@@ -22,16 +22,15 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kapua-consumer</artifactId>
     <packaging>pom</packaging>
+
+    <artifactId>kapua-consumer</artifactId>
 
     <modules>
         <module>commons</module>
-
         <module>lifecycle</module>
-        <module>lifecycle-app</module>
-
         <module>telemetry</module>
+        <module>lifecycle-app</module>
         <module>telemetry-app</module>
     </modules>
 
@@ -47,55 +46,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-shade-plugin</artifactId>
-                    <version>${maven-shade-plugin.version}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.springframework.boot</groupId>
-                            <artifactId>spring-boot-maven-plugin</artifactId>
-                            <version>${spring-boot.version}</version>
-                        </dependency>
-                    </dependencies>
-                    <configuration>
-                        <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
-                        <transformers combine.children="append">
-                            <!-- Base Springboot and Camel transformers -->
-                            <!-- see https://issues.apache.org/jira/browse/CAMEL-3773 -->
-                            <transformer implementation="org.springframework.boot.maven.PropertiesMergingResourceTransformer">
-                                <resource>META-INF/spring.factories</resource>
-                            </transformer>
-                            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                <resource>META-INF/spring.handlers</resource>
-                            </transformer>
-                            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                <resource>META-INF/spring.schemas</resource>
-                            </transformer>
-                            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                <resource>META-INF/services/org/apache/camel/TypeConverter</resource>
-                            </transformer>
-                            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                <resource>META-INF/services/org/apache/camel/TypeConverterLoader</resource>
-                            </transformer>
-
-                            <!-- Kapua Persistence -->
-                            <transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
-                                <resource>META-INF/persistence.xml</resource>
-                            </transformer>
-
-                            <!-- Kapua Translator -->
-                            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                <resource>META-INF/services/org.eclipse.kapua.translator.Translator</resource>
-                            </transformer>
-                        </transformers>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
 </project>

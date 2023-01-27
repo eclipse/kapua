@@ -28,7 +28,7 @@
             <fileMode>0755</fileMode>
         </file>
         <file>
-            <source>${project.basedir}/../../../consumer/telemetry-app/target/kapua-consumer-telemetry-app-${project.version}-app.jar</source>
+            <source>${project.basedir}/../../../consumer/telemetry-app/target/kapua-consumer-telemetry-${project.version}-app.jar</source>
             <fileMode>0755</fileMode>
         </file>
     </files>
