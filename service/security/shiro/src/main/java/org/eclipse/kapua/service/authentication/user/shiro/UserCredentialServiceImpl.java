@@ -70,7 +70,7 @@ public class UserCredentialServiceImpl implements UserCredentialService {
                                                        .findAny()
                                                        .orElseThrow(() -> new IllegalStateException("User does not have any credential of type password"));
 
-            String encryptedPass = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, passwordCredential.getCredentialKey());
+            String encryptedPass = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, passwordChangeRequest.getNewPassword());
             passwordCredential.setCredentialKey(encryptedPass);
 
             return credentialService.update(passwordCredential);
