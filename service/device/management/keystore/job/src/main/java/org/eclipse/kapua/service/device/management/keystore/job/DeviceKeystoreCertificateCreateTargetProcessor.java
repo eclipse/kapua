@@ -14,9 +14,8 @@ package org.eclipse.kapua.service.device.management.keystore.job;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
+import org.eclipse.kapua.job.engine.commons.operation.AbstractDeviceTargetProcessor;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService;
@@ -34,9 +33,7 @@ import javax.inject.Inject;
  *
  * @since 1.0.0
  */
-public class DeviceKeystoreCertificateCreateTargetProcessor extends AbstractTargetProcessor implements TargetProcessor {
-
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+public class DeviceKeystoreCertificateCreateTargetProcessor extends AbstractDeviceTargetProcessor implements TargetProcessor {
     private static final DeviceKeystoreManagementService KEYSTORE_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceKeystoreManagementService.class);
     private static final DeviceKeystoreManagementFactory KEYSTORE_MANAGEMENT_FACTORY = LOCATOR.getFactory(DeviceKeystoreManagementFactory.class);
 

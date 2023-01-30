@@ -36,9 +36,7 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DevicePackageDownloadTargetProcessor extends AbstractDevicePackageTargetProcessor implements TargetProcessor {
-
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
     private static final DevicePackageManagementService PACKAGES_MANAGEMENT_SERVICE = LOCATOR.getService(DevicePackageManagementService.class);
     private static final DevicePackageFactory DEVICE_PACKAGE_FACTORY = LOCATOR.getFactory(DevicePackageFactory.class);
 

@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.device.management.bundle.job;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
+import org.eclipse.kapua.job.engine.commons.operation.AbstractDeviceTargetProcessor;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -32,8 +32,7 @@ import javax.inject.Inject;
  *
  * @since 1.0.0
  */
-public class DeviceBundleStartTargetProcessor extends AbstractTargetProcessor implements TargetProcessor {
-
+public class DeviceBundleStartTargetProcessor extends AbstractDeviceTargetProcessor implements TargetProcessor {
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final DeviceBundleManagementService BUNDLE_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceBundleManagementService.class);
 
