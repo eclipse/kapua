@@ -17,6 +17,7 @@ import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
@@ -25,6 +26,7 @@ import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.exception.PasswordLengthException;
 import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
@@ -41,6 +43,7 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class UserCredentialServiceImpl implements UserCredentialService {
+    private static final int SYSTEM_MAXIMUM_PASSWORD_LENGTH = 255;
     @Override
     public Credential changePasswordRequest(PasswordChangeRequest passwordChangeRequest) throws KapuaException {
         ArgumentValidator.notNull(passwordChangeRequest.getNewPassword(), "passwordChangeRequest.newPassword");
@@ -69,6 +72,16 @@ public class UserCredentialServiceImpl implements UserCredentialService {
                                                        .filter(credential -> credential.getCredentialType().equals(CredentialType.PASSWORD))
                                                        .findAny()
                                                        .orElseThrow(() -> new IllegalStateException("User does not have any credential of type password"));
+
+            // Validate Password length
+            int minPasswordLength = credentialService.getMinimumPasswordLength(passwordCredential.getScopeId());
+            if (passwordChangeRequest.getNewPassword().length() < minPasswordLength || passwordChangeRequest.getNewPassword().length() > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
+                throw new PasswordLengthException(minPasswordLength, SYSTEM_MAXIMUM_PASSWORD_LENGTH);
+            }
+
+            //
+            // Validate Password regex
+            ArgumentValidator.match(passwordChangeRequest.getNewPassword(), CommonsValidationRegex.PASSWORD_REGEXP, "credentialCreator.credentialKey");
 
             String encryptedPass = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, passwordChangeRequest.getNewPassword());
             passwordCredential.setCredentialKey(encryptedPass);
