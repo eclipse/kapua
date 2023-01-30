@@ -128,6 +128,11 @@ public class JobDefinitionBuildUtils {
         jslStepIndexProperty.setValue(String.valueOf(jobStep.getStepIndex()));
         jslPropertyList.add(jslStepIndexProperty);
 
+        Property jslStepNameProperty = new Property();
+        jslStepNameProperty.setName(StepContextPropertyNames.STEP_NAME);
+        jslStepNameProperty.setValue(jobStep.getName());
+        jslPropertyList.add(jslStepNameProperty);
+
         if (hasNext) {
             Property jslStepNextIndexProperty = new Property();
             jslStepNextIndexProperty.setName(StepContextPropertyNames.STEP_NEXT_INDEX);
