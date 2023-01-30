@@ -61,7 +61,10 @@ public class DefaultTargetWriter extends AbstractItemWriter implements TargetWri
         JobLogger jobLogger = jobContextWrapper.getJobLogger();
         jobLogger.setClassLog(LOG);
 
-        jobLogger.info("Writing items...");
+        int stepIndex = stepContextWrapper.getStepIndex();
+        String stepName = stepContextWrapper.getKapuaStepName();
+
+        jobLogger.info("Writing chunk results. Step:{} (index:{})...", stepName, stepIndex);
 
         for (Object item : items) {
             JobTargetWrapper processedWrappedJobTarget = (JobTargetWrapper) item;
@@ -96,6 +99,6 @@ public class DefaultTargetWriter extends AbstractItemWriter implements TargetWri
             }
         }
 
-        jobLogger.info("Writing items... DONE!");
+        jobLogger.info("Writing chunk results. Step:{} (index:{})... DONE!", stepName, stepIndex);
     }
 }
