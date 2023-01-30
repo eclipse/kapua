@@ -1685,7 +1685,7 @@ public class JobServiceSteps extends TestBase {
         tmpCr.setName(String.format("DefinitionName_%d", random.nextInt()));
         tmpCr.setDescription("DefinitionDescription");
         tmpCr.setReaderName(null);
-        tmpCr.setProcessorName(TestProcessor.class.getName());
+        tmpCr.setProcessorName(TestJobStepProcessor.class.getName());
         tmpCr.setWriterName(null);
         tmpCr.setStepType(JobStepType.TARGET);
 
