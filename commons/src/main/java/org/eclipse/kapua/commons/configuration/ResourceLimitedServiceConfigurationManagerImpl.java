@@ -124,7 +124,7 @@ public class ResourceLimitedServiceConfigurationManagerImpl
         } else {
             finalConfig = getConfigValues(scopeId, false);
         }
-        boolean allowInfiniteChildEntities = (boolean) finalConfig.get("infiniteChildEntities");
+        boolean allowInfiniteChildEntities = (boolean) finalConfig.getOrDefault("infiniteChildEntities", false);
         if (allowInfiniteChildEntities) {
             return Integer.MAX_VALUE;
         }
@@ -146,7 +146,7 @@ public class ResourceLimitedServiceConfigurationManagerImpl
             }
 
             // Max allowed for this account
-            int maxChildAccounts = (int) finalConfig.get("maxNumberChildEntities");
+            int maxChildAccounts = (int) finalConfig.getOrDefault("maxNumberChildEntities", 0);
             return maxChildAccounts - currentUsedEntities - childCount;
         });
     }
