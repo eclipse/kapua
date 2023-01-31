@@ -28,4 +28,9 @@ public interface StepContextPropertyNames {
      * @since 1.0.0
      */
     String STEP_NEXT_INDEX = "step.nextStepIndex";
+
+    /**
+     * @since 2.0.0
+     */
+    String STEP_NAME = "step.name";
 }

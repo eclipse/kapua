@@ -79,7 +79,10 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
         JobLogger jobLogger = jobContextWrapper.getJobLogger();
         jobLogger.setClassLog(LOG);
 
-        jobLogger.info("Opening cursor...");
+        int stepIndex = stepContextWrapper.getStepIndex();
+        String stepName = stepContextWrapper.getKapuaStepName();
+
+        jobLogger.info("Reading target chunk. Step:{} (index:{})...", stepName, stepIndex);
 
         //
         // Job Id and JobTarget status filtering
@@ -107,7 +110,7 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
         // Wrap the JobTargets in a wrapper object to store additional informations
         jobTargets.getItems().forEach(jt -> wrappedJobTargets.add(new JobTargetWrapper(jt)));
 
-        jobLogger.info("Opening cursor... DONE!");
+        jobLogger.info("Reading target chunk. Step:{} (index:{})...DONE", stepName, stepIndex);
     }
 
     @Override

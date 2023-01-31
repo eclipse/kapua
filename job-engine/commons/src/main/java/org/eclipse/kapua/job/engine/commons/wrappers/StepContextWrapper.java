@@ -152,4 +152,13 @@ public class StepContextWrapper {
     public Metric[] getMetrics() {
         return stepContext.getMetrics();
     }
+
+    public String getKapuaStepName() {
+        Properties stepContextProperties = stepContext.getProperties();
+        String stepName = stepContextProperties.getProperty(StepContextPropertyNames.STEP_NAME);
+        if (Strings.isNullOrEmpty(stepName)) {
+            throw KapuaRuntimeException.internalError("stepName is not available in the StepContext.properties");
+        }
+        return stepName;
+    }
 }
