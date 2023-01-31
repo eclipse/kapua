@@ -35,8 +35,8 @@ import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.eclipse.kapua.service.device.registry.DeviceRegistrySettingKeys;
-import org.eclipse.kapua.service.device.registry.DeviceRegistrySettings;
+import org.eclipse.kapua.service.device.registry.KapuaDeviceRegistrySettingKeys;
+import org.eclipse.kapua.service.device.registry.KapuaDeviceRegistrySettings;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
@@ -51,9 +51,9 @@ import java.util.List;
  */
 public final class DeviceValidation {
 
-    private static final DeviceRegistrySettings DEVICE_REGISTRY_SETTINGS = DeviceRegistrySettings.getInstance();
-    private static final Integer BIRTH_FIELDS_CLOB_MAX_LENGTH = DEVICE_REGISTRY_SETTINGS.getInt(DeviceRegistrySettingKeys.DEVICE_REGISTRY_LIFECYCLE_BIRTH_FIELDS_CLOB_LENGTH_MAX);
-    private static final Integer BIRTH_FIELDS_EXTENDED_PROPERTY_VALUE_MAX_LENGTH = DEVICE_REGISTRY_SETTINGS.getInt(DeviceRegistrySettingKeys.DEVICE_LIFECYCLE_BIRTH_EXTENDED_PROPERTIES_LENGTH_MAX);
+    private static final KapuaDeviceRegistrySettings DEVICE_REGISTRY_SETTINGS = KapuaDeviceRegistrySettings.getInstance();
+    private static final Integer BIRTH_FIELDS_CLOB_MAX_LENGTH = DEVICE_REGISTRY_SETTINGS.getInt(KapuaDeviceRegistrySettingKeys.DEVICE_REGISTRY_LIFECYCLE_BIRTH_FIELDS_CLOB_LENGTH_MAX);
+    private static final Integer BIRTH_FIELDS_EXTENDED_PROPERTY_VALUE_MAX_LENGTH = DEVICE_REGISTRY_SETTINGS.getInt(KapuaDeviceRegistrySettingKeys.DEVICE_LIFECYCLE_BIRTH_EXTENDED_PROPERTIES_LENGTH_MAX);
 
     private static final DeviceDomain DEVICE_DOMAIN = new DeviceDomain();
 

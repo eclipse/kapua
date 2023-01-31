@@ -16,11 +16,11 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
 
 /**
- * {@link SettingKey}s for {@link DeviceRegistrySettings}.
+ * {@link SettingKey}s for KapuaDeviceRegistrySettings.
  *
  * @since 1.0.0
  */
-public enum DeviceRegistrySettingKeys implements SettingKey {
+public enum KapuaDeviceRegistrySettingKeys implements SettingKey {
 
     /**
      * The key value in the configuration resources.
@@ -32,7 +32,7 @@ public enum DeviceRegistrySettingKeys implements SettingKey {
     /**
      * @since 1.0.0
      */
-    DEVICE_REGISTRY_EVENT_ADDRESS("device.registry.event.address"),
+    DEVICE_EVENT_ADDRESS("device.eventAddress"),
 
     /**
      * Gets the hard limit for {@link KapuaBirthMessage} generic fields length.
@@ -58,12 +58,12 @@ public enum DeviceRegistrySettingKeys implements SettingKey {
      * @param key The value mapped by this {@link Enum} value
      * @since 1.0.0
      */
-    DeviceRegistrySettingKeys(String key) {
+    KapuaDeviceRegistrySettingKeys(String key) {
         this.key = key;
     }
 
     /**
-     * Gets the key for this {@link DeviceRegistrySettingKeys}
+     * Gets the key for this {@link KapuaDeviceRegistrySettingKeys}
      *
      * @since 1.0.0
      */
