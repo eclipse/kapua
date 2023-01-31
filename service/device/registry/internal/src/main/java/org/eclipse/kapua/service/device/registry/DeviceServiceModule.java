@@ -32,14 +32,14 @@ public class DeviceServiceModule extends ServiceEventModule {
 
     @Override
     protected ServiceEventModuleConfiguration initializeConfiguration() {
-        DeviceRegistrySettings deviceRegistrySettings = DeviceRegistrySettings.getInstance();
+        KapuaDeviceRegistrySettings kapuaDeviceRegistrySettings = KapuaDeviceRegistrySettings.getInstance();
 
         List<ServiceEventClientConfiguration> serviceEventListenerConfigurations = new ArrayList<>();
         serviceEventListenerConfigurations.addAll(ServiceInspector.getEventBusClients(deviceRegistryService, DeviceRegistryService.class));
         serviceEventListenerConfigurations.addAll(ServiceInspector.getEventBusClients(deviceConnectionService, DeviceConnectionService.class));
 
         return new ServiceEventModuleConfiguration(
-                deviceRegistrySettings.getString(DeviceRegistrySettingKeys.DEVICE_REGISTRY_EVENT_ADDRESS),
+                kapuaDeviceRegistrySettings.getString(KapuaDeviceRegistrySettingKeys.DEVICE_EVENT_ADDRESS),
                 DeviceEntityManagerFactory.getInstance(),
                 serviceEventListenerConfigurations.toArray(new ServiceEventClientConfiguration[0])
         );

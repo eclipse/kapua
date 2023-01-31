@@ -20,28 +20,28 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  *
  * @since 1.0.0
  */
-public class DeviceRegistrySettings extends AbstractKapuaSetting<DeviceRegistrySettingKeys> {
+public class KapuaDeviceRegistrySettings extends AbstractKapuaSetting<KapuaDeviceRegistrySettingKeys> {
 
-    private static final String DEVICE_REGISTRY_SETTING_RESOURCE = "device-registry-setting.properties";
+    private static final String DEVICE_REGISTRY_SETTING_RESOURCE = "kapua-device-registry-setting.properties";
 
-    private static final DeviceRegistrySettings INSTANCE = new DeviceRegistrySettings();
+    private static final KapuaDeviceRegistrySettings INSTANCE = new KapuaDeviceRegistrySettings();
 
     /**
      * Constructor.
      *
      * @since 1.0.0
      */
-    private DeviceRegistrySettings() {
+    private KapuaDeviceRegistrySettings() {
         super(DEVICE_REGISTRY_SETTING_RESOURCE);
     }
 
     /**
-     * Gets the {@link DeviceRegistrySettings} singleton instance.
+     * Gets the {@link KapuaDeviceRegistrySettings} singleton instance.
      *
-     * @return The {@link DeviceRegistrySettings} instance.
+     * @return The {@link KapuaDeviceRegistrySettings} instance.
      * @since 1.0.0
      */
-    public static DeviceRegistrySettings getInstance() {
+    public static KapuaDeviceRegistrySettings getInstance() {
         return INSTANCE;
     }
 
