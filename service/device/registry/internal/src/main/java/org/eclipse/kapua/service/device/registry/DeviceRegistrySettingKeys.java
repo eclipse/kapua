@@ -46,7 +46,7 @@ public enum DeviceRegistrySettingKeys implements SettingKey {
      *
      * @since 2.0.0
      */
-    DEVICE_REGISTRY_LIFECYCLE_BIRTH_FIELDS_EXTENDED_PROPERTIES_VALUE_LENGTH_MAX("device.registry.lifecycle.birth.fields.extendedProperties.value.length.max"),
+    DEVICE_LIFECYCLE_BIRTH_EXTENDED_PROPERTIES_LENGTH_MAX("device.lifecycle.birth.extended.properties.length.max"),
 
     ;
 
