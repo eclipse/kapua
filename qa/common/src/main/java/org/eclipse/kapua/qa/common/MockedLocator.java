@@ -39,7 +39,7 @@ import java.util.Map;
  * In cucumber setting is done in custom cucumber runner CucumberWithProperties.
  * <p>
  * Mocked locator can be used in two ways:
- * - setting services with seter and having local Map of services and factories
+ * - setting services with setter and having local Map of services and factories
  * - setting services with Google Guice DI
  */
 public class MockedLocator extends KapuaLocator {
@@ -99,7 +99,7 @@ public class MockedLocator extends KapuaLocator {
     @Override
     public <F extends KapuaObjectFactory> F getFactory(Class<F> factoryClass) {
 
-        logger.info("Geting mocked factory {} from MockedLocator", factoryClass.getName());
+        logger.info("Getting mocked factory {} from MockedLocator", factoryClass.getName());
         F factory = getMockedFactory(factoryClass);
         if ((factory == null) && (guiceInjector != null)) {
             try {
