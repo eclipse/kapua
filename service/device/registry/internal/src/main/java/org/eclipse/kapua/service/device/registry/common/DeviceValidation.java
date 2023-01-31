@@ -55,7 +55,7 @@ public final class DeviceValidation {
 
     private static final DeviceRegistrySettings DEVICE_REGISTRY_SETTINGS = DeviceRegistrySettings.getInstance();
     private static final Integer BIRTH_FIELDS_CLOB_MAX_LENGTH = DEVICE_REGISTRY_SETTINGS.getInt(DeviceRegistrySettingKeys.DEVICE_REGISTRY_LIFECYCLE_BIRTH_FIELDS_CLOB_LENGTH_MAX);
-    private static final Integer BIRTH_FIELDS_EXTENDED_PROPERTY_VALUE_MAX_LENGTH = DEVICE_REGISTRY_SETTINGS.getInt(DeviceRegistrySettingKeys.DEVICE_REGISTRY_LIFECYCLE_BIRTH_FIELDS_EXTENDED_PROPERTIES_VALUE_LENGTH_MAX);
+    private static final Integer BIRTH_FIELDS_EXTENDED_PROPERTY_VALUE_MAX_LENGTH = DEVICE_REGISTRY_SETTINGS.getInt(DeviceRegistrySettingKeys.DEVICE_LIFECYCLE_BIRTH_EXTENDED_PROPERTIES_LENGTH_MAX);
 
     private static final DeviceDomain DEVICE_DOMAIN = new DeviceDomain();
 
