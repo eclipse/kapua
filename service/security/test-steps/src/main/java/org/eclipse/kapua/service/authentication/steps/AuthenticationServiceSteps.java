@@ -25,11 +25,17 @@ import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.authentication.AuthenticationService;
+import org.eclipse.kapua.service.authentication.CredentialsFactory;
+import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
+import org.eclipse.kapua.service.authentication.user.UserCredentialFactory;
+import org.eclipse.kapua.service.authentication.user.UserCredentialService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -53,8 +59,13 @@ public class AuthenticationServiceSteps extends TestBase {
 
     private CredentialService credentialService;
     private CredentialFactory credentialFactory;
+    private CredentialsFactory credentialsFactory;
     private UserService userService;
     private UserFactory userFactory;
+
+    private UserCredentialService userCredentialService;
+    private UserCredentialFactory userCredentialFactory;
+    private AuthenticationService authenticationService;
 
     @Inject
     public AuthenticationServiceSteps(StepData stepData) {
@@ -73,6 +84,22 @@ public class AuthenticationServiceSteps extends TestBase {
         credentialFactory = locator.getFactory(CredentialFactory.class);
         userService = locator.getService(UserService.class);
         userFactory = locator.getFactory(UserFactory.class);
+        userCredentialService = locator.getService(UserCredentialService.class);
+        userCredentialFactory = locator.getFactory(UserCredentialFactory.class);
+        credentialsFactory = locator.getFactory(CredentialsFactory.class);
+        authenticationService = locator.getService(AuthenticationService.class);
+    }
+
+    @When("I login as user with name {string} and password {string}")
+    public void loginUser(String userName, String password) throws Exception {
+        LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(userName, password);
+        authenticationService.logout();
+        primeException();
+        try {
+            authenticationService.login(credentials);
+        } catch (KapuaException e) {
+            verifyException(e);
+        }
     }
 
     @When("I create default test-user")
@@ -178,4 +205,19 @@ public class AuthenticationServiceSteps extends TestBase {
         }
     }
 
+
+    @When("I change the user credential password with old password {string} and new password {string}")
+    public void changeUserPasswordCredential(String oldPassword, String newPassword) throws Exception {
+        primeException();
+
+        PasswordChangeRequest passwordChangeRequest = userCredentialFactory.newPasswordChangeRequest();
+        passwordChangeRequest.setOldPassword(oldPassword);
+        passwordChangeRequest.setNewPassword(newPassword);
+
+        try {
+            userCredentialService.changePasswordRequest(passwordChangeRequest);
+        } catch (Exception ex) {
+            verifyException(ex);
+        }
+    }
 }

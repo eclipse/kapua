@@ -13,8 +13,8 @@
 package org.eclipse.kapua.service.authentication.user.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
@@ -26,6 +26,7 @@ import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.exception.PasswordLengthException;
 import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
@@ -62,8 +63,8 @@ public class UserCredentialServiceImpl implements UserCredentialService {
             UsernamePasswordCredentials usernamePasswordCredentials = credentialsFactory.newUsernamePasswordCredentials(user.getName(), passwordChangeRequest.getOldPassword());
             try {
                 authenticationService.verifyCredentials(usernamePasswordCredentials);
-            } catch (KapuaException e) {
-                throw new KapuaException(KapuaErrorCodes.OPERATION_NOT_ALLOWED, "passwordChangeRequest.oldPassword");
+            } catch (KapuaAuthenticationException e) {
+                throw new KapuaIllegalArgumentException("passwordChangeRequest.oldPassword", passwordChangeRequest.getOldPassword());
             }
 
             CredentialService credentialService = locator.getService(CredentialService.class);
@@ -81,7 +82,7 @@ public class UserCredentialServiceImpl implements UserCredentialService {
 
             //
             // Validate Password regex
-            ArgumentValidator.match(passwordChangeRequest.getNewPassword(), CommonsValidationRegex.PASSWORD_REGEXP, "credentialCreator.credentialKey");
+            ArgumentValidator.match(passwordChangeRequest.getNewPassword(), CommonsValidationRegex.PASSWORD_REGEXP, "passwordChangeRequest.newPassword");
 
             String encryptedPass = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, passwordChangeRequest.getNewPassword());
             passwordCredential.setCredentialKey(encryptedPass);
