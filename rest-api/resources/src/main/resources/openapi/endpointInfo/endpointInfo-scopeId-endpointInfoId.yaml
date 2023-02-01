@@ -60,6 +60,7 @@ paths:
               usages:
                 - name: MESSAGE_BROKER
                 - name: PROVISION
+              endpointType: resource
         required: true
       responses:
         200:
