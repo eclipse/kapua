@@ -20,6 +20,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -61,6 +63,8 @@ public class ServiceConfigurations extends AbstractKapuaResource {
                 serviceConfiguration.getComponentConfigurations().add(serviceComponentConfiguration);
             }
         }
+        Collections.sort(serviceConfiguration.getComponentConfigurations(), Comparator.comparing(ServiceComponentConfiguration::getName));
+
         return serviceConfiguration;
     }
 
