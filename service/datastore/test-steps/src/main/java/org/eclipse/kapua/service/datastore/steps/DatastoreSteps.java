@@ -12,6 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.steps;
 
+import com.google.inject.Singleton;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.DataTableType;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
@@ -98,17 +107,6 @@ import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Singleton;
-
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
-import io.cucumber.java.DataTableType;
-import io.cucumber.java.Scenario;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-
 import javax.inject.Inject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -137,7 +135,7 @@ public class DatastoreSteps extends TestBase {
     private static final String DOUBLE = "double";
     private static final String LAST_ACCOUNT = "LastAccount";
     private static final String MESSAGE_QUERY = "messageQuery";
-    private static final String LAST_DEVICE = "LastDevice";
+    private static final String DEVICE = "Device";
     private static final String DATE_FORMAT_HH_MM_SS = "HH:mm:ss dd/MM/yyyy";
     private static final String DATE_FORMAT_DD_MM_YYYY = "dd/MM/yyyy HH:mm:ss";
     private static final String RANDOM_DATE_1 = "01/04/2017 03:00:00";
@@ -240,9 +238,9 @@ public class DatastoreSteps extends TestBase {
     @DataTableType
     public MetricEntry metricEntry(Map<String, String> entry) {
         return new MetricEntry(
-            entry.get("key"),
-            entry.get("type"),
-            entry.get("value")
+                entry.get("key"),
+                entry.get("type"),
+                entry.get("value")
         );
     }
 
@@ -284,7 +282,7 @@ public class DatastoreSteps extends TestBase {
         this.session = session;
     }
 
-    @After(value="@setup")
+    @After(value = "@setup")
     public void setServices() throws Exception {
         locator = KapuaLocator.getInstance();
         // Get instance of services used in different scenarios
@@ -320,7 +318,7 @@ public class DatastoreSteps extends TestBase {
 
     }
 
-    @After(value="not (@setup or @teardown)", order=10)
+    @After(value = "not (@setup or @teardown)", order = 10)
     public void afterScenario() {
         try {
             deleteIndices();
@@ -447,8 +445,8 @@ public class DatastoreSteps extends TestBase {
     @Given("I prepare a random message and save it as {string}")
     public void prepareAndRememberARandomMessage(String msgKey) throws Exception {
         KapuaDataMessage tmpMessage = createTestMessage(((Account) stepData.get(LAST_ACCOUNT)).getId(),
-                ((Device) stepData.get(LAST_DEVICE)).getId(),
-                ((Device) stepData.get(LAST_DEVICE)).getClientId(),
+                ((Device) stepData.get(DEVICE)).getId(),
+                ((Device) stepData.get(DEVICE)).getClientId(),
                 "", "");
         stepData.put(msgKey, tmpMessage);
     }
@@ -456,8 +454,8 @@ public class DatastoreSteps extends TestBase {
     @Given("I prepare a random message with capture date {string} and save it as {string}")
     public void prepareAndRememberARandomMessage(String captureDate, String msgKey) throws Exception {
         KapuaDataMessage tmpMessage = createTestMessage(((Account) stepData.get(LAST_ACCOUNT)).getId(),
-                ((Device) stepData.get(LAST_DEVICE)).getId(),
-                ((Device) stepData.get(LAST_DEVICE)).getClientId(),
+                ((Device) stepData.get(DEVICE)).getId(),
+                ((Device) stepData.get(DEVICE)).getClientId(),
                 null, captureDate);
         stepData.put(msgKey, tmpMessage);
     }
@@ -466,8 +464,8 @@ public class DatastoreSteps extends TestBase {
     public void prepareRandomMessageWithNullPayload(String msgKey) throws Exception {
         KapuaDataMessage tmpMessage = createTestMessage(
                 ((Account) stepData.get(LAST_ACCOUNT)).getId(),
-                ((Device) stepData.get(LAST_DEVICE)).getId(),
-                ((Device) stepData.get(LAST_DEVICE)).getClientId(),
+                ((Device) stepData.get(DEVICE)).getId(),
+                ((Device) stepData.get(DEVICE)).getClientId(),
                 "", "");
         tmpMessage.setPayload(null);
         stepData.put(msgKey, tmpMessage);
@@ -480,7 +478,7 @@ public class DatastoreSteps extends TestBase {
         for (CucTopic tmpTopic : topics) {
             tmpMsg = createTestMessage(
                     ((Account) stepData.get(LAST_ACCOUNT)).getId(),
-                    ((Device) stepData.get(LAST_DEVICE)).getId(),
+                    ((Device) stepData.get(DEVICE)).getId(),
                     tmpTopic.getClientId(),
                     tmpTopic.getTopic(),
                     tmpTopic.getCaptured());
@@ -503,7 +501,7 @@ public class DatastoreSteps extends TestBase {
             for (int cnt = 0; cnt < tmpMessage.getCount(); cnt++) {
                 tmpMsg = createTestMessage(
                         ((Account) stepData.get(LAST_ACCOUNT)).getId(),
-                        ((Device) stepData.get(LAST_DEVICE)).getId(),
+                        ((Device) stepData.get(DEVICE)).getId(),
                         tmpMessage.getClientId(),
                         tmpMessage.getTopic(),
                         tmpCal.getTime());
@@ -552,8 +550,8 @@ public class DatastoreSteps extends TestBase {
         List<KapuaDataMessage> msgList = new ArrayList<>();
         for (int i = 0; i < number; i++) {
             tmpMsg = createTestMessage(((Account) stepData.get(LAST_ACCOUNT)).getId(),
-                    ((Device) stepData.get(LAST_DEVICE)).getId(),
-                    ((Device) stepData.get(LAST_DEVICE)).getClientId(),
+                    ((Device) stepData.get(DEVICE)).getId(),
+                    ((Device) stepData.get(DEVICE)).getClientId(),
                     "", "");
             msgList.add(tmpMsg);
         }
@@ -1484,12 +1482,12 @@ public class DatastoreSteps extends TestBase {
     @When("I count for metric info")
     public void countForMetricInfo() throws KapuaException {
         MetricInfoQuery metricInfoQuery = (MetricInfoQuery) stepData.get(METRIC_INFO_QUERY);
-        stepData.put("metricInfoCountResult", (int)metricInfoRegistryService.count(metricInfoQuery));
+        stepData.put("metricInfoCountResult", (int) metricInfoRegistryService.count(metricInfoQuery));
     }
 
     @Then("I get metric info count {int}")
     public void getDesiredMetricInfoCountResult(int desiredCount) {
-        int count = (int)stepData.get("metricInfoCountResult");
+        int count = (int) stepData.get("metricInfoCountResult");
         Assert.assertEquals(desiredCount, count);
     }
 
@@ -1683,7 +1681,7 @@ public class DatastoreSteps extends TestBase {
             throws Exception {
 
         String tmpTopic = ((topic != null) && !topic.isEmpty()) ? topic : "default/test/topic";
-        String tmpClientId = (clientId != null) ? clientId : ((Device) stepData.get(LAST_DEVICE)).getClientId();
+        String tmpClientId = (clientId != null) ? clientId : ((Device) stepData.get(DEVICE)).getClientId();
         KapuaDataMessage tmpMessage = dataMessageFactory.newKapuaDataMessage();
 
         Date tmpRecDate = new Date();
@@ -1717,7 +1715,7 @@ public class DatastoreSteps extends TestBase {
             throws Exception {
 
         String tmpTopic = (topic != null) ? topic : "default/test/topic";
-        String tmpClientId = (clientId != null) ? clientId : ((Device) stepData.get(LAST_DEVICE)).getClientId();
+        String tmpClientId = (clientId != null) ? clientId : ((Device) stepData.get(DEVICE)).getClientId();
         KapuaDataMessage tmpMessage = dataMessageFactory.newKapuaDataMessage();
 
         Date tmpCaptured = (captured != null) ? captured : new Date();
@@ -1795,7 +1793,7 @@ public class DatastoreSteps extends TestBase {
     private void isChannelForFirstMessageInStoreOK(StorableId msgId, Date storedOn) throws KapuaException {
 
         KapuaId tmpAccId = ((Account) stepData.get(LAST_ACCOUNT)).getId();
-        String tmpClId = ((Device) stepData.get(LAST_DEVICE)).getClientId();
+        String tmpClId = ((Device) stepData.get(DEVICE)).getClientId();
         AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
         andPredicate.getPredicates().add(datastorePredicateFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, tmpClId));
         ChannelInfoQuery channelInfoQuery = createBaseChannelInfoQuery(tmpAccId, 100);
@@ -1813,7 +1811,7 @@ public class DatastoreSteps extends TestBase {
     private void isClientForFirstMessageInStoreOK(StorableId msgId, Date storedOn) throws KapuaException {
 
         KapuaId tmpAccId = ((Account) stepData.get(LAST_ACCOUNT)).getId();
-        String tmpClId = ((Device) stepData.get(LAST_DEVICE)).getClientId();
+        String tmpClId = ((Device) stepData.get(DEVICE)).getClientId();
         AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
         andPredicate.getPredicates().add(datastorePredicateFactory.newTermPredicate(ClientInfoField.CLIENT_ID, tmpClId));
         ClientInfoQuery clientInfoQuery = createBaseClientInfoQuery(tmpAccId, 100);
@@ -1832,7 +1830,7 @@ public class DatastoreSteps extends TestBase {
     private void isMetricForFirstMessageInStoreOK(StorableId msgId, Date storedOn) throws KapuaException {
 
         KapuaId tmpAccId = ((Account) stepData.get(LAST_ACCOUNT)).getId();
-        String tmpClId = ((Device) stepData.get(LAST_DEVICE)).getClientId();
+        String tmpClId = ((Device) stepData.get(DEVICE)).getClientId();
         AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
         andPredicate.getPredicates().add(datastorePredicateFactory.newTermPredicate(MetricInfoField.CLIENT_ID, tmpClId));
         MetricInfoQuery metricInfoQuery = createBaseMetricInfoQuery(tmpAccId, 100);

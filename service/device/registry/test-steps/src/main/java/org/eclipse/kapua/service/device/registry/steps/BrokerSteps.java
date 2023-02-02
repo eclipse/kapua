@@ -13,16 +13,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.steps;
 
+import com.google.inject.Singleton;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
-import org.eclipse.kapua.service.device.management.asset.internal.DeviceAssetsImpl;
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
+import org.eclipse.kapua.service.device.management.asset.internal.DeviceAssetsImpl;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
@@ -45,17 +52,6 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.Singleton;
-
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
-import io.cucumber.java.Scenario;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
 
 import javax.inject.Inject;
 import java.nio.file.Files;
@@ -71,8 +67,6 @@ import java.util.stream.Collectors;
  */
 @Singleton
 public class BrokerSteps extends TestBase {
-
-    private static final Logger logger = LoggerFactory.getLogger(BrokerSteps.class);
 
     /**
      * Embedded broker configuration file from classpath resources.
@@ -93,6 +87,10 @@ public class BrokerSteps extends TestBase {
      * URI of mqtt broker.
      */
     private static final String BROKER_URI = "tcp://localhost:1883";
+
+    private static final String DEVICE = "Device";
+    private static final String DEVICE_CONNECTION = "DeviceConnection";
+    private static final String DEVICE_CONNECTIONS = "DeviceConnections";
 
     private static final String PACKAGES = "packages";
     private static final String BUNDLES = "bundles";
@@ -145,9 +143,10 @@ public class BrokerSteps extends TestBase {
         super(stepData);
     }
 
-    @After(value="@setup")
+    @After(value = "@setup")
     public void setServices() {
         KapuaLocator locator = KapuaLocator.getInstance();
+
         devicePackageManagementService = locator.getService(DevicePackageManagementService.class);
         deviceRegistryService = locator.getService(DeviceRegistryService.class);
         deviceConfiguratiomManagementService = locator.getService(DeviceConfigurationManagementService.class);
@@ -158,7 +157,7 @@ public class BrokerSteps extends TestBase {
         deviceAssetManagementService = locator.getService(DeviceAssetManagementService.class);
     }
 
-    @Before(value="@env_docker or @env_docker_base or @env_none", order=10)
+    @Before(value = "@env_docker or @env_docker_base or @env_none", order = 10)
     public void beforeScenarioNone(Scenario scenario) {
         beforeInternal(scenario);
     }
@@ -169,7 +168,7 @@ public class BrokerSteps extends TestBase {
         BrokerSetting.resetInstance();
     }
 
-    @After(value="not (@setup or @teardown)", order=10)
+    @After(value = "not (@setup or @teardown)", order = 10)
     public void afterScenario() {
         disconnectAll();
     }
@@ -179,19 +178,18 @@ public class BrokerSteps extends TestBase {
         if (!kuraDevices.isEmpty()) {
             kuraDevices.clear();
         }
+
         KuraDevice kuraDevice = new KuraDevice();
         kuraDevice.mqttClientConnect();
         kuraDevices.add(kuraDevice);
     }
 
     @When("I restart the Kura Mock")
-    public void restartKuraMock() throws Exception {
-        List<KuraDevice> restartedKuraDevices = new ArrayList<>();
+    public void restartKuraMock() {
         if (!kuraDevices.isEmpty()) {
             for (KuraDevice kuraDevice : kuraDevices) {
                 kuraDevice.mqttClientSetup();
                 kuraDevice.mqttClientConnect();
-                restartedKuraDevices.add(kuraDevice);
             }
         }
     }
@@ -200,18 +198,18 @@ public class BrokerSteps extends TestBase {
     public void getKuraMockDevice(int seconds) throws Exception {
         ArrayList<Device> deviceList = new ArrayList<>();
         for (KuraDevice kuraDevice : kuraDevices) {
-            Device device = null;
+            Device device;
             int loop = 0;
             do {
                 device = deviceRegistryService.findByClientId(getCurrentScopeId(), kuraDevice.getClientId());
-                if (device==null) {
+                if (device == null) {
                     Thread.sleep(1000);
                 }
             }
-            while(device==null && loop++ < seconds);
+            while (device == null && loop++ < seconds);
             if (device != null) {
                 deviceList.add(device);
-                stepData.put("LastDevice", device);
+                stepData.put(DEVICE, device);
             }
         }
         stepData.put("DeviceList", deviceList);
@@ -220,6 +218,7 @@ public class BrokerSteps extends TestBase {
     @When("KuraMock is disconnected")
     public void kuraMockDisconnected() throws Exception {
         deviceDeathMessage();
+
         for (KuraDevice kuraDevice : kuraDevices) {
             kuraDevice.mqttClientDisconnect();
         }
@@ -495,12 +494,20 @@ public class BrokerSteps extends TestBase {
     }
 
     @Then("Device(s) status is {string}")
-    public void deviceStatusIs(String deviceStatus) throws Exception {
-        DeviceConnection deviceConn = null;
+    public void deviceStatusIs(String deviceConnectionStatus) throws Exception {
+        DeviceConnection deviceConnection = null;
+        List<DeviceConnection> deviceConnections = new ArrayList<>();
         for (KuraDevice kuraDevice : kuraDevices) {
-            deviceConn = deviceConnectionService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
+            deviceConnection = deviceConnectionService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
+
+            deviceConnections.add(deviceConnection);
         }
-        Assert.assertEquals(deviceStatus, deviceConn.getStatus().toString());
+
+        Assert.assertNotNull(deviceConnection);
+        Assert.assertEquals(deviceConnectionStatus, deviceConnection.getStatus().toString());
+
+        stepData.put(DEVICE_CONNECTION, deviceConnection);
+        stepData.put(DEVICE_CONNECTIONS, deviceConnections);
     }
 
     @And("I add {int} devices to Kura Mock")

@@ -16,7 +16,7 @@
 
 Feature: Datastore tests
 
-@setup
+  @setup
   Scenario: Start full docker environment
     Given Init Jaxb Context
     And Init Security Context
@@ -753,8 +753,11 @@ Feature: Datastore tests
     And I start the Kura Mock
     When Device is connected
     And I wait for 1 seconds
-    Then Device status is "CONNECTED"
+    And Device status is "CONNECTED"
+    And Device birth message is sent
+    And I wait for 2 seconds
     And I select account "kapua-sys"
+    Then I find device with clientId "rpione3"
     And I get the KuraMock device after 5 seconds
     And I set the database to device timestamp indexing
     Then I prepare a number of messages with the following details and remember the list as "TestMessages"
@@ -810,6 +813,7 @@ Feature: Datastore tests
     And I wait for 1 seconds
     Then Device status is "CONNECTED"
     And I select account "kapua-sys"
+    And I find device with clientId "rpione3"
     And I get the KuraMock device after 5 seconds
     And I set the database to device timestamp indexing
     Then I prepare a number of messages with the following details and remember the list as "TestMessages"
@@ -971,7 +975,7 @@ Feature: Datastore tests
     And I logout
 
   Scenario: Create 4 clients, query all clients with offset 0 and limit 1
-    Check if value of limitExceed is true.
+  Check if value of limitExceed is true.
 
     Given I delete all indices
     Given I login as user with name "kapua-sys" and password "kapua-password"
@@ -992,7 +996,7 @@ Feature: Datastore tests
     And I logout
 
   Scenario: Create 4 clients, query all clients with offset 0 and limit 4
-    Check if value of limitExceed is false.
+  Check if value of limitExceed is false.
 
     Given I delete all indices
     Given I login as user with name "kapua-sys" and password "kapua-password"
@@ -1013,7 +1017,7 @@ Feature: Datastore tests
     And I logout
 
   Scenario: Create 4 clients, query all clients with offset 2 and limit 1
-    Check if value of limitExceed is true.
+  Check if value of limitExceed is true.
 
     Given I delete all indices
     Given I login as user with name "kapua-sys" and password "kapua-password"
@@ -1034,7 +1038,7 @@ Feature: Datastore tests
     And I logout
 
   Scenario: Create 4 clients, query all clients with offset 1 and limit 3
-    Check if value of limitExceed is false.
+  Check if value of limitExceed is false.
 
     Given I delete all indices
     Given I login as user with name "kapua-sys" and password "kapua-password"
@@ -1055,7 +1059,7 @@ Feature: Datastore tests
     And I logout
 
   Scenario: Create 4 metrics, query all metrics with offset 0 and limit 1
-    Check if value of limitExceed is true.
+  Check if value of limitExceed is true.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1080,7 +1084,7 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Create 4 metrics, query all metrics with offset 0 and limit 4
-    Check if value of limitExceed is false.
+  Check if value of limitExceed is false.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1105,7 +1109,7 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Create 4 metrics, query all metrics with offset 2 and limit 1
-    Check if value of limitExceed is true.
+  Check if value of limitExceed is true.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1130,7 +1134,7 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Create 4 metrics, query all metrics with offset 3 and limit 1
-    Check if value of limitExceed is false.
+  Check if value of limitExceed is false.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1155,7 +1159,7 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Create 4 clients, query all clients with offset 0 and limit 1
-    Check if value of limitExceed is true.
+  Check if value of limitExceed is true.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1174,7 +1178,7 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Create 4 clients, query all clients with offset 0 and limit 4
-    Check if value of limitExceed is false.
+  Check if value of limitExceed is false.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1193,7 +1197,7 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Create 4 clients, query all clients with offset 2 and limit 1
-    Check if value of limitExceed is true.
+  Check if value of limitExceed is true.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1212,7 +1216,7 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Create 4 clients, query all clients with offset 3 and limit 1
-    Check if value of limitExceed is false.
+  Check if value of limitExceed is false.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1231,7 +1235,7 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Create 4 messages, query all messages with offset 0 and limit 1
-    Check if value of limitExceed is true.
+  Check if value of limitExceed is true.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1247,7 +1251,7 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Create 4 messages, query all messages with offset 0 and limit 4
-    Check if value of limitExceed is false.
+  Check if value of limitExceed is false.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1255,7 +1259,7 @@ Feature: Datastore tests
     And I set the database to device timestamp indexing
     When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
       | clientId      | topic               | count | startDate                | endDate                  |
-      | test-client-1 | delete/by/date/test | 4    | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
+      | test-client-1 | delete/by/date/test | 4     | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for the current account messages with limit 4 and offset 0 and store them as "MessageInfo"
@@ -1263,7 +1267,7 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Create 4 messages, query all messages with offset 2 and limit 1
-    Check if value of limitExceed is true.
+  Check if value of limitExceed is true.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1271,7 +1275,7 @@ Feature: Datastore tests
     And I set the database to device timestamp indexing
     When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
       | clientId      | topic               | count | startDate                | endDate                  |
-      | test-client-1 | delete/by/date/test | 4    | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
+      | test-client-1 | delete/by/date/test | 4     | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for the current account messages with limit 1 and offset 2 and store them as "MessageInfo"
@@ -1279,7 +1283,7 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Create 4 messages, query all messages with offset 3 and limit 1
-    Check if value of limitExceed is false.
+  Check if value of limitExceed is false.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1287,13 +1291,13 @@ Feature: Datastore tests
     And I set the database to device timestamp indexing
     When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
       | clientId      | topic               | count | startDate                | endDate                  |
-      | test-client-1 | delete/by/date/test | 4    | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
+      | test-client-1 | delete/by/date/test | 4     | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for the current account messages with limit 1 and offset 3 and store them as "MessageInfo"
     Then The message list "MessageInfo" have limitExceed value false
     And I delete all indices
 
-@teardown
+  @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment

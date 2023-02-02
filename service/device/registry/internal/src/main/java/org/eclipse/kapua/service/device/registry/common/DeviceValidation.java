@@ -13,199 +13,563 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.common;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupService;
+import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceDomain;
+import org.eclipse.kapua.service.device.registry.DeviceExtendedProperty;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.eclipse.kapua.service.tag.Tag;
+import org.eclipse.kapua.service.device.registry.KapuaDeviceRegistrySettingKeys;
+import org.eclipse.kapua.service.device.registry.KapuaDeviceRegistrySettings;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
+import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
 import org.eclipse.kapua.service.tag.TagService;
+import org.eclipse.kapua.service.user.User;
 
 import java.util.List;
 
 /**
- * Provides logic used to validate preconditions required to execute the device service operation.
+ * Logic used to validate preconditions required to execute the {@link DeviceRegistryServiceImpl} operations.
  *
  * @since 1.0.0
  */
 public final class DeviceValidation {
 
+    private static final KapuaDeviceRegistrySettings DEVICE_REGISTRY_SETTINGS = KapuaDeviceRegistrySettings.getInstance();
+    private static final Integer BIRTH_FIELDS_CLOB_MAX_LENGTH = DEVICE_REGISTRY_SETTINGS.getInt(KapuaDeviceRegistrySettingKeys.DEVICE_LIFECYCLE_BIRTH_VAR_FIELDS_LENGTH_MAX);
+    private static final Integer BIRTH_FIELDS_EXTENDED_PROPERTY_VALUE_MAX_LENGTH = DEVICE_REGISTRY_SETTINGS.getInt(KapuaDeviceRegistrySettingKeys.DEVICE_LIFECYCLE_BIRTH_EXTENDED_PROPERTIES_LENGTH_MAX);
+
     private static final DeviceDomain DEVICE_DOMAIN = new DeviceDomain();
 
-    private static final AuthorizationService AUTHORIZATION_SERVICE = KapuaLocator.getInstance().getService(AuthorizationService.class);
-    private static final GroupService GROUP_SERVICE = KapuaLocator.getInstance().getService(GroupService.class);
-    private static final TagService TAG_SERVICE = KapuaLocator.getInstance().getService(TagService.class);
-    private static final PermissionFactory PERMISSION_FACTORY = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
+    private static final KapuaLocator KAPUA_LOCATOR = KapuaLocator.getInstance();
 
-    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
-    private static final DeviceFactory DEVICE_FACTORY = KapuaLocator.getInstance().getFactory(DeviceFactory.class);
+    private static final AuthorizationService AUTHORIZATION_SERVICE = KAPUA_LOCATOR.getService(AuthorizationService.class);
+    private static final PermissionFactory PERMISSION_FACTORY = KAPUA_LOCATOR.getFactory(PermissionFactory.class);
 
-    private static final String DEVICE_CREATOR_CLIENT_ID = "deviceCreator.clientId";
+    private static final GroupService GROUP_SERVICE = KAPUA_LOCATOR.getService(GroupService.class);
+
+    private static final DeviceConnectionService DEVICE_CONNECTION_SERVICE = KAPUA_LOCATOR.getService(DeviceConnectionService.class);
+
+    private static final DeviceEventService DEVICE_EVENT_SERVICE = KAPUA_LOCATOR.getService(DeviceEventService.class);
+
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = KAPUA_LOCATOR.getService(DeviceRegistryService.class);
+    private static final DeviceFactory DEVICE_FACTORY = KAPUA_LOCATOR.getFactory(DeviceFactory.class);
+
+    private static final TagService TAG_SERVICE = KAPUA_LOCATOR.getService(TagService.class);
 
     private DeviceValidation() {
     }
 
     /**
-     * Validates the device creates precondition
+     * Validates the {@link DeviceCreator}.
      *
-     * @param deviceCreator
-     * @return
-     * @throws KapuaException
+     * @param deviceCreator The {@link DeviceCreator} to validate.
+     * @throws org.eclipse.kapua.KapuaIllegalArgumentException                                if one of the {@link DeviceCreator} fields is invalid.
+     * @throws org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException if current {@link User} does not have sufficient {@link Permission}s
+     * @throws KapuaException                                                                 if there are other errors.
+     * @since 1.0.0
      */
-    public static DeviceCreator validateCreatePreconditions(DeviceCreator deviceCreator) throws KapuaException {
+    public static void validateCreatePreconditions(DeviceCreator deviceCreator) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(deviceCreator, "deviceCreator");
         ArgumentValidator.notNull(deviceCreator.getScopeId(), "deviceCreator.scopeId");
-        ArgumentValidator.notEmptyOrNull(deviceCreator.getClientId(), DEVICE_CREATOR_CLIENT_ID);
-        ArgumentValidator.lengthRange(deviceCreator.getClientId(), 1, 255, DEVICE_CREATOR_CLIENT_ID);
-        ArgumentValidator.match(deviceCreator.getClientId(), DeviceValidationRegex.CLIENT_ID, DEVICE_CREATOR_CLIENT_ID);
 
+        // .clientId
+        ArgumentValidator.notEmptyOrNull(deviceCreator.getClientId(), "deviceCreator.clientId");
+        ArgumentValidator.lengthRange(deviceCreator.getClientId(), 1, 255, "deviceCreator.clientId");
+        ArgumentValidator.match(deviceCreator.getClientId(), DeviceValidationRegex.CLIENT_ID, "deviceCreator.clientId");
+
+        // .groupId
         if (deviceCreator.getGroupId() != null) {
-            ArgumentValidator.notNull(GROUP_SERVICE.find(deviceCreator.getScopeId(), deviceCreator.getGroupId()), "deviceCreator.groupId");
+            ArgumentValidator.notNull(
+                    KapuaSecurityUtils.doPrivileged(
+                            () -> GROUP_SERVICE.find(deviceCreator.getScopeId(), deviceCreator.getGroupId())
+                    ), "deviceCreator.groupId");
         }
 
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DEVICE_DOMAIN, Actions.write, deviceCreator.getScopeId(), deviceCreator.getGroupId()));
+        // .status
+        ArgumentValidator.notNull(deviceCreator.getStatus(), "deviceCreator.status");
 
-        return deviceCreator;
-    }
-
-    /**
-     * Validates the device updates precondition
-     *
-     * @param device
-     * @return
-     * @throws KapuaException
-     */
-    public static Device validateUpdatePreconditions(Device device) throws KapuaException {
-        ArgumentValidator.notNull(device, "device");
-        ArgumentValidator.notNull(device.getId(), "device.id");
-        ArgumentValidator.notNull(device.getScopeId(), "device.scopeId");
-
-        // Check that current user can manage the current group of the device
-        KapuaId currentGroupId = findCurrentGroupId(device.getScopeId(), device.getId());
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DEVICE_DOMAIN, Actions.write, device.getScopeId(), currentGroupId));
-
-        // Check that current user can manage the target group of the device
-        if (device.getGroupId() != null) {
-            ArgumentValidator.notNull(KapuaSecurityUtils.doPrivileged(() -> GROUP_SERVICE.find(device.getScopeId(), device.getGroupId())), "device.groupId");
+        // .connectionId
+        if (deviceCreator.getConnectionId() != null) {
+            ArgumentValidator.notNull(
+                    KapuaSecurityUtils.doPrivileged(
+                            () -> DEVICE_CONNECTION_SERVICE.find(deviceCreator.getScopeId(), deviceCreator.getConnectionId())
+                    ), "deviceCreator.connectionId");
         }
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DEVICE_DOMAIN, Actions.write, device.getScopeId(), device.getGroupId()));
 
-        for (KapuaId tagId : device.getTagIds()) {
-            Tag tag = KapuaSecurityUtils.doPrivileged(() -> TAG_SERVICE.find(device.getScopeId(), tagId));
-            if (tag == null) {
-                throw new KapuaEntityNotFoundException(Tag.TYPE, tagId);
+        // .lastEventId
+        if (deviceCreator.getLastEventId() != null) {
+            ArgumentValidator.notNull(
+                    KapuaSecurityUtils.doPrivileged(
+                            () -> DEVICE_EVENT_SERVICE.find(deviceCreator.getScopeId(), deviceCreator.getLastEventId())
+                    ), "deviceCreator.lastEventId");
+        }
+
+        // .displayName
+        if (!Strings.isNullOrEmpty(deviceCreator.getDisplayName())) {
+            ArgumentValidator.lengthRange(deviceCreator.getDisplayName(), 1, 255, "deviceCreator.displayName");
+        }
+
+        // .serialNumber
+        if (!Strings.isNullOrEmpty(deviceCreator.getSerialNumber())) {
+            ArgumentValidator.lengthRange(deviceCreator.getSerialNumber(), 1, 255, "deviceCreator.serialNumber");
+        }
+
+        // .modelId
+        if (!Strings.isNullOrEmpty(deviceCreator.getModelId())) {
+            ArgumentValidator.lengthRange(deviceCreator.getModelId(), 1, 255, "deviceCreator.modelId");
+        }
+
+        // .modelName
+        if (!Strings.isNullOrEmpty(deviceCreator.getModelName())) {
+            ArgumentValidator.lengthRange(deviceCreator.getModelName(), 1, 255, "deviceCreator.modelName");
+        }
+
+        // .imei
+        if (!Strings.isNullOrEmpty(deviceCreator.getImei())) {
+            ArgumentValidator.lengthRange(deviceCreator.getImei(), 1, 24, "deviceCreator.imei");
+        }
+
+        // .imsi
+        if (!Strings.isNullOrEmpty(deviceCreator.getImsi())) {
+            ArgumentValidator.lengthRange(deviceCreator.getImsi(), 1, 15, "deviceCreator.imsi");
+        }
+
+        // .iccid
+        if (!Strings.isNullOrEmpty(deviceCreator.getIccid())) {
+            ArgumentValidator.lengthRange(deviceCreator.getIccid(), 1, 22, "deviceCreator.iccid");
+        }
+
+        // .biosVersion
+        if (!Strings.isNullOrEmpty(deviceCreator.getBiosVersion())) {
+            ArgumentValidator.lengthRange(deviceCreator.getBiosVersion(), 1, 255, "deviceCreator.biosVersion");
+        }
+
+        // .firmwareVersion
+        if (!Strings.isNullOrEmpty(deviceCreator.getFirmwareVersion())) {
+            ArgumentValidator.lengthRange(deviceCreator.getFirmwareVersion(), 1, 255, "deviceCreator.firmwareVersion");
+        }
+
+        // .osVersion
+        if (!Strings.isNullOrEmpty(deviceCreator.getOsVersion())) {
+            ArgumentValidator.lengthRange(deviceCreator.getOsVersion(), 1, 255, "deviceCreator.osVersion");
+        }
+
+        // .jvmVersion
+        if (!Strings.isNullOrEmpty(deviceCreator.getJvmVersion())) {
+            ArgumentValidator.lengthRange(deviceCreator.getJvmVersion(), 1, 255, "deviceCreator.jvmVersion");
+        }
+
+        // .osgiFrameworkVersion
+        if (!Strings.isNullOrEmpty(deviceCreator.getOsgiFrameworkVersion())) {
+            ArgumentValidator.lengthRange(deviceCreator.getOsgiFrameworkVersion(), 1, 255, "deviceCreator.osgiFrameworkVersion");
+        }
+
+        // .applicationFrameworkVersion
+        if (!Strings.isNullOrEmpty(deviceCreator.getApplicationFrameworkVersion())) {
+            ArgumentValidator.lengthRange(deviceCreator.getApplicationFrameworkVersion(), 1, 255, "deviceCreator.applicationFrameworkVersion");
+        }
+
+        // .connectionInterface
+        if (!Strings.isNullOrEmpty(deviceCreator.getConnectionInterface())) {
+            ArgumentValidator.lengthRange(deviceCreator.getConnectionInterface(), 1, BIRTH_FIELDS_CLOB_MAX_LENGTH, "deviceCreator.connectionInterface");
+        }
+
+        // .connectionIp
+        if (!Strings.isNullOrEmpty(deviceCreator.getConnectionIp())) {
+            ArgumentValidator.lengthRange(deviceCreator.getConnectionIp(), 1, BIRTH_FIELDS_CLOB_MAX_LENGTH, "deviceCreator.connectionIp");
+        }
+
+        // .applicationIdentifiers
+        if (!Strings.isNullOrEmpty(deviceCreator.getApplicationIdentifiers())) {
+            ArgumentValidator.lengthRange(deviceCreator.getApplicationIdentifiers(), 1, 1024, "deviceCreator.applicationIdentifiers");
+        }
+
+        // .acceptEncoding
+        if (!Strings.isNullOrEmpty(deviceCreator.getAcceptEncoding())) {
+            ArgumentValidator.lengthRange(deviceCreator.getAcceptEncoding(), 1, 255, "deviceCreator.acceptEncoding");
+        }
+
+        // .customAttribute1
+        if (!Strings.isNullOrEmpty(deviceCreator.getCustomAttribute1())) {
+            ArgumentValidator.lengthRange(deviceCreator.getCustomAttribute1(), 1, 255, "deviceCreator.customAttribute1");
+        }
+
+        // .customAttribute2
+        if (!Strings.isNullOrEmpty(deviceCreator.getCustomAttribute2())) {
+            ArgumentValidator.lengthRange(deviceCreator.getCustomAttribute2(), 1, 255, "deviceCreator.customAttribute2");
+        }
+
+        // .customAttribute3
+        if (!Strings.isNullOrEmpty(deviceCreator.getCustomAttribute3())) {
+            ArgumentValidator.lengthRange(deviceCreator.getCustomAttribute3(), 1, 255, "deviceCreator.customAttribute3");
+        }
+
+        // .customAttribute4
+        if (!Strings.isNullOrEmpty(deviceCreator.getCustomAttribute4())) {
+            ArgumentValidator.lengthRange(deviceCreator.getCustomAttribute4(), 1, 255, "deviceCreator.customAttribute4");
+        }
+
+        // .customAttribute5
+        if (!Strings.isNullOrEmpty(deviceCreator.getCustomAttribute5())) {
+            ArgumentValidator.lengthRange(deviceCreator.getCustomAttribute5(), 1, 255, "deviceCreator.customAttribute5");
+        }
+
+        // .extendedProperties
+        for (DeviceExtendedProperty deviceExtendedProperty : deviceCreator.getExtendedProperties()) {
+            // .groupName
+            ArgumentValidator.notNull(deviceExtendedProperty.getGroupName(), "deviceCreator.extendedProperties[].groupName");
+            ArgumentValidator.lengthRange(deviceExtendedProperty.getGroupName(), 1, 64, "deviceCreator.extendedProperties[].groupName");
+
+            // .name
+            ArgumentValidator.notNull(deviceExtendedProperty.getName(), "deviceCreator.extendedProperties[].name");
+            ArgumentValidator.lengthRange(deviceExtendedProperty.getName(), 1, 64, "deviceCreator.extendedProperties[].name");
+
+            // .value
+            if (!Strings.isNullOrEmpty(deviceExtendedProperty.getValue())) {
+                ArgumentValidator.lengthRange(deviceExtendedProperty.getValue(), 1, BIRTH_FIELDS_EXTENDED_PROPERTY_VALUE_MAX_LENGTH, "deviceCreator.extendedProperties[].value");
             }
         }
 
-        return device;
+        //
+        // Check access
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DEVICE_DOMAIN, Actions.write, deviceCreator.getScopeId(), deviceCreator.getGroupId()));
     }
 
     /**
-     * Validates the find device precondition
+     * Validates the {@link Device} for {@link DeviceRegistryService#update(KapuaUpdatableEntity)} operation.
      *
-     * @param scopeId
-     * @param entityId
-     * @throws KapuaException
+     * @param device The {@link Device} to validate.
+     * @throws org.eclipse.kapua.KapuaIllegalArgumentException                                if one of the {@link Device} fields is invalid.
+     * @throws org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException if current {@link User} does not have sufficient {@link Permission}s
+     * @throws KapuaException                                                                 if there are other errors.
+     * @since 1.0.0
      */
-    public static void validateFindPreconditions(KapuaId scopeId, KapuaId entityId) throws KapuaException {
-        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
-        ArgumentValidator.notNull(entityId, "entityId");
+    public static void validateUpdatePreconditions(Device device) throws KapuaException {
+        //
+        // Argument validation
+        ArgumentValidator.notNull(device, "device");
+        ArgumentValidator.notNull(device.getScopeId(), "device.scopeId");
+        ArgumentValidator.notNull(device.getId(), "device.id");
 
-        KapuaId groupId = findCurrentGroupId(scopeId, entityId);
+        // .clientId
+        ArgumentValidator.notEmptyOrNull(device.getClientId(), "device.clientId");
+        ArgumentValidator.lengthRange(device.getClientId(), 1, 255, "device.clientId");
+        ArgumentValidator.match(device.getClientId(), DeviceValidationRegex.CLIENT_ID, "device.clientId");
+
+        // .groupId
+        // Check that current User can manage the current Group of the Device
+        KapuaId currentGroupId = findCurrentGroupId(device.getScopeId(), device.getId());
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DEVICE_DOMAIN, Actions.write, device.getScopeId(), currentGroupId));
+
+        // Check that current User can manage the target Group of the Device
+        if (device.getGroupId() != null) {
+            ArgumentValidator.notNull(
+                    KapuaSecurityUtils.doPrivileged(
+                            () -> GROUP_SERVICE.find(device.getScopeId(), device.getGroupId())
+                    ), "device.groupId");
+        }
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DEVICE_DOMAIN, Actions.write, device.getScopeId(), device.getGroupId()));
+
+        // .status
+        ArgumentValidator.notNull(device.getStatus(), "device.status");
+
+        // .connectionId
+        if (device.getConnectionId() != null) {
+            ArgumentValidator.notNull(
+                    KapuaSecurityUtils.doPrivileged(
+                            () -> DEVICE_CONNECTION_SERVICE.find(device.getScopeId(), device.getConnectionId())
+                    ), "device.connectionId");
+        }
+
+        // .lastEventId
+        if (device.getLastEventId() != null) {
+            ArgumentValidator.notNull(
+                    KapuaSecurityUtils.doPrivileged(
+                            () -> DEVICE_EVENT_SERVICE.find(device.getScopeId(), device.getLastEventId())
+                    ), "device.lastEventId");
+        }
+
+        // .displayName
+        if (!Strings.isNullOrEmpty(device.getDisplayName())) {
+            ArgumentValidator.lengthRange(device.getDisplayName(), 1, 255, "device.displayName");
+        }
+
+        // .serialNumber
+        if (!Strings.isNullOrEmpty(device.getSerialNumber())) {
+            ArgumentValidator.lengthRange(device.getSerialNumber(), 1, 255, "device.serialNumber");
+        }
+
+        // .modelId
+        if (!Strings.isNullOrEmpty(device.getModelId())) {
+            ArgumentValidator.lengthRange(device.getModelId(), 1, 255, "device.modelId");
+        }
+
+        // .modelName
+        if (!Strings.isNullOrEmpty(device.getModelName())) {
+            ArgumentValidator.lengthRange(device.getModelName(), 1, 255, "device.modelName");
+        }
+
+        // .imei
+        if (!Strings.isNullOrEmpty(device.getImei())) {
+            ArgumentValidator.lengthRange(device.getImei(), 1, 24, "device.imei");
+        }
+
+        // .imsi
+        if (!Strings.isNullOrEmpty(device.getImsi())) {
+            ArgumentValidator.lengthRange(device.getImsi(), 1, 15, "device.imsi");
+        }
+
+        // .iccid
+        if (!Strings.isNullOrEmpty(device.getIccid())) {
+            ArgumentValidator.lengthRange(device.getIccid(), 1, 22, "device.iccid");
+        }
+
+        // .biosVersion
+        if (!Strings.isNullOrEmpty(device.getBiosVersion())) {
+            ArgumentValidator.lengthRange(device.getBiosVersion(), 1, 255, "device.biosVersion");
+        }
+
+        // .firmwareVersion
+        if (!Strings.isNullOrEmpty(device.getFirmwareVersion())) {
+            ArgumentValidator.lengthRange(device.getFirmwareVersion(), 1, 255, "device.firmwareVersion");
+        }
+
+        // .osVersion
+        if (!Strings.isNullOrEmpty(device.getOsVersion())) {
+            ArgumentValidator.lengthRange(device.getOsVersion(), 1, 255, "device.osVersion");
+        }
+
+        // .jvmVersion
+        if (!Strings.isNullOrEmpty(device.getJvmVersion())) {
+            ArgumentValidator.lengthRange(device.getJvmVersion(), 1, 255, "device.jvmVersion");
+        }
+
+        // .osgiFrameworkVersion
+        if (!Strings.isNullOrEmpty(device.getOsgiFrameworkVersion())) {
+            ArgumentValidator.lengthRange(device.getOsgiFrameworkVersion(), 1, 255, "device.osgiFrameworkVersion");
+        }
+
+        // .applicationFrameworkVersion
+        if (!Strings.isNullOrEmpty(device.getApplicationFrameworkVersion())) {
+            ArgumentValidator.lengthRange(device.getApplicationFrameworkVersion(), 1, 255, "device.applicationFrameworkVersion");
+        }
+
+        // .connectionInterface
+        if (!Strings.isNullOrEmpty(device.getConnectionInterface())) {
+            ArgumentValidator.lengthRange(device.getConnectionInterface(), 1, BIRTH_FIELDS_CLOB_MAX_LENGTH, "device.connectionInterface");
+        }
+
+        // .connectionIp
+        if (!Strings.isNullOrEmpty(device.getConnectionIp())) {
+            ArgumentValidator.lengthRange(device.getConnectionIp(), 1, BIRTH_FIELDS_CLOB_MAX_LENGTH, "device.connectionIp");
+        }
+
+        // .applicationIdentifiers
+        if (!Strings.isNullOrEmpty(device.getApplicationIdentifiers())) {
+            ArgumentValidator.lengthRange(device.getApplicationIdentifiers(), 1, 1024, "device.applicationIdentifiers");
+        }
+
+        // .acceptEncoding
+        if (!Strings.isNullOrEmpty(device.getAcceptEncoding())) {
+            ArgumentValidator.lengthRange(device.getAcceptEncoding(), 1, 255, "device.acceptEncoding");
+        }
+
+        // .customAttribute1
+        if (!Strings.isNullOrEmpty(device.getCustomAttribute1())) {
+            ArgumentValidator.lengthRange(device.getCustomAttribute1(), 1, 255, "device.customAttribute1");
+        }
+
+        // .customAttribute2
+        if (!Strings.isNullOrEmpty(device.getCustomAttribute2())) {
+            ArgumentValidator.lengthRange(device.getCustomAttribute2(), 1, 255, "device.customAttribute2");
+        }
+
+        // .customAttribute3
+        if (!Strings.isNullOrEmpty(device.getCustomAttribute3())) {
+            ArgumentValidator.lengthRange(device.getCustomAttribute3(), 1, 255, "device.customAttribute3");
+        }
+
+        // .customAttribute4
+        if (!Strings.isNullOrEmpty(device.getCustomAttribute4())) {
+            ArgumentValidator.lengthRange(device.getCustomAttribute4(), 1, 255, "device.customAttribute4");
+        }
+
+        // .customAttribute5
+        if (!Strings.isNullOrEmpty(device.getCustomAttribute5())) {
+            ArgumentValidator.lengthRange(device.getCustomAttribute5(), 1, 255, "device.customAttribute5");
+        }
+
+        // .extendedProperties
+        for (DeviceExtendedProperty deviceExtendedProperty : device.getExtendedProperties()) {
+            // .groupName
+            ArgumentValidator.notNull(deviceExtendedProperty.getGroupName(), "device.extendedProperties[].groupName");
+            ArgumentValidator.lengthRange(deviceExtendedProperty.getGroupName(), 1, 64, "device.extendedProperties[].groupName");
+
+            // .name
+            ArgumentValidator.notNull(deviceExtendedProperty.getName(), "device.extendedProperties[].name");
+            ArgumentValidator.lengthRange(deviceExtendedProperty.getName(), 1, 64, "device.extendedProperties[].name");
+
+            // .value
+            if (!Strings.isNullOrEmpty(deviceExtendedProperty.getValue())) {
+                ArgumentValidator.lengthRange(deviceExtendedProperty.getValue(), 1, BIRTH_FIELDS_EXTENDED_PROPERTY_VALUE_MAX_LENGTH, "device.extendedProperties[].value");
+            }
+        }
+
+        // .tagsIds
+        for (KapuaId tagId : device.getTagIds()) {
+            ArgumentValidator.notNull(
+                    KapuaSecurityUtils.doPrivileged(
+                            () -> TAG_SERVICE.find(device.getScopeId(), tagId))
+                    , "device.tagsIds[].id"
+            );
+        }
+    }
+
+    /**
+     * Validates the parameters for {@link DeviceRegistryService#find(KapuaId, KapuaId)} operation.
+     *
+     * @param scopeId  The {@link Device#getScopeId()}
+     * @param deviceId The {@link Device#getId()}
+     * @throws org.eclipse.kapua.KapuaIllegalArgumentException                                if one of the parameters is invalid.
+     * @throws org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException if current {@link User} does not have sufficient {@link Permission}s
+     * @throws KapuaException                                                                 if there are other errors.
+     * @since 1.0.0
+     */
+    public static void validateFindPreconditions(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
+        //
+        // Argument validation
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(deviceId, "deviceId");
+
+        //
+        // Check access
+        KapuaId groupId = findCurrentGroupId(scopeId, deviceId);
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DEVICE_DOMAIN, Actions.read, scopeId, groupId));
     }
 
     /**
-     * Validates the device query precondition
+     * Validates the {@link KapuaQuery} for {@link DeviceRegistryService#query(KapuaQuery)} operation.
      *
-     * @param query
-     * @throws KapuaException
+     * @param query The {@link KapuaQuery} to validate.
+     * @throws org.eclipse.kapua.KapuaIllegalArgumentException                                if one of the {@link KapuaQuery} fields is invalid.
+     * @throws org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException if current {@link User} does not have sufficient {@link Permission}s
+     * @throws KapuaException                                                                 if there are other errors.
+     * @since 1.0.0
      */
     public static void validateQueryPreconditions(KapuaQuery query) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(query, "query");
-        List<String> fetchAttributes = query.getFetchAttributes();
 
+        // .fetchAttributes
+        List<String> fetchAttributes = query.getFetchAttributes();
         if (fetchAttributes != null) {
             for (String fetchAttribute : fetchAttributes) {
                 ArgumentValidator.match(fetchAttribute, DeviceValidationRegex.QUERY_FETCH_ATTRIBUTES, "fetchAttributes");
             }
         }
 
+        //
+        // Check access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DEVICE_DOMAIN, Actions.read, query.getScopeId(), Group.ANY));
     }
 
     /**
-     * Validates the device count precondition
+     * Validates the {@link KapuaQuery} for {@link DeviceRegistryService#count(KapuaQuery)} operation.
      *
-     * @param query
-     * @throws KapuaException
+     * @param query The {@link KapuaQuery} to validate.
+     * @throws org.eclipse.kapua.KapuaIllegalArgumentException                                if one of the {@link KapuaQuery} fields is invalid.
+     * @throws org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException if current {@link User} does not have sufficient {@link Permission}s
+     * @throws KapuaException                                                                 if there are other errors.
+     * @since 1.0.0
      */
     public static void validateCountPreconditions(KapuaQuery query) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(query, "query");
 
+        //
+        // Check access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DEVICE_DOMAIN, Actions.read, query.getScopeId(), Group.ANY));
     }
 
     /**
-     * Validates the device delete precondition
+     * Validates the parameters for {@link DeviceRegistryService#delete(KapuaId, KapuaId)} operation.
      *
-     * @param scopeId
-     * @param deviceId
-     * @throws KapuaException
+     * @param scopeId  The {@link Device#getScopeId()}
+     * @param deviceId The {@link Device#getId()}
+     * @throws org.eclipse.kapua.KapuaIllegalArgumentException                                if one of the parameters is invalid.
+     * @throws org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException if current {@link User} does not have sufficient {@link Permission}s
+     * @throws KapuaException                                                                 if there are other errors.
+     * @since 1.0.0
      */
     public static void validateDeletePreconditions(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
-        ArgumentValidator.notNull(deviceId, "id");
+        ArgumentValidator.notNull(deviceId, "deviceId");
 
+        //
+        // Check access
         KapuaId groupId = findCurrentGroupId(scopeId, deviceId);
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DEVICE_DOMAIN, Actions.delete, scopeId, groupId));
     }
 
     /**
-     * Validates the device find by identifier precondition
+     * Validates the parameters for {@link DeviceRegistryService#findByClientId(KapuaId, String)} operation.
      *
-     * @param scopeId
-     * @param clientId
-     * @throws KapuaException
+     * @param scopeId  The {@link Device#getScopeId()}
+     * @param clientId The {@link Device#getClientId()}
+     * @throws org.eclipse.kapua.KapuaIllegalArgumentException                                if one of the parameters is invalid.
+     * @throws org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException if current {@link User} does not have sufficient {@link Permission}s
+     * @throws KapuaException                                                                 if there are other errors.
      * @since 1.0.0
      */
     public static void validateFindByClientIdPreconditions(KapuaId scopeId, String clientId) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notEmptyOrNull(clientId, "clientId");
 
+        //
         // Check access is performed by the query method.
     }
 
     /**
-     * Finds the current {@link Group} id assigned to the given {@link Device} id.
+     * Finds the current {@link Group} id assigned to the given {@link Device#getId()}.
      *
-     * @param scopeId  The scope {@link KapuaId} of the {@link Device}
-     * @param entityId The {@link KapuaEntity} {@link KapuaId} of the {@link Device}.
+     * @param scopeId  The {@link Device#getScopeId()}
+     * @param entityId The {@link Device#getId()}
      * @return The {@link Group} id found.
-     * @throws KapuaException
+     * @throws KapuaException if any error occurs while looking for the Group.
      * @since 1.0.0
      */
     private static KapuaId findCurrentGroupId(KapuaId scopeId, KapuaId entityId) throws KapuaException {
         DeviceQuery query = DEVICE_FACTORY.newQuery(scopeId);
         query.setPredicate(query.attributePredicate(KapuaEntityAttributes.ENTITY_ID, entityId));
 
-        DeviceListResult results = null;
+        DeviceListResult results;
         try {
             results = KapuaSecurityUtils.doPrivileged(() -> DEVICE_REGISTRY_SERVICE.query(query));
         } catch (Exception e) {
