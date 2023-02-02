@@ -39,7 +39,7 @@ public enum KapuaDeviceRegistrySettingKeys implements SettingKey {
      *
      * @since 2.0.0
      */
-    DEVICE_REGISTRY_LIFECYCLE_BIRTH_FIELDS_CLOB_LENGTH_MAX("device.registry.lifecycle.birth.fields.clob.length.max"),
+    DEVICE_LIFECYCLE_BIRTH_VAR_FIELDS_LENGTH_MAX("device.lifecycle.birth.var.fields.length.max"),
 
     /**
      * Gets the hard limit for {@link KapuaBirthMessage} {@link DeviceExtendedProperty#getValue()} fields length hdrd limit.

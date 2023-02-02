@@ -52,7 +52,7 @@ import java.util.List;
 public final class DeviceValidation {
 
     private static final KapuaDeviceRegistrySettings DEVICE_REGISTRY_SETTINGS = KapuaDeviceRegistrySettings.getInstance();
-    private static final Integer BIRTH_FIELDS_CLOB_MAX_LENGTH = DEVICE_REGISTRY_SETTINGS.getInt(KapuaDeviceRegistrySettingKeys.DEVICE_REGISTRY_LIFECYCLE_BIRTH_FIELDS_CLOB_LENGTH_MAX);
+    private static final Integer BIRTH_FIELDS_CLOB_MAX_LENGTH = DEVICE_REGISTRY_SETTINGS.getInt(KapuaDeviceRegistrySettingKeys.DEVICE_LIFECYCLE_BIRTH_VAR_FIELDS_LENGTH_MAX);
     private static final Integer BIRTH_FIELDS_EXTENDED_PROPERTY_VALUE_MAX_LENGTH = DEVICE_REGISTRY_SETTINGS.getInt(KapuaDeviceRegistrySettingKeys.DEVICE_LIFECYCLE_BIRTH_EXTENDED_PROPERTIES_LENGTH_MAX);
 
     private static final DeviceDomain DEVICE_DOMAIN = new DeviceDomain();
