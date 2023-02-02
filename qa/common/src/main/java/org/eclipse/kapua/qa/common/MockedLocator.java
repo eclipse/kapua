@@ -83,7 +83,7 @@ public class MockedLocator extends KapuaLocator {
     @Override
     public <S extends KapuaService> S getService(Class<S> serviceClass) {
 
-        logger.info("Geting mocked service {} from MockedLocator", serviceClass.getName());
+        logger.info("Getting mocked service {} from MockedLocator", serviceClass.getName());
         S service = getMockedService(serviceClass);
         if ((service == null) && (guiceInjector != null)) {
             try {
