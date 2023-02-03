@@ -235,9 +235,8 @@ public final class DeviceValidation {
         // .extendedProperties
         for (DeviceExtendedProperty deviceExtendedProperty : deviceCreator.getExtendedProperties()) {
             // .groupName
-            if (!Strings.isNullOrEmpty(deviceExtendedProperty.getGroupName())) {
-                ArgumentValidator.lengthRange(deviceExtendedProperty.getGroupName(), 1, 64, "deviceCreator.extendedProperties[].groupName");
-            }
+            ArgumentValidator.notNull(deviceExtendedProperty.getGroupName(), "deviceCreator.extendedProperties[].groupName");
+            ArgumentValidator.lengthRange(deviceExtendedProperty.getGroupName(), 1, 64, "device.extendedProperties[].groupName");
 
             // .name
             ArgumentValidator.notNull(deviceExtendedProperty.getName(), "deviceCreator.extendedProperties[].name");
@@ -420,9 +419,8 @@ public final class DeviceValidation {
         // .extendedProperties
         for (DeviceExtendedProperty deviceExtendedProperty : device.getExtendedProperties()) {
             // .groupName
-            if (!Strings.isNullOrEmpty(deviceExtendedProperty.getGroupName())) {
-                ArgumentValidator.lengthRange(deviceExtendedProperty.getGroupName(), 1, 64, "device.extendedProperties[].groupName");
-            }
+            ArgumentValidator.notNull(deviceExtendedProperty.getGroupName(), "device.extendedProperties[].groupName");
+            ArgumentValidator.lengthRange(deviceExtendedProperty.getGroupName(), 1, 64, "device.extendedProperties[].groupName");
 
             // .name
             ArgumentValidator.notNull(deviceExtendedProperty.getName(), "device.extendedProperties[].name");
