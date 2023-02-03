@@ -48,7 +48,7 @@ public class UserCredentialServiceImpl implements UserCredentialService {
     @Override
     public Credential changePasswordRequest(PasswordChangeRequest passwordChangeRequest) throws KapuaException {
         ArgumentValidator.notNull(passwordChangeRequest.getNewPassword(), "passwordChangeRequest.newPassword");
-        ArgumentValidator.notNull(passwordChangeRequest.getOldPassword(), "passwordChangeRequest.oldPassword");
+        ArgumentValidator.notNull(passwordChangeRequest.getCurrentPassword(), "passwordChangeRequest.oldPassword");
 
         return KapuaSecurityUtils.doPrivileged(() -> {
             KapuaLocator locator = KapuaLocator.getInstance();
@@ -60,11 +60,11 @@ public class UserCredentialServiceImpl implements UserCredentialService {
 
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
             CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
-            UsernamePasswordCredentials usernamePasswordCredentials = credentialsFactory.newUsernamePasswordCredentials(user.getName(), passwordChangeRequest.getOldPassword());
+            UsernamePasswordCredentials usernamePasswordCredentials = credentialsFactory.newUsernamePasswordCredentials(user.getName(), passwordChangeRequest.getCurrentPassword());
             try {
                 authenticationService.verifyCredentials(usernamePasswordCredentials);
             } catch (KapuaAuthenticationException e) {
-                throw new KapuaIllegalArgumentException("passwordChangeRequest.oldPassword", passwordChangeRequest.getOldPassword());
+                throw new KapuaIllegalArgumentException("passwordChangeRequest.oldPassword", passwordChangeRequest.getCurrentPassword());
             }
 
             CredentialService credentialService = locator.getService(CredentialService.class);

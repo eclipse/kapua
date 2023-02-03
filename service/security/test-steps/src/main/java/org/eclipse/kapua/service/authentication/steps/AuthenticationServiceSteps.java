@@ -211,7 +211,7 @@ public class AuthenticationServiceSteps extends TestBase {
         primeException();
 
         PasswordChangeRequest passwordChangeRequest = userCredentialFactory.newPasswordChangeRequest();
-        passwordChangeRequest.setOldPassword(oldPassword);
+        passwordChangeRequest.setCurrentPassword(oldPassword);
         passwordChangeRequest.setNewPassword(newPassword);
 
         try {
