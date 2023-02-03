@@ -17,10 +17,10 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import javax.xml.bind.annotation.XmlRegistry;
 
 @XmlRegistry
-public class UserCredentialXmlRegistry {
+public class UserCredentialsXmlRegistry {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final UserCredentialFactory USER_CREDENTIAL_FACTORY = LOCATOR.getFactory(UserCredentialFactory.class);
+    private static final UserCredentialsFactory USER_CREDENTIAL_FACTORY = LOCATOR.getFactory(UserCredentialsFactory.class);
 
 
     /**

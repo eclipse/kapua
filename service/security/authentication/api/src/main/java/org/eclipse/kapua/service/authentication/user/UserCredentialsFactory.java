@@ -12,16 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.user;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.model.KapuaObjectFactory;
 
-/**
- * Credential service definition.
- *
- * @since 2.0.0
- */
-public interface UserCredentialService extends KapuaService {
-
-    Credential changePasswordRequest(PasswordChangeRequest passwordChangeRequest) throws KapuaException;
+public interface UserCredentialsFactory extends KapuaObjectFactory {
+    PasswordChangeRequest newPasswordChangeRequest();
 }
