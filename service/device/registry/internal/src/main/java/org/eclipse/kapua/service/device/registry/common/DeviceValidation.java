@@ -18,15 +18,14 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
-import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupService;
-import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
@@ -42,7 +41,6 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionServ
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
 import org.eclipse.kapua.service.tag.TagService;
-import org.eclipse.kapua.service.user.User;
 
 import java.util.List;
 
@@ -82,9 +80,8 @@ public final class DeviceValidation {
      * Validates the {@link DeviceCreator}.
      *
      * @param deviceCreator The {@link DeviceCreator} to validate.
-     * @throws org.eclipse.kapua.KapuaIllegalArgumentException                                if one of the {@link DeviceCreator} fields is invalid.
-     * @throws org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException if current {@link User} does not have sufficient {@link Permission}s
-     * @throws KapuaException                                                                 if there are other errors.
+     * @throws org.eclipse.kapua.KapuaIllegalArgumentException if one of the {@link DeviceCreator} fields is invalid.
+     * @throws KapuaException                                  if there are other errors.
      * @since 1.0.0
      */
     public static void validateCreatePreconditions(DeviceCreator deviceCreator) throws KapuaException {
@@ -258,12 +255,11 @@ public final class DeviceValidation {
     }
 
     /**
-     * Validates the {@link Device} for {@link DeviceRegistryService#update(KapuaUpdatableEntity)} operation.
+     * Validates the {@link Device} for {@link DeviceRegistryService#update(KapuaEntity)} operation.
      *
      * @param device The {@link Device} to validate.
-     * @throws org.eclipse.kapua.KapuaIllegalArgumentException                                if one of the {@link Device} fields is invalid.
-     * @throws org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException if current {@link User} does not have sufficient {@link Permission}s
-     * @throws KapuaException                                                                 if there are other errors.
+     * @throws org.eclipse.kapua.KapuaIllegalArgumentException if one of the {@link Device} fields is invalid.
+     * @throws KapuaException                                  if there are other errors.
      * @since 1.0.0
      */
     public static void validateUpdatePreconditions(Device device) throws KapuaException {
@@ -453,9 +449,8 @@ public final class DeviceValidation {
      *
      * @param scopeId  The {@link Device#getScopeId()}
      * @param deviceId The {@link Device#getId()}
-     * @throws org.eclipse.kapua.KapuaIllegalArgumentException                                if one of the parameters is invalid.
-     * @throws org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException if current {@link User} does not have sufficient {@link Permission}s
-     * @throws KapuaException                                                                 if there are other errors.
+     * @throws org.eclipse.kapua.KapuaIllegalArgumentException if one of the parameters is invalid.
+     * @throws KapuaException                                  if there are other errors.
      * @since 1.0.0
      */
     public static void validateFindPreconditions(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
@@ -474,9 +469,8 @@ public final class DeviceValidation {
      * Validates the {@link KapuaQuery} for {@link DeviceRegistryService#query(KapuaQuery)} operation.
      *
      * @param query The {@link KapuaQuery} to validate.
-     * @throws org.eclipse.kapua.KapuaIllegalArgumentException                                if one of the {@link KapuaQuery} fields is invalid.
-     * @throws org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException if current {@link User} does not have sufficient {@link Permission}s
-     * @throws KapuaException                                                                 if there are other errors.
+     * @throws org.eclipse.kapua.KapuaIllegalArgumentException if one of the {@link KapuaQuery} fields is invalid.
+     * @throws KapuaException                                  if there are other errors.
      * @since 1.0.0
      */
     public static void validateQueryPreconditions(KapuaQuery query) throws KapuaException {
@@ -501,9 +495,8 @@ public final class DeviceValidation {
      * Validates the {@link KapuaQuery} for {@link DeviceRegistryService#count(KapuaQuery)} operation.
      *
      * @param query The {@link KapuaQuery} to validate.
-     * @throws org.eclipse.kapua.KapuaIllegalArgumentException                                if one of the {@link KapuaQuery} fields is invalid.
-     * @throws org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException if current {@link User} does not have sufficient {@link Permission}s
-     * @throws KapuaException                                                                 if there are other errors.
+     * @throws org.eclipse.kapua.KapuaIllegalArgumentException if one of the {@link KapuaQuery} fields is invalid.
+     * @throws KapuaException                                  if there are other errors.
      * @since 1.0.0
      */
     public static void validateCountPreconditions(KapuaQuery query) throws KapuaException {
@@ -521,9 +514,8 @@ public final class DeviceValidation {
      *
      * @param scopeId  The {@link Device#getScopeId()}
      * @param deviceId The {@link Device#getId()}
-     * @throws org.eclipse.kapua.KapuaIllegalArgumentException                                if one of the parameters is invalid.
-     * @throws org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException if current {@link User} does not have sufficient {@link Permission}s
-     * @throws KapuaException                                                                 if there are other errors.
+     * @throws org.eclipse.kapua.KapuaIllegalArgumentException if one of the parameters is invalid.
+     * @throws KapuaException                                  if there are other errors.
      * @since 1.0.0
      */
     public static void validateDeletePreconditions(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
@@ -543,9 +535,8 @@ public final class DeviceValidation {
      *
      * @param scopeId  The {@link Device#getScopeId()}
      * @param clientId The {@link Device#getClientId()}
-     * @throws org.eclipse.kapua.KapuaIllegalArgumentException                                if one of the parameters is invalid.
-     * @throws org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException if current {@link User} does not have sufficient {@link Permission}s
-     * @throws KapuaException                                                                 if there are other errors.
+     * @throws org.eclipse.kapua.KapuaIllegalArgumentException if one of the parameters is invalid.
+     * @throws KapuaException                                  if there are other errors.
      * @since 1.0.0
      */
     public static void validateFindByClientIdPreconditions(KapuaId scopeId, String clientId) throws KapuaException {
