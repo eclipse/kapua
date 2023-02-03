@@ -1908,7 +1908,7 @@ public class DeviceRegistrySteps extends TestBase {
             tmpMsg.setDeviceId(null);
         }
 
-        deviceLifeCycleService.birth(getKapuaId(), tmpMsg);
+        deviceLifeCycleService.birth(null, tmpMsg);
     }
 
     @Given("^A disconnect message from device \"(.+)\"$")
@@ -1944,7 +1944,7 @@ public class DeviceRegistrySteps extends TestBase {
 
         try {
             primeException();
-            deviceLifeCycleService.death(getKapuaId(), tmpMsg);
+            deviceLifeCycleService.death(null, tmpMsg);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1982,7 +1982,7 @@ public class DeviceRegistrySteps extends TestBase {
 
         try {
             primeException();
-            deviceLifeCycleService.missing(getKapuaId(), tmpMsg);
+            deviceLifeCycleService.missing(null, tmpMsg);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -2020,7 +2020,7 @@ public class DeviceRegistrySteps extends TestBase {
 
         try {
             primeException();
-            deviceLifeCycleService.applications(getKapuaId(), tmpMsg);
+            deviceLifeCycleService.applications(null, tmpMsg);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -2240,7 +2240,7 @@ public class DeviceRegistrySteps extends TestBase {
 
         DeviceCreator tmpDeviceCreator = deviceFactory.newCreator(accountId, client);
 
-        tmpDeviceCreator.setConnectionId(getKapuaId());
+        // tmpDeviceCreator.setConnectionId(getKapuaId());
         tmpDeviceCreator.setDisplayName(TEST_DEVICE_NAME);
         tmpDeviceCreator.setSerialNumber("serialNumber");
         tmpDeviceCreator.setModelId("modelId");
@@ -2271,7 +2271,7 @@ public class DeviceRegistrySteps extends TestBase {
         Device tmpDevice = deviceFactory.newEntity(accountId);
 
         tmpDevice.setId(deviceId);
-        tmpDevice.setConnectionId(getKapuaId());
+        // tmpDevice.setConnectionId(getKapuaId());
         tmpDevice.setDisplayName(TEST_DEVICE_NAME);
         tmpDevice.setSerialNumber("serialNumber");
         tmpDevice.setModelId("modelId");
@@ -2758,7 +2758,7 @@ public class DeviceRegistrySteps extends TestBase {
     }
 
     @When("^I remove device \"([^\"]*)\" from all groups$")
-    public void iChangeDevicesGroupToNoGroup(String deviceName) throws Exception{
+    public void iChangeDevicesGroupToNoGroup(String deviceName) throws Exception {
 
         try {
             DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
@@ -3024,7 +3024,7 @@ public class DeviceRegistrySteps extends TestBase {
     }
 
     @Given("^I create a device with null clientID$")
-    public void iCreateADeviceWithNullClientID() throws Throwable{
+    public void iCreateADeviceWithNullClientID() throws Throwable {
         DeviceCreator deviceCreator = deviceFactory.newCreator(getCurrentScopeId());
         deviceCreator.setClientId(null);
         stepData.put("DeviceCreator", deviceCreator);
