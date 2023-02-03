@@ -525,9 +525,9 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
 
     @Override
     public void setConnectionIp(String connectionIp) {
-        if (connectionIp != null && connectionIp.length() > 255) {
+        if (connectionIp != null && connectionIp.length() > 64) {
             setConnectionIpClob(connectionIp);
-            this.connectionIp = connectionIp.substring(0, 255);
+            this.connectionIp = connectionIp.substring(0, 64);
         } else {
             this.connectionIp = connectionIp;
         }
