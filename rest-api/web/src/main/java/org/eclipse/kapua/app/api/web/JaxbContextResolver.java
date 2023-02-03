@@ -99,6 +99,8 @@ import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeQuery;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeXmlRegistry;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.LoginInfo;
+import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
+import org.eclipse.kapua.service.authentication.user.UserCredentialsXmlRegistry;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
@@ -684,6 +686,10 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     UserListResult.class,
                     UserQuery.class,
                     UserXmlRegistry.class,
+
+                    // User Credentials
+                    PasswordChangeRequest.class,
+                    UserCredentialsXmlRegistry.class,
 
                     // KapuaEvent
                     ServiceEvent.class,

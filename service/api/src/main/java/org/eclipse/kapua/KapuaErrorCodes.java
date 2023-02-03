@@ -133,6 +133,5 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
     /**
      * The service has been disabled
      */
-    SERVICE_DISABLED
-
+    SERVICE_DISABLED,
 }
