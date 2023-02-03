@@ -18,7 +18,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
-import org.eclipse.kapua.service.authentication.user.UserCredentialService;
+import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -30,7 +30,7 @@ import javax.ws.rs.core.MediaType;
 @Path("{scopeId}/user/credentials")
 public class UserCredential {
     private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final UserCredentialService userCredentialService = locator.getService(UserCredentialService.class);
+    private final UserCredentialsService userCredentialsService = locator.getService(UserCredentialsService.class);
 
 
     /**
@@ -46,6 +46,6 @@ public class UserCredential {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Credential newPassword(@PathParam("scopeId") ScopeId scopeId, PasswordChangeRequest passwordChangeRequest) throws KapuaException {
-        return userCredentialService.changePasswordRequest(passwordChangeRequest);
+        return userCredentialsService.changePasswordRequest(passwordChangeRequest);
     }
 }

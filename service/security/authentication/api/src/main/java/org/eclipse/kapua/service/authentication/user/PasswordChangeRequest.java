@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = UserCredentialXmlRegistry.class, factoryMethod = "newPasswordChangeRequest")
+@XmlType(factoryClass = UserCredentialsXmlRegistry.class, factoryMethod = "newPasswordChangeRequest")
 public interface PasswordChangeRequest {
     @XmlElement(name = "currentPassword")
     String getCurrentPassword();
