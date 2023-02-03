@@ -59,6 +59,6 @@ Feature: User Credential
     And I create a new PASSWORD credential for the default user with password "Welcome12345!"
     And I login as user with name "test-user" and password "Welcome12345!"
     And No exception was thrown
-    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument passwordChangeRequest.oldPassword: WrongPassword!"
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument passwordChangeRequest.currentPassword: WrongPassword!"
     When I change the user credential password with old password "WrongPassword!" and new password "Welcome12345!"
     Then An exception was thrown

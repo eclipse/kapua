@@ -14,18 +14,18 @@ package org.eclipse.kapua.service.authentication.user.shiro;
 
 import com.google.inject.Module;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.service.authentication.user.UserCredentialFactory;
-import org.eclipse.kapua.service.authentication.user.UserCredentialService;
+import org.eclipse.kapua.service.authentication.user.UserCredentialsFactory;
+import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
 
 /**
  * {@code kapua-security-shiro} {@link Module} implementation.
  *
  * @since 2.0.0
  */
-public class UserCredentialModule extends AbstractKapuaModule implements Module {
+public class UserCredentialsModule extends AbstractKapuaModule implements Module {
     @Override
     protected void configureModule() {
-        bind(UserCredentialService.class).to(UserCredentialServiceImpl.class);
-        bind(UserCredentialFactory.class).to(UserCredentialFactoryImpl.class);
+        bind(UserCredentialsService.class).to(UserCredentialsServiceImpl.class);
+        bind(UserCredentialsFactory.class).to(UserCredentialsFactoryImpl.class);
     }
 }

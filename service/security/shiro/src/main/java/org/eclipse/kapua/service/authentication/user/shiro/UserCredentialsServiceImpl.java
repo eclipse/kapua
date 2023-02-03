@@ -31,24 +31,24 @@ import org.eclipse.kapua.service.authentication.exception.PasswordLengthExceptio
 import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
-import org.eclipse.kapua.service.authentication.user.UserCredentialService;
+import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 
 import javax.inject.Singleton;
 
 /**
- * {@link UserCredentialService} implementation.
+ * {@link UserCredentialsService} implementation.
  *
  * @since 2.0.0
  */
 @Singleton
-public class UserCredentialServiceImpl implements UserCredentialService {
+public class UserCredentialsServiceImpl implements UserCredentialsService {
     private static final int SYSTEM_MAXIMUM_PASSWORD_LENGTH = 255;
     @Override
     public Credential changePasswordRequest(PasswordChangeRequest passwordChangeRequest) throws KapuaException {
         ArgumentValidator.notNull(passwordChangeRequest.getNewPassword(), "passwordChangeRequest.newPassword");
-        ArgumentValidator.notNull(passwordChangeRequest.getCurrentPassword(), "passwordChangeRequest.oldPassword");
+        ArgumentValidator.notNull(passwordChangeRequest.getCurrentPassword(), "passwordChangeRequest.currentPassword");
 
         return KapuaSecurityUtils.doPrivileged(() -> {
             KapuaLocator locator = KapuaLocator.getInstance();
@@ -64,7 +64,7 @@ public class UserCredentialServiceImpl implements UserCredentialService {
             try {
                 authenticationService.verifyCredentials(usernamePasswordCredentials);
             } catch (KapuaAuthenticationException e) {
-                throw new KapuaIllegalArgumentException("passwordChangeRequest.oldPassword", passwordChangeRequest.getCurrentPassword());
+                throw new KapuaIllegalArgumentException("passwordChangeRequest.currentPassword", passwordChangeRequest.getCurrentPassword());
             }
 
             CredentialService credentialService = locator.getService(CredentialService.class);

@@ -34,8 +34,8 @@ import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
-import org.eclipse.kapua.service.authentication.user.UserCredentialFactory;
-import org.eclipse.kapua.service.authentication.user.UserCredentialService;
+import org.eclipse.kapua.service.authentication.user.UserCredentialsFactory;
+import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -63,8 +63,8 @@ public class AuthenticationServiceSteps extends TestBase {
     private UserService userService;
     private UserFactory userFactory;
 
-    private UserCredentialService userCredentialService;
-    private UserCredentialFactory userCredentialFactory;
+    private UserCredentialsService userCredentialsService;
+    private UserCredentialsFactory userCredentialsFactory;
     private AuthenticationService authenticationService;
 
     @Inject
@@ -84,8 +84,8 @@ public class AuthenticationServiceSteps extends TestBase {
         credentialFactory = locator.getFactory(CredentialFactory.class);
         userService = locator.getService(UserService.class);
         userFactory = locator.getFactory(UserFactory.class);
-        userCredentialService = locator.getService(UserCredentialService.class);
-        userCredentialFactory = locator.getFactory(UserCredentialFactory.class);
+        userCredentialsService = locator.getService(UserCredentialsService.class);
+        userCredentialsFactory = locator.getFactory(UserCredentialsFactory.class);
         credentialsFactory = locator.getFactory(CredentialsFactory.class);
         authenticationService = locator.getService(AuthenticationService.class);
     }
@@ -210,12 +210,12 @@ public class AuthenticationServiceSteps extends TestBase {
     public void changeUserPasswordCredential(String oldPassword, String newPassword) throws Exception {
         primeException();
 
-        PasswordChangeRequest passwordChangeRequest = userCredentialFactory.newPasswordChangeRequest();
+        PasswordChangeRequest passwordChangeRequest = userCredentialsFactory.newPasswordChangeRequest();
         passwordChangeRequest.setCurrentPassword(oldPassword);
         passwordChangeRequest.setNewPassword(newPassword);
 
         try {
-            userCredentialService.changePasswordRequest(passwordChangeRequest);
+            userCredentialsService.changePasswordRequest(passwordChangeRequest);
         } catch (Exception ex) {
             verifyException(ex);
         }

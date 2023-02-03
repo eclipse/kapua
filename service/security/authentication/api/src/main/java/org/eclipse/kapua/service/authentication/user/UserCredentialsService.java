@@ -10,17 +10,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.user.shiro;
+package org.eclipse.kapua.service.authentication.user;
 
-import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
-import org.eclipse.kapua.service.authentication.user.UserCredentialFactory;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.authentication.credential.Credential;
 
-import javax.inject.Singleton;
+/**
+ * Credential service definition.
+ *
+ * @since 2.0.0
+ */
+public interface UserCredentialsService extends KapuaService {
 
-@Singleton
-public class UserCredentialFactoryImpl implements UserCredentialFactory {
-    @Override
-    public PasswordChangeRequest newPasswordChangeRequest() {
-        return new PasswordChangeRequestImpl();
-    }
+    Credential changePasswordRequest(PasswordChangeRequest passwordChangeRequest) throws KapuaException;
 }
