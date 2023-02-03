@@ -22,11 +22,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = UserCredentialXmlRegistry.class, factoryMethod = "newPasswordChangeRequest")
 public interface PasswordChangeRequest {
-    @XmlElement(name = "oldPassword")
-    String getOldPassword();
+    @XmlElement(name = "currentPassword")
+    String getCurrentPassword();
 
 
-    void setOldPassword(String oldPassword);
+    void setCurrentPassword(String currentPassword);
 
 
     @XmlElement(name = "newPassword")

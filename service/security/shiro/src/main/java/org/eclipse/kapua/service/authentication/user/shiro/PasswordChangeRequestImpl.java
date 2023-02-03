@@ -16,18 +16,18 @@ import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
 
 public class PasswordChangeRequestImpl implements PasswordChangeRequest {
     private String newPassword;
-    private String oldPassword;
+    private String currentPassword;
 
 
     @Override
-    public String getOldPassword() {
-        return oldPassword;
+    public String getCurrentPassword() {
+        return currentPassword;
     }
 
 
     @Override
-    public void setOldPassword(String oldPassword) {
-        this.oldPassword = oldPassword;
+    public void setCurrentPassword(String currentPassword) {
+        this.currentPassword = currentPassword;
     }
 
 
