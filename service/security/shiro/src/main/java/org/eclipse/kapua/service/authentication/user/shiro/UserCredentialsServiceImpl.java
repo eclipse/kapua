@@ -19,6 +19,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
@@ -35,16 +36,15 @@ import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 
-import javax.inject.Singleton;
-
 /**
  * {@link UserCredentialsService} implementation.
  *
  * @since 2.0.0
  */
-@Singleton
+@KapuaProvider
 public class UserCredentialsServiceImpl implements UserCredentialsService {
     private static final int SYSTEM_MAXIMUM_PASSWORD_LENGTH = 255;
+
     @Override
     public Credential changePasswordRequest(PasswordChangeRequest passwordChangeRequest) throws KapuaException {
         ArgumentValidator.notNull(passwordChangeRequest.getNewPassword(), "passwordChangeRequest.newPassword");
@@ -70,9 +70,9 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
             CredentialService credentialService = locator.getService(CredentialService.class);
             CredentialListResult credentials = credentialService.findByUserId(KapuaSecurityUtils.getSession().getScopeId(), KapuaSecurityUtils.getSession().getUserId());
             Credential passwordCredential = credentials.getItems().stream()
-                                                       .filter(credential -> credential.getCredentialType().equals(CredentialType.PASSWORD))
-                                                       .findAny()
-                                                       .orElseThrow(() -> new IllegalStateException("User does not have any credential of type password"));
+                    .filter(credential -> credential.getCredentialType().equals(CredentialType.PASSWORD))
+                    .findAny()
+                    .orElseThrow(() -> new IllegalStateException("User does not have any credential of type password"));
 
             // Validate Password length
             int minPasswordLength = credentialService.getMinimumPasswordLength(passwordCredential.getScopeId());
