@@ -25,6 +25,7 @@ paths:
           description: The role name to filter results
           schema:
             type: string
+        - $ref: '../openapi.yaml#/components/parameters/askTotalCount'
         - $ref: '../openapi.yaml#/components/parameters/limit'
         - $ref: '../openapi.yaml#/components/parameters/offset'
       responses:

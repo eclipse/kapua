@@ -91,6 +91,7 @@ public class Roles extends AbstractKapuaResource {
     public RoleListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("name") String name,
+            @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         RoleQuery query = roleFactory.newQuery(scopeId);
@@ -101,6 +102,7 @@ public class Roles extends AbstractKapuaResource {
         }
         query.setPredicate(andPredicate);
 
+        query.setAskTotalCount(askTotalCount);
         query.setOffset(offset);
         query.setLimit(limit);
 
