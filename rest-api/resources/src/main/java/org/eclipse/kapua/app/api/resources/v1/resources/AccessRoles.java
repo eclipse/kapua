@@ -64,12 +64,14 @@ public class AccessRoles extends AbstractKapuaResource {
     public AccessRoleListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("accessInfoId") EntityId accessInfoId,
+            @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         AccessRoleQuery query = accessRoleFactory.newQuery(scopeId);
 
         query.setPredicate(query.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));
 
+        query.setAskTotalCount(askTotalCount);
         query.setOffset(offset);
         query.setLimit(limit);
 

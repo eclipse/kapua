@@ -75,6 +75,7 @@ public class RolesPermissions extends AbstractKapuaResource {
             @PathParam("roleId") EntityId roleId,
             @QueryParam("name") String domain,
             @QueryParam("action") Actions action,
+            @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("sortParam") String sortParam,
             @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("offset") @DefaultValue("0") int offset,
@@ -94,6 +95,7 @@ public class RolesPermissions extends AbstractKapuaResource {
         }
         query.setPredicate(andPredicate);
 
+        query.setAskTotalCount(askTotalCount);
         query.setOffset(offset);
         query.setLimit(limit);
 

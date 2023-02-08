@@ -77,6 +77,7 @@ public class AccessPermissions extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("accessInfoId") EntityId accessInfoId,
             @QueryParam("sortParam") String sortParam,
+            @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
@@ -87,6 +88,7 @@ public class AccessPermissions extends AbstractKapuaResource {
             query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
         }
 
+        query.setAskTotalCount(askTotalCount);
         query.setOffset(offset);
         query.setLimit(limit);
 
