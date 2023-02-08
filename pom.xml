@@ -108,7 +108,7 @@
         <spotify.version>8.15.1</spotify.version>
         <spring.version>4.3.30.RELEASE</spring.version>
         <spring-security.version>4.2.20.RELEASE</spring-security.version>
-        <swagger-ui.version>3.23.0</swagger-ui.version>
+        <swagger-ui.version>3.52.5</swagger-ui.version>
         <zxing.version>3.4.1</zxing.version>
 
         <!-- Plugins versions -->
