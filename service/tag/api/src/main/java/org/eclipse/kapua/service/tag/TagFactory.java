@@ -32,5 +32,4 @@ public interface TagFactory extends KapuaEntityFactory<Tag, TagCreator, TagQuery
      * @since 1.0.0
      */
     TagCreator newCreator(KapuaId scopeId, String name);
-
 }

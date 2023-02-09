@@ -47,7 +47,7 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerDefi
 import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerDefinitionServiceImpl;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerFactoryImpl;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerServiceImpl;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 @Singleton
@@ -65,7 +65,7 @@ public class SchedulerLocatorConfiguration {
                 // Inject mocked Authorization Service method checkPermission
                 AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
                 try {
-                    Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(Permission.class));
+                    Mockito.doNothing().when(mockedAuthorization).checkPermission(ArgumentMatchers.any(Permission.class));
                 } catch (KapuaException e) {
                     // skip
                 }

@@ -16,9 +16,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-
 import io.cucumber.java.Before;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -27,7 +25,7 @@ import org.eclipse.kapua.qa.common.MockedLocator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 @Singleton
@@ -38,7 +36,7 @@ public class TranslatorLocatorConfiguration {
      * Create mocked and non mocked service under test and bind them with Guice.
      * It is based on custom MockedLocator locator that is meant for sevice unit tests.
      */
-    @Before(value="@setup", order=1)
+    @Before(value = "@setup", order = 1)
     public void setupDI() {
         MockedLocator mockedLocator = (MockedLocator) KapuaLocator.getInstance();
 
@@ -50,7 +48,7 @@ public class TranslatorLocatorConfiguration {
                 // Inject mocked Authorization Service method checkPermission
                 AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
                 try {
-                    Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(Permission.class));
+                    Mockito.doNothing().when(mockedAuthorization).checkPermission(ArgumentMatchers.any(Permission.class));
                 } catch (KapuaException e) {
                     // skip
                 }

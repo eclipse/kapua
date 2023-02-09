@@ -20,6 +20,7 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -64,5 +65,14 @@ public class TagModule extends AbstractKapuaModule {
                                 permissionFactory,
                                 new EntityManagerSession(entityManagerFactory)
                         )));
+    }
+
+    @Provides
+    TagRepository tagRepository(TagFactory tagFactory) {
+        return new TagRepositoryJpaImpl<>(
+                TagImpl.class,
+                tagFactory,
+                new AbstractEntityManagerFactory("kapua-tag") {
+                });
     }
 }

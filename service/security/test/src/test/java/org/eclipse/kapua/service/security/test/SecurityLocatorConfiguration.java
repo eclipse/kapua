@@ -58,7 +58,7 @@ import org.eclipse.kapua.service.user.internal.UserCacheFactory;
 import org.eclipse.kapua.service.user.internal.UserEntityManagerFactory;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
 import org.eclipse.kapua.service.user.internal.UserServiceImpl;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 @Singleton
@@ -76,7 +76,7 @@ public class SecurityLocatorConfiguration {
                 // Inject mocked Authorization Service method checkPermission
                 AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
                 try {
-                    Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(Permission.class));
+                    Mockito.doNothing().when(mockedAuthorization).checkPermission(ArgumentMatchers.any(Permission.class));
                 } catch (KapuaException e) {
                     // skip
                 }

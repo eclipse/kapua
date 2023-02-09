@@ -18,6 +18,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -125,7 +126,8 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(
+// TODO: INJECT
+        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(
                 this,
                 jobStepCreator,
                 Collections.singletonList(queryFactory.newQuery().attributePredicate(JobStepAttributes.JOB_ID, jobStepCreator.getJobId()))
@@ -225,7 +227,8 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(
+        // TODO: INJECT
+        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(
                 this,
                 jobStep,
                 Collections.singletonList(queryFactory.newQuery().attributePredicate(JobStepAttributes.JOB_ID, jobStep.getJobId()))

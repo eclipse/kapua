@@ -32,5 +32,6 @@ public class UserEntityManagerFactory extends AbstractEntityManagerFactory imple
     public UserEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME);
     }
+}
 
 

@@ -12,20 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Access info creator service implementation.
  *
  * @since 1.0
- *
  */
 public class AccessInfoCreatorImpl extends AbstractKapuaEntityCreator<AccessInfo> implements AccessInfoCreator {
 
@@ -40,7 +39,7 @@ public class AccessInfoCreatorImpl extends AbstractKapuaEntityCreator<AccessInfo
      *
      * @param accessInfo
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public AccessInfoCreatorImpl(AccessInfoCreator accessInfo) {
         super((AbstractKapuaEntityCreator) accessInfo);
 

@@ -85,7 +85,7 @@ public class PermissionImplTest {
         for (String domain : domains) {
             for (Actions action : actions) {
                 for (boolean forwardable : forwardables) {
-                    PermissionImpl permissionImpl = new PermissionImpl(domain, action, targetScopeId, groupId,forwardable);
+                    PermissionImpl permissionImpl = new PermissionImpl(domain, action, targetScopeId, groupId, forwardable);
                     Assert.assertEquals("Expected and actual values should be the same.", domain, permissionImpl.getDomain());
                     Assert.assertEquals("Expected and actual values should be the same.", action, permissionImpl.getAction());
                     Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, permissionImpl.getTargetScopeId());

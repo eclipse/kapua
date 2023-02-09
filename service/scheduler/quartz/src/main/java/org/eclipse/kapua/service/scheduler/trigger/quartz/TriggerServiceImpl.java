@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -126,7 +127,8 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, triggerCreator);
+        // TODO: INJECT
+        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, triggerCreator);
 
         //
         // Check dates
@@ -216,7 +218,8 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, trigger);
+        // TODO: INJECT
+        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, trigger);
 
         //
         // Check dates
