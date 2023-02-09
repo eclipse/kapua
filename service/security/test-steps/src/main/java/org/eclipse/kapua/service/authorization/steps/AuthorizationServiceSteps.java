@@ -12,6 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.steps;
 
+import com.google.inject.Singleton;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -22,12 +30,12 @@ import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.TestDomain;
-import org.eclipse.kapua.qa.common.cucumber.CucUser;
-import org.eclipse.kapua.qa.common.cucumber.CucRolePermission;
+import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.qa.common.cucumber.CucDomain;
 import org.eclipse.kapua.qa.common.cucumber.CucGroup;
 import org.eclipse.kapua.qa.common.cucumber.CucRole;
-import org.eclipse.kapua.qa.common.cucumber.CucConfig;
+import org.eclipse.kapua.qa.common.cucumber.CucRolePermission;
+import org.eclipse.kapua.qa.common.cucumber.CucUser;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
@@ -63,32 +71,22 @@ import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
-import org.eclipse.kapua.service.authorization.role.RolePermission;
-import org.eclipse.kapua.service.authorization.role.RoleListResult;
-import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
-import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
-import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
-import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
-import org.eclipse.kapua.service.authorization.role.RolePermissionService;
-import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
+import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
+import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
+import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
+import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
+import org.eclipse.kapua.service.authorization.role.RolePermissionService;
+import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.junit.Assert;
-
-import com.google.inject.Singleton;
-
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
-import io.cucumber.java.Scenario;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -161,7 +159,7 @@ public class AuthorizationServiceSteps extends TestBase {
         super(stepData);
     }
 
-    @After(value="@setup")
+    @After(value = "@setup")
     public void setServices() {
         KapuaLocator locator = KapuaLocator.getInstance();
         accessInfoService = locator.getService(AccessInfoService.class);
@@ -384,12 +382,12 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @When("I count the roles in scope {int}")
     public void countRolesInScope(int scope) throws Exception {
-        updateCount(() -> (int)roleService.count(roleFactory.newQuery(getKapuaId(scope))));
+        updateCount(() -> (int) roleService.count(roleFactory.newQuery(getKapuaId(scope))));
     }
 
     @When("I count the role permissions in scope {int}")
     public void countRolePermissionsInScope(Integer scope) throws Exception {
-        updateCount(() -> (int)rolePermissionService.count(rolePermissionFactory.newQuery(getKapuaId(scope))));
+        updateCount(() -> (int) rolePermissionService.count(rolePermissionFactory.newQuery(getKapuaId(scope))));
     }
 
     @When("I query for the role {string} in scope {int}")
@@ -675,7 +673,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @When("I count the domain entries in the database")
     public void countDomainEntries() throws Exception {
-        updateCount(() -> (int)domainRegistryService.count(domainFactory.newQuery(null)));
+        updateCount(() -> (int) domainRegistryService.count(domainFactory.newQuery(null)));
     }
 
     @When("I query for domains with the name {string}")
@@ -821,7 +819,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @When("I count the group entries in the database")
     public void countGroupEntries() throws Exception {
-        updateCount(() -> (int)groupService.count(groupFactory.newQuery(SYS_SCOPE_ID)));
+        updateCount(() -> (int) groupService.count(groupFactory.newQuery(SYS_SCOPE_ID)));
     }
 
     @Given("I create the group(s)")
@@ -923,7 +921,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @When("I count all the groups in scope {int}")
     public void countGroupsInScope(int scope) throws Exception {
-        updateCount(() -> (int)groupService.count(groupFactory.newQuery(getKapuaId(scope))));
+        updateCount(() -> (int) groupService.count(groupFactory.newQuery(getKapuaId(scope))));
     }
 
     @When("I query for the group {string} in scope {int}")
@@ -1213,7 +1211,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @When("I count the access roles in scope {int}")
     public void countAccesRolesInScope(Integer scope) throws Exception {
-        updateCount(() -> (int)accessRoleService.count(accessRoleFactory.newQuery(getKapuaId(scope))));
+        updateCount(() -> (int) accessRoleService.count(accessRoleFactory.newQuery(getKapuaId(scope))));
     }
 
     @When("I delete the last created access role entry")
@@ -1242,7 +1240,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @When("I count the access info entities for scope {int}")
     public void countAccessInfoEntitiesInScope(Integer scope) throws Exception {
-        updateCount(() -> (int)accessInfoService.count(accessInfoFactory.newQuery(getKapuaId(scope))));
+        updateCount(() -> (int) accessInfoService.count(accessInfoFactory.newQuery(getKapuaId(scope))));
     }
 
     @When("I query for the access info entities for the last user")
@@ -1314,7 +1312,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @When("I count the permissions in scope {int}")
     public void countPermissionsForScope(Integer scope) throws Exception {
-        updateCount(() -> (int)accessPermissionService.count(accessPermissionFactory.newQuery(getKapuaId(scope))));
+        updateCount(() -> (int) accessPermissionService.count(accessPermissionFactory.newQuery(getKapuaId(scope))));
     }
 
     @When("I check the sanity of the access info factory")
@@ -1837,7 +1835,7 @@ public class AuthorizationServiceSteps extends TestBase {
         AccessRoleQuery tmpQuery = accessRoleFactory.newQuery(getCurrentScopeId());
         tmpQuery.setPredicate(tmpQuery.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfo.getId(), AttributePredicate.Operator.EQUAL));
         Assert.assertEquals(userName, lastUser.getName());
-        updateCount(() -> (int)accessRoleService.count(tmpQuery));
+        updateCount(() -> (int) accessRoleService.count(tmpQuery));
     }
 
     @When("I search for granted user")
@@ -2038,7 +2036,7 @@ public class AuthorizationServiceSteps extends TestBase {
         Assert.assertEquals(accountName, account.getName());
         AccessRoleQuery tmpQuery = accessRoleFactory.newQuery(account.getId());
         tmpQuery.setPredicate(tmpQuery.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfo.getId(), AttributePredicate.Operator.EQUAL));
-        updateCount(() -> (int)accessRoleService.count(tmpQuery));
+        updateCount(() -> (int) accessRoleService.count(tmpQuery));
     }
 
     @When("I update the role name to {string}")
@@ -2128,7 +2126,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @When("I count the roles in the database")
     public void iCountTheRolesInTheDatabase() throws Exception {
-        updateCount(() -> (int)(roleService.count(roleFactory.newQuery(getCurrentScopeId())) - 1));
+        updateCount(() -> (int) (roleService.count(roleFactory.newQuery(getCurrentScopeId())) - 1));
     }
 
     @And("I update the role description to {string}")

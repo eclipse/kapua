@@ -22,7 +22,6 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
  * Role creator service implementation.
  *
  * @since 1.0
- *
  */
 public class RolePermissionCreatorImpl extends AbstractKapuaEntityCreator<RolePermission> implements RolePermissionCreator {
 

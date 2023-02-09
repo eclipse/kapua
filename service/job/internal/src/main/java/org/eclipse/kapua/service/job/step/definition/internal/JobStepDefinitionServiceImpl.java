@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.job.step.definition.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -71,7 +72,8 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, creator);
+        // TODO: INJECT
+        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniquenessInAllScopes(this, creator);
 
         //
         // Do create
@@ -94,7 +96,8 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, jobStepDefinition);
+        // TODO: INJECT
+        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniquenessInAllScopes(this, jobStepDefinition);
 
         //
         // Do Update

@@ -250,21 +250,21 @@ public class KapuaGwtAuthorizationModelConverter {
         GwtAction gwtAction = null;
         if (action != null) {
             switch (action) {
-            case connect:
-                gwtAction = GwtAction.connect;
-                break;
-            case delete:
-                gwtAction = GwtAction.delete;
-                break;
-            case execute:
-                gwtAction = GwtAction.execute;
-                break;
-            case read:
-                gwtAction = GwtAction.read;
-                break;
-            case write:
-                gwtAction = GwtAction.write;
-                break;
+                case connect:
+                    gwtAction = GwtAction.connect;
+                    break;
+                case delete:
+                    gwtAction = GwtAction.delete;
+                    break;
+                case execute:
+                    gwtAction = GwtAction.execute;
+                    break;
+                case read:
+                    gwtAction = GwtAction.read;
+                    break;
+                case write:
+                    gwtAction = GwtAction.write;
+                    break;
             }
         }
         return gwtAction;

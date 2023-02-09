@@ -22,7 +22,6 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
  * {@link AccessPermission} creator implementation.
  *
  * @since 1.0.0
- *
  */
 public class AccessPermissionCreatorImpl extends AbstractKapuaEntityCreator<AccessPermission> implements AccessPermissionCreator {
 
