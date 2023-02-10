@@ -31,6 +31,7 @@ paths:
           description: The action to filter results
           schema:
             type: string
+        - $ref: '../openapi.yaml#/components/parameters/askTotalCount'
         - $ref: '../openapi.yaml#/components/parameters/sortParam'
         - $ref: '../openapi.yaml#/components/parameters/sortDir'
         - $ref: '../openapi.yaml#/components/parameters/limit'
