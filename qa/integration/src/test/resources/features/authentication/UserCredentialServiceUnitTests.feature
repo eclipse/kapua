@@ -18,8 +18,7 @@ Feature: User Credential
 
   @setup
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Change the PASSWORD credential, providing a correct current password, with a new password meeting the standard requirements.
     Given I login as user with name "kapua-sys" and password "kapua-password"
