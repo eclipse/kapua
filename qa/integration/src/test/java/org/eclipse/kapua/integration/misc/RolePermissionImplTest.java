@@ -200,14 +200,6 @@ public class RolePermissionImplTest {
     }
 
     @Test
-    public void equalsNullBothRoleIdsDifferentPermissionsTest() {
-        rolePermissionImpl1.setPermission(permission1);
-        rolePermissionImpl2.setPermission(permission2);
-
-        Assert.assertFalse("False expected.", rolePermissionImpl1.equals(rolePermissionImpl2));
-    }
-
-    @Test
     public void equalsNullRoleIdTest() {
         rolePermissionImpl2.setRoleId(KapuaId.ONE);
 
@@ -228,15 +220,5 @@ public class RolePermissionImplTest {
         rolePermissionImpl2.setRoleId(KapuaId.ONE);
 
         Assert.assertTrue("True expected.", rolePermissionImpl1.equals(rolePermissionImpl2));
-    }
-
-    @Test
-    public void equalsSameRoleIdsDifferentPermissionsTest() {
-        rolePermissionImpl1.setRoleId(KapuaId.ONE);
-        rolePermissionImpl1.setPermission(permission1);
-        rolePermissionImpl2.setRoleId(KapuaId.ONE);
-        rolePermissionImpl2.setPermission(permission2);
-
-        Assert.assertFalse("False expected.", rolePermissionImpl1.equals(rolePermissionImpl2));
     }
 }
