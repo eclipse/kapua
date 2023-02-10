@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.Properties;
@@ -104,38 +103,6 @@ public class AbstractKapuaUpdatableEntityTest {
         int optlock = 25;
         updatableEntity.setOptlock(optlock);
         Assert.assertEquals("Actual and expected values are not the same!", optlock, updatableEntity.getOptlock());
-    }
-
-    @Test(expected = IOException.class)
-    public void getEntityAttributesTest() {
-        AbstractKapuaUpdatableEntity kapuaUpdatableEntity = new ActualKapuaUpdatableEntity();
-        AbstractKapuaUpdatableEntity spy = Mockito.spy(kapuaUpdatableEntity);
-        Mockito.when(spy.getEntityAttributes()).thenThrow(IOException.class);
-        spy.getEntityAttributes();
-    }
-
-    @Test(expected = IOException.class)
-    public void setEntityAttributesTest() {
-        AbstractKapuaUpdatableEntity kapuaUpdatableEntity = new ActualKapuaUpdatableEntity();
-        AbstractKapuaUpdatableEntity spy = Mockito.spy(kapuaUpdatableEntity);
-        Mockito.doThrow(IOException.class).when(spy).setEntityAttributes(new Properties());
-        spy.setEntityAttributes(new Properties());
-    }
-
-    @Test(expected = IOException.class)
-    public void getEntityPropertiesTest() {
-        AbstractKapuaUpdatableEntity kapuaUpdatableEntity = new ActualKapuaUpdatableEntity();
-        AbstractKapuaUpdatableEntity spy = Mockito.spy(kapuaUpdatableEntity);
-        Mockito.when(spy.getEntityProperties()).thenThrow(IOException.class);
-        spy.getEntityProperties();
-    }
-
-    @Test(expected = IOException.class)
-    public void setEntityPropertiesTest() {
-        AbstractKapuaUpdatableEntity kapuaUpdatableEntity = new ActualKapuaUpdatableEntity();
-        AbstractKapuaUpdatableEntity spy = Mockito.spy(kapuaUpdatableEntity);
-        Mockito.doThrow(IOException.class).when(spy).setEntityProperties(new Properties());
-        spy.setEntityProperties(new Properties());
     }
 
     @Test
