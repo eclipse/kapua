@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authentication.shiro.realm;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.eclipse.kapua.plugin.sso.openid.JwtProcessor;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDIllegalArgumentException;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
@@ -119,7 +120,7 @@ public class JwtCredentialsMatcherTest {
         Mockito.when(authenticationToken.getIdToken()).thenReturn("idToken");
         Mockito.when(authenticationInfo.getCredentials()).thenReturn(credential);
         Mockito.when(credential.getCredentialKey()).thenReturn("idToken");
-        Mockito.when(jwtProcessor.validate("idToken")).thenThrow(Mockito.mock(OpenIDException.class));
+        Mockito.when(jwtProcessor.validate("idToken")).thenThrow(OpenIDIllegalArgumentException.class);
 
         Assert.assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }
