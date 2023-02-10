@@ -50,7 +50,8 @@ public class TagServiceRepoBasedImplTest {
     @BeforeEach
     public void setUp() throws KapuaException {
         permissionFactory = Mockito.mock(PermissionFactory.class);
-        Mockito.when(permissionFactory.newPermission(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(FAKE_PERMISSION);
+        Mockito.when(permissionFactory.newPermission(Mockito.any(), Mockito.any(), Mockito.any()))
+                .thenReturn(FAKE_PERMISSION);
         authorizationService = Mockito.mock(AuthorizationService.class);
         serviceConfigurationManager = Mockito.mock(ServiceConfigurationManager.class);
         tagRepository = Mockito.mock(TagRepository.class);
@@ -61,6 +62,7 @@ public class TagServiceRepoBasedImplTest {
                 .thenAnswer(invocation -> new TagCreatorImpl(invocation.getArgument(0), invocation.getArgument(1)));
         Mockito.when(tagFactory.newEntity(Mockito.any()))
                 .thenAnswer(invocation -> new TagImpl(invocation.<KapuaId>getArgument(0)));
+
         instance = new TagServiceRepoBasedImpl(
                 permissionFactory,
                 authorizationService,
@@ -70,7 +72,7 @@ public class TagServiceRepoBasedImplTest {
     }
 
     @Test
-    public void performsInputValidation() {
+    public void createTagPerformsInputValidation() {
         Assertions.assertThrows(KapuaIllegalNullArgumentException.class,
                 () -> instance.create(null),
                 "Does not accept null tagCreator");
@@ -83,7 +85,7 @@ public class TagServiceRepoBasedImplTest {
     }
 
     @Test
-    public void callsCollaboratorsAsExpected() throws KapuaException {
+    public void createTagCallsCollaboratorsAsExpected() throws KapuaException {
         final KapuaIdImpl scopeId = new KapuaIdImpl(BigInteger.ONE);
 
         final Tag got = instance.create(new TagCreatorImpl(scopeId, "testTag"));
