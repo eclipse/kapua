@@ -132,6 +132,7 @@
         <maven-source-plugin.version>2.4</maven-source-plugin.version>
         <maven-war-plugin.version>3.0.0</maven-war-plugin.version>
 
+        <buildnumber-maven-plugin.version>3.0.0</buildnumber-maven-plugin.version>
         <checkstyle.version>7.6.1</checkstyle.version>
         <dependency-check-maven.version>7.4.4</dependency-check-maven.version>
         <docker-maven-plugin.version>0.24.0</docker-maven-plugin.version>
@@ -429,6 +430,22 @@
                         <excludes>**/target/**/*, **/.settings/**/*, maven/**/*, .maven/**/*, .idea/**/*, **/node/**/*</excludes>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>${buildnumber-maven-plugin.version}</version>
+                    <configuration>
+                        <timestampFormat>{0,date,yyyyMMdd}</timestampFormat>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>create</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -500,6 +517,11 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>${exec-maven-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>${buildnumber-maven-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
@@ -1025,6 +1047,26 @@
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-user-test-steps</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-system-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-system-internal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-system-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-system-test-steps</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
