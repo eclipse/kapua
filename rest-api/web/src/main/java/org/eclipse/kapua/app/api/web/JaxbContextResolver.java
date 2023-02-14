@@ -303,6 +303,8 @@ import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.SortFieldXmlAdapter;
 import org.eclipse.kapua.service.storable.model.query.XmlAdaptedSortField;
 import org.eclipse.kapua.service.storable.model.query.XmlAdaptedSortFields;
+import org.eclipse.kapua.service.systeminfo.SystemInfo;
+import org.eclipse.kapua.service.systeminfo.SystemInfoXmlRegistry;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagListResult;
@@ -668,6 +670,10 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     AccessRoleCreator.class,
                     AccessRoleQuery.class,
                     AccessRoleXmlRegistry.class,
+
+                    // System Info
+                    SystemInfo.class,
+                    SystemInfoXmlRegistry.class,
 
                     // Tag
                     Tag.class,
