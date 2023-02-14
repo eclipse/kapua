@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (c) 2016, 2022 Eurotech and/or its affiliates and others
+    Copyright (c) 2023, 2022 Eurotech and/or its affiliates and others
 
     This program and the accompanying materials are made
     available under the terms of the Eclipse Public License 2.0
@@ -17,30 +17,19 @@
 
     <parent>
         <groupId>org.eclipse.kapua</groupId>
-        <artifactId>kapua</artifactId>
+        <artifactId>kapua-service</artifactId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
-
-    <artifactId>kapua-service</artifactId>
     <packaging>pom</packaging>
+
+    <artifactId>kapua-system</artifactId>
+    <name>${project.artifactId}</name>
 
     <modules>
         <module>api</module>
-
-        <module>commons</module>
-
-        <module>account</module>
-        <module>datastore</module>
-        <module>device</module>
-        <module>endpoint</module>
-        <module>job</module>
-        <module>scheduler</module>
-        <module>security</module>
-        <module>system</module>
-        <module>stream</module>
-        <module>tag</module>
-        <module>user</module>
-
+        <module>internal</module>
+        <module>test</module>
+        <module>test-steps</module>
     </modules>
 
 </project>

@@ -105,7 +105,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
 
                     String fileFullPath = String.join("", "file://", configResourceDirName, configFileName);
 
-                    // Ignore files that arent named '*.properties'
+                    // Ignore files that aren't named '*.properties'
                     if (fileFullPath.endsWith(".properties")) {
                         loadConfigResource(compositeConfig, fileFullPath);
                     } else {
