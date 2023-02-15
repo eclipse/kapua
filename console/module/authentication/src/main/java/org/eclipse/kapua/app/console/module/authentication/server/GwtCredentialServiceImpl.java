@@ -18,7 +18,6 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -46,10 +45,12 @@ import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.exception.PasswordLengthException;
 import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
+import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
+import org.eclipse.kapua.service.authentication.user.UserCredentialsFactory;
+import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
@@ -76,6 +77,9 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
 
     private static final UserService USER_SERVICE = LOCATOR.getService(UserService.class);
     private static final UserFactory USER_FACTORY = LOCATOR.getFactory(UserFactory.class);
+
+    private static final UserCredentialsService USER_CREDENTIALS_SERVICE = LOCATOR.getService(UserCredentialsService.class);
+    private static final UserCredentialsFactory USER_CREDENTIALS_FACTORY = LOCATOR.getFactory(UserCredentialsFactory.class);
 
     // this should be removed due to the refactoring in fixPasswordValidationBypass method
     private static final int SYSTEM_MAXIMUM_PASSWORD_LENGTH = 255;
@@ -270,38 +274,10 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
             loginCredentials.setAuthenticationCode(mfaCode);
             AUTHENTICATION_SERVICE.verifyCredentials(loginCredentials);
 
-            KapuaSecurityUtils.doPrivileged(new Callable<Void>() {
-
-                @Override
-                public Void call() throws Exception {
-                    CredentialListResult credentialsList = CREDENTIAL_SERVICE.findByUserId(scopeId, userId);
-
-                    Credential oldCredential = null;
-                    for (Credential credential : credentialsList.getItems()) {
-                        if (credential.getCredentialType().equals(CredentialType.PASSWORD)) {
-                            oldCredential = credential;
-                            break;
-                        }
-                    }
-
-                    if (oldCredential != null) {
-                        CREDENTIAL_SERVICE.delete(scopeId, oldCredential.getId());
-
-                        CredentialCreator newCredentialCreator = CREDENTIAL_FACTORY.newCreator(
-                                scopeId,
-                                userId,
-                                CredentialType.PASSWORD,
-                                newPassword,
-                                oldCredential.getStatus(),
-                                oldCredential.getExpirationDate());
-
-                        CREDENTIAL_SERVICE.create(newCredentialCreator);
-                    } else {
-                        throw new KapuaEntityNotFoundException(Credential.TYPE, finalUsername);
-                    }
-                    return null;
-                }
-            });
+            PasswordChangeRequest passwordChangeRequest = USER_CREDENTIALS_FACTORY.newPasswordChangeRequest();
+            passwordChangeRequest.setCurrentPassword(oldPassword);
+            passwordChangeRequest.setNewPassword(newPassword);
+            USER_CREDENTIALS_SERVICE.changePasswordRequest(passwordChangeRequest);
 
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
