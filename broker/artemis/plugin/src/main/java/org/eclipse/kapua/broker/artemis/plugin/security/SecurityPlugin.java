@@ -14,6 +14,7 @@ package org.eclipse.kapua.broker.artemis.plugin.security;
 
 import java.security.cert.Certificate;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.jms.JMSException;
 import javax.net.ssl.SSLPeerUnverifiedException;
@@ -55,6 +56,7 @@ import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.Timer.Context;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.common.base.Strings;
 
 import io.netty.handler.ssl.SslHandler;
 
@@ -65,6 +67,10 @@ import io.netty.handler.ssl.SslHandler;
 public class SecurityPlugin implements ActiveMQSecurityManager5 {
 
     protected static Logger logger = LoggerFactory.getLogger(SecurityPlugin.class);
+
+    //this class should be a singleton but just to be sure let's use the atomic integer
+    private static final AtomicInteger INDEX = new AtomicInteger();
+    private String clientIdPrefix = "internal-client-id-";
 
     private LoginMetric loginMetric = LoginMetric.getInstance();
     private PublishMetric publishMetric = PublishMetric.getInstance();
@@ -95,9 +101,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         String clientId = remotingConnection.getClientID();
         //leave the clientId validation to the DeviceCreator. Here just check for / or ::
         //ArgumentValidator.match(clientId, DeviceValidationRegex.CLIENT_ID, "deviceCreator.clientId");
-        if (clientId!=null && (
-                clientId.contains("/") || clientId.contains("::")
-                )) {
+        if (clientId!=null && (clientId.contains("/") || clientId.contains("::"))) {
             //TODO look for the right exception mapped to MQTT invalid client id error code
             throw new SecurityException("Invalid Client Id!");
         }
@@ -142,8 +146,16 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                 remotingConnection.getTransportConnection().getRemoteAddress(), remotingConnection.getTransportConnection().isOpen());
             //TODO double check why the client id is null once coming from AMQP connection (the Kapua connection factory with custom client id generation is called)
             KapuaPrincipal kapuaPrincipal = buildInternalKapuaPrincipal(getAdminScopeId(), connectionInfo.getClientId());
+            //auto generate client id if null. It shouldn't be null but in some case the one from JMS connection is.
+            String clientId = connectionInfo.getClientId();
+            //set a random client id value if not set by the client
+            //from JMS 2 specs "Although setting client ID remains mandatory when creating an unshared durable subscription, it is optional when creating a shared durable subscription."
+            if (Strings.isNullOrEmpty(clientId)) {
+                clientId = clientIdPrefix + INDEX.getAndIncrement();
+                logger.info("Updated empty client id to: {}", clientId);
+            }
             //update client id with account|clientId (see pattern)
-            String fullClientId = Utils.getFullClientId(getAdminScopeId(), connectionInfo.getClientId());
+            String fullClientId = Utils.getFullClientId(getAdminScopeId(), clientId);
             remotingConnection.setClientID(fullClientId);
             Subject subject = buildInternalSubject(kapuaPrincipal);
             SessionContext sessionContext = new SessionContext(kapuaPrincipal, connectionInfo,

@@ -302,15 +302,17 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             SessionContext sessionContext = serverContext.getSecurityContext().getSessionContext(connectionId);
             if (sessionContext!=null) {
                 SessionContext sessionContextByClient = serverContext.getSecurityContext().cleanSessionContext(sessionContext);
-                AuthRequest authRequest = new AuthRequest(
-                    serverContext.getClusterName(),
-                    serverContext.getBrokerIdentity().getBrokerHost(),
-                    SecurityAction.brokerDisconnect.name(), sessionContext);
-                if (exception!=null) {
-                    updateError(authRequest, exception);
+                if (!PluginUtility.isInternal(connection)) {
+                    AuthRequest authRequest = new AuthRequest(
+                        serverContext.getClusterName(),
+                        serverContext.getBrokerIdentity().getBrokerHost(),
+                        SecurityAction.brokerDisconnect.name(), sessionContext);
+                    if (exception!=null) {
+                        updateError(authRequest, exception);
+                    }
+                    serverContext.getSecurityContext().updateStealingLinkAndIllegalState(authRequest, connectionId, sessionContextByClient!=null ? sessionContextByClient.getConnectionId() : null);
+                    serverContext.getAuthServiceClient().brokerDisconnect(authRequest);
                 }
-                serverContext.getSecurityContext().updateStealingLinkAndIllegalState(authRequest, connectionId, sessionContextByClient!=null ? sessionContextByClient.getConnectionId() : null);
-                serverContext.getAuthServiceClient().brokerDisconnect(authRequest);
             }
             else {
                 logger.warn("Cannot find any session context for connection id: {}", connectionId);
