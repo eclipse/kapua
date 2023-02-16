@@ -65,7 +65,7 @@ public class AuthenticationServiceListener extends AbstractListener {
     }
 
     private static ObjectMapper mapper = new ObjectMapper();
-    private static ObjectWriter writer = mapper.writer();//check if it's thread safe
+    private static ObjectWriter writer = mapper.writer();
 
     public void brokerConnect(Exchange exchange, AuthRequest authRequest) throws JsonProcessingException, JMSException {
         metricLoginRequestCount.inc();

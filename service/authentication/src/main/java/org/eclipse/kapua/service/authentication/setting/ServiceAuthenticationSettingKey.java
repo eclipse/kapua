@@ -18,6 +18,11 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  * Service authentication settings
  */
 public enum ServiceAuthenticationSettingKey implements SettingKey {
+
+    /**
+     * Service host
+     */
+    SERVICE_HOST("service.host"),
     /**
      * enable/disable the raising of connect/disconnect event
      */
