@@ -172,7 +172,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
                     break;
                 case PASSWORD:
                 default:
-                    // Don't do nothing special
+                    // Don't do anything special
                     break;
 
             }
@@ -253,6 +253,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             return CredentialDAO.update(em, credential);
         });
     }
+
 
     @Override
     public Credential find(KapuaId scopeId, KapuaId credentialId)

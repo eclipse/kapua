@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.authentication.user;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 
@@ -23,5 +24,23 @@ import org.eclipse.kapua.service.authentication.credential.Credential;
  */
 public interface UserCredentialsService extends KapuaService {
 
+    /**
+     * Change the password of the authenticated user, according to the given {@link PasswordChangeRequest}
+     *
+     * @param passwordChangeRequest request for change the password
+     * @return The updated credential
+     * @throws KapuaException
+     */
     Credential changePasswordRequest(PasswordChangeRequest passwordChangeRequest) throws KapuaException;
+
+
+    /**
+     * Reset the password of a user, according to the given {@link PasswordResetRequest}
+     *
+     * @param scopeId              scope of the {@link Credential} in which to change the password
+     * @param credentialId         id of the {@link Credential} to change the password
+     * @param passwordResetRequest request for resetting password
+     * @return The updated credential
+     */
+    Credential resetPassword(KapuaId scopeId, KapuaId credentialId, PasswordResetRequest passwordResetRequest) throws KapuaException;
 }

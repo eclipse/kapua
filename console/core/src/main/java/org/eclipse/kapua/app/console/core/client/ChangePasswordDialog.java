@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.client;
 
+import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.core.client.util.TokenCleaner;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
@@ -29,18 +33,10 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtMfaCredentialOptions;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialServiceAsync;
-import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtMfaCredentialOptionsService;
-import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtMfaCredentialOptionsServiceAsync;
-
-import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ChangePasswordDialog extends SimpleDialog {
 
     GwtCredentialServiceAsync credentialService = GWT.create(GwtCredentialService.class);
-    GwtMfaCredentialOptionsServiceAsync mfaCredentialOptionsService = GWT.create(GwtMfaCredentialOptionsService.class);
     private static final ConsoleMessages CONSOLE_MSGS = GWT.create(ConsoleMessages.class);
 
     private TextField<String> oldPassword;
