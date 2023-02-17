@@ -63,6 +63,7 @@ public class CredentialFactoryImpl implements CredentialFactory {
         return new CredentialCreatorImpl(scopeId);
     }
 
+
     @Override
     public Credential clone(Credential credential) {
         try {

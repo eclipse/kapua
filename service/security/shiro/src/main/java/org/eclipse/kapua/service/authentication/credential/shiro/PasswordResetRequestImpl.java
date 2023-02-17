@@ -12,29 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
-import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.user.PasswordResetRequest;
 
-public class KeyChangeRequest {
-    private Credential credential;
-    private String newCredentialKey;
+public class PasswordResetRequestImpl implements PasswordResetRequest {
+    private String newPassword;
 
 
-    public Credential getCredential() {
-        return credential;
+    @Override
+    public String getNewPassword() {
+        return newPassword;
     }
 
 
-    public void setCredential(Credential credential) {
-        this.credential = credential;
-    }
-
-
-    public String getNewCredentialKey() {
-        return newCredentialKey;
-    }
-
-
-    public void setNewCredentialKey(String newCredentialKey) {
-        this.newCredentialKey = newCredentialKey;
+    @Override
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
     }
 }

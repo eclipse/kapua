@@ -14,6 +14,27 @@ package org.eclipse.kapua.service.authentication.user;
 
 import org.eclipse.kapua.model.KapuaObjectFactory;
 
+/**
+ * {@link UserCredentialsFactory} definition.
+ *
+ * @see org.eclipse.kapua.model.KapuaEntityFactory
+ * @since 2.0.0
+ */
 public interface UserCredentialsFactory extends KapuaObjectFactory {
+    /**
+     * Instantiates a new {@link PasswordChangeRequest}.
+     *
+     * @return The newly instantiated {@link PasswordChangeRequest}
+     * @since 2.0.0
+     */
     PasswordChangeRequest newPasswordChangeRequest();
+
+
+    /**
+     * Instantiates a new {@link PasswordResetRequest}.
+     *
+     * @return The newly instantiated {@link PasswordResetRequest}
+     * @since 2.0.0
+     */
+    PasswordResetRequest newPasswordResetRequest();
 }
