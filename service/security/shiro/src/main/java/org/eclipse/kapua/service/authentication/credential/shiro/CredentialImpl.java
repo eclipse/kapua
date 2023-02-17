@@ -60,7 +60,7 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     private CredentialType credentialType;
 
     @Basic
-    @Column(name = "credential_key", nullable = false)
+    @Column(name = "credential_key", nullable = false, updatable = false)
     private String credentialKey;
 
     @Temporal(TemporalType.TIMESTAMP)

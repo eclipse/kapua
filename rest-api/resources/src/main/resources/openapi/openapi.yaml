@@ -423,7 +423,9 @@ paths:
     $ref: './user/user-scopeId-userId-mfa-disableTrust.yaml#/paths/~1{scopeId}~1users~1{userId}~1mfa~1disableTrust'
   ### User Credentials ###
   /{scopeId}/user/credentials/password:
-    $ref: './userCredentials/user-credentials-scopeId.yaml#/paths/~1{scopeId}~1user~1credentials~1password'
+    $ref: './userCredentials/userCredentials-scopeId.yaml#/paths/~1{scopeId}~1user~1credentials~1password'
+  /{scopeId}/user/credentials/{credentialId}/_reset:
+    $ref: './userCredentials/userCredentials-scopeId-credentialId-_reset.yaml#/paths/~1{scopeId}~1user~1credentials~1{credentialId}~1_reset'
 
 components:
   parameters:
@@ -935,6 +937,8 @@ components:
     ### User Credentials Entities ###
     passwordChangeRequest:
       $ref: './userCredentials/userCredentials.yaml#/components/schemas/passwordChangeRequest'
+    passwordResetRequest:
+      $ref: './userCredentials/userCredentials.yaml#/components/schemas/passwordResetRequest'
   requestBodies:
     kapuaQuery:
       description: An object to specify Query options

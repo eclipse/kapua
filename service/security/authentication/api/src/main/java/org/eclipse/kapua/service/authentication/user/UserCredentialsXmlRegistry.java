@@ -32,4 +32,13 @@ public class UserCredentialsXmlRegistry {
         return USER_CREDENTIAL_FACTORY.newPasswordChangeRequest();
     }
 
+
+    /**
+     * Creates a new reset password request
+     * @return
+     */
+    public PasswordResetRequest newPasswordResetRequest() {
+        return USER_CREDENTIAL_FACTORY.newPasswordResetRequest();
+    }
+
 }
