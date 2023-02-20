@@ -12,12 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.systeminfo.internal;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.systeminfo.SystemInfo;
 import org.eclipse.kapua.service.systeminfo.SystemInfoFactory;
 
-import javax.inject.Singleton;
-
-@Singleton
+@KapuaProvider
 public class SystemInfoFactoryImpl implements SystemInfoFactory {
     @Override
     public SystemInfo newSystemInfo() {

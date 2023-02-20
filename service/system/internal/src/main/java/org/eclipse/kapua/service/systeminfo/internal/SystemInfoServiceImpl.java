@@ -15,13 +15,12 @@ package org.eclipse.kapua.service.systeminfo.internal;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.systeminfo.SystemInfo;
 import org.eclipse.kapua.service.systeminfo.SystemInfoFactory;
 import org.eclipse.kapua.service.systeminfo.SystemInfoService;
 
-import javax.inject.Singleton;
-
-@Singleton
+@KapuaProvider
 public class SystemInfoServiceImpl implements SystemInfoService {
     private final KapuaLocator locator = KapuaLocator.getInstance();
 
