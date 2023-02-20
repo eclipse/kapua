@@ -56,12 +56,12 @@ public class TagServiceRepoBasedImplTest {
         serviceConfigurationManager = Mockito.mock(ServiceConfigurationManager.class);
         tagRepository = Mockito.mock(TagRepository.class);
         Mockito.when(tagRepository.create(Mockito.<Tag>any()))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+                .thenAnswer(invocation -> invocation.getArgumentAt(0, Tag.class));
         tagFactory = Mockito.mock(TagFactory.class);
         Mockito.when(tagFactory.newCreator(Mockito.any(), Mockito.any()))
-                .thenAnswer(invocation -> new TagCreatorImpl(invocation.getArgument(0), invocation.getArgument(1)));
+                .thenAnswer(invocation -> new TagCreatorImpl(invocation.getArgumentAt(0, KapuaId.class), invocation.getArgumentAt(1, String.class)));
         Mockito.when(tagFactory.newEntity(Mockito.any()))
-                .thenAnswer(invocation -> new TagImpl(invocation.<KapuaId>getArgument(0)));
+                .thenAnswer(invocation -> new TagImpl(invocation.<KapuaId>getArgumentAt(0, KapuaId.class)));
 
         instance = new TagServiceRepoBasedImpl(
                 permissionFactory,
