@@ -16,14 +16,20 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.multibindings.Multibinder;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.core.ClassProvider;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProviderImpl;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
+import org.eclipse.kapua.qa.common.TestJAXBClassProvider;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
@@ -80,10 +86,15 @@ public class UserLocatorConfiguration {
                 bind(UserEntityManagerFactory.class).toInstance(userEntityManagerFactory);
                 bind(UserService.class).toInstance(new UserServiceImpl());
                 bind(UserFactory.class).toInstance(new UserFactoryImpl());
+
+                //Initialize JAXB context
+                Multibinder.newSetBinder(binder(), ClassProvider.class).addBinding().to(TestJAXBClassProvider.class);
+                bind(JAXBContextProvider.class).to(JAXBContextProviderImpl.class);
             }
         };
 
         Injector injector = Guice.createInjector(module);
+        XmlUtil.setContextProvider(injector.getInstance(JAXBContextProvider.class));
         mockedLocator.setInjector(injector);
     }
 }

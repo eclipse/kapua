@@ -21,8 +21,7 @@ Feature: Scheduler Service
 @setup
 @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Create scheduler with valid schedule name
   Creating scheduler with valid schedule name property.

@@ -13,16 +13,12 @@
 package org.eclipse.kapua.job.engine.app.web;
 
 import org.eclipse.kapua.commons.rest.errors.ExceptionConfigurationProvider;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.job.engine.app.web.jaxb.JobEngineJAXBContextProvider;
-import org.glassfish.hk2.api.ServiceLocator;
+import org.eclipse.kapua.job.engine.app.web.jaxb.JaxbContextResolver;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.filter.UriConnegFilter;
-import org.glassfish.jersey.server.spi.Container;
-import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
 
 import javax.inject.Singleton;
 import javax.ws.rs.core.MediaType;
@@ -49,31 +45,7 @@ public class JobEngineApplication extends ResourceConfig {
         property(ServerProperties.WADL_FEATURE_DISABLE, true);
         register(UriConnegFilter.class);
         register(JacksonFeature.class);
-
-        register(new ContainerLifecycleListener() {
-
-            @Override
-            public void onStartup(Container container) {
-                ServiceLocator serviceLocator = container.getApplicationHandler().getInjectionManager().getInstance(ServiceLocator.class);
-                JobEngineJAXBContextProvider provider = serviceLocator.createAndInitialize(JobEngineJAXBContextProvider.class);
-                XmlUtil.setContextProvider(provider);
-            }
-
-            @Override
-            /**
-             * Nothing to do
-             */
-            public void onReload(Container container) {
-            }
-
-            @Override
-            /**
-             * Nothing to do
-             */
-            public void onShutdown(Container container) {
-            }
-        });
-
+        register(JaxbContextResolver.class);
     }
 
 }

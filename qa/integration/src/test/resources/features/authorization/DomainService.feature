@@ -18,8 +18,7 @@ Feature: Domain Service tests
 
 @setup
 Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Count domains in a blank database
   The default domain table must contain 20 preset entries.

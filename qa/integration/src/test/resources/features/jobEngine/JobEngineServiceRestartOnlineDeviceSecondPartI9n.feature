@@ -17,8 +17,7 @@ Feature: JobEngineService restart job tests with online device - second part
 
   @setup
   Scenario: Start full docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start full docker environment
 
     # *************************************************

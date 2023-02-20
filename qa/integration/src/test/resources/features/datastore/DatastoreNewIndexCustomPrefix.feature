@@ -19,8 +19,7 @@ Feature: Datastore tests
 
 @setup
   Scenario: Start full docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start full docker environment
 
   Scenario: Create index with specific prefix

@@ -56,7 +56,7 @@ scenarios.
 **Note:** the Docker Hub repository mentioned above is not the official project repository from Eclipse Foundation.
 ***
 
-Suppose the target is the current snapshot 2.0.0-SNAPSHOT.
+Suppose the target is the current snapshot 2.0.0-DYN-JAXB-SNAPSHOT.
 
 * Clone Eclipse Kapua&trade; into a local directory
 * Open an OS shell and move to Kapua project root directory
@@ -108,12 +108,12 @@ On Windows (PowerShell):
 ### Access
 
 Once the containers are running, the Kapua services can be accessed. Eclipse Kapua&trade; is a multi tenant
-system. The demo installation comes with one default tenant, called _kapua-sys_, which is also the root tenant. 
+system. The demo installation comes with one default tenant, called _kapua-sys_, which is also the root tenant.
 In Eclipse Kapua&trade; a _tenant_ is commonly referred to as an _account_.
 
 #### The console
 
-The administration console is available at [http://localhost:8080/](http://localhost:8080/). 
+The administration console is available at [http://localhost:8080/](http://localhost:8080/).
 Copy paste the URL above to a Web browser, as the login screen appears, type the following credentials:
 
 * Username: `kapua-sys`

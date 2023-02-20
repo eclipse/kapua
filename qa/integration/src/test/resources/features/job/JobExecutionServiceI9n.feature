@@ -19,8 +19,7 @@ Feature: Job Execution service CRUD tests
 
 @setup
 Scenario: Init Security Context for all scenarios
-  Given Init Jaxb Context
-  And Init Security Context
+    Given Init Security Context
   And Start base docker environment
 
 Scenario: Regular job execution creation

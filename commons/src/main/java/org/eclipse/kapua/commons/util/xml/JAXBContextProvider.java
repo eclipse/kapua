@@ -12,17 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util.xml;
 
-import javax.xml.bind.JAXBContext;
-
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.KapuaObjectFactory;
+
+import javax.xml.bind.JAXBContext;
 
 /**
  * Jaxb context provider service definition.
  *
  * @since 1.0
- *
  */
-public interface JAXBContextProvider {
+public interface JAXBContextProvider extends KapuaObjectFactory {
 
     /**
      * Get the jaxb context

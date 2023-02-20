@@ -1,4 +1,3 @@
-
 ###############################################################################
 # Copyright (c) 2017, 2022 Eurotech and/or its affiliates and others
 #
@@ -19,8 +18,7 @@ Feature: Device lifecycle scenarios
 
 @setup
   Scenario: Start docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start full docker environment
 
 Scenario: Starting and stopping the simulator should create a device entry and properly set its status

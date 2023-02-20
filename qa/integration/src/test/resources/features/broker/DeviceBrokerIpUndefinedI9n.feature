@@ -19,8 +19,7 @@ Feature: Device Broker connection ip not set
 
 @setup
   Scenario: Start full docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And System property "broker.ip" with value "null"
     And System property "kapua.config.url" with value "null"
     And Start full docker environment

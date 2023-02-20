@@ -22,8 +22,7 @@ Feature: Device Event CRUD tests
 @setup
 @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
 Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
 Scenario: Create a regular event
     Create a regular event. The event should not be null and should

@@ -18,8 +18,7 @@ Feature: Role Service tests
 
 @setup
 Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
 Scenario: Regular role creation
     Create a regular role entry. The entry must match the creator details.

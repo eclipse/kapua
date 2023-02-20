@@ -14,10 +14,11 @@ package org.eclipse.kapua.integration.misc;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.event.JsonServiceEventMarshaler;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProviderImpl;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.event.ServiceEventBusException;
-import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
+import org.eclipse.kapua.qa.common.TestJAXBClassProvider;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,6 +26,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.io.StringWriter;
+import java.util.Collections;
 
 
 @Category(JUnitTests.class)
@@ -50,7 +52,7 @@ public class JsonServiceEventMarshalerTest {
     public void marshalJsonWithoutContextTest() throws ServiceEventBusException {
         stringWriter.write("{\n}");
         String expectedValues = stringWriter.toString();
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
+        XmlUtil.setContextProvider(new JAXBContextProviderImpl(Collections.singleton(new TestJAXBClassProvider())));
         Assert.assertEquals("Expected and actual values should be the same!", expectedValues, jsonServiceEventMarshaler.marshal(serviceEvent));
     }
 
@@ -71,7 +73,7 @@ public class JsonServiceEventMarshalerTest {
         serviceEvent.setStatus(ServiceEvent.EventStatus.SENT);
         serviceEvent.setNote("note");
 
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
+        XmlUtil.setContextProvider(new JAXBContextProviderImpl(Collections.singleton(new TestJAXBClassProvider())));
         Assert.assertEquals("Expected and actual values should be the same!", expectedValues, jsonServiceEventMarshaler.marshal(serviceEvent));
     }
 
@@ -82,7 +84,7 @@ public class JsonServiceEventMarshalerTest {
 
     @Test
     public void unmarshalJsonWithContextTest() throws KapuaException {
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
+        XmlUtil.setContextProvider(new JAXBContextProviderImpl(Collections.singleton(new TestJAXBClassProvider())));
         ServiceEvent elements = jsonServiceEventMarshaler.unmarshal("{\n" +
                 "   \"id\" : \"id\",\n" +
                 "   \"contextId\" : \"contextId\",\n" +

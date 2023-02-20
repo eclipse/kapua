@@ -21,8 +21,7 @@ Feature: Translator Service
 @setup
 @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Translating "CommandRequestMessage" to "KuraRequestMessage"
   Trying to make translation from CommandRequestMessage to KuraRequestMessage.

@@ -61,11 +61,7 @@ public enum BrokerSettingKey implements SettingKey {
     /**
      * Publish message info if the message size is over the specified threshold
      */
-    PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD("broker.security.published.message_size.log_threshold"),
-    /**
-     * Jaxb context provider class name
-     */
-    JAXB_CONTEXT_CLASS_NAME("broker.jaxb_context_class_name");
+    PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD("broker.security.published.message_size.log_threshold");
 
     private String key;
 

@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.telemetry;
 
-import org.eclipse.kapua.consumer.commons.setting.ConsumerSettingKey;
 import org.eclipse.kapua.service.security.SecurityUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,7 +20,6 @@ import org.springframework.context.annotation.PropertySource;
 
 /**
  * Telemetry application container main class
- *
  */
 @ImportResource({"classpath:spring/applicationContext.xml"})
 @PropertySource(value = "classpath:spring/application.properties")
@@ -37,8 +35,6 @@ public class TelemetryApplication {
     }
 
     public static void main(String[] args) {
-        //statically set parameters
-        System.setProperty(ConsumerSettingKey.JAXB_CONTEXT_CLASS_NAME.key(), TelemetryJAXBContextProvider.class.getName());
         //org.springframework.context.ApplicationContext is not needed now so don't keep the SpringApplication.run return
         SpringApplication.run(TelemetryApplication.class, args);
     }

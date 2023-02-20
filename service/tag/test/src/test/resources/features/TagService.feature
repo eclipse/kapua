@@ -21,8 +21,7 @@ Feature: Tag Service
 @setup
 @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Creating Unique Tag Without Description
   Create a tag with unique name without description. Kapua should not return any error.

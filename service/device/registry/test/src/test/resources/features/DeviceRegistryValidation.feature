@@ -21,8 +21,7 @@ Feature: Device Registry Validation Tests
 @setup
 @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
 Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
 Scenario: Validate a regular creator
     Create a regular device creator. The validator should OK it.

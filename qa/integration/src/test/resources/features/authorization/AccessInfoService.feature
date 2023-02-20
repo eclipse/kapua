@@ -18,8 +18,7 @@ Feature: Access Info Service CRUD tests
 
 @setup
 Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Simple create
   Create a simple access info entry. Only a user is supplied. The entry must

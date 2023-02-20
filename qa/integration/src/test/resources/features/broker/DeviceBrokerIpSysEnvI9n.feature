@@ -19,8 +19,7 @@ Feature: Device Broker connection ip with System environment variable
 
 @setup
   Scenario: Start full docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And System property "broker.ip" with value "localhost"
     And Start full docker environment
 

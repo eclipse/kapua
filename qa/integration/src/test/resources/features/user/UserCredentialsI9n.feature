@@ -19,8 +19,7 @@ Feature: Feature file for testing Password user credential
 
   @setup
   Scenario: Init Security Context for all scenarios
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Create a valid user with valid password credential
   Creating a new user "kapua-a" in kapua-sys account with valid password credential.

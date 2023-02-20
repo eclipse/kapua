@@ -21,8 +21,7 @@ Feature: Device Broker Integration
 
 @setup
   Scenario: Start full docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start full docker environment
 
   Scenario: Send BIRTH message and then DC message

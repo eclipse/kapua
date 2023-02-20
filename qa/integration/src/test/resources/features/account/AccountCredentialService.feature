@@ -18,8 +18,7 @@ Feature: Account Credential Service Integration Tests
 
   @setup
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Uncorrect Login While Lockout Policy Is Enabled
   Login as kapua-sys, create an account, create a user under that account (user1)

@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Just a container to pass a bunch of classes around
@@ -21,5 +21,5 @@ import java.util.List;
  */
 public interface ClassProvider {
 
-    public List<Class<?>> getClasses();
+    public Collection<Class<?>> getClasses();
 }
