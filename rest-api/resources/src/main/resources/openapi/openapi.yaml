@@ -393,6 +393,9 @@ paths:
     $ref: './serviceConfiguration/serviceConfiguration-scopeId.yaml#/paths/~1{scopeId}~1serviceConfigurations'
   /{scopeId}/serviceConfigurations/{componentId}:
     $ref: './serviceConfiguration/serviceConfiguration-scopeId-componentId.yaml#/paths/~1{scopeId}~1serviceConfigurations~1{componentId}'
+  ### System Info ###
+  /sys-info:
+    $ref: './systemInfo/systemInfo.yaml#/paths/~1sys-info'
   ### Stream ###
   /{scopeId}/streams/messages:
     $ref: './stream/stream-scopeId.yaml#/paths/~1{scopeId}~1streams~1messages'
@@ -901,6 +904,9 @@ components:
       $ref: './serviceConfiguration/serviceConfiguration.yaml#/components/schemas/option'
     serviceAttributeDefinition:
       $ref: './serviceConfiguration/serviceConfiguration.yaml#/components/schemas/attributeDefinition'
+    ### System Info Entities ###
+    systemInfo:
+      $ref: './systemInfo/systemInfo.yaml#/components/schemas/systemInfo'
     ### Tag Entities ###
     tag:
       $ref: './tag/tag.yaml#/components/schemas/tag'

@@ -91,5 +91,9 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-job-engine-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-system-api</artifactId>
+        </dependency>
     </dependencies>
 </project>

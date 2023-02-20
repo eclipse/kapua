@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (c) 2016, 2022 Eurotech and/or its affiliates and others
+    Copyright (c) 2023, 2022 Eurotech and/or its affiliates and others
 
     This program and the accompanying materials are made
     available under the terms of the Eclipse Public License 2.0
@@ -14,33 +14,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>org.eclipse.kapua</groupId>
-        <artifactId>kapua</artifactId>
+        <artifactId>kapua-system</artifactId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kapua-service</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>kapua-system-api</artifactId>
 
-    <modules>
-        <module>api</module>
-
-        <module>commons</module>
-
-        <module>account</module>
-        <module>datastore</module>
-        <module>device</module>
-        <module>endpoint</module>
-        <module>job</module>
-        <module>scheduler</module>
-        <module>security</module>
-        <module>system</module>
-        <module>stream</module>
-        <module>tag</module>
-        <module>user</module>
-
-    </modules>
-
+    <dependencies>
+        <!-- Extended service interfaces -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-service-api</artifactId>
+        </dependency>
+    </dependencies>
 </project>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2023, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.tag.test;
+package org.eclipse.kapua.service.systeminfo.test;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -21,8 +21,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.message.KapuaMessageFactory;
-import org.eclipse.kapua.message.internal.KapuaMessageFactoryImpl;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
@@ -33,29 +31,15 @@ import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.device.registry.DeviceFactory;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
-import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionFactoryImpl;
-import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionServiceImpl;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
-import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventFactoryImpl;
-import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventServiceImpl;
-import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
-import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
-import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
-import org.eclipse.kapua.service.tag.TagFactory;
-import org.eclipse.kapua.service.tag.TagService;
-import org.eclipse.kapua.service.tag.internal.TagEntityManagerFactory;
-import org.eclipse.kapua.service.tag.internal.TagFactoryImpl;
-import org.eclipse.kapua.service.tag.internal.TagServiceImpl;
+import org.eclipse.kapua.service.systeminfo.SystemInfoFactory;
+import org.eclipse.kapua.service.systeminfo.SystemInfoService;
+import org.eclipse.kapua.service.systeminfo.internal.SystemInfoFactoryImpl;
+import org.eclipse.kapua.service.systeminfo.internal.SystemInfoServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 @Singleton
-public class TagLocatorConfiguration {
+public class SystemInfoLocatorConfiguration {
 
     /**
      * Setup DI with Google Guice DI.
@@ -91,25 +75,10 @@ public class TagLocatorConfiguration {
                 bind(AccountService.class).toInstance(Mockito.spy(new AccountServiceImpl()));
                 bind(AccountFactory.class).toInstance(Mockito.spy(new AccountFactoryImpl()));
 
-                // Inject actual Tag service related services
-                TagEntityManagerFactory tagEntityManagerFactory = TagEntityManagerFactory.getInstance();
-                bind(TagEntityManagerFactory.class).toInstance(tagEntityManagerFactory);
-                bind(TagService.class).toInstance(new TagServiceImpl());
-                bind(TagFactory.class).toInstance(new TagFactoryImpl());
+                // Inject actual System Info service related services
+                bind(SystemInfoService.class).toInstance(new SystemInfoServiceImpl());
+                bind(SystemInfoFactory.class).toInstance(new SystemInfoFactoryImpl());
 
-                // Inject actual Device service related services
-                DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.getInstance();
-                bind(DeviceEntityManagerFactory.class).toInstance(deviceEntityManagerFactory);
-
-                bind(DeviceRegistryService.class).toInstance(new DeviceRegistryServiceImpl());
-                bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
-
-                bind(DeviceConnectionService.class).toInstance(new DeviceConnectionServiceImpl());
-                bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
-
-                bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl());
-                bind(DeviceEventFactory.class).toInstance(new DeviceEventFactoryImpl());
-                bind(KapuaMessageFactory.class).toInstance(new KapuaMessageFactoryImpl());
             }
         };
 
