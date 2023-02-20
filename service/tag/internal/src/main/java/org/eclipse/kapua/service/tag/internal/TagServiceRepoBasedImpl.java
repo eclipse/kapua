@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.tag.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase2;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
@@ -41,7 +41,7 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
-public class TagServiceRepoBasedImpl extends KapuaConfigurableServiceBase2 implements TagService {
+public class TagServiceRepoBasedImpl extends KapuaConfigurableServiceLinker implements TagService {
 
     private final PermissionFactory permissionFactory;
     private final AuthorizationService authorizationService;

@@ -31,13 +31,13 @@ import java.util.Optional;
  *
  * @since 2.0.0
  */
-public class KapuaConfigurableServiceBase2
+public class KapuaConfigurableServiceLinker
         implements KapuaConfigurableService,
         KapuaService {
 
     protected final ServiceConfigurationManager serviceConfigurationManager;
 
-    public KapuaConfigurableServiceBase2(ServiceConfigurationManager serviceConfigurationManager) {
+    public KapuaConfigurableServiceLinker(ServiceConfigurationManager serviceConfigurationManager) {
         this.serviceConfigurationManager = serviceConfigurationManager;
     }
 

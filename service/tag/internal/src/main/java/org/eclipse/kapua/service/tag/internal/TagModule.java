@@ -33,7 +33,7 @@ import javax.inject.Named;
 public class TagModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(TagService.class).to(TagServiceImpl.class);
+        bind(TagService.class).to(TagServiceRepoBasedImpl.class);
         bind(TagFactory.class).to(TagFactoryImpl.class);
         bind(TagEntityManagerFactory.class).toInstance(new TagEntityManagerFactory());
     }
@@ -71,7 +71,7 @@ public class TagModule extends AbstractKapuaModule {
     TagRepository tagRepository(TagFactory tagFactory) {
         return new TagRepositoryJpaImpl<>(
                 TagImpl.class,
-                tagFactory,
+                () -> tagFactory.newListResult(),
                 new AbstractEntityManagerFactory("kapua-tag") {
                 });
     }
