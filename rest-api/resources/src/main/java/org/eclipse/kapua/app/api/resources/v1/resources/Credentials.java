@@ -28,7 +28,6 @@ import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
-import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -49,7 +48,7 @@ public class Credentials extends AbstractKapuaResource {
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final CredentialService credentialService = locator.getService(CredentialService.class);
     private final CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
-    private final UserCredentialsService userCredentialsService = locator.getService(UserCredentialsService.class);
+
 
     /**
      * Gets the {@link Credential} list in the scope.

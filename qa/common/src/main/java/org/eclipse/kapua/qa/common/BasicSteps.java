@@ -75,6 +75,8 @@ public class BasicSteps extends TestBase {
     public static final String LIFECYCLE_CONSUMER_CONTAINER_NAME = "lifecycle-consumer";
     public static final int JOB_ENGINE_CONTAINER_PORT = 8080;
 
+    public static final String LAST_CREDENTIAL_ID = "LastCredentialId";
+
     private static final double WAIT_MULTIPLIER = Double.parseDouble(System.getProperty("org.eclipse.kapua.qa.waitMultiplier", "1.0"));
 
     private static final String KAPUA_CUSTOM_PROPERTIES = "@KapuaProperties(\"";

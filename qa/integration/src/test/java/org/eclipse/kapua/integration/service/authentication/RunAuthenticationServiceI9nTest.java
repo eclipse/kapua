@@ -24,6 +24,8 @@ import org.junit.runner.RunWith;
         glue = {"org.eclipse.kapua.service.security.test",
                 "org.eclipse.kapua.service.authorization.steps",
                 "org.eclipse.kapua.service.authentication.steps",
+                "org.eclipse.kapua.service.user.steps",
+                "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.qa.common"
         },
         plugin = {"pretty",
