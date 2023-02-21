@@ -13,8 +13,6 @@
 package org.eclipse.kapua.repository;
 
 import org.eclipse.kapua.KapuaEntityExistsException;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -54,7 +52,6 @@ public interface KapuaEntityServiceRepository<E extends KapuaEntity, L extends K
      *
      * @param kapuaQuery The {@link KapuaQuery} to perform.
      * @return The reference of the {@code resultContainer} parameter. Results are added to the given {@code resultContainer} parameter.
-     * @throws KapuaException If filter predicates in the {@link KapuaQuery} are incorrect.
      * @since 2.0.0
      */
     L query(KapuaQuery kapuaQuery);
@@ -64,7 +61,6 @@ public interface KapuaEntityServiceRepository<E extends KapuaEntity, L extends K
      *
      * @param kapuaQuery The {@link KapuaQuery} to perform.
      * @return The number of {@link KapuaEntity}es that matched the filter predicates.
-     * @throws KapuaException If filter predicates in the {@link KapuaQuery} are incorrect.
      * @since 2.0.0
      */
     long count(KapuaQuery kapuaQuery);
@@ -75,7 +71,6 @@ public interface KapuaEntityServiceRepository<E extends KapuaEntity, L extends K
      * @param scopeId  The {@link KapuaEntity#getScopeId()} of the entity to be deleted.
      * @param entityId The {@link KapuaEntity#getId()} of the entity to be deleted.
      * @return The deleted {@link KapuaEntity}.
-     * @throws KapuaEntityNotFoundException If the {@link KapuaEntity} does not exists.
      * @since 1.0.0
      */
     E delete(KapuaId scopeId, KapuaId entityId);
