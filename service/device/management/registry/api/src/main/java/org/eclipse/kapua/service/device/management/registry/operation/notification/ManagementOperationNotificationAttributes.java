@@ -25,4 +25,6 @@ public class ManagementOperationNotificationAttributes extends KapuaUpdatableEnt
     public static final String PROGRESS = "progress";
 
     public static final String CHECKPOINT = "checkpoint";
+
+    public static final String RESOURCE = "resource";
 }
