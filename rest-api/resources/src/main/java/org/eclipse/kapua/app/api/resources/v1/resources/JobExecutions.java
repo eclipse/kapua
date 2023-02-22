@@ -16,12 +16,15 @@ import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.CountResult;
+import org.eclipse.kapua.app.api.core.model.DateParam;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.query.SortOrder;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.execution.JobExecution;
@@ -74,13 +77,24 @@ public class JobExecutions extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("jobId") EntityId jobId,
             @QueryParam("askTotalCount") boolean askTotalCount,
+            @QueryParam("startDate") DateParam startDateParam,
+            @QueryParam("endDate") DateParam endDateParam,
             @QueryParam("sortParam") String sortParam,
             @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         JobExecutionQuery query = jobExecutionFactory.newQuery(scopeId);
 
-        query.setPredicate(query.attributePredicate(JobExecutionAttributes.JOB_ID, jobId));
+        AndPredicate andPredicate = query.andPredicate(query.attributePredicate(JobExecutionAttributes.JOB_ID, jobId));
+
+        if (startDateParam != null) {
+            andPredicate.and(query.attributePredicate(JobExecutionAttributes.STARTED_ON, startDateParam.getDate(), AttributePredicate.Operator.GREATER_THAN_OR_EQUAL));
+        }
+        if (endDateParam != null) {
+            andPredicate.and(query.attributePredicate(JobExecutionAttributes.ENDED_ON, endDateParam.getDate(), AttributePredicate.Operator.LESS_THAN_OR_EQUAL));
+        }
+
+        query.setPredicate(andPredicate);
 
         if (!Strings.isNullOrEmpty(sortParam)) {
             query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
