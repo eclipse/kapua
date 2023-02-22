@@ -69,7 +69,7 @@ public enum MqttClientErrorCodes implements KapuaErrorCode {
      *
      * @since 1.0.0
      */
-    PUBLISH_EXCEPTION,
+    PUBLISH_ERROR,
 
     /**
      * Error while subscribing to a topic.
