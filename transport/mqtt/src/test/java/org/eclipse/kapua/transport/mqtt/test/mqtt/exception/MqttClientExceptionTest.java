@@ -188,7 +188,7 @@ public class MqttClientExceptionTest {
         Assert.assertEquals(MqttClientErrorCodes.PUBLISH_ERROR, mqttClientPublishException.getCode());
         Assert.assertEquals(cause, mqttClientPublishException.getCause());
         Assert.assertEquals(clientId, mqttClientPublishException.getClientId());
-        Assert.assertEquals(mqttTopic.toString(), mqttClientPublishException.getTopic());
+        Assert.assertEquals(mqttTopic, mqttClientPublishException.getTopic());
         Assert.assertEquals(mqttMessage, mqttClientPublishException.getMqttMessage());
         Assert.assertEquals(exceptionMessage, mqttClientPublishException.getMessage());
         Assert.assertEquals(exceptionMessage, mqttClientPublishException.getLocalizedMessage());
