@@ -183,19 +183,31 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        EndpointInfo endpointInfoToFind = entityManagerSession.doAction(em -> EndpointInfoDAO.find(em, scopeId, endpointInfoId));
-        KapuaId scopeIdPermission = null;
-        if (endpointInfoToFind != null && endpointInfoToFind.getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS)) {
-            scopeIdPermission = scopeId;
-        }
 
         AUTHORIZATION_SERVICE.checkPermission(
-                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, scopeIdPermission)
+                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, scopeId)
         );
 
-        //
-        // Do find
-        return entityManagerSession.doAction(em -> EndpointInfoDAO.find(em, scopeId, endpointInfoId));
+        EndpointInfo endpointInfoToFind = entityManagerSession.doAction(em -> EndpointInfoDAO.find(em, KapuaId.ANY, endpointInfoId)); // search the endpoint in any scope
+
+        if (endpointInfoToFind == null) {
+            throw new KapuaEntityNotFoundException(EndpointInfo.TYPE, scopeId);
+        }
+
+        if (endpointInfoToFind.getScopeId().equals(scopeId)) { //found in the specified scope, search finish here
+            return endpointInfoToFind;
+        }
+        //found but in another scope...is defined in the scope of the first Account that has defined endpoints? (proceeding upwards)
+        String type = endpointInfoToFind.getEndpointType();
+        //now find the endpoints of the search type that I can use (aka, the nearest proceeding upwards in Accounts hierarchy)
+        EndpointInfoQuery query = ENDPOINT_INFO_FACTORY.newQuery(scopeId);
+        EndpointInfoListResult nearestUsableEndpoints = query(query, type);
+
+        if (nearestUsableEndpoints.isEmpty() || ! nearestUsableEndpoints.getFirstItem().getScopeId().equals(endpointInfoToFind.getScopeId())) { //the second condition is equivalent to verify if the searched endpoint is in this list
+            throw new KapuaEntityNotFoundException(EndpointInfo.TYPE, scopeId);
+        } else {
+            return endpointInfoToFind;
+        }
     }
 
     @Override
