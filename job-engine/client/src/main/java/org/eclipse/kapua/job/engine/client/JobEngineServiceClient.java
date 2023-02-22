@@ -275,10 +275,19 @@ public class JobEngineServiceClient implements JobEngineService {
     private KapuaException buildJobEngineExceptionFromResponse(String responseText) {
         try {
             if (StringUtils.isBlank(responseText)) {
-                throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, "Job Engine returned an error but no message was given");
+                throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, "JobEngine returned an error but no message was given");
             }
 
             ExceptionInfo exceptionInfo = XmlUtil.unmarshalJson(responseText, ExceptionInfo.class);
+
+            if (exceptionInfo == null) {
+                throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, "Job Engine returned an not-empty response but it was not deserializable as an ExceptionInfo. Content returned: " + responseText);
+            }
+
+            if (exceptionInfo.getKapuaErrorCode() == null) {
+                throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, "Job Engine returned an ExceptionInfo without a KapuaErrorCode. Content returned: " + responseText);
+            }
+
             switch (exceptionInfo.getKapuaErrorCode()) {
                 case "ENTITY_NOT_FOUND":
                     EntityNotFoundExceptionInfo entityNotFoundExceptionInfo = XmlUtil.unmarshalJson(responseText, EntityNotFoundExceptionInfo.class);
