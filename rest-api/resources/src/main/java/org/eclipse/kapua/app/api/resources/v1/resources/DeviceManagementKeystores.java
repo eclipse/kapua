@@ -32,6 +32,7 @@ import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore
 import org.eclipse.kapua.service.device.registry.Device;
 
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -69,7 +70,7 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
     public DeviceKeystores getKeystores(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("10000") Long timeout) throws KapuaException {
         return DEVICE_KEYSTORE_MANAGEMENT_SERVICE.getKeystores(scopeId, deviceId, timeout);
     }
 
@@ -91,7 +92,7 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("keystoreId") String keystoreId,
             @QueryParam("alias") String alias,
-            @QueryParam("timeout") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("10000") Long timeout) throws KapuaException {
 
         DeviceKeystoreItemQuery itemQuery = DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreItemQuery();
         itemQuery.setKeystoreId(keystoreId);
@@ -118,7 +119,7 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("keystoreId") String keystoreId,
             @QueryParam("alias") String alias,
-            @QueryParam("timeout") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("10000") Long timeout) throws KapuaException {
 
         return DEVICE_KEYSTORE_MANAGEMENT_SERVICE.getKeystoreItem(scopeId, deviceId, keystoreId, alias, timeout);
     }
@@ -140,7 +141,7 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
     public Response createDeviceKeystoreCertificate(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout,
+            @QueryParam("timeout") @DefaultValue("10000") Long timeout,
             DeviceKeystoreCertificateInfo keystoreCertificateInfo) throws KapuaException {
 
         DEVICE_KEYSTORE_MANAGEMENT_SERVICE.createKeystoreCertificate(
@@ -171,7 +172,7 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
     public Response createDeviceKeystoreCertificate(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout,
+            @QueryParam("timeout") @DefaultValue("10000") Long timeout,
             DeviceKeystoreCertificate keystoreCertificate) throws KapuaException {
 
         DEVICE_KEYSTORE_MANAGEMENT_SERVICE.createKeystoreCertificate(scopeId, deviceId, keystoreCertificate, timeout);
@@ -197,7 +198,7 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
     public Response createDeviceKeystoreKeypair(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout,
+            @QueryParam("timeout") @DefaultValue("10000") Long timeout,
             DeviceKeystoreKeypair deviceKeystoreKeypair) throws KapuaException {
 
         DEVICE_KEYSTORE_MANAGEMENT_SERVICE.createKeystoreKeypair(scopeId, deviceId, deviceKeystoreKeypair, timeout);
@@ -222,7 +223,7 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
     public DeviceKeystoreCSR createDeviceKeystoreCSR(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout,
+            @QueryParam("timeout") @DefaultValue("10000") Long timeout,
             DeviceKeystoreCSRInfo deviceKeystoreCSRInfo) throws KapuaException {
 
         return DEVICE_KEYSTORE_MANAGEMENT_SERVICE.createKeystoreCSR(scopeId, deviceId, deviceKeystoreCSRInfo, timeout);

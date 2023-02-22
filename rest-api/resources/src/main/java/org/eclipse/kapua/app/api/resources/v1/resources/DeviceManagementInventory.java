@@ -30,6 +30,7 @@ import org.eclipse.kapua.service.device.management.inventory.model.packages.Devi
 import org.eclipse.kapua.service.device.management.inventory.model.system.DeviceInventorySystemPackages;
 import org.eclipse.kapua.service.device.registry.Device;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -60,7 +61,7 @@ public class DeviceManagementInventory extends AbstractKapuaResource {
     public DeviceInventory getInventory(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("10000") Long timeout) throws KapuaException {
         return DEVICE_INVENTORY_MANAGEMENT_SERVICE.getInventory(scopeId, deviceId, timeout);
     }
 
@@ -80,7 +81,7 @@ public class DeviceManagementInventory extends AbstractKapuaResource {
     public DeviceInventoryBundles getInventoryBundles(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("10000") Long timeout) throws KapuaException {
         return DEVICE_INVENTORY_MANAGEMENT_SERVICE.getBundles(scopeId, deviceId, timeout);
     }
 
@@ -101,7 +102,7 @@ public class DeviceManagementInventory extends AbstractKapuaResource {
     public Response startInventoryBundles(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout,
+            @QueryParam("timeout") @DefaultValue("10000") Long timeout,
             DeviceInventoryBundle deviceInventoryBundle) throws KapuaException {
 
         DEVICE_INVENTORY_MANAGEMENT_SERVICE.execBundle(scopeId, deviceId, deviceInventoryBundle, DeviceInventoryBundleAction.START, timeout);

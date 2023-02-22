@@ -65,6 +65,8 @@ public class DeviceConnections extends AbstractKapuaResource {
     public DeviceConnectionListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("clientId") String clientId,
+            @QueryParam("clientIp") String clientIp,
+            @QueryParam("protocol") String protocol,
             @QueryParam("status") DeviceConnectionStatus status,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
@@ -73,6 +75,12 @@ public class DeviceConnections extends AbstractKapuaResource {
         AndPredicate andPredicate = query.andPredicate();
         if (!Strings.isNullOrEmpty(clientId)) {
             andPredicate.and(query.attributePredicate(DeviceConnectionAttributes.CLIENT_ID, clientId));
+        }
+        if (!Strings.isNullOrEmpty(clientIp)) {
+            andPredicate.and(query.attributePredicate(DeviceConnectionAttributes.CLIENT_IP, clientIp));
+        }
+        if (!Strings.isNullOrEmpty(protocol)) {
+            andPredicate.and(query.attributePredicate(DeviceConnectionAttributes.PROTOCOL, protocol));
         }
         if (status != null) {
             andPredicate.and(query.attributePredicate(DeviceConnectionAttributes.STATUS, status));
