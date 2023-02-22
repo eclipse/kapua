@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -59,7 +60,7 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
     public DeviceSnapshots get(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("10000") Long timeout) throws KapuaException {
         return snapshotService.get(scopeId, deviceId, timeout);
     }
 
@@ -86,7 +87,7 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("snapshotId") String snapshotId,
-            @QueryParam("timeout") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("10000") Long timeout) throws KapuaException {
         snapshotService.rollback(scopeId, deviceId, snapshotId, timeout);
 
         return returnNoContent();
@@ -115,7 +116,7 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("snapshotId") String snapshotId,
-            @QueryParam("timeout") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("10000") Long timeout) throws KapuaException {
         return configurationService.get(scopeId, deviceId, snapshotId, null, timeout);
     }
 

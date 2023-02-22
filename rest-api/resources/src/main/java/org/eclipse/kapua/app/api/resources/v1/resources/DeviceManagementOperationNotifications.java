@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
@@ -73,6 +74,10 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
         ManagementOperationNotificationQuery query = managementOperationNotificationFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate(query.attributePredicate(ManagementOperationNotificationAttributes.OPERATION_ID, operationId));
+
+        if (!Strings.isNullOrEmpty(resource)) {
+            andPredicate.and(query.attributePredicate(ManagementOperationNotificationAttributes.RESOURCE, resource));
+        }
 
         query.setPredicate(andPredicate);
 

@@ -32,6 +32,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -59,7 +60,7 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
     public DeviceAssets get(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("10000") Long timeout) throws KapuaException {
         return get(scopeId, deviceId, timeout, deviceAssetFilter.newAssetListResult());
     }
 
@@ -78,7 +79,7 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
     public DeviceAssets get(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout,
+            @QueryParam("timeout") @DefaultValue("10000") Long timeout,
             DeviceAssets deviceAssetFilter) throws KapuaException {
         return deviceManagementAssetService.get(scopeId, deviceId, deviceAssetFilter, timeout);
     }
@@ -99,7 +100,7 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
     public DeviceAssets read(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout,
+            @QueryParam("timeout") @DefaultValue("10000") Long timeout,
             DeviceAssets deviceAssetFilter) throws KapuaException {
         return deviceManagementAssetService.read(scopeId, deviceId, deviceAssetFilter, timeout);
     }
@@ -120,7 +121,7 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
     public DeviceAssets write(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout,
+            @QueryParam("timeout") @DefaultValue("10000") Long timeout,
             DeviceAssets deviceAssetFilter) throws KapuaException {
         return deviceManagementAssetService.write(scopeId, deviceId, deviceAssetFilter, timeout);
     }
