@@ -30,9 +30,9 @@ public class MqttClientConnectException extends MqttClientException {
     /**
      * Constructor.
      *
-     * @param uri      The {@link URI} of the server which the {@link MqttClient} was connecting to.
      * @param clientId The clientId of the {@link org.eclipse.kapua.transport.mqtt.MqttClient} that produced this {@link MqttClientConnectException}.
      * @param username The username used to authenticate into the server.
+     * @param uri      The {@link URI} of the server which the {@link MqttClient} was connecting to.
      * @since 1.2.0
      */
     public MqttClientConnectException(String clientId, String username, URI uri) {
@@ -43,16 +43,16 @@ public class MqttClientConnectException extends MqttClientException {
      * Constructor.
      *
      * @param cause    The root {@link Throwable} that caused the error.
-     * @param uri      The {@link URI} of the server which the {@link MqttClient} was connecting to.
      * @param clientId The clientId of the {@link org.eclipse.kapua.transport.mqtt.MqttClient} that produced this {@link MqttClientConnectException}.
      * @param username The username used to authenticate into the server.
+     * @param uri      The {@link URI} of the server which the {@link MqttClient} was connecting to.
      * @since 1.2.0
      */
     public MqttClientConnectException(Throwable cause, String clientId, String username, URI uri) {
         super(MqttClientErrorCodes.CONNECT_ERROR, cause, clientId, username, uri);
 
-        this.uri = uri;
         this.username = username;
+        this.uri = uri;
     }
 
     /**

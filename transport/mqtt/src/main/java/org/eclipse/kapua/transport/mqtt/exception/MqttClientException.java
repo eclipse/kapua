@@ -14,6 +14,9 @@ package org.eclipse.kapua.transport.mqtt.exception;
 
 import org.eclipse.kapua.KapuaException;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 /**
  * Class that extends {@link KapuaException} with a specialized set of exceptions
  * for the {@link org.eclipse.kapua.transport.mqtt} implementation.
@@ -43,7 +46,9 @@ public class MqttClientException extends KapuaException {
      * @since 1.0.0
      */
     public MqttClientException(MqttClientErrorCodes code, String clientId) {
-        this(code, clientId, (Object) null);
+        super(code, clientId);
+
+        this.clientId = clientId;
     }
 
     /**
@@ -54,7 +59,9 @@ public class MqttClientException extends KapuaException {
      * @since 1.0.0
      */
     public MqttClientException(MqttClientErrorCodes code, String clientId, Object... arguments) {
-        this(code, null, clientId, arguments);
+        super(code, clientId, arguments);
+
+        this.clientId = clientId;
     }
 
     /**
@@ -66,7 +73,7 @@ public class MqttClientException extends KapuaException {
      * @since 1.0.0
      */
     public MqttClientException(MqttClientErrorCodes code, Throwable cause, String clientId, Object... arguments) {
-        super(code, cause, clientId, arguments);
+        super(code, cause, Stream.concat(Stream.of((Object) clientId), Arrays.stream(arguments)).toArray());
 
         this.clientId = clientId;
     }
