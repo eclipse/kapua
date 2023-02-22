@@ -28,7 +28,7 @@ public class MqttClientPublishException extends MqttClientException {
      *
      * @since 1.2.0
      */
-    final String topic;
+    final MqttTopic topic;
 
     /**
      * The {@link MqttMessage}  was meant to be published.
@@ -47,7 +47,11 @@ public class MqttClientPublishException extends MqttClientException {
      * @since 2.0.0
      */
     public MqttClientPublishException(Throwable cause, String clientId, MqttTopic topic, MqttMessage mqttMessage) {
-        this(cause, clientId, topic.toString(), mqttMessage);
+        super(MqttClientErrorCodes.PUBLISH_ERROR, cause, clientId, topic, mqttMessage.getPayload().hasBody() ? mqttMessage.getPayload().getBody().length : null);
+
+        this.topic = topic;
+        this.mqttMessage = mqttMessage;
+
     }
 
     /**
@@ -58,12 +62,11 @@ public class MqttClientPublishException extends MqttClientException {
      * @param topic       The {@link MqttTopic} in {@link String} form where the {@link MqttMessage} that was meant to be published.
      * @param mqttMessage The {@link MqttMessage}  was meant to be published.
      * @since 1.2.0
+     * @deprecated Since 2.0.0. Please make use of {@link #MqttClientPublishException(Throwable, String, MqttTopic, MqttMessage)}
      */
+    @Deprecated
     public MqttClientPublishException(Throwable cause, String clientId, String topic, MqttMessage mqttMessage) {
-        super(MqttClientErrorCodes.PUBLISH_ERROR, cause, clientId, topic, mqttMessage.getPayload().hasBody() ? mqttMessage.getPayload().getBody().length : null);
-
-        this.topic = topic;
-        this.mqttMessage = mqttMessage;
+        this(cause, clientId, new MqttTopic(topic), mqttMessage);
     }
 
     /**
@@ -72,7 +75,7 @@ public class MqttClientPublishException extends MqttClientException {
      * @return The {@link MqttTopic} where the {@link MqttMessage} that was meant to be published.
      * @since 1.2.0
      */
-    public String getTopic() {
+    public MqttTopic getTopic() {
         return topic;
     }
 
