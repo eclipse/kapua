@@ -48,13 +48,14 @@ public class TagModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder
+            AccountChildrenFinder accountChildrenFinder,
+            TagRepository tagRepository
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         TagService.class.getName(),
                         TagDomains.TAG_DOMAIN,
-                        new ServiceConfigImplJpaRepository(entityManagerFactory),
+                        new ServiceConfigImplJpaRepository(new EntityManagerSession(entityManagerFactory)),
                         permissionFactory,
                         authorizationService,
                         rootUserTester,
@@ -62,10 +63,9 @@ public class TagModule extends AbstractKapuaModule {
                         new UsedEntitiesCounterImpl(
                                 factory,
                                 TagDomains.TAG_DOMAIN,
-                                TagDAO::count,
+                                tagRepository,
                                 authorizationService,
-                                permissionFactory,
-                                new EntityManagerSession(entityManagerFactory)
+                                permissionFactory
                         )));
     }
 
@@ -73,7 +73,7 @@ public class TagModule extends AbstractKapuaModule {
     TagRepository tagRepository(TagFactory tagFactory) {
         return new TagImplJpaRepository(
                 () -> tagFactory.newListResult(),
-                new AbstractEntityManagerFactory("kapua-tag") {
-                });
+                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-tag") {
+                }));
     }
 }

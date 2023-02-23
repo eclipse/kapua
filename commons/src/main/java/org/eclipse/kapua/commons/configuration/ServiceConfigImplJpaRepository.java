@@ -12,13 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
-import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
-import org.eclipse.kapua.commons.jpa.UpdatableEntityJpaRepositoryBase;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.commons.jpa.KapuaUpdateableEntityRepositoryJpaImpl;
 
-public class ServiceConfigImplJpaRepository extends UpdatableEntityJpaRepositoryBase<ServiceConfig, ServiceConfigImpl> implements ServiceConfigRepository {
+public class ServiceConfigImplJpaRepository
+        extends KapuaUpdateableEntityRepositoryJpaImpl<ServiceConfig, ServiceConfigImpl> implements ServiceConfigRepository {
 
     public ServiceConfigImplJpaRepository(
-            EntityManagerFactory entityManagerFactory) {
-        super(ServiceConfigImpl.class, () -> new ServiceConfigListResultImpl(), entityManagerFactory);
+            EntityManagerSession entityManagerSession) {
+        super(ServiceConfigImpl.class, () -> new ServiceConfigListResultImpl(), entityManagerSession);
     }
 }

@@ -20,7 +20,7 @@ public class AbstractKapuaConfigurableServiceCache extends AbstractEntityCacheFa
         super("AbstractKapuaConfigurableServiceCacheId");
     }
 
-    protected static AbstractKapuaConfigurableServiceCache getInstance() {
+    public static AbstractKapuaConfigurableServiceCache getInstance() {
         return new AbstractKapuaConfigurableServiceCache();
     }
 }

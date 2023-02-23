@@ -22,9 +22,12 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.service.account.AccountDomains;
 import org.eclipse.kapua.service.account.AccountFactory;
+import org.eclipse.kapua.service.account.AccountRepository;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -53,13 +56,14 @@ public class AccountModule extends AbstractKapuaModule implements Module {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder
+            AccountChildrenFinder accountChildrenFinder,
+            AccountRepository accountRepository
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         AccountService.class.getName(),
                         AccountDomains.ACCOUNT_DOMAIN,
-                        new ServiceConfigImplJpaRepository(entityManagerFactory),
+                        new ServiceConfigImplJpaRepository(new EntityManagerSession(entityManagerFactory)),
                         permissionFactory,
                         authorizationService,
                         rootUserTester,
@@ -67,10 +71,19 @@ public class AccountModule extends AbstractKapuaModule implements Module {
                         new UsedEntitiesCounterImpl(
                                 factory,
                                 AccountDomains.ACCOUNT_DOMAIN,
-                                AccountDAO::count,
+                                accountRepository,
                                 authorizationService,
-                                permissionFactory,
-                                new EntityManagerSession(entityManagerFactory))
+                                permissionFactory)
                 ));
+    }
+
+    @Provides
+    AccountRepository accountRepository(AccountFactory accountFactory, AccountCacheFactory accountCacheFactory) {
+        final AccountImplJpaRepository wrapped = new AccountImplJpaRepository(
+                () -> accountFactory.newListResult(),
+                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-device") {
+                }));
+        final NamedEntityCache cache = (NamedEntityCache) accountCacheFactory.createCache();
+        return new CachingAccountRepository(wrapped, cache);
     }
 }

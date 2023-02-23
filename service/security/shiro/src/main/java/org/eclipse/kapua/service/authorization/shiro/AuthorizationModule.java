@@ -21,6 +21,7 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -41,18 +42,20 @@ import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainFactoryImpl;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainRegistryServiceImpl;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
+import org.eclipse.kapua.service.authorization.group.GroupRepository;
 import org.eclipse.kapua.service.authorization.group.GroupService;
-import org.eclipse.kapua.service.authorization.group.shiro.GroupDAO;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
+import org.eclipse.kapua.service.authorization.group.shiro.GroupImplJpaRepository;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
+import org.eclipse.kapua.service.authorization.role.RoleRepository;
 import org.eclipse.kapua.service.authorization.role.RoleService;
-import org.eclipse.kapua.service.authorization.role.shiro.RoleDAO;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleFactoryImpl;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleImplJpaRepository;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionServiceImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
@@ -94,13 +97,14 @@ public class AuthorizationModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder
+            AccountChildrenFinder accountChildrenFinder,
+            RoleRepository roleRepository
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         RoleService.class.getName(),
                         AuthorizationDomains.ROLE_DOMAIN,
-                        new ServiceConfigImplJpaRepository(authorizationEntityManagerFactory),
+                        new ServiceConfigImplJpaRepository(new EntityManagerSession(authorizationEntityManagerFactory)),
                         permissionFactory,
                         authorizationService,
                         rootUserTester,
@@ -108,11 +112,26 @@ public class AuthorizationModule extends AbstractKapuaModule {
                         new UsedEntitiesCounterImpl(
                                 roleFactory,
                                 AuthorizationDomains.ROLE_DOMAIN,
-                                RoleDAO::count,
+                                roleRepository,
                                 authorizationService,
-                                permissionFactory,
-                                new EntityManagerSession(authorizationEntityManagerFactory)
+                                permissionFactory
                         )));
+    }
+
+    @Provides
+    RoleRepository roleRepository(RoleFactory roleFactory) {
+        return new RoleImplJpaRepository(
+                () -> roleFactory.newListResult(),
+                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-authorization") {
+                }));
+    }
+
+    @Provides
+    GroupRepository groupRepository(GroupFactory groupFactory) {
+        return new GroupImplJpaRepository(
+                () -> groupFactory.newListResult(),
+                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-authorization") {
+                }));
     }
 
     @Provides
@@ -123,13 +142,14 @@ public class AuthorizationModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder
+            AccountChildrenFinder accountChildrenFinder,
+            GroupRepository groupRepository
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         GroupService.class.getName(),
                         AuthorizationDomains.GROUP_DOMAIN,
-                        new ServiceConfigImplJpaRepository(authorizationEntityManagerFactory),
+                        new ServiceConfigImplJpaRepository(new EntityManagerSession(authorizationEntityManagerFactory)),
                         permissionFactory,
                         authorizationService,
                         rootUserTester,
@@ -137,10 +157,9 @@ public class AuthorizationModule extends AbstractKapuaModule {
                         new UsedEntitiesCounterImpl(
                                 factory,
                                 AuthorizationDomains.GROUP_DOMAIN,
-                                GroupDAO::count,
+                                groupRepository,
                                 authorizationService,
-                                permissionFactory,
-                                new EntityManagerSession(authorizationEntityManagerFactory)
+                                permissionFactory
                         )));
     }
 }

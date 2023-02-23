@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,21 +10,20 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.tag.internal;
+package org.eclipse.kapua.service.device.registry.internal;
 
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.jpa.KapuaUpdateableEntityRepositoryJpaImpl;
 import org.eclipse.kapua.model.query.KapuaListResult;
-import org.eclipse.kapua.service.tag.Tag;
-import org.eclipse.kapua.service.tag.TagRepository;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRepository;
 
-import javax.inject.Singleton;
 import java.util.function.Supplier;
 
-@Singleton
-public class TagImplJpaRepository extends KapuaUpdateableEntityRepositoryJpaImpl<Tag, TagImpl> implements TagRepository {
-    public TagImplJpaRepository(Supplier<? extends KapuaListResult<Tag>> listProvider, EntityManagerSession entityManagerSession) {
-        super(TagImpl.class, listProvider, entityManagerSession);
+public class DeviceImplJpaRepository
+        extends KapuaUpdateableEntityRepositoryJpaImpl<Device, DeviceImpl>
+        implements DeviceRepository {
+    public DeviceImplJpaRepository(Supplier<? extends KapuaListResult<Device>> listProvider, EntityManagerSession entityManagerSession) {
+        super(DeviceImpl.class, listProvider, entityManagerSession);
     }
-
 }

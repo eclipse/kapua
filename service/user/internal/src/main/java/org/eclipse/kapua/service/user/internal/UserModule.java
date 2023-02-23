@@ -22,12 +22,14 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.UserDomains;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserNamedEntityService;
+import org.eclipse.kapua.service.user.UserRepository;
 import org.eclipse.kapua.service.user.UserService;
 
 import javax.inject.Named;
@@ -51,12 +53,13 @@ public class UserModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder
+            AccountChildrenFinder accountChildrenFinder,
+            UserRepository userRepository
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(UserService.class.getName(),
                         UserDomains.USER_DOMAIN,
-                        new ServiceConfigImplJpaRepository(userEntityManagerFactory),
+                        new ServiceConfigImplJpaRepository(new EntityManagerSession(userEntityManagerFactory)),
                         permissionFactory,
                         authorizationService,
                         rootUserTester,
@@ -64,11 +67,17 @@ public class UserModule extends AbstractKapuaModule {
                         new UsedEntitiesCounterImpl(
                                 userFactory,
                                 UserDomains.USER_DOMAIN,
-                                UserDAO::count,
+                                userRepository,
                                 authorizationService,
-                                permissionFactory,
-                                new EntityManagerSession(userEntityManagerFactory))
+                                permissionFactory)
                 ));
     }
 
+    @Provides
+    UserRepository userRepository(UserFactory userFactory) {
+        return new UserImplJpaRepository(
+                () -> userFactory.newListResult(),
+                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-user") {
+                }));
+    }
 }

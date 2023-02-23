@@ -21,8 +21,10 @@ import javax.inject.Singleton;
  * {@link AccountServiceImpl} {@link EntityManagerFactory} implementation.
  *
  * @since 1.0.0
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.account.AccountRepository} instead
  */
 @Singleton
+@Deprecated
 public class AccountEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-account";

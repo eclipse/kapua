@@ -21,7 +21,9 @@ import javax.inject.Singleton;
  * {@link JobServiceImpl} {@link EntityManagerFactory} implementation.
  *
  * @since 1.0.0
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.job.JobRepository} instead
  */
+@Deprecated
 @Singleton
 public class JobEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 

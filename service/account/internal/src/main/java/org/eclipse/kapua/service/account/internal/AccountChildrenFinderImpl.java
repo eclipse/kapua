@@ -14,60 +14,43 @@ package org.eclipse.kapua.service.account.internal;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
-import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
-import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.service.account.AccountDomains;
+import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountFactory;
-import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountQuery;
-import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.account.AccountRepository;
 
 import javax.inject.Inject;
 import java.util.Optional;
 
-public class AccountChildrenFinderImpl extends AbstractKapuaService implements AccountChildrenFinder {
+public class AccountChildrenFinderImpl implements AccountChildrenFinder, KapuaService {
 
     private final AccountFactory accountFactory;
-    private final PermissionFactory permissionFactory;
-    private final AuthorizationService authorizationService;
+    private final AccountRepository accountRepository;
 
     @Inject
-    public AccountChildrenFinderImpl(
-            AccountEntityManagerFactory accountEntityManagerFactory,
-            AccountCacheFactory accountCacheFactory,
-            AccountFactory accountFactory,
-            PermissionFactory permissionFactory,
-            AuthorizationService authorizationService) {
-        super(accountEntityManagerFactory, accountCacheFactory);
+    public AccountChildrenFinderImpl(AccountFactory accountFactory, AccountRepository accountRepository) {
         this.accountFactory = accountFactory;
-        this.permissionFactory = permissionFactory;
-        this.authorizationService = authorizationService;
+        this.accountRepository = accountRepository;
     }
 
     @Override
-    public AccountListResult findChildren(KapuaId scopeId, Optional<KapuaId> excludeTargetScopeId) throws KapuaException {
+    public KapuaListResult<Account> findChildren(KapuaId scopeId, Optional<KapuaId> excludeTargetScopeId) throws KapuaException {
         final AccountQuery childAccountsQuery = accountFactory.newQuery(scopeId);
         // Exclude the scope that is under config update
         if (excludeTargetScopeId.isPresent()) {
-            childAccountsQuery.setPredicate(childAccountsQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, excludeTargetScopeId.get(), AttributePredicate.Operator.NOT_EQUAL));
+            childAccountsQuery.setPredicate(
+                    childAccountsQuery.attributePredicate(
+                            KapuaEntityAttributes.ENTITY_ID,
+                            excludeTargetScopeId.get(),
+                            AttributePredicate.Operator.NOT_EQUAL)
+            );
         }
 
-        //What follows is a duplication of AccountServiceImpl.query implementation
-        //
-        // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, childAccountsQuery.getScopeId()));
-
-        //
-        // Do query
-        final AccountListResult childAccounts = entityManagerSession.doAction(
-                EntityManagerContainer.<AccountListResult>create().onResultHandler(em -> AccountDAO.query(em, childAccountsQuery))
-        );
-
-        return childAccounts;
+        return accountRepository.query(childAccountsQuery);
     }
 }

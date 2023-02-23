@@ -20,6 +20,7 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
@@ -80,7 +81,7 @@ public class AuthenticationModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             RootUserTester rootUserTester) {
         final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
-                new ServiceConfigImplJpaRepository(authenticationEntityManagerFactory),
+                new ServiceConfigImplJpaRepository(new EntityManagerSession(authenticationEntityManagerFactory)),
                 permissionFactory,
                 authorizationService,
                 rootUserTester);

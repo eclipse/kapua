@@ -16,7 +16,7 @@ import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 
 
-public interface KapuaNamedEntityRepository<E extends KapuaNamedEntity> {
+public interface KapuaNamedEntityRepository<E extends KapuaNamedEntity> extends KapuaUpdatableEntityRepository<E> {
     /**
      * Finds a {@link KapuaNamedEntity} by {@link KapuaNamedEntity#getName()}.
      *

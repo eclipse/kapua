@@ -62,9 +62,9 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class KapuaEntityRepositoryJpaImpl<E extends KapuaEntity, C extends E> implements KapuaEntityRepository<E> {
-    private final Class<C> concreteClass;
-    private final Supplier<? extends KapuaListResult<E>> listSupplier;
-    private final EntityManagerSession entityManagerSession;
+    protected final Class<C> concreteClass;
+    protected final Supplier<? extends KapuaListResult<E>> listSupplier;
+    protected final EntityManagerSession entityManagerSession;
     private static final String SQL_ERROR_CODE_CONSTRAINT_VIOLATION = "23505";
     private static final SystemSetting SYSTEM_SETTING = SystemSetting.getInstance();
     private static final String ESCAPE = SYSTEM_SETTING.getString(SystemSettingKey.DB_CHARACTER_ESCAPE, "\\");

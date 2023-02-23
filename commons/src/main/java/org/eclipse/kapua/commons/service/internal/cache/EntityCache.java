@@ -136,12 +136,12 @@ public class EntityCache {
      * This mimics the checks that are performed in the 'find' method of the {@link org.eclipse.kapua.commons.service.internal.ServiceDAO} class.
      *
      * @param scopeId a {@link KapuaId} representing the scopeId
-     * @param entity the {@link KapuaEntity} to be checked
+     * @param entity  the {@link KapuaEntity} to be checked
      * @return the provided entity if it has the required scopeId, null otherwise
      */
     protected KapuaEntity checkResult(KapuaId scopeId, KapuaEntity entity) {
         if (entity != null) {
-            if (scopeId == null) {
+            if (scopeId == null || KapuaId.ANY.equals(scopeId)) {
                 return entity;
             } else if (entity.getScopeId() == null) {
                 return entity;
@@ -160,14 +160,14 @@ public class EntityCache {
      * This mimics the checks that are performed in the 'find' method of the {@link org.eclipse.kapua.commons.service.internal.ServiceDAO} class.
      *
      * @param scopeId a {@link KapuaId} representing the scopeId
-     * @param entity the {@link KapuaListResult} entity to be checked
+     * @param entity  the {@link KapuaListResult} entity to be checked
      * @return the provided entity if it has the required scopeId, null otherwise
      */
     protected KapuaListResult checkResult(KapuaId scopeId, KapuaListResult entity) {
         if (entity != null) {
             if (entity.getSize() == 0) {
                 return entity;  // If the list is empty, I want to return the empty list
-            } else if (scopeId == null) {
+            } else if (scopeId == null || KapuaId.ANY.equals(scopeId)) {
                 return entity;
             } else if (entity.getFirstItem().getScopeId() == null) {
                 return entity;

@@ -16,15 +16,18 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.repository.KapuaUpdatableEntityRepository;
 
-public class KapuaUpdateableEntityRepositoryJpaImpl<E extends KapuaUpdatableEntity> implements KapuaUpdatableEntityRepository<E> {
-    private final Class<? extends E> concreteClass;
-    private final EntityManagerSession entityManagerSession;
+import java.util.function.Supplier;
 
-    public KapuaUpdateableEntityRepositoryJpaImpl(Class<? extends E> concreteClass, EntityManagerSession entityManagerSession) {
-        this.concreteClass = concreteClass;
-        this.entityManagerSession = entityManagerSession;
+public class KapuaUpdateableEntityRepositoryJpaImpl<E extends KapuaUpdatableEntity, C extends E>
+        extends KapuaEntityRepositoryJpaImpl<E, C>
+        implements KapuaUpdatableEntityRepository<E> {
+    public KapuaUpdateableEntityRepositoryJpaImpl(
+            Class<C> concreteClass, Supplier<? extends KapuaListResult<E>> listSupplier,
+            EntityManagerSession entityManagerSession) {
+        super(concreteClass, listSupplier, entityManagerSession);
     }
 
     @Override

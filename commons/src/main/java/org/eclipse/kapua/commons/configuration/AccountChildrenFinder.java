@@ -14,8 +14,9 @@ package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.account.AccountListResult;
+import org.eclipse.kapua.service.account.Account;
 
 import java.util.Optional;
 
@@ -32,5 +33,5 @@ public interface AccountChildrenFinder extends KapuaService {
      * @return the list of child accounts
      * @throws KapuaException
      */
-    AccountListResult findChildren(KapuaId scopeId, Optional<KapuaId> targetScopeId) throws KapuaException;
+    KapuaListResult<Account> findChildren(KapuaId scopeId, Optional<KapuaId> targetScopeId) throws KapuaException;
 }

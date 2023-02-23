@@ -16,21 +16,24 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.repository.KapuaNamedEntityRepository;
 
-public class KapuaNamedEntityRepositoryJpaImpl<E extends KapuaNamedEntity, C extends E> implements KapuaNamedEntityRepository<E> {
-    private final Class<C> clazz;
-    private final EntityManagerSession entityManagerSession;
+import java.util.function.Supplier;
 
-    public KapuaNamedEntityRepositoryJpaImpl(Class<C> clazz, EntityManagerSession entityManagerSession) {
-        this.clazz = clazz;
-        this.entityManagerSession = entityManagerSession;
+public class KapuaNamedEntityRepositoryJpaImpl<E extends KapuaNamedEntity, C extends E>
+        extends KapuaUpdateableEntityRepositoryJpaImpl<E, C>
+        implements KapuaNamedEntityRepository<E> {
+    public KapuaNamedEntityRepositoryJpaImpl(Class<C> concreteClass,
+                                             Supplier<? extends KapuaListResult<E>> listSupplier,
+                                             EntityManagerSession entityManagerSession) {
+        super(concreteClass, listSupplier, entityManagerSession);
     }
 
     @Override
     public E findByName(String value) {
         try {
-            return entityManagerSession.doTransactedAction(em -> ServiceDAO.findByName(em, clazz, value));
+            return entityManagerSession.doTransactedAction(em -> ServiceDAO.findByName(em, concreteClass, value));
         } catch (KapuaException e) {
             throw new RuntimeException(e);
         }
@@ -39,7 +42,7 @@ public class KapuaNamedEntityRepositoryJpaImpl<E extends KapuaNamedEntity, C ext
     @Override
     public E findByName(KapuaId scopeId, String value) {
         try {
-            return entityManagerSession.doTransactedAction(em -> ServiceDAO.findByName(em, clazz, scopeId, value));
+            return entityManagerSession.doTransactedAction(em -> ServiceDAO.findByName(em, concreteClass, scopeId, value));
         } catch (KapuaException e) {
             throw new RuntimeException(e);
         }
