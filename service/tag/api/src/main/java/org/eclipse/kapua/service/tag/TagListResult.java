@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag;
 
+import org.eclipse.kapua.model.query.KapuaListResult;
+
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.kapua.model.query.KapuaListResult;
 
 /**
  * {@link Tag} list result definition.

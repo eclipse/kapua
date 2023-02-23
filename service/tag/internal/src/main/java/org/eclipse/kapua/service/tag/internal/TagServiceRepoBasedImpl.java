@@ -29,6 +29,7 @@ import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagDomains;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagListResult;
+import org.eclipse.kapua.service.tag.TagRepository;
 import org.eclipse.kapua.service.tag.TagService;
 
 import javax.inject.Inject;
@@ -180,7 +181,7 @@ public class TagServiceRepoBasedImpl extends KapuaConfigurableServiceLinker impl
 
         //
         // Do query
-        return tagRepository.query(query);
+        return (TagListResult) tagRepository.query(query);
     }
 
     @Override

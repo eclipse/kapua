@@ -21,11 +21,11 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import javax.validation.constraints.Null;
 
 /**
- * {@link KapuaEntityServiceRepository} utility methods.
+ * {@link KapuaEntityRepository} utility methods.
  *
  * @since 1.0.0
  */
-public interface KapuaEntityServiceRepository<E extends KapuaEntity, L extends KapuaListResult<E>> {
+public interface KapuaEntityRepository<E extends KapuaEntity> {
 
     /**
      * Persists the {@link KapuaEntity}.
@@ -54,7 +54,7 @@ public interface KapuaEntityServiceRepository<E extends KapuaEntity, L extends K
      * @return The reference of the {@code resultContainer} parameter. Results are added to the given {@code resultContainer} parameter.
      * @since 2.0.0
      */
-    L query(KapuaQuery kapuaQuery);
+    KapuaListResult<E> query(KapuaQuery kapuaQuery);
 
     /**
      * Counts the {@link KapuaEntity}es.

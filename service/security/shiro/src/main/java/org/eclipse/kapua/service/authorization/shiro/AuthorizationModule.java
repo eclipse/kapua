@@ -16,6 +16,7 @@ import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
@@ -99,7 +100,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         RoleService.class.getName(),
                         AuthorizationDomains.ROLE_DOMAIN,
-                        new EntityManagerSession(authorizationEntityManagerFactory),
+                        new ServiceConfigImplJpaRepository(authorizationEntityManagerFactory),
                         permissionFactory,
                         authorizationService,
                         rootUserTester,
@@ -128,7 +129,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         GroupService.class.getName(),
                         AuthorizationDomains.GROUP_DOMAIN,
-                        new EntityManagerSession(authorizationEntityManagerFactory),
+                        new ServiceConfigImplJpaRepository(authorizationEntityManagerFactory),
                         permissionFactory,
                         authorizationService,
                         rootUserTester,

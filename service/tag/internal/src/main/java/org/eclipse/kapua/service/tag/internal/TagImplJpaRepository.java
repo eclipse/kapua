@@ -12,29 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag.internal;
 
-import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.UpdatableEntityJpaRepositoryBase;
+import org.eclipse.kapua.model.query.KapuaListResult;
+import org.eclipse.kapua.service.tag.Tag;
+import org.eclipse.kapua.service.tag.TagRepository;
 
 import javax.inject.Singleton;
+import javax.validation.constraints.NotNull;
+import java.util.function.Supplier;
 
-/**
- * {@link TagServiceImpl} {@link EntityManagerFactory} implementation.
- *
- * @since 1.0.0
- * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.tag.TagRepository} instead
- */
 @Singleton
-@Deprecated
-public class TagEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
-
-    private static final String PERSISTENCE_UNIT_NAME = "kapua-tag";
-
-    /**
-     * Constructor.
-     *
-     * @since 1.0.0
-     */
-    public TagEntityManagerFactory() {
-        super(PERSISTENCE_UNIT_NAME);
+public class TagImplJpaRepository extends UpdatableEntityJpaRepositoryBase<Tag, TagImpl> implements TagRepository {
+    public TagImplJpaRepository(Supplier<? extends KapuaListResult<Tag>> listProvider, @NotNull EntityManagerFactory entityManagerFactory) {
+        super(TagImpl.class, listProvider, entityManagerFactory);
     }
+
 }
