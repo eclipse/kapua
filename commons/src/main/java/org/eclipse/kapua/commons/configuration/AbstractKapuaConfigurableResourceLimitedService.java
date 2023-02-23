@@ -32,7 +32,6 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
@@ -247,7 +246,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
             // Current used entities
             long currentUsedEntities = this.count(countQuery);
 
-            AccountListResult childAccounts = getAccountChildrenFinder().findChildren(scopeId, Optional.ofNullable(targetScopeId));
+            final KapuaListResult<Account> childAccounts = getAccountChildrenFinder().findChildren(scopeId, Optional.ofNullable(targetScopeId));
             // Resources assigned to children
             long childCount = 0;
             for (Account childAccount : childAccounts.getItems()) {

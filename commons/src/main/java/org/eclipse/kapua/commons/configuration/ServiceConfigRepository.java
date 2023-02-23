@@ -15,7 +15,7 @@ package org.eclipse.kapua.commons.configuration;
 import org.eclipse.kapua.repository.KapuaEntityRepository;
 import org.eclipse.kapua.repository.KapuaUpdatableEntityRepository;
 
-public interface ServiceConfigRepository extends KapuaEntityRepository<ServiceConfig>,
+public interface ServiceConfigRepository extends
+        KapuaEntityRepository<ServiceConfig>,
         KapuaUpdatableEntityRepository<ServiceConfig> {
-
 }

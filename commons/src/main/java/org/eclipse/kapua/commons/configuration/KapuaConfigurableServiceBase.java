@@ -32,7 +32,9 @@ import java.util.Optional;
  * - this class is nothing more than glue and convenience, demanding all of its logic to the {@link ServiceConfigurationManager}'s instance provided, so no flexibility has been sacrificed
  *
  * @since 2.0.0
+ * @deprecated since 2.0.0 - this is provided as a stepping stone during the migration to the services using the repository pattern for persistence. Use {@link KapuaConfigurableServiceLinker} instead
  */
+@Deprecated
 public class KapuaConfigurableServiceBase
         /*
         Being configurable should have nothing to do with being an Entity-bound service.

@@ -18,13 +18,11 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
-import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
-import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -40,6 +38,7 @@ import org.eclipse.kapua.service.account.AccountAttributes;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountDomains;
 import org.eclipse.kapua.service.account.AccountListResult;
+import org.eclipse.kapua.service.account.AccountRepository;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.exception.KapuaAccountErrorCodes;
 import org.eclipse.kapua.service.account.internal.exception.KapuaAccountException;
@@ -49,7 +48,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import javax.persistence.TypedQuery;
 import java.util.Objects;
 
 /**
@@ -59,18 +57,18 @@ import java.util.Objects;
  */
 @Singleton
 public class AccountServiceImpl
-        extends KapuaConfigurableServiceBase
+        extends KapuaConfigurableServiceLinker
         implements AccountService {
 
     private static final String NO_EXPIRATION_DATE_SET = "no expiration date set";
+    private AccountRepository accountRepository;
     private PermissionFactory permissionFactory;
     private AuthorizationService authorizationService;
 
     /**
      * Injectable constructor
      *
-     * @param accountEntityManagerFactory The {@link AccountEntityManagerFactory} instance
-     * @param accountCacheFactory         The {@link AccountCacheFactory} instance
+     * @param accountRepository           The {@link AccountRepository} instance
      * @param permissionFactory           The {@link PermissionFactory} instance
      * @param authorizationService        The {@link AuthorizationService} instance
      * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance
@@ -78,12 +76,12 @@ public class AccountServiceImpl
      */
     @Inject
     public AccountServiceImpl(
-            AccountEntityManagerFactory accountEntityManagerFactory,
-            AccountCacheFactory accountCacheFactory,
+            AccountRepository accountRepository,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             @Named("AccountServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
-        super(accountEntityManagerFactory, accountCacheFactory, serviceConfigurationManager);
+        super(serviceConfigurationManager);
+        this.accountRepository = accountRepository;
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
     }
@@ -142,19 +140,26 @@ public class AccountServiceImpl
 
         //
         // Do create
-        return entityManagerSession.doTransactedAction(
-                EntityManagerContainer.<Account>create()
-                        .onResultHandler(em -> {
-                            Account account = AccountDAO.create(em, accountCreator);
-                            em.persist(account);
+        final OrganizationImpl organizationImpl = new OrganizationImpl();
+        organizationImpl.setName(accountCreator.getOrganizationName());
+        organizationImpl.setPersonName(accountCreator.getOrganizationPersonName());
+        organizationImpl.setEmail(accountCreator.getOrganizationEmail());
+        organizationImpl.setPhoneNumber(accountCreator.getOrganizationPhoneNumber());
+        organizationImpl.setAddressLine1(accountCreator.getOrganizationAddressLine1());
+        organizationImpl.setAddressLine2(accountCreator.getOrganizationAddressLine2());
+        organizationImpl.setAddressLine3(accountCreator.getOrganizationAddressLine3());
+        organizationImpl.setCity(accountCreator.getOrganizationCity());
+        organizationImpl.setZipPostCode(accountCreator.getOrganizationZipPostCode());
+        organizationImpl.setStateProvinceCounty(accountCreator.getOrganizationStateProvinceCounty());
+        organizationImpl.setCountry(accountCreator.getOrganizationCountry());
 
-                            // Set the parent account path
-                            String parentAccountPath = AccountDAO.find(em, KapuaId.ANY, accountCreator.getScopeId()).getParentAccountPath() + "/" + account.getId();
-                            account.setParentAccountPath(parentAccountPath);
-
-                            // Return updated account
-                            return AccountDAO.update(em, account);
-                        }));
+        final AccountImpl accountImpl = new AccountImpl(accountCreator.getScopeId(), accountCreator.getName());
+        accountImpl.setOrganization(organizationImpl);
+        accountImpl.setExpirationDate(accountCreator.getExpirationDate());
+        final Account createdAccount = accountRepository.create(accountImpl);
+        String parentAccountPath = accountRepository.find(KapuaId.ANY, accountCreator.getScopeId()).getParentAccountPath() + "/" + createdAccount.getId();
+        createdAccount.setParentAccountPath(parentAccountPath);
+        return accountRepository.update(createdAccount);
     }
 
     @Override
@@ -243,14 +248,7 @@ public class AccountServiceImpl
 
         //
         // Do update
-        return entityManagerSession.doTransactedAction(
-                EntityManagerContainer.<Account>create()
-                        .onBeforeHandler(() -> {
-                            entityCache.remove(null, account);
-                            return null;
-                        })
-                        .onResultHandler(em -> AccountDAO.update(em, account))
-        );
+        return accountRepository.update(account);
     }
 
     @Override
@@ -274,30 +272,23 @@ public class AccountServiceImpl
 
         //
         // Do delete
-        entityManagerSession.doTransactedAction(
-                EntityManagerContainer.<Account>create()
-                        .onResultHandler(em -> {
-                            Account account = scopeId.equals(accountId) ?
-                                    AccountDAO.find(em, KapuaId.ANY, accountId) :
-                                    AccountDAO.find(em, scopeId, accountId);
+        Account account = scopeId.equals(accountId) ?
+                accountRepository.find(KapuaId.ANY, accountId) :
+                accountRepository.find(scopeId, accountId);
+        if (account == null) {
+            throw new KapuaEntityNotFoundException(Account.TYPE, accountId);
+        }
+        // do not allow deletion of the kapua admin account
+        SystemSetting settings = SystemSetting.getInstance();
+        if (settings.getString(SystemSettingKey.SYS_PROVISION_ACCOUNT_NAME).equals(account.getName())) {
+            throw new KapuaIllegalAccessException(action.name());
+        }
 
-                            if (account == null) {
-                                throw new KapuaEntityNotFoundException(Account.TYPE, accountId);
-                            }
+        if (settings.getString(SystemSettingKey.SYS_ADMIN_USERNAME).equals(account.getName())) {
+            throw new KapuaIllegalAccessException(action.name());
+        }
 
-                            // do not allow deletion of the kapua admin account
-                            SystemSetting settings = SystemSetting.getInstance();
-                            if (settings.getString(SystemSettingKey.SYS_PROVISION_ACCOUNT_NAME).equals(account.getName())) {
-                                throw new KapuaIllegalAccessException(action.name());
-                            }
-
-                            if (settings.getString(SystemSettingKey.SYS_ADMIN_USERNAME).equals(account.getName())) {
-                                throw new KapuaIllegalAccessException(action.name());
-                            }
-
-                            return AccountDAO.delete(em, scopeId, accountId);
-                        })
-                        .onAfterHandler((emptyParam) -> entityCache.remove(scopeId, accountId)));
+        accountRepository.delete(scopeId, accountId);
     }
 
     @Override
@@ -321,12 +312,7 @@ public class AccountServiceImpl
 
         //
         // Do find
-        return entityManagerSession.doAction(
-                EntityManagerContainer.<Account>create()
-                        .onBeforeHandler(() -> (Account) entityCache.get(scopeId, accountId))
-                        .onResultHandler(em -> AccountDAO.find(em, scopeId, accountId))
-                        .onAfterHandler(entityCache::put)
-        );
+        return accountRepository.find(scopeId, accountId);
     }
 
     @Override
@@ -335,14 +321,8 @@ public class AccountServiceImpl
         // Argument validation
         ArgumentValidator.notNull(accountId, KapuaEntityAttributes.ENTITY_ID);
 
-        //
         // Do find
-        Account account = entityManagerSession.doAction(
-                EntityManagerContainer.<Account>create()
-                        .onBeforeHandler(() -> (Account) entityCache.get(null, accountId))
-                        .onResultHandler(em -> AccountDAO.find(em, KapuaId.ANY, accountId))
-                        .onAfterHandler(entityCache::put)
-        );
+        Account account = accountRepository.find(KapuaId.ANY, accountId);
 
         //
         // Check Access
@@ -363,11 +343,7 @@ public class AccountServiceImpl
 
         //
         // Do find
-        Account account = entityManagerSession.doAction(
-                EntityManagerContainer.<Account>create()
-                        .onBeforeHandler(() -> (Account) ((NamedEntityCache) entityCache).get(null, name))
-                        .onResultHandler(em -> AccountDAO.findByName(em, name))
-                        .onAfterHandler(entityCache::put));
+        Account account = accountRepository.findByName(name);
 
         //
         // Check access
@@ -402,16 +378,7 @@ public class AccountServiceImpl
 
         //
         // Do find
-        return entityManagerSession.doAction(
-                EntityManagerContainer.<AccountListResult>create()
-                        .onResultHandler(em -> {
-                            TypedQuery<Account> q = em.createNamedQuery("Account.findChildAccountsRecursive", Account.class);
-                            q.setParameter("parentAccountPath", "\\" + account.getParentAccountPath() + "/%");
-
-                            AccountListResult result = new AccountListResultImpl();
-                            result.addItems(q.getResultList());
-                            return result;
-                        }));
+        return (AccountListResult) accountRepository.findChildAccountsRecursive(account.getParentAccountPath());
     }
 
     @Override
@@ -426,10 +393,7 @@ public class AccountServiceImpl
 
         //
         // Do query
-        return entityManagerSession.doAction(
-                EntityManagerContainer.<AccountListResult>create()
-                        .onResultHandler(em -> AccountDAO.query(em, query))
-        );
+        return (AccountListResult) accountRepository.query(query);
     }
 
     @Override
@@ -444,10 +408,7 @@ public class AccountServiceImpl
 
         //
         // Do count
-        return entityManagerSession.doAction(
-                EntityManagerContainer.<Long>create()
-                        .onResultHandler(em -> AccountDAO.count(em, query))
-        );
+        return accountRepository.count(query);
     }
 
     private AccountListResult findChildAccountsTrusted(KapuaId accountId)
@@ -459,10 +420,7 @@ public class AccountServiceImpl
 
         //
         // Do find
-        return entityManagerSession.doAction(
-                EntityManagerContainer.<AccountListResult>create()
-                        .onResultHandler(em -> AccountDAO.query(em, new AccountQueryImpl(accountId)))
-        );
+        return (AccountListResult) accountRepository.query(new AccountQueryImpl(accountId));
     }
 
     private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, Domain domain, Actions action) throws KapuaException {

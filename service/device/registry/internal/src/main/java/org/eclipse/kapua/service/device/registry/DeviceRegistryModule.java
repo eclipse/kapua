@@ -22,6 +22,7 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachin
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -37,9 +38,9 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventFactoryImpl;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventServiceImpl;
-import org.eclipse.kapua.service.device.registry.internal.DeviceDAO;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
+import org.eclipse.kapua.service.device.registry.internal.DeviceImplJpaRepository;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCacheFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
@@ -77,7 +78,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
         return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerImpl(
                 DeviceConnectionService.class.getName(),
                 DeviceDomains.DEVICE_CONNECTION_DOMAIN,
-                new ServiceConfigImplJpaRepository(deviceEntityManagerFactory),
+                new ServiceConfigImplJpaRepository(new EntityManagerSession(deviceEntityManagerFactory)),
                 permissionFactory,
                 authorizationService,
                 rootUserTester));
@@ -91,13 +92,14 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder
+            AccountChildrenFinder accountChildrenFinder,
+            DeviceRepository deviceRepository
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         DeviceRegistryService.class.getName(),
                         DeviceDomains.DEVICE_DOMAIN,
-                        new ServiceConfigImplJpaRepository(deviceEntityManagerFactory),
+                        new ServiceConfigImplJpaRepository(new EntityManagerSession(deviceEntityManagerFactory)),
                         permissionFactory,
                         authorizationService,
                         rootUserTester,
@@ -105,10 +107,17 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                         new UsedEntitiesCounterImpl(
                                 factory,
                                 DeviceDomains.DEVICE_DOMAIN,
-                                DeviceDAO::count,
+                                deviceRepository,
                                 authorizationService,
-                                permissionFactory,
-                                new EntityManagerSession(deviceEntityManagerFactory))
+                                permissionFactory)
                 ));
+    }
+
+    @Provides
+    DeviceRepository deviceRepository(DeviceFactory deviceFactory) {
+        return new DeviceImplJpaRepository(
+                () -> deviceFactory.newListResult(),
+                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-account") {
+                }));
     }
 }

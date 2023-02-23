@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,14 +10,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.tag;
+package org.eclipse.kapua.service.account;
 
+import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.repository.KapuaEntityRepository;
+import org.eclipse.kapua.repository.KapuaNamedEntityRepository;
 import org.eclipse.kapua.repository.KapuaUpdatableEntityRepository;
 
-public interface TagRepository extends
-        KapuaEntityRepository<Tag>,
-//        KapuaNamedEntityRepository<Tag>, //Strangely, not needed
-        KapuaUpdatableEntityRepository<Tag> {
-
+public interface AccountRepository extends
+        KapuaEntityRepository<Account>,
+        KapuaNamedEntityRepository<Account>,
+        KapuaUpdatableEntityRepository<Account> {
+    KapuaListResult<Account> findChildAccountsRecursive(String parentAccountPath);
 }

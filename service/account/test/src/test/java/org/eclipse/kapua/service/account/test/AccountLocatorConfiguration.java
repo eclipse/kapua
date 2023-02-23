@@ -34,9 +34,9 @@ import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
 import org.eclipse.kapua.service.account.AccountDomains;
 import org.eclipse.kapua.service.account.AccountFactory;
+import org.eclipse.kapua.service.account.AccountRepository;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountChildrenFinderImpl;
-import org.eclipse.kapua.service.account.internal.AccountDAO;
 import org.eclipse.kapua.service.account.internal.AccountEntityManagerFactory;
 import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
 import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
@@ -85,12 +85,13 @@ public class AccountLocatorConfiguration {
                 final AccountFactory accountFactory = new AccountFactoryImpl();
                 bind(AccountFactory.class).toInstance(accountFactory);
                 bind(AccountChildrenFinder.class).to(AccountChildrenFinderImpl.class);
+                final AccountRepository accountRepository = Mockito.mock(AccountRepository.class);
                 bind(ServiceConfigurationManager.class)
                         .annotatedWith(Names.named("AccountServiceConfigurationManager"))
                         .toInstance(new ResourceLimitedServiceConfigurationManagerImpl(
                                 AccountService.class.getName(),
                                 AccountDomains.ACCOUNT_DOMAIN,
-                                new ServiceConfigImplJpaRepository(entityManagerFactory),
+                                new ServiceConfigImplJpaRepository(new EntityManagerSession(entityManagerFactory)),
                                 mockPermissionFactory,
                                 mockedAuthorization,
                                 Mockito.mock(RootUserTester.class),
@@ -98,10 +99,9 @@ public class AccountLocatorConfiguration {
                                 new UsedEntitiesCounterImpl(
                                         accountFactory,
                                         AccountDomains.ACCOUNT_DOMAIN,
-                                        AccountDAO::count,
+                                        accountRepository,
                                         mockedAuthorization,
-                                        mockPermissionFactory,
-                                        new EntityManagerSession(entityManagerFactory))
+                                        mockPermissionFactory)
                         ));
                 bind(AccountService.class).to(AccountServiceImpl.class);
             }

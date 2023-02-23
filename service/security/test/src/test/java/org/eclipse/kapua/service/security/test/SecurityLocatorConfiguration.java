@@ -24,6 +24,7 @@ import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -110,7 +111,7 @@ public class SecurityLocatorConfiguration {
                         .annotatedWith(Names.named("CredentialServiceConfigurationManager"))
                         .toInstance(
                                 new CredentialServiceConfigurationManagerImpl(
-                                        new ServiceConfigImplJpaRepository(AuthenticationEntityManagerFactory.getInstance()),
+                                        new ServiceConfigImplJpaRepository(new EntityManagerSession(AuthenticationEntityManagerFactory.getInstance())),
                                         mockPermissionFactory,
                                         mockedAuthorization,
                                         Mockito.mock(RootUserTester.class))

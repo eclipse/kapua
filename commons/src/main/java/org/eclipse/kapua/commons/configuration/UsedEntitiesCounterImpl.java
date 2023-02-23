@@ -14,18 +14,15 @@
 package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.EntityManager;
-import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
-import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.KapuaEntityFactory;
-import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.repository.KapuaEntityRepository;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
@@ -39,29 +36,20 @@ public class UsedEntitiesCounterImpl<
 
     private final F factory;
     private final Domain domain;
-    private final DaoCounter daoCounter;
+    private final KapuaEntityRepository<E> entityRepository;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
-    private final EntityManagerSession entityManagerSession;
 
     public UsedEntitiesCounterImpl(F factory,
                                    Domain domain,
-                                   DaoCounter daoCounter,
+                                   KapuaEntityRepository<E> entityRepository,
                                    AuthorizationService authorizationService,
-                                   PermissionFactory permissionFactory,
-                                   EntityManagerSession entityManagerSession) {
+                                   PermissionFactory permissionFactory) {
         this.factory = factory;
         this.domain = domain;
-        this.daoCounter = daoCounter;
+        this.entityRepository = entityRepository;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
-        this.entityManagerSession = entityManagerSession;
-    }
-
-    @FunctionalInterface
-    public static interface DaoCounter {
-        long count(EntityManager em, KapuaQuery userPermissionQuery)
-                throws KapuaException;
     }
 
     @Override
@@ -73,12 +61,7 @@ public class UsedEntitiesCounterImpl<
         ArgumentValidator.notNull(query, "query");
 
         //
-        // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, query.getScopeId()));
-
-        //
         // Do count
-        return entityManagerSession.doAction(EntityManagerContainer.<Long>create()
-                .onResultHandler(em -> daoCounter.count(em, query)));
+        return entityRepository.count(query);
     }
 }

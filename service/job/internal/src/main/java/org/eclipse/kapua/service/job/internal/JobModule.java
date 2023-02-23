@@ -21,11 +21,13 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.JobFactory;
+import org.eclipse.kapua.service.job.JobRepository;
 import org.eclipse.kapua.service.job.JobService;
 
 import javax.inject.Named;
@@ -45,13 +47,14 @@ public class JobModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder
+            AccountChildrenFinder accountChildrenFinder,
+            JobRepository jobRepository
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         JobService.class.getName(),
                         JobDomains.JOB_DOMAIN,
-                        new ServiceConfigImplJpaRepository(jobEntityManagerFactory),
+                        new ServiceConfigImplJpaRepository(new EntityManagerSession(jobEntityManagerFactory)),
                         permissionFactory,
                         authorizationService,
                         rootUserTester,
@@ -59,11 +62,18 @@ public class JobModule extends AbstractKapuaModule {
                         new UsedEntitiesCounterImpl(
                                 factory,
                                 JobDomains.JOB_DOMAIN,
-                                JobDAO::count,
+                                jobRepository,
                                 authorizationService,
-                                permissionFactory,
-                                new EntityManagerSession(jobEntityManagerFactory)
+                                permissionFactory
                         )));
 
+    }
+
+    @Provides
+    JobRepository jobRepository(JobFactory jobFactory) {
+        return new JobImplJpaRepository(
+                () -> jobFactory.newListResult(),
+                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-job") {
+                }));
     }
 }
