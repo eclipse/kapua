@@ -115,16 +115,11 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
                 }
             }
 
-            // Validate Password length
-            int minPasswordLength = getMinimumPasswordLength(credentialCreator.getScopeId());
-            if (credentialCreator.getCredentialPlainKey().length() < minPasswordLength ||
-                    credentialCreator.getCredentialPlainKey().length() > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
-                throw new PasswordLengthException(minPasswordLength, SYSTEM_MAXIMUM_PASSWORD_LENGTH);
+            try {
+                validatePassword(credentialCreator.getScopeId(), credentialCreator.getCredentialPlainKey());
+            } catch (KapuaIllegalArgumentException ignored) {
+                throw new KapuaIllegalArgumentException("credentialCreator.credentialKey", credentialCreator.getCredentialPlainKey());
             }
-
-            //
-            // Validate Password regex
-            ArgumentValidator.match(credentialCreator.getCredentialPlainKey(), CommonsValidationRegex.PASSWORD_REGEXP, "credentialCreator.credentialKey");
         }
 
         //
@@ -520,4 +515,22 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         }
     }
 
+
+    @Override
+    public void validatePassword(KapuaId scopeId, String plainPassword) throws KapuaException {
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notEmptyOrNull(plainPassword, "plainPassword");
+
+        // Validate Password length
+        int minPasswordLength = getMinimumPasswordLength(scopeId);
+        if (plainPassword.length() < minPasswordLength || plainPassword.length() > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
+            throw new PasswordLengthException(minPasswordLength, SYSTEM_MAXIMUM_PASSWORD_LENGTH);
+        }
+
+        //
+        // Validate Password regex
+        ArgumentValidator.match(plainPassword, CommonsValidationRegex.PASSWORD_REGEXP, "plainPassword");
+    }
 }

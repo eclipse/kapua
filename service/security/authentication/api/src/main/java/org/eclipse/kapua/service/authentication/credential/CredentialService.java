@@ -56,8 +56,7 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
      * @param query
      */
     @Override
-    CredentialListResult query(KapuaQuery query)
-            throws KapuaException;
+    CredentialListResult query(KapuaQuery query) throws KapuaException;
 
     /**
      * Unlocks a {@link Credential}
@@ -76,4 +75,14 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
      * @throws KapuaException   When something goes wrong
      */
     int getMinimumPasswordLength(KapuaId scopeId) throws KapuaException;
+
+
+    /**
+     * Check if the provided password meets all the password's requirements. Return exception if requirements not fulfilled.
+     *
+     * @param scopeId:          The scope ID in which to perform the check
+     * @param plainPassword:    Password to check requirement for
+     * @throws KapuaException   When something goes wrong
+     */
+    void validatePassword(KapuaId scopeId, String plainPassword) throws KapuaException;
 }

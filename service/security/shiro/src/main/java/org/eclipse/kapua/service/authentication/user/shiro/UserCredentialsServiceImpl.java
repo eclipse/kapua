@@ -18,7 +18,6 @@ import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
@@ -36,7 +35,6 @@ import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDAO;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
-import org.eclipse.kapua.service.authentication.exception.PasswordLengthException;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
@@ -57,7 +55,6 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class UserCredentialsServiceImpl implements UserCredentialsService {
-    private static final int SYSTEM_MAXIMUM_PASSWORD_LENGTH = 255;
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final CredentialService credentialService = locator.getService(CredentialService.class);
 
@@ -89,17 +86,14 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
                                                        .findAny()
                                                        .orElseThrow(() -> new IllegalStateException("User does not have any credential of type password"));
 
-            // Validate Password length
-            int minPasswordLength = credentialService.getMinimumPasswordLength(passwordCredential.getScopeId());
-            if (passwordChangeRequest.getNewPassword().length() < minPasswordLength || passwordChangeRequest.getNewPassword().length() > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
-                throw new PasswordLengthException(minPasswordLength, SYSTEM_MAXIMUM_PASSWORD_LENGTH);
+            String plainNewPassword = passwordChangeRequest.getNewPassword();
+            try {
+                credentialService.validatePassword(KapuaSecurityUtils.getSession().getScopeId(), plainNewPassword);
+            } catch (KapuaIllegalArgumentException ignored) {
+                throw new KapuaIllegalArgumentException("passwordChangeRequest.newPassword", plainNewPassword);
             }
 
-            //
-            // Validate Password regex
-            ArgumentValidator.match(passwordChangeRequest.getNewPassword(), CommonsValidationRegex.PASSWORD_REGEXP, "passwordChangeRequest.newPassword");
-
-            String encryptedPass = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, passwordChangeRequest.getNewPassword());
+            String encryptedPass = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, plainNewPassword);
             passwordCredential.setCredentialKey(encryptedPass);
 
             return credentialService.update(passwordCredential);
@@ -109,15 +103,10 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
 
     @Override
     public Credential resetPassword(KapuaId scopeId, KapuaId credentialId, PasswordResetRequest passwordResetRequest) throws KapuaException {
-        Credential credential = credentialService.find(scopeId, credentialId);
-        if (credential == null) {
-            throw new KapuaEntityNotFoundException(Credential.TYPE, credentialId);
-        }
-
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(credentialId, "credential.id");
+        ArgumentValidator.notNull(credentialId, "credentialId");
         ArgumentValidator.notNull(passwordResetRequest.getNewPassword(), "passwordResetRequest.newPassword");
 
         //
@@ -126,16 +115,17 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, scopeId));
 
-        // Validate Password length
-        String plainNewPassword = passwordResetRequest.getNewPassword();
-        int minPasswordLength = credentialService.getMinimumPasswordLength(credential.getScopeId());
-        if (plainNewPassword.length() < minPasswordLength || plainNewPassword.length() > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
-            throw new PasswordLengthException(minPasswordLength, SYSTEM_MAXIMUM_PASSWORD_LENGTH);
+        Credential credential = credentialService.find(scopeId, credentialId);
+        if (credential == null) {
+            throw new KapuaEntityNotFoundException(Credential.TYPE, credentialId);
         }
 
-        //
-        // Validate Password regex
-        ArgumentValidator.match(plainNewPassword, CommonsValidationRegex.PASSWORD_REGEXP, "passwordResetRequest.newPassword");
+        String plainNewPassword = passwordResetRequest.getNewPassword();
+        try {
+            credentialService.validatePassword(credential.getScopeId(), plainNewPassword);
+        } catch (KapuaIllegalArgumentException ignored) {
+            throw new KapuaIllegalArgumentException("passwordResetRequest.newPassword", plainNewPassword);
+        }
 
         CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
         CredentialCreator credentialCreator = credentialFactory.newCreator(scopeId,
