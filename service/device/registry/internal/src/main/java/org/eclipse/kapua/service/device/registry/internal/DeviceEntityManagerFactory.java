@@ -33,7 +33,7 @@ public class DeviceEntityManagerFactory extends AbstractEntityManagerFactory imp
      *
      * @since 1.0.0
      */
-    private DeviceEntityManagerFactory() {
+    public DeviceEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME);
     }
 

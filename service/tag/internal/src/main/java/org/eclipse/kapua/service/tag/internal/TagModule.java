@@ -16,6 +16,7 @@ import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
@@ -26,6 +27,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.tag.TagDomains;
 import org.eclipse.kapua.service.tag.TagFactory;
+import org.eclipse.kapua.service.tag.TagRepository;
 import org.eclipse.kapua.service.tag.TagService;
 
 import javax.inject.Named;
@@ -52,7 +54,7 @@ public class TagModule extends AbstractKapuaModule {
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         TagService.class.getName(),
                         TagDomains.TAG_DOMAIN,
-                        new EntityManagerSession(entityManagerFactory),
+                        new ServiceConfigImplJpaRepository(entityManagerFactory),
                         permissionFactory,
                         authorizationService,
                         rootUserTester,
@@ -69,8 +71,7 @@ public class TagModule extends AbstractKapuaModule {
 
     @Provides
     TagRepository tagRepository(TagFactory tagFactory) {
-        return new TagRepositoryJpaImpl<>(
-                TagImpl.class,
+        return new TagImplJpaRepository(
                 () -> tagFactory.newListResult(),
                 new AbstractEntityManagerFactory("kapua-tag") {
                 });

@@ -16,6 +16,7 @@ import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerImpl;
@@ -51,7 +52,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     protected void configureModule() {
         bind(DeviceRegistryCacheFactory.class).toInstance(new DeviceRegistryCacheFactory());
         bind(DeviceRegistryService.class).to(DeviceRegistryServiceImpl.class);
-        bind(DeviceEntityManagerFactory.class).toInstance(DeviceEntityManagerFactory.getInstance());
+        bind(DeviceEntityManagerFactory.class).toInstance(new DeviceEntityManagerFactory());
         bind(DeviceFactory.class).to(DeviceFactoryImpl.class);
 
         bind(DeviceConnectionFactory.class).to(DeviceConnectionFactoryImpl.class);
@@ -76,7 +77,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
         return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerImpl(
                 DeviceConnectionService.class.getName(),
                 DeviceDomains.DEVICE_CONNECTION_DOMAIN,
-                new EntityManagerSession(deviceEntityManagerFactory),
+                new ServiceConfigImplJpaRepository(deviceEntityManagerFactory),
                 permissionFactory,
                 authorizationService,
                 rootUserTester));
@@ -96,7 +97,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         DeviceRegistryService.class.getName(),
                         DeviceDomains.DEVICE_DOMAIN,
-                        new EntityManagerSession(deviceEntityManagerFactory),
+                        new ServiceConfigImplJpaRepository(deviceEntityManagerFactory),
                         permissionFactory,
                         authorizationService,
                         rootUserTester,

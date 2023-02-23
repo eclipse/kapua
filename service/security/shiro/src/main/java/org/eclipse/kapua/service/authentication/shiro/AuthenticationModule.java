@@ -16,10 +16,10 @@ import com.google.inject.Provides;
 import com.google.inject.name.Names;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
@@ -80,7 +80,7 @@ public class AuthenticationModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             RootUserTester rootUserTester) {
         final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
-                new EntityManagerSession(authenticationEntityManagerFactory),
+                new ServiceConfigImplJpaRepository(authenticationEntityManagerFactory),
                 permissionFactory,
                 authorizationService,
                 rootUserTester);

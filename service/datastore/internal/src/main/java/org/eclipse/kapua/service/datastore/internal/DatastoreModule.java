@@ -14,11 +14,11 @@ package org.eclipse.kapua.service.datastore.internal;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -60,7 +60,7 @@ public class DatastoreModule extends AbstractKapuaModule {
         return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerImpl(
                 MessageStoreService.class.getName(),
                 DatastoreDomains.DATASTORE_DOMAIN,
-                new EntityManagerSession(entityManagerFactory),
+                new ServiceConfigImplJpaRepository(entityManagerFactory),
                 permissionFactory,
                 authorizationService,
                 rootUserTester

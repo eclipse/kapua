@@ -16,7 +16,7 @@ import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 
 
-public interface KapuaNamedEntityServiceRepository<E extends KapuaNamedEntity> {
+public interface KapuaNamedEntityRepository<E extends KapuaNamedEntity> {
     /**
      * Finds a {@link KapuaNamedEntity} by {@link KapuaNamedEntity#getName()}.
      *
@@ -24,7 +24,7 @@ public interface KapuaNamedEntityServiceRepository<E extends KapuaNamedEntity> {
      * @return The {@link KapuaNamedEntity} found, or {@code null} if not found.
      * @since 2.0.0
      */
-    <E extends KapuaNamedEntity> E findByName(String value);
+    E findByName(String value);
 
     /**
      * Finds a {@link KapuaNamedEntity} by {@link KapuaNamedEntity#getName()}.
@@ -34,5 +34,5 @@ public interface KapuaNamedEntityServiceRepository<E extends KapuaNamedEntity> {
      * @return The {@link KapuaNamedEntity} found, or {@code null} if not found.
      * @since 2.0.0
      */
-    <E extends KapuaNamedEntity> E findByName(KapuaId scopeId, String value);
+    E findByName(KapuaId scopeId, String value);
 }
