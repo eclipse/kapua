@@ -21,6 +21,18 @@ paths:
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: '../job/job.yaml#/components/parameters/jobId'
+        - description: The start date to filter the results.
+          name: startDate
+          in: query
+          schema:
+            type: string
+            format: 'date-time'
+        - description: The end date to filter the results.
+          name: endDate
+          in: query
+          schema:
+            type: string
+            format: 'date-time'
         - $ref: '../openapi.yaml#/components/parameters/sortParam'
         - $ref: '../openapi.yaml#/components/parameters/sortDir'
         - $ref: '../openapi.yaml#/components/parameters/limit'
