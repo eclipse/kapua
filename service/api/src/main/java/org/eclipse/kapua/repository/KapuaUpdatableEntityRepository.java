@@ -13,6 +13,7 @@
 package org.eclipse.kapua.repository;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 
@@ -25,5 +26,5 @@ public interface KapuaUpdatableEntityRepository<E extends KapuaUpdatableEntity> 
      * @throws KapuaEntityNotFoundException If the {@link KapuaEntity} does not exist.
      * @since 2.0.0
      */
-    E update(E entity);
+    E update(E entity) throws KapuaException;
 }

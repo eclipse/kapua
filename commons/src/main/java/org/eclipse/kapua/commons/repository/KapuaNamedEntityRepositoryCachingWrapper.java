@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.repository;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaNamedEntity;
@@ -27,16 +28,16 @@ public class KapuaNamedEntityRepositoryCachingWrapper<E extends KapuaNamedEntity
     }
 
     @Override
-    public E findByName(String value) {
+    public E findByName(String value) throws KapuaException {
         return doFindByName(KapuaId.ANY, value);
     }
 
     @Override
-    public E findByName(KapuaId scopeId, String value) {
+    public E findByName(KapuaId scopeId, String value) throws KapuaException {
         return doFindByName(scopeId, value);
     }
 
-    private E doFindByName(KapuaId scopeId, String value) {
+    private E doFindByName(KapuaId scopeId, String value) throws KapuaException {
         final NamedEntityCache namedEntityCache = (NamedEntityCache) entityCache;
         final KapuaEntity cached = namedEntityCache.get(scopeId, value);
         if (cached != null) {

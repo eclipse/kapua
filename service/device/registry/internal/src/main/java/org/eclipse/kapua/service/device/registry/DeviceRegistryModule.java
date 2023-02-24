@@ -117,7 +117,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     DeviceRepository deviceRepository(DeviceFactory deviceFactory) {
         return new DeviceImplJpaRepository(
                 () -> deviceFactory.newListResult(),
-                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-account") {
+                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-device") {
                 }));
     }
 }

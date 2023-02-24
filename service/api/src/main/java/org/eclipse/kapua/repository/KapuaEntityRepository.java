@@ -13,6 +13,7 @@
 package org.eclipse.kapua.repository;
 
 import org.eclipse.kapua.KapuaEntityExistsException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -35,7 +36,7 @@ public interface KapuaEntityRepository<E extends KapuaEntity> {
      * @return The persisted {@link KapuaEntity}.
      * @since 2.0.0
      */
-    E create(E entity);
+    E create(E entity) throws KapuaException;
 
     /**
      * Finds a {@link KapuaEntity}.
@@ -44,7 +45,7 @@ public interface KapuaEntityRepository<E extends KapuaEntity> {
      * @param entityId The {@link KapuaEntity#getId()} of the entity to be found.
      * @since 2.0.0
      */
-    E find(@Null KapuaId scopeId, KapuaId entityId);
+    E find(@Null KapuaId scopeId, KapuaId entityId) throws KapuaException;
 
     /**
      * Queries the {@link KapuaEntity}es.
@@ -53,7 +54,7 @@ public interface KapuaEntityRepository<E extends KapuaEntity> {
      * @return The reference of the {@code resultContainer} parameter. Results are added to the given {@code resultContainer} parameter.
      * @since 2.0.0
      */
-    KapuaListResult<E> query(KapuaQuery kapuaQuery);
+    KapuaListResult<E> query(KapuaQuery kapuaQuery) throws KapuaException;
 
     /**
      * Counts the {@link KapuaEntity}es.
@@ -62,7 +63,7 @@ public interface KapuaEntityRepository<E extends KapuaEntity> {
      * @return The number of {@link KapuaEntity}es that matched the filter predicates.
      * @since 2.0.0
      */
-    long count(KapuaQuery kapuaQuery);
+    long count(KapuaQuery kapuaQuery) throws KapuaException;
 
     /**
      * Deletes a {@link KapuaEntity}.
@@ -72,5 +73,5 @@ public interface KapuaEntityRepository<E extends KapuaEntity> {
      * @return The deleted {@link KapuaEntity}.
      * @since 1.0.0
      */
-    E delete(KapuaId scopeId, KapuaId entityId);
+    E delete(KapuaId scopeId, KapuaId entityId) throws KapuaException;
 }
