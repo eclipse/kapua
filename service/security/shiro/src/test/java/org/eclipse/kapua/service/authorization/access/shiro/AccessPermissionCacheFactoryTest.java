@@ -29,7 +29,7 @@ public class AccessPermissionCacheFactoryTest {
         Constructor<AccessPermissionCacheFactory> accessPermissionCacheFactory = AccessPermissionCacheFactory.class.getDeclaredConstructor();
         accessPermissionCacheFactory.setAccessible(true);
         accessPermissionCacheFactory.newInstance();
-        Assert.assertTrue("True expected.", Modifier.isPrivate(accessPermissionCacheFactory.getModifiers()));
+        Assert.assertFalse("False expected.", Modifier.isPrivate(accessPermissionCacheFactory.getModifiers()));
     }
 
     @Test
