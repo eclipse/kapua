@@ -17,18 +17,18 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.jpa.KapuaEntityRepositoryJpaImpl;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionAttributes;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionRepository;
 
 import java.util.function.Supplier;
 
 public class AccessPermissionImplJpaRepository
-        extends KapuaEntityRepositoryJpaImpl<AccessPermission, AccessPermissionImpl>
+        extends KapuaEntityRepositoryJpaImpl<AccessPermission, AccessPermissionImpl, AccessPermissionListResult>
         implements AccessPermissionRepository {
-    public AccessPermissionImplJpaRepository(Supplier<? extends KapuaListResult<AccessPermission>> listSupplier, EntityManagerSession entityManagerSession) {
+    public AccessPermissionImplJpaRepository(Supplier<AccessPermissionListResult> listSupplier, EntityManagerSession entityManagerSession) {
         super(AccessPermissionImpl.class, listSupplier, entityManagerSession);
     }
 
@@ -56,7 +56,7 @@ public class AccessPermissionImplJpaRepository
     }
 
     @Override
-    public KapuaListResult<AccessPermission> findByAccessInfoId(KapuaId scopeId, KapuaId accessInfoId) throws KapuaException {
+    public AccessPermissionListResult findByAccessInfoId(KapuaId scopeId, KapuaId accessInfoId) throws KapuaException {
         AccessPermissionQuery query = new AccessPermissionQueryImpl(scopeId);
         query.setPredicate(query.attributePredicate(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfoId));
         return this.query(query);

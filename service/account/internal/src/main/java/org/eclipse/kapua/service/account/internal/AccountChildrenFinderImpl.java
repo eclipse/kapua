@@ -16,11 +16,10 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountFactory;
+import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountRepository;
 
@@ -39,7 +38,7 @@ public class AccountChildrenFinderImpl implements AccountChildrenFinder, KapuaSe
     }
 
     @Override
-    public KapuaListResult<Account> findChildren(KapuaId scopeId, Optional<KapuaId> excludeTargetScopeId) throws KapuaException {
+    public AccountListResult findChildren(KapuaId scopeId, Optional<KapuaId> excludeTargetScopeId) throws KapuaException {
         final AccountQuery childAccountsQuery = accountFactory.newQuery(scopeId);
         // Exclude the scope that is under config update
         if (excludeTargetScopeId.isPresent()) {

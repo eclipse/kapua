@@ -20,11 +20,11 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.repository.KapuaEntityRepository;
 
-public class KapuaEntityRepositoryCachingWrapper<E extends KapuaEntity> implements KapuaEntityRepository<E> {
-    protected final KapuaEntityRepository<E> wrapped;
+public class KapuaEntityRepositoryCachingWrapper<E extends KapuaEntity, L extends KapuaListResult<E>> implements KapuaEntityRepository<E, L> {
+    protected final KapuaEntityRepository<E, L> wrapped;
     protected final EntityCache entityCache;
 
-    public KapuaEntityRepositoryCachingWrapper(KapuaEntityRepository<E> wrapped, EntityCache entityCache) {
+    public KapuaEntityRepositoryCachingWrapper(KapuaEntityRepository<E, L> wrapped, EntityCache entityCache) {
         this.wrapped = wrapped;
         this.entityCache = entityCache;
     }
@@ -48,7 +48,7 @@ public class KapuaEntityRepositoryCachingWrapper<E extends KapuaEntity> implemen
     }
 
     @Override
-    public KapuaListResult<E> query(KapuaQuery kapuaQuery) throws KapuaException {
+    public L query(KapuaQuery kapuaQuery) throws KapuaException {
         return wrapped.query(kapuaQuery);
     }
 

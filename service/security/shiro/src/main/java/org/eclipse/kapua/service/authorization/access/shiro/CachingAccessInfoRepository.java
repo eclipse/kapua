@@ -16,10 +16,11 @@ import org.eclipse.kapua.commons.repository.KapuaUpdatableEntityRepositoryCachin
 import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
 import org.eclipse.kapua.repository.KapuaUpdatableEntityRepository;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
 import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
 
-public class CachingAccessInfoRepository extends KapuaUpdatableEntityRepositoryCachingWrapper<AccessInfo> implements AccessInfoRepository {
-    public CachingAccessInfoRepository(KapuaUpdatableEntityRepository<AccessInfo> wrapped, EntityCache entityCache) {
+public class CachingAccessInfoRepository extends KapuaUpdatableEntityRepositoryCachingWrapper<AccessInfo, AccessInfoListResult> implements AccessInfoRepository {
+    public CachingAccessInfoRepository(KapuaUpdatableEntityRepository<AccessInfo, AccessInfoListResult> wrapped, EntityCache entityCache) {
         super(wrapped, entityCache);
     }
 }

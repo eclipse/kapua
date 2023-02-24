@@ -13,14 +13,9 @@
 package org.eclipse.kapua.service.account;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.model.query.KapuaListResult;
-import org.eclipse.kapua.repository.KapuaEntityRepository;
 import org.eclipse.kapua.repository.KapuaNamedEntityRepository;
-import org.eclipse.kapua.repository.KapuaUpdatableEntityRepository;
 
 public interface AccountRepository extends
-        KapuaEntityRepository<Account>,
-        KapuaNamedEntityRepository<Account>,
-        KapuaUpdatableEntityRepository<Account> {
-    KapuaListResult<Account> findChildAccountsRecursive(String parentAccountPath) throws KapuaException;
+        KapuaNamedEntityRepository<Account, AccountListResult> {
+    AccountListResult findChildAccountsRecursive(String parentAccountPath) throws KapuaException;
 }

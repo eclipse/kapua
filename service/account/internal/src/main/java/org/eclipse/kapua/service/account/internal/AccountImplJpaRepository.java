@@ -16,32 +16,32 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityRepositoryJpaImpl;
-import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountRepository;
 
 import javax.persistence.TypedQuery;
 import java.util.function.Supplier;
 
 public class AccountImplJpaRepository
-        extends KapuaNamedEntityRepositoryJpaImpl<Account, AccountImpl>
+        extends KapuaNamedEntityRepositoryJpaImpl<Account, AccountImpl, AccountListResult>
         implements AccountRepository {
 
     public AccountImplJpaRepository(
-            Supplier<? extends KapuaListResult<Account>> listProvider,
+            Supplier<AccountListResult> listProvider,
             EntityManagerSession entityManagerSession) {
         super(AccountImpl.class, listProvider, entityManagerSession);
     }
 
     @Override
-    public KapuaListResult<Account> findChildAccountsRecursive(String parentAccountPath) {
+    public AccountListResult findChildAccountsRecursive(String parentAccountPath) {
         try {
             return entityManagerSession.doAction(
-                    EntityManagerContainer.<KapuaListResult<Account>>create()
+                    EntityManagerContainer.<AccountListResult>create()
                             .onResultHandler(em -> {
                                 TypedQuery<Account> q = em.createNamedQuery("Account.findChildAccountsRecursive", Account.class);
                                 q.setParameter("parentAccountPath", "\\" + parentAccountPath + "/%");
-                                KapuaListResult<Account> result = listSupplier.get();
+                                final AccountListResult result = listSupplier.get();
                                 result.addItems(q.getResultList());
                                 return result;
                             }));

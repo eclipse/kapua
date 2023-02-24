@@ -12,10 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
-import org.eclipse.kapua.repository.KapuaEntityRepository;
 import org.eclipse.kapua.repository.KapuaUpdatableEntityRepository;
 
 public interface DeviceRepository extends
-        KapuaEntityRepository<Device>,
-        KapuaUpdatableEntityRepository<Device> {
+        KapuaUpdatableEntityRepository<Device, DeviceListResult> {
 }

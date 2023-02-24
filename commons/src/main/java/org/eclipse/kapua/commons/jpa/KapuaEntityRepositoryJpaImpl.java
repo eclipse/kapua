@@ -61,9 +61,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class KapuaEntityRepositoryJpaImpl<E extends KapuaEntity, C extends E> implements KapuaEntityRepository<E> {
+public class KapuaEntityRepositoryJpaImpl<E extends KapuaEntity, C extends E, L extends KapuaListResult<E>> implements KapuaEntityRepository<E, L> {
     protected final Class<C> concreteClass;
-    protected final Supplier<? extends KapuaListResult<E>> listSupplier;
+    protected final Supplier<? extends L> listSupplier;
     protected final EntityManagerSession entityManagerSession;
     private static final String SQL_ERROR_CODE_CONSTRAINT_VIOLATION = "23505";
     private static final SystemSetting SYSTEM_SETTING = SystemSetting.getInstance();
@@ -75,7 +75,10 @@ public class KapuaEntityRepositoryJpaImpl<E extends KapuaEntity, C extends E> im
     private static final String ATTRIBUTE_SEPARATOR_ESCAPED = "\\.";
     private static final String COMPARE_ERROR_MESSAGE = "Trying to compare a non-comparable value";
 
-    public KapuaEntityRepositoryJpaImpl(Class<C> concreteClass, Supplier<? extends KapuaListResult<E>> listSupplier, EntityManagerSession entityManagerSession) {
+    public KapuaEntityRepositoryJpaImpl(
+            Class<C> concreteClass,
+            Supplier<L> listSupplier,
+            EntityManagerSession entityManagerSession) {
         this.concreteClass = concreteClass;
         this.listSupplier = listSupplier;
         this.entityManagerSession = entityManagerSession;
@@ -134,7 +137,7 @@ public class KapuaEntityRepositoryJpaImpl<E extends KapuaEntity, C extends E> im
     }
 
     @Override
-    public KapuaListResult<E> query(KapuaQuery listQuery) throws KapuaException {
+    public L query(KapuaQuery listQuery) throws KapuaException {
         return entityManagerSession.doAction(em -> {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<C> criteriaSelectQuery = cb.createQuery(concreteClass);
@@ -224,7 +227,7 @@ public class KapuaEntityRepositoryJpaImpl<E extends KapuaEntity, C extends E> im
 
             // Finally querying!
             List<C> result = query.getResultList();
-            final KapuaListResult<E> resultContainer = listSupplier.get();
+            final L resultContainer = listSupplier.get();
 
             // Check limit exceeded
             if (listQuery.getLimit() != null &&

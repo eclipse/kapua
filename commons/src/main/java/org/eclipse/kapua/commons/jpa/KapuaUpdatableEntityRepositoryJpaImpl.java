@@ -21,11 +21,12 @@ import org.eclipse.kapua.repository.KapuaUpdatableEntityRepository;
 
 import java.util.function.Supplier;
 
-public class KapuaUpdateableEntityRepositoryJpaImpl<E extends KapuaUpdatableEntity, C extends E>
-        extends KapuaEntityRepositoryJpaImpl<E, C>
-        implements KapuaUpdatableEntityRepository<E> {
-    public KapuaUpdateableEntityRepositoryJpaImpl(
-            Class<C> concreteClass, Supplier<? extends KapuaListResult<E>> listSupplier,
+public class KapuaUpdatableEntityRepositoryJpaImpl<E extends KapuaUpdatableEntity, C extends E, L extends KapuaListResult<E>>
+        extends KapuaEntityRepositoryJpaImpl<E, C, L>
+        implements KapuaUpdatableEntityRepository<E, L> {
+    public KapuaUpdatableEntityRepositoryJpaImpl(
+            Class<C> concreteClass,
+            Supplier<L> listSupplier,
             EntityManagerSession entityManagerSession) {
         super(concreteClass, listSupplier, entityManagerSession);
     }

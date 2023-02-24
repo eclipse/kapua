@@ -14,16 +14,16 @@ package org.eclipse.kapua.service.authorization.role.shiro;
 
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityRepositoryJpaImpl;
-import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.service.authorization.role.Role;
+import org.eclipse.kapua.service.authorization.role.RoleListResult;
 import org.eclipse.kapua.service.authorization.role.RoleRepository;
 
 import java.util.function.Supplier;
 
 public class RoleImplJpaRepository
-        extends KapuaNamedEntityRepositoryJpaImpl<Role, RoleImpl>
+        extends KapuaNamedEntityRepositoryJpaImpl<Role, RoleImpl, RoleListResult>
         implements RoleRepository {
-    public RoleImplJpaRepository(Supplier<? extends KapuaListResult<Role>> listProvider, EntityManagerSession entityManagerSession) {
+    public RoleImplJpaRepository(Supplier<RoleListResult> listProvider, EntityManagerSession entityManagerSession) {
         super(RoleImpl.class, listProvider, entityManagerSession);
     }
 }

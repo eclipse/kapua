@@ -13,17 +13,17 @@
 package org.eclipse.kapua.service.authorization.access.shiro;
 
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
-import org.eclipse.kapua.commons.jpa.KapuaUpdateableEntityRepositoryJpaImpl;
-import org.eclipse.kapua.model.query.KapuaListResult;
+import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityRepositoryJpaImpl;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
 import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
 
 import java.util.function.Supplier;
 
 public class AccessInfoImplJpaRepository
-        extends KapuaUpdateableEntityRepositoryJpaImpl<AccessInfo, AccessInfoImpl>
+        extends KapuaUpdatableEntityRepositoryJpaImpl<AccessInfo, AccessInfoImpl, AccessInfoListResult>
         implements AccessInfoRepository {
-    public AccessInfoImplJpaRepository(Supplier<? extends KapuaListResult<AccessInfo>> listSupplier, EntityManagerSession entityManagerSession) {
+    public AccessInfoImplJpaRepository(Supplier<AccessInfoListResult> listSupplier, EntityManagerSession entityManagerSession) {
         super(AccessInfoImpl.class, listSupplier, entityManagerSession);
     }
 }

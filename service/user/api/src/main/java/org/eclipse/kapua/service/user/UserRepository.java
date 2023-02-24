@@ -12,12 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user;
 
-import org.eclipse.kapua.repository.KapuaEntityRepository;
 import org.eclipse.kapua.repository.KapuaNamedEntityRepository;
-import org.eclipse.kapua.repository.KapuaUpdatableEntityRepository;
 
 public interface UserRepository extends
-        KapuaEntityRepository<User>,
-        KapuaNamedEntityRepository<User>,
-        KapuaUpdatableEntityRepository<User> {
+        KapuaNamedEntityRepository<User, UserListResult> {
 }

@@ -26,7 +26,7 @@ import javax.validation.constraints.Null;
  *
  * @since 1.0.0
  */
-public interface KapuaEntityRepository<E extends KapuaEntity> {
+public interface KapuaEntityRepository<E extends KapuaEntity, L extends KapuaListResult<E>> {
     /**
      * Persists the {@link KapuaEntity}.
      * <p>
@@ -54,7 +54,7 @@ public interface KapuaEntityRepository<E extends KapuaEntity> {
      * @return The reference of the {@code resultContainer} parameter. Results are added to the given {@code resultContainer} parameter.
      * @since 2.0.0
      */
-    KapuaListResult<E> query(KapuaQuery kapuaQuery) throws KapuaException;
+    L query(KapuaQuery kapuaQuery) throws KapuaException;
 
     /**
      * Counts the {@link KapuaEntity}es.

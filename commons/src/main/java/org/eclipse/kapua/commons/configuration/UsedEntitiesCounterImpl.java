@@ -36,13 +36,13 @@ public class UsedEntitiesCounterImpl<
 
     private final F factory;
     private final Domain domain;
-    private final KapuaEntityRepository<E> entityRepository;
+    private final KapuaEntityRepository<E, L> entityRepository;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
 
     public UsedEntitiesCounterImpl(F factory,
                                    Domain domain,
-                                   KapuaEntityRepository<E> entityRepository,
+                                   KapuaEntityRepository<E, L> entityRepository,
                                    AuthorizationService authorizationService,
                                    PermissionFactory permissionFactory) {
         this.factory = factory;

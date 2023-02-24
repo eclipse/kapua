@@ -17,23 +17,23 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.jpa.KapuaEntityRepositoryJpaImpl;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
+import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleRepository;
 
 import java.util.function.Supplier;
 
 public class AccessRoleImplJpaRepository
-        extends KapuaEntityRepositoryJpaImpl<AccessRole, AccessRoleImpl>
+        extends KapuaEntityRepositoryJpaImpl<AccessRole, AccessRoleImpl, AccessRoleListResult>
         implements AccessRoleRepository {
-    public AccessRoleImplJpaRepository(Supplier<? extends KapuaListResult<AccessRole>> listSupplier, EntityManagerSession entityManagerSession) {
+    public AccessRoleImplJpaRepository(Supplier<AccessRoleListResult> listSupplier, EntityManagerSession entityManagerSession) {
         super(AccessRoleImpl.class, listSupplier, entityManagerSession);
     }
 
     @Override
-    public KapuaListResult<AccessRole> findAll(KapuaId scopeId, KapuaId accessInfoId) throws KapuaException {
+    public AccessRoleListResult findAll(KapuaId scopeId, KapuaId accessInfoId) throws KapuaException {
         // Do find and populate cache
         AccessRoleQuery query = new AccessRoleQueryImpl(scopeId);
         query.setPredicate(query.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));

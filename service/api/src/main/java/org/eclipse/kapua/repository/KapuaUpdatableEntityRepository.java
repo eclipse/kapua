@@ -16,8 +16,9 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.model.query.KapuaListResult;
 
-public interface KapuaUpdatableEntityRepository<E extends KapuaUpdatableEntity> extends KapuaEntityRepository<E> {
+public interface KapuaUpdatableEntityRepository<E extends KapuaUpdatableEntity, L extends KapuaListResult<E>> extends KapuaEntityRepository<E, L> {
     /**
      * Updates the {@link KapuaUpdatableEntity}.
      *

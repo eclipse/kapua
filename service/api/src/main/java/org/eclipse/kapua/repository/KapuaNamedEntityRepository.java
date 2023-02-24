@@ -15,9 +15,10 @@ package org.eclipse.kapua.repository;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaListResult;
 
 
-public interface KapuaNamedEntityRepository<E extends KapuaNamedEntity> extends KapuaUpdatableEntityRepository<E> {
+public interface KapuaNamedEntityRepository<E extends KapuaNamedEntity, L extends KapuaListResult<E>> extends KapuaUpdatableEntityRepository<E, L> {
     /**
      * Finds a {@link KapuaNamedEntity} by {@link KapuaNamedEntity#getName()}.
      *

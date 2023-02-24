@@ -16,10 +16,11 @@ import org.eclipse.kapua.commons.repository.KapuaNamedEntityRepositoryCachingWra
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.repository.KapuaNamedEntityRepository;
 import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserRepository;
 
-public class CachingUserRepository extends KapuaNamedEntityRepositoryCachingWrapper<User> implements UserRepository {
-    public CachingUserRepository(KapuaNamedEntityRepository<User> wrapped, NamedEntityCache entityCache) {
+public class CachingUserRepository extends KapuaNamedEntityRepositoryCachingWrapper<User, UserListResult> implements UserRepository {
+    public CachingUserRepository(KapuaNamedEntityRepository<User, UserListResult> wrapped, NamedEntityCache entityCache) {
         super(wrapped, entityCache);
     }
 }
