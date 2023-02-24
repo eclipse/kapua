@@ -47,6 +47,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 import java.util.Map;
 import java.util.Optional;
 
@@ -74,6 +75,7 @@ public class AuthenticationModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     @Named("CredentialServiceConfigurationManager")
     public CredentialServiceConfigurationManager deviceConnectionServiceConfigurationManager(
             AuthenticationEntityManagerFactory authenticationEntityManagerFactory,

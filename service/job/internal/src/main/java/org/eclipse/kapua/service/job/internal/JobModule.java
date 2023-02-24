@@ -31,6 +31,7 @@ import org.eclipse.kapua.service.job.JobRepository;
 import org.eclipse.kapua.service.job.JobService;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 public class JobModule extends AbstractKapuaModule {
     @Override
@@ -40,6 +41,7 @@ public class JobModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     @Named("JobServiceConfigurationManager")
     public ServiceConfigurationManager jobServiceConfigurationManager(
             JobFactory factory,
@@ -70,6 +72,7 @@ public class JobModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     JobRepository jobRepository(JobFactory jobFactory) {
         return new JobImplJpaRepository(
                 () -> jobFactory.newListResult(),

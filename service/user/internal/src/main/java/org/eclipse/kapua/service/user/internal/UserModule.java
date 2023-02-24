@@ -34,6 +34,7 @@ import org.eclipse.kapua.service.user.UserRepository;
 import org.eclipse.kapua.service.user.UserService;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 public class UserModule extends AbstractKapuaModule {
     @Override
@@ -47,6 +48,7 @@ public class UserModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     @Named("UserServiceConfigurationManager")
     ServiceConfigurationManager userServiceConfigurationManager(
             UserEntityManagerFactory userEntityManagerFactory,
@@ -75,6 +77,7 @@ public class UserModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     UserRepository userRepository(UserFactory userFactory) {
         return new CachingUserRepository(
                 new UserImplJpaRepository(

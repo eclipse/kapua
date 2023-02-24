@@ -33,6 +33,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 /**
  * {@code kapua-account-internal} {@link Module} implementation.
@@ -49,6 +50,7 @@ public class AccountModule extends AbstractKapuaModule implements Module {
     }
 
     @Provides
+    @Singleton
     @Named("AccountServiceConfigurationManager")
     ServiceConfigurationManager accountServiceConfigurationManager(
             AccountEntityManagerFactory entityManagerFactory,
@@ -78,6 +80,7 @@ public class AccountModule extends AbstractKapuaModule implements Module {
     }
 
     @Provides
+    @Singleton
     AccountRepository accountRepository(AccountFactory accountFactory, AccountCacheFactory accountCacheFactory) {
         final AccountImplJpaRepository wrapped = new AccountImplJpaRepository(
                 () -> accountFactory.newListResult(),

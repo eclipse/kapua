@@ -47,6 +47,7 @@ import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleServic
 import org.eclipse.kapua.service.device.registry.lifecycle.internal.DeviceLifeCycleServiceImpl;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 public class DeviceRegistryModule extends AbstractKapuaModule {
     @Override
@@ -69,6 +70,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     @Named("DeviceConnectionServiceConfigurationManager")
     ServiceConfigurationManager deviceConnectionServiceConfigurationManager(
             DeviceEntityManagerFactory deviceEntityManagerFactory,
@@ -85,6 +87,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     @Named("DeviceRegistryServiceConfigurationManager")
     ServiceConfigurationManager deviceRegistryServiceConfigurationManager(
             DeviceEntityManagerFactory deviceEntityManagerFactory,
@@ -114,6 +117,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     DeviceRepository deviceRepository(DeviceFactory deviceFactory) {
         return new DeviceImplJpaRepository(
                 () -> deviceFactory.newListResult(),
