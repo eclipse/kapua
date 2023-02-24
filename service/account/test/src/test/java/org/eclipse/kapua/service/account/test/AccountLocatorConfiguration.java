@@ -39,6 +39,7 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountChildrenFinderImpl;
 import org.eclipse.kapua.service.account.internal.AccountEntityManagerFactory;
 import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
+import org.eclipse.kapua.service.account.internal.AccountImplJpaRepository;
 import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
@@ -104,6 +105,7 @@ public class AccountLocatorConfiguration {
                                         mockPermissionFactory)
                         ));
                 bind(AccountService.class).to(AccountServiceImpl.class);
+                bind(AccountRepository.class).toInstance(new AccountImplJpaRepository(() -> accountFactory.newListResult(), new EntityManagerSession(entityManagerFactory)));
             }
         };
 
