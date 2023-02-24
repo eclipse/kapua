@@ -26,17 +26,29 @@ import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
+import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionRepository;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
+import org.eclipse.kapua.service.authorization.access.AccessRoleRepository;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoCacheFactory;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoFactoryImpl;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoImplJpaRepository;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoServiceImpl;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionCacheFactory;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionFactoryImpl;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionImplJpaRepository;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionServiceImpl;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleCacheFactory;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleFactoryImpl;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleImplJpaRepository;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleServiceImpl;
+import org.eclipse.kapua.service.authorization.access.shiro.CachingAccessInfoRepository;
+import org.eclipse.kapua.service.authorization.access.shiro.CachingAccessPermissionRepository;
+import org.eclipse.kapua.service.authorization.access.shiro.CachingAccessRoleRepository;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainFactoryImpl;
@@ -132,6 +144,39 @@ public class AuthorizationModule extends AbstractKapuaModule {
                 () -> groupFactory.newListResult(),
                 new EntityManagerSession(new AbstractEntityManagerFactory("kapua-authorization") {
                 }));
+    }
+
+    @Provides
+    AccessInfoRepository accessInfoRepository(AccessInfoFactory accessInfoFactory) {
+        return new CachingAccessInfoRepository(
+                new AccessInfoImplJpaRepository(
+                        () -> accessInfoFactory.newListResult(),
+                        new EntityManagerSession(new AbstractEntityManagerFactory("kapua-authorization") {
+                        }))
+                , new AccessInfoCacheFactory().createCache()
+        );
+    }
+
+    @Provides
+    AccessPermissionRepository accessPermissionRepository(AccessPermissionFactory accessPermissionFactory) {
+        return new CachingAccessPermissionRepository(
+                new AccessPermissionImplJpaRepository(
+                        () -> accessPermissionFactory.newListResult(),
+                        new EntityManagerSession(new AbstractEntityManagerFactory("kapua-authorization") {
+                        }))
+                , new AccessPermissionCacheFactory().createCache()
+        );
+    }
+
+    @Provides
+    AccessRoleRepository accessRoleRepository(AccessRoleFactory accessRoleFactory) {
+        return new CachingAccessRoleRepository(
+                new AccessRoleImplJpaRepository(
+                        () -> accessRoleFactory.newListResult(),
+                        new EntityManagerSession(new AbstractEntityManagerFactory("kapua-authorization") {
+                        }))
+                , new AccessRoleCacheFactory().createCache()
+        );
     }
 
     @Provides

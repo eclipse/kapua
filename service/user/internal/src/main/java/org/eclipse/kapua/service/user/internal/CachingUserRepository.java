@@ -12,19 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
-import org.eclipse.kapua.commons.jpa.EntityManagerSession;
-import org.eclipse.kapua.commons.jpa.KapuaNamedEntityRepositoryJpaImpl;
-import org.eclipse.kapua.model.query.KapuaListResult;
+import org.eclipse.kapua.commons.repository.KapuaNamedEntityRepositoryCachingWrapper;
+import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
+import org.eclipse.kapua.repository.KapuaNamedEntityRepository;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserRepository;
 
-import java.util.function.Supplier;
-
-public class UserImplJpaRepository
-        extends KapuaNamedEntityRepositoryJpaImpl<User, UserImpl>
-        implements UserRepository {
-    public UserImplJpaRepository(Supplier<? extends KapuaListResult<User>> listProvider, EntityManagerSession entityManagerSession) {
-        super(UserImpl.class, listProvider, entityManagerSession);
+public class CachingUserRepository extends KapuaNamedEntityRepositoryCachingWrapper<User> implements UserRepository {
+    public CachingUserRepository(KapuaNamedEntityRepository<User> wrapped, NamedEntityCache entityCache) {
+        super(wrapped, entityCache);
     }
-
 }

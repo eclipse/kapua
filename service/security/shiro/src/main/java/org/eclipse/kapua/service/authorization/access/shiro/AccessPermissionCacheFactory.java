@@ -19,7 +19,7 @@ import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
  */
 public class AccessPermissionCacheFactory extends AbstractEntityCacheFactory {
 
-    private AccessPermissionCacheFactory() {
+    public AccessPermissionCacheFactory() {
         super("AccessPermissionId");
     }
 

@@ -107,10 +107,10 @@ public class KapuaEntityRepositoryJpaImpl<E extends KapuaEntity, C extends E> im
 
     @Override
     public E find(KapuaId scopeId, KapuaId entityId) throws KapuaException {
-        return entityManagerSession.doAction(em -> doFind(scopeId, entityId, em));
+        return entityManagerSession.doAction(em -> doFind(em, scopeId, entityId));
     }
 
-    private E doFind(KapuaId scopeId, KapuaId entityId, EntityManager em) {
+    protected E doFind(EntityManager em, KapuaId scopeId, KapuaId entityId) {
         //
         // Checking existence
         E entityToFind = em.find(concreteClass, entityId);
@@ -304,7 +304,7 @@ public class KapuaEntityRepositoryJpaImpl<E extends KapuaEntity, C extends E> im
         return entityManagerSession.doTransactedAction(em -> {
             //
             // Checking existence
-            E entityToDelete = doFind(scopeId, entityId, em);
+            E entityToDelete = doFind(em, scopeId, entityId);
 
             //
             // Deleting if found
