@@ -81,7 +81,7 @@ public class AccountModule extends AbstractKapuaModule implements Module {
     AccountRepository accountRepository(AccountFactory accountFactory, AccountCacheFactory accountCacheFactory) {
         final AccountImplJpaRepository wrapped = new AccountImplJpaRepository(
                 () -> accountFactory.newListResult(),
-                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-device") {
+                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-account") {
                 }));
         final NamedEntityCache cache = (NamedEntityCache) accountCacheFactory.createCache();
         return new CachingAccountRepository(wrapped, cache);
