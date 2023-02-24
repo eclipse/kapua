@@ -668,7 +668,6 @@ public class DockerSteps {
      * @param brokerAddr
      * @param brokerIp
      * @param clusterName
-     * @param controlMessageForwarding
      * @param mqttPort                 mqtt port on docker
      * @param mqttHostPort             mqtt port on docker host
      * @param mqttsPort                mqtts port on docker
