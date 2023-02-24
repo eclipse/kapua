@@ -17,13 +17,14 @@ import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.repository.KapuaNamedEntityRepository;
 
-public class KapuaNamedEntityRepositoryCachingWrapper<E extends KapuaNamedEntity>
-        extends KapuaUpdatableEntityRepositoryCachingWrapper<E>
-        implements KapuaNamedEntityRepository<E> {
+public class KapuaNamedEntityRepositoryCachingWrapper<E extends KapuaNamedEntity, L extends KapuaListResult<E>>
+        extends KapuaUpdatableEntityRepositoryCachingWrapper<E, L>
+        implements KapuaNamedEntityRepository<E, L> {
 
-    public KapuaNamedEntityRepositoryCachingWrapper(KapuaNamedEntityRepository<E> wrapped, NamedEntityCache entityCache) {
+    public KapuaNamedEntityRepositoryCachingWrapper(KapuaNamedEntityRepository<E, L> wrapped, NamedEntityCache entityCache) {
         super(wrapped, entityCache);
     }
 
@@ -43,7 +44,7 @@ public class KapuaNamedEntityRepositoryCachingWrapper<E extends KapuaNamedEntity
         if (cached != null) {
             return (E) cached;
         }
-        final E found = ((KapuaNamedEntityRepository<E>) wrapped).findByName(scopeId, value);
+        final E found = ((KapuaNamedEntityRepository<E, L>) wrapped).findByName(scopeId, value);
         return found;
     }
 }

@@ -16,6 +16,6 @@ import org.eclipse.kapua.repository.KapuaEntityRepository;
 import org.eclipse.kapua.repository.KapuaUpdatableEntityRepository;
 
 public interface ServiceConfigRepository extends
-        KapuaEntityRepository<ServiceConfig>,
-        KapuaUpdatableEntityRepository<ServiceConfig> {
+        KapuaEntityRepository<ServiceConfig, ServiceConfigListResult>,
+        KapuaUpdatableEntityRepository<ServiceConfig, ServiceConfigListResult> {
 }

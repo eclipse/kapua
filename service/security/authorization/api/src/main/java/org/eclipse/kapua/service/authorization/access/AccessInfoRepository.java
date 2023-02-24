@@ -14,5 +14,5 @@ package org.eclipse.kapua.service.authorization.access;
 
 import org.eclipse.kapua.repository.KapuaUpdatableEntityRepository;
 
-public interface AccessInfoRepository extends KapuaUpdatableEntityRepository<AccessInfo> {
+public interface AccessInfoRepository extends KapuaUpdatableEntityRepository<AccessInfo, AccessInfoListResult> {
 }

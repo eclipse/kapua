@@ -12,12 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job;
 
-import org.eclipse.kapua.repository.KapuaEntityRepository;
 import org.eclipse.kapua.repository.KapuaNamedEntityRepository;
-import org.eclipse.kapua.repository.KapuaUpdatableEntityRepository;
 
 public interface JobRepository extends
-        KapuaEntityRepository<Job>,
-        KapuaNamedEntityRepository<Job>,
-        KapuaUpdatableEntityRepository<Job> {
+        KapuaNamedEntityRepository<Job, JobListResult> {
 }

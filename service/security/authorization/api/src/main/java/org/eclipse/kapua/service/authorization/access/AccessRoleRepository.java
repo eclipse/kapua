@@ -14,10 +14,9 @@ package org.eclipse.kapua.service.authorization.access;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.repository.KapuaEntityRepository;
 
-public interface AccessRoleRepository extends KapuaEntityRepository<AccessRole> {
+public interface AccessRoleRepository extends KapuaEntityRepository<AccessRole, AccessRoleListResult> {
 
-    KapuaListResult<AccessRole> findAll(KapuaId scopeId, KapuaId accessInfoId) throws KapuaException;
+    AccessRoleListResult findAll(KapuaId scopeId, KapuaId accessInfoId) throws KapuaException;
 }

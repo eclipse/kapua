@@ -13,17 +13,17 @@
 package org.eclipse.kapua.service.device.registry.internal;
 
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
-import org.eclipse.kapua.commons.jpa.KapuaUpdateableEntityRepositoryJpaImpl;
-import org.eclipse.kapua.model.query.KapuaListResult;
+import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityRepositoryJpaImpl;
 import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
 
 import java.util.function.Supplier;
 
 public class DeviceImplJpaRepository
-        extends KapuaUpdateableEntityRepositoryJpaImpl<Device, DeviceImpl>
+        extends KapuaUpdatableEntityRepositoryJpaImpl<Device, DeviceImpl, DeviceListResult>
         implements DeviceRepository {
-    public DeviceImplJpaRepository(Supplier<? extends KapuaListResult<Device>> listProvider, EntityManagerSession entityManagerSession) {
+    public DeviceImplJpaRepository(Supplier<DeviceListResult> listProvider, EntityManagerSession entityManagerSession) {
         super(DeviceImpl.class, listProvider, entityManagerSession);
     }
 }

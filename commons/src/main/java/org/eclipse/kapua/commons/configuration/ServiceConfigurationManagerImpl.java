@@ -30,7 +30,6 @@ import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
@@ -157,7 +156,7 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
                 )
         );
 
-        KapuaListResult<ServiceConfig> result = serviceConfigRepository.query(query);
+        ServiceConfigListResult result = serviceConfigRepository.query(query);
 
         Properties props = toProperties(values);
         if (result == null || result.isEmpty()) {
@@ -363,7 +362,7 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
                 )
         );
 
-        final KapuaListResult<ServiceConfig> result = serviceConfigRepository.query(query);
+        final ServiceConfigListResult result = serviceConfigRepository.query(query);
 //        ServiceConfigListResult result = entityManagerSession.doAction(EntityManagerContainer.<ServiceConfigListResult>create()
 //                .onResultHandler(em -> ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query))
         //TODO: move this behaviour to repo wrapper

@@ -14,16 +14,16 @@ package org.eclipse.kapua.service.user.internal;
 
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityRepositoryJpaImpl;
-import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserRepository;
 
 import java.util.function.Supplier;
 
 public class UserImplJpaRepository
-        extends KapuaNamedEntityRepositoryJpaImpl<User, UserImpl>
+        extends KapuaNamedEntityRepositoryJpaImpl<User, UserImpl, UserListResult>
         implements UserRepository {
-    public UserImplJpaRepository(Supplier<? extends KapuaListResult<User>> listProvider, EntityManagerSession entityManagerSession) {
+    public UserImplJpaRepository(Supplier<UserListResult> listProvider, EntityManagerSession entityManagerSession) {
         super(UserImpl.class, listProvider, entityManagerSession);
     }
 

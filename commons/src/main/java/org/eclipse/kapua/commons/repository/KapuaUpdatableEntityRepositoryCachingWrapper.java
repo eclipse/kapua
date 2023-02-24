@@ -16,20 +16,21 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.repository.KapuaUpdatableEntityRepository;
 
-public class KapuaUpdatableEntityRepositoryCachingWrapper<E extends KapuaUpdatableEntity>
-        extends KapuaEntityRepositoryCachingWrapper<E>
-        implements KapuaUpdatableEntityRepository<E> {
+public class KapuaUpdatableEntityRepositoryCachingWrapper<E extends KapuaUpdatableEntity, L extends KapuaListResult<E>>
+        extends KapuaEntityRepositoryCachingWrapper<E, L>
+        implements KapuaUpdatableEntityRepository<E, L> {
 
-    public KapuaUpdatableEntityRepositoryCachingWrapper(KapuaUpdatableEntityRepository<E> wrapped, EntityCache entityCache) {
+    public KapuaUpdatableEntityRepositoryCachingWrapper(KapuaUpdatableEntityRepository<E, L> wrapped, EntityCache entityCache) {
         super(wrapped, entityCache);
     }
 
     @Override
     public E update(E entity) throws KapuaException {
         entityCache.remove(KapuaId.ANY, entity);
-        final E updated = ((KapuaUpdatableEntityRepository<E>) wrapped).update(entity);
+        final E updated = ((KapuaUpdatableEntityRepository<E, L>) wrapped).update(entity);
         entityCache.put(entity);
         return updated;
     }

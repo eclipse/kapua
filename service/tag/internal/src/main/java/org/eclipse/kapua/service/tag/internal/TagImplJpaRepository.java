@@ -13,17 +13,17 @@
 package org.eclipse.kapua.service.tag.internal;
 
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
-import org.eclipse.kapua.commons.jpa.KapuaUpdateableEntityRepositoryJpaImpl;
-import org.eclipse.kapua.model.query.KapuaListResult;
+import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityRepositoryJpaImpl;
 import org.eclipse.kapua.service.tag.Tag;
+import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagRepository;
 
 import javax.inject.Singleton;
 import java.util.function.Supplier;
 
 @Singleton
-public class TagImplJpaRepository extends KapuaUpdateableEntityRepositoryJpaImpl<Tag, TagImpl> implements TagRepository {
-    public TagImplJpaRepository(Supplier<? extends KapuaListResult<Tag>> listProvider, EntityManagerSession entityManagerSession) {
+public class TagImplJpaRepository extends KapuaUpdatableEntityRepositoryJpaImpl<Tag, TagImpl, TagListResult> implements TagRepository {
+    public TagImplJpaRepository(Supplier<TagListResult> listProvider, EntityManagerSession entityManagerSession) {
         super(TagImpl.class, listProvider, entityManagerSession);
     }
 

@@ -14,17 +14,17 @@ package org.eclipse.kapua.service.job.internal;
 
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityRepositoryJpaImpl;
-import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.job.JobListResult;
 import org.eclipse.kapua.service.job.JobRepository;
 
 import java.util.function.Supplier;
 
 public class JobImplJpaRepository
-        extends KapuaNamedEntityRepositoryJpaImpl<Job, JobImpl>
+        extends KapuaNamedEntityRepositoryJpaImpl<Job, JobImpl, JobListResult>
         implements JobRepository {
 
-    public JobImplJpaRepository(Supplier<? extends KapuaListResult<Job>> listProvider, EntityManagerSession entityManagerSession) {
+    public JobImplJpaRepository(Supplier<JobListResult> listProvider, EntityManagerSession entityManagerSession) {
         super(JobImpl.class, listProvider, entityManagerSession);
     }
 }

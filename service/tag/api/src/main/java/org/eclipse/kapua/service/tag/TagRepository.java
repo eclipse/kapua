@@ -16,8 +16,8 @@ import org.eclipse.kapua.repository.KapuaEntityRepository;
 import org.eclipse.kapua.repository.KapuaUpdatableEntityRepository;
 
 public interface TagRepository extends
-        KapuaEntityRepository<Tag>,
+        KapuaEntityRepository<Tag, TagListResult>,
 //        KapuaNamedEntityRepository<Tag>, //Strangely, not needed
-        KapuaUpdatableEntityRepository<Tag> {
+        KapuaUpdatableEntityRepository<Tag, TagListResult> {
 
 }
