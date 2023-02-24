@@ -19,7 +19,7 @@ import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
  */
 public class AccessRoleCacheFactory extends AbstractEntityCacheFactory {
 
-    private AccessRoleCacheFactory() {
+    public AccessRoleCacheFactory() {
         super("AccessRoleId");
     }
 

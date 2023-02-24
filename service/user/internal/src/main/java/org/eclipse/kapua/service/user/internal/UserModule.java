@@ -24,6 +24,7 @@ import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.UserDomains;
@@ -75,9 +76,12 @@ public class UserModule extends AbstractKapuaModule {
 
     @Provides
     UserRepository userRepository(UserFactory userFactory) {
-        return new UserImplJpaRepository(
-                () -> userFactory.newListResult(),
-                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-user") {
-                }));
+        return new CachingUserRepository(
+                new UserImplJpaRepository(
+                        () -> userFactory.newListResult(),
+                        new EntityManagerSession(new AbstractEntityManagerFactory("kapua-user") {
+                        })),
+                (NamedEntityCache) new UserCacheFactory().createCache()
+        );
     }
 }

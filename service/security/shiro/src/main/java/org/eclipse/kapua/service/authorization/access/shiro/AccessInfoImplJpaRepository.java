@@ -10,21 +10,20 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.user.internal;
+package org.eclipse.kapua.service.authorization.access.shiro;
 
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
-import org.eclipse.kapua.commons.jpa.KapuaNamedEntityRepositoryJpaImpl;
+import org.eclipse.kapua.commons.jpa.KapuaUpdateableEntityRepositoryJpaImpl;
 import org.eclipse.kapua.model.query.KapuaListResult;
-import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserRepository;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
 
 import java.util.function.Supplier;
 
-public class UserImplJpaRepository
-        extends KapuaNamedEntityRepositoryJpaImpl<User, UserImpl>
-        implements UserRepository {
-    public UserImplJpaRepository(Supplier<? extends KapuaListResult<User>> listProvider, EntityManagerSession entityManagerSession) {
-        super(UserImpl.class, listProvider, entityManagerSession);
+public class AccessInfoImplJpaRepository
+        extends KapuaUpdateableEntityRepositoryJpaImpl<AccessInfo, AccessInfoImpl>
+        implements AccessInfoRepository {
+    public AccessInfoImplJpaRepository(Supplier<? extends KapuaListResult<AccessInfo>> listSupplier, EntityManagerSession entityManagerSession) {
+        super(AccessInfoImpl.class, listSupplier, entityManagerSession);
     }
-
 }
