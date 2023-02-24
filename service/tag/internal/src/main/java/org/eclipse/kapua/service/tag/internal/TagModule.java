@@ -31,6 +31,7 @@ import org.eclipse.kapua.service.tag.TagRepository;
 import org.eclipse.kapua.service.tag.TagService;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 public class TagModule extends AbstractKapuaModule {
     @Override
@@ -41,6 +42,7 @@ public class TagModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     @Named("TagServiceConfigurationManager")
     ServiceConfigurationManager tagServiceConfigurationManager(
             TagEntityManagerFactory entityManagerFactory,
@@ -70,6 +72,7 @@ public class TagModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     TagRepository tagRepository(TagFactory tagFactory) {
         return new TagImplJpaRepository(
                 () -> tagFactory.newListResult(),

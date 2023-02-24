@@ -73,6 +73,7 @@ import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionServiceI
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 public class AuthorizationModule extends AbstractKapuaModule {
     @Override
@@ -102,6 +103,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     @Named("RoleServiceConfigurationManager")
     public ServiceConfigurationManager roleServiceConfigurationManager(
             RoleFactory roleFactory,
@@ -131,6 +133,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     RoleRepository roleRepository(RoleFactory roleFactory) {
         return new RoleImplJpaRepository(
                 () -> roleFactory.newListResult(),
@@ -139,6 +142,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     GroupRepository groupRepository(GroupFactory groupFactory) {
         return new GroupImplJpaRepository(
                 () -> groupFactory.newListResult(),
@@ -147,6 +151,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     AccessInfoRepository accessInfoRepository(AccessInfoFactory accessInfoFactory) {
         return new CachingAccessInfoRepository(
                 new AccessInfoImplJpaRepository(
@@ -158,6 +163,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     AccessPermissionRepository accessPermissionRepository(AccessPermissionFactory accessPermissionFactory) {
         return new CachingAccessPermissionRepository(
                 new AccessPermissionImplJpaRepository(
@@ -169,6 +175,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     AccessRoleRepository accessRoleRepository(AccessRoleFactory accessRoleFactory) {
         return new CachingAccessRoleRepository(
                 new AccessRoleImplJpaRepository(
@@ -180,6 +187,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     @Named("GroupServiceConfigurationManager")
     public ServiceConfigurationManager groupServiceConfigurationManager(
             AuthorizationEntityManagerFactory authorizationEntityManagerFactory,

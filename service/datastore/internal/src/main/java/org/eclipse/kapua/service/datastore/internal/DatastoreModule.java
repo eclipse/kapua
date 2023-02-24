@@ -36,6 +36,7 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 public class DatastoreModule extends AbstractKapuaModule {
     @Override
@@ -51,6 +52,7 @@ public class DatastoreModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Singleton
     @Named("MessageStoreServiceConfigurationManager")
     ServiceConfigurationManager messageStoreServiceConfigurationManager(
             DatastoreEntityManagerFactory entityManagerFactory,
