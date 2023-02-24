@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.repository;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -26,7 +27,7 @@ public class KapuaUpdatableEntityRepositoryCachingWrapper<E extends KapuaUpdatab
     }
 
     @Override
-    public E update(E entity) {
+    public E update(E entity) throws KapuaException {
         entityCache.remove(KapuaId.ANY, entity);
         final E updated = ((KapuaUpdatableEntityRepository<E>) wrapped).update(entity);
         entityCache.put(entity);

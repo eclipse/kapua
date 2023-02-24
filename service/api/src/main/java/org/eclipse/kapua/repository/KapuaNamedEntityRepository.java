@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.repository;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 
@@ -24,7 +25,7 @@ public interface KapuaNamedEntityRepository<E extends KapuaNamedEntity> extends 
      * @return The {@link KapuaNamedEntity} found, or {@code null} if not found.
      * @since 2.0.0
      */
-    E findByName(String value);
+    E findByName(String value) throws KapuaException;
 
     /**
      * Finds a {@link KapuaNamedEntity} by {@link KapuaNamedEntity#getName()}.
@@ -34,5 +35,5 @@ public interface KapuaNamedEntityRepository<E extends KapuaNamedEntity> extends 
      * @return The {@link KapuaNamedEntity} found, or {@code null} if not found.
      * @since 2.0.0
      */
-    E findByName(KapuaId scopeId, String value);
+    E findByName(KapuaId scopeId, String value) throws KapuaException;
 }

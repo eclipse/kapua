@@ -31,20 +31,12 @@ public class KapuaNamedEntityRepositoryJpaImpl<E extends KapuaNamedEntity, C ext
     }
 
     @Override
-    public E findByName(String value) {
-        try {
-            return entityManagerSession.doTransactedAction(em -> ServiceDAO.findByName(em, concreteClass, value));
-        } catch (KapuaException e) {
-            throw new RuntimeException(e);
-        }
+    public E findByName(String value) throws KapuaException {
+        return entityManagerSession.doTransactedAction(em -> ServiceDAO.findByName(em, concreteClass, value));
     }
 
     @Override
-    public E findByName(KapuaId scopeId, String value) {
-        try {
-            return entityManagerSession.doTransactedAction(em -> ServiceDAO.findByName(em, concreteClass, scopeId, value));
-        } catch (KapuaException e) {
-            throw new RuntimeException(e);
-        }
+    public E findByName(KapuaId scopeId, String value) throws KapuaException {
+        return entityManagerSession.doTransactedAction(em -> ServiceDAO.findByName(em, concreteClass, scopeId, value));
     }
 }

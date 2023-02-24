@@ -31,32 +31,28 @@ public class KapuaUpdateableEntityRepositoryJpaImpl<E extends KapuaUpdatableEnti
     }
 
     @Override
-    public E update(E entity) {
-        try {
-            return entityManagerSession.doTransactedAction(em -> {
+    public E update(E entity) throws KapuaException {
+        return entityManagerSession.doTransactedAction(em -> {
 
-                //
-                // Checking existence
-                E entityToUpdate = em.find(concreteClass, entity.getId());
+            //
+            // Checking existence
+            E entityToUpdate = em.find(concreteClass, entity.getId());
 
-                //
-                // Updating if not null
-                if (entityToUpdate != null) {
-                    AbstractKapuaUpdatableEntity updatableEntity = (AbstractKapuaUpdatableEntity) entity;
-                    updatableEntity.setCreatedOn(entityToUpdate.getCreatedOn());
-                    updatableEntity.setCreatedBy(entityToUpdate.getCreatedBy());
+            //
+            // Updating if not null
+            if (entityToUpdate != null) {
+                AbstractKapuaUpdatableEntity updatableEntity = (AbstractKapuaUpdatableEntity) entity;
+                updatableEntity.setCreatedOn(entityToUpdate.getCreatedOn());
+                updatableEntity.setCreatedBy(entityToUpdate.getCreatedBy());
 
-                    em.merge(entity);
-                    em.flush();
-                    em.refresh(entityToUpdate);
-                } else {
-                    throw new KapuaEntityNotFoundException(concreteClass.getSimpleName(), entity.getId());
-                }
+                em.merge(entity);
+                em.flush();
+                em.refresh(entityToUpdate);
+            } else {
+                throw new KapuaEntityNotFoundException(concreteClass.getSimpleName(), entity.getId());
+            }
 
-                return entityToUpdate;
-            });
-        } catch (KapuaException e) {
-            throw new RuntimeException(e);
-        }
+            return entityToUpdate;
+        });
     }
 }

@@ -82,261 +82,241 @@ public class KapuaEntityRepositoryJpaImpl<E extends KapuaEntity, C extends E> im
     }
 
     @Override
-    public E create(E entity) {
-        try {
-            return entityManagerSession.doTransactedAction(em -> {
-                try {
-                    em.persist(entity);
-                    em.flush();
-                    em.refresh(entity);
-                } catch (EntityExistsException e) {
-                    throw new KapuaEntityExistsException(e, entity.getId());
-                } catch (PersistenceException e) {
-                    if (isInsertConstraintViolation(e)) {
-                        KapuaEntity entityFound = em.find(entity.getClass(), entity.getId());
-                        if (entityFound == null) {
-                            throw e;
-                        }
-                        throw new KapuaEntityExistsException(e, entity.getId());
-                    } else {
+    public E create(E entity) throws KapuaException {
+        return entityManagerSession.doTransactedAction(em -> {
+            try {
+                em.persist(entity);
+                em.flush();
+                em.refresh(entity);
+            } catch (EntityExistsException e) {
+                throw new KapuaEntityExistsException(e, entity.getId());
+            } catch (PersistenceException e) {
+                if (isInsertConstraintViolation(e)) {
+                    KapuaEntity entityFound = em.find(entity.getClass(), entity.getId());
+                    if (entityFound == null) {
                         throw e;
                     }
+                    throw new KapuaEntityExistsException(e, entity.getId());
+                } else {
+                    throw e;
                 }
-                return entity;
-            });
-        } catch (KapuaException e) {
-            throw new RuntimeException(e);
-        }
+            }
+            return entity;
+        });
     }
 
     @Override
-    public E find(KapuaId scopeId, KapuaId entityId) {
-        try {
-            return entityManagerSession.doAction(em -> {
-                //
-                // Checking existence
-                E entityToFind = em.find(concreteClass, entityId);
+    public E find(KapuaId scopeId, KapuaId entityId) throws KapuaException {
+        return entityManagerSession.doAction(em -> {
+            //
+            // Checking existence
+            E entityToFind = em.find(concreteClass, entityId);
 
-                // If 'null' ScopeId has been requested, it means that we need to look for ANY ScopeId.
-                KapuaId scopeIdToMatch = scopeId != null ? scopeId : KapuaId.ANY;
+            // If 'null' ScopeId has been requested, it means that we need to look for ANY ScopeId.
+            KapuaId scopeIdToMatch = scopeId != null ? scopeId : KapuaId.ANY;
 
-                //
-                // Return if not null and ScopeIds matches
-                if (entityToFind != null) {
-                    if (KapuaId.ANY.equals(scopeIdToMatch)) { // If requested ScopeId is ANY, return whatever Entity has been found
-                        return entityToFind;
-                    } else if (scopeIdToMatch.equals(entityToFind.getScopeId())) { // If a specific ScopeId is requested, return Entity if given ScopeId matches Entity.scopeId
-                        return entityToFind;
-                    } else { // If no match, return no result
-                        return null;
-                    }
-                } else {
+            //
+            // Return if not null and ScopeIds matches
+            if (entityToFind != null) {
+                if (KapuaId.ANY.equals(scopeIdToMatch)) { // If requested ScopeId is ANY, return whatever Entity has been found
+                    return entityToFind;
+                } else if (scopeIdToMatch.equals(entityToFind.getScopeId())) { // If a specific ScopeId is requested, return Entity if given ScopeId matches Entity.scopeId
+                    return entityToFind;
+                } else { // If no match, return no result
                     return null;
                 }
-            });
-        } catch (KapuaException e) {
-            throw new RuntimeException(e);
-        }
+            } else {
+                return null;
+            }
+        });
     }
 
     @Override
-    public KapuaListResult<E> query(KapuaQuery listQuery) {
-        try {
-            return entityManagerSession.doAction(em -> {
-                CriteriaBuilder cb = em.getCriteriaBuilder();
-                CriteriaQuery<C> criteriaSelectQuery = cb.createQuery(concreteClass);
+    public KapuaListResult<E> query(KapuaQuery listQuery) throws KapuaException {
+        return entityManagerSession.doAction(em -> {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<C> criteriaSelectQuery = cb.createQuery(concreteClass);
 
-                //
-                // FROM
-                Root<C> entityRoot = criteriaSelectQuery.from(concreteClass);
-                EntityType<C> entityType = entityRoot.getModel();
+            //
+            // FROM
+            Root<C> entityRoot = criteriaSelectQuery.from(concreteClass);
+            EntityType<C> entityType = entityRoot.getModel();
 
-                //
-                // SELECT
-                criteriaSelectQuery.select(entityRoot).distinct(true);
+            //
+            // SELECT
+            criteriaSelectQuery.select(entityRoot).distinct(true);
 
-                // Fetch LAZY attributes if necessary
-                for (String fetchAttribute : listQuery.getFetchAttributes()) {
-                    if (entityType.getAttribute(fetchAttribute).isAssociation()) {
-                        entityRoot.fetch(entityType.getSingularAttribute(fetchAttribute), JoinType.LEFT);
-                    } else {
-                        entityRoot.fetch(fetchAttribute);
-                    }
-                }
-
-                //
-                // WHERE
-                QueryPredicate kapuaPredicates = listQuery.getPredicate();
-                // Add ScopeId to query if has been defined one specific
-                if (listQuery.getScopeId() != null && // Support for old method of querying for all ScopeIds (e.g.: query.setScopeId(null)
-                        !listQuery.getScopeId().equals(KapuaId.ANY)) {// Support for new method of querying for all ScopeIds (e.g.: query.setScopeId(KapuaId.ANY)
-
-                    AndPredicate scopedAndPredicate = listQuery.andPredicate(
-                            listQuery.attributePredicate(KapuaEntityAttributes.SCOPE_ID, listQuery.getScopeId())
-                    );
-
-                    // Add existing query predicates
-                    if (listQuery.getPredicate() != null) {
-                        scopedAndPredicate.and(listQuery.getPredicate());
-                    }
-
-                    kapuaPredicates = scopedAndPredicate;
-                }
-
-                // Manage kapua query predicates to build the where clause.
-                Map<ParameterExpression, Object> binds = new HashMap<>();
-                Expression<Boolean> expr = handleKapuaQueryPredicates(kapuaPredicates,
-                        binds,
-                        cb,
-                        entityRoot,
-                        entityRoot.getModel());
-
-                if (expr != null) {
-                    criteriaSelectQuery.where(expr);
-                }
-
-                //
-                // ORDER BY
-                // Default to the KapuaEntity id if no ordering is specified.
-                Order order;
-                if (listQuery.getSortCriteria() != null || listQuery.getDefaultSortCriteria() != null) {
-                    FieldSortCriteria sortCriteria = (FieldSortCriteria) MoreObjects.firstNonNull(listQuery.getSortCriteria(), listQuery.getDefaultSortCriteria());
-
-                    if (SortOrder.DESCENDING.equals(sortCriteria.getSortOrder())) {
-                        order = cb.desc(extractAttribute(entityRoot, sortCriteria.getAttributeName()));
-                    } else {
-                        order = cb.asc(extractAttribute(entityRoot, sortCriteria.getAttributeName()));
-                    }
+            // Fetch LAZY attributes if necessary
+            for (String fetchAttribute : listQuery.getFetchAttributes()) {
+                if (entityType.getAttribute(fetchAttribute).isAssociation()) {
+                    entityRoot.fetch(entityType.getSingularAttribute(fetchAttribute), JoinType.LEFT);
                 } else {
-                    order = cb.asc(entityRoot.get(entityType.getSingularAttribute(KapuaEntityAttributes.ENTITY_ID)));
+                    entityRoot.fetch(fetchAttribute);
                 }
-                criteriaSelectQuery.orderBy(order);
+            }
 
-                //S
-                // QUERY!
-                TypedQuery<C> query = em.createQuery(criteriaSelectQuery);
+            //
+            // WHERE
+            QueryPredicate kapuaPredicates = listQuery.getPredicate();
+            // Add ScopeId to query if has been defined one specific
+            if (listQuery.getScopeId() != null && // Support for old method of querying for all ScopeIds (e.g.: query.setScopeId(null)
+                    !listQuery.getScopeId().equals(KapuaId.ANY)) {// Support for new method of querying for all ScopeIds (e.g.: query.setScopeId(KapuaId.ANY)
 
-                // Populate query parameters
-                binds.forEach(query::setParameter); // Whoah! This is very magic!
+                AndPredicate scopedAndPredicate = listQuery.andPredicate(
+                        listQuery.attributePredicate(KapuaEntityAttributes.SCOPE_ID, listQuery.getScopeId())
+                );
 
-                // Set offset
-                if (listQuery.getOffset() != null) {
-                    query.setFirstResult(listQuery.getOffset());
-                }
-
-                // Set limit
-                if (listQuery.getLimit() != null) {
-                    query.setMaxResults(listQuery.getLimit() + 1);
-                }
-
-                // Finally querying!
-                List<C> result = query.getResultList();
-                final KapuaListResult<E> resultContainer = listSupplier.get();
-
-                // Check limit exceeded
-                if (listQuery.getLimit() != null &&
-                        result.size() > listQuery.getLimit()) {
-                    result.remove(listQuery.getLimit().intValue());
-                    resultContainer.setLimitExceeded(true);
+                // Add existing query predicates
+                if (listQuery.getPredicate() != null) {
+                    scopedAndPredicate.and(listQuery.getPredicate());
                 }
 
-                if (Boolean.TRUE.equals(listQuery.getAskTotalCount())) {
-                    resultContainer.setTotalCount(count(listQuery));
-                }
+                kapuaPredicates = scopedAndPredicate;
+            }
 
-                // Set results
-                resultContainer.addItems(result);
-                return resultContainer;
-            });
-        } catch (KapuaException e) {
-            throw new RuntimeException(e);
-        }
-    }
+            // Manage kapua query predicates to build the where clause.
+            Map<ParameterExpression, Object> binds = new HashMap<>();
+            Expression<Boolean> expr = handleKapuaQueryPredicates(kapuaPredicates,
+                    binds,
+                    cb,
+                    entityRoot,
+                    entityRoot.getModel());
 
-    @Override
-    public long count(KapuaQuery countQuery) {
-        try {
-            return entityManagerSession.doAction(em -> {
+            if (expr != null) {
+                criteriaSelectQuery.where(expr);
+            }
 
-                CriteriaBuilder cb = em.getCriteriaBuilder();
-                CriteriaQuery<Long> criteriaSelectQuery = cb.createQuery(Long.class);
+            //
+            // ORDER BY
+            // Default to the KapuaEntity id if no ordering is specified.
+            Order order;
+            if (listQuery.getSortCriteria() != null || listQuery.getDefaultSortCriteria() != null) {
+                FieldSortCriteria sortCriteria = (FieldSortCriteria) MoreObjects.firstNonNull(listQuery.getSortCriteria(), listQuery.getDefaultSortCriteria());
 
-                //
-                // FROM
-                Root<C> entityRoot = criteriaSelectQuery.from(concreteClass);
-
-                //
-                // SELECT
-                criteriaSelectQuery.select(cb.countDistinct(entityRoot));
-
-                //
-                // WHERE
-                QueryPredicate kapuaPredicates = countQuery.getPredicate();
-                // Add ScopeId to query if has been defined one specific
-                if (countQuery.getScopeId() != null && // Support for old method of querying for all ScopeIds (e.g.: query.setScopeId(null)
-                        !countQuery.getScopeId().equals(KapuaId.ANY)) {// Support for new method of querying for all ScopeIds (e.g.: query.setScopeId(KapuaId.ANY)
-
-                    AndPredicate scopedAndPredicate = countQuery.andPredicate();
-
-                    AttributePredicate<KapuaId> scopeId = countQuery.attributePredicate(KapuaEntityAttributes.SCOPE_ID, countQuery.getScopeId());
-                    scopedAndPredicate.and(scopeId);
-
-                    if (countQuery.getPredicate() != null) {
-                        scopedAndPredicate.and(countQuery.getPredicate());
-                    }
-
-                    kapuaPredicates = scopedAndPredicate;
-                }
-
-                Map<ParameterExpression, Object> binds = new HashMap<>();
-                Expression<Boolean> expr = handleKapuaQueryPredicates(kapuaPredicates,
-                        binds,
-                        cb,
-                        entityRoot,
-                        entityRoot.getModel());
-
-                if (expr != null) {
-                    criteriaSelectQuery.where(expr);
-                }
-
-                //
-                // COUNT!
-                TypedQuery<Long> query = em.createQuery(criteriaSelectQuery);
-
-                // Populate query parameters
-                binds.forEach(query::setParameter);
-
-                return query.getSingleResult();
-            });
-        } catch (KapuaException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public E delete(KapuaId scopeId, KapuaId entityId) {
-        try {
-            return entityManagerSession.doTransactedAction(em -> {
-                //
-                // Checking existence
-                E entityToDelete = find(scopeId, entityId);
-
-                //
-                // Deleting if found
-                if (entityToDelete != null) {
-                    em.remove(entityToDelete);
-                    em.flush();
+                if (SortOrder.DESCENDING.equals(sortCriteria.getSortOrder())) {
+                    order = cb.desc(extractAttribute(entityRoot, sortCriteria.getAttributeName()));
                 } else {
-                    throw new KapuaEntityNotFoundException(concreteClass.getSimpleName(), entityId);
+                    order = cb.asc(extractAttribute(entityRoot, sortCriteria.getAttributeName()));
+                }
+            } else {
+                order = cb.asc(entityRoot.get(entityType.getSingularAttribute(KapuaEntityAttributes.ENTITY_ID)));
+            }
+            criteriaSelectQuery.orderBy(order);
+
+            //S
+            // QUERY!
+            TypedQuery<C> query = em.createQuery(criteriaSelectQuery);
+
+            // Populate query parameters
+            binds.forEach(query::setParameter); // Whoah! This is very magic!
+
+            // Set offset
+            if (listQuery.getOffset() != null) {
+                query.setFirstResult(listQuery.getOffset());
+            }
+
+            // Set limit
+            if (listQuery.getLimit() != null) {
+                query.setMaxResults(listQuery.getLimit() + 1);
+            }
+
+            // Finally querying!
+            List<C> result = query.getResultList();
+            final KapuaListResult<E> resultContainer = listSupplier.get();
+
+            // Check limit exceeded
+            if (listQuery.getLimit() != null &&
+                    result.size() > listQuery.getLimit()) {
+                result.remove(listQuery.getLimit().intValue());
+                resultContainer.setLimitExceeded(true);
+            }
+
+            if (Boolean.TRUE.equals(listQuery.getAskTotalCount())) {
+                resultContainer.setTotalCount(count(listQuery));
+            }
+
+            // Set results
+            resultContainer.addItems(result);
+            return resultContainer;
+        });
+    }
+
+    @Override
+    public long count(KapuaQuery countQuery) throws KapuaException {
+        return entityManagerSession.doAction(em -> {
+
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Long> criteriaSelectQuery = cb.createQuery(Long.class);
+
+            //
+            // FROM
+            Root<C> entityRoot = criteriaSelectQuery.from(concreteClass);
+
+            //
+            // SELECT
+            criteriaSelectQuery.select(cb.countDistinct(entityRoot));
+
+            //
+            // WHERE
+            QueryPredicate kapuaPredicates = countQuery.getPredicate();
+            // Add ScopeId to query if has been defined one specific
+            if (countQuery.getScopeId() != null && // Support for old method of querying for all ScopeIds (e.g.: query.setScopeId(null)
+                    !countQuery.getScopeId().equals(KapuaId.ANY)) {// Support for new method of querying for all ScopeIds (e.g.: query.setScopeId(KapuaId.ANY)
+
+                AndPredicate scopedAndPredicate = countQuery.andPredicate();
+
+                AttributePredicate<KapuaId> scopeId = countQuery.attributePredicate(KapuaEntityAttributes.SCOPE_ID, countQuery.getScopeId());
+                scopedAndPredicate.and(scopeId);
+
+                if (countQuery.getPredicate() != null) {
+                    scopedAndPredicate.and(countQuery.getPredicate());
                 }
 
-                //
-                // Returning deleted entity
-                return entityToDelete;
-            });
-        } catch (KapuaException e) {
-            throw new RuntimeException(e);
-        }
+                kapuaPredicates = scopedAndPredicate;
+            }
+
+            Map<ParameterExpression, Object> binds = new HashMap<>();
+            Expression<Boolean> expr = handleKapuaQueryPredicates(kapuaPredicates,
+                    binds,
+                    cb,
+                    entityRoot,
+                    entityRoot.getModel());
+
+            if (expr != null) {
+                criteriaSelectQuery.where(expr);
+            }
+
+            //
+            // COUNT!
+            TypedQuery<Long> query = em.createQuery(criteriaSelectQuery);
+
+            // Populate query parameters
+            binds.forEach(query::setParameter);
+
+            return query.getSingleResult();
+        });
+    }
+
+    @Override
+    public E delete(KapuaId scopeId, KapuaId entityId) throws KapuaException {
+        return entityManagerSession.doTransactedAction(em -> {
+            //
+            // Checking existence
+            E entityToDelete = find(scopeId, entityId);
+
+            //
+            // Deleting if found
+            if (entityToDelete != null) {
+                em.remove(entityToDelete);
+                em.flush();
+            } else {
+                throw new KapuaEntityNotFoundException(concreteClass.getSimpleName(), entityId);
+            }
+
+            //
+            // Returning deleted entity
+            return entityToDelete;
+        });
     }
 //
     // Private Methods

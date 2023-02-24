@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.repository;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -29,14 +30,14 @@ public class KapuaEntityRepositoryCachingWrapper<E extends KapuaEntity> implemen
     }
 
     @Override
-    public E create(E entity) {
+    public E create(E entity) throws KapuaException {
         final E created = wrapped.create(entity);
         entityCache.put(created);
         return created;
     }
 
     @Override
-    public E find(KapuaId scopeId, KapuaId entityId) {
+    public E find(KapuaId scopeId, KapuaId entityId) throws KapuaException {
         final KapuaEntity cached = entityCache.get(scopeId, entityId);
         if (cached != null) {
             return (E) cached;
@@ -47,17 +48,17 @@ public class KapuaEntityRepositoryCachingWrapper<E extends KapuaEntity> implemen
     }
 
     @Override
-    public KapuaListResult<E> query(KapuaQuery kapuaQuery) {
+    public KapuaListResult<E> query(KapuaQuery kapuaQuery) throws KapuaException {
         return wrapped.query(kapuaQuery);
     }
 
     @Override
-    public long count(KapuaQuery kapuaQuery) {
+    public long count(KapuaQuery kapuaQuery) throws KapuaException {
         return wrapped.count(kapuaQuery);
     }
 
     @Override
-    public E delete(KapuaId scopeId, KapuaId entityId) {
+    public E delete(KapuaId scopeId, KapuaId entityId) throws KapuaException {
         final E deleted = wrapped.delete(scopeId, entityId);
         entityCache.remove(scopeId, entityId);
         return deleted;
