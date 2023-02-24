@@ -107,28 +107,30 @@ public class KapuaEntityRepositoryJpaImpl<E extends KapuaEntity, C extends E> im
 
     @Override
     public E find(KapuaId scopeId, KapuaId entityId) throws KapuaException {
-        return entityManagerSession.doAction(em -> {
-            //
-            // Checking existence
-            E entityToFind = em.find(concreteClass, entityId);
+        return entityManagerSession.doAction(em -> doFind(scopeId, entityId, em));
+    }
 
-            // If 'null' ScopeId has been requested, it means that we need to look for ANY ScopeId.
-            KapuaId scopeIdToMatch = scopeId != null ? scopeId : KapuaId.ANY;
+    private E doFind(KapuaId scopeId, KapuaId entityId, EntityManager em) {
+        //
+        // Checking existence
+        E entityToFind = em.find(concreteClass, entityId);
 
-            //
-            // Return if not null and ScopeIds matches
-            if (entityToFind != null) {
-                if (KapuaId.ANY.equals(scopeIdToMatch)) { // If requested ScopeId is ANY, return whatever Entity has been found
-                    return entityToFind;
-                } else if (scopeIdToMatch.equals(entityToFind.getScopeId())) { // If a specific ScopeId is requested, return Entity if given ScopeId matches Entity.scopeId
-                    return entityToFind;
-                } else { // If no match, return no result
-                    return null;
-                }
-            } else {
+        // If 'null' ScopeId has been requested, it means that we need to look for ANY ScopeId.
+        KapuaId scopeIdToMatch = scopeId != null ? scopeId : KapuaId.ANY;
+
+        //
+        // Return if not null and ScopeIds matches
+        if (entityToFind != null) {
+            if (KapuaId.ANY.equals(scopeIdToMatch)) { // If requested ScopeId is ANY, return whatever Entity has been found
+                return entityToFind;
+            } else if (scopeIdToMatch.equals(entityToFind.getScopeId())) { // If a specific ScopeId is requested, return Entity if given ScopeId matches Entity.scopeId
+                return entityToFind;
+            } else { // If no match, return no result
                 return null;
             }
-        });
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -302,7 +304,7 @@ public class KapuaEntityRepositoryJpaImpl<E extends KapuaEntity, C extends E> im
         return entityManagerSession.doTransactedAction(em -> {
             //
             // Checking existence
-            E entityToDelete = find(scopeId, entityId);
+            E entityToDelete = doFind(scopeId, entityId, em);
 
             //
             // Deleting if found
@@ -318,7 +320,8 @@ public class KapuaEntityRepositoryJpaImpl<E extends KapuaEntity, C extends E> im
             return entityToDelete;
         });
     }
-//
+
+    //
     // Private Methods
     //
 
