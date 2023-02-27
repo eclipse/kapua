@@ -12,10 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.repository.KapuaEntityRepository;
 import org.eclipse.kapua.repository.KapuaUpdatableEntityRepository;
 
 public interface ServiceConfigRepository extends
         KapuaEntityRepository<ServiceConfig, ServiceConfigListResult>,
         KapuaUpdatableEntityRepository<ServiceConfig, ServiceConfigListResult> {
+    ServiceConfigListResult findByScopeAndPid(KapuaId scopeId, String pid) throws KapuaException;
 }

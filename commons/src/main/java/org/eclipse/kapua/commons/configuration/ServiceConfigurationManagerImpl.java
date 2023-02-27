@@ -18,7 +18,6 @@ import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
-import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.commons.util.StringUtil;
@@ -51,7 +50,6 @@ import java.util.stream.Collectors;
 
 public class ServiceConfigurationManagerImpl implements ServiceConfigurationManager {
 
-    private static final EntityCache PRIVATE_ENTITY_CACHE = AbstractKapuaConfigurableServiceCache.getInstance().createCache();
     protected final String pid;
     protected final Domain domain;
     private final ServiceConfigRepository serviceConfigRepository;
@@ -184,17 +182,7 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
      * @since 1.0.0
      */
     private ServiceConfig createConfig(ServiceConfig serviceConfig) throws KapuaException {
-
         return serviceConfigRepository.create(serviceConfig);
-        //TODO: move this behaviour to repo wrapper
-//        return entityManagerSession.doTransactedAction(
-//                EntityManagerContainer.<ServiceConfig>create()
-//                        .onResultHandler(em -> ServiceDAO.create(em, serviceConfig))
-//                        .onBeforeHandler(() -> {
-//                            PRIVATE_ENTITY_CACHE.removeList(serviceConfig.getScopeId(), pid);
-//                            return null;
-//                        })
-//        );
     }
 
     /**
@@ -221,12 +209,6 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
 
         // Update
         return serviceConfigRepository.update(serviceConfig);
-        //TODO: move this behaviour to repo wrapper
-//                .onBeforeHandler(() -> {
-//                    PRIVATE_ENTITY_CACHE.removeList(serviceConfig.getScopeId(), pid);
-//                    return null;
-//                })
-//        );
     }
 
     /**
@@ -353,22 +335,7 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
 
         //
         // Get configuration values
-        ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
-
-        query.setPredicate(
-                query.andPredicate(
-                        query.attributePredicate(ServiceConfigAttributes.SERVICE_ID, pid),
-                        query.attributePredicate(KapuaEntityAttributes.SCOPE_ID, scopeId)
-                )
-        );
-
-        final ServiceConfigListResult result = serviceConfigRepository.query(query);
-//        ServiceConfigListResult result = entityManagerSession.doAction(EntityManagerContainer.<ServiceConfigListResult>create()
-//                .onResultHandler(em -> ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query))
-        //TODO: move this behaviour to repo wrapper
-//                .onBeforeHandler(() -> (ServiceConfigListResult) PRIVATE_ENTITY_CACHE.getList(scopeId, pid))
-//                .onAfterHandler(entity -> PRIVATE_ENTITY_CACHE.putList(scopeId, pid, entity))
-//        );
+        final ServiceConfigListResult result = serviceConfigRepository.findByScopeAndPid(scopeId, pid);
 
         Properties properties = null;
         if (result != null && !result.isEmpty()) {

@@ -13,6 +13,8 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import com.google.inject.Provides;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
+import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
@@ -63,7 +65,10 @@ public class DatastoreModule extends AbstractKapuaModule {
         return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerImpl(
                 MessageStoreService.class.getName(),
                 DatastoreDomains.DATASTORE_DOMAIN,
-                new ServiceConfigImplJpaRepository(new EntityManagerSession(entityManagerFactory)),
+                new CachingServiceConfigRepository(
+                        new ServiceConfigImplJpaRepository(new EntityManagerSession(entityManagerFactory)),
+                        new AbstractKapuaConfigurableServiceCache().createCache()
+                ),
                 permissionFactory,
                 authorizationService,
                 rootUserTester

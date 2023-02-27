@@ -24,8 +24,9 @@ import org.eclipse.kapua.model.query.KapuaQuery;
  * Service configuration DAO
  *
  * @since 1.0
- *
+ * @deprecated since 2.0.0 - use {@link ServiceConfigRepository} instead
  */
+@Deprecated
 public class ServiceConfigDAO extends ServiceDAO {
 
     /**
@@ -120,8 +121,7 @@ public class ServiceConfigDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param userId
-     * @throws KapuaEntityNotFoundException
-     *             If {@link ServiceConfig} is not found.
+     * @throws KapuaEntityNotFoundException If {@link ServiceConfig} is not found.
      */
     public static void delete(EntityManager em, KapuaId scopeId, KapuaId userId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, ServiceConfigImpl.class, scopeId, userId);

@@ -13,7 +13,9 @@
 package org.eclipse.kapua.service.job.internal;
 
 import com.google.inject.Provides;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
@@ -56,7 +58,10 @@ public class JobModule extends AbstractKapuaModule {
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         JobService.class.getName(),
                         JobDomains.JOB_DOMAIN,
-                        new ServiceConfigImplJpaRepository(new EntityManagerSession(jobEntityManagerFactory)),
+                        new CachingServiceConfigRepository(
+                                new ServiceConfigImplJpaRepository(new EntityManagerSession(jobEntityManagerFactory)),
+                                new AbstractKapuaConfigurableServiceCache().createCache()
+                        ),
                         permissionFactory,
                         authorizationService,
                         rootUserTester,

@@ -13,7 +13,9 @@
 package org.eclipse.kapua.service.tag.internal;
 
 import com.google.inject.Provides;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
@@ -57,7 +59,10 @@ public class TagModule extends AbstractKapuaModule {
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         TagService.class.getName(),
                         TagDomains.TAG_DOMAIN,
-                        new ServiceConfigImplJpaRepository(new EntityManagerSession(entityManagerFactory)),
+                        new CachingServiceConfigRepository(
+                                new ServiceConfigImplJpaRepository(new EntityManagerSession(entityManagerFactory)),
+                                new AbstractKapuaConfigurableServiceCache().createCache()
+                        ),
                         permissionFactory,
                         authorizationService,
                         rootUserTester,
