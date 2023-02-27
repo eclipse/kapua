@@ -17,9 +17,7 @@ import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -28,11 +26,13 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationAttributes;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationCreator;
+import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationListResult;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationQuery;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationService;
 import org.eclipse.kapua.service.job.JobDomains;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -45,16 +45,24 @@ import java.util.Map;
  * @since 1.1.0
  */
 @Singleton
-public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaService
+public class JobDeviceManagementOperationServiceImpl
         implements JobDeviceManagementOperationService {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private final JobDeviceManagementOperationFactory entityFactory;
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
+    private final JobDeviceManagementOperationRepository repository;
 
-    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
-    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
-
-    public JobDeviceManagementOperationServiceImpl() {
-        super(JobDeviceManagementOperationEntityManagerFactory.getInstance(), null);
+    @Inject
+    public JobDeviceManagementOperationServiceImpl(
+            JobDeviceManagementOperationFactory entityFactory,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            JobDeviceManagementOperationRepository repository) {
+        this.entityFactory = entityFactory;
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.repository = repository;
     }
 
     @Override
@@ -68,7 +76,7 @@ public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaServic
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
         //
         // Check duplicate
@@ -80,7 +88,7 @@ public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaServic
                 )
         );
 
-        if (count(query) > 0) {
+        if (repository.count(query) > 0) {
             List<Map.Entry<String, Object>> uniqueAttributes = new ArrayList<>();
 
             uniqueAttributes.add(new AbstractMap.SimpleEntry<>(JobDeviceManagementOperationAttributes.JOB_ID, jobDeviceManagementOperationCreator.getJobId()));
@@ -90,10 +98,15 @@ public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaServic
         }
 
         //
-        // Do create
-        return entityManagerSession.doTransactedAction(em -> JobDeviceManagementOperationDAO.create(em, jobDeviceManagementOperationCreator));
-    }
+        // Create JobDeviceManagementOperation
+        JobDeviceManagementOperation newEntity = entityFactory.newEntity(jobDeviceManagementOperationCreator.getScopeId());
+        newEntity.setJobId(jobDeviceManagementOperationCreator.getJobId());
+        newEntity.setDeviceManagementOperationId(jobDeviceManagementOperationCreator.getDeviceManagementOperationId());
 
+        //
+        // Do create
+        return repository.create(newEntity);
+    }
 
     @Override
     public JobDeviceManagementOperation find(KapuaId scopeId, KapuaId jobDeviceManagementOperationId) throws KapuaException {
@@ -104,11 +117,11 @@ public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaServic
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, scopeId));
 
         //
         // Do find
-        return entityManagerSession.doAction(em -> JobDeviceManagementOperationDAO.find(em, scopeId, jobDeviceManagementOperationId));
+        return repository.find(scopeId, jobDeviceManagementOperationId);
     }
 
     @Override
@@ -119,11 +132,11 @@ public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaServic
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
-        return entityManagerSession.doAction(em -> JobDeviceManagementOperationDAO.query(em, query));
+        return repository.query(query);
     }
 
     @Override
@@ -134,11 +147,11 @@ public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaServic
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
-        return entityManagerSession.doAction(em -> JobDeviceManagementOperationDAO.count(em, query));
+        return repository.count(query);
     }
 
     @Override
@@ -150,7 +163,7 @@ public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaServic
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -160,6 +173,6 @@ public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaServic
 
         //
         // Do delete
-        entityManagerSession.doTransactedAction(em -> JobDeviceManagementOperationDAO.delete(em, scopeId, jobDeviceManagementOperationId));
+        repository.delete(scopeId, jobDeviceManagementOperationId);
     }
 }
