@@ -15,6 +15,8 @@ package org.eclipse.kapua.service.authentication.shiro;
 import com.google.inject.Provides;
 import com.google.inject.name.Names;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
+import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
@@ -77,13 +79,16 @@ public class AuthenticationModule extends AbstractKapuaModule {
     @Provides
     @Singleton
     @Named("CredentialServiceConfigurationManager")
-    public CredentialServiceConfigurationManager deviceConnectionServiceConfigurationManager(
+    public CredentialServiceConfigurationManager credentialServiceConfigurationManager(
             AuthenticationEntityManagerFactory authenticationEntityManagerFactory,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester) {
         final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
-                new ServiceConfigImplJpaRepository(new EntityManagerSession(authenticationEntityManagerFactory)),
+                new CachingServiceConfigRepository(
+                        new ServiceConfigImplJpaRepository(new EntityManagerSession(authenticationEntityManagerFactory)),
+                        new AbstractKapuaConfigurableServiceCache().createCache()
+                ),
                 permissionFactory,
                 authorizationService,
                 rootUserTester);

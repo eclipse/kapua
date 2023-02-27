@@ -13,7 +13,9 @@
 package org.eclipse.kapua.service.user.internal;
 
 import com.google.inject.Provides;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.RootUserTesterImpl;
@@ -62,7 +64,10 @@ public class UserModule extends AbstractKapuaModule {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(UserService.class.getName(),
                         UserDomains.USER_DOMAIN,
-                        new ServiceConfigImplJpaRepository(new EntityManagerSession(userEntityManagerFactory)),
+                        new CachingServiceConfigRepository(
+                                new ServiceConfigImplJpaRepository(new EntityManagerSession(userEntityManagerFactory)),
+                                new AbstractKapuaConfigurableServiceCache().createCache()
+                        ),
                         permissionFactory,
                         authorizationService,
                         rootUserTester,

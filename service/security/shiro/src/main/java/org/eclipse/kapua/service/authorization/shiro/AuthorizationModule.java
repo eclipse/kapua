@@ -13,7 +13,9 @@
 package org.eclipse.kapua.service.authorization.shiro;
 
 import com.google.inject.Provides;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
@@ -118,7 +120,10 @@ public class AuthorizationModule extends AbstractKapuaModule {
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         RoleService.class.getName(),
                         AuthorizationDomains.ROLE_DOMAIN,
-                        new ServiceConfigImplJpaRepository(new EntityManagerSession(authorizationEntityManagerFactory)),
+                        new CachingServiceConfigRepository(
+                                new ServiceConfigImplJpaRepository(new EntityManagerSession(authorizationEntityManagerFactory)),
+                                new AbstractKapuaConfigurableServiceCache().createCache()
+                        ),
                         permissionFactory,
                         authorizationService,
                         rootUserTester,
@@ -202,7 +207,10 @@ public class AuthorizationModule extends AbstractKapuaModule {
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         GroupService.class.getName(),
                         AuthorizationDomains.GROUP_DOMAIN,
-                        new ServiceConfigImplJpaRepository(new EntityManagerSession(authorizationEntityManagerFactory)),
+                        new CachingServiceConfigRepository(
+                                new ServiceConfigImplJpaRepository(new EntityManagerSession(authorizationEntityManagerFactory)),
+                                new AbstractKapuaConfigurableServiceCache().createCache()
+                        ),
                         permissionFactory,
                         authorizationService,
                         rootUserTester,

@@ -71,7 +71,7 @@ import java.util.stream.Collectors;
 @Deprecated
 public abstract class AbstractKapuaConfigurableService extends AbstractKapuaService implements KapuaConfigurableService {
 
-    private static final EntityCache PRIVATE_ENTITY_CACHE = AbstractKapuaConfigurableServiceCache.getInstance().createCache();
+    private static final EntityCache PRIVATE_ENTITY_CACHE = new AbstractKapuaConfigurableServiceCache().createCache();
     private static final int LOCAL_CACHE_SIZE_MAX = SystemSetting.getInstance().getInt(SystemSettingKey.TMETADATA_LOCAL_CACHE_SIZE_MAXIMUM, 100);
 
     private final Domain domain;

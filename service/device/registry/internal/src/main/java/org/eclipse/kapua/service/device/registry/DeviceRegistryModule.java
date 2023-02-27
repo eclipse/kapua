@@ -13,7 +13,9 @@
 package org.eclipse.kapua.service.device.registry;
 
 import com.google.inject.Provides;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
@@ -80,7 +82,10 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
         return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerImpl(
                 DeviceConnectionService.class.getName(),
                 DeviceDomains.DEVICE_CONNECTION_DOMAIN,
-                new ServiceConfigImplJpaRepository(new EntityManagerSession(deviceEntityManagerFactory)),
+                new CachingServiceConfigRepository(
+                        new ServiceConfigImplJpaRepository(new EntityManagerSession(deviceEntityManagerFactory)),
+                        new AbstractKapuaConfigurableServiceCache().createCache()
+                ),
                 permissionFactory,
                 authorizationService,
                 rootUserTester));
@@ -102,7 +107,10 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         DeviceRegistryService.class.getName(),
                         DeviceDomains.DEVICE_DOMAIN,
-                        new ServiceConfigImplJpaRepository(new EntityManagerSession(deviceEntityManagerFactory)),
+                        new CachingServiceConfigRepository(
+                                new ServiceConfigImplJpaRepository(new EntityManagerSession(deviceEntityManagerFactory)),
+                                new AbstractKapuaConfigurableServiceCache().createCache()
+                        ),
                         permissionFactory,
                         authorizationService,
                         rootUserTester,

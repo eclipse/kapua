@@ -16,11 +16,7 @@ import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
 
 public class AbstractKapuaConfigurableServiceCache extends AbstractEntityCacheFactory {
 
-    private AbstractKapuaConfigurableServiceCache() {
+    public AbstractKapuaConfigurableServiceCache() {
         super("AbstractKapuaConfigurableServiceCacheId");
-    }
-
-    public static AbstractKapuaConfigurableServiceCache getInstance() {
-        return new AbstractKapuaConfigurableServiceCache();
     }
 }
