@@ -12,13 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
-import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
-import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -30,6 +28,7 @@ import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.device.registry.DeviceRepository;
 import org.eclipse.kapua.service.device.registry.common.DeviceValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,47 +44,21 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class DeviceRegistryServiceImpl
-        extends KapuaConfigurableServiceBase
+        extends KapuaConfigurableServiceLinker
         implements DeviceRegistryService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceRegistryServiceImpl.class);
+    private final DeviceRepository repository;
+    private final DeviceFactory entityFactory;
 
-    /**
-     * Constructor.
-     *
-     * @param deviceEntityManagerFactory The {@link DeviceEntityManagerFactory#getInstance()}.
-     * @since 1.0.0
-     * @deprecated since 2.0.0 - Please use {@link #DeviceRegistryServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, ServiceConfigurationManager)} instead. This constructor may be removed in future releases
-     */
-    @Deprecated
-    public DeviceRegistryServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
-        super(deviceEntityManagerFactory, DeviceRegistryCacheFactory.getInstance(), null);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @since 1.0.0
-     * @deprecated since 2.0.0 - Please use {@link #DeviceRegistryServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, ServiceConfigurationManager)} instead. This constructor may be removed in future releases
-     */
-    @Deprecated
-    public DeviceRegistryServiceImpl() {
-        this(DeviceEntityManagerFactory.getInstance());
-    }
-
-    /**
-     * Injectable Constructor
-     *
-     * @param deviceEntityManagerFactory  The {@link DeviceEntityManagerFactory} instance
-     * @param deviceRegistryCacheFactory  The {@link DeviceRegistryCacheFactory} instance
-     * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance
-     * @since 2.0.0
-     */
     @Inject
-    public DeviceRegistryServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory,
-                                     DeviceRegistryCacheFactory deviceRegistryCacheFactory,
-                                     @Named("DeviceRegistryServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
-        super(deviceEntityManagerFactory, deviceRegistryCacheFactory, serviceConfigurationManager);
+    public DeviceRegistryServiceImpl(
+            @Named("DeviceRegistryServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
+            DeviceRepository repository,
+            DeviceFactory entityFactory) {
+        super(serviceConfigurationManager);
+        this.repository = repository;
+        this.entityFactory = entityFactory;
     }
 
     @Override
@@ -99,19 +72,49 @@ public class DeviceRegistryServiceImpl
 
         //
         // Check duplicate clientId
-        DeviceQuery query = new DeviceQueryImpl(deviceCreator.getScopeId());
+        DeviceQuery query = entityFactory.newQuery(deviceCreator.getScopeId());
         query.setPredicate(query.attributePredicate(DeviceAttributes.CLIENT_ID, deviceCreator.getClientId()));
 
-        if (count(query) > 0) {
+        //TODO: check whether this is anywhere efficient
+        if (repository.count(query) > 0) {
             throw new KapuaDuplicateNameException(deviceCreator.getClientId());
         }
 
+        final Device device = entityFactory.newEntity(deviceCreator.getScopeId());
+
+        device.setGroupId(deviceCreator.getGroupId());
+        device.setClientId(deviceCreator.getClientId());
+        device.setStatus(deviceCreator.getStatus());
+        device.setDisplayName(deviceCreator.getDisplayName());
+        device.setSerialNumber(deviceCreator.getSerialNumber());
+        device.setModelId(deviceCreator.getModelId());
+        device.setModelName(deviceCreator.getModelName());
+        device.setImei(deviceCreator.getImei());
+        device.setImsi(deviceCreator.getImsi());
+        device.setIccid(deviceCreator.getIccid());
+        device.setBiosVersion(deviceCreator.getBiosVersion());
+        device.setFirmwareVersion(deviceCreator.getFirmwareVersion());
+        device.setOsVersion(deviceCreator.getOsVersion());
+        device.setJvmVersion(deviceCreator.getJvmVersion());
+        device.setOsgiFrameworkVersion(deviceCreator.getOsgiFrameworkVersion());
+        device.setApplicationFrameworkVersion(deviceCreator.getApplicationFrameworkVersion());
+        device.setConnectionInterface(deviceCreator.getConnectionInterface());
+        device.setConnectionIp(deviceCreator.getConnectionIp());
+        device.setApplicationIdentifiers(deviceCreator.getApplicationIdentifiers());
+        device.setAcceptEncoding(deviceCreator.getAcceptEncoding());
+        device.setCustomAttribute1(deviceCreator.getCustomAttribute1());
+        device.setCustomAttribute2(deviceCreator.getCustomAttribute2());
+        device.setCustomAttribute3(deviceCreator.getCustomAttribute3());
+        device.setCustomAttribute4(deviceCreator.getCustomAttribute4());
+        device.setCustomAttribute5(deviceCreator.getCustomAttribute5());
+        device.setExtendedProperties(deviceCreator.getExtendedProperties());
+
+        device.setConnectionId(deviceCreator.getConnectionId());
+        device.setLastEventId(deviceCreator.getLastEventId());
+
         //
         // Do create
-        return entityManagerSession.doTransactedAction(
-                EntityManagerContainer
-                        .<Device>create()
-                        .onResultHandler(entityManager -> DeviceDAO.create(entityManager, deviceCreator)));
+        return repository.create(device);
     }
 
     @Override
@@ -121,21 +124,12 @@ public class DeviceRegistryServiceImpl
 
         //
         // Do update
-        return entityManagerSession.doTransactedAction(
-                EntityManagerContainer
-                        .<Device>create()
-                        .onResultHandler(entityManager -> {
-                            Device currentDevice = DeviceDAO.find(entityManager, device.getScopeId(), device.getId());
-                            if (currentDevice == null) {
-                                throw new KapuaEntityNotFoundException(Device.TYPE, device.getId());
-                            }
-                            // Update
-                            return DeviceDAO.update(entityManager, device);
-                        }).onBeforeHandler(() -> {
-                                    entityCache.remove(device.getScopeId(), device);
-                                    return null;
-                                }
-                        ));
+        final Device currentDevice = repository.find(device.getScopeId(), device.getId());
+        if (currentDevice == null) {
+            throw new KapuaEntityNotFoundException(Device.TYPE, device.getId());
+        }
+        // Update
+        return repository.update(device);
     }
 
     @Override
@@ -145,12 +139,7 @@ public class DeviceRegistryServiceImpl
 
         //
         // Do find
-        return entityManagerSession.doAction(
-                EntityManagerContainer
-                        .<Device>create()
-                        .onResultHandler(entityManager -> DeviceDAO.find(entityManager, scopeId, entityId))
-                        .onBeforeHandler(() -> (Device) entityCache.get(scopeId, entityId))
-                        .onAfterHandler(entityCache::put));
+        return repository.find(scopeId, entityId);
     }
 
     @Override
@@ -159,22 +148,7 @@ public class DeviceRegistryServiceImpl
 
         //
         // Check cache and/or do find
-        Device device = (Device) ((DeviceRegistryCache) entityCache).getByClientId(scopeId, clientId);
-        if (device == null) {
-            DeviceQueryImpl query = new DeviceQueryImpl(scopeId);
-            query.setPredicate(query.attributePredicate(DeviceAttributes.CLIENT_ID, clientId));
-            query.setFetchAttributes(Lists.newArrayList(DeviceAttributes.CONNECTION, DeviceAttributes.LAST_EVENT));
-
-            //
-            // Query and parse result
-            DeviceListResult result = query(query);
-            if (!result.isEmpty()) {
-                device = result.getFirstItem();
-                entityCache.put(device);
-            }
-        }
-
-        return device;
+        return repository.findByClientId(scopeId, clientId);
     }
 
     @Override
@@ -184,10 +158,7 @@ public class DeviceRegistryServiceImpl
 
         //
         // Do query
-        return entityManagerSession.doAction(
-                EntityManagerContainer
-                        .<DeviceListResult>create()
-                        .onResultHandler(entityManager -> DeviceDAO.query(entityManager, query)));
+        return repository.query(query);
     }
 
     @Override
@@ -195,10 +166,7 @@ public class DeviceRegistryServiceImpl
         DeviceValidation.validateCountPreconditions(query);
 
         // Do count
-        return entityManagerSession.doAction(
-                EntityManagerContainer
-                        .<Long>create()
-                        .onResultHandler(entityManager -> DeviceDAO.count(entityManager, query)));
+        return repository.count(query);
     }
 
     @Override
@@ -207,16 +175,12 @@ public class DeviceRegistryServiceImpl
 
         //
         // Do delete
-        entityManagerSession.doTransactedAction(
-                EntityManagerContainer
-                        .create()
-                        .onResultHandler(entityManager -> DeviceDAO.delete(entityManager, scopeId, deviceId))
-                        .onAfterHandler((emptyParam) -> entityCache.remove(scopeId, deviceId)));
+        repository.delete(scopeId, deviceId);
     }
 
+    //@ListenServiceEvent(fromAddress="account")
+    //@ListenServiceEvent(fromAddress="authorization")
     public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
-        //@ListenServiceEvent(fromAddress="account")
-        //@ListenServiceEvent(fromAddress="authorization")
         if (kapuaEvent == null) {
             //service bus error. Throw some exception?
         }
@@ -233,17 +197,14 @@ public class DeviceRegistryServiceImpl
     //
 
     private void deleteDeviceByGroupId(KapuaId scopeId, KapuaId groupId) throws KapuaException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);
-
-        DeviceQuery query = deviceFactory.newQuery(scopeId);
+        DeviceQuery query = entityFactory.newQuery(scopeId);
         query.setPredicate(query.attributePredicate(DeviceAttributes.GROUP_ID, groupId));
 
-        DeviceListResult devicesToDelete = query(query);
+        DeviceListResult devicesToDelete = repository.query(query);
 
         for (Device d : devicesToDelete.getItems()) {
             d.setGroupId(null);
-            update(d);
+            repository.update(d);
         }
     }
 
@@ -253,10 +214,10 @@ public class DeviceRegistryServiceImpl
 
         DeviceQuery query = deviceFactory.newQuery(accountId);
 
-        DeviceListResult devicesToDelete = query(query);
+        DeviceListResult devicesToDelete = repository.query(query);
 
         for (Device d : devicesToDelete.getItems()) {
-            delete(d.getScopeId(), d.getId());
+            repository.delete(d.getScopeId(), d.getId());
         }
     }
 }

@@ -41,19 +41,22 @@ public class KapuaUpdatableEntityRepositoryJpaImpl<E extends KapuaUpdatableEntit
 
             //
             // Updating if not null
-            if (entityToUpdate != null) {
-                AbstractKapuaUpdatableEntity updatableEntity = (AbstractKapuaUpdatableEntity) entity;
-                updatableEntity.setCreatedOn(entityToUpdate.getCreatedOn());
-                updatableEntity.setCreatedBy(entityToUpdate.getCreatedBy());
-
-                em.merge(entity);
-                em.flush();
-                em.refresh(entityToUpdate);
-            } else {
-                throw new KapuaEntityNotFoundException(concreteClass.getSimpleName(), entity.getId());
+            if (entityToUpdate == null) {
+                throw new KapuaEntityNotFoundException(concreteClass.getSimpleName(), entityToUpdate.getId());
             }
 
-            return entityToUpdate;
+            return doUpdate(em, entityToUpdate);
         });
+    }
+
+    protected E doUpdate(EntityManager em, E entityToUpdate) throws KapuaEntityNotFoundException {
+        AbstractKapuaUpdatableEntity updatableEntity = (AbstractKapuaUpdatableEntity) entityToUpdate;
+        updatableEntity.setCreatedOn(entityToUpdate.getCreatedOn());
+        updatableEntity.setCreatedBy(entityToUpdate.getCreatedBy());
+
+        em.merge(entityToUpdate);
+        em.flush();
+        em.refresh(entityToUpdate);
+        return entityToUpdate;
     }
 }

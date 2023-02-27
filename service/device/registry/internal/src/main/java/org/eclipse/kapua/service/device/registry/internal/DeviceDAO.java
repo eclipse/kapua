@@ -30,7 +30,9 @@ import java.util.List;
  * {@link Device} DAO
  *
  * @since 1.0.0
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.device.registry.DeviceRepository} instead
  */
+@Deprecated
 public class DeviceDAO extends ServiceDAO {
 
     /**

@@ -50,7 +50,7 @@ public class DeviceEventFactoryImpl implements DeviceEventFactory {
 
     @Override
     public DeviceEvent newEntity(KapuaId scopeId) {
-        return new DeviceEventImpl();
+        return new DeviceEventImpl(scopeId);
     }
 
     @Override
