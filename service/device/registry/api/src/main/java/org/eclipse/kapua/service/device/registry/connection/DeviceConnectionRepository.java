@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,13 +10,10 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.registry;
+package org.eclipse.kapua.service.device.registry.connection;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.repository.KapuaUpdatableEntityRepository;
 
-public interface DeviceRepository extends
-        KapuaUpdatableEntityRepository<Device, DeviceListResult> {
-    Device findByClientId(KapuaId scopeId, String clientId) throws KapuaException;
+public interface DeviceConnectionRepository
+        extends KapuaUpdatableEntityRepository<DeviceConnection, DeviceConnectionListResult> {
 }

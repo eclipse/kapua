@@ -26,7 +26,9 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionList
  * Device connection DAO
  *
  * @since 1.0
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationRepository} instead
  */
+@Deprecated
 public class DeviceConnectionDAO extends ServiceDAO {
 
     /**

@@ -14,14 +14,11 @@ package org.eclipse.kapua.service.device.registry.connection.internal;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.eclipse.kapua.KapuaDuplicateNameException;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
-import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -35,10 +32,8 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCrea
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionListResult;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionRepository;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
-import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
-import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCache;
-import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCacheFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,25 +47,32 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
-public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase implements DeviceConnectionService {
+public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker implements DeviceConnectionService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceConnectionServiceImpl.class);
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
+    private final DeviceConnectionFactory entityFactory;
+    private final DeviceConnectionRepository repository;
 
     /**
      * Constructor.
      *
-     * @param deviceEntityManagerFactory  The {@link DeviceEntityManagerFactory} instance.
-     * @param deviceRegistryCacheFactory  The {@link DeviceRegistryCacheFactory} instance.
      * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance.
      * @since 2.0.0
      */
     @Inject
     public DeviceConnectionServiceImpl(
-            DeviceEntityManagerFactory deviceEntityManagerFactory,
-            DeviceRegistryCacheFactory deviceRegistryCacheFactory,
-            @Named("DeviceConnectionServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager
-    ) {
-        super(deviceEntityManagerFactory, deviceRegistryCacheFactory, serviceConfigurationManager);
+            @Named("DeviceConnectionServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            DeviceConnectionFactory entityFactory,
+            DeviceConnectionRepository repository) {
+        super(serviceConfigurationManager);
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.entityFactory = entityFactory;
+        this.repository = repository;
     }
 
     @Override
@@ -87,9 +89,6 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
 
         //
@@ -97,16 +96,24 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
         DeviceConnectionQuery query = new DeviceConnectionQueryImpl(deviceConnectionCreator.getScopeId());
         query.setPredicate(query.attributePredicate(DeviceConnectionAttributes.CLIENT_ID, deviceConnectionCreator.getClientId()));
 
-        if (count(query) > 0) {
+        //TODO: check whether this is anywhere efficient
+        if (repository.count(query) > 0) {
             throw new KapuaDuplicateNameException(deviceConnectionCreator.getClientId());
         }
 
+        final DeviceConnection deviceConnection = entityFactory.newEntity(deviceConnectionCreator.getScopeId());
+        deviceConnection.setStatus(deviceConnectionCreator.getStatus());
+        deviceConnection.setClientId(deviceConnectionCreator.getClientId());
+        deviceConnection.setUserId(deviceConnectionCreator.getUserId());
+        deviceConnection.setUserCouplingMode(deviceConnectionCreator.getUserCouplingMode());
+        deviceConnection.setReservedUserId(deviceConnectionCreator.getReservedUserId());
+        deviceConnection.setAllowUserChange(deviceConnectionCreator.getAllowUserChange());
+        deviceConnection.setProtocol(deviceConnectionCreator.getProtocol());
+        deviceConnection.setClientIp(deviceConnectionCreator.getClientIp());
+        deviceConnection.setServerIp(deviceConnectionCreator.getServerIp());
         //
         // Do create
-        return entityManagerSession.doTransactedAction(
-                EntityManagerContainer
-                        .<DeviceConnection>create()
-                        .onResultHandler(entityManager -> DeviceConnectionDAO.create(entityManager, deviceConnectionCreator)));
+        return repository.create(deviceConnection);
     }
 
     @Override
@@ -120,25 +127,11 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
 
         //
         // Do Update
-        return entityManagerSession.doTransactedAction(
-                EntityManagerContainer
-                        .<DeviceConnection>create()
-                        .onResultHandler(entityManager -> {
-                            if (DeviceConnectionDAO.find(entityManager, deviceConnection.getScopeId(), deviceConnection.getId()) == null) {
-                                throw new KapuaEntityNotFoundException(DeviceConnection.TYPE, deviceConnection.getId());
-                            }
-                            return DeviceConnectionDAO.update(entityManager, deviceConnection);
-                        }).onBeforeHandler(() -> {
-                            ((DeviceRegistryCache) entityCache).removeByDeviceConnectionId(deviceConnection.getScopeId(), deviceConnection.getId());
-                            return null;
-                        }));
+        return repository.update(deviceConnection);
     }
 
     @Override
@@ -151,17 +144,11 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
-        return entityManagerSession.doAction(
-                EntityManagerContainer
-                        .<DeviceConnection>create()
-                        .onResultHandler(entityManager -> DeviceConnectionDAO.find(entityManager, scopeId, entityId)));
+        return repository.find(scopeId, entityId);
     }
 
     @Override
@@ -179,7 +166,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
 
         //
         // Do find
-        return query(query).getFirstItem();
+        return repository.query(query).getFirstItem();
     }
 
     @Override
@@ -191,17 +178,11 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
-        return entityManagerSession.doAction(
-                EntityManagerContainer
-                        .<DeviceConnectionListResult>create()
-                        .onResultHandler(entityManager -> DeviceConnectionDAO.query(entityManager, query)));
+        return repository.query(query);
     }
 
     @Override
@@ -213,17 +194,11 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
-        return entityManagerSession.doAction(
-                EntityManagerContainer
-                        .<Long>create()
-                        .onResultHandler(entityManager -> DeviceConnectionDAO.count(entityManager, query)));
+        return repository.count(query);
     }
 
     @Override
@@ -236,23 +211,9 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
 
-        entityManagerSession.doTransactedAction(
-                EntityManagerContainer
-                        .create()
-                        .onResultHandler(entityManager -> {
-                            // TODO: check if it is correct to remove this statement (already thrown by the delete method, but
-                            //  without TYPE)
-                            if (DeviceConnectionDAO.find(entityManager, scopeId, deviceConnectionId) == null) {
-                                throw new KapuaEntityNotFoundException(DeviceConnection.TYPE, deviceConnectionId);
-                            }
-                            return DeviceConnectionDAO.delete(entityManager, scopeId, deviceConnectionId);
-                        })
-                        .onAfterHandler((emptyParam) -> ((DeviceRegistryCache) entityCache).removeByDeviceConnectionId(scopeId, deviceConnectionId)));
+        repository.delete(scopeId, deviceConnectionId);
     }
 
     @Override
@@ -283,15 +244,12 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
     //
 
     private void deleteConnectionByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceConnectionFactory deviceConnectionFactory = locator.getFactory(DeviceConnectionFactory.class);
+        DeviceConnectionQuery query = entityFactory.newQuery(accountId);
 
-        DeviceConnectionQuery query = deviceConnectionFactory.newQuery(accountId);
-
-        DeviceConnectionListResult deviceConnectionsToDelete = query(query);
+        DeviceConnectionListResult deviceConnectionsToDelete = repository.query(query);
 
         for (DeviceConnection dc : deviceConnectionsToDelete.getItems()) {
-            delete(dc.getScopeId(), dc.getId());
+            repository.delete(dc.getScopeId(), dc.getId());
         }
     }
 }

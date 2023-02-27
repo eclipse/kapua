@@ -38,11 +38,14 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.device.registry.DeviceRepository;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionRepository;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionFactoryImpl;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionServiceImpl;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventFactoryImpl;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventServiceImpl;
@@ -119,7 +122,10 @@ public class TagLocatorConfiguration {
                 bind(DeviceConnectionService.class).to(DeviceConnectionServiceImpl.class);
                 bind(DeviceConnectionFactory.class).to(DeviceConnectionFactoryImpl.class);
 
-                bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl());
+                bind(DeviceRepository.class).toInstance(Mockito.mock(DeviceRepository.class));
+                bind(DeviceConnectionRepository.class).toInstance(Mockito.mock(DeviceConnectionRepository.class));
+                bind(DeviceEventRepository.class).toInstance(Mockito.mock(DeviceEventRepository.class));
+                bind(DeviceEventService.class).to(DeviceEventServiceImpl.class);
                 bind(DeviceEventFactory.class).toInstance(new DeviceEventFactoryImpl());
                 bind(KapuaMessageFactory.class).toInstance(new KapuaMessageFactoryImpl());
                 bind(ServiceConfigurationManager.class)

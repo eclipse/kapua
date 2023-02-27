@@ -12,9 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
+import com.google.common.collect.Lists;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityRepositoryJpaImpl;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
 
@@ -25,5 +29,13 @@ public class DeviceImplJpaRepository
         implements DeviceRepository {
     public DeviceImplJpaRepository(Supplier<DeviceListResult> listProvider, EntityManagerSession entityManagerSession) {
         super(DeviceImpl.class, listProvider, entityManagerSession);
+    }
+
+    @Override
+    public Device findByClientId(KapuaId scopeId, String clientId) throws KapuaException {
+        DeviceQueryImpl query = new DeviceQueryImpl(scopeId);
+        query.setPredicate(query.attributePredicate(DeviceAttributes.CLIENT_ID, clientId));
+        query.setFetchAttributes(Lists.newArrayList(DeviceAttributes.CONNECTION, DeviceAttributes.LAST_EVENT));
+        return this.query(query).getFirstItem();
     }
 }

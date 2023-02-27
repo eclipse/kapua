@@ -311,17 +311,20 @@ public class KapuaEntityRepositoryJpaImpl<E extends KapuaEntity, C extends E, L 
 
             //
             // Deleting if found
-            if (entityToDelete != null) {
-                em.remove(entityToDelete);
-                em.flush();
-            } else {
+            if (entityToDelete == null) {
                 throw new KapuaEntityNotFoundException(concreteClass.getSimpleName(), entityId);
             }
-
-            //
-            // Returning deleted entity
-            return entityToDelete;
+            return doDelete(em, entityToDelete);
         });
+    }
+
+    protected E doDelete(EntityManager em, E entityToDelete) {
+        em.remove(entityToDelete);
+        em.flush();
+
+        //
+        // Returning deleted entity
+        return entityToDelete;
     }
 
     //

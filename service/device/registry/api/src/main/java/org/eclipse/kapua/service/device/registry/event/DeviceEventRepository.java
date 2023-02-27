@@ -10,13 +10,10 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.registry;
+package org.eclipse.kapua.service.device.registry.event;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.repository.KapuaUpdatableEntityRepository;
+import org.eclipse.kapua.repository.KapuaEntityRepository;
 
-public interface DeviceRepository extends
-        KapuaUpdatableEntityRepository<Device, DeviceListResult> {
-    Device findByClientId(KapuaId scopeId, String clientId) throws KapuaException;
+public interface DeviceEventRepository
+        extends KapuaEntityRepository<DeviceEvent, DeviceEventListResult> {
 }
