@@ -19,29 +19,19 @@ import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
  * DeviceManagementOperation Service {@link EntityManagerFactory} implementation.
  *
  * @since 1.1.0
+ * @deprecated since 2.0.0 - use repository pattern implementations instead
  */
+@Deprecated
 public class DeviceManagementOperationEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-device_management_operation_registry";
-
-    private static final DeviceManagementOperationEntityManagerFactory INSTANCE = new DeviceManagementOperationEntityManagerFactory();
 
     /**
      * Constructor.
      *
      * @since 1.1.0
      */
-    private DeviceManagementOperationEntityManagerFactory() {
+    public DeviceManagementOperationEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME);
-    }
-
-    /**
-     * Returns the {@link EntityManagerFactory} instance.
-     *
-     * @return The {@link EntityManagerFactory} instance.
-     * @since 1.1.0
-     */
-    public static DeviceManagementOperationEntityManagerFactory getInstance() {
-        return INSTANCE;
     }
 }

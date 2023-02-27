@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.device.management.job.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.ServiceConfigRepository;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -27,7 +26,7 @@ import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperat
  * {@link JobDeviceManagementOperation} {@link ServiceDAO}
  *
  * @since 1.1.0
- * @deprecated since 2.0.0 - use {@link ServiceConfigRepository} instead
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationRepository} instead
  */
 @Deprecated
 public class JobDeviceManagementOperationDAO {
