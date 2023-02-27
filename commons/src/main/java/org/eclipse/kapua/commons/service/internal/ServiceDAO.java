@@ -97,7 +97,9 @@ import java.util.Map;
  * {@link ServiceDAO} utility methods.
  *
  * @since 1.0.0
+ * @deprecated since 2.0.0 - this is not testable, consider using {@link org.eclipse.kapua.repository.KapuaEntityRepository} instead
  */
+@Deprecated
 public class ServiceDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServiceDAO.class);
@@ -157,7 +159,9 @@ public class ServiceDAO {
      * Constructor.
      *
      * @since 1.0.0
+     * @deprecated since 2.0.0 - this is not testable, consider using {@link org.eclipse.kapua.repository.KapuaEntityRepository} instead
      */
+    @Deprecated
     protected ServiceDAO() {
     }
 
@@ -170,7 +174,9 @@ public class ServiceDAO {
      * @param entity The {@link KapuaEntity} to be persisted.
      * @return The persisted {@link KapuaEntity}.
      * @since 1.0.0
+     * @deprecated since 2.0.0 - this is not testable, consider using {@link org.eclipse.kapua.repository.KapuaEntityRepository#create(KapuaEntity)} instead
      */
+    @Deprecated
     public static <E extends KapuaEntity> E create(@NonNull EntityManager em, @NonNull E entity) {
         try {
             em.persist(entity);
@@ -202,7 +208,9 @@ public class ServiceDAO {
      * @return The updated {@link KapuaUpdatableEntity}.
      * @throws KapuaEntityNotFoundException If the {@link KapuaEntity} does not exist.
      * @since 1.0.0
+     * @deprecated since 2.0.0 - this is not testable, consider using {@link org.eclipse.kapua.repository.KapuaUpdatableEntityRepository#update(KapuaUpdatableEntity)} instead
      */
+    @Deprecated
     public static <E extends KapuaUpdatableEntity> E update(@NonNull EntityManager em, @NonNull Class<E> clazz, @NonNull E entity) throws KapuaEntityNotFoundException {
         //
         // Checking existence
@@ -233,7 +241,9 @@ public class ServiceDAO {
      * @param scopeId  The {@link KapuaEntity#getScopeId()} the entity to be found.
      * @param entityId The {@link KapuaEntity#getId()} of the entity to be found.
      * @since 1.0.0
+     * @deprecated since 2.0.0 - this is not testable, consider using {@link org.eclipse.kapua.repository.KapuaEntityRepository#find(KapuaId, KapuaId)} instead
      */
+    @Deprecated
     public static <E extends KapuaEntity> E find(@NonNull EntityManager em, @NonNull Class<E> clazz, @Null KapuaId scopeId, @NonNull KapuaId entityId) {
         //
         // Checking existence
@@ -266,8 +276,10 @@ public class ServiceDAO {
      * @return The {@link KapuaNamedEntity} found, or {@code null} if not found.
      * @throws NonUniqueResultException When more than one result is returned
      * @since 2.0.0
+     * @deprecated since 2.0.0 - this is not testable, consider using {@link org.eclipse.kapua.repository.KapuaNamedEntityRepository#findByName(String)} instead
      */
     @Nullable
+    @Deprecated
     public static <E extends KapuaNamedEntity> E findByName(@NonNull EntityManager em,
                                                             @NonNull Class<E> clazz,
                                                             @NonNull Object value) {
@@ -284,8 +296,10 @@ public class ServiceDAO {
      * @return The {@link KapuaNamedEntity} found, or {@code null} if not found.
      * @throws NonUniqueResultException When more than one result is returned.
      * @since 1.0.0
+     * @deprecated since 2.0.0 - this is not testable, consider using {@link org.eclipse.kapua.repository.KapuaNamedEntityRepository#findByName(KapuaId, String)} instead
      */
     @Nullable
+    @Deprecated
     public static <E extends KapuaNamedEntity> E findByName(@NonNull EntityManager em,
                                                             @NonNull Class<E> clazz,
                                                             @NonNull KapuaId scopeId,
@@ -388,7 +402,9 @@ public class ServiceDAO {
      * @return The reference of the {@code resultContainer} parameter. Results are added to the given {@code resultContainer} parameter.
      * @throws KapuaException If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates(QueryPredicate, Map, CriteriaBuilder, Root, EntityType)}.
      * @since 1.0.0
+     * @deprecated since 2.0.0 - this is not testable, consider using {@link org.eclipse.kapua.repository.KapuaEntityRepository#query(KapuaQuery)} instead
      */
+    @Deprecated
     public static <I extends KapuaEntity, E extends I, L extends KapuaListResult<I>> L query(@NonNull EntityManager em,
                                                                                              @NonNull Class<I> interfaceClass,
                                                                                              @NonNull Class<E> implementingClass,
@@ -510,7 +526,9 @@ public class ServiceDAO {
      * @return The number of {@link KapuaEntity}es that matched the filter predicates.
      * @throws KapuaException If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates(QueryPredicate, Map, CriteriaBuilder, Root, EntityType)}.
      * @since 1.0.0
+     * @deprecated since 2.0.0 - this is not testable, consider using {@link org.eclipse.kapua.repository.KapuaEntityRepository#count(KapuaQuery)} instead
      */
+    @Deprecated
     public static <I extends KapuaEntity, E extends I> long count(@NonNull EntityManager em,
                                                                   @NonNull Class<I> interfaceClass,
                                                                   @NonNull Class<E> implementingClass,
@@ -577,7 +595,9 @@ public class ServiceDAO {
      * @return The deleted {@link KapuaEntity}.
      * @throws KapuaEntityNotFoundException If the {@link KapuaEntity} does not exists.
      * @since 1.0.0
+     * @deprecated since 2.0.0 - this is not testable, consider using {@link org.eclipse.kapua.repository.KapuaEntityRepository#delete(KapuaId, KapuaId)} instead
      */
+    @Deprecated
     public static <E extends KapuaEntity> E delete(@NonNull EntityManager em, @NonNull Class<E> clazz, @NonNull KapuaId scopeId, @NonNull KapuaId entityId)
             throws KapuaEntityNotFoundException {
         //
