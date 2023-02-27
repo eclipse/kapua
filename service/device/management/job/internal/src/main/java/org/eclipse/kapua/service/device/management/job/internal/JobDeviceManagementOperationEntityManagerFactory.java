@@ -19,29 +19,20 @@ import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
  * {@link JobDeviceManagementOperationServiceImpl} {@link EntityManagerFactory} implementation.
  *
  * @since 1.1.0
+ * @deprecated since 2.0.0 - use repository pattern implementations instead
  */
+@Deprecated
 public class JobDeviceManagementOperationEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-job-device-management-operation";
-
-    private static final JobDeviceManagementOperationEntityManagerFactory INSTANCE = new JobDeviceManagementOperationEntityManagerFactory();
 
     /**
      * Constructor.
      *
      * @since 1.1.0
      */
-    private JobDeviceManagementOperationEntityManagerFactory() {
+    public JobDeviceManagementOperationEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME);
     }
 
-    /**
-     * Returns the {@link EntityManagerFactory} instance
-     *
-     * @return The {@link EntityManagerFactory} instance.
-     * @since 1.1.0
-     */
-    public static JobDeviceManagementOperationEntityManagerFactory getInstance() {
-        return INSTANCE;
-    }
 }
