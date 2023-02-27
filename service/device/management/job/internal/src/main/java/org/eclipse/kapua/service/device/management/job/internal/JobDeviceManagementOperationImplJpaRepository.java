@@ -16,6 +16,7 @@ import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityRepositoryJpaImpl;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationListResult;
+import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationRepository;
 
 import java.util.function.Supplier;
 

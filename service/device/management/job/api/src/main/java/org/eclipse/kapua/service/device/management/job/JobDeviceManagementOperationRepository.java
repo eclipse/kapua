@@ -10,11 +10,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.job.internal;
+package org.eclipse.kapua.service.device.management.job;
 
 import org.eclipse.kapua.repository.KapuaUpdatableEntityRepository;
-import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperation;
-import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationListResult;
 
 public interface JobDeviceManagementOperationRepository
         extends KapuaUpdatableEntityRepository<JobDeviceManagementOperation, JobDeviceManagementOperationListResult> {

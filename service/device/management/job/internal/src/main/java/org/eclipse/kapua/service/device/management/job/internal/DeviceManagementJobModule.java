@@ -17,6 +17,7 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationFactory;
+import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationRepository;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationService;
 
 import javax.inject.Singleton;

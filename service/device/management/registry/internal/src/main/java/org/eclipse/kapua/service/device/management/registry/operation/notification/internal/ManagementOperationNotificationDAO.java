@@ -26,9 +26,10 @@ import org.eclipse.kapua.service.device.management.registry.operation.notificati
  * DeviceManagementOperationNotification DAO
  *
  * @since 1.0
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationRepository} instead
  */
+@Deprecated
 public class ManagementOperationNotificationDAO {
-
     private ManagementOperationNotificationDAO() {
     }
 

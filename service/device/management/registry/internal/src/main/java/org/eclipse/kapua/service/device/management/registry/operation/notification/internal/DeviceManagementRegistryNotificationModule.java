@@ -12,9 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.registry.operation.notification.internal;
 
+import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationRepository;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationService;
+
+import javax.inject.Singleton;
 
 public class DeviceManagementRegistryNotificationModule extends AbstractKapuaModule {
     @Override
@@ -22,4 +28,14 @@ public class DeviceManagementRegistryNotificationModule extends AbstractKapuaMod
         bind(ManagementOperationNotificationFactory.class).to(ManagementOperationNotificationFactoryImpl.class);
         bind(ManagementOperationNotificationService.class).to(ManagementOperationNotificationServiceImpl.class);
     }
+
+    @Provides
+    @Singleton
+    ManagementOperationNotificationRepository managementOperationNotificationRepository(ManagementOperationNotificationFactory entityFactory) {
+        return new ManagementOperationNotificationImplJpaRepository(
+                () -> entityFactory.newListResult(),
+                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-device_management_operation_registry") {
+                }));
+    }
+
 }
