@@ -33,20 +33,20 @@ public class DeviceConnectionRepositoryImplJpaRepository
     @Override
     // TODO: check if it is correct to remove this statement (already thrown by the update method, but
     //  without TYPE)
-    public DeviceConnection update(DeviceConnection deviceConnection) throws KapuaException {
+    public DeviceConnection update(DeviceConnection updatedEntity) throws KapuaException {
         return entityManagerSession.doTransactedAction(em -> {
 
             //
             // Checking existence
-            DeviceConnection entityToUpdate = em.find(concreteClass, deviceConnection.getId());
+            DeviceConnection currentEntity = em.find(concreteClass, updatedEntity.getId());
 
             //
             // Updating if not null
-            if (entityToUpdate == null) {
-                throw new KapuaEntityNotFoundException(DeviceConnection.TYPE, deviceConnection.getId());
+            if (currentEntity == null) {
+                throw new KapuaEntityNotFoundException(DeviceConnection.TYPE, updatedEntity.getId());
             }
 
-            return doUpdate(em, entityToUpdate);
+            return doUpdate(em, currentEntity, updatedEntity);
         });
     }
 

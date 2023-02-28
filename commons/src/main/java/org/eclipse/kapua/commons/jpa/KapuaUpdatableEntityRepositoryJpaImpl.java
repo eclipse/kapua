@@ -32,31 +32,31 @@ public class KapuaUpdatableEntityRepositoryJpaImpl<E extends KapuaUpdatableEntit
     }
 
     @Override
-    public E update(E entity) throws KapuaException {
+    public E update(E updatedEntity) throws KapuaException {
         return entityManagerSession.doTransactedAction(em -> {
 
             //
             // Checking existence
-            E entityToUpdate = em.find(concreteClass, entity.getId());
+            E currentEntity = em.find(concreteClass, updatedEntity.getId());
 
             //
             // Updating if not null
-            if (entityToUpdate == null) {
-                throw new KapuaEntityNotFoundException(concreteClass.getSimpleName(), entityToUpdate.getId());
+            if (currentEntity == null) {
+                throw new KapuaEntityNotFoundException(concreteClass.getSimpleName(), updatedEntity.getId());
             }
 
-            return doUpdate(em, entityToUpdate);
+            return doUpdate(em, currentEntity, updatedEntity);
         });
     }
 
-    protected E doUpdate(EntityManager em, E entityToUpdate) throws KapuaEntityNotFoundException {
-        AbstractKapuaUpdatableEntity updatableEntity = (AbstractKapuaUpdatableEntity) entityToUpdate;
-        updatableEntity.setCreatedOn(entityToUpdate.getCreatedOn());
-        updatableEntity.setCreatedBy(entityToUpdate.getCreatedBy());
+    protected E doUpdate(EntityManager em, E currentEntity, E updatedEntity) throws KapuaEntityNotFoundException {
+        AbstractKapuaUpdatableEntity updatableEntity = (AbstractKapuaUpdatableEntity) updatedEntity;
+        updatableEntity.setCreatedOn(currentEntity.getCreatedOn());
+        updatableEntity.setCreatedBy(currentEntity.getCreatedBy());
 
-        em.merge(entityToUpdate);
+        em.merge(updatedEntity);
         em.flush();
-        em.refresh(entityToUpdate);
-        return entityToUpdate;
+        em.refresh(currentEntity);
+        return currentEntity;
     }
 }
