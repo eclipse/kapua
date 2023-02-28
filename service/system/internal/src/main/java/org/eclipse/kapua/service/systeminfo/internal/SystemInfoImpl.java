@@ -17,6 +17,9 @@ import org.eclipse.kapua.service.systeminfo.SystemInfo;
 public class SystemInfoImpl implements SystemInfo {
     private String version;
     private String buildNumber;
+    private String buildDate;
+    private String buildBranch;
+    private String buildRevision;
 
 
     @Override
@@ -32,13 +35,49 @@ public class SystemInfoImpl implements SystemInfo {
 
 
     @Override
-    public String getBuildVersion() {
+    public String getRevision() {
+        return buildRevision;
+    }
+
+
+    @Override
+    public void setRevision(String revision) {
+        this.buildRevision = revision;
+    }
+
+
+    @Override
+    public String getBuildTimestamp() {
+        return buildDate;
+    }
+
+
+    @Override
+    public void setBuildTimestamp(String buildDate) {
+        this.buildDate = buildDate;
+    }
+
+
+    @Override
+    public String getBuildNumber() {
         return buildNumber;
     }
 
 
     @Override
-    public void setBuildVersion(String buildVersion) {
-        this.buildNumber = buildVersion;
+    public void setBuildNumber(String buildNumber) {
+        this.buildNumber = buildNumber;
+    }
+
+
+    @Override
+    public String getBuildBranch() {
+        return buildBranch;
+    }
+
+
+    @Override
+    public void setBuildBranch(String buildBranch) {
+        this.buildBranch = buildBranch;
     }
 }

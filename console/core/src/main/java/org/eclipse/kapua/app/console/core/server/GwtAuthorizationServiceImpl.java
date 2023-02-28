@@ -293,7 +293,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         SystemSetting commonsConfig = SystemSetting.getInstance();
 
         gwtSession.setVersion(commonsConfig.getString(SystemSettingKey.VERSION));
-        gwtSession.setBuildVersion(commonsConfig.getString(SystemSettingKey.BUILD_VERSION));
+        gwtSession.setBuildVersion(commonsConfig.getString(SystemSettingKey.BUILD_REVISION));
         gwtSession.setBuildNumber(commonsConfig.getString(SystemSettingKey.BUILD_NUMBER));
         gwtSession.setSsoEnabled(ConsoleSsoLocator.getLocator(this).getService().isEnabled());
         gwtSession.setDatastoreDisabled(DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false));

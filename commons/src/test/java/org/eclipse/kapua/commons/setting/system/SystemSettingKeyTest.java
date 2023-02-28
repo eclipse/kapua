@@ -24,7 +24,7 @@ public class SystemSettingKeyTest {
     @Test
     public void keyTest() {
         SystemSettingKey[] systemSettings = {SystemSettingKey.SYS_PROVISION_ACCOUNT_NAME, SystemSettingKey.SYS_ADMIN_ACCOUNT,
-                SystemSettingKey.SYS_ADMIN_USERNAME, SystemSettingKey.VERSION, SystemSettingKey.BUILD_VERSION, SystemSettingKey.BUILD_NUMBER,
+                SystemSettingKey.SYS_ADMIN_USERNAME, SystemSettingKey.VERSION, SystemSettingKey.BUILD_REVISION, SystemSettingKey.BUILD_NUMBER,
                 SystemSettingKey.CHAR_ENCODING, SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER, SystemSettingKey.DB_NAME, SystemSettingKey.DB_USERNAME,
                 SystemSettingKey.DB_PASSWORD, SystemSettingKey.DB_JDBC_DRIVER, SystemSettingKey.DB_CONNECTION_SCHEME, SystemSettingKey.DB_CONNECTION_HOST,
                 SystemSettingKey.DB_CONNECTION_PORT, SystemSettingKey.DB_CONNECTION_USE_SSL, SystemSettingKey.DB_CONNECTION_TRUSTSTORE_URL,
@@ -41,7 +41,7 @@ public class SystemSettingKeyTest {
                 SystemSettingKey.CACHING_PROVIDER, SystemSettingKey.TMETADATA_LOCAL_CACHE_SIZE_MAXIMUM, SystemSettingKey.CACHE_CONFIG_URL,
                 SystemSettingKey.CACHE_TTL, SystemSettingKey.JCACHE_EXPIRY_POLICY};
 
-        String[] expectedValue = {"commons.sys.provision.account.name", "commons.sys.admin.account", "commons.sys.admin.userName", "commons.version", "commons.build.version",
+        String[] expectedValue = {"commons.sys.provision.account.name", "commons.sys.admin.account", "commons.sys.admin.userName", "commons.version", "commons.build.revision",
                 "commons.build.number", "character.encoding", "commons.db.jdbcConnectionUrlResolver", "commons.db.name", "commons.db.username", "commons.db.password",
                 "commons.db.jdbc.driver", "commons.db.connection.scheme", "commons.db.connection.host", "commons.db.connection.port", "commons.db.connection.useSsl",
                 "commons.db.connection.trust.store.url", "commons.db.connection.trust.store.pwd", "commons.db.connection.additionalOptions", "commons.db.schema",

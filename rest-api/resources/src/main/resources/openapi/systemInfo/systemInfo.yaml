@@ -34,9 +34,21 @@ components:
         version:
           type: string
           description: Version of the system
-        build:
+        revision:
           type: string
-          description: Build version of the system
+          description: Last commit hash of the system
+        buildDate:
+          type: string
+          description: Build date of the system
+        buildNumber:
+          type: string
+          description: Build number of the system
+        buildBranch:
+          type: string
+          description: Build branch of the system
       example:
-        version: 5.10.0
-        build: 0217c5988517bb3cfeef783d43438a8b8faaa1d8
+        buildBranch: release/2.0.0,
+        buildNumber: 142
+        buildDate: 2023-03-02T08:50:59Z UTC
+        revision: e53c7b7d4208204a0791ec296fa3d4dbe2344585
+        version": 2.0.0
