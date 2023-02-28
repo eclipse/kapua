@@ -23,12 +23,12 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceDomains;
-import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.registry.DeviceTransactedRepository;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventTransactedRepository;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,17 +52,17 @@ public class DeviceEventServiceImpl
 
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
-    private final DeviceRepository deviceRepository;
+    private final DeviceTransactedRepository deviceRepository;
     private final DeviceEventFactory entityFactory;
-    private final DeviceEventRepository repository;
+    private final DeviceEventTransactedRepository repository;
 
     @Inject
     public DeviceEventServiceImpl(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            DeviceRepository deviceRepository,
+            DeviceTransactedRepository deviceRepository,
             DeviceEventFactory entityFactory,
-            DeviceEventRepository deviceEventRepository) {
+            DeviceEventTransactedRepository deviceEventRepository) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.deviceRepository = deviceRepository;

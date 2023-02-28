@@ -23,18 +23,18 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
-import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
+import org.eclipse.kapua.service.authorization.access.AccessInfoTransactedRepository;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
-import org.eclipse.kapua.service.authorization.access.AccessRoleRepository;
+import org.eclipse.kapua.service.authorization.access.AccessRoleTransactedRepository;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
-import org.eclipse.kapua.service.authorization.role.RoleRepository;
+import org.eclipse.kapua.service.authorization.role.RoleTransactedRepository;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -47,17 +47,17 @@ import javax.inject.Singleton;
 @Singleton
 public class AccessRoleServiceImpl implements AccessRoleService {
 
-    private final RoleRepository roleRepository;
-    private final AccessInfoRepository accessInfoRepository;
-    private final AccessRoleRepository accessRoleRepository;
+    private final RoleTransactedRepository roleRepository;
+    private final AccessInfoTransactedRepository accessInfoRepository;
+    private final AccessRoleTransactedRepository accessRoleRepository;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
 
     @Inject
     public AccessRoleServiceImpl(
-            RoleRepository roleRepository,
-            AccessInfoRepository accessInfoRepository,
-            AccessRoleRepository accessRoleRepository,
+            RoleTransactedRepository roleRepository,
+            AccessInfoTransactedRepository accessInfoRepository,
+            AccessRoleTransactedRepository accessRoleRepository,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory) {
         this.roleRepository = roleRepository;

@@ -21,13 +21,13 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationTransactedRepository;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementRegistryDomains;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationCreator;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationListResult;
-import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationRepository;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationTransactedRepository;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationService;
 
 import javax.inject.Inject;
@@ -39,16 +39,16 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final ManagementOperationNotificationFactory entityFactory;
-    private final ManagementOperationNotificationRepository repository;
-    private final DeviceManagementOperationRepository deviceManagementOperationRepository;
+    private final ManagementOperationNotificationTransactedRepository repository;
+    private final DeviceManagementOperationTransactedRepository deviceManagementOperationRepository;
 
     @Inject
     public ManagementOperationNotificationServiceImpl(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             ManagementOperationNotificationFactory entityFactory,
-            ManagementOperationNotificationRepository repository,
-            DeviceManagementOperationRepository deviceManagementOperationRepository) {
+            ManagementOperationNotificationTransactedRepository repository,
+            DeviceManagementOperationTransactedRepository deviceManagementOperationRepository) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.entityFactory = entityFactory;

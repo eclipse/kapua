@@ -13,13 +13,12 @@
 package org.eclipse.kapua.extras.migrator.encryption.job;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
-import org.eclipse.kapua.extras.migrator.encryption.MigratorEntityManagerFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepCreator;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
+import org.eclipse.kapua.service.job.step.JobStepTransactedRepository;
 import org.eclipse.kapua.service.job.step.JobStepService;
 
 import javax.inject.Singleton;
@@ -30,25 +29,26 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
-public class JobStepMigratorServiceImpl extends AbstractKapuaService implements JobStepService {
+public class JobStepMigratorServiceImpl implements JobStepService {
+    private final JobStepTransactedRepository jobStepRepository;
 
-    public JobStepMigratorServiceImpl() {
-        super(MigratorEntityManagerFactory.getInstance(), null);
+    public JobStepMigratorServiceImpl(JobStepTransactedRepository jobStepRepository) {
+        this.jobStepRepository = jobStepRepository;
     }
 
     @Override
     public JobStep update(JobStep jobStep) throws KapuaException {
-        return entityManagerSession.doTransactedAction((em) -> JobStepMigratorDAO.update(em, jobStep));
+        return jobStepRepository.update(jobStep);
     }
 
     @Override
     public JobStepListResult query(KapuaQuery query) throws KapuaException {
-        return entityManagerSession.doAction(em -> JobStepMigratorDAO.query(em, query));
+        return jobStepRepository.query(query);
     }
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        return entityManagerSession.doAction(em -> JobStepMigratorDAO.count(em, query));
+        return jobStepRepository.count(query);
     }
 
     //

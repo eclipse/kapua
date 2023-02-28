@@ -15,10 +15,10 @@ package org.eclipse.kapua.service.device.registry;
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
-import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
+import org.eclipse.kapua.commons.configuration.CachingServiceConfigTransactedRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
-import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaTransactedRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerImpl;
@@ -29,28 +29,28 @@ import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionRepository;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionTransactedRepository;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
-import org.eclipse.kapua.service.device.registry.connection.internal.CachingDeviceConnectionRepository;
+import org.eclipse.kapua.service.device.registry.connection.internal.CachingDeviceConnectionTransactedRepository;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionFactoryImpl;
-import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionRepositoryImplJpaRepository;
+import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionRepositoryImplJpaTransactedRepository;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionServiceImpl;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionFactory;
-import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionRepository;
+import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionTransactedRepository;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService;
 import org.eclipse.kapua.service.device.registry.connection.option.internal.DeviceConnectionOptionFactoryImpl;
-import org.eclipse.kapua.service.device.registry.connection.option.internal.DeviceConnectionOptionImplJpaRepository;
+import org.eclipse.kapua.service.device.registry.connection.option.internal.DeviceConnectionOptionImplJpaTransactedRepository;
 import org.eclipse.kapua.service.device.registry.connection.option.internal.DeviceConnectionOptionServiceImpl;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventTransactedRepository;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventFactoryImpl;
-import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImplJpaRepository;
+import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImplJpaTransactedRepository;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventServiceImpl;
-import org.eclipse.kapua.service.device.registry.internal.CachingDeviceRepository;
+import org.eclipse.kapua.service.device.registry.internal.CachingDeviceTransactedRepository;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
-import org.eclipse.kapua.service.device.registry.internal.DeviceImplJpaRepository;
+import org.eclipse.kapua.service.device.registry.internal.DeviceImplJpaTransactedRepository;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCache;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCacheFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
@@ -91,8 +91,8 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
         return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerImpl(
                 DeviceConnectionService.class.getName(),
                 DeviceDomains.DEVICE_CONNECTION_DOMAIN,
-                new CachingServiceConfigRepository(
-                        new ServiceConfigImplJpaRepository(new EntityManagerSession(deviceEntityManagerFactory)),
+                new CachingServiceConfigTransactedRepository(
+                        new ServiceConfigImplJpaTransactedRepository(new EntityManagerSession(deviceEntityManagerFactory)),
                         new AbstractKapuaConfigurableServiceCache().createCache()
                 ),
                 permissionFactory,
@@ -110,14 +110,14 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
-            DeviceRepository deviceRepository
+            DeviceTransactedRepository deviceRepository
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         DeviceRegistryService.class.getName(),
                         DeviceDomains.DEVICE_DOMAIN,
-                        new CachingServiceConfigRepository(
-                                new ServiceConfigImplJpaRepository(new EntityManagerSession(deviceEntityManagerFactory)),
+                        new CachingServiceConfigTransactedRepository(
+                                new ServiceConfigImplJpaTransactedRepository(new EntityManagerSession(deviceEntityManagerFactory)),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
                         permissionFactory,
@@ -135,9 +135,9 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    DeviceRepository deviceRepository(DeviceFactory deviceFactory,
-                                      DeviceRegistryCacheFactory deviceRegistryCacheFactory) {
-        return new CachingDeviceRepository(new DeviceImplJpaRepository(
+    DeviceTransactedRepository deviceRepository(DeviceFactory deviceFactory,
+                                                DeviceRegistryCacheFactory deviceRegistryCacheFactory) {
+        return new CachingDeviceTransactedRepository(new DeviceImplJpaTransactedRepository(
                 () -> deviceFactory.newListResult(),
                 new EntityManagerSession(new AbstractEntityManagerFactory("kapua-device") {
                 })),
@@ -148,10 +148,10 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    DeviceConnectionRepository deviceConnectionRepository(DeviceConnectionFactory entityFactory,
-                                                          DeviceRegistryCacheFactory deviceRegistryCacheFactory) {
-        return new CachingDeviceConnectionRepository(
-                new DeviceConnectionRepositoryImplJpaRepository(
+    DeviceConnectionTransactedRepository deviceConnectionRepository(DeviceConnectionFactory entityFactory,
+                                                                    DeviceRegistryCacheFactory deviceRegistryCacheFactory) {
+        return new CachingDeviceConnectionTransactedRepository(
+                new DeviceConnectionRepositoryImplJpaTransactedRepository(
                         () -> entityFactory.newListResult(),
                         new EntityManagerSession(new AbstractEntityManagerFactory("kapua-device") {
                         })),
@@ -161,8 +161,8 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    DeviceConnectionOptionRepository deviceConnectionOptionRepository(DeviceConnectionOptionFactory entityFactory) {
-        return new DeviceConnectionOptionImplJpaRepository(
+    DeviceConnectionOptionTransactedRepository deviceConnectionOptionRepository(DeviceConnectionOptionFactory entityFactory) {
+        return new DeviceConnectionOptionImplJpaTransactedRepository(
                 () -> entityFactory.newListResult(),
                 new EntityManagerSession(new AbstractEntityManagerFactory("kapua-device") {
                 })
@@ -171,8 +171,8 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    DeviceEventRepository deviceEventRepository(DeviceEventFactory entityFactory) {
-        return new DeviceEventImplJpaRepository(
+    DeviceEventTransactedRepository deviceEventRepository(DeviceEventFactory entityFactory) {
+        return new DeviceEventImplJpaTransactedRepository(
                 () -> entityFactory.newListResult(),
                 new EntityManagerSession(new AbstractEntityManagerFactory("kapua-device") {
                 })

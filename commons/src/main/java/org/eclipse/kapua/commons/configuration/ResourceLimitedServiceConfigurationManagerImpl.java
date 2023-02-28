@@ -37,7 +37,7 @@ public class ResourceLimitedServiceConfigurationManagerImpl
     private final AccountChildrenFinder accountChildrenFinder;
     private final UsedEntitiesCounter usedEntitiesCounter;
 
-    public ResourceLimitedServiceConfigurationManagerImpl(String pid, Domain domain, ServiceConfigRepository serviceConfigRepository, PermissionFactory permissionFactory, AuthorizationService authorizationService, RootUserTester rootUserTester, AccountChildrenFinder accountChildrenFinder, UsedEntitiesCounter usedEntitiesCounter) {
+    public ResourceLimitedServiceConfigurationManagerImpl(String pid, Domain domain, ServiceConfigTransactedRepository serviceConfigRepository, PermissionFactory permissionFactory, AuthorizationService authorizationService, RootUserTester rootUserTester, AccountChildrenFinder accountChildrenFinder, UsedEntitiesCounter usedEntitiesCounter) {
         super(pid, domain, serviceConfigRepository, permissionFactory, authorizationService, rootUserTester);
         this.accountChildrenFinder = accountChildrenFinder;
         this.usedEntitiesCounter = usedEntitiesCounter;

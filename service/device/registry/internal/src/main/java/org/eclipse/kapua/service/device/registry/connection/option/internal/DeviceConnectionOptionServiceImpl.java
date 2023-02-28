@@ -28,11 +28,11 @@ import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionAttributes;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionRepository;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionTransactedRepository;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOption;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionCreator;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionListResult;
-import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionRepository;
+import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionTransactedRepository;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService;
 import org.eclipse.kapua.service.device.registry.connection.option.UserAlreadyReservedException;
 
@@ -50,17 +50,17 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
 
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
-    private final DeviceConnectionRepository deviceConnectionRepository;
+    private final DeviceConnectionTransactedRepository deviceConnectionRepository;
     private final DeviceConnectionFactory entityFactory;
-    private final DeviceConnectionOptionRepository repository;
+    private final DeviceConnectionOptionTransactedRepository repository;
 
     @Inject
     public DeviceConnectionOptionServiceImpl(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            DeviceConnectionRepository deviceConnectionRepository,
+            DeviceConnectionTransactedRepository deviceConnectionRepository,
             DeviceConnectionFactory entityFactory,
-            DeviceConnectionOptionRepository repository) {
+            DeviceConnectionOptionTransactedRepository repository) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.deviceConnectionRepository = deviceConnectionRepository;

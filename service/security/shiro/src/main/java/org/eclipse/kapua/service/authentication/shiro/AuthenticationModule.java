@@ -16,13 +16,14 @@ import com.google.inject.Provides;
 import com.google.inject.name.Names;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
-import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
+import org.eclipse.kapua.commons.configuration.CachingServiceConfigTransactedRepository;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
-import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaTransactedRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
@@ -85,8 +86,9 @@ public class AuthenticationModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             RootUserTester rootUserTester) {
         final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
-                new CachingServiceConfigRepository(
-                        new ServiceConfigImplJpaRepository(new EntityManagerSession(authenticationEntityManagerFactory)),
+                new CachingServiceConfigTransactedRepository(
+                        new ServiceConfigImplJpaTransactedRepository(
+                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication"))),
                         new AbstractKapuaConfigurableServiceCache().createCache()
                 ),
                 permissionFactory,

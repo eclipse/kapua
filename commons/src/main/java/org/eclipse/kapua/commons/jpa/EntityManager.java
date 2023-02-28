@@ -19,6 +19,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.EntityTransaction;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -56,7 +57,8 @@ public class EntityManager {
         if (javaxPersitenceEntityManager == null) {
             throw KapuaException.internalError(new NullPointerException(), "null EntityManager");
         }
-        javaxPersitenceEntityManager.getTransaction().begin();
+        final EntityTransaction transaction = javaxPersitenceEntityManager.getTransaction();
+        transaction.begin();
     }
 
     /**

@@ -17,7 +17,7 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationFactory;
-import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationRepository;
+import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationTransactedRepository;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationService;
 
 import javax.inject.Singleton;
@@ -31,8 +31,8 @@ public class DeviceManagementJobModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    JobDeviceManagementOperationRepository jobDeviceManagementOperationRepository(JobDeviceManagementOperationFactory entityFactory) {
-        return new JobDeviceManagementOperationImplJpaRepository(
+    JobDeviceManagementOperationTransactedRepository jobDeviceManagementOperationRepository(JobDeviceManagementOperationFactory entityFactory) {
+        return new JobDeviceManagementOperationImplJpaTransactedRepository(
                 () -> entityFactory.newListResult(),
                 new EntityManagerSession(new AbstractEntityManagerFactory("kapua-job-device-management-operation") {
                 }));

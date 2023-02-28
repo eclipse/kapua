@@ -32,7 +32,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCrea
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionListResult;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionRepository;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionTransactedRepository;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +53,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final DeviceConnectionFactory entityFactory;
-    private final DeviceConnectionRepository repository;
+    private final DeviceConnectionTransactedRepository repository;
 
     /**
      * Constructor.
@@ -67,7 +67,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             DeviceConnectionFactory entityFactory,
-            DeviceConnectionRepository repository) {
+            DeviceConnectionTransactedRepository repository) {
         super(serviceConfigurationManager);
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;

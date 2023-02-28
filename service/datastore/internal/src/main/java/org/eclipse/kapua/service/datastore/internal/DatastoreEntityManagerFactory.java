@@ -21,8 +21,10 @@ import javax.inject.Singleton;
  * Datastore module {@link EntityManagerFactory} impleemntation
  *
  * @since 1.0.0
+ * @deprecated since 2.0.0
  */
 @Singleton
+@Deprecated
 public class DatastoreEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-datastore";

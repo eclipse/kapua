@@ -52,7 +52,7 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
 
     protected final String pid;
     protected final Domain domain;
-    private final ServiceConfigRepository serviceConfigRepository;
+    private final ServiceConfigTransactedRepository serviceConfigRepository;
     private final PermissionFactory permissionFactory;
     private final AuthorizationService authorizationService;
     private final RootUserTester rootUserTester;
@@ -60,7 +60,7 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
     public ServiceConfigurationManagerImpl(
             String pid,
             Domain domain,
-            ServiceConfigRepository serviceConfigRepository,
+            ServiceConfigTransactedRepository serviceConfigRepository,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester) {

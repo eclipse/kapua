@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.job.internal;
 
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
+import org.eclipse.kapua.service.job.JobTransactedRepository;
 
 import javax.inject.Singleton;
 
@@ -21,7 +22,7 @@ import javax.inject.Singleton;
  * {@link JobServiceImpl} {@link EntityManagerFactory} implementation.
  *
  * @since 1.0.0
- * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.job.JobRepository} instead
+ * @deprecated since 2.0.0 - use {@link JobTransactedRepository} instead
  */
 @Deprecated
 @Singleton

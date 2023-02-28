@@ -15,61 +15,61 @@ package org.eclipse.kapua.service.authorization.shiro;
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
-import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
+import org.eclipse.kapua.commons.configuration.CachingServiceConfigTransactedRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
-import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaTransactedRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
-import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
+import org.eclipse.kapua.service.authorization.access.AccessInfoTransactedRepository;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionRepository;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionTransactedRepository;
 import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
-import org.eclipse.kapua.service.authorization.access.AccessRoleRepository;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
+import org.eclipse.kapua.service.authorization.access.AccessRoleTransactedRepository;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoCacheFactory;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoFactoryImpl;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoImplJpaRepository;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoImplJpaTransactedRepository;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoServiceImpl;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionCacheFactory;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionFactoryImpl;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionImplJpaRepository;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionImplJpaTransactedRepository;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionServiceImpl;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleCacheFactory;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleFactoryImpl;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleImplJpaRepository;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleImplJpaTransactedRepository;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleServiceImpl;
-import org.eclipse.kapua.service.authorization.access.shiro.CachingAccessInfoRepository;
-import org.eclipse.kapua.service.authorization.access.shiro.CachingAccessPermissionRepository;
-import org.eclipse.kapua.service.authorization.access.shiro.CachingAccessRoleRepository;
+import org.eclipse.kapua.service.authorization.access.shiro.CachingAccessInfoTransactedRepository;
+import org.eclipse.kapua.service.authorization.access.shiro.CachingAccessPermissionTransactedRepository;
+import org.eclipse.kapua.service.authorization.access.shiro.CachingAccessRoleTransactedRepository;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainFactoryImpl;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainRegistryServiceImpl;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
-import org.eclipse.kapua.service.authorization.group.GroupRepository;
 import org.eclipse.kapua.service.authorization.group.GroupService;
+import org.eclipse.kapua.service.authorization.group.GroupTransactedRepository;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
-import org.eclipse.kapua.service.authorization.group.shiro.GroupImplJpaRepository;
+import org.eclipse.kapua.service.authorization.group.shiro.GroupImplJpaTransactedRepository;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
-import org.eclipse.kapua.service.authorization.role.RoleRepository;
 import org.eclipse.kapua.service.authorization.role.RoleService;
+import org.eclipse.kapua.service.authorization.role.RoleTransactedRepository;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleFactoryImpl;
-import org.eclipse.kapua.service.authorization.role.shiro.RoleImplJpaRepository;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleImplJpaTransactedRepository;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionServiceImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
@@ -102,6 +102,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
 
         bind(GroupService.class).to(GroupServiceImpl.class);
         bind(GroupFactory.class).to(GroupFactoryImpl.class);
+
     }
 
     @Provides
@@ -114,14 +115,16 @@ public class AuthorizationModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
-            RoleRepository roleRepository
+            RoleTransactedRepository roleRepository
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         RoleService.class.getName(),
                         AuthorizationDomains.ROLE_DOMAIN,
-                        new CachingServiceConfigRepository(
-                                new ServiceConfigImplJpaRepository(new EntityManagerSession(authorizationEntityManagerFactory)),
+                        new CachingServiceConfigTransactedRepository(
+                                new ServiceConfigImplJpaTransactedRepository(
+                                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"))
+                                ),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
                         permissionFactory,
@@ -139,54 +142,49 @@ public class AuthorizationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    RoleRepository roleRepository(RoleFactory roleFactory) {
-        return new RoleImplJpaRepository(
-                () -> roleFactory.newListResult(),
-                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-authorization") {
-                }));
+    RoleTransactedRepository roleRepository(RoleFactory roleFactory) {
+        return new RoleImplJpaTransactedRepository(
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                () -> roleFactory.newListResult());
     }
 
     @Provides
     @Singleton
-    GroupRepository groupRepository(GroupFactory groupFactory) {
-        return new GroupImplJpaRepository(
-                () -> groupFactory.newListResult(),
-                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-authorization") {
-                }));
+    GroupTransactedRepository groupRepository(GroupFactory groupFactory) {
+        return new GroupImplJpaTransactedRepository(
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                () -> groupFactory.newListResult());
     }
 
     @Provides
     @Singleton
-    AccessInfoRepository accessInfoRepository(AccessInfoFactory accessInfoFactory) {
-        return new CachingAccessInfoRepository(
-                new AccessInfoImplJpaRepository(
-                        () -> accessInfoFactory.newListResult(),
-                        new EntityManagerSession(new AbstractEntityManagerFactory("kapua-authorization") {
-                        }))
+    AccessInfoTransactedRepository accessInfoRepository(AccessInfoFactory accessInfoFactory) {
+        return new CachingAccessInfoTransactedRepository(
+                new AccessInfoImplJpaTransactedRepository(
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                        () -> accessInfoFactory.newListResult())
                 , new AccessInfoCacheFactory().createCache()
         );
     }
 
     @Provides
     @Singleton
-    AccessPermissionRepository accessPermissionRepository(AccessPermissionFactory accessPermissionFactory) {
-        return new CachingAccessPermissionRepository(
-                new AccessPermissionImplJpaRepository(
-                        () -> accessPermissionFactory.newListResult(),
-                        new EntityManagerSession(new AbstractEntityManagerFactory("kapua-authorization") {
-                        }))
+    AccessPermissionTransactedRepository accessPermissionRepository(AccessPermissionFactory accessPermissionFactory) {
+        return new CachingAccessPermissionTransactedRepository(
+                new AccessPermissionImplJpaTransactedRepository(
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                        () -> accessPermissionFactory.newListResult())
                 , new AccessPermissionCacheFactory().createCache()
         );
     }
 
     @Provides
     @Singleton
-    AccessRoleRepository accessRoleRepository(AccessRoleFactory accessRoleFactory) {
-        return new CachingAccessRoleRepository(
-                new AccessRoleImplJpaRepository(
-                        () -> accessRoleFactory.newListResult(),
-                        new EntityManagerSession(new AbstractEntityManagerFactory("kapua-authorization") {
-                        }))
+    AccessRoleTransactedRepository accessRoleRepository(AccessRoleFactory accessRoleFactory) {
+        return new CachingAccessRoleTransactedRepository(
+                new AccessRoleImplJpaTransactedRepository(
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                        () -> accessRoleFactory.newListResult())
                 , new AccessRoleCacheFactory().createCache()
         );
     }
@@ -201,14 +199,16 @@ public class AuthorizationModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
-            GroupRepository groupRepository
+            GroupTransactedRepository groupRepository
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         GroupService.class.getName(),
                         AuthorizationDomains.GROUP_DOMAIN,
-                        new CachingServiceConfigRepository(
-                                new ServiceConfigImplJpaRepository(new EntityManagerSession(authorizationEntityManagerFactory)),
+                        new CachingServiceConfigTransactedRepository(
+                                new ServiceConfigImplJpaTransactedRepository(
+                                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"))
+                                ),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
                         permissionFactory,

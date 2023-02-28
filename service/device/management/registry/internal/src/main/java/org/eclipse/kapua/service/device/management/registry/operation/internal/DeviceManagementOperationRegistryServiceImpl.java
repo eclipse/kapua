@@ -25,10 +25,10 @@ import org.eclipse.kapua.service.device.management.registry.operation.DeviceMana
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationListResult;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationTransactedRepository;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementRegistryDomains;
 import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.registry.DeviceTransactedRepository;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -39,16 +39,16 @@ public class DeviceManagementOperationRegistryServiceImpl
 
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
-    private final DeviceRepository deviceRepository;
-    private final DeviceManagementOperationRepository repository;
+    private final DeviceTransactedRepository deviceRepository;
+    private final DeviceManagementOperationTransactedRepository repository;
     private final DeviceManagementOperationFactory entityFactory;
 
     @Inject
     public DeviceManagementOperationRegistryServiceImpl(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            DeviceRepository deviceRepository,
-            DeviceManagementOperationRepository repository,
+            DeviceTransactedRepository deviceRepository,
+            DeviceManagementOperationTransactedRepository repository,
             DeviceManagementOperationFactory entityFactory) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;

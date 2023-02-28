@@ -21,7 +21,7 @@ import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountQuery;
-import org.eclipse.kapua.service.account.AccountRepository;
+import org.eclipse.kapua.service.account.AccountTransactedRepository;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -29,10 +29,10 @@ import java.util.Optional;
 public class AccountChildrenFinderImpl implements AccountChildrenFinder, KapuaService {
 
     private final AccountFactory accountFactory;
-    private final AccountRepository accountRepository;
+    private final AccountTransactedRepository accountRepository;
 
     @Inject
-    public AccountChildrenFinderImpl(AccountFactory accountFactory, AccountRepository accountRepository) {
+    public AccountChildrenFinderImpl(AccountFactory accountFactory, AccountTransactedRepository accountRepository) {
         this.accountFactory = accountFactory;
         this.accountRepository = accountRepository;
     }

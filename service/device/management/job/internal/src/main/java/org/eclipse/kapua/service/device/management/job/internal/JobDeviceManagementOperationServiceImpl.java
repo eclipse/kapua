@@ -29,7 +29,7 @@ import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperat
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationListResult;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationQuery;
-import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationRepository;
+import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationTransactedRepository;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationService;
 import org.eclipse.kapua.service.job.JobDomains;
 
@@ -52,14 +52,14 @@ public class JobDeviceManagementOperationServiceImpl
     private final JobDeviceManagementOperationFactory entityFactory;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
-    private final JobDeviceManagementOperationRepository repository;
+    private final JobDeviceManagementOperationTransactedRepository repository;
 
     @Inject
     public JobDeviceManagementOperationServiceImpl(
             JobDeviceManagementOperationFactory entityFactory,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            JobDeviceManagementOperationRepository repository) {
+            JobDeviceManagementOperationTransactedRepository repository) {
         this.entityFactory = entityFactory;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;

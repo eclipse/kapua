@@ -21,12 +21,15 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepCreator;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
+import org.eclipse.kapua.service.job.step.JobStepTransactedRepository;
 
 /**
  * JobStep DAO
  *
  * @since 1.0
+ * @deprecated since 2.0.0, use {@link JobStepTransactedRepository} instead
  */
+@Deprecated
 public class JobStepDAO {
 
     private JobStepDAO() {

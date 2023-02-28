@@ -17,7 +17,7 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory;
-import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationRepository;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationTransactedRepository;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationService;
 
 import javax.inject.Singleton;
@@ -31,8 +31,8 @@ public class DeviceManagementRegistryNotificationModule extends AbstractKapuaMod
 
     @Provides
     @Singleton
-    ManagementOperationNotificationRepository managementOperationNotificationRepository(ManagementOperationNotificationFactory entityFactory) {
-        return new ManagementOperationNotificationImplJpaRepository(
+    ManagementOperationNotificationTransactedRepository managementOperationNotificationRepository(ManagementOperationNotificationFactory entityFactory) {
+        return new ManagementOperationNotificationImplJpaTransactedRepository(
                 () -> entityFactory.newListResult(),
                 new EntityManagerSession(new AbstractEntityManagerFactory("kapua-device_management_operation_registry") {
                 }));

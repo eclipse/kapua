@@ -15,7 +15,7 @@ package org.eclipse.kapua.service.authentication.shiro;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
-import org.eclipse.kapua.commons.configuration.ServiceConfigRepository;
+import org.eclipse.kapua.commons.configuration.ServiceConfigTransactedRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerImpl;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -39,7 +39,7 @@ public class CredentialServiceConfigurationManagerImpl extends ServiceConfigurat
     private final int systemMinimumPasswordLength;
 
     public CredentialServiceConfigurationManagerImpl(
-            ServiceConfigRepository serviceConfigRepository,
+            ServiceConfigTransactedRepository serviceConfigRepository,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester) {

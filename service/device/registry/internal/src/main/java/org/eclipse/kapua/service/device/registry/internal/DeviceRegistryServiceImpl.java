@@ -28,7 +28,7 @@ import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.registry.DeviceTransactedRepository;
 import org.eclipse.kapua.service.device.registry.common.DeviceValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,13 +48,13 @@ public class DeviceRegistryServiceImpl
         implements DeviceRegistryService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceRegistryServiceImpl.class);
-    private final DeviceRepository repository;
+    private final DeviceTransactedRepository repository;
     private final DeviceFactory entityFactory;
 
     @Inject
     public DeviceRegistryServiceImpl(
             @Named("DeviceRegistryServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
-            DeviceRepository repository,
+            DeviceTransactedRepository repository,
             DeviceFactory entityFactory) {
         super(serviceConfigurationManager);
         this.repository = repository;

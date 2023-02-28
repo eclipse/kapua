@@ -21,12 +21,13 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationCreator;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationListResult;
+import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationTransactedRepository;
 
 /**
  * {@link JobDeviceManagementOperation} {@link ServiceDAO}
  *
  * @since 1.1.0
- * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationRepository} instead
+ * @deprecated since 2.0.0 - use {@link JobDeviceManagementOperationTransactedRepository} instead
  */
 @Deprecated
 public class JobDeviceManagementOperationDAO {

@@ -21,7 +21,7 @@ import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
-import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaTransactedRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
@@ -111,7 +111,7 @@ public class SecurityLocatorConfiguration {
                         .annotatedWith(Names.named("CredentialServiceConfigurationManager"))
                         .toInstance(
                                 new CredentialServiceConfigurationManagerImpl(
-                                        new ServiceConfigImplJpaRepository(new EntityManagerSession(AuthenticationEntityManagerFactory.getInstance())),
+                                        new ServiceConfigImplJpaTransactedRepository(new EntityManagerSession(AuthenticationEntityManagerFactory.getInstance())),
                                         mockPermissionFactory,
                                         mockedAuthorization,
                                         Mockito.mock(RootUserTester.class))

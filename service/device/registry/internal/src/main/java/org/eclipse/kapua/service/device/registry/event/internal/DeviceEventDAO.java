@@ -21,12 +21,13 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventTransactedRepository;
 
 /**
  * Device event DAO
  *
  * @since 1.0.0
- * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.device.registry.event.DeviceEventRepository} instead
+ * @deprecated since 2.0.0 - use {@link DeviceEventTransactedRepository} instead
  */
 @Deprecated
 public class DeviceEventDAO extends ServiceDAO {
