@@ -32,7 +32,6 @@ public class KapuaEntityRepositoryCachingWrapper<E extends KapuaEntity, L extend
     @Override
     public E create(E entity) throws KapuaException {
         final E created = wrapped.create(entity);
-        entityCache.put(created);
         return created;
     }
 

@@ -23,6 +23,7 @@ import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
@@ -43,14 +44,20 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFact
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionRepository;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionFactoryImpl;
+import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionListResultImpl;
+import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionRepositoryImplJpaRepository;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionServiceImpl;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventFactoryImpl;
+import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImplJpaRepository;
+import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventListResultImpl;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventServiceImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
+import org.eclipse.kapua.service.device.registry.internal.DeviceImplJpaRepository;
+import org.eclipse.kapua.service.device.registry.internal.DeviceListResultImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagService;
@@ -122,9 +129,17 @@ public class TagLocatorConfiguration {
                 bind(DeviceConnectionService.class).to(DeviceConnectionServiceImpl.class);
                 bind(DeviceConnectionFactory.class).to(DeviceConnectionFactoryImpl.class);
 
-                bind(DeviceRepository.class).toInstance(Mockito.mock(DeviceRepository.class));
-                bind(DeviceConnectionRepository.class).toInstance(Mockito.mock(DeviceConnectionRepository.class));
-                bind(DeviceEventRepository.class).toInstance(Mockito.mock(DeviceEventRepository.class));
+                bind(DeviceRepository.class).toInstance(new DeviceImplJpaRepository(
+                        () -> new DeviceListResultImpl(),
+                        new EntityManagerSession(deviceEntityManagerFactory)));
+                bind(DeviceConnectionRepository.class).toInstance(new DeviceConnectionRepositoryImplJpaRepository(
+                                () -> new DeviceConnectionListResultImpl(),
+                                new EntityManagerSession(deviceEntityManagerFactory)
+                        )
+                );
+                bind(DeviceEventRepository.class).toInstance(new DeviceEventImplJpaRepository(
+                        () -> new DeviceEventListResultImpl(),
+                        new EntityManagerSession(deviceEntityManagerFactory)));
                 bind(DeviceEventService.class).to(DeviceEventServiceImpl.class);
                 bind(DeviceEventFactory.class).toInstance(new DeviceEventFactoryImpl());
                 bind(KapuaMessageFactory.class).toInstance(new KapuaMessageFactoryImpl());

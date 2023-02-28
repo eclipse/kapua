@@ -31,7 +31,6 @@ public class KapuaUpdatableEntityRepositoryCachingWrapper<E extends KapuaUpdatab
     public E update(E entity) throws KapuaException {
         entityCache.remove(KapuaId.ANY, entity);
         final E updated = ((KapuaUpdatableEntityRepository<E, L>) wrapped).update(entity);
-        entityCache.put(entity);
         return updated;
     }
 }
