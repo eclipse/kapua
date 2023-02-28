@@ -34,9 +34,23 @@ public interface SystemInfo {
 
     void setVersion(String version);
 
-    @XmlElement(name = "buildVersion")
-    String getBuildVersion();
+    @XmlElement(name = "revision")
+    String getRevision();
 
+    void setRevision(String revision);
 
-    void setBuildVersion(String buildVersion);
+    @XmlElement(name = "buildDate")
+    String getBuildTimestamp();
+
+    void setBuildTimestamp(String buildDate);
+
+    @XmlElement(name = "buildBranch")
+    String getBuildBranch();
+
+    void setBuildBranch(String buildBranch);
+
+    @XmlElement(name = "buildNumber")
+    String getBuildNumber();
+
+    void setBuildNumber(String buildNumber);
 }

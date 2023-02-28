@@ -30,13 +30,18 @@ public class SystemInfoServiceImpl implements SystemInfoService {
     public SystemInfo getSystemInfo() {
         SystemSetting systemSetting = SystemSetting.getInstance();
         String version = systemSetting.getString(SystemSettingKey.VERSION);
-        String buildVersion = systemSetting.getString(SystemSettingKey.BUILD_VERSION);
+        String revision = systemSetting.getString(SystemSettingKey.BUILD_REVISION);
+        String branch = systemSetting.getString(SystemSettingKey.BUILD_BRANCH);
+        String timestamp = systemSetting.getString(SystemSettingKey.BUILD_TIMESTAMP);
+        String buildNumber = systemSetting.getString(SystemSettingKey.BUILD_NUMBER);
 
         SystemInfoFactory systemInfoFactory = locator.getFactory(SystemInfoFactory.class);
         SystemInfo systemInfo = systemInfoFactory.newSystemInfo();
         systemInfo.setVersion(version);
-        systemInfo.setBuildVersion(buildVersion);
-
+        systemInfo.setRevision(revision);
+        systemInfo.setBuildBranch(branch);
+        systemInfo.setBuildTimestamp(timestamp + " UTC");
+        systemInfo.setBuildNumber(buildNumber);
         return systemInfo;
     }
 }

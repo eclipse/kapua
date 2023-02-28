@@ -31,7 +31,7 @@ public enum SystemSettingKey implements SettingKey {
      */
     SYS_ADMIN_ACCOUNT("commons.sys.admin.account"),
     /**
-     * System administration user name
+     * System administration username
      */
     SYS_ADMIN_USERNAME("commons.sys.admin.userName"),
 
@@ -42,7 +42,15 @@ public enum SystemSettingKey implements SettingKey {
     /**
      * Build version
      */
-    BUILD_VERSION("commons.build.version"),
+    BUILD_REVISION("commons.build.revision"),
+    /**
+     * Build timestamp
+     */
+    BUILD_TIMESTAMP("commons.build.timestamp"),
+    /**
+     * Build branch
+     */
+    BUILD_BRANCH("commons.build.branch"),
     /**
      * Build number
      */
