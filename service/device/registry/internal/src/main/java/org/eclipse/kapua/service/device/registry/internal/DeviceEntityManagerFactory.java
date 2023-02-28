@@ -16,12 +16,13 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
+import org.eclipse.kapua.service.device.registry.DeviceTransactedRepository;
 
 /**
  * {@link DeviceRegistryServiceImpl} {@link EntityManagerFactory} implementation.
  *
  * @since 1.0.0
- * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.device.registry.DeviceRepository} instead
+ * @deprecated since 2.0.0 - use {@link DeviceTransactedRepository} instead
  */
 @Deprecated
 public class DeviceEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {

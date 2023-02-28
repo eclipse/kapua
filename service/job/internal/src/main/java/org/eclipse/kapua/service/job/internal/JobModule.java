@@ -15,10 +15,10 @@ package org.eclipse.kapua.service.job.internal;
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
-import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
+import org.eclipse.kapua.commons.configuration.CachingServiceConfigTransactedRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
-import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaTransactedRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
@@ -29,7 +29,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.JobFactory;
-import org.eclipse.kapua.service.job.JobRepository;
+import org.eclipse.kapua.service.job.JobTransactedRepository;
 import org.eclipse.kapua.service.job.JobService;
 
 import javax.inject.Named;
@@ -52,14 +52,14 @@ public class JobModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
-            JobRepository jobRepository
+            JobTransactedRepository jobRepository
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         JobService.class.getName(),
                         JobDomains.JOB_DOMAIN,
-                        new CachingServiceConfigRepository(
-                                new ServiceConfigImplJpaRepository(new EntityManagerSession(jobEntityManagerFactory)),
+                        new CachingServiceConfigTransactedRepository(
+                                new ServiceConfigImplJpaTransactedRepository(new EntityManagerSession(jobEntityManagerFactory)),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
                         permissionFactory,
@@ -78,8 +78,8 @@ public class JobModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    JobRepository jobRepository(JobFactory jobFactory) {
-        return new JobImplJpaRepository(
+    JobTransactedRepository jobRepository(JobFactory jobFactory) {
+        return new JobImplJpaTransactedRepository(
                 () -> jobFactory.newListResult(),
                 new EntityManagerSession(new AbstractEntityManagerFactory("kapua-job") {
                 }));

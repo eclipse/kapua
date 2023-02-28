@@ -18,7 +18,7 @@ import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationTransactedRepository;
 
 import javax.inject.Singleton;
 
@@ -32,8 +32,8 @@ public class DeviceManagementRegistryOperationModule extends AbstractKapuaModule
 
     @Provides
     @Singleton
-    DeviceManagementOperationRepository deviceManagementOperationRepository(DeviceManagementOperationFactory entityFactory) {
-        return new DeviceManagementOperationRepositoryImplJpaRepository(
+    DeviceManagementOperationTransactedRepository deviceManagementOperationRepository(DeviceManagementOperationFactory entityFactory) {
+        return new DeviceManagementOperationRepositoryImplJpaTransactedRepository(
                 () -> entityFactory.newListResult(),
                 new EntityManagerSession(new AbstractEntityManagerFactory("kapua-device_management_operation_registry") {
                 }));

@@ -23,13 +23,13 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
-import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
+import org.eclipse.kapua.service.authorization.access.AccessInfoTransactedRepository;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionRepository;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionTransactedRepository;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -52,14 +52,14 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
 
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
-    private final AccessPermissionRepository accessPermissionRepository;
-    private final AccessInfoRepository accessInfoRepository;
+    private final AccessPermissionTransactedRepository accessPermissionRepository;
+    private final AccessInfoTransactedRepository accessInfoRepository;
 
     @Inject
     public AccessPermissionServiceImpl(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            AccessPermissionRepository accessPermissionRepository, AccessInfoRepository accessInfoRepository) {
+            AccessPermissionTransactedRepository accessPermissionRepository, AccessInfoTransactedRepository accessInfoRepository) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.accessPermissionRepository = accessPermissionRepository;

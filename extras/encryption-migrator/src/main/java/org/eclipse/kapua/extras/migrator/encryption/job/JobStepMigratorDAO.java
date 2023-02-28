@@ -27,7 +27,9 @@ import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
  * JobStep DAO
  *
  * @since 2.0.0
+ * @deprecated since 2.0.0 - use {@link JobStepMigratorJpaTransactedRepository} instead
  */
+@Deprecated
 public class JobStepMigratorDAO {
 
     private JobStepMigratorDAO() {

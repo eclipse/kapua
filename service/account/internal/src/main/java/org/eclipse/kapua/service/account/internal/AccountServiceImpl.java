@@ -38,8 +38,8 @@ import org.eclipse.kapua.service.account.AccountAttributes;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountDomains;
 import org.eclipse.kapua.service.account.AccountListResult;
-import org.eclipse.kapua.service.account.AccountRepository;
 import org.eclipse.kapua.service.account.AccountService;
+import org.eclipse.kapua.service.account.AccountTransactedRepository;
 import org.eclipse.kapua.service.account.internal.exception.KapuaAccountErrorCodes;
 import org.eclipse.kapua.service.account.internal.exception.KapuaAccountException;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -61,14 +61,14 @@ public class AccountServiceImpl
         implements AccountService {
 
     private static final String NO_EXPIRATION_DATE_SET = "no expiration date set";
-    private AccountRepository accountRepository;
+    private AccountTransactedRepository accountRepository;
     private PermissionFactory permissionFactory;
     private AuthorizationService authorizationService;
 
     /**
      * Injectable constructor
      *
-     * @param accountRepository           The {@link AccountRepository} instance
+     * @param accountRepository           The {@link AccountTransactedRepository} instance
      * @param permissionFactory           The {@link PermissionFactory} instance
      * @param authorizationService        The {@link AuthorizationService} instance
      * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance
@@ -76,7 +76,7 @@ public class AccountServiceImpl
      */
     @Inject
     public AccountServiceImpl(
-            AccountRepository accountRepository,
+            AccountTransactedRepository accountRepository,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             @Named("AccountServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {

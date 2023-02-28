@@ -29,7 +29,7 @@ import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagDomains;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagListResult;
-import org.eclipse.kapua.service.tag.TagRepository;
+import org.eclipse.kapua.service.tag.TagTransactedRepository;
 import org.eclipse.kapua.service.tag.TagService;
 
 import javax.inject.Inject;
@@ -46,7 +46,7 @@ public class TagServiceRepoBasedImpl extends KapuaConfigurableServiceLinker impl
 
     private final PermissionFactory permissionFactory;
     private final AuthorizationService authorizationService;
-    private final TagRepository tagRepository;
+    private final TagTransactedRepository tagRepository;
     private final TagFactory tagFactory;
 
     /**
@@ -55,7 +55,7 @@ public class TagServiceRepoBasedImpl extends KapuaConfigurableServiceLinker impl
      * @param permissionFactory           The {@link PermissionFactory} instance
      * @param authorizationService        The {@link AuthorizationService} instance
      * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance
-     * @param tagRepository               The {@link TagRepository} instance
+     * @param tagRepository               The {@link TagTransactedRepository} instance
      * @param tagFactory
      * @since 2.0.0
      */
@@ -64,7 +64,7 @@ public class TagServiceRepoBasedImpl extends KapuaConfigurableServiceLinker impl
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             @Named("TagServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
-            TagRepository tagRepository, TagFactory tagFactory) {
+            TagTransactedRepository tagRepository, TagFactory tagFactory) {
         super(serviceConfigurationManager);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;

@@ -21,7 +21,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
-import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaTransactedRepository;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
@@ -37,7 +37,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.UserDomains;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserNamedEntityService;
-import org.eclipse.kapua.service.user.UserRepository;
+import org.eclipse.kapua.service.user.UserTransactedRepository;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.UserCacheFactory;
 import org.eclipse.kapua.service.user.internal.UserEntityManagerFactory;
@@ -93,10 +93,10 @@ public class UserLocatorConfiguration {
                 bind(RootUserTester.class).toInstance(mockRootUserTester);
                 final UserNamedEntityService namedEntityService = new UserNamedEntityServiceImpl(userEntityManagerFactory, new UserCacheFactory(), mockPermissionFactory, mockedAuthorization);
                 bind(UserNamedEntityService.class).toInstance(namedEntityService);
-                final UserRepository userRepository = Mockito.mock(UserRepository.class);
+                final UserTransactedRepository userRepository = Mockito.mock(UserTransactedRepository.class);
                 final ResourceLimitedServiceConfigurationManagerImpl userConfigurationManager = new ResourceLimitedServiceConfigurationManagerImpl(UserService.class.getName(),
                         UserDomains.USER_DOMAIN,
-                        new ServiceConfigImplJpaRepository(new EntityManagerSession(userEntityManagerFactory)),
+                        new ServiceConfigImplJpaTransactedRepository(new EntityManagerSession(userEntityManagerFactory)),
                         mockPermissionFactory,
                         mockedAuthorization,
                         Mockito.mock(RootUserTester.class),

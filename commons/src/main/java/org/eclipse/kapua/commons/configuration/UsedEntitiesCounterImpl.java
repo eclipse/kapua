@@ -22,7 +22,7 @@ import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.repository.KapuaEntityRepository;
+import org.eclipse.kapua.storage.KapuaEntityTransactedRepository;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
@@ -36,13 +36,13 @@ public class UsedEntitiesCounterImpl<
 
     private final F factory;
     private final Domain domain;
-    private final KapuaEntityRepository<E, L> entityRepository;
+    private final KapuaEntityTransactedRepository<E, L> entityRepository;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
 
     public UsedEntitiesCounterImpl(F factory,
                                    Domain domain,
-                                   KapuaEntityRepository<E, L> entityRepository,
+                                   KapuaEntityTransactedRepository<E, L> entityRepository,
                                    AuthorizationService authorizationService,
                                    PermissionFactory permissionFactory) {
         this.factory = factory;

@@ -22,7 +22,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
-import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaTransactedRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
@@ -34,12 +34,12 @@ import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
 import org.eclipse.kapua.service.account.AccountDomains;
 import org.eclipse.kapua.service.account.AccountFactory;
-import org.eclipse.kapua.service.account.AccountRepository;
+import org.eclipse.kapua.service.account.AccountTransactedRepository;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountChildrenFinderImpl;
 import org.eclipse.kapua.service.account.internal.AccountEntityManagerFactory;
 import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
-import org.eclipse.kapua.service.account.internal.AccountImplJpaRepository;
+import org.eclipse.kapua.service.account.internal.AccountImplJpaTransactedRepository;
 import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
@@ -86,13 +86,13 @@ public class AccountLocatorConfiguration {
                 final AccountFactory accountFactory = new AccountFactoryImpl();
                 bind(AccountFactory.class).toInstance(accountFactory);
                 bind(AccountChildrenFinder.class).to(AccountChildrenFinderImpl.class);
-                final AccountRepository accountRepository = Mockito.mock(AccountRepository.class);
+                final AccountTransactedRepository accountRepository = Mockito.mock(AccountTransactedRepository.class);
                 bind(ServiceConfigurationManager.class)
                         .annotatedWith(Names.named("AccountServiceConfigurationManager"))
                         .toInstance(new ResourceLimitedServiceConfigurationManagerImpl(
                                 AccountService.class.getName(),
                                 AccountDomains.ACCOUNT_DOMAIN,
-                                new ServiceConfigImplJpaRepository(new EntityManagerSession(entityManagerFactory)),
+                                new ServiceConfigImplJpaTransactedRepository(new EntityManagerSession(entityManagerFactory)),
                                 mockPermissionFactory,
                                 mockedAuthorization,
                                 Mockito.mock(RootUserTester.class),
@@ -105,7 +105,7 @@ public class AccountLocatorConfiguration {
                                         mockPermissionFactory)
                         ));
                 bind(AccountService.class).to(AccountServiceImpl.class);
-                bind(AccountRepository.class).toInstance(new AccountImplJpaRepository(() -> accountFactory.newListResult(), new EntityManagerSession(entityManagerFactory)));
+                bind(AccountTransactedRepository.class).toInstance(new AccountImplJpaTransactedRepository(() -> accountFactory.newListResult(), new EntityManagerSession(entityManagerFactory)));
             }
         };
 

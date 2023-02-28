@@ -14,12 +14,13 @@ package org.eclipse.kapua.service.user.internal;
 
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
+import org.eclipse.kapua.service.user.UserTransactedRepository;
 
 /**
  * {@link UserServiceImpl} {@link EntityManagerFactory} implementation.
  *
  * @since 1.0.0
- * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.user.UserRepository} instead
+ * @deprecated since 2.0.0 - use {@link UserTransactedRepository} instead
  */
 @Deprecated
 public class UserEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {

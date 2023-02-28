@@ -20,12 +20,13 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOption;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionListResult;
+import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionTransactedRepository;
 
 /**
  * Device connection options DAO
  *
  * @since 1.0
- * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.device.registry.connection.DeviceConnectionRepository} instead
+ * @deprecated since 2.0.0 - use {@link DeviceConnectionOptionTransactedRepository} instead
  */
 @Deprecated
 public class DeviceConnectionOptionDAO extends ServiceDAO {

@@ -24,7 +24,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagDomains;
 import org.eclipse.kapua.service.tag.TagFactory;
-import org.eclipse.kapua.service.tag.TagRepository;
+import org.eclipse.kapua.service.tag.TagTransactedRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ public class TagServiceRepoBasedImplTest {
     private PermissionFactory permissionFactory;
     private AuthorizationService authorizationService;
     private ServiceConfigurationManager serviceConfigurationManager;
-    private TagRepository tagRepository;
+    private TagTransactedRepository tagRepository;
     private TagServiceRepoBasedImpl instance;
     private TagFactory tagFactory;
 
@@ -55,7 +55,7 @@ public class TagServiceRepoBasedImplTest {
                 .thenReturn(FAKE_PERMISSION);
         authorizationService = Mockito.mock(AuthorizationService.class);
         serviceConfigurationManager = Mockito.mock(ServiceConfigurationManager.class);
-        tagRepository = Mockito.mock(TagRepository.class);
+        tagRepository = Mockito.mock(TagTransactedRepository.class);
         Mockito.when(tagRepository.create(Mockito.<Tag>any()))
                 .thenAnswer(invocation -> invocation.getArgumentAt(0, Tag.class));
         tagFactory = Mockito.mock(TagFactory.class);
