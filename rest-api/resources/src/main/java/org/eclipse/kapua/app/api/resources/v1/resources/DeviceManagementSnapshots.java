@@ -60,7 +60,7 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
     public DeviceSnapshots get(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") @DefaultValue("10000") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout) throws KapuaException {
         return snapshotService.get(scopeId, deviceId, timeout);
     }
 
@@ -87,7 +87,7 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("snapshotId") String snapshotId,
-            @QueryParam("timeout") @DefaultValue("10000") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout) throws KapuaException {
         snapshotService.rollback(scopeId, deviceId, snapshotId, timeout);
 
         return returnNoContent();
@@ -116,7 +116,7 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("snapshotId") String snapshotId,
-            @QueryParam("timeout") @DefaultValue("10000") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout) throws KapuaException {
         return configurationService.get(scopeId, deviceId, snapshotId, null, timeout);
     }
 

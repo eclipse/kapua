@@ -59,7 +59,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
     public DeviceConfiguration get(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") @DefaultValue("10000") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout) throws KapuaException {
         return getComponent(scopeId, deviceId, null, timeout);
     }
 
@@ -84,7 +84,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
     public Response update(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") @DefaultValue("10000") Long timeout,
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout,
             DeviceConfiguration deviceConfiguration) throws KapuaException {
         configurationService.put(scopeId, deviceId, deviceConfiguration, timeout);
 
@@ -118,7 +118,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("componentId") String componentId,
-            @QueryParam("timeout") @DefaultValue("10000") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout) throws KapuaException {
         return configurationService.get(scopeId, deviceId, null, componentId, timeout);
     }
 
@@ -151,7 +151,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("componentId") String componentId,
-            @QueryParam("timeout") @DefaultValue("10000") Long timeout,
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout,
             DeviceComponentConfiguration deviceComponentConfiguration) throws KapuaException {
         deviceComponentConfiguration.setId(componentId);
 

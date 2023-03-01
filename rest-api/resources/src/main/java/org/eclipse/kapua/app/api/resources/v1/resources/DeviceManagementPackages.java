@@ -67,7 +67,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
     public DevicePackages get(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") @DefaultValue("10000") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout) throws KapuaException {
         return devicePackageManagementService.getInstalled(scopeId, deviceId, timeout);
     }
 
@@ -90,7 +90,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
     public Response download(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") @DefaultValue("10000") Long timeout,
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout,
             @QueryParam("legacy") @DefaultValue("false") boolean legacy,
             DevicePackageDownloadRequest packageDownloadRequest)
             throws KapuaException {
@@ -121,7 +121,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
     public Response uninstall(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout,
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout,
             @QueryParam("legacy") @DefaultValue("false") boolean legacy,
             DevicePackageUninstallRequest packageUninstallRequest) throws KapuaException {
         DevicePackageUninstallOptions options = devicePackageFactory.newPackageUninstallOptions();
