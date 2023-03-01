@@ -29,6 +29,7 @@ import org.eclipse.kapua.service.device.management.request.message.response.Gene
 import org.eclipse.kapua.service.device.registry.Device;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -65,7 +66,7 @@ public class DeviceManagementRequestsJson extends AbstractKapuaResource implemen
     public JsonGenericResponseMessage sendRequest(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout,
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout,
             JsonGenericRequestMessage jsonGenericRequestMessage) throws KapuaException {
 
         GenericRequestMessage genericRequestMessage = GENERIC_REQUEST_FACTORY.newRequestMessage();

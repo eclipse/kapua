@@ -28,7 +28,7 @@ components:
       description: The timeout for the request in milliseconds
       schema:
         type: integer
-        default: 10000
+        default: 30000
     fetchAttributes:
       name: fetchAttributes
       in: query

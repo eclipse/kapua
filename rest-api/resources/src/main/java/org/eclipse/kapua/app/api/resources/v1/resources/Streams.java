@@ -20,6 +20,7 @@ import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.service.stream.StreamService;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -85,7 +86,7 @@ public class Streams extends AbstractKapuaResource {
     @Consumes({ MediaType.APPLICATION_XML })
     public Response publish(
             @PathParam("scopeId") ScopeId scopeId,
-            @QueryParam("timeout") Long timeout,
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout,
             KapuaDataMessage requestMessage) throws KapuaException {
         requestMessage.setScopeId(scopeId);
         streamService.publish(requestMessage, timeout);

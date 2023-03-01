@@ -21,6 +21,7 @@ paths:
       description: Publishes a fire-and-forget message to a topic composed of [account-name] / [client-id] / [semtantic-parts]
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
       requestBody:
         content:
           application/json:

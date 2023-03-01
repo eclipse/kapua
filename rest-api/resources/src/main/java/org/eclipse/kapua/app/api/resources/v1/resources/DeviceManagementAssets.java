@@ -60,7 +60,7 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
     public DeviceAssets get(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") @DefaultValue("10000") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout) throws KapuaException {
         return get(scopeId, deviceId, timeout, deviceAssetFilter.newAssetListResult());
     }
 
@@ -79,7 +79,7 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
     public DeviceAssets get(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") @DefaultValue("10000") Long timeout,
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout,
             DeviceAssets deviceAssetFilter) throws KapuaException {
         return deviceManagementAssetService.get(scopeId, deviceId, deviceAssetFilter, timeout);
     }
@@ -100,7 +100,7 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
     public DeviceAssets read(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") @DefaultValue("10000") Long timeout,
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout,
             DeviceAssets deviceAssetFilter) throws KapuaException {
         return deviceManagementAssetService.read(scopeId, deviceId, deviceAssetFilter, timeout);
     }
@@ -121,7 +121,7 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
     public DeviceAssets write(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") @DefaultValue("10000") Long timeout,
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout,
             DeviceAssets deviceAssetFilter) throws KapuaException {
         return deviceManagementAssetService.write(scopeId, deviceId, deviceAssetFilter, timeout);
     }
