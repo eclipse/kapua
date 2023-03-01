@@ -191,7 +191,7 @@ public class EndpointInfoServiceImpl
         EndpointInfo endpointInfoToFind = entityManagerSession.doAction(em -> EndpointInfoDAO.find(em, KapuaId.ANY, endpointInfoId)); // search the endpoint in any scope
 
         if (endpointInfoToFind == null) {
-            throw new KapuaEntityNotFoundException(EndpointInfo.TYPE, scopeId);
+            throw new KapuaEntityNotFoundException(EndpointInfo.TYPE, endpointInfoId);
         }
 
         if (endpointInfoToFind.getScopeId().equals(scopeId)) { //found in the specified scope, search finish here
@@ -204,7 +204,7 @@ public class EndpointInfoServiceImpl
         EndpointInfoListResult nearestUsableEndpoints = query(query, type);
 
         if (nearestUsableEndpoints.isEmpty() || ! nearestUsableEndpoints.getFirstItem().getScopeId().equals(endpointInfoToFind.getScopeId())) { //the second condition is equivalent to verify if the searched endpoint is in this list
-            throw new KapuaEntityNotFoundException(EndpointInfo.TYPE, scopeId);
+            throw new KapuaEntityNotFoundException(EndpointInfo.TYPE, endpointInfoId);
         } else {
             return endpointInfoToFind;
         }
