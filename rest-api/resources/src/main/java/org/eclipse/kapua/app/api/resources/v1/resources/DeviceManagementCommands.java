@@ -81,7 +81,7 @@ public class DeviceManagementCommands extends AbstractKapuaResource {
     public DeviceCommandOutput sendCommand(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") @DefaultValue("10000") Long timeout,
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout,
             DeviceCommandInput commandInput) throws KapuaException {
         return commandService.exec(scopeId, deviceId, commandInput, timeout);
     }
