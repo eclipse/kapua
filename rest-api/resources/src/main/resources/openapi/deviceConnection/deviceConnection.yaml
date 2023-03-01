@@ -28,6 +28,18 @@ components:
       description: The connection status to filter results
       schema:
         $ref: './deviceConnection.yaml#/components/schemas/connectionStatus'
+    clientIp:
+      name: clientIp
+      in: query
+      description: The client ip to filter results
+      schema:
+        type: string
+    protocol:
+      name: protocol
+      in: query
+      description: The connection protocol to filter results
+      schema:
+        type: string
   schemas:
     connection:
       allOf:

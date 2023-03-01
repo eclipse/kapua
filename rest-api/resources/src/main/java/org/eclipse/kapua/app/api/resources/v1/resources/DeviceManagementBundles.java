@@ -67,7 +67,7 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("sortParam") String sortParam,
             @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
-            @QueryParam("timeout") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout) throws KapuaException {
         DeviceBundles deviceBundles = bundleService.get(scopeId, deviceId, timeout);
         if (!Strings.isNullOrEmpty(sortParam)) {
             deviceBundles.getBundles().sort((b1, b2) -> sortBundles(sortParam, sortDir, b1, b2));
@@ -112,7 +112,7 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("bundleId") String bundleId,
-            @QueryParam("timeout") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout) throws KapuaException {
         bundleService.start(scopeId, deviceId, bundleId, timeout);
 
         return returnNoContent();
@@ -137,7 +137,7 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("bundleId") String bundleId,
-            @QueryParam("timeout") Long timeout) throws KapuaException {
+            @QueryParam("timeout") @DefaultValue("30000") Long timeout) throws KapuaException {
         bundleService.stop(scopeId, deviceId, bundleId, timeout);
 
         return returnNoContent();
