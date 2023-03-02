@@ -21,14 +21,15 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationTransactedRepository;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementRegistryDomains;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationCreator;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationListResult;
-import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationTransactedRepository;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationRepository;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationService;
+import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -39,19 +40,22 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final ManagementOperationNotificationFactory entityFactory;
-    private final ManagementOperationNotificationTransactedRepository repository;
-    private final DeviceManagementOperationTransactedRepository deviceManagementOperationRepository;
+    private final TxManager txManager;
+    private final ManagementOperationNotificationRepository repository;
+    private final DeviceManagementOperationRepository deviceManagementOperationRepository;
 
     @Inject
     public ManagementOperationNotificationServiceImpl(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             ManagementOperationNotificationFactory entityFactory,
-            ManagementOperationNotificationTransactedRepository repository,
-            DeviceManagementOperationTransactedRepository deviceManagementOperationRepository) {
+            TxManager txManager,
+            ManagementOperationNotificationRepository repository,
+            DeviceManagementOperationRepository deviceManagementOperationRepository) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.entityFactory = entityFactory;
+        this.txManager = txManager;
         this.repository = repository;
         this.deviceManagementOperationRepository = deviceManagementOperationRepository;
     }
@@ -72,23 +76,25 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
 
-        //
-        // Check operation existence
-        if (deviceManagementOperationRepository.find(creator.getScopeId(), creator.getOperationId()) == null) {
-            throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, creator.getOperationId());
-        }
-        //
-        // Create DeviceManagementOperationNotification
-        final ManagementOperationNotification newEntity = entityFactory.newEntity(creator.getScopeId());
-        newEntity.setOperationId(creator.getOperationId());
-        newEntity.setSentOn(creator.getSentOn());
-        newEntity.setStatus(creator.getStatus());
-        newEntity.setResource(creator.getResource());
-        newEntity.setProgress(creator.getProgress());
-        newEntity.setMessage(creator.getMessage());
-        //
-        // Do create
-        return repository.create(newEntity);
+        return txManager.executeWithResult(tx -> {
+            //
+            // Check operation existence
+            if (deviceManagementOperationRepository.find(tx, creator.getScopeId(), creator.getOperationId()) == null) {
+                throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, creator.getOperationId());
+            }
+            //
+            // Create DeviceManagementOperationNotification
+            final ManagementOperationNotification newEntity = entityFactory.newEntity(creator.getScopeId());
+            newEntity.setOperationId(creator.getOperationId());
+            newEntity.setSentOn(creator.getSentOn());
+            newEntity.setStatus(creator.getStatus());
+            newEntity.setResource(creator.getResource());
+            newEntity.setProgress(creator.getProgress());
+            newEntity.setMessage(creator.getMessage());
+            //
+            // Do create
+            return repository.create(tx, newEntity);
+        });
     }
 
     @Override
@@ -104,7 +110,7 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
 
         //
         // Do find
-        return repository.find(scopeId, entityId);
+        return txManager.executeWithResult(tx -> repository.find(tx, scopeId, entityId));
     }
 
     @Override
@@ -119,7 +125,7 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
 
         //
         // Do query
-        return repository.query(query);
+        return txManager.executeWithResult(tx -> repository.query(tx, query));
     }
 
     @Override
@@ -134,7 +140,7 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
 
         //
         // Do count
-        return repository.count(query);
+        return txManager.executeWithResult(tx -> repository.count(tx, query));
     }
 
     @Override
@@ -150,6 +156,6 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
 
         //
         // Do delete
-        repository.delete(scopeId, entityId);
+        txManager.executeNoResult(tx -> repository.delete(tx, scopeId, entityId));
     }
 }

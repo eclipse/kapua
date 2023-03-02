@@ -23,7 +23,9 @@ import javax.inject.Inject;
  * {@link AuthorizationServiceImpl} {@link EntityManagerFactory} implementation.
  *
  * @since 1.0.0
+ * @deprecated since 2.0.0, use {@link org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory} instead
  */
+@Deprecated
 public class AuthorizationEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-authorization";

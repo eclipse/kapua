@@ -15,7 +15,7 @@ package org.eclipse.kapua.service.authentication.shiro;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
-import org.eclipse.kapua.commons.configuration.ServiceConfigTransactedRepository;
+import org.eclipse.kapua.commons.configuration.ServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerImpl;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -26,6 +26,7 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticatio
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,12 +40,14 @@ public class CredentialServiceConfigurationManagerImpl extends ServiceConfigurat
     private final int systemMinimumPasswordLength;
 
     public CredentialServiceConfigurationManagerImpl(
-            ServiceConfigTransactedRepository serviceConfigRepository,
+            TxManager txManager,
+            ServiceConfigRepository serviceConfigRepository,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester) {
         super(CredentialService.class.getName(),
                 AuthenticationDomains.CREDENTIAL_DOMAIN,
+                txManager,
                 serviceConfigRepository,
                 permissionFactory,
                 authorizationService,

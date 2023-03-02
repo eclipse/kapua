@@ -26,6 +26,7 @@ import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
+import org.eclipse.kapua.storage.TxManager;
 
 import java.util.Map;
 import java.util.Optional;
@@ -37,8 +38,8 @@ public class ResourceLimitedServiceConfigurationManagerImpl
     private final AccountChildrenFinder accountChildrenFinder;
     private final UsedEntitiesCounter usedEntitiesCounter;
 
-    public ResourceLimitedServiceConfigurationManagerImpl(String pid, Domain domain, ServiceConfigTransactedRepository serviceConfigRepository, PermissionFactory permissionFactory, AuthorizationService authorizationService, RootUserTester rootUserTester, AccountChildrenFinder accountChildrenFinder, UsedEntitiesCounter usedEntitiesCounter) {
-        super(pid, domain, serviceConfigRepository, permissionFactory, authorizationService, rootUserTester);
+    public ResourceLimitedServiceConfigurationManagerImpl(String pid, Domain domain, TxManager txManager, ServiceConfigRepository serviceConfigRepository, PermissionFactory permissionFactory, AuthorizationService authorizationService, RootUserTester rootUserTester, AccountChildrenFinder accountChildrenFinder, UsedEntitiesCounter usedEntitiesCounter) {
+        super(pid, domain, txManager, serviceConfigRepository, permissionFactory, authorizationService, rootUserTester);
         this.accountChildrenFinder = accountChildrenFinder;
         this.usedEntitiesCounter = usedEntitiesCounter;
     }

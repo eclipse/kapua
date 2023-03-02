@@ -24,7 +24,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
  * Service configuration DAO
  *
  * @since 1.0
- * @deprecated since 2.0.0 - use {@link ServiceConfigTransactedRepository} instead
+ * @deprecated since 2.0.0 - use {@link ServiceConfigRepository} instead
  */
 @Deprecated
 public class ServiceConfigDAO extends ServiceDAO {

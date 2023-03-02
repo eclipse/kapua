@@ -26,7 +26,9 @@ import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResu
  * MfaOption DAO
  *
  * @since 2.0.0
+ * @deprecated since 2.0.0
  */
+@Deprecated
 public class MfaOptionMigratorDAO {
 
     private MfaOptionMigratorDAO() {

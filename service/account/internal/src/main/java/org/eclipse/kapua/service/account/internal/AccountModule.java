@@ -16,20 +16,20 @@ import com.google.inject.Module;
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
-import org.eclipse.kapua.commons.configuration.CachingServiceConfigTransactedRepository;
+import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
-import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaTransactedRepository;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.service.account.AccountDomains;
 import org.eclipse.kapua.service.account.AccountFactory;
-import org.eclipse.kapua.service.account.AccountTransactedRepository;
+import org.eclipse.kapua.service.account.AccountRepository;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -61,14 +61,15 @@ public class AccountModule extends AbstractKapuaModule implements Module {
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
-            AccountTransactedRepository accountRepository
+            AccountRepository accountRepository
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         AccountService.class.getName(),
                         AccountDomains.ACCOUNT_DOMAIN,
-                        new CachingServiceConfigTransactedRepository(
-                                new ServiceConfigImplJpaTransactedRepository(new EntityManagerSession(entityManagerFactory)),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-account")),
+                        new CachingServiceConfigRepository(
+                                new ServiceConfigImplJpaRepository(),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
                         permissionFactory,
@@ -77,21 +78,16 @@ public class AccountModule extends AbstractKapuaModule implements Module {
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
-                                AccountDomains.ACCOUNT_DOMAIN,
-                                accountRepository,
-                                authorizationService,
-                                permissionFactory)
+                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-account")),
+                                accountRepository)
                 ));
     }
 
     @Provides
     @Singleton
-    AccountTransactedRepository accountRepository(AccountFactory accountFactory, AccountCacheFactory accountCacheFactory) {
-        final AccountImplJpaTransactedRepository wrapped = new AccountImplJpaTransactedRepository(
-                () -> accountFactory.newListResult(),
-                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-account") {
-                }));
+    AccountRepository accountRepository(AccountCacheFactory accountCacheFactory) {
+        final AccountImplJpaRepository wrapped = new AccountImplJpaRepository();
         final NamedEntityCache cache = (NamedEntityCache) accountCacheFactory.createCache();
-        return new CachingAccountTransactedRepository(wrapped, cache);
+        return new CachingAccountRepository(wrapped, cache);
     }
 }

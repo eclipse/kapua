@@ -23,7 +23,7 @@ import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
-import org.eclipse.kapua.service.device.registry.DeviceTransactedRepository;
+import org.eclipse.kapua.service.device.registry.DeviceRepository;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ import java.util.List;
  * {@link Device} DAO
  *
  * @since 1.0.0
- * @deprecated since 2.0.0 - use {@link DeviceTransactedRepository} instead
+ * @deprecated since 2.0.0 - use {@link DeviceRepository} instead
  */
 @Deprecated
 public class DeviceDAO extends ServiceDAO {

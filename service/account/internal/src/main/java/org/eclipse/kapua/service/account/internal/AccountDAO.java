@@ -22,7 +22,7 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountQuery;
-import org.eclipse.kapua.service.account.AccountTransactedRepository;
+import org.eclipse.kapua.service.account.AccountRepository;
 
 import javax.validation.constraints.NotNull;
 
@@ -30,7 +30,7 @@ import javax.validation.constraints.NotNull;
  * {@link Account} {@link ServiceDAO}.
  *
  * @since 1.0.0
- * @deprecated since 2.0.0 - use {@link AccountTransactedRepository} instead
+ * @deprecated since 2.0.0 - use {@link AccountRepository} instead
  */
 @Deprecated
 public class AccountDAO {

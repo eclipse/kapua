@@ -22,4 +22,11 @@ public class JpaTxContext implements TxContext {
     public JpaTxContext(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
+
+    public static EntityManager extractEntityManager(TxContext txContext) {
+        if (txContext instanceof JpaTxContext) {
+            return ((JpaTxContext) txContext).entityManager;
+        }
+        throw new RuntimeException("This repo needs to run within the context of a JPA transaction");
+    }
 }

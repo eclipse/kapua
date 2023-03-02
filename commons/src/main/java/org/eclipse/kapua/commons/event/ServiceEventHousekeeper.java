@@ -23,7 +23,6 @@ import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreService;
 import org.eclipse.kapua.commons.service.event.store.api.ServiceEventUtil;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreFactoryImpl;
-import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
@@ -77,11 +76,11 @@ public class ServiceEventHousekeeper implements Runnable {
      * @param servicesEntryList
      * @throws KapuaException
      */
-    public ServiceEventHousekeeper(EntityManagerFactory entityManagerFactory, ServiceEventBus eventbus, List<ServiceEntry> servicesEntryList) throws KapuaException {
+    public ServiceEventHousekeeper(EventStoreService eventStoreService, EntityManagerFactory entityManagerFactory, ServiceEventBus eventbus, List<ServiceEntry> servicesEntryList) throws KapuaException {
         this.eventbus = eventbus;
         this.servicesEntryList = servicesEntryList;
         manager = entityManagerFactory.createEntityManager();
-        kapuaEventService = new EventStoreServiceImpl(entityManagerFactory);
+        kapuaEventService = eventStoreService;
     }
 
     @Override

@@ -23,18 +23,19 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
-import org.eclipse.kapua.service.authorization.access.AccessInfoTransactedRepository;
+import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
-import org.eclipse.kapua.service.authorization.access.AccessRoleTransactedRepository;
+import org.eclipse.kapua.service.authorization.access.AccessRoleRepository;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
-import org.eclipse.kapua.service.authorization.role.RoleTransactedRepository;
+import org.eclipse.kapua.service.authorization.role.RoleRepository;
+import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -47,19 +48,22 @@ import javax.inject.Singleton;
 @Singleton
 public class AccessRoleServiceImpl implements AccessRoleService {
 
-    private final RoleTransactedRepository roleRepository;
-    private final AccessInfoTransactedRepository accessInfoRepository;
-    private final AccessRoleTransactedRepository accessRoleRepository;
+    private final TxManager txManager;
+    private final RoleRepository roleRepository;
+    private final AccessInfoRepository accessInfoRepository;
+    private final AccessRoleRepository accessRoleRepository;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
 
     @Inject
     public AccessRoleServiceImpl(
-            RoleTransactedRepository roleRepository,
-            AccessInfoTransactedRepository accessInfoRepository,
-            AccessRoleTransactedRepository accessRoleRepository,
+            TxManager txManager,
+            RoleRepository roleRepository,
+            AccessInfoRepository accessInfoRepository,
+            AccessRoleRepository accessRoleRepository,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory) {
+        this.txManager = txManager;
         this.roleRepository = roleRepository;
         this.accessInfoRepository = accessInfoRepository;
         this.accessRoleRepository = accessRoleRepository;
@@ -78,43 +82,45 @@ public class AccessRoleServiceImpl implements AccessRoleService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.write, accessRoleCreator.getScopeId()));
 
-        //
-        // Check that AccessInfo exists
-        final AccessInfo accessInfo = accessInfoRepository.find(accessRoleCreator.getScopeId(), accessRoleCreator.getAccessInfoId());
+        return txManager.executeWithResult(tx -> {
+            //
+            // Check that AccessInfo exists
+            final AccessInfo accessInfo = accessInfoRepository.find(tx, accessRoleCreator.getScopeId(), accessRoleCreator.getAccessInfoId());
 
-        if (accessInfo == null) {
-            throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessRoleCreator.getAccessInfoId());
-        }
+            if (accessInfo == null) {
+                throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessRoleCreator.getAccessInfoId());
+            }
 
-        //
-        // Check that Role exists
-        final Role role = roleRepository.find(accessRoleCreator.getScopeId(), accessRoleCreator.getRoleId());
+            //
+            // Check that Role exists
+            final Role role = roleRepository.find(tx, accessRoleCreator.getScopeId(), accessRoleCreator.getRoleId());
 
-        if (role == null) {
-            throw new KapuaEntityNotFoundException(Role.TYPE, accessRoleCreator.getRoleId());
-        }
+            if (role == null) {
+                throw new KapuaEntityNotFoundException(Role.TYPE, accessRoleCreator.getRoleId());
+            }
 
-        //
-        // Check that Role is not already assigned
-        AccessRoleQuery query = new AccessRoleQueryImpl(accessRoleCreator.getScopeId());
-        query.setPredicate(
-                query.andPredicate(
-                        query.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessRoleCreator.getAccessInfoId()),
-                        query.attributePredicate(RolePermissionAttributes.ROLE_ID, accessRoleCreator.getRoleId())
-                )
-        );
+            //
+            // Check that Role is not already assigned
+            AccessRoleQuery query = new AccessRoleQueryImpl(accessRoleCreator.getScopeId());
+            query.setPredicate(
+                    query.andPredicate(
+                            query.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessRoleCreator.getAccessInfoId()),
+                            query.attributePredicate(RolePermissionAttributes.ROLE_ID, accessRoleCreator.getRoleId())
+                    )
+            );
 
-        if (accessRoleRepository.count(query) > 0) {
-            throw new KapuaDuplicateNameException(role.getName());
-        }
+            if (accessRoleRepository.count(tx, query) > 0) {
+                throw new KapuaDuplicateNameException(role.getName());
+            }
 
-        //
-        // Do create
-        AccessRole accessRole = new AccessRoleImpl(accessRoleCreator.getScopeId());
+            //
+            // Do create
+            AccessRole accessRole = new AccessRoleImpl(accessRoleCreator.getScopeId());
 
-        accessRole.setAccessInfoId(accessRoleCreator.getAccessInfoId());
-        accessRole.setRoleId(accessRoleCreator.getRoleId());
-        return accessRoleRepository.create(accessRole);
+            accessRole.setAccessInfoId(accessRoleCreator.getAccessInfoId());
+            accessRole.setRoleId(accessRoleCreator.getRoleId());
+            return accessRoleRepository.create(tx, accessRole);
+        });
     }
 
     @Override
@@ -129,7 +135,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
 
         //
         // Do find
-        return accessRoleRepository.find(scopeId, accessRoleId);
+        return txManager.executeWithResult(tx -> accessRoleRepository.find(tx, scopeId, accessRoleId));
     }
 
     @Override
@@ -146,7 +152,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
         // Check cache
         AccessRoleQuery query = new AccessRoleQueryImpl(scopeId);
         query.setPredicate(query.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));
-        return (AccessRoleListResult) accessRoleRepository.query(query);
+        return txManager.executeWithResult(tx -> accessRoleRepository.query(tx, query));
     }
 
     @Override
@@ -160,7 +166,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
 
         //
         // Do query
-        return (AccessRoleListResult) accessRoleRepository.query(query);
+        return txManager.executeWithResult(tx -> accessRoleRepository.query(tx, query));
     }
 
     @Override
@@ -174,7 +180,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
 
         //
         // Do count
-        return accessRoleRepository.count(query);
+        return txManager.executeWithResult(tx -> accessRoleRepository.count(tx, query));
     }
 
     @Override
@@ -188,6 +194,6 @@ public class AccessRoleServiceImpl implements AccessRoleService {
 
         //
         // Do delete
-        accessRoleRepository.delete(scopeId, accessRoleId);
+        txManager.executeNoResult(tx -> accessRoleRepository.delete(tx, scopeId, accessRoleId));
     }
 }

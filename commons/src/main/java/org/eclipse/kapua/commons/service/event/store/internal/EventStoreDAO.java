@@ -21,6 +21,10 @@ import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 
+/**
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository} instead
+ */
+@Deprecated
 public class EventStoreDAO {
 
     private EventStoreDAO() {

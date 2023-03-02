@@ -21,7 +21,9 @@ import org.slf4j.LoggerFactory;
  * {@link CollisionEntityService} {@link EntityManagerFactory} implementation
  *
  * @since 1.0.0
+ * @deprecated since 2.0.0, use {@link org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory} instead
  */
+@Deprecated
 public class CollisionEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(CollisionEntityManagerFactory.class);

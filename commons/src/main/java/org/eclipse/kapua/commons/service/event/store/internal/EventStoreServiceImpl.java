@@ -12,24 +12,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.event.store.internal;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreDomains;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreService;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.RaiseServiceEvent;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Inject;
 
@@ -38,20 +37,26 @@ import javax.inject.Inject;
  *
  * @since 1.0.0
  */
-public class EventStoreServiceImpl extends AbstractKapuaService implements EventStoreService {
+public class EventStoreServiceImpl
+        implements EventStoreService {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
-    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
+    private final TxManager txManager;
+    private final EventStoreFactory entityFactory;
+    private final EventStoreRecordRepository repository;
 
-    /**
-     * Constructor.
-     *
-     * @since 1.0.0
-     */
     @Inject
-    public EventStoreServiceImpl(EntityManagerFactory entityManagerFactory) {
-        super(entityManagerFactory);
+    public EventStoreServiceImpl(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            TxManager txManager, EventStoreFactory entityFactory,
+            EventStoreRecordRepository repository) {
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.txManager = txManager;
+        this.entityFactory = entityFactory;
+        this.repository = repository;
     }
 
     @Override
@@ -72,19 +77,11 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.write, kapuaEvent.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.write, kapuaEvent.getScopeId()));
 
         //
         // Do update
-        return entityManagerSession.doTransactedAction(em -> {
-            EventStoreRecord oldKapuaEvent = EventStoreDAO.find(em, kapuaEvent.getScopeId(), kapuaEvent.getId());
-            if (oldKapuaEvent == null) {
-                throw new KapuaEntityNotFoundException(EventStoreRecord.TYPE, kapuaEvent.getId());
-            }
-
-            // Update
-            return EventStoreDAO.update(em, kapuaEvent);
-        });
+        return txManager.executeWithResult(tx -> repository.update(tx, kapuaEvent));
     }
 
     @Override
@@ -100,11 +97,11 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
         //
         // Check Access
         Actions action = Actions.write;
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, action, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, action, scopeId));
 
         //
         // Do delete
-        entityManagerSession.doTransactedAction(em -> EventStoreDAO.delete(em, scopeId, kapuaEventId));
+        txManager.executeWithResult(tx -> repository.delete(tx, scopeId, kapuaEventId));
     }
 
     @Override
@@ -117,11 +114,11 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, scopeId));
 
         //
         // Make sure kapuaEvent exists
-        return findById(kapuaEventId);
+        return txManager.executeWithResult(tx -> repository.find(tx, scopeId, kapuaEventId));
     }
 
     @Override
@@ -133,11 +130,9 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, kapuaEventId));
+        authorizationService.checkPermission(permissionFactory.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, kapuaEventId));
 
-        //
-        // Make sure kapuaEvent exists
-        return findById(kapuaEventId);
+        return txManager.executeWithResult(tx -> repository.find(tx, KapuaId.ANY, kapuaEventId));
     }
 
     @Override
@@ -147,9 +142,8 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, query.getScopeId()));
-
-        return entityManagerSession.doAction(em -> EventStoreDAO.query(em, query));
+        authorizationService.checkPermission(permissionFactory.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, query.getScopeId()));
+        return txManager.executeWithResult(tx -> repository.query(tx, query));
     }
 
     @Override
@@ -159,26 +153,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, query.getScopeId()));
-
-        return entityManagerSession.doAction(em -> EventStoreDAO.count(em, query));
+        authorizationService.checkPermission(permissionFactory.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, query.getScopeId()));
+        return txManager.executeWithResult(tx -> repository.count(tx, query));
     }
-
-    /**
-     * Find an {@link EventStoreRecord} without authorization checks.
-     *
-     * @param kapuaEventId
-     * @return
-     * @throws KapuaException
-     * @since 1.0.0
-     */
-    private EventStoreRecord findById(KapuaId kapuaEventId)
-            throws KapuaException {
-        //
-        // Argument Validation
-        ArgumentValidator.notNull(kapuaEventId, KapuaEntityAttributes.ENTITY_ID);
-
-        return entityManagerSession.doAction(em -> EventStoreDAO.find(em, null, kapuaEventId));
-    }
-
 }

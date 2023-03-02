@@ -19,7 +19,7 @@ import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
  * {@link JobDeviceManagementOperationServiceImpl} {@link EntityManagerFactory} implementation.
  *
  * @since 1.1.0
- * @deprecated since 2.0.0 - use repository pattern implementations instead
+ * @deprecated since 2.0.0, use {@link org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory} instead
  */
 @Deprecated
 public class JobDeviceManagementOperationEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {

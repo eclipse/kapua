@@ -18,13 +18,11 @@ import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.KapuaEntityFactory;
-import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.storage.KapuaEntityTransactedRepository;
-import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.storage.KapuaEntityRepository;
+import org.eclipse.kapua.storage.TxManager;
 
 public class UsedEntitiesCounterImpl<
         E extends KapuaEntity,
@@ -35,33 +33,28 @@ public class UsedEntitiesCounterImpl<
         > implements UsedEntitiesCounter {
 
     private final F factory;
-    private final Domain domain;
-    private final KapuaEntityTransactedRepository<E, L> entityRepository;
-    private final AuthorizationService authorizationService;
-    private final PermissionFactory permissionFactory;
+    private final TxManager txManager;
+    private final KapuaEntityRepository<E, L> entityRepository;
 
     public UsedEntitiesCounterImpl(F factory,
-                                   Domain domain,
-                                   KapuaEntityTransactedRepository<E, L> entityRepository,
-                                   AuthorizationService authorizationService,
-                                   PermissionFactory permissionFactory) {
+                                   TxManager txManager, KapuaEntityRepository<E, L> entityRepository) {
         this.factory = factory;
-        this.domain = domain;
+        this.txManager = txManager;
         this.entityRepository = entityRepository;
-        this.authorizationService = authorizationService;
-        this.permissionFactory = permissionFactory;
     }
 
     @Override
     public long countEntitiesInScope(KapuaId scopeId) throws KapuaException {
-        final Q query = factory.newQuery(scopeId);
+        return txManager.executeWithResult(tx -> {
+            final Q query = factory.newQuery(scopeId);
 
-        //
-        // Argument Validator
-        ArgumentValidator.notNull(query, "query");
+            //
+            // Argument Validator
+            ArgumentValidator.notNull(query, "query");
 
-        //
-        // Do count
-        return entityRepository.count(query);
+            //
+            // Do count
+            return entityRepository.count(tx, query);
+        });
     }
 }

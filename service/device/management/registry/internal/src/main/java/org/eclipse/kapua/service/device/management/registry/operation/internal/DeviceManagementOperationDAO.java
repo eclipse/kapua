@@ -21,13 +21,13 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationCreator;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationListResult;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationTransactedRepository;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
 
 /**
  * DeviceManagementOperationNotification DAO
  *
  * @since 1.0
- * @deprecated since 2.0.0 - use {@link DeviceManagementOperationTransactedRepository} instead
+ * @deprecated since 2.0.0 - use {@link DeviceManagementOperationRepository} instead
  */
 @Deprecated
 public class DeviceManagementOperationDAO {

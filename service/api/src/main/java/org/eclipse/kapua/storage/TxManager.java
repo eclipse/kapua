@@ -16,6 +16,10 @@ import org.eclipse.kapua.KapuaException;
 
 public interface TxManager {
 
+    <R> R executeWithResult(TxConsumer<R> transactionConsumer) throws KapuaException;
+
+    void executeNoResult(TxResultlessConsumer transactionConsumer) throws KapuaException;
+
     @FunctionalInterface
     public interface TxConsumer<R> {
         R executeWithResult(TxContext txHolder) throws KapuaException;
@@ -26,7 +30,4 @@ public interface TxManager {
         void executeWithoutResult(TxContext txHolder) throws KapuaException;
     }
 
-    <R> R executeWithResult(TxConsumer<R> transactionConsumer) throws KapuaException;
-
-    void executeNoResult(TxResultlessConsumer transactionConsumer) throws KapuaException;
 }

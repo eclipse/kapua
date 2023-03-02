@@ -15,24 +15,24 @@ package org.eclipse.kapua.service.user.internal;
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
-import org.eclipse.kapua.commons.configuration.CachingServiceConfigTransactedRepository;
+import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.RootUserTesterImpl;
-import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaTransactedRepository;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.UserDomains;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserNamedEntityService;
-import org.eclipse.kapua.service.user.UserTransactedRepository;
+import org.eclipse.kapua.service.user.UserRepository;
 import org.eclipse.kapua.service.user.UserService;
 
 import javax.inject.Named;
@@ -53,19 +53,19 @@ public class UserModule extends AbstractKapuaModule {
     @Singleton
     @Named("UserServiceConfigurationManager")
     ServiceConfigurationManager userServiceConfigurationManager(
-            UserEntityManagerFactory userEntityManagerFactory,
             UserFactory userFactory,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
-            UserTransactedRepository userRepository
+            UserRepository userRepository
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(UserService.class.getName(),
                         UserDomains.USER_DOMAIN,
-                        new CachingServiceConfigTransactedRepository(
-                                new ServiceConfigImplJpaTransactedRepository(new EntityManagerSession(userEntityManagerFactory)),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
+                        new CachingServiceConfigRepository(
+                                new ServiceConfigImplJpaRepository(),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
                         permissionFactory,
@@ -74,21 +74,16 @@ public class UserModule extends AbstractKapuaModule {
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 userFactory,
-                                UserDomains.USER_DOMAIN,
-                                userRepository,
-                                authorizationService,
-                                permissionFactory)
-                ));
+                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
+                                userRepository
+                        )));
     }
 
     @Provides
     @Singleton
-    UserTransactedRepository userRepository(UserFactory userFactory) {
-        return new CachingUserTransactedRepository(
-                new UserImplJpaTransactedRepository(
-                        () -> userFactory.newListResult(),
-                        new EntityManagerSession(new AbstractEntityManagerFactory("kapua-user") {
-                        })),
+    UserRepository userRepository() {
+        return new CachingUserRepository(
+                new UserImplJpaRepository(),
                 (NamedEntityCache) new UserCacheFactory().createCache()
         );
     }

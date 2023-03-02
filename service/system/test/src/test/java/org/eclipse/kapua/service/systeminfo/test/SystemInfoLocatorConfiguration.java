@@ -72,7 +72,7 @@ public class SystemInfoLocatorConfiguration {
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
                 // binding Account related services
-                bind(AccountService.class).toInstance(Mockito.spy(new AccountServiceImpl()));
+                bind(AccountService.class).toInstance(Mockito.spy(AccountServiceImpl.class));
                 bind(AccountFactory.class).toInstance(Mockito.spy(new AccountFactoryImpl()));
 
                 // Inject actual System Info service related services

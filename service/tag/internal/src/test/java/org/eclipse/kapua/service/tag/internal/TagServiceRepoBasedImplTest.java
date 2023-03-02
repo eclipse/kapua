@@ -24,7 +24,9 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagDomains;
 import org.eclipse.kapua.service.tag.TagFactory;
-import org.eclipse.kapua.service.tag.TagTransactedRepository;
+import org.eclipse.kapua.service.tag.TagRepository;
+import org.eclipse.kapua.storage.TxContext;
+import org.eclipse.kapua.storage.TxManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +46,7 @@ public class TagServiceRepoBasedImplTest {
     private PermissionFactory permissionFactory;
     private AuthorizationService authorizationService;
     private ServiceConfigurationManager serviceConfigurationManager;
-    private TagTransactedRepository tagRepository;
+    private TagRepository tagRepository;
     private TagServiceRepoBasedImpl instance;
     private TagFactory tagFactory;
 
@@ -55,8 +57,8 @@ public class TagServiceRepoBasedImplTest {
                 .thenReturn(FAKE_PERMISSION);
         authorizationService = Mockito.mock(AuthorizationService.class);
         serviceConfigurationManager = Mockito.mock(ServiceConfigurationManager.class);
-        tagRepository = Mockito.mock(TagTransactedRepository.class);
-        Mockito.when(tagRepository.create(Mockito.<Tag>any()))
+        tagRepository = Mockito.mock(TagRepository.class);
+        Mockito.when(tagRepository.create(Mockito.<TxContext>any(), Mockito.<Tag>any()))
                 .thenAnswer(invocation -> invocation.getArgumentAt(0, Tag.class));
         tagFactory = Mockito.mock(TagFactory.class);
         Mockito.when(tagFactory.newCreator(Mockito.any(), Mockito.any()))
@@ -68,8 +70,9 @@ public class TagServiceRepoBasedImplTest {
                 permissionFactory,
                 authorizationService,
                 serviceConfigurationManager,
-                tagRepository,
-                tagFactory);
+                Mockito.mock(TxManager.class), tagRepository,
+                tagFactory
+        );
     }
 
     @Test
@@ -98,8 +101,8 @@ public class TagServiceRepoBasedImplTest {
         Mockito.verify(permissionFactory).newPermission(Mockito.eq(TagDomains.TAG_DOMAIN), Mockito.eq(Actions.read), Mockito.eq(scopeId));
         Mockito.verify(authorizationService, Mockito.times(2)).checkPermission(Mockito.eq(FAKE_PERMISSION));
         Mockito.verify(serviceConfigurationManager).checkAllowedEntities(Mockito.eq(scopeId), Mockito.any());
-        Mockito.verify(tagRepository).create(Mockito.<Tag>any());
-        Mockito.verify(tagRepository).count(Mockito.any());
+        Mockito.verify(tagRepository).create(Mockito.any(), Mockito.<Tag>any());
+        Mockito.verify(tagRepository).count(Mockito.any(), Mockito.any());
         Mockito.verify(tagFactory).newEntity(scopeId);
         Mockito.verifyNoMoreInteractions(serviceConfigurationManager);
         Mockito.verifyNoMoreInteractions(permissionFactory);

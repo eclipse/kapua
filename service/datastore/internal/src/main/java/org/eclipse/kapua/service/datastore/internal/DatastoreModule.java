@@ -14,9 +14,9 @@ package org.eclipse.kapua.service.datastore.internal;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
-import org.eclipse.kapua.commons.configuration.CachingServiceConfigTransactedRepository;
+import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
-import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaTransactedRepository;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerImpl;
@@ -58,7 +58,6 @@ public class DatastoreModule extends AbstractKapuaModule {
     @Singleton
     @Named("MessageStoreServiceConfigurationManager")
     ServiceConfigurationManager messageStoreServiceConfigurationManager(
-            DatastoreEntityManagerFactory entityManagerFactory,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester
@@ -66,9 +65,9 @@ public class DatastoreModule extends AbstractKapuaModule {
         return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerImpl(
                 MessageStoreService.class.getName(),
                 DatastoreDomains.DATASTORE_DOMAIN,
-                new CachingServiceConfigTransactedRepository(
-                        new ServiceConfigImplJpaTransactedRepository(
-                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-datastore"))),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-datastore")),
+                new CachingServiceConfigRepository(
+                        new ServiceConfigImplJpaRepository(),
                         new AbstractKapuaConfigurableServiceCache().createCache()
                 ),
                 permissionFactory,

@@ -15,21 +15,21 @@ package org.eclipse.kapua.service.job.internal;
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
-import org.eclipse.kapua.commons.configuration.CachingServiceConfigTransactedRepository;
+import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
-import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaTransactedRepository;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.JobFactory;
-import org.eclipse.kapua.service.job.JobTransactedRepository;
+import org.eclipse.kapua.service.job.JobRepository;
 import org.eclipse.kapua.service.job.JobService;
 
 import javax.inject.Named;
@@ -47,19 +47,19 @@ public class JobModule extends AbstractKapuaModule {
     @Named("JobServiceConfigurationManager")
     public ServiceConfigurationManager jobServiceConfigurationManager(
             JobFactory factory,
-            JobEntityManagerFactory jobEntityManagerFactory,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
-            JobTransactedRepository jobRepository
+            JobRepository jobRepository
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         JobService.class.getName(),
                         JobDomains.JOB_DOMAIN,
-                        new CachingServiceConfigTransactedRepository(
-                                new ServiceConfigImplJpaTransactedRepository(new EntityManagerSession(jobEntityManagerFactory)),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                        new CachingServiceConfigRepository(
+                                new ServiceConfigImplJpaRepository(),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
                         permissionFactory,
@@ -68,20 +68,15 @@ public class JobModule extends AbstractKapuaModule {
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
-                                JobDomains.JOB_DOMAIN,
-                                jobRepository,
-                                authorizationService,
-                                permissionFactory
+                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                                jobRepository
                         )));
 
     }
 
     @Provides
     @Singleton
-    JobTransactedRepository jobRepository(JobFactory jobFactory) {
-        return new JobImplJpaTransactedRepository(
-                () -> jobFactory.newListResult(),
-                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-job") {
-                }));
+    JobRepository jobRepository() {
+        return new JobImplJpaRepository();
     }
 }

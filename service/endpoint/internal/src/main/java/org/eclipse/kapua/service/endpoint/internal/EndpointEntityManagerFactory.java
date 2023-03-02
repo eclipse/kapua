@@ -21,7 +21,9 @@ import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
  * {@link EndpointInfoServiceImpl} {@link EntityManagerFactory} implementation.
  *
  * @since 1.0.0
+ * @deprecated since 2.0.0, use {@link org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory} instead
  */
+@Deprecated
 public class EndpointEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-endpoint";

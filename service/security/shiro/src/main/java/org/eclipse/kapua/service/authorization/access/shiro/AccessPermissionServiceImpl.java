@@ -23,17 +23,18 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
-import org.eclipse.kapua.service.authorization.access.AccessInfoTransactedRepository;
+import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionTransactedRepository;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionRepository;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValidator;
+import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -52,16 +53,19 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
 
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
-    private final AccessPermissionTransactedRepository accessPermissionRepository;
-    private final AccessInfoTransactedRepository accessInfoRepository;
+    private final TxManager txManager;
+    private final AccessPermissionRepository accessPermissionRepository;
+    private final AccessInfoRepository accessInfoRepository;
 
     @Inject
     public AccessPermissionServiceImpl(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            AccessPermissionTransactedRepository accessPermissionRepository, AccessInfoTransactedRepository accessInfoRepository) {
+            TxManager txManager,
+            AccessPermissionRepository accessPermissionRepository, AccessInfoRepository accessInfoRepository) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
+        this.txManager = txManager;
         this.accessPermissionRepository = accessPermissionRepository;
         this.accessInfoRepository = accessInfoRepository;
     }
@@ -88,44 +92,47 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
 
         PermissionValidator.validatePermission(permission);
 
-        //
-        // Check duplicates
-        AccessPermissionQuery query = new AccessPermissionQueryImpl(accessPermissionCreator.getScopeId());
-        query.setPredicate(
-                query.andPredicate(
-                        query.attributePredicate(KapuaEntityAttributes.SCOPE_ID, accessPermissionCreator.getScopeId()),
-                        query.attributePredicate(AccessPermissionAttributes.ACCESS_INFO_ID, accessPermissionCreator.getAccessInfoId()),
-                        query.attributePredicate(AccessPermissionAttributes.PERMISSION_DOMAIN, accessPermissionCreator.getPermission().getDomain()),
-                        query.attributePredicate(AccessPermissionAttributes.PERMISSION_ACTION, accessPermissionCreator.getPermission().getAction()),
-                        query.attributePredicate(AccessPermissionAttributes.PERMISSION_TARGET_SCOPE_ID, accessPermissionCreator.getPermission().getTargetScopeId()),
-                        query.attributePredicate(AccessPermissionAttributes.PERMISSION_GROUP_ID, accessPermissionCreator.getPermission().getGroupId()),
-                        query.attributePredicate(AccessPermissionAttributes.PERMISSION_FORWARDABLE, accessPermissionCreator.getPermission().getForwardable())
-                )
-        );
-        if (accessPermissionRepository.count(query) > 0) {
-            List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
+        return txManager.executeWithResult(tx -> {
+            //
+            // Check duplicates
+            AccessPermissionQuery query = new AccessPermissionQueryImpl(accessPermissionCreator.getScopeId());
+            query.setPredicate(
+                    query.andPredicate(
+                            query.attributePredicate(KapuaEntityAttributes.SCOPE_ID, accessPermissionCreator.getScopeId()),
+                            query.attributePredicate(AccessPermissionAttributes.ACCESS_INFO_ID, accessPermissionCreator.getAccessInfoId()),
+                            query.attributePredicate(AccessPermissionAttributes.PERMISSION_DOMAIN, accessPermissionCreator.getPermission().getDomain()),
+                            query.attributePredicate(AccessPermissionAttributes.PERMISSION_ACTION, accessPermissionCreator.getPermission().getAction()),
+                            query.attributePredicate(AccessPermissionAttributes.PERMISSION_TARGET_SCOPE_ID, accessPermissionCreator.getPermission().getTargetScopeId()),
+                            query.attributePredicate(AccessPermissionAttributes.PERMISSION_GROUP_ID, accessPermissionCreator.getPermission().getGroupId()),
+                            query.attributePredicate(AccessPermissionAttributes.PERMISSION_FORWARDABLE, accessPermissionCreator.getPermission().getForwardable())
+                    )
+            );
 
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(KapuaEntityAttributes.SCOPE_ID, accessPermissionCreator.getScopeId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.ACCESS_INFO_ID, accessPermissionCreator.getAccessInfoId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.PERMISSION_DOMAIN, accessPermissionCreator.getPermission().getDomain()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.PERMISSION_ACTION, accessPermissionCreator.getPermission().getAction()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.PERMISSION_TARGET_SCOPE_ID, accessPermissionCreator.getPermission().getTargetScopeId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.PERMISSION_GROUP_ID, accessPermissionCreator.getPermission().getGroupId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.PERMISSION_FORWARDABLE, accessPermissionCreator.getPermission().getForwardable()));
+            if (accessPermissionRepository.count(tx, query) > 0) {
+                List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
 
-            throw new KapuaEntityUniquenessException(AccessPermission.TYPE, uniquesFieldValues);
-        }
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(KapuaEntityAttributes.SCOPE_ID, accessPermissionCreator.getScopeId()));
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.ACCESS_INFO_ID, accessPermissionCreator.getAccessInfoId()));
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.PERMISSION_DOMAIN, accessPermissionCreator.getPermission().getDomain()));
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.PERMISSION_ACTION, accessPermissionCreator.getPermission().getAction()));
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.PERMISSION_TARGET_SCOPE_ID, accessPermissionCreator.getPermission().getTargetScopeId()));
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.PERMISSION_GROUP_ID, accessPermissionCreator.getPermission().getGroupId()));
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.PERMISSION_FORWARDABLE, accessPermissionCreator.getPermission().getForwardable()));
 
-        //
-        // Do create
-        final AccessInfo accessInfo = accessInfoRepository.find(accessPermissionCreator.getScopeId(), accessPermissionCreator.getAccessInfoId());
-        if (accessInfo == null) {
-            throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessPermissionCreator.getAccessInfoId());
-        }
-        AccessPermission accessPermission = new AccessPermissionImpl(accessPermissionCreator.getScopeId());
-        accessPermission.setAccessInfoId(accessPermissionCreator.getAccessInfoId());
-        accessPermission.setPermission(accessPermissionCreator.getPermission());
-        return accessPermissionRepository.create(accessPermission);
+                throw new KapuaEntityUniquenessException(AccessPermission.TYPE, uniquesFieldValues);
+            }
+
+            //
+            // Do create
+            final AccessInfo accessInfo = accessInfoRepository.find(tx, accessPermissionCreator.getScopeId(), accessPermissionCreator.getAccessInfoId());
+            if (accessInfo == null) {
+                throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessPermissionCreator.getAccessInfoId());
+            }
+            AccessPermission accessPermission = new AccessPermissionImpl(accessPermissionCreator.getScopeId());
+            accessPermission.setAccessInfoId(accessPermissionCreator.getAccessInfoId());
+            accessPermission.setPermission(accessPermissionCreator.getPermission());
+            return accessPermissionRepository.create(tx, accessPermission);
+        });
     }
 
     @Override
@@ -136,7 +143,7 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.delete, scopeId));
 
-        accessPermissionRepository.delete(scopeId, accessPermissionId);
+        txManager.executeNoResult(tx -> accessPermissionRepository.delete(tx, scopeId, accessPermissionId));
     }
 
     @Override
@@ -148,7 +155,7 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
-        return accessPermissionRepository.find(scopeId, accessPermissionId);
+        return txManager.executeWithResult(tx -> accessPermissionRepository.find(tx, scopeId, accessPermissionId));
     }
 
     @Override
@@ -162,7 +169,7 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN,
                 Actions.read, scopeId));
 
-        return (AccessPermissionListResult) accessPermissionRepository.findByAccessInfoId(scopeId, accessInfoId);
+        return txManager.executeWithResult(tx -> accessPermissionRepository.findByAccessInfoId(tx, scopeId, accessInfoId));
     }
 
     @Override
@@ -173,7 +180,7 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
-        return (AccessPermissionListResult) accessPermissionRepository.query(query);
+        return txManager.executeWithResult(tx -> accessPermissionRepository.query(tx, query));
     }
 
     @Override
@@ -184,6 +191,6 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
-        return accessPermissionRepository.count(query);
+        return txManager.executeWithResult(tx -> accessPermissionRepository.count(tx, query));
     }
 }

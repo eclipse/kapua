@@ -28,13 +28,14 @@ import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionAttributes;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionTransactedRepository;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionRepository;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOption;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionCreator;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionListResult;
-import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionTransactedRepository;
+import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionRepository;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService;
 import org.eclipse.kapua.service.device.registry.connection.option.UserAlreadyReservedException;
+import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -50,19 +51,22 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
 
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
-    private final DeviceConnectionTransactedRepository deviceConnectionRepository;
+    private final TxManager txManager;
+    private final DeviceConnectionRepository deviceConnectionRepository;
     private final DeviceConnectionFactory entityFactory;
-    private final DeviceConnectionOptionTransactedRepository repository;
+    private final DeviceConnectionOptionRepository repository;
 
     @Inject
     public DeviceConnectionOptionServiceImpl(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            DeviceConnectionTransactedRepository deviceConnectionRepository,
+            TxManager txManager,
+            DeviceConnectionRepository deviceConnectionRepository,
             DeviceConnectionFactory entityFactory,
-            DeviceConnectionOptionTransactedRepository repository) {
+            DeviceConnectionOptionRepository repository) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
+        this.txManager = txManager;
         this.deviceConnectionRepository = deviceConnectionRepository;
         this.entityFactory = entityFactory;
         this.repository = repository;
@@ -88,24 +92,27 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
 
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, deviceConnectionOptions.getScopeId()));
 
-        if (deviceConnectionOptions.getReservedUserId() != null) {
-            DeviceConnectionQuery query = entityFactory.newQuery(deviceConnectionOptions.getScopeId());
+        return txManager.executeWithResult(tx -> {
+            if (deviceConnectionOptions.getReservedUserId() != null) {
+                DeviceConnectionQuery query = entityFactory.newQuery(deviceConnectionOptions.getScopeId());
 
-            AndPredicate deviceAndPredicate = query.andPredicate(
-                    query.attributePredicate(DeviceConnectionAttributes.RESERVED_USER_ID, deviceConnectionOptions.getReservedUserId()),
-                    query.attributePredicate(DeviceConnectionAttributes.ENTITY_ID, deviceConnectionOptions.getId(), Operator.NOT_EQUAL)
-            );
+                AndPredicate deviceAndPredicate = query.andPredicate(
+                        query.attributePredicate(DeviceConnectionAttributes.RESERVED_USER_ID, deviceConnectionOptions.getReservedUserId()),
+                        query.attributePredicate(DeviceConnectionAttributes.ENTITY_ID, deviceConnectionOptions.getId(), Operator.NOT_EQUAL)
+                );
 
-            query.setPredicate(deviceAndPredicate);
-            if (deviceConnectionRepository.count(query) > 0) {
-                throw new UserAlreadyReservedException(deviceConnectionOptions.getScopeId(), deviceConnectionOptions.getId(), deviceConnectionOptions.getReservedUserId());
+                query.setPredicate(deviceAndPredicate);
+                if (deviceConnectionRepository.count(tx, query) > 0) {
+                    throw new UserAlreadyReservedException(deviceConnectionOptions.getScopeId(), deviceConnectionOptions.getId(), deviceConnectionOptions.getReservedUserId());
+                }
             }
-        }
-        if (deviceConnectionRepository.find(deviceConnectionOptions.getScopeId(), deviceConnectionOptions.getId()) == null) {
-            throw new KapuaEntityNotFoundException(DeviceConnectionOption.TYPE, deviceConnectionOptions.getId());
-        }
+            if (deviceConnectionRepository.find(tx, deviceConnectionOptions.getScopeId(), deviceConnectionOptions.getId()) == null) {
+                throw new KapuaEntityNotFoundException(DeviceConnectionOption.TYPE, deviceConnectionOptions.getId());
+            }
 
-        return repository.update(deviceConnectionOptions);
+            return repository.update(tx, deviceConnectionOptions);
+        });
+
     }
 
     @Override
@@ -120,7 +127,7 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, scopeId));
 
-        return repository.find(scopeId, entityId);
+        return txManager.executeWithResult(tx -> repository.find(tx, scopeId, entityId));
     }
 
     @Override
@@ -134,7 +141,7 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
 
-        return repository.query(query);
+        return txManager.executeWithResult(tx -> repository.query(tx, query));
     }
 
     @Override
@@ -148,7 +155,7 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
 
-        return repository.count(query);
+        return txManager.executeWithResult(tx -> repository.count(tx, query));
     }
 
     @Override
