@@ -46,7 +46,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Objects;
 
@@ -81,7 +80,7 @@ public class AccountServiceImpl
             AccountRepository accountRepository,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
-            @Named("AccountServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
+            ServiceConfigurationManager serviceConfigurationManager) {
         super(serviceConfigurationManager);
         this.txManager = txManager;
         this.accountRepository = accountRepository;

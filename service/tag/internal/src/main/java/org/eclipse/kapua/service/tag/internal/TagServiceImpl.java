@@ -14,12 +14,11 @@ package org.eclipse.kapua.service.tag.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -28,11 +27,13 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagDomains;
+import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagListResult;
+import org.eclipse.kapua.service.tag.TagRepository;
 import org.eclipse.kapua.service.tag.TagService;
+import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
@@ -41,28 +42,40 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
-public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagService {
+public class TagServiceImpl extends KapuaConfigurableServiceLinker implements TagService {
 
-    private PermissionFactory permissionFactory;
-    private AuthorizationService authorizationService;
+
+    private final PermissionFactory permissionFactory;
+    private final AuthorizationService authorizationService;
+    private final TagFactory tagFactory;
+    private final TxManager txManager;
+    private final TagRepository tagRepository;
 
     /**
      * Injectable Constructor
      *
-     * @param entityManagerFactory The {@link TagEntityManagerFactory} instance
-     * @param permissionFactory    The {@link PermissionFactory} instance
-     * @param authorizationService The {@link AuthorizationService} instance
+     * @param permissionFactory           The {@link PermissionFactory} instance
+     * @param authorizationService        The {@link AuthorizationService} instance
+     * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance
+     * @param txManager
+     * @param tagRepository               The {@link TagRepository} instance
+     * @param tagFactory
      * @since 2.0.0
      */
     @Inject
     public TagServiceImpl(
-            TagEntityManagerFactory entityManagerFactory,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
-            @Named("TagServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
-        super(entityManagerFactory, null, serviceConfigurationManager);
+            ServiceConfigurationManager serviceConfigurationManager,
+            TxManager txManager,
+            TagRepository tagRepository,
+            TagFactory tagFactory) {
+        super(serviceConfigurationManager);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
+        this.tagRepository = tagRepository;
+        this.tagFactory = tagFactory;
+        this.txManager = txManager;
     }
 
     @Override
@@ -75,7 +88,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(TagDomains.TAG_DOMAIN, Actions.write, tagCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.write, tagCreator.getScopeId()));
 
         //
         // Check entity limit
@@ -86,9 +99,12 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         // TODO: INJECT
         new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, tagCreator);
 
+        final Tag toBeCreated = tagFactory.newEntity(tagCreator.getScopeId());
+        toBeCreated.setName(tagCreator.getName());
+        toBeCreated.setDescription(tagCreator.getDescription());
         //
         // Do create
-        return entityManagerSession.doTransactedAction(em -> TagDAO.create(em, tagCreator));
+        return txManager.executeWithResult(tx -> tagRepository.create(tx, toBeCreated));
     }
 
     @Override
@@ -102,7 +118,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(TagDomains.TAG_DOMAIN, Actions.write, tag.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.write, tag.getScopeId()));
 
         //
         // Check existence
@@ -117,7 +133,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
 
         //
         // Do Update
-        return entityManagerSession.doTransactedAction(em -> TagDAO.update(em, tag));
+        return txManager.executeWithResult(tx -> tagRepository.update(tx, tag));
     }
 
     @Override
@@ -129,7 +145,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(TagDomains.TAG_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -138,8 +154,9 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         }
 
         //
+        // Do delete
         //
-        entityManagerSession.doTransactedAction(em -> TagDAO.delete(em, scopeId, tagId));
+        txManager.executeNoResult(tx -> tagRepository.delete(tx, scopeId, tagId));
     }
 
     @Override
@@ -151,11 +168,11 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(TagDomains.TAG_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
-        return entityManagerSession.doAction(em -> TagDAO.find(em, scopeId, tagId));
+        return txManager.executeWithResult(tx -> tagRepository.find(tx, scopeId, tagId));
     }
 
     @Override
@@ -166,11 +183,11 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(TagDomains.TAG_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
-        return entityManagerSession.doAction(em -> TagDAO.query(em, query));
+        return txManager.executeWithResult(tx -> tagRepository.query(tx, query));
     }
 
     @Override
@@ -181,38 +198,10 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(TagDomains.TAG_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
-        return entityManagerSession.doAction(em -> TagDAO.count(em, query));
-    }
-
-    /**
-     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link AuthorizationService} instance
-     */
-    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
-    protected AuthorizationService getAuthorizationService() {
-        if (authorizationService == null) {
-            authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
-        }
-        return authorizationService;
-    }
-
-    /**
-     * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link PermissionFactory} instance
-     */
-    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
-    protected PermissionFactory getPermissionFactory() {
-        if (permissionFactory == null) {
-            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
-        }
-        return permissionFactory;
+        return txManager.executeWithResult(tx -> tagRepository.count(tx, query));
     }
 }

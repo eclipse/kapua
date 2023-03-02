@@ -43,7 +43,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
@@ -59,14 +58,6 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
     private AuthorizationService authorizationService;
     private RolePermissionFactory rolePermissionFactory;
 
-    /**
-     * @deprecated since 2.0.0 - please use {@link #RoleServiceImpl(AuthorizationEntityManagerFactory, RoleCacheFactory, PermissionFactory, AuthorizationService, RolePermissionFactory, ServiceConfigurationManager)} instead. This constructor might be removed in future releases.
-     */
-    @Deprecated
-    public RoleServiceImpl() {
-        super(AuthorizationEntityManagerFactory.getInstance(), RoleCacheFactory.getInstance(), null);
-        this.rolePermissionFactory = null;
-    }
 
     /**
      * Injectable constructor
@@ -84,7 +75,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
                            PermissionFactory permissionFactory,
                            AuthorizationService authorizationService,
                            RolePermissionFactory rolePermissionFactory,
-                           @Named("RoleServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
+                           ServiceConfigurationManager serviceConfigurationManager) {
         super(authorizationEntityManagerFactory, roleCacheFactory, serviceConfigurationManager);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;

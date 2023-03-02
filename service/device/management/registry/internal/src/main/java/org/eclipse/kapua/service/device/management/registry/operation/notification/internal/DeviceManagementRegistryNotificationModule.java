@@ -14,6 +14,11 @@ package org.eclipse.kapua.service.device.management.registry.operation.notificat
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationRepository;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationService;
@@ -25,6 +30,24 @@ public class DeviceManagementRegistryNotificationModule extends AbstractKapuaMod
     protected void configureModule() {
         bind(ManagementOperationNotificationFactory.class).to(ManagementOperationNotificationFactoryImpl.class);
         bind(ManagementOperationNotificationService.class).to(ManagementOperationNotificationServiceImpl.class);
+    }
+
+    @Provides
+    @Singleton
+    ManagementOperationNotificationService managementOperationNotificationService(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            ManagementOperationNotificationFactory entityFactory,
+            ManagementOperationNotificationRepository repository,
+            DeviceManagementOperationRepository deviceManagementOperationRepository) {
+        return new ManagementOperationNotificationServiceImpl(
+                authorizationService,
+                permissionFactory,
+                entityFactory,
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device_management_operation_registry")),
+                repository,
+                deviceManagementOperationRepository
+        );
     }
 
     @Provides

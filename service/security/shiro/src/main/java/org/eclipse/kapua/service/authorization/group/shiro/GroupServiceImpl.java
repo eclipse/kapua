@@ -28,7 +28,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
-import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.GroupService;
@@ -38,7 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
@@ -54,7 +52,7 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
     private AuthorizationService authorizationService;
 
     /**
-     * @deprecated since 2.0.0 - please use {@link #GroupServiceImpl(AuthorizationEntityManagerFactory, GroupFactory, PermissionFactory, AuthorizationService, ServiceConfigurationManager)} instead. This constructor might be removed in later releases.
+     * @deprecated since 2.0.0 - please use {@link #GroupServiceImpl(AuthorizationEntityManagerFactory, PermissionFactory, AuthorizationService, ServiceConfigurationManager)} instead. This constructor might be removed in later releases.
      */
     @Deprecated
     public GroupServiceImpl() {
@@ -65,7 +63,6 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
      * Injectable constructor
      *
      * @param authorizationEntityManagerFactory The {@link AuthorizationEntityManagerFactory} instance.
-     * @param factory                           The {@link GroupFactory} instance.
      * @param permissionFactory                 The {@link PermissionFactory} instance.
      * @param authorizationService              The {@link AuthorizationService} instance.
      * @param serviceConfigurationManager       The {@link ServiceConfigurationManager} instance.
@@ -73,10 +70,9 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
      */
     @Inject
     public GroupServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory,
-                            GroupFactory factory,
                             PermissionFactory permissionFactory,
                             AuthorizationService authorizationService,
-                            @Named("GroupServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager
+                            ServiceConfigurationManager serviceConfigurationManager
     ) {
         super(authorizationEntityManagerFactory, null, serviceConfigurationManager);
         this.permissionFactory = permissionFactory;

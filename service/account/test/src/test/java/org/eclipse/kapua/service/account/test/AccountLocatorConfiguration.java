@@ -37,7 +37,6 @@ import org.eclipse.kapua.service.account.AccountDomains;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountRepository;
 import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.account.internal.AccountChildrenFinderImpl;
 import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
 import org.eclipse.kapua.service.account.internal.AccountImplJpaRepository;
 import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
@@ -85,7 +84,7 @@ public class AccountLocatorConfiguration {
 //                bind(AccountEntityManagerFactory.class).toInstance(entityManagerFactory);
                 final AccountFactory accountFactory = new AccountFactoryImpl();
                 bind(AccountFactory.class).toInstance(accountFactory);
-                bind(AccountChildrenFinder.class).to(AccountChildrenFinderImpl.class);
+                bind(AccountChildrenFinder.class).toInstance(Mockito.mock(AccountChildrenFinder.class));
                 final AccountRepository accountRepository = Mockito.mock(AccountRepository.class);
                 bind(ServiceConfigurationManager.class)
                         .annotatedWith(Names.named("AccountServiceConfigurationManager"))

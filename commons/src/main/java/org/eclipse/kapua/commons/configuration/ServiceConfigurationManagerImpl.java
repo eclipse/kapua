@@ -62,7 +62,8 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
     public ServiceConfigurationManagerImpl(
             String pid,
             Domain domain,
-            TxManager txManager, ServiceConfigRepository serviceConfigRepository,
+            TxManager txManager,
+            ServiceConfigRepository serviceConfigRepository,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester) {
