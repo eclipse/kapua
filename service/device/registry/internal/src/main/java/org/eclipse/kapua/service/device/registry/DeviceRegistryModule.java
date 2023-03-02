@@ -33,7 +33,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionRepo
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.internal.CachingDeviceConnectionRepository;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionFactoryImpl;
-import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionRepositoryImplJpaRepository;
+import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImplJpaRepository;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionServiceImpl;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionFactory;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionRepository;
@@ -167,7 +167,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     DeviceConnectionRepository deviceConnectionRepository(DeviceConnectionFactory entityFactory,
                                                           DeviceRegistryCacheFactory deviceRegistryCacheFactory) {
         return new CachingDeviceConnectionRepository(
-                new DeviceConnectionRepositoryImplJpaRepository(),
+                new DeviceConnectionImplJpaRepository(),
                 deviceRegistryCacheFactory.createCache()
         );
     }

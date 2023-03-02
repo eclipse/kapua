@@ -42,7 +42,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFact
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionRepository;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionFactoryImpl;
-import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionRepositoryImplJpaRepository;
+import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImplJpaRepository;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionServiceImpl;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
@@ -105,7 +105,7 @@ public class DeviceRegistryLocatorConfiguration {
                 bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
 
                 bind(DeviceRepository.class).toInstance(new DeviceImplJpaRepository());
-                bind(DeviceConnectionRepository.class).toInstance(new DeviceConnectionRepositoryImplJpaRepository());
+                bind(DeviceConnectionRepository.class).toInstance(new DeviceConnectionImplJpaRepository());
                 bind(DeviceEventRepository.class).toInstance(new DeviceEventImplJpaRepository());
                 bind(DeviceEventService.class).to(DeviceEventServiceImpl.class);
                 bind(DeviceEventFactory.class).toInstance(new DeviceEventFactoryImpl());
