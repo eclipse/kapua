@@ -62,7 +62,8 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             TxManager txManager,
-            AccessPermissionRepository accessPermissionRepository, AccessInfoRepository accessInfoRepository) {
+            AccessPermissionRepository accessPermissionRepository,
+            AccessInfoRepository accessInfoRepository) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.txManager = txManager;

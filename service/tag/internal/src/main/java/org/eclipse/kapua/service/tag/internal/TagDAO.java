@@ -27,19 +27,18 @@ import org.eclipse.kapua.service.tag.TagQuery;
  * {@link Tag} DAO
  *
  * @since 1.0.0
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.tag.TagRepository} instead
  */
+@Deprecated
 public class TagDAO extends ServiceDAO {
 
     /**
      * Creates and returns new {@link Tag}
      *
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param creator
-     *            The {@link TagCreator} object from which create the new {@link Tag}.
+     * @param em      The {@link EntityManager} that holds the transaction.
+     * @param creator The {@link TagCreator} object from which create the new {@link Tag}.
      * @return The newly created {@link Tag}.
-     * @throws KapuaException
-     *             On create error.
+     * @throws KapuaException On create error.
      * @since 1.0.0
      */
     public static Tag create(EntityManager em, TagCreator creator)
@@ -54,13 +53,10 @@ public class TagDAO extends ServiceDAO {
     /**
      * Updates and returns the updated {@link Tag}
      *
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param tag
-     *            The {@link Tag} to update
+     * @param em  The {@link EntityManager} that holds the transaction.
+     * @param tag The {@link Tag} to update
      * @return The updated {@link Tag}.
-     * @throws KapuaEntityNotFoundException
-     *             If {@link Tag} is not found.
+     * @throws KapuaEntityNotFoundException If {@link Tag} is not found.
      */
     public static Tag update(EntityManager em, Tag tag) throws KapuaEntityNotFoundException {
         TagImpl tagImpl = (TagImpl) tag;
@@ -70,28 +66,23 @@ public class TagDAO extends ServiceDAO {
     /**
      * Finds the {@link Tag} by {@link Tag} identifier
      *
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
+     * @param em      The {@link EntityManager} that holds the transaction.
      * @param scopeId
-     * @param tagId
-     *            The {@link Tag} id to search.
+     * @param tagId   The {@link Tag} id to search.
      * @return The found {@link Tag} or {@code null} if not found.
      * @since 1.0.0
      */
     public static Tag find(EntityManager em, KapuaId scopeId, KapuaId tagId) {
-        return ServiceDAO.find(em,TagImpl.class, scopeId, tagId);
+        return ServiceDAO.find(em, TagImpl.class, scopeId, tagId);
     }
 
     /**
      * Returns the {@link Tag} list matching the provided query.
      *
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param tagQuery
-     *            The {@link TagQuery} used to filter results.
+     * @param em       The {@link EntityManager} that holds the transaction.
+     * @param tagQuery The {@link TagQuery} used to filter results.
      * @return The list of {@link Tag}s that matches the given query.
-     * @throws KapuaException
-     *             On query error.
+     * @throws KapuaException On query error.
      * @since 1.0.0
      */
     public static TagListResult query(EntityManager em, KapuaQuery tagQuery)
@@ -102,10 +93,8 @@ public class TagDAO extends ServiceDAO {
     /**
      * Return the {@link Tag} count matching the provided query
      *
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param tagQuery
-     *            The {@link TagQuery} used to filter results
+     * @param em       The {@link EntityManager} that holds the transaction.
+     * @param tagQuery The {@link TagQuery} used to filter results
      * @return The count of {@link Tag}s that matches the given query.
      * @throws KapuaException
      * @since 1.0.0
@@ -118,14 +107,11 @@ public class TagDAO extends ServiceDAO {
     /**
      * Deletes the {@link Tag} by {@link Tag} identifier
      *
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
+     * @param em      The {@link EntityManager} that holds the transaction.
      * @param scopeId
-     * @param tagId
-     *            The {@link Tag} id to delete.
+     * @param tagId   The {@link Tag} id to delete.
      * @return deleted entity
-     * @throws KapuaEntityNotFoundException
-     *             If {@link Tag} is not found.
+     * @throws KapuaEntityNotFoundException If {@link Tag} is not found.
      * @since 1.0.0
      */
     public static Tag delete(EntityManager em, KapuaId scopeId, KapuaId tagId) throws KapuaEntityNotFoundException {

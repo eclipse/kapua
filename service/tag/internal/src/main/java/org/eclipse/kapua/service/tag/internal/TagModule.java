@@ -38,16 +38,27 @@ import javax.inject.Singleton;
 public class TagModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(TagService.class).to(TagServiceRepoBasedImpl.class);
         bind(TagFactory.class).to(TagFactoryImpl.class);
-        bind(TagEntityManagerFactory.class).toInstance(new TagEntityManagerFactory());
+    }
+
+    @Provides
+    @Singleton
+    TagService tagService(
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            @Named("TagServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
+            TagRepository tagRepository,
+            TagFactory tagFactory) {
+        return new TagServiceImpl(permissionFactory, authorizationService, serviceConfigurationManager,
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-tag")),
+                tagRepository,
+                tagFactory);
     }
 
     @Provides
     @Singleton
     @Named("TagServiceConfigurationManager")
     ServiceConfigurationManager tagServiceConfigurationManager(
-            TagEntityManagerFactory entityManagerFactory,
             TagFactory factory,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,

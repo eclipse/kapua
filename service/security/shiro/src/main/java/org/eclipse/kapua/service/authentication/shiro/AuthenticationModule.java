@@ -63,7 +63,6 @@ public class AuthenticationModule extends AbstractKapuaModule {
                 .annotatedWith(Names.named("CredentialServiceConfigurationManager"))
                 .to(CredentialServiceConfigurationManager.class);
         bind(CredentialFactory.class).to(CredentialFactoryImpl.class);
-        bind(CredentialService.class).to(CredentialServiceImpl.class);
         bind(CredentialsFactory.class).to(CredentialsFactoryImpl.class);
 
         bind(MfaOptionFactory.class).to(MfaOptionFactoryImpl.class);
@@ -75,6 +74,14 @@ public class AuthenticationModule extends AbstractKapuaModule {
         bind(AccessTokenService.class).to(AccessTokenServiceImpl.class);
 
         bind(RegistrationService.class).to(RegistrationServiceImpl.class);
+    }
+
+    @Provides
+    @Singleton
+    public CredentialService credentialService(
+            AuthenticationEntityManagerFactory authenticationEntityManagerFactory,
+            @Named("CredentialServiceConfigurationManager") CredentialServiceConfigurationManager serviceConfigurationManager) {
+        return new CredentialServiceImpl(authenticationEntityManagerFactory, serviceConfigurationManager);
     }
 
     @Provides

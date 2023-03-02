@@ -47,15 +47,35 @@ public class AccountModule extends AbstractKapuaModule implements Module {
     @Override
     protected void configureModule() {
         bind(AccountFactory.class).to(AccountFactoryImpl.class);
-        bind(AccountChildrenFinder.class).to(AccountChildrenFinderImpl.class);
-        bind(AccountService.class).to(AccountServiceImpl.class);
+    }
+
+    @Provides
+    @Singleton
+    AccountChildrenFinder accountChildrenFinder(AccountFactory accountFactory, AccountRepository accountRepository) {
+        return new AccountChildrenFinderImpl(
+                accountFactory,
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-account")),
+                accountRepository);
+    }
+
+    @Provides
+    @Singleton
+    AccountService accountService(AccountRepository accountRepository,
+                                  PermissionFactory permissionFactory,
+                                  AuthorizationService authorizationService,
+                                  @Named("AccountServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
+        return new AccountServiceImpl(
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-account")),
+                accountRepository,
+                permissionFactory,
+                authorizationService,
+                serviceConfigurationManager);
     }
 
     @Provides
     @Singleton
     @Named("AccountServiceConfigurationManager")
     ServiceConfigurationManager accountServiceConfigurationManager(
-            AccountEntityManagerFactory entityManagerFactory,
             AccountFactory factory,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,

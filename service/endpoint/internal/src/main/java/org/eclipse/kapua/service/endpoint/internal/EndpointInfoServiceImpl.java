@@ -70,7 +70,8 @@ public class EndpointInfoServiceImpl
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             EndpointInfoFactory endpointInfoFactory,
-            EndpointInfoRepository endpointInfoRepository, TxManager txManager) {
+            EndpointInfoRepository endpointInfoRepository,
+            TxManager txManager) {
         this.accountService = accountService;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;

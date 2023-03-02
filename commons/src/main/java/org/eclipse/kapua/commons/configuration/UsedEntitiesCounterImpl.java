@@ -37,7 +37,8 @@ public class UsedEntitiesCounterImpl<
     private final KapuaEntityRepository<E, L> entityRepository;
 
     public UsedEntitiesCounterImpl(F factory,
-                                   TxManager txManager, KapuaEntityRepository<E, L> entityRepository) {
+                                   TxManager txManager,
+                                   KapuaEntityRepository<E, L> entityRepository) {
         this.factory = factory;
         this.txManager = txManager;
         this.entityRepository = entityRepository;

@@ -35,7 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
@@ -55,8 +54,9 @@ public class DeviceRegistryServiceImpl
 
     @Inject
     public DeviceRegistryServiceImpl(
-            @Named("DeviceRegistryServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
-            TxManager txManager, DeviceRepository repository,
+            ServiceConfigurationManager serviceConfigurationManager,
+            TxManager txManager,
+            DeviceRepository repository,
             DeviceFactory entityFactory) {
         super(serviceConfigurationManager);
         this.txManager = txManager;

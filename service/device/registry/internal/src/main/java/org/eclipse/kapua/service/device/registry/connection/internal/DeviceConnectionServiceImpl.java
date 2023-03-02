@@ -39,7 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
@@ -65,7 +64,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
      */
     @Inject
     public DeviceConnectionServiceImpl(
-            @Named("DeviceConnectionServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
+            ServiceConfigurationManager serviceConfigurationManager,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             DeviceConnectionFactory entityFactory,

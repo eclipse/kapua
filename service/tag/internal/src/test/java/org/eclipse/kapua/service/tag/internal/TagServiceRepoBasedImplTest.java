@@ -47,7 +47,7 @@ public class TagServiceRepoBasedImplTest {
     private AuthorizationService authorizationService;
     private ServiceConfigurationManager serviceConfigurationManager;
     private TagRepository tagRepository;
-    private TagServiceRepoBasedImpl instance;
+    private TagServiceImpl instance;
     private TagFactory tagFactory;
 
     @BeforeEach
@@ -66,7 +66,7 @@ public class TagServiceRepoBasedImplTest {
         Mockito.when(tagFactory.newEntity(Mockito.any()))
                 .thenAnswer(invocation -> new TagImpl(invocation.<KapuaId>getArgumentAt(0, KapuaId.class)));
 
-        instance = new TagServiceRepoBasedImpl(
+        instance = new TagServiceImpl(
                 permissionFactory,
                 authorizationService,
                 serviceConfigurationManager,
