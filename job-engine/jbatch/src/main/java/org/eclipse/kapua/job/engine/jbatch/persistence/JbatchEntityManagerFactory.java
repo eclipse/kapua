@@ -20,7 +20,9 @@ import org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver;
  * {@link JbatchDriver} {@link EntityManagerFactory} implementation.
  *
  * @since 1.2.0
+ * @deprecated since 2.0.0, use {@link org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory} instead
  */
+@Deprecated
 public class JbatchEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "jbatch";

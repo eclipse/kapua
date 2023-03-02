@@ -89,7 +89,6 @@ public class JobLocatorConfiguration {
                 bind(AccountChildrenFinder.class).toInstance(Mockito.mock(AccountChildrenFinder.class));
                 bind(AccountService.class).toInstance(Mockito.mock(AccountService.class));
                 bind(AccountFactory.class).toInstance(Mockito.spy(new AccountFactoryImpl()));
-
                 bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
 
                 // Auth

@@ -29,8 +29,9 @@ import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagDomains;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagListResult;
-import org.eclipse.kapua.service.tag.TagTransactedRepository;
+import org.eclipse.kapua.service.tag.TagRepository;
 import org.eclipse.kapua.service.tag.TagService;
+import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -46,8 +47,9 @@ public class TagServiceRepoBasedImpl extends KapuaConfigurableServiceLinker impl
 
     private final PermissionFactory permissionFactory;
     private final AuthorizationService authorizationService;
-    private final TagTransactedRepository tagRepository;
     private final TagFactory tagFactory;
+    private final TxManager txManager;
+    private final TagRepository tagRepository;
 
     /**
      * Injectable Constructor
@@ -55,7 +57,8 @@ public class TagServiceRepoBasedImpl extends KapuaConfigurableServiceLinker impl
      * @param permissionFactory           The {@link PermissionFactory} instance
      * @param authorizationService        The {@link AuthorizationService} instance
      * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance
-     * @param tagRepository               The {@link TagTransactedRepository} instance
+     * @param txManager
+     * @param tagRepository               The {@link TagRepository} instance
      * @param tagFactory
      * @since 2.0.0
      */
@@ -64,12 +67,13 @@ public class TagServiceRepoBasedImpl extends KapuaConfigurableServiceLinker impl
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             @Named("TagServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
-            TagTransactedRepository tagRepository, TagFactory tagFactory) {
+            TxManager txManager, TagRepository tagRepository, TagFactory tagFactory) {
         super(serviceConfigurationManager);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         this.tagRepository = tagRepository;
         this.tagFactory = tagFactory;
+        this.txManager = txManager;
     }
 
     @Override
@@ -98,7 +102,7 @@ public class TagServiceRepoBasedImpl extends KapuaConfigurableServiceLinker impl
         toBeCreated.setDescription(tagCreator.getDescription());
         //
         // Do create
-        return tagRepository.create(toBeCreated);
+        return txManager.executeWithResult(tx -> tagRepository.create(tx, toBeCreated));
     }
 
     @Override
@@ -127,7 +131,7 @@ public class TagServiceRepoBasedImpl extends KapuaConfigurableServiceLinker impl
 
         //
         // Do Update
-        return tagRepository.update(tag);
+        return txManager.executeWithResult(tx -> tagRepository.update(tx, tag));
     }
 
     @Override
@@ -150,7 +154,7 @@ public class TagServiceRepoBasedImpl extends KapuaConfigurableServiceLinker impl
         //
         // Do delete
         //
-        tagRepository.delete(scopeId, tagId);
+        txManager.executeNoResult(tx -> tagRepository.delete(tx, scopeId, tagId));
     }
 
     @Override
@@ -166,7 +170,7 @@ public class TagServiceRepoBasedImpl extends KapuaConfigurableServiceLinker impl
 
         //
         // Do find
-        return tagRepository.find(scopeId, tagId);
+        return txManager.executeWithResult(tx -> tagRepository.find(tx, scopeId, tagId));
     }
 
     @Override
@@ -181,7 +185,7 @@ public class TagServiceRepoBasedImpl extends KapuaConfigurableServiceLinker impl
 
         //
         // Do query
-        return (TagListResult) tagRepository.query(query);
+        return txManager.executeWithResult(tx -> tagRepository.query(tx, query));
     }
 
     @Override
@@ -196,6 +200,6 @@ public class TagServiceRepoBasedImpl extends KapuaConfigurableServiceLinker impl
 
         //
         // Do count
-        return tagRepository.count(query);
+        return txManager.executeWithResult(tx -> tagRepository.count(tx, query));
     }
 }

@@ -15,21 +15,21 @@ package org.eclipse.kapua.service.tag.internal;
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
-import org.eclipse.kapua.commons.configuration.CachingServiceConfigTransactedRepository;
+import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
-import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaTransactedRepository;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.tag.TagDomains;
 import org.eclipse.kapua.service.tag.TagFactory;
-import org.eclipse.kapua.service.tag.TagTransactedRepository;
+import org.eclipse.kapua.service.tag.TagRepository;
 import org.eclipse.kapua.service.tag.TagService;
 
 import javax.inject.Named;
@@ -53,14 +53,15 @@ public class TagModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
-            TagTransactedRepository tagRepository
+            TagRepository tagRepository
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         TagService.class.getName(),
                         TagDomains.TAG_DOMAIN,
-                        new CachingServiceConfigTransactedRepository(
-                                new ServiceConfigImplJpaTransactedRepository(new EntityManagerSession(entityManagerFactory)),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-tag")),
+                        new CachingServiceConfigRepository(
+                                new ServiceConfigImplJpaRepository(),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
                         permissionFactory,
@@ -69,19 +70,14 @@ public class TagModule extends AbstractKapuaModule {
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
-                                TagDomains.TAG_DOMAIN,
-                                tagRepository,
-                                authorizationService,
-                                permissionFactory
+                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-tag")),
+                                tagRepository
                         )));
     }
 
     @Provides
     @Singleton
-    TagTransactedRepository tagRepository(TagFactory tagFactory) {
-        return new TagImplJpaTransactedRepository(
-                () -> tagFactory.newListResult(),
-                new EntityManagerSession(new AbstractEntityManagerFactory("kapua-tag") {
-                }));
+    TagRepository tagRepository() {
+        return new TagImplJpaRepository();
     }
 }

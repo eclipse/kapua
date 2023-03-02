@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.account.internal;
 
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
-import org.eclipse.kapua.service.account.AccountTransactedRepository;
 
 import javax.inject.Singleton;
 
@@ -22,7 +21,7 @@ import javax.inject.Singleton;
  * {@link AccountServiceImpl} {@link EntityManagerFactory} implementation.
  *
  * @since 1.0.0
- * @deprecated since 2.0.0 - use {@link AccountTransactedRepository} instead
+ * @deprecated since 2.0.0, use {@link org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory} instead
  */
 @Singleton
 @Deprecated

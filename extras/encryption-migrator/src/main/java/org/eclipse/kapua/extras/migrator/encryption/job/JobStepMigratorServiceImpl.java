@@ -18,8 +18,9 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepCreator;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
-import org.eclipse.kapua.service.job.step.JobStepTransactedRepository;
+import org.eclipse.kapua.service.job.step.JobStepRepository;
 import org.eclipse.kapua.service.job.step.JobStepService;
+import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Singleton;
 
@@ -30,25 +31,27 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class JobStepMigratorServiceImpl implements JobStepService {
-    private final JobStepTransactedRepository jobStepRepository;
+    private final TxManager txManager;
+    private final JobStepRepository jobStepRepository;
 
-    public JobStepMigratorServiceImpl(JobStepTransactedRepository jobStepRepository) {
+    public JobStepMigratorServiceImpl(TxManager txManager, JobStepRepository jobStepRepository) {
+        this.txManager = txManager;
         this.jobStepRepository = jobStepRepository;
     }
 
     @Override
     public JobStep update(JobStep jobStep) throws KapuaException {
-        return jobStepRepository.update(jobStep);
+        return txManager.executeWithResult(tx -> jobStepRepository.update(tx, jobStep));
     }
 
     @Override
     public JobStepListResult query(KapuaQuery query) throws KapuaException {
-        return jobStepRepository.query(query);
+        return txManager.executeWithResult(tx -> jobStepRepository.query(tx, query));
     }
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        return jobStepRepository.count(query);
+        return txManager.executeWithResult(tx -> jobStepRepository.count(tx, query));
     }
 
     //

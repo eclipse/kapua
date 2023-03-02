@@ -23,13 +23,15 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceDomains;
-import org.eclipse.kapua.service.device.registry.DeviceTransactedRepository;
+import org.eclipse.kapua.service.device.registry.DeviceRepository;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventTransactedRepository;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
+import org.eclipse.kapua.storage.TxContext;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,19 +54,22 @@ public class DeviceEventServiceImpl
 
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
-    private final DeviceTransactedRepository deviceRepository;
+    private final TxManager txManager;
+    private final DeviceRepository deviceRepository;
     private final DeviceEventFactory entityFactory;
-    private final DeviceEventTransactedRepository repository;
+    private final DeviceEventRepository repository;
 
     @Inject
     public DeviceEventServiceImpl(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            DeviceTransactedRepository deviceRepository,
+            TxManager txManager,
+            DeviceRepository deviceRepository,
             DeviceEventFactory entityFactory,
-            DeviceEventTransactedRepository deviceEventRepository) {
+            DeviceEventRepository deviceEventRepository) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
+        this.txManager = txManager;
         this.deviceRepository = deviceRepository;
         this.entityFactory = entityFactory;
         this.repository = deviceEventRepository;
@@ -85,29 +90,31 @@ public class DeviceEventServiceImpl
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.write, deviceEventCreator.getScopeId()));
+        return txManager.executeWithResult(tx -> {
+            //
+            // Check that device exists
+            final Device device = deviceRepository.find(tx, deviceEventCreator.getScopeId(), deviceEventCreator.getDeviceId());
+            if (device == null) {
+                throw new KapuaEntityNotFoundException(Device.TYPE, deviceEventCreator.getDeviceId());
+            }
 
-        //
-        // Check that device exists
-        final Device device = deviceRepository.find(deviceEventCreator.getScopeId(), deviceEventCreator.getDeviceId());
-        if (device == null) {
-            throw new KapuaEntityNotFoundException(Device.TYPE, deviceEventCreator.getDeviceId());
-        }
+            // Create the event
+            DeviceEvent newEvent = entityFactory.newEntity(deviceEventCreator.getScopeId());
+            newEvent.setDeviceId(device.getId());
+            newEvent.setReceivedOn(deviceEventCreator.getReceivedOn());
+            newEvent.setSentOn(deviceEventCreator.getSentOn());
+            newEvent.setResource(deviceEventCreator.getResource());
+            newEvent.setAction(deviceEventCreator.getAction());
+            newEvent.setResponseCode(deviceEventCreator.getResponseCode());
+            newEvent.setEventMessage(deviceEventCreator.getEventMessage());
+            newEvent.setPosition(deviceEventCreator.getPosition());
 
-        // Create the event
-        DeviceEvent newEvent = entityFactory.newEntity(deviceEventCreator.getScopeId());
-        newEvent.setDeviceId(device.getId());
-        newEvent.setReceivedOn(deviceEventCreator.getReceivedOn());
-        newEvent.setSentOn(deviceEventCreator.getSentOn());
-        newEvent.setResource(deviceEventCreator.getResource());
-        newEvent.setAction(deviceEventCreator.getAction());
-        newEvent.setResponseCode(deviceEventCreator.getResponseCode());
-        newEvent.setEventMessage(deviceEventCreator.getEventMessage());
-        newEvent.setPosition(deviceEventCreator.getPosition());
+            final DeviceEvent created = repository.create(tx, newEvent);
+            updateLastEventOnDevice(tx, device, created);
 
-        final DeviceEvent created = repository.create(newEvent);
-        updateLastEventOnDevice(device, created);
+            return newEvent;
+        });
 
-        return newEvent;
     }
 
     @Override
@@ -122,7 +129,7 @@ public class DeviceEventServiceImpl
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, scopeId));
 
-        return repository.find(scopeId, entityId);
+        return txManager.executeWithResult(tx -> repository.find(tx, scopeId, entityId));
     }
 
     @Override
@@ -136,7 +143,7 @@ public class DeviceEventServiceImpl
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, query.getScopeId()));
 
-        return repository.query(query);
+        return txManager.executeWithResult(tx -> repository.query(tx, query));
     }
 
     @Override
@@ -150,7 +157,7 @@ public class DeviceEventServiceImpl
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, query.getScopeId()));
 
-        return repository.count(query);
+        return txManager.executeWithResult(tx -> repository.count(tx, query));
     }
 
     @Override
@@ -164,18 +171,19 @@ public class DeviceEventServiceImpl
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.delete, scopeId));
 
-        repository.delete(scopeId, deviceEventId);
+        txManager.executeNoResult(tx -> repository.delete(tx, scopeId, deviceEventId));
     }
 
 
     /**
      * Updates the {@link Device#getLastEventId()} with the given {@link DeviceEvent}.
      *
+     * @param tx
      * @param deviceEvent The {@link DeviceEvent} that needs to be set.
      * @throws KapuaException If {@link Device} does not exist or updating the entity causes an error that is not {@link KapuaOptimisticLockingException} which is ignored.
      * @since 1.2.0
      */
-    private void updateLastEventOnDevice(Device device, DeviceEvent deviceEvent) throws KapuaException {
+    private void updateLastEventOnDevice(TxContext tx, Device device, DeviceEvent deviceEvent) throws KapuaException {
         int retry = 0;
         do {
             retry++;
@@ -187,7 +195,7 @@ public class DeviceEventServiceImpl
                 if (device.getLastEvent() == null ||
                         device.getLastEvent().getReceivedOn().before(deviceEvent.getReceivedOn())) {
                     device.setLastEventId(deviceEvent.getId());
-                    deviceRepository.update(device);
+                    deviceRepository.update(tx, device);
                 }
                 break;
             } catch (KapuaOptimisticLockingException e) {

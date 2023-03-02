@@ -13,15 +13,16 @@
 package org.eclipse.kapua.extras.migrator.encryption.authentication;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
-import org.eclipse.kapua.extras.migrator.encryption.MigratorEntityManagerFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResult;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionRepository;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
+import org.eclipse.kapua.storage.TxManager;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -30,25 +31,30 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
-public class MfaOptionMigratorServiceImpl extends AbstractKapuaService implements MfaOptionService {
+public class MfaOptionMigratorServiceImpl implements MfaOptionService {
 
-    public MfaOptionMigratorServiceImpl() {
-        super(MigratorEntityManagerFactory.getInstance(), null);
+    private final TxManager txManager;
+    private final MfaOptionRepository repository;
+
+    @Inject
+    public MfaOptionMigratorServiceImpl(TxManager txManager, MfaOptionRepository repository) {
+        this.txManager = txManager;
+        this.repository = repository;
     }
 
     @Override
     public MfaOption update(MfaOption mfaOption) throws KapuaException {
-        return entityManagerSession.doTransactedAction((em) -> MfaOptionMigratorDAO.update(em, mfaOption));
+        return txManager.executeWithResult(tx -> repository.update(tx, mfaOption));
     }
 
     @Override
     public MfaOptionListResult query(KapuaQuery query) throws KapuaException {
-        return entityManagerSession.doAction(em -> MfaOptionMigratorDAO.query(em, query));
+        return txManager.executeWithResult(tx -> repository.query(tx, query));
     }
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        return entityManagerSession.doAction(em -> MfaOptionMigratorDAO.count(em, query));
+        return txManager.executeWithResult(tx -> repository.count(tx, query));
     }
 
     //

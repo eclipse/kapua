@@ -20,7 +20,9 @@ import org.eclipse.kapua.extras.migrator.encryption.job.JobStepMigratorServiceIm
  * {@link JobStepMigratorServiceImpl} {@link EntityManagerFactory} implementation.
  *
  * @since 2.0.0
+ * @deprecated since 2.0.0, use {@link org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory} instead
  */
+@Deprecated
 public class MigratorEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-encryption-migrator";

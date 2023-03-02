@@ -25,10 +25,11 @@ import org.eclipse.kapua.service.device.management.registry.operation.DeviceMana
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationListResult;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationTransactedRepository;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementRegistryDomains;
 import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceTransactedRepository;
+import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -39,20 +40,23 @@ public class DeviceManagementOperationRegistryServiceImpl
 
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
-    private final DeviceTransactedRepository deviceRepository;
-    private final DeviceManagementOperationTransactedRepository repository;
+    private final DeviceRepository deviceRepository;
+    private final TxManager txManager;
+    private final DeviceManagementOperationRepository repository;
     private final DeviceManagementOperationFactory entityFactory;
 
     @Inject
     public DeviceManagementOperationRegistryServiceImpl(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            DeviceTransactedRepository deviceRepository,
-            DeviceManagementOperationTransactedRepository repository,
+            DeviceRepository deviceRepository,
+            TxManager txManager,
+            DeviceManagementOperationRepository repository,
             DeviceManagementOperationFactory entityFactory) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.deviceRepository = deviceRepository;
+        this.txManager = txManager;
         this.repository = repository;
         this.entityFactory = entityFactory;
     }
@@ -74,28 +78,30 @@ public class DeviceManagementOperationRegistryServiceImpl
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
 
-        //
-        // Check device existence
-        if (deviceRepository.find(creator.getScopeId(), creator.getDeviceId()) == null) {
-            throw new KapuaEntityNotFoundException(Device.TYPE, creator.getDeviceId());
-        }
+        return txManager.executeWithResult(tx -> {
+            //
+            // Check device existence
+            if (deviceRepository.find(tx, creator.getScopeId(), creator.getDeviceId()) == null) {
+                throw new KapuaEntityNotFoundException(Device.TYPE, creator.getDeviceId());
+            }
 
-        //
-        // Create DeviceManagementOperationNotification
-        DeviceManagementOperation newEntity = entityFactory.newEntity(creator.getScopeId());
-        newEntity.setStartedOn(creator.getStartedOn());
-        newEntity.setDeviceId(creator.getDeviceId());
-        newEntity.setOperationId(creator.getOperationId());
-        newEntity.setAppId(creator.getAppId());
-        newEntity.setAction(creator.getAction());
-        newEntity.setResource(creator.getResource());
-        newEntity.setStatus(creator.getStatus());
-        newEntity.setStatus(creator.getStatus());
-        newEntity.setInputProperties(creator.getInputProperties());
+            //
+            // Create DeviceManagementOperationNotification
+            DeviceManagementOperation newEntity = entityFactory.newEntity(creator.getScopeId());
+            newEntity.setStartedOn(creator.getStartedOn());
+            newEntity.setDeviceId(creator.getDeviceId());
+            newEntity.setOperationId(creator.getOperationId());
+            newEntity.setAppId(creator.getAppId());
+            newEntity.setAction(creator.getAction());
+            newEntity.setResource(creator.getResource());
+            newEntity.setStatus(creator.getStatus());
+            newEntity.setStatus(creator.getStatus());
+            newEntity.setInputProperties(creator.getInputProperties());
 
-        //
-        // Do create
-        return repository.create(newEntity);
+            //
+            // Do create
+            return repository.create(tx, newEntity);
+        });
     }
 
     @Override
@@ -116,21 +122,23 @@ public class DeviceManagementOperationRegistryServiceImpl
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
 
-        //
-        // Check device existence
-        if (deviceRepository.find(entity.getScopeId(), entity.getDeviceId()) == null) {
-            throw new KapuaEntityNotFoundException(Device.TYPE, entity.getDeviceId());
-        }
+        return txManager.executeWithResult(tx -> {
+            //
+            // Check device existence
+            if (deviceRepository.find(tx, entity.getScopeId(), entity.getDeviceId()) == null) {
+                throw new KapuaEntityNotFoundException(Device.TYPE, entity.getDeviceId());
+            }
 
-        //
-        // Check existence
-        if (find(entity.getScopeId(), entity.getId()) == null) {
-            throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, entity.getId());
-        }
+            //
+            // Check existence
+            if (repository.find(tx, entity.getScopeId(), entity.getId()) == null) {
+                throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, entity.getId());
+            }
 
-        //
-        // Do update
-        return repository.update(entity);
+            //
+            // Do update
+            return repository.update(tx, entity);
+        });
     }
 
     @Override
@@ -146,7 +154,7 @@ public class DeviceManagementOperationRegistryServiceImpl
 
         //
         // Do find
-        return repository.find(scopeId, entityId);
+        return txManager.executeWithResult(tx -> repository.find(tx, scopeId, entityId));
     }
 
     @Override
@@ -161,7 +169,7 @@ public class DeviceManagementOperationRegistryServiceImpl
 
         //
         // Do find
-        return repository.findByOperationId(scopeId, operationId);
+        return txManager.executeWithResult(tx -> repository.findByOperationId(tx, scopeId, operationId));
     }
 
     @Override
@@ -176,7 +184,7 @@ public class DeviceManagementOperationRegistryServiceImpl
 
         //
         // Do query
-        return repository.query(query);
+        return txManager.executeWithResult(tx -> repository.query(tx, query));
     }
 
     @Override
@@ -191,7 +199,7 @@ public class DeviceManagementOperationRegistryServiceImpl
 
         //
         // Do count
-        return repository.count(query);
+        return txManager.executeWithResult(tx -> repository.count(tx, query));
     }
 
     @Override
@@ -213,6 +221,6 @@ public class DeviceManagementOperationRegistryServiceImpl
 
         //
         // Do delete
-        repository.delete(scopeId, entityId);
+        txManager.executeNoResult(tx -> repository.delete(tx, scopeId, entityId));
     }
 }

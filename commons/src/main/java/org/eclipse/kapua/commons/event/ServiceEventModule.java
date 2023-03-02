@@ -15,7 +15,15 @@ package org.eclipse.kapua.commons.event;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.ServiceModule;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.service.event.store.internal.EventStoreFactoryImpl;
+import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordTransactedJpaRepository;
+import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
 import org.eclipse.kapua.event.ServiceEventBus;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,7 +96,15 @@ public abstract class ServiceEventModule implements ServiceModule {
         // Start the House keeper
         LOGGER.info("Starting service event module... start housekeeper");
         houseKeeperScheduler = Executors.newScheduledThreadPool(1);
+        final KapuaLocator locator = KapuaLocator.getInstance();
         houseKeeperJob = new ServiceEventHousekeeper(
+                new EventStoreServiceImpl(locator.getService(AuthorizationService.class),
+                        locator.getFactory(PermissionFactory.class),
+                        //FIXME: can we inject collaborators here?
+                        new JpaTxManager(new KapuaEntityManagerFactory("FIXME!!!")),
+                        new EventStoreFactoryImpl(),
+                        new EventStoreRecordTransactedJpaRepository()
+                ),
                 serviceEventModuleConfiguration.getEntityManagerFactory(),
                 eventbus,
                 servicesEntryList);

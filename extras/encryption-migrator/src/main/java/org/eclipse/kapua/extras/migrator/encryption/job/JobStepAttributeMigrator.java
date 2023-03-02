@@ -22,9 +22,8 @@ import org.eclipse.kapua.service.job.step.JobStep;
 public class JobStepAttributeMigrator extends AbstractEntityAttributeMigrator<JobStep> implements EntitySecretAttributeMigrator<JobStep> {
 
     private static final JobStepMigratorServiceImpl JOB_STEP_MIGRATOR_SERVICE = new JobStepMigratorServiceImpl(
-            new JobStepMigratorJpaTransactedRepository(
-                    new JpaTxManager(new KapuaEntityManagerFactory("kapua-encryption-migrator")),
-                    () -> new JobStepMigratorListResultImpl())
+            new JpaTxManager(new KapuaEntityManagerFactory("kapua-encryption-migrator")),
+            new JobStepMigratorJpaRepository()
     );
 
     public JobStepAttributeMigrator() {

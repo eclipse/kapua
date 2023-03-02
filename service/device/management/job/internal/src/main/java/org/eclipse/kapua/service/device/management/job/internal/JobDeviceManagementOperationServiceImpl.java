@@ -29,9 +29,10 @@ import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperat
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationListResult;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationQuery;
-import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationTransactedRepository;
+import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationRepository;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationService;
 import org.eclipse.kapua.service.job.JobDomains;
+import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -52,17 +53,20 @@ public class JobDeviceManagementOperationServiceImpl
     private final JobDeviceManagementOperationFactory entityFactory;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
-    private final JobDeviceManagementOperationTransactedRepository repository;
+    private final TxManager txManager;
+    private final JobDeviceManagementOperationRepository repository;
 
     @Inject
     public JobDeviceManagementOperationServiceImpl(
             JobDeviceManagementOperationFactory entityFactory,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            JobDeviceManagementOperationTransactedRepository repository) {
+            TxManager txManager,
+            JobDeviceManagementOperationRepository repository) {
         this.entityFactory = entityFactory;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
+        this.txManager = txManager;
         this.repository = repository;
     }
 
@@ -89,24 +93,27 @@ public class JobDeviceManagementOperationServiceImpl
                 )
         );
 
-        if (repository.count(query) > 0) {
-            List<Map.Entry<String, Object>> uniqueAttributes = new ArrayList<>();
+        return txManager.executeWithResult(tx -> {
+            if (repository.count(tx, query) > 0) {
+                List<Map.Entry<String, Object>> uniqueAttributes = new ArrayList<>();
 
-            uniqueAttributes.add(new AbstractMap.SimpleEntry<>(JobDeviceManagementOperationAttributes.JOB_ID, jobDeviceManagementOperationCreator.getJobId()));
-            uniqueAttributes.add(new AbstractMap.SimpleEntry<>(JobDeviceManagementOperationAttributes.DEVICE_MANAGEMENT_OPERATION_ID, jobDeviceManagementOperationCreator.getDeviceManagementOperationId()));
+                uniqueAttributes.add(new AbstractMap.SimpleEntry<>(JobDeviceManagementOperationAttributes.JOB_ID, jobDeviceManagementOperationCreator.getJobId()));
+                uniqueAttributes.add(new AbstractMap.SimpleEntry<>(JobDeviceManagementOperationAttributes.DEVICE_MANAGEMENT_OPERATION_ID, jobDeviceManagementOperationCreator.getDeviceManagementOperationId()));
 
-            throw new KapuaEntityUniquenessException(JobDeviceManagementOperation.TYPE, uniqueAttributes);
-        }
+                throw new KapuaEntityUniquenessException(JobDeviceManagementOperation.TYPE, uniqueAttributes);
+            }
 
-        //
-        // Create JobDeviceManagementOperation
-        JobDeviceManagementOperation newEntity = entityFactory.newEntity(jobDeviceManagementOperationCreator.getScopeId());
-        newEntity.setJobId(jobDeviceManagementOperationCreator.getJobId());
-        newEntity.setDeviceManagementOperationId(jobDeviceManagementOperationCreator.getDeviceManagementOperationId());
+            //
+            // Create JobDeviceManagementOperation
+            JobDeviceManagementOperation newEntity = entityFactory.newEntity(jobDeviceManagementOperationCreator.getScopeId());
+            newEntity.setJobId(jobDeviceManagementOperationCreator.getJobId());
+            newEntity.setDeviceManagementOperationId(jobDeviceManagementOperationCreator.getDeviceManagementOperationId());
 
-        //
-        // Do create
-        return repository.create(newEntity);
+            //
+            // Do create
+            return repository.create(tx, newEntity);
+        });
+
     }
 
     @Override
@@ -122,7 +129,7 @@ public class JobDeviceManagementOperationServiceImpl
 
         //
         // Do find
-        return repository.find(scopeId, jobDeviceManagementOperationId);
+        return txManager.executeWithResult(tx -> repository.find(tx, scopeId, jobDeviceManagementOperationId));
     }
 
     @Override
@@ -137,7 +144,7 @@ public class JobDeviceManagementOperationServiceImpl
 
         //
         // Do query
-        return repository.query(query);
+        return txManager.executeWithResult(tx -> repository.query(tx, query));
     }
 
     @Override
@@ -152,7 +159,7 @@ public class JobDeviceManagementOperationServiceImpl
 
         //
         // Do query
-        return repository.count(query);
+        return txManager.executeWithResult(tx -> repository.count(tx, query));
     }
 
     @Override
@@ -174,6 +181,6 @@ public class JobDeviceManagementOperationServiceImpl
 
         //
         // Do delete
-        repository.delete(scopeId, jobDeviceManagementOperationId);
+        txManager.executeNoResult(tx -> repository.delete(tx, scopeId, jobDeviceManagementOperationId));
     }
 }

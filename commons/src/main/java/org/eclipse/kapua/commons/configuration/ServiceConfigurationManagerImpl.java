@@ -32,6 +32,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
+import org.eclipse.kapua.storage.TxManager;
 import org.xml.sax.SAXException;
 
 import javax.validation.constraints.NotNull;
@@ -52,7 +53,8 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
 
     protected final String pid;
     protected final Domain domain;
-    private final ServiceConfigTransactedRepository serviceConfigRepository;
+    private final TxManager txManager;
+    private final ServiceConfigRepository serviceConfigRepository;
     private final PermissionFactory permissionFactory;
     private final AuthorizationService authorizationService;
     private final RootUserTester rootUserTester;
@@ -60,12 +62,13 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
     public ServiceConfigurationManagerImpl(
             String pid,
             Domain domain,
-            ServiceConfigTransactedRepository serviceConfigRepository,
+            TxManager txManager, ServiceConfigRepository serviceConfigRepository,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester) {
         this.pid = pid;
         this.domain = domain;
+        this.txManager = txManager;
         this.serviceConfigRepository = serviceConfigRepository;
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
@@ -154,7 +157,7 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
                 )
         );
 
-        ServiceConfigListResult result = serviceConfigRepository.query(query);
+        ServiceConfigListResult result = txManager.executeWithResult(tx -> serviceConfigRepository.query(tx, query));
 
         Properties props = toProperties(values);
         if (result == null || result.isEmpty()) {
@@ -182,7 +185,7 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
      * @since 1.0.0
      */
     private ServiceConfig createConfig(ServiceConfig serviceConfig) throws KapuaException {
-        return serviceConfigRepository.create(serviceConfig);
+        return txManager.executeWithResult(tx -> serviceConfigRepository.create(tx, serviceConfig));
     }
 
     /**
@@ -194,7 +197,7 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
      */
     private ServiceConfig updateConfig(ServiceConfig serviceConfig)
             throws KapuaException {
-        final ServiceConfig oldServiceConfig = serviceConfigRepository.find(serviceConfig.getScopeId(), serviceConfig.getId());
+        final ServiceConfig oldServiceConfig = txManager.executeWithResult(tx -> serviceConfigRepository.find(tx, serviceConfig.getScopeId(), serviceConfig.getId()));
         if (oldServiceConfig == null) {
             throw new KapuaEntityNotFoundException(ServiceConfig.TYPE, serviceConfig.getId());
         }
@@ -208,7 +211,7 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
         }
 
         // Update
-        return serviceConfigRepository.update(serviceConfig);
+        return txManager.executeWithResult(tx -> serviceConfigRepository.update(tx, serviceConfig));
     }
 
     /**
@@ -335,7 +338,7 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
 
         //
         // Get configuration values
-        final ServiceConfigListResult result = serviceConfigRepository.findByScopeAndPid(scopeId, pid);
+        final ServiceConfigListResult result = txManager.executeWithResult(tx -> serviceConfigRepository.findByScopeAndPid(tx, scopeId, pid));
 
         Properties properties = null;
         if (result != null && !result.isEmpty()) {

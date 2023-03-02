@@ -21,10 +21,11 @@ import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
-import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaTransactedRepository;
+import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
-import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -35,7 +36,6 @@ import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFactoryImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
-import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authentication.shiro.CredentialServiceConfigurationManager;
 import org.eclipse.kapua.service.authentication.shiro.CredentialServiceConfigurationManagerImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -111,7 +111,8 @@ public class SecurityLocatorConfiguration {
                         .annotatedWith(Names.named("CredentialServiceConfigurationManager"))
                         .toInstance(
                                 new CredentialServiceConfigurationManagerImpl(
-                                        new ServiceConfigImplJpaTransactedRepository(new EntityManagerSession(AuthenticationEntityManagerFactory.getInstance())),
+                                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                                        new ServiceConfigImplJpaRepository(),
                                         mockPermissionFactory,
                                         mockedAuthorization,
                                         Mockito.mock(RootUserTester.class))

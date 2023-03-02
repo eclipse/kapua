@@ -32,8 +32,9 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCrea
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionListResult;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionTransactedRepository;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionRepository;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +54,8 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final DeviceConnectionFactory entityFactory;
-    private final DeviceConnectionTransactedRepository repository;
+    private final TxManager txManager;
+    private final DeviceConnectionRepository repository;
 
     /**
      * Constructor.
@@ -67,11 +69,13 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             DeviceConnectionFactory entityFactory,
-            DeviceConnectionTransactedRepository repository) {
+            TxManager txManager,
+            DeviceConnectionRepository repository) {
         super(serviceConfigurationManager);
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.entityFactory = entityFactory;
+        this.txManager = txManager;
         this.repository = repository;
     }
 
@@ -96,24 +100,28 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
         DeviceConnectionQuery query = new DeviceConnectionQueryImpl(deviceConnectionCreator.getScopeId());
         query.setPredicate(query.attributePredicate(DeviceConnectionAttributes.CLIENT_ID, deviceConnectionCreator.getClientId()));
 
-        //TODO: check whether this is anywhere efficient
-        if (repository.count(query) > 0) {
-            throw new KapuaDuplicateNameException(deviceConnectionCreator.getClientId());
-        }
+        return txManager.executeWithResult(tx -> {
 
-        final DeviceConnection deviceConnection = entityFactory.newEntity(deviceConnectionCreator.getScopeId());
-        deviceConnection.setStatus(deviceConnectionCreator.getStatus());
-        deviceConnection.setClientId(deviceConnectionCreator.getClientId());
-        deviceConnection.setUserId(deviceConnectionCreator.getUserId());
-        deviceConnection.setUserCouplingMode(deviceConnectionCreator.getUserCouplingMode());
-        deviceConnection.setReservedUserId(deviceConnectionCreator.getReservedUserId());
-        deviceConnection.setAllowUserChange(deviceConnectionCreator.getAllowUserChange());
-        deviceConnection.setProtocol(deviceConnectionCreator.getProtocol());
-        deviceConnection.setClientIp(deviceConnectionCreator.getClientIp());
-        deviceConnection.setServerIp(deviceConnectionCreator.getServerIp());
-        //
-        // Do create
-        return repository.create(deviceConnection);
+            //TODO: check whether this is anywhere efficient
+            if (repository.count(tx, query) > 0) {
+                throw new KapuaDuplicateNameException(deviceConnectionCreator.getClientId());
+            }
+
+            final DeviceConnection deviceConnection = entityFactory.newEntity(deviceConnectionCreator.getScopeId());
+            deviceConnection.setStatus(deviceConnectionCreator.getStatus());
+            deviceConnection.setClientId(deviceConnectionCreator.getClientId());
+            deviceConnection.setUserId(deviceConnectionCreator.getUserId());
+            deviceConnection.setUserCouplingMode(deviceConnectionCreator.getUserCouplingMode());
+            deviceConnection.setReservedUserId(deviceConnectionCreator.getReservedUserId());
+            deviceConnection.setAllowUserChange(deviceConnectionCreator.getAllowUserChange());
+            deviceConnection.setProtocol(deviceConnectionCreator.getProtocol());
+            deviceConnection.setClientIp(deviceConnectionCreator.getClientIp());
+            deviceConnection.setServerIp(deviceConnectionCreator.getServerIp());
+            //
+            // Do create
+            return repository.create(tx, deviceConnection);
+        });
+
     }
 
     @Override
@@ -131,7 +139,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
 
         //
         // Do Update
-        return repository.update(deviceConnection);
+        return txManager.executeWithResult(tx -> repository.update(tx, deviceConnection));
     }
 
     @Override
@@ -148,7 +156,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
 
         //
         // Do find
-        return repository.find(scopeId, entityId);
+        return txManager.executeWithResult(tx -> repository.find(tx, scopeId, entityId));
     }
 
     @Override
@@ -166,7 +174,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
 
         //
         // Do find
-        return repository.query(query).getFirstItem();
+        return txManager.executeWithResult(tx -> repository.query(tx, query).getFirstItem());
     }
 
     @Override
@@ -182,7 +190,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
 
         //
         // Do query
-        return repository.query(query);
+        return txManager.executeWithResult(tx -> repository.query(tx, query));
     }
 
     @Override
@@ -198,7 +206,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
 
         //
         // Do count
-        return repository.count(query);
+        return txManager.executeWithResult(tx -> repository.count(tx, query));
     }
 
     @Override
@@ -213,7 +221,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
 
-        repository.delete(scopeId, deviceConnectionId);
+        txManager.executeNoResult(tx -> repository.delete(tx, scopeId, deviceConnectionId));
     }
 
     @Override
@@ -246,10 +254,12 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
     private void deleteConnectionByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
         DeviceConnectionQuery query = entityFactory.newQuery(accountId);
 
-        DeviceConnectionListResult deviceConnectionsToDelete = repository.query(query);
+        txManager.executeNoResult(tx -> {
+            final DeviceConnectionListResult deviceConnectionsToDelete = repository.query(tx, query);
 
-        for (DeviceConnection dc : deviceConnectionsToDelete.getItems()) {
-            repository.delete(dc.getScopeId(), dc.getId());
-        }
+            for (DeviceConnection dc : deviceConnectionsToDelete.getItems()) {
+                repository.delete(tx, dc.getScopeId(), dc.getId());
+            }
+        });
     }
 }

@@ -27,7 +27,9 @@ import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
  * {@link EndpointInfo} DAO
  *
  * @since 1.0.0
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.endpoint.EndpointInfoRepository} instead
  */
+@Deprecated
 public class EndpointInfoDAO extends ServiceDAO {
 
     /**

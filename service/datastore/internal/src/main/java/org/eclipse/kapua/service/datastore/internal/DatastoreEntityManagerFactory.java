@@ -21,7 +21,7 @@ import javax.inject.Singleton;
  * Datastore module {@link EntityManagerFactory} impleemntation
  *
  * @since 1.0.0
- * @deprecated since 2.0.0
+ * @deprecated since 2.0.0, use {@link org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory} instead
  */
 @Singleton
 @Deprecated
