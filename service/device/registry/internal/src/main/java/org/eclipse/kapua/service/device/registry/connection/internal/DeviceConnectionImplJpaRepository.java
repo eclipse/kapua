@@ -21,11 +21,11 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionList
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionRepository;
 import org.eclipse.kapua.storage.TxContext;
 
-public class DeviceConnectionRepositoryImplJpaRepository
+public class DeviceConnectionImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<DeviceConnection, DeviceConnectionImpl, DeviceConnectionListResult>
         implements DeviceConnectionRepository {
 
-    public DeviceConnectionRepositoryImplJpaRepository() {
+    public DeviceConnectionImplJpaRepository() {
         super(DeviceConnectionImpl.class, () -> new DeviceConnectionListResultImpl());
     }
 
