@@ -24,15 +24,17 @@ public class CachingDeviceRepository
         extends KapuaUpdatableEntityRepositoryCachingWrapper<Device, DeviceListResult>
         implements DeviceRepository {
     private final DeviceRepository wrapped;
+    private final DeviceRegistryCache entityCache;
 
     public CachingDeviceRepository(DeviceRepository wrapped, DeviceRegistryCache entityCache) {
         super(wrapped, entityCache);
         this.wrapped = wrapped;
+        this.entityCache = entityCache;
     }
 
     @Override
     public Device findByClientId(TxContext tx, KapuaId scopeId, String clientId) throws KapuaException {
-        final Device cached = (Device) ((DeviceRegistryCache) entityCache).getByClientId(scopeId, clientId);
+        final Device cached = (Device) entityCache.getByClientId(scopeId, clientId);
         if (cached == null) {
             final Device found = wrapped.findByClientId(tx, scopeId, clientId);
             if (found != null) {
