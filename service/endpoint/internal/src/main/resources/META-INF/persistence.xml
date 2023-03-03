@@ -22,10 +22,10 @@
 
         <class>org.eclipse.kapua.service.endpoint.internal.EndpointInfoImpl</class>
         <class>org.eclipse.kapua.service.endpoint.internal.EndpointUsageImpl</class>
-        <class>org.eclipse.kapua.service.endpoint.internal.cors.CorsEndpointInfoImpl</class>
 
         <!-- Base classes and External classes -->
         <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
+        <class>org.eclipse.kapua.service.account.internal.AccountImpl</class>
         <class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
         <class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
         <class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
