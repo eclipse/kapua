@@ -13,13 +13,12 @@
 package org.eclipse.kapua.commons.setting.system;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-
-import java.util.Map;
-import java.util.EnumMap;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 
 @Category(JUnitTests.class)
@@ -34,7 +33,9 @@ public class SystemSettingKeyTest {
         systemSettings.put(SystemSettingKey.SYS_ADMIN_ACCOUNT, "commons.sys.admin.account");
         systemSettings.put(SystemSettingKey.SYS_ADMIN_USERNAME, "commons.sys.admin.userName");
         systemSettings.put(SystemSettingKey.VERSION, "commons.version");
-        systemSettings.put(SystemSettingKey.BUILD_VERSION, "commons.build.version");
+        systemSettings.put(SystemSettingKey.BUILD_REVISION, "commons.build.revision");
+        systemSettings.put(SystemSettingKey.BUILD_TIMESTAMP, "commons.build.timestamp");
+        systemSettings.put(SystemSettingKey.BUILD_BRANCH, "commons.build.branch");
         systemSettings.put(SystemSettingKey.BUILD_NUMBER, "commons.build.number");
         systemSettings.put(SystemSettingKey.CHAR_ENCODING, "character.encoding");
         systemSettings.put(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER, "commons.db.jdbcConnectionUrlResolver");

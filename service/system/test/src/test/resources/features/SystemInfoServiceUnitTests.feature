@@ -22,6 +22,10 @@ Feature: System Info
     And Init Security Context
 
 
-  Scenario: Retrieve the system info
+  Scenario: Retrieve the system info, then check if everything match with provided properties.
     When I retrieve the system info
-    Then The version of the system is "kapuaVersion42" and the build version of the system is "kapuaBuildVersion42"
+    Then The version of the system is "kapuaVersion42"
+    And The build number of the system is "kapuaBuildNumber42"
+    And The build revision of the system is "42a24b"
+    And The build timestamp of the system is "1677748276 UTC"
+    And The build branch of the system is "test-branch"

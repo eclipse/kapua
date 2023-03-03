@@ -484,9 +484,6 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>buildnumber-maven-plugin</artifactId>
                     <version>${buildnumber-maven-plugin.version}</version>
-                    <configuration>
-                        <timestampFormat>{0,date,yyyyMMdd}</timestampFormat>
-                    </configuration>
                     <executions>
                         <execution>
                             <phase>validate</phase>

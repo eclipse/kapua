@@ -45,9 +45,9 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
-import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.registration.RegistrationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
@@ -293,7 +293,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         SystemSetting commonsConfig = SystemSetting.getInstance();
 
         gwtSession.setVersion(commonsConfig.getString(SystemSettingKey.VERSION));
-        gwtSession.setBuildVersion(commonsConfig.getString(SystemSettingKey.BUILD_VERSION));
+        gwtSession.setBuildVersion(commonsConfig.getString(SystemSettingKey.BUILD_REVISION));
         gwtSession.setBuildNumber(commonsConfig.getString(SystemSettingKey.BUILD_NUMBER));
         gwtSession.setSsoEnabled(ConsoleSsoLocator.getLocator(this).getService().isEnabled());
         gwtSession.setDatastoreDisabled(DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false));

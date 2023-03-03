@@ -19,7 +19,6 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.service.systeminfo.SystemInfo;
-import org.eclipse.kapua.service.systeminfo.SystemInfoFactory;
 import org.eclipse.kapua.service.systeminfo.SystemInfoService;
 import org.junit.Assert;
 
@@ -29,7 +28,6 @@ import javax.inject.Singleton;
 @Singleton
 public class SystemInfoSteps extends TestBase {
     private SystemInfoService systemInfoService;
-    private SystemInfoFactory systemInfoFactory;
 
 
     @Inject
@@ -42,7 +40,6 @@ public class SystemInfoSteps extends TestBase {
     public void setServices() {
         KapuaLocator locator = KapuaLocator.getInstance();
         systemInfoService = locator.getService(SystemInfoService.class);
-        systemInfoFactory = locator.getFactory(SystemInfoFactory.class);
     }
 
 
@@ -50,13 +47,39 @@ public class SystemInfoSteps extends TestBase {
     public void configureSystemInfo() {
         SystemInfo systemInfo = systemInfoService.getSystemInfo();
         stepData.put("systemVersion", systemInfo.getVersion());
-        stepData.put("systemBuildVersion", systemInfo.getBuildVersion());
+        stepData.put("buildNumber", systemInfo.getBuildNumber());
+        stepData.put("buildRevision", systemInfo.getRevision());
+        stepData.put("buildTimestamp", systemInfo.getBuildTimestamp());
+        stepData.put("buildBranch", systemInfo.getBuildBranch());
     }
 
 
-    @Then("The version of the system is {string} and the build version of the system is {string}")
-    public void theVersionOfTheSystemIsAndTheBuildVersionOfTheSystemIs(String expectedVersion, String expectedBuildVersion) {
+    @Then("The version of the system is {string}")
+    public void theVersionOfTheSystemIs(String expectedVersion) {
         Assert.assertEquals(stepData.get("systemVersion"), expectedVersion);
-        Assert.assertEquals(stepData.get("systemBuildVersion"), expectedBuildVersion);
+    }
+
+
+    @Then("The build number of the system is {string}")
+    public void theBuildNumberOfTheSystemIs(String expectedBuildNumber) {
+        Assert.assertEquals(stepData.get("buildNumber"), expectedBuildNumber);
+    }
+
+
+    @Then("The build revision of the system is {string}")
+    public void theRevisionOfTheSystemIs(String expectedBuildRevision) {
+        Assert.assertEquals(stepData.get("buildRevision"), expectedBuildRevision);
+    }
+
+
+    @Then("The build timestamp of the system is {string}")
+    public void theTimestampOfTheSystemIs(String expectedBuildTimestamp) {
+        Assert.assertEquals(stepData.get("buildTimestamp"), expectedBuildTimestamp);
+    }
+
+
+    @Then("The build branch of the system is {string}")
+    public void theBranchOfTheSystemIs(String expectedBuildBranch) {
+        Assert.assertEquals(stepData.get("buildBranch"), expectedBuildBranch);
     }
 }
