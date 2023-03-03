@@ -36,10 +36,9 @@ import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDAO;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
-import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
-import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
 import org.eclipse.kapua.service.authentication.user.PasswordResetRequest;
+import org.eclipse.kapua.service.authentication.user.UserCredentialsFactory;
 import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -86,17 +85,14 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
                                                        .findAny()
                                                        .orElseThrow(() -> new IllegalStateException("User does not have any credential of type password"));
 
-            String plainNewPassword = passwordChangeRequest.getNewPassword();
+            UserCredentialsFactory userCredentialsFactory = locator.getFactory(UserCredentialsFactory.class);
+            PasswordResetRequest passwordResetRequest = userCredentialsFactory.newPasswordResetRequest();
+            passwordResetRequest.setNewPassword(passwordChangeRequest.getNewPassword());
             try {
-                credentialService.validatePassword(KapuaSecurityUtils.getSession().getScopeId(), plainNewPassword);
+                return resetPassword(KapuaSecurityUtils.getSession().getScopeId(), passwordCredential.getId(), passwordResetRequest);
             } catch (KapuaIllegalArgumentException ignored) {
-                throw new KapuaIllegalArgumentException("passwordChangeRequest.newPassword", plainNewPassword);
+                throw new KapuaIllegalArgumentException("passwordChangeRequest.newPassword", passwordChangeRequest.getNewPassword());
             }
-
-            String encryptedPass = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, plainNewPassword);
-            passwordCredential.setCredentialKey(encryptedPass);
-
-            return credentialService.update(passwordCredential);
         });
     }
 
