@@ -18,9 +18,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
-import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
-import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -106,7 +104,6 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
             if (otherEntitiesWithSameName > 0) {
                 throw new KapuaDuplicateNameException(tagCreator.getName());
             }
-            new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, tagCreator);
 
             final Tag toBeCreated = tagFactory.newEntity(tagCreator.getScopeId());
             toBeCreated.setName(tagCreator.getName());
@@ -130,20 +127,25 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.write, tag.getScopeId()));
 
-        //
-        // Check existence
-        if (find(tag.getScopeId(), tag.getId()) == null) {
-            throw new KapuaEntityNotFoundException(Tag.TYPE, tag.getId());
-        }
-
-        //
         // Check duplicate name
-        // TODO: INJECT
-        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, tag);
+        return txManager.executeWithResult(tx -> {
+            //
+            // Check existence
+            if (tagRepository.find(tx, tag.getScopeId(), tag.getId()) == null) {
+                throw new KapuaEntityNotFoundException(Tag.TYPE, tag.getId());
+            }
 
-        //
-        // Do Update
-        return txManager.executeWithResult(tx -> tagRepository.update(tx, tag));
+            //
+            // Check duplicate name
+            final long otherEntitiesWithSameName = duplicateNameChecker.countOtherEntitiesWithName(tx, tag.getScopeId(), tag.getId(), tag.getName());
+            if (otherEntitiesWithSameName > 0) {
+                throw new KapuaDuplicateNameException(tag.getName());
+            }
+
+            //
+            // Do Update
+            return tagRepository.update(tx, tag);
+        });
     }
 
     @Override

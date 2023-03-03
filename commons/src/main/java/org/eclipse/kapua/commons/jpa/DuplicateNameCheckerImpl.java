@@ -62,6 +62,7 @@ public class DuplicateNameCheckerImpl<E extends KapuaNamedEntity> implements Dup
         query.setScopeId(scopeId);
 
         AndPredicate andPredicate = query.andPredicate();
+        andPredicate.and(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name));
 //
 //        for (QueryPredicate additionalPredicate : additionalPredicates) {
 //            andPredicate.and(additionalPredicate);
