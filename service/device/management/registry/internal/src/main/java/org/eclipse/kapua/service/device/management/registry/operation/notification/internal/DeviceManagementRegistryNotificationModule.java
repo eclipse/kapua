@@ -29,7 +29,6 @@ public class DeviceManagementRegistryNotificationModule extends AbstractKapuaMod
     @Override
     protected void configureModule() {
         bind(ManagementOperationNotificationFactory.class).to(ManagementOperationNotificationFactoryImpl.class);
-        bind(ManagementOperationNotificationService.class).to(ManagementOperationNotificationServiceImpl.class);
     }
 
     @Provides
