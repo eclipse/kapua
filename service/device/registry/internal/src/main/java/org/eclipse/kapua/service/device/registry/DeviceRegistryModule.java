@@ -87,9 +87,9 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     @Provides
     @Singleton
     DeviceRepository deviceRepository(DeviceFactory deviceFactory,
-                                      DeviceRegistryCacheFactory deviceRegistryCacheFactory) {
+                                      DeviceRegistryCache deviceRegistryCache) {
         return new CachingDeviceRepository(new DeviceImplJpaRepository(),
-                (DeviceRegistryCache) deviceRegistryCacheFactory.createCache()
+                deviceRegistryCache
         );
     }
 
@@ -163,11 +163,17 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
+    DeviceRegistryCache deviceRegistryCache(DeviceRegistryCacheFactory deviceRegistryCacheFactory) {
+        return (DeviceRegistryCache) deviceRegistryCacheFactory.createCache();
+    }
+
+    @Provides
+    @Singleton
     DeviceConnectionRepository deviceConnectionRepository(DeviceConnectionFactory entityFactory,
-                                                          DeviceRegistryCacheFactory deviceRegistryCacheFactory) {
+                                                          DeviceRegistryCache deviceRegistryCache) {
         return new CachingDeviceConnectionRepository(
                 new DeviceConnectionImplJpaRepository(),
-                deviceRegistryCacheFactory.createCache()
+                deviceRegistryCache
         );
     }
 
