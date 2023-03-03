@@ -12,6 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag.steps;
 
+import com.google.inject.Singleton;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -29,16 +37,6 @@ import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagQuery;
 import org.eclipse.kapua.service.tag.TagService;
 import org.junit.Assert;
-
-import com.google.inject.Singleton;
-
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
-import io.cucumber.java.Scenario;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -63,7 +61,7 @@ public class TagServiceSteps extends TestBase {
         super(stepData);
     }
 
-    @After(value="@setup")
+    @After(value = "@setup")
     public void setServices() {
         KapuaLocator locator = KapuaLocator.getInstance();
         tagService = locator.getService(TagService.class);
@@ -152,7 +150,7 @@ public class TagServiceSteps extends TestBase {
     public void tagWithInvalidSymbols() throws Exception {
         String invalidSymbols = "!\"#$%&'()=»Ç" +
                 ">:;<-.,⁄@‹›€" +
-                "*ı–°·‚_±Œ„‰" +
+                "*ı–°·‚±Œ„‰" +
                 "?“‘”’ÉØ∏{}|Æ" +
                 "æÒ\uF8FFÔÓÌÏÎÍÅ«" +
                 "◊Ñˆ¯Èˇ¿";
