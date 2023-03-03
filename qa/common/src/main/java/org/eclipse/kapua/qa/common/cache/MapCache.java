@@ -38,9 +38,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MapCache<K, V> implements Cache<K, V> {
 
     private static final Logger logger = LoggerFactory.getLogger(MapCacheManager.class);
+    private final String cacheName;
     private ConcurrentHashMap<K, V> hashMap;
 
-    MapCache() {
+    MapCache(String cacheName) {
+        this.cacheName = cacheName;
         hashMap = new ConcurrentHashMap<>();
     }
 
@@ -49,7 +51,7 @@ public class MapCache<K, V> implements Cache<K, V> {
         try {
             Object returnedValue = clone(hashMap.get(key));
             if (returnedValue instanceof KapuaListResult) {
-                for (Object element: ((KapuaListResult) hashMap.get(key)).getItems()) {
+                for (Object element : ((KapuaListResult) hashMap.get(key)).getItems()) {
                     ((KapuaListResult) returnedValue).addItem((KapuaEntity) clone(element));
                 }
             }
@@ -81,7 +83,7 @@ public class MapCache<K, V> implements Cache<K, V> {
         try {
             V newValue = (V) clone(value);
             if (value instanceof KapuaListResult) {
-                for (Object element: ((KapuaListResult) value).getItems()) {
+                for (Object element : ((KapuaListResult) value).getItems()) {
                     ((KapuaListResult) newValue).addItem((KapuaEntity) clone(element));
                 }
             }
@@ -153,7 +155,7 @@ public class MapCache<K, V> implements Cache<K, V> {
 
     @Override
     public String getName() {
-        throw new UnsupportedOperationException();
+        return cacheName;
     }
 
     @Override

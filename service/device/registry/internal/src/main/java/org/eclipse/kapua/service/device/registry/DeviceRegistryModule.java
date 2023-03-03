@@ -145,7 +145,6 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     @Singleton
     @Named("DeviceConnectionServiceConfigurationManager")
     ServiceConfigurationManager deviceConnectionServiceConfigurationManager(
-            DeviceEntityManagerFactory deviceEntityManagerFactory,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester) {

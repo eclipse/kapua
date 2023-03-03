@@ -13,7 +13,6 @@
 package org.eclipse.kapua.commons.service.internal.cache.dummy;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -32,21 +31,21 @@ public class CacheTest {
 
     @Test
     public void constructorTest() throws Exception {
-        Constructor<Cache> testConstructor = Cache.class.getDeclaredConstructor();
+        Constructor<Cache> testConstructor = Cache.class.getDeclaredConstructor(String.class);
         testConstructor.setAccessible(true);
-        testConstructor.newInstance();
+        testConstructor.newInstance("name");
     }
 
     @Test
     public void getTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         Object object = "Key";
         Assert.assertNull("Null expected", cache.get(object));
     }
 
     @Test
     public void getAllTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         Set set = new HashSet();
         set.add("String");
         set.add('c');
@@ -73,7 +72,7 @@ public class CacheTest {
 
     @Test
     public void containsKeyTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         Object[] listOfObjects = new Object[]{null, "String", 1, 100000, 12333.333, 10.0f, 10L, 10d, 'c', true, false};
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
 
@@ -88,7 +87,7 @@ public class CacheTest {
 
     @Test
     public void loadAllTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         Set set = new HashSet();
         set.add("String");
         set.add('c');
@@ -119,7 +118,7 @@ public class CacheTest {
 
     @Test
     public void putTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         Object key = "Key";
         Object value = "Value";
         cache.put(key, value);
@@ -127,7 +126,7 @@ public class CacheTest {
 
     @Test
     public void getAndPutTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         Object key = "Key";
         Object value = "Value";
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
@@ -140,7 +139,7 @@ public class CacheTest {
 
     @Test
     public void putAllTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         Map map = new HashMap();
         Object[] keyList = new Object[]{null, "String", 1, 100000, 12333.333, 10.0f, 10L, 10d, 'c', true, false};
         Object[] valueList = new Object[]{null, "String", 1, 100000, 12333.333, 10.0f, 10L, 10d, 'c', true, false};
@@ -160,7 +159,7 @@ public class CacheTest {
 
     @Test
     public void putIfAbsentTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         Object[] keyList = new Object[]{null, "String", 1, 100000, 12333.333, 10.0f, 10L, 10d, 'c', true, false};
         Object[] valueList = new Object[]{null, "String", 1, 100000, 12333.333, 10.0f, 10L, 10d, 'c', true, false};
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
@@ -178,7 +177,7 @@ public class CacheTest {
 
     @Test
     public void removeTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         Object[] keyList = new Object[]{null, "String", 1, 100000, 12333.333, 10.0f, 10L, 10d, 'c', true, false};
 
         for (int i = 0; i < keyList.length; i++) {
@@ -188,7 +187,7 @@ public class CacheTest {
 
     @Test
     public void removeWithOldValueTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         Object[] keyList = new Object[]{null, "Key", 1, 100000, 12333.333, 10.0f, 10L, 10d, 'c', true, false};
         Object[] valueList = new Object[]{null, "Old Value", 1, 100000, 12333.333, 10.0f, 10L, 10d, 'c', true, false};
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
@@ -206,7 +205,7 @@ public class CacheTest {
 
     @Test
     public void getAndRemoveTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         Object[] keyList = new Object[]{null, "Key", 1, 100000, 12333.333, 10.0f, 10L, 10d, 'c', true, false};
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
 
@@ -221,7 +220,7 @@ public class CacheTest {
 
     @Test
     public void replaceWithNewValueTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         Object[] keyList = new Object[]{null, "Key", 1, 100000, 12333.333, 10.0f, 10L, 10d, 'c', true, false};
         Object[] oldValueList = new Object[]{null, "Old Value", 1, 100000, 12333.333, 10.0f, 10L, 10d, 'c', true, false};
         Object[] newValueList = new Object[]{null, "New Value", 1, 100000, 12333.333, 10.0f, 10L, 10d, 'c', true, false};
@@ -242,7 +241,7 @@ public class CacheTest {
 
     @Test
     public void replaceTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         Object[] keyList = new Object[]{null, "Key", 1, 100000, 12333.333, 10.0f, 10L, 10d, 'c', true, false};
         Object[] valueList = new Object[]{null, "Value", 1, 100000, 12333.333, 10.0f, 10L, 10d, 'c', true, false};
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
@@ -260,7 +259,7 @@ public class CacheTest {
 
     @Test
     public void getAndReplaceTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         Object[] keyList = new Object[]{null, "Key", 1, 100000, 12333.333, 10.0f, 10L, 10d, 'c', true, false};
         Object[] valueList = new Object[]{null, "Value", 1, 100000, 12333.333, 10.0f, 10L, 10d, 'c', true, false};
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
@@ -278,7 +277,7 @@ public class CacheTest {
 
     @Test
     public void removeAllWithKeyTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         Set set = new HashSet();
         set.add("String");
         set.add('c');
@@ -305,7 +304,7 @@ public class CacheTest {
 
     @Test
     public void removeAllTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
         try {
             cache.removeAll();
@@ -316,13 +315,13 @@ public class CacheTest {
 
     @Test
     public void clearTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         cache.clear();
     }
 
     @Test
     public void getNameTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
         try {
             cache.getName();
@@ -333,7 +332,7 @@ public class CacheTest {
 
     @Test
     public void getCacheManagerTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
         try {
             cache.getCacheManager();
@@ -344,7 +343,7 @@ public class CacheTest {
 
     @Test
     public void closeTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
         try {
             cache.close();
@@ -355,7 +354,7 @@ public class CacheTest {
 
     @Test
     public void isClosedTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
         try {
             cache.isClosed();
@@ -366,7 +365,7 @@ public class CacheTest {
 
     @Test
     public void registerCacheEntryListenerTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
         try {
             cache.registerCacheEntryListener(null);
@@ -377,7 +376,7 @@ public class CacheTest {
 
     @Test
     public void deregisterCacheEntryListenerTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
         try {
             cache.deregisterCacheEntryListener(null);
@@ -388,7 +387,7 @@ public class CacheTest {
 
     @Test
     public void iteratorTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
         try {
             cache.iterator();
@@ -399,7 +398,7 @@ public class CacheTest {
 
     @Test
     public void unwrapTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
         Class[] clazz = new Class[]{Integer.class, Character.class, String.class, Long.class, Double.class, Byte.class, Boolean.class};
 
@@ -414,7 +413,7 @@ public class CacheTest {
 
     @Test
     public void invokeAllTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         Set set = new HashSet();
         set.add("String");
         set.add('c');
@@ -441,7 +440,7 @@ public class CacheTest {
 
     @Test
     public void invokeTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
         try {
             cache.invoke("key", null, "String", "string", "str");
@@ -452,7 +451,7 @@ public class CacheTest {
 
     @Test
     public void getConfigurationTest() {
-        Cache cache = new Cache();
+        Cache cache = new Cache("test");
         UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException();
         Class[] clazz = new Class[]{Integer.class, Character.class, String.class, Long.class, Double.class, Byte.class, Boolean.class};
 

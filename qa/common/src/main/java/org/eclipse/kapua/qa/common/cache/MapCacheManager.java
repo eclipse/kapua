@@ -57,7 +57,7 @@ public class MapCacheManager implements CacheManager {
     public <K, V, C extends Configuration<K, V>> Cache<K, V> createCache(String cacheName, C configuration) throws IllegalArgumentException {
         //Class<K> kClass = configuration.getKeyType();
         //Class<V> vClass = configuration.getValueType();
-        return new MapCache<>();
+        return new MapCache<>(cacheName);
     }
 
     @Override
