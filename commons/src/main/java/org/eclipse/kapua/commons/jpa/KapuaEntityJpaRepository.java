@@ -112,9 +112,11 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     }
 
     protected E doFind(javax.persistence.EntityManager em, KapuaId scopeId, KapuaId entityId) {
+        KapuaEid eId = KapuaEid.parseKapuaId(entityId);
+
         //
         // Checking existence
-        final E entityToFind = em.find(concreteClass, entityId);
+        final E entityToFind = em.find(concreteClass, eId);
 
         // If 'null' ScopeId has been requested, it means that we need to look for ANY ScopeId.
         final KapuaId scopeIdToMatch = scopeId != null ? scopeId : KapuaId.ANY;

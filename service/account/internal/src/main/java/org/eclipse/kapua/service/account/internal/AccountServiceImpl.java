@@ -107,58 +107,57 @@ public class AccountServiceImpl
         //
         // Check entity limit
         serviceConfigurationManager.checkAllowedEntities(accountCreator.getScopeId(), "Accounts");
-
-        //
-        // Check if the parent account exists
-        if (find(accountCreator.getScopeId()) == null) {
-            throw new KapuaIllegalArgumentException(KapuaEntityAttributes.SCOPE_ID, "parent account does not exist: " + accountCreator.getScopeId() + "::");
-        }
-
-        //
-        // check if the account collides with the SystemSettingKey#COMMONS_CONTROL_TOPIC_CLASSIFIER
-        if (!StringUtils.isEmpty(SystemSetting.getInstance().getMessageClassifier())) {
-            if (SystemSetting.getInstance().getMessageClassifier().equals(accountCreator.getName())) {
-                throw new KapuaIllegalArgumentException("name", "Reserved account name");// obfuscate this message? or change to something more clear like "the account name collides with some system
-                // configuration parameter"?
-            }
-        }
-
-        //
-        // Check duplicate name
-        // TODO: INJECT
-        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, accountCreator);
-        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniquenessInAllScopes(this, accountCreator);
-
-        //
-        // Check that expiration date is no later than parent expiration date
-        Account parentAccount = KapuaSecurityUtils.doPrivileged(() -> find(accountCreator.getScopeId()));
-        if (parentAccount != null && parentAccount.getExpirationDate() != null) {
-            // parent account never expires no check is needed
-            if (accountCreator.getExpirationDate() == null || parentAccount.getExpirationDate().before(accountCreator.getExpirationDate())) {
-                // if current account expiration date is null it will be obviously after parent expiration date
-                throw new KapuaIllegalArgumentException(AccountAttributes.EXPIRATION_DATE, accountCreator.getExpirationDate() != null ? accountCreator.getExpirationDate().toString() : NO_EXPIRATION_DATE_SET);
-            }
-        }
-
-        //
-        // Do create
-        final OrganizationImpl organizationImpl = new OrganizationImpl();
-        organizationImpl.setName(accountCreator.getOrganizationName());
-        organizationImpl.setPersonName(accountCreator.getOrganizationPersonName());
-        organizationImpl.setEmail(accountCreator.getOrganizationEmail());
-        organizationImpl.setPhoneNumber(accountCreator.getOrganizationPhoneNumber());
-        organizationImpl.setAddressLine1(accountCreator.getOrganizationAddressLine1());
-        organizationImpl.setAddressLine2(accountCreator.getOrganizationAddressLine2());
-        organizationImpl.setAddressLine3(accountCreator.getOrganizationAddressLine3());
-        organizationImpl.setCity(accountCreator.getOrganizationCity());
-        organizationImpl.setZipPostCode(accountCreator.getOrganizationZipPostCode());
-        organizationImpl.setStateProvinceCounty(accountCreator.getOrganizationStateProvinceCounty());
-        organizationImpl.setCountry(accountCreator.getOrganizationCountry());
-
-        final AccountImpl accountImpl = new AccountImpl(accountCreator.getScopeId(), accountCreator.getName());
-        accountImpl.setOrganization(organizationImpl);
-        accountImpl.setExpirationDate(accountCreator.getExpirationDate());
         return txManager.executeWithResult(tx -> {
+            //
+            // Check if the parent account exists
+            if (accountRepository.find(tx, KapuaId.ANY, accountCreator.getScopeId()) == null) {
+                throw new KapuaIllegalArgumentException(KapuaEntityAttributes.SCOPE_ID, "parent account does not exist: " + accountCreator.getScopeId() + "::");
+            }
+
+            //
+            // check if the account collides with the SystemSettingKey#COMMONS_CONTROL_TOPIC_CLASSIFIER
+            if (!StringUtils.isEmpty(SystemSetting.getInstance().getMessageClassifier())) {
+                if (SystemSetting.getInstance().getMessageClassifier().equals(accountCreator.getName())) {
+                    throw new KapuaIllegalArgumentException("name", "Reserved account name");// obfuscate this message? or change to something more clear like "the account name collides with some system
+                    // configuration parameter"?
+                }
+            }
+
+            //
+            // Check duplicate name
+            // TODO: INJECT
+            new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, accountCreator);
+            new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniquenessInAllScopes(this, accountCreator);
+
+            //
+            // Check that expiration date is no later than parent expiration date
+            Account parentAccount = KapuaSecurityUtils.doPrivileged(() -> find(accountCreator.getScopeId()));
+            if (parentAccount != null && parentAccount.getExpirationDate() != null) {
+                // parent account never expires no check is needed
+                if (accountCreator.getExpirationDate() == null || parentAccount.getExpirationDate().before(accountCreator.getExpirationDate())) {
+                    // if current account expiration date is null it will be obviously after parent expiration date
+                    throw new KapuaIllegalArgumentException(AccountAttributes.EXPIRATION_DATE, accountCreator.getExpirationDate() != null ? accountCreator.getExpirationDate().toString() : NO_EXPIRATION_DATE_SET);
+                }
+            }
+
+            //
+            // Do create
+            final OrganizationImpl organizationImpl = new OrganizationImpl();
+            organizationImpl.setName(accountCreator.getOrganizationName());
+            organizationImpl.setPersonName(accountCreator.getOrganizationPersonName());
+            organizationImpl.setEmail(accountCreator.getOrganizationEmail());
+            organizationImpl.setPhoneNumber(accountCreator.getOrganizationPhoneNumber());
+            organizationImpl.setAddressLine1(accountCreator.getOrganizationAddressLine1());
+            organizationImpl.setAddressLine2(accountCreator.getOrganizationAddressLine2());
+            organizationImpl.setAddressLine3(accountCreator.getOrganizationAddressLine3());
+            organizationImpl.setCity(accountCreator.getOrganizationCity());
+            organizationImpl.setZipPostCode(accountCreator.getOrganizationZipPostCode());
+            organizationImpl.setStateProvinceCounty(accountCreator.getOrganizationStateProvinceCounty());
+            organizationImpl.setCountry(accountCreator.getOrganizationCountry());
+
+            final AccountImpl accountImpl = new AccountImpl(accountCreator.getScopeId(), accountCreator.getName());
+            accountImpl.setOrganization(organizationImpl);
+            accountImpl.setExpirationDate(accountCreator.getExpirationDate());
             final Account createdAccount = accountRepository.create(tx, accountImpl);
             String parentAccountPath = accountRepository.find(tx, KapuaId.ANY, accountCreator.getScopeId()).getParentAccountPath() + "/" + createdAccount.getId();
             createdAccount.setParentAccountPath(parentAccountPath);
