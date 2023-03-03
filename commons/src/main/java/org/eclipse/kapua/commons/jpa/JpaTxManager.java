@@ -13,6 +13,7 @@
 package org.eclipse.kapua.commons.jpa;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.storage.TxManager;
 
 import javax.persistence.EntityManager;
@@ -39,7 +40,7 @@ public class JpaTxManager implements TxManager {
             return res;
         } catch (Exception ex) {
             tx.rollback();
-            throw ex;
+            throw KapuaExceptionUtils.convertPersistenceException(ex);
         } finally {
             em.close();
         }
@@ -56,7 +57,7 @@ public class JpaTxManager implements TxManager {
             tx.commit();
         } catch (Exception ex) {
             tx.rollback();
-            throw ex;
+            throw KapuaExceptionUtils.convertPersistenceException(ex);
         } finally {
             em.close();
         }
