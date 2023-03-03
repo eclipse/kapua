@@ -55,7 +55,7 @@ public class CacheManager implements javax.cache.CacheManager {
 
     @Override
     public <K, V, C extends Configuration<K, V>> javax.cache.Cache createCache(String cacheName, C configuration) throws IllegalArgumentException {
-        return new Cache<>();
+        return new Cache<>(cacheName);
     }
 
     @Override

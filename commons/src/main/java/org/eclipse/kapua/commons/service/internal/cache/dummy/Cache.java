@@ -29,7 +29,10 @@ import java.util.Set;
  */
 public class Cache<K, V> implements javax.cache.Cache<K, V> {
 
-    public Cache() {
+    private final String cacheName;
+
+    public Cache(String cacheName) {
+        this.cacheName = cacheName;
     }
 
     @Override
@@ -117,7 +120,7 @@ public class Cache<K, V> implements javax.cache.Cache<K, V> {
 
     @Override
     public String getName() {
-        throw new UnsupportedOperationException();
+        return cacheName;
     }
 
     @Override
