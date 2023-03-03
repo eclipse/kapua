@@ -12,9 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag;
 
-import org.eclipse.kapua.storage.KapuaUpdatableEntityRepository;
+import org.eclipse.kapua.storage.KapuaNamedEntityRepository;
 
 public interface TagRepository extends
-        //strange, since Tag is a NamedEntity - yet it is never retrieved by name
-        KapuaUpdatableEntityRepository<Tag, TagListResult> {
+        KapuaNamedEntityRepository<Tag, TagListResult> {
 }

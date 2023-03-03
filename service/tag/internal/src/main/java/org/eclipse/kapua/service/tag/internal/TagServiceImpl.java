@@ -12,11 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag.internal;
 
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
+import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
@@ -50,6 +53,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
     private final TagFactory tagFactory;
     private final TxManager txManager;
     private final TagRepository tagRepository;
+    private final DuplicateNameChecker<Tag> duplicateNameChecker;
 
     /**
      * Injectable Constructor
@@ -76,6 +80,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
         this.tagRepository = tagRepository;
         this.tagFactory = tagFactory;
         this.txManager = txManager;
+        this.duplicateNameChecker = new DuplicateNameCheckerImpl<>(tagRepository, (scopeId) -> tagFactory.newQuery(scopeId));
     }
 
     @Override
@@ -96,15 +101,20 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
 
         //
         // Check duplicate name
-        // TODO: INJECT
-        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, tagCreator);
+        return txManager.executeWithResult(tx -> {
+            final long otherEntitiesWithSameName = duplicateNameChecker.countOtherEntitiesWithName(tx, tagCreator.getScopeId(), tagCreator.getName());
+            if (otherEntitiesWithSameName > 0) {
+                throw new KapuaDuplicateNameException(tagCreator.getName());
+            }
+            new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, tagCreator);
 
-        final Tag toBeCreated = tagFactory.newEntity(tagCreator.getScopeId());
-        toBeCreated.setName(tagCreator.getName());
-        toBeCreated.setDescription(tagCreator.getDescription());
-        //
-        // Do create
-        return txManager.executeWithResult(tx -> tagRepository.create(tx, toBeCreated));
+            final Tag toBeCreated = tagFactory.newEntity(tagCreator.getScopeId());
+            toBeCreated.setName(tagCreator.getName());
+            toBeCreated.setDescription(tagCreator.getDescription());
+            //
+            // Do create
+            return tagRepository.create(tx, toBeCreated);
+        });
     }
 
     @Override
