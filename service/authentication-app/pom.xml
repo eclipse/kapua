@@ -17,7 +17,7 @@
     <parent>
         <artifactId>kapua-service</artifactId>
         <groupId>org.eclipse.kapua</groupId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>2.0.0-REPO-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -320,7 +320,7 @@
                                     <resource>META-INF/persistence.xml</resource>
                                 </transformer>
                                 <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
                                         <Main-Class>org.eclipse.kapua.service.authentication.AuthenticationApplication</Main-Class>
                                     </manifestEntries>
