@@ -16,14 +16,12 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
-import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
@@ -86,9 +84,12 @@ public class AccountLocatorConfiguration {
                 bind(AccountFactory.class).toInstance(accountFactory);
                 bind(AccountChildrenFinder.class).toInstance(Mockito.mock(AccountChildrenFinder.class));
                 final AccountRepository accountRepository = Mockito.mock(AccountRepository.class);
-                bind(ServiceConfigurationManager.class)
-                        .annotatedWith(Names.named("AccountServiceConfigurationManager"))
-                        .toInstance(new ResourceLimitedServiceConfigurationManagerImpl(
+                bind(AccountService.class).toInstance(new AccountServiceImpl(
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-account")),
+                        new AccountImplJpaRepository(),
+                        mockPermissionFactory,
+                        mockedAuthorization,
+                        new ResourceLimitedServiceConfigurationManagerImpl(
                                 AccountService.class.getName(),
                                 AccountDomains.ACCOUNT_DOMAIN,
                                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-account")),
@@ -101,8 +102,8 @@ public class AccountLocatorConfiguration {
                                         accountFactory,
                                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-account")),
                                         accountRepository)
-                        ));
-                bind(AccountService.class).to(AccountServiceImpl.class);
+                        )
+                ));
                 bind(AccountRepository.class).toInstance(new AccountImplJpaRepository());
             }
         };
