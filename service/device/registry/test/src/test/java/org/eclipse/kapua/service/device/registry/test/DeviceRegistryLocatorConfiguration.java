@@ -16,7 +16,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
@@ -98,21 +97,29 @@ public class DeviceRegistryLocatorConfiguration {
                 bind(DeviceRegistryCacheFactory.class).toInstance(deviceRegistryCacheFactory);
 
                 bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
-                bind(ServiceConfigurationManager.class)
-                        .annotatedWith(Names.named("DeviceConnectionServiceConfigurationManager"))
-                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
-                bind(DeviceConnectionService.class).to(DeviceConnectionServiceImpl.class);
+                bind(DeviceConnectionService.class).toInstance(new DeviceConnectionServiceImpl(
+                        Mockito.mock(ServiceConfigurationManager.class),
+                        mockedAuthorization,
+                        permissionFactory,
+                        new DeviceConnectionFactoryImpl(),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
+                        new DeviceConnectionImplJpaRepository()
+                ));
                 bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
 
                 bind(DeviceRepository.class).toInstance(new DeviceImplJpaRepository());
                 bind(DeviceConnectionRepository.class).toInstance(new DeviceConnectionImplJpaRepository());
                 bind(DeviceEventRepository.class).toInstance(new DeviceEventImplJpaRepository());
-                bind(DeviceEventService.class).to(DeviceEventServiceImpl.class);
+                bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl(
+                        mockedAuthorization,
+                        permissionFactory,
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
+                        new DeviceImplJpaRepository(),
+                        new DeviceEventFactoryImpl(),
+                        new DeviceEventImplJpaRepository()
+                ));
                 bind(DeviceEventFactory.class).toInstance(new DeviceEventFactoryImpl());
                 bind(KapuaMessageFactory.class).toInstance(new KapuaMessageFactoryImpl());
-                bind(ServiceConfigurationManager.class)
-                        .annotatedWith(Names.named("DeviceRegistryServiceConfigurationManager"))
-                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
                 bind(DeviceRegistryService.class).toInstance(new DeviceRegistryServiceImpl(
                         Mockito.mock(ServiceConfigurationManager.class),
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),

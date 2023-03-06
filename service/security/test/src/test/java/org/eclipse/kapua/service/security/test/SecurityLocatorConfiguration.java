@@ -16,7 +16,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
@@ -36,7 +35,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFactoryImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
-import org.eclipse.kapua.service.authentication.shiro.CredentialServiceConfigurationManager;
+import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authentication.shiro.CredentialServiceConfigurationManagerImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
@@ -110,17 +109,15 @@ public class SecurityLocatorConfiguration {
                         Mockito.mock(ServiceConfigurationManager.class)));
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
                 bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
-                bind(CredentialServiceConfigurationManager.class)
-                        .annotatedWith(Names.named("CredentialServiceConfigurationManager"))
-                        .toInstance(
-                                new CredentialServiceConfigurationManagerImpl(
-                                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
-                                        new ServiceConfigImplJpaRepository(),
-                                        mockPermissionFactory,
-                                        mockedAuthorization,
-                                        Mockito.mock(RootUserTester.class))
-                        );
-                bind(CredentialService.class).to(CredentialServiceImpl.class);
+                bind(CredentialService.class).toInstance(new CredentialServiceImpl(
+                        new AuthenticationEntityManagerFactory(),
+                        new CredentialServiceConfigurationManagerImpl(
+                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                                new ServiceConfigImplJpaRepository(),
+                                mockPermissionFactory,
+                                mockedAuthorization,
+                                Mockito.mock(RootUserTester.class))
+                ));
                 final UserFactoryImpl userFactory = new UserFactoryImpl();
                 bind(UserFactory.class).toInstance(userFactory);
                 final RootUserTester rootUserTester = Mockito.mock(RootUserTester.class);
