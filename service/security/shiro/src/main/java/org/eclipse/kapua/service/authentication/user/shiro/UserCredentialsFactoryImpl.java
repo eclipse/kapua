@@ -12,7 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.user.shiro;
 
+import org.eclipse.kapua.service.authentication.credential.shiro.PasswordResetRequestImpl;
 import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
+import org.eclipse.kapua.service.authentication.user.PasswordResetRequest;
 import org.eclipse.kapua.service.authentication.user.UserCredentialsFactory;
 
 import javax.inject.Singleton;
@@ -22,5 +24,11 @@ public class UserCredentialsFactoryImpl implements UserCredentialsFactory {
     @Override
     public PasswordChangeRequest newPasswordChangeRequest() {
         return new PasswordChangeRequestImpl();
+    }
+
+
+    @Override
+    public PasswordResetRequest newPasswordResetRequest() {
+        return new PasswordResetRequestImpl();
     }
 }

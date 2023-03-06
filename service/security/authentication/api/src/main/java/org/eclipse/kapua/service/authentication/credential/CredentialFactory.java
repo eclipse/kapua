@@ -52,5 +52,4 @@ public interface CredentialFactory extends KapuaEntityFactory<Credential, Creden
      * @since 1.0.0
      */
     CredentialCreator newCreator(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialStatus credentialStatus, Date expirationDate);
-
 }

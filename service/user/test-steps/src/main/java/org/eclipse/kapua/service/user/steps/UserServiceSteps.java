@@ -30,6 +30,7 @@ import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.qa.common.BasicSteps;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.cucumber.CucConfig;
@@ -817,6 +818,7 @@ public class UserServiceSteps extends TestBase {
         } catch (KapuaException ke) {
             verifyException(ke);
         }
+        stepData.put(BasicSteps.LAST_CREDENTIAL_ID, credentialList.get(0).getId());
         return credentialList.size() == 1 ? credentialList.get(0) : null;
     }
 
