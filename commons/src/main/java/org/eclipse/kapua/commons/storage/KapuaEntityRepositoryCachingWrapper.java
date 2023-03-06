@@ -44,6 +44,9 @@ public class KapuaEntityRepositoryCachingWrapper<E extends KapuaEntity, L extend
             return (E) cached;
         }
         final E found = wrapped.find(txContext, scopeId, entityId);
+        if (found == null) {
+            return null;
+        }
         entityCache.put(found);
         return found;
     }

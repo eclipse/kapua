@@ -35,13 +35,14 @@ public class CachingDeviceRepository
     @Override
     public Device findByClientId(TxContext tx, KapuaId scopeId, String clientId) throws KapuaException {
         final Device cached = (Device) entityCache.getByClientId(scopeId, clientId);
-        if (cached == null) {
-            final Device found = wrapped.findByClientId(tx, scopeId, clientId);
-            if (found != null) {
-                entityCache.put(found);
-            }
+        if (cached != null) {
+            return cached;
+        }
+        final Device found = wrapped.findByClientId(tx, scopeId, clientId);
+        if (found == null) {
             return null;
         }
-        return cached;
+        entityCache.put(found);
+        return found;
     }
 }
