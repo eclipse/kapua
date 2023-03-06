@@ -12,17 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
-import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
-import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
-import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
+import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -34,11 +32,14 @@ import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValida
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
+import org.eclipse.kapua.service.authorization.role.RolePermissionRepository;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
+import org.eclipse.kapua.service.authorization.role.RoleRepository;
 import org.eclipse.kapua.service.authorization.role.RoleService;
-import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,35 +52,48 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
-public class RoleServiceImpl extends KapuaConfigurableServiceBase implements RoleService {
+public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements RoleService {
+
     private static final Logger LOG = LoggerFactory.getLogger(RoleServiceImpl.class);
 
-    private PermissionFactory permissionFactory;
-    private AuthorizationService authorizationService;
-    private RolePermissionFactory rolePermissionFactory;
-
+    private final PermissionFactory permissionFactory;
+    private final AuthorizationService authorizationService;
+    private final RolePermissionFactory rolePermissionFactory;
+    private final TxManager txManager;
+    private final RoleRepository roleRepository;
+    private final RolePermissionRepository rolePermissionRepository;
+    private final DuplicateNameChecker<Role> duplicateNameChecker;
 
     /**
      * Injectable constructor
      *
-     * @param authorizationEntityManagerFactory The {@link AuthorizationEntityManagerFactory} instance.
-     * @param roleCacheFactory                  The {@link RoleCacheFactory} instance.
-     * @param permissionFactory                 The {@link PermissionFactory} instance.
-     * @param authorizationService              The {@link AuthorizationService} instance.
-     * @param rolePermissionFactory             The {@link RolePermissionFactory} instance.
-     * @param serviceConfigurationManager       The {@link ServiceConfigurationManager} instance.
+     * @param permissionFactory           The {@link PermissionFactory} instance.
+     * @param authorizationService        The {@link AuthorizationService} instance.
+     * @param rolePermissionFactory       The {@link RolePermissionFactory} instance.
+     * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance.
+     * @param txManager
+     * @param roleRepository
+     * @param rolePermissionRepository
+     * @param duplicateNameChecker
      */
     @Inject
-    public RoleServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory,
-                           RoleCacheFactory roleCacheFactory,
-                           PermissionFactory permissionFactory,
-                           AuthorizationService authorizationService,
-                           RolePermissionFactory rolePermissionFactory,
-                           ServiceConfigurationManager serviceConfigurationManager) {
-        super(authorizationEntityManagerFactory, roleCacheFactory, serviceConfigurationManager);
+    public RoleServiceImpl(
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            RolePermissionFactory rolePermissionFactory,
+            ServiceConfigurationManager serviceConfigurationManager,
+            TxManager txManager,
+            RoleRepository roleRepository,
+            RolePermissionRepository rolePermissionRepository,
+            DuplicateNameChecker<Role> duplicateNameChecker) {
+        super(serviceConfigurationManager);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         this.rolePermissionFactory = rolePermissionFactory;
+        this.txManager = txManager;
+        this.roleRepository = roleRepository;
+        this.rolePermissionRepository = rolePermissionRepository;
+        this.duplicateNameChecker = duplicateNameChecker;
     }
 
     @Override
@@ -93,50 +107,61 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, roleCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, roleCreator.getScopeId()));
 
-        //
-        // Check entity limit
-        serviceConfigurationManager.checkAllowedEntities(roleCreator.getScopeId(), "Roles");
+        return txManager.executeWithResult(tx -> {
 
-        //
-        // Check duplicate name
-        // TODO: INJECT
-        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, roleCreator);
+            //
+            // Check entity limit
+            serviceConfigurationManager.checkAllowedEntities(roleCreator.getScopeId(), "Roles");
 
-        //
-        // If permission are created out of the role scope, check that the current user has the permission on the external scopeId.
-        if (roleCreator.getPermissions() != null) {
-            for (Permission p : roleCreator.getPermissions()) {
-                if (p.getTargetScopeId() == null || !p.getTargetScopeId().equals(roleCreator.getScopeId())) {
-                    getAuthorizationService().checkPermission(p);
+            //
+            // Check duplicate name
+            // TODO: INJECT
+            if (duplicateNameChecker.countOtherEntitiesWithName(tx, roleCreator.getScopeId(), roleCreator.getName()) > 0) {
+                throw new KapuaDuplicateNameException(roleCreator.getName());
+            }
+
+            //
+            // If permission are created out of the role scope, check that the current user has the permission on the external scopeId.
+            if (roleCreator.getPermissions() != null) {
+                for (Permission p : roleCreator.getPermissions()) {
+                    if (p.getTargetScopeId() == null || !p.getTargetScopeId().equals(roleCreator.getScopeId())) {
+                        authorizationService.checkPermission(p);
+                    }
                 }
             }
-        }
 
-        //
-        // Check that the given permission matches the definition of the Domains.
-        PermissionValidator.validatePermissions(roleCreator.getPermissions());
+            //
+            // Check that the given permission matches the definition of the Domains.
+            PermissionValidator.validatePermissions(roleCreator.getPermissions());
 
-        //
-        // Do create
-        return entityManagerSession.doTransactedAction(EntityManagerContainer.<Role>create().onResultHandler(em -> {
-            Role role = RoleDAO.create(em, roleCreator);
+            //
+            // Do create
+            Role newRole = new RoleImpl(roleCreator.getScopeId());
+
+            newRole.setName(roleCreator.getName());
+            newRole.setDescription(roleCreator.getDescription());
+
+            final Role createdRole = roleRepository.create(tx, newRole);
 
             if (!roleCreator.getPermissions().isEmpty()) {
                 for (Permission p : roleCreator.getPermissions()) {
 
                     RolePermissionCreator rolePermissionCreator = rolePermissionFactory.newCreator(roleCreator.getScopeId());
 
-                    rolePermissionCreator.setRoleId(role.getId());
+                    rolePermissionCreator.setRoleId(createdRole.getId());
                     rolePermissionCreator.setPermission(p);
+                    RolePermission rolePermission = new RolePermissionImpl(rolePermissionCreator.getScopeId());
 
-                    RolePermissionDAO.create(em, rolePermissionCreator);
+                    rolePermission.setRoleId(rolePermissionCreator.getRoleId());
+                    rolePermission.setPermission(rolePermissionCreator.getPermission());
+                    rolePermissionRepository.create(tx, rolePermission);
                 }
             }
+            return createdRole;
+        });
 
-            return role;
-        }));
     }
 
     @Override
@@ -150,26 +175,24 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, role.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, role.getScopeId()));
 
-        //
-        // Check existence
-        if (find(role.getScopeId(), role.getId()) == null) {
-            throw new KapuaEntityNotFoundException(Role.TYPE, role.getId());
-        }
+        return txManager.executeWithResult(tx -> {
+            //
+            // Check existence
+            if (roleRepository.find(tx, role.getScopeId(), role.getId()) == null) {
+                throw new KapuaEntityNotFoundException(Role.TYPE, role.getId());
+            }
+            //
+            // Check duplicate name
+            if (duplicateNameChecker.countOtherEntitiesWithName(tx, role.getScopeId(), role.getId(), role.getName()) > 0) {
+                throw new KapuaDuplicateNameException(role.getName());
+            }
 
-        //
-        // Check duplicate name
-        // TODO: INJECT
-        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, role);
-
-        //
-        // Do update
-        return entityManagerSession.doTransactedAction(EntityManagerContainer.<Role>create().onResultHandler(em -> RoleDAO.update(em, role))
-                .onBeforeHandler(() -> {
-                    entityCache.remove(null, role);
-                    return null;
-                }));
+            //
+            // Do update
+            return roleRepository.update(tx, role);
+        });
     }
 
     @Override
@@ -181,21 +204,25 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.delete, scopeId));
 
-        //
-        // Check existence
-        if (find(scopeId, roleId) == null) {
-            throw new KapuaEntityNotFoundException(Role.TYPE, roleId);
-        }
         if (roleId.equals(KapuaId.ONE)) {
             throw new KapuaException(KapuaErrorCodes.ADMIN_ROLE_DELETED_ERROR);
         }
 
-        //
-        // Do delete
-        entityManagerSession.doTransactedAction(EntityManagerContainer.<Role>create().onResultHandler(em -> RoleDAO.delete(em, scopeId, roleId))
-                .onAfterHandler((emptyParam) -> entityCache.remove(scopeId, roleId)));
+        txManager.executeNoResult(tx -> {
+
+            //
+            // Check existence
+            final Role roleToDelete = roleRepository.find(tx, scopeId, roleId);
+            if (roleToDelete == null) {
+                throw new KapuaEntityNotFoundException(Role.TYPE, roleId);
+            }
+
+            //
+            // Do delete
+            roleRepository.delete(tx, roleToDelete);
+        });
     }
 
     @Override
@@ -207,13 +234,11 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
-        return entityManagerSession.doAction(EntityManagerContainer.<Role>create().onResultHandler(em -> RoleDAO.find(em, scopeId, roleId))
-                .onBeforeHandler(() -> (Role) entityCache.get(scopeId, roleId))
-                .onAfterHandler((entity) -> entityCache.put(entity)));
+        return txManager.executeWithResult(tx -> roleRepository.find(tx, scopeId, roleId));
     }
 
     @Override
@@ -224,11 +249,11 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
-        return entityManagerSession.doAction(EntityManagerContainer.<RoleListResult>create().onResultHandler(em -> RoleDAO.query(em, query)));
+        return txManager.executeWithResult(tx -> roleRepository.query(tx, query));
     }
 
     @Override
@@ -239,11 +264,11 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
-        return entityManagerSession.doAction(EntityManagerContainer.<Long>create().onResultHandler(em -> RoleDAO.count(em, query)));
+        return txManager.executeWithResult(tx -> roleRepository.count(tx, query));
     }
 
     //@ListenServiceEvent(fromAddress="account")
@@ -267,33 +292,5 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
         for (Role r : rolesToDelete.getItems()) {
             delete(r.getScopeId(), r.getId());
         }
-    }
-
-    /**
-     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link AuthorizationService} instance
-     */
-    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
-    protected AuthorizationService getAuthorizationService() {
-        if (authorizationService == null) {
-            authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
-        }
-        return authorizationService;
-    }
-
-    /**
-     * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link PermissionFactory} instance
-     */
-    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
-    protected PermissionFactory getPermissionFactory() {
-        if (permissionFactory == null) {
-            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
-        }
-        return permissionFactory;
     }
 }

@@ -26,8 +26,9 @@ import org.eclipse.kapua.service.authorization.role.RoleListResult;
  * Role DAO
  *
  * @since 1.0
- *
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.authorization.role.RoleRepository} instead
  */
+@Deprecated
 public class RoleDAO extends ServiceDAO {
 
     /**
@@ -54,8 +55,7 @@ public class RoleDAO extends ServiceDAO {
      * @param em
      * @param role
      * @return
-     * @throws KapuaEntityNotFoundException
-     *             If {@link Role} is not found.
+     * @throws KapuaEntityNotFoundException If {@link Role} is not found.
      */
     public static Role update(EntityManager em, Role role) throws KapuaEntityNotFoundException {
         RoleImpl roleImpl = (RoleImpl) role;
@@ -107,8 +107,7 @@ public class RoleDAO extends ServiceDAO {
      * @param scopeId
      * @param roleId
      * @return the deleted {@link Role}
-     * @throws KapuaEntityNotFoundException
-     *             If {@link Role} is not found.
+     * @throws KapuaEntityNotFoundException If {@link Role} is not found.
      */
     public static Role delete(EntityManager em, KapuaId scopeId, KapuaId roleId)
             throws KapuaEntityNotFoundException {

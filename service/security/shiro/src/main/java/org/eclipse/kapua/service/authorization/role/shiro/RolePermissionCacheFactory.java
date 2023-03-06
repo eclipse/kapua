@@ -19,11 +19,8 @@ import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
  */
 public class RolePermissionCacheFactory extends AbstractEntityCacheFactory {
 
-    private RolePermissionCacheFactory() {
+    public RolePermissionCacheFactory() {
         super("RolePermissionId");
     }
 
-    protected static RolePermissionCacheFactory getInstance() {
-        return new RolePermissionCacheFactory();
-    }
 }

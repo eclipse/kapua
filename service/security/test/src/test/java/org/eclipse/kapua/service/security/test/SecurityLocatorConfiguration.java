@@ -23,6 +23,7 @@ import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
@@ -47,9 +48,11 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RoleService;
-import org.eclipse.kapua.service.authorization.role.shiro.RoleCacheFactory;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleFactoryImpl;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleImplJpaRepository;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryImpl;
+import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImplJpaRepository;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleQueryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -73,7 +76,6 @@ public class SecurityLocatorConfiguration {
 
             @Override
             protected void configure() {
-
                 // Inject mocked Authorization Service method checkPermission
                 AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
                 try {
@@ -94,12 +96,16 @@ public class SecurityLocatorConfiguration {
                 // Inject actual Role service related services
                 AuthorizationEntityManagerFactory authorizationEntityManagerFactory = AuthorizationEntityManagerFactory.getInstance();
                 bind(AuthorizationEntityManagerFactory.class).toInstance(authorizationEntityManagerFactory);
-                bind(RoleService.class).toInstance(new RoleServiceImpl(authorizationEntityManagerFactory,
-                        new RoleCacheFactory(),
+                bind(RoleService.class).toInstance(new RoleServiceImpl(
                         mockPermissionFactory,
                         mockedAuthorization,
                         new RolePermissionFactoryImpl(),
-                        Mockito.mock(ServiceConfigurationManager.class)));
+                        Mockito.mock(ServiceConfigurationManager.class),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                        new RoleImplJpaRepository(),
+                        new RolePermissionImplJpaRepository(),
+                        new DuplicateNameCheckerImpl<>(new RoleImplJpaRepository(), scopeId -> new RoleQueryImpl(scopeId)))
+                );
                 bind(RoleFactory.class).toInstance(new RoleFactoryImpl());
                 bind(RolePermissionFactory.class).toInstance(new RolePermissionFactoryImpl());
 
