@@ -13,7 +13,6 @@
 package org.eclipse.kapua.commons.jpa;
 
 import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
@@ -96,7 +95,6 @@ public class KapuaEntityManagerFactory implements EntityManagerFactory {
      * Returns an EntityManager instance.
      *
      * @return An entity manager for the persistence unit.
-     * @throws KapuaException If {@link EntityManagerFactory#createEntityManager()} cannot create the {@link EntityManager}
      * @since 1.0.0
      */
     @Override
