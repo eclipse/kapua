@@ -17,9 +17,10 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.certificate.info.CertificateInfo;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoFactory;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoService;
@@ -51,6 +52,12 @@ import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore
 import org.eclipse.kapua.service.device.management.keystore.model.internal.DeviceKeystoreCertificateImpl;
 import org.eclipse.kapua.service.device.management.keystore.model.internal.DeviceKeystoreItemQueryImpl;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
+import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,10 +77,31 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
     private static final String SCOPE_ID = "scopeId";
     private static final String DEVICE_ID = "deviceId";
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private final CertificateInfoService certificateInfoService;
+    private final CertificateInfoFactory certificateInfoFactory;
 
-    private static final CertificateInfoService CERTIFICATE_INFO_SERVICE = LOCATOR.getService(CertificateInfoService.class);
-    private static final CertificateInfoFactory CERTIFICATE_INFO_FACTORY = LOCATOR.getFactory(CertificateInfoFactory.class);
+    public DeviceKeystoreManagementServiceImpl(
+            TxManager txManager,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            DeviceEventRepository deviceEventRepository,
+            DeviceEventFactory deviceEventFactory,
+            DeviceRepository deviceRepository,
+            DeviceManagementOperationRepository deviceManagementOperationRepository,
+            DeviceManagementOperationFactory deviceManagementOperationFactory,
+            CertificateInfoService certificateInfoService,
+            CertificateInfoFactory certificateInfoFactory) {
+        super(txManager,
+                authorizationService,
+                permissionFactory,
+                deviceEventRepository,
+                deviceEventFactory,
+                deviceRepository,
+                deviceManagementOperationRepository,
+                deviceManagementOperationFactory);
+        this.certificateInfoService = certificateInfoService;
+        this.certificateInfoFactory = certificateInfoFactory;
+    }
 
     @Override
     public DeviceKeystores getKeystores(KapuaId scopeId, KapuaId deviceId, Long timeout)
@@ -85,7 +113,7 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -159,7 +187,7 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -227,7 +255,7 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -301,7 +329,7 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
         // Check Certificate Info existence
         CertificateInfo certificateInfo;
         try {
-            certificateInfo = CERTIFICATE_INFO_SERVICE.find(scopeId, certificateId);
+            certificateInfo = certificateInfoService.find(scopeId, certificateId);
         } catch (UnsupportedOperationException e) {
             LOG.warn("Unable to get the certificate {} since the implementation does not support CertificateInfoService.find(scopeId, certificateId)... Returning KapuaEntityNotFoundException!", certificateId);
             throw new KapuaEntityNotFoundException(CertificateInfo.TYPE, certificateId);
@@ -331,7 +359,7 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
 
         //
         // Prepare the request
@@ -398,7 +426,7 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
 
         //
         // Prepare the request
@@ -465,7 +493,7 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -533,7 +561,7 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.delete, scopeId));
 
         //
         // Prepare the request

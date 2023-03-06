@@ -14,9 +14,10 @@ package org.eclipse.kapua.service.device.management.asset.internal;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
@@ -30,6 +31,12 @@ import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilde
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 import org.eclipse.kapua.service.device.management.exception.DeviceNeverConnectedException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
+import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,11 +53,32 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceAssetManagementServiceImpl.class);
 
-    private static final DeviceAssetStoreService ASSET_STORE_SERVICE = KapuaLocator.getInstance().getService(DeviceAssetStoreService.class);
-
     private static final String SCOPE_ID = "scopeId";
     private static final String DEVICE_ID = "deviceId";
     private static final String DEVICE_ASSETS = "deviceAssets";
+
+    private final DeviceAssetStoreService deviceAssetStoreService;
+
+    public DeviceAssetManagementServiceImpl(
+            TxManager txManager,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            DeviceEventRepository deviceEventRepository,
+            DeviceEventFactory deviceEventFactory,
+            DeviceRepository deviceRepository,
+            DeviceManagementOperationRepository deviceManagementOperationRepository,
+            DeviceManagementOperationFactory deviceManagementOperationFactory,
+            DeviceAssetStoreService deviceAssetStoreService) {
+        super(txManager,
+                authorizationService,
+                permissionFactory,
+                deviceEventRepository,
+                deviceEventFactory,
+                deviceRepository,
+                deviceManagementOperationRepository,
+                deviceManagementOperationFactory);
+        this.deviceAssetStoreService = deviceAssetStoreService;
+    }
 
     @Override
     public DeviceAssets get(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout)
@@ -63,7 +91,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -115,15 +143,15 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
             //
             // Store value and return
-            if (ASSET_STORE_SERVICE.isServiceEnabled(scopeId) &&
-                    ASSET_STORE_SERVICE.isApplicationEnabled(scopeId, deviceId)) {
-                ASSET_STORE_SERVICE.storeAssets(scopeId, deviceId, onlineDeviceAssets);
+            if (deviceAssetStoreService.isServiceEnabled(scopeId) &&
+                    deviceAssetStoreService.isApplicationEnabled(scopeId, deviceId)) {
+                deviceAssetStoreService.storeAssets(scopeId, deviceId, onlineDeviceAssets);
             }
 
             return onlineDeviceAssets;
         } else {
-            if (ASSET_STORE_SERVICE.isServiceEnabled(scopeId)) {
-                return ASSET_STORE_SERVICE.getAssets(scopeId, deviceId, deviceAssets);
+            if (deviceAssetStoreService.isServiceEnabled(scopeId)) {
+                return deviceAssetStoreService.getAssets(scopeId, deviceId, deviceAssets);
             } else {
                 throw new DeviceNeverConnectedException(deviceId);
             }
@@ -140,7 +168,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -193,16 +221,16 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
             //
             // Store value and return
-            if (ASSET_STORE_SERVICE.isServiceEnabled(scopeId) &&
-                    ASSET_STORE_SERVICE.isApplicationEnabled(scopeId, deviceId)) {
-                ASSET_STORE_SERVICE.storeAssetsValues(scopeId, deviceId, onlineDeviceAssets);
+            if (deviceAssetStoreService.isServiceEnabled(scopeId) &&
+                    deviceAssetStoreService.isApplicationEnabled(scopeId, deviceId)) {
+                deviceAssetStoreService.storeAssetsValues(scopeId, deviceId, onlineDeviceAssets);
             }
 
             return onlineDeviceAssets;
         } else {
-            if (ASSET_STORE_SERVICE.isServiceEnabled(scopeId) &&
-                    ASSET_STORE_SERVICE.isApplicationEnabled(scopeId, deviceId)) {
-                return ASSET_STORE_SERVICE.getAssetsValues(scopeId, deviceId, deviceAssets);
+            if (deviceAssetStoreService.isServiceEnabled(scopeId) &&
+                    deviceAssetStoreService.isApplicationEnabled(scopeId, deviceId)) {
+                return deviceAssetStoreService.getAssetsValues(scopeId, deviceId, deviceAssets);
             } else {
                 throw new DeviceNeverConnectedException(deviceId);
             }
@@ -219,7 +247,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
 
         //
         // Prepare the request
