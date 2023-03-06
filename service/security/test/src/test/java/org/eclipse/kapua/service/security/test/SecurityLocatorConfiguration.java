@@ -48,6 +48,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RoleService;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleCacheFactory;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
@@ -94,17 +95,19 @@ public class SecurityLocatorConfiguration {
                 // Inject actual Role service related services
                 AuthorizationEntityManagerFactory authorizationEntityManagerFactory = AuthorizationEntityManagerFactory.getInstance();
                 bind(AuthorizationEntityManagerFactory.class).toInstance(authorizationEntityManagerFactory);
-                bind(ServiceConfigurationManager.class)
-                        .annotatedWith(Names.named("RoleServiceConfigurationManager"))
-                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
-                bind(RoleService.class).to(RoleServiceImpl.class);
+                bind(RoleService.class).toInstance(new RoleServiceImpl(authorizationEntityManagerFactory,
+                        new RoleCacheFactory(),
+                        mockPermissionFactory,
+                        mockedAuthorization,
+                        new RolePermissionFactoryImpl(),
+                        Mockito.mock(ServiceConfigurationManager.class)));
                 bind(RoleFactory.class).toInstance(new RoleFactoryImpl());
                 bind(RolePermissionFactory.class).toInstance(new RolePermissionFactoryImpl());
 
-                bind(ServiceConfigurationManager.class)
-                        .annotatedWith(Names.named("GroupServiceConfigurationManager"))
-                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
-                bind(GroupService.class).to(GroupServiceImpl.class);
+                bind(GroupService.class).toInstance(new GroupServiceImpl(authorizationEntityManagerFactory,
+                        mockPermissionFactory,
+                        mockedAuthorization,
+                        Mockito.mock(ServiceConfigurationManager.class)));
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
                 bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
                 bind(CredentialServiceConfigurationManager.class)
