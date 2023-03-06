@@ -21,7 +21,6 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.storage.KapuaEntityRepository;
 import org.eclipse.kapua.storage.TxContext;
 
-//TODO: review
 public class KapuaEntityRepositoryCachingWrapper<E extends KapuaEntity, L extends KapuaListResult<E>>
         implements KapuaEntityRepository<E, L> {
     protected final KapuaEntityRepository<E, L> wrapped;

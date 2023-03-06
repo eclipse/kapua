@@ -23,8 +23,10 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
@@ -63,14 +65,20 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
+import org.eclipse.kapua.service.authorization.role.RolePermissionRepository;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleRepository;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleCacheFactory;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleCachingRepository;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleImplJpaRepository;
+import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionCacheFactory;
+import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionCachingRepository;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryImpl;
+import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImplJpaRepository;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionServiceImpl;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleQueryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
 
 import javax.inject.Named;
@@ -91,7 +99,6 @@ public class AuthorizationModule extends AbstractKapuaModule {
         bind(AccessPermissionFactory.class).to(AccessPermissionFactoryImpl.class);
         bind(AccessRoleFactory.class).to(AccessRoleFactoryImpl.class);
 
-        bind(RolePermissionService.class).to(RolePermissionServiceImpl.class);
         bind(RolePermissionFactory.class).to(RolePermissionFactoryImpl.class);
 
         bind(GroupFactory.class).to(GroupFactoryImpl.class);
@@ -99,19 +106,34 @@ public class AuthorizationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    RoleService roleService(AuthorizationEntityManagerFactory authorizationEntityManagerFactory,
-                            RoleCacheFactory roleCacheFactory,
-                            PermissionFactory permissionFactory,
+    RolePermissionService rolePermissionService(RoleRepository roleRepository,
+                                                RolePermissionRepository rolePermissionRepository) {
+        return new RolePermissionServiceImpl(
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                roleRepository,
+                rolePermissionRepository
+        );
+    }
+
+    @Provides
+    @Singleton
+    RoleService roleService(PermissionFactory permissionFactory,
                             AuthorizationService authorizationService,
                             RolePermissionFactory rolePermissionFactory,
-                            @Named("RoleServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
+                            @Named("RoleServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
+                            RoleRepository roleRepository,
+                            RolePermissionRepository rolePermissionRepository
+    ) {
         return new RoleServiceImpl(
-                authorizationEntityManagerFactory,
-                roleCacheFactory,
                 permissionFactory,
                 authorizationService,
                 rolePermissionFactory,
-                serviceConfigurationManager);
+                serviceConfigurationManager,
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                roleRepository,
+                rolePermissionRepository,
+                new DuplicateNameCheckerImpl<>(roleRepository, (scopeId) -> new RoleQueryImpl(scopeId))
+        );
     }
 
     @Provides
@@ -148,8 +170,16 @@ public class AuthorizationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    RoleRepository roleRepository() {
-        return new RoleImplJpaRepository();
+    RoleRepository roleRepository(RoleCacheFactory roleCacheFactory) {
+        return new RoleCachingRepository(new RoleImplJpaRepository(),
+                (NamedEntityCache) roleCacheFactory.createCache());
+    }
+
+    @Provides
+    @Singleton
+    RolePermissionRepository rolePermissionRepository() {
+        return new RolePermissionCachingRepository(new RolePermissionImplJpaRepository(),
+                new RolePermissionCacheFactory().createCache());
     }
 
     @Provides

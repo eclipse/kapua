@@ -35,7 +35,9 @@ import java.util.List;
  * Util class that offers checks on the {@link KapuaNamedEntity#getName()} uniqueness in different flavors.
  *
  * @since 2.0.0
+ * @deprecated since 2.0.0 - use {@link DuplicateNameChecker} instead
  */
+@Deprecated
 public class KapuaNamedEntityServiceUtils {
 
     private final QueryFactory queryFactory;

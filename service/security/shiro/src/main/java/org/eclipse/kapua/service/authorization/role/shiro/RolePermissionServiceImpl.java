@@ -16,8 +16,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
@@ -35,9 +33,10 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
+import org.eclipse.kapua.service.authorization.role.RolePermissionRepository;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
-import org.eclipse.kapua.service.authorization.role.RoleService;
-import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
+import org.eclipse.kapua.service.authorization.role.RoleRepository;
+import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Singleton;
 import java.util.AbstractMap;
@@ -51,12 +50,19 @@ import java.util.Map;
  * @since 1.0
  */
 @Singleton
-public class RolePermissionServiceImpl extends AbstractKapuaService implements RolePermissionService {
+public class RolePermissionServiceImpl implements RolePermissionService {
 
-    private static final RoleService ROLE_SERVICE = KapuaLocator.getInstance().getService(RoleService.class);
+    private final TxManager txManager;
+    private final RoleRepository roleRepository;
+    private final RolePermissionRepository rolePermissionRepository;
 
-    public RolePermissionServiceImpl() {
-        super(AuthorizationEntityManagerFactory.getInstance(), RolePermissionCacheFactory.getInstance());
+    public RolePermissionServiceImpl(
+            TxManager txManager,
+            RoleRepository roleRepository,
+            RolePermissionRepository rolePermissionRepository) {
+        this.txManager = txManager;
+        this.roleRepository = roleRepository;
+        this.rolePermissionRepository = rolePermissionRepository;
     }
 
     @Override
@@ -73,53 +79,58 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, rolePermissionCreator.getScopeId()));
 
-        //
-        // Check role existence
-        if (ROLE_SERVICE.find(rolePermissionCreator.getScopeId(), rolePermissionCreator.getRoleId()) == null) {
-            throw new KapuaEntityNotFoundException(Role.TYPE, rolePermissionCreator.getRoleId());
-        }
+        return txManager.executeWithResult(tx -> {
+            //
+            // Check role existence
+            final Role role = roleRepository.find(tx, rolePermissionCreator.getScopeId(), rolePermissionCreator.getRoleId());
+            if (role == null) {
+                throw new KapuaEntityNotFoundException(Role.TYPE, rolePermissionCreator.getRoleId());
+            }
 
-        //
-        // Check that the given permission matches the definition of the Domains.
-        PermissionValidator.validatePermission(rolePermissionCreator.getPermission());
+            //
+            // Check that the given permission matches the definition of the Domains.
+            PermissionValidator.validatePermission(rolePermissionCreator.getPermission());
 
-        //
-        // If permission are created out of the role permission scope, check that the current user has the permission on the external scopeId.
-        Permission permission = rolePermissionCreator.getPermission();
-        if (permission.getTargetScopeId() == null || !permission.getTargetScopeId().equals(rolePermissionCreator.getScopeId())) {
-            authorizationService.checkPermission(permission);
-        }
+            //
+            // If permission are created out of the role permission scope, check that the current user has the permission on the external scopeId.
+            Permission permission = rolePermissionCreator.getPermission();
+            if (permission.getTargetScopeId() == null || !permission.getTargetScopeId().equals(rolePermissionCreator.getScopeId())) {
+                authorizationService.checkPermission(permission);
+            }
 
-        //
-        // Check duplicates
-        RolePermissionQuery query = new RolePermissionQueryImpl(rolePermissionCreator.getScopeId());
-        query.setPredicate(
-                query.andPredicate(
-                        query.attributePredicate(KapuaEntityAttributes.SCOPE_ID, rolePermissionCreator.getScopeId()),
-                        query.attributePredicate(RolePermissionAttributes.ROLE_ID, rolePermissionCreator.getRoleId()),
-                        query.attributePredicate(RolePermissionAttributes.PERMISSION_DOMAIN, rolePermissionCreator.getPermission().getDomain()),
-                        query.attributePredicate(RolePermissionAttributes.PERMISSION_ACTION, rolePermissionCreator.getPermission().getAction()),
-                        query.attributePredicate(RolePermissionAttributes.PERMISSION_TARGET_SCOPE_ID, rolePermissionCreator.getPermission().getTargetScopeId()),
-                        query.attributePredicate(RolePermissionAttributes.PERMISSION_GROUP_ID, rolePermissionCreator.getPermission().getGroupId()),
-                        query.attributePredicate(RolePermissionAttributes.PERMISSION_FORWARDABLE, rolePermissionCreator.getPermission().getForwardable())
-                )
-        );
-        if (count(query) > 0) {
-            List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
+            //
+            // Check duplicates
+            RolePermissionQuery query = new RolePermissionQueryImpl(rolePermissionCreator.getScopeId());
+            query.setPredicate(
+                    query.andPredicate(
+                            query.attributePredicate(KapuaEntityAttributes.SCOPE_ID, rolePermissionCreator.getScopeId()),
+                            query.attributePredicate(RolePermissionAttributes.ROLE_ID, rolePermissionCreator.getRoleId()),
+                            query.attributePredicate(RolePermissionAttributes.PERMISSION_DOMAIN, rolePermissionCreator.getPermission().getDomain()),
+                            query.attributePredicate(RolePermissionAttributes.PERMISSION_ACTION, rolePermissionCreator.getPermission().getAction()),
+                            query.attributePredicate(RolePermissionAttributes.PERMISSION_TARGET_SCOPE_ID, rolePermissionCreator.getPermission().getTargetScopeId()),
+                            query.attributePredicate(RolePermissionAttributes.PERMISSION_GROUP_ID, rolePermissionCreator.getPermission().getGroupId()),
+                            query.attributePredicate(RolePermissionAttributes.PERMISSION_FORWARDABLE, rolePermissionCreator.getPermission().getForwardable())
+                    )
+            );
+            if (rolePermissionRepository.count(tx, query) > 0) {
+                List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
 
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(KapuaEntityAttributes.SCOPE_ID, rolePermissionCreator.getScopeId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.ROLE_ID, rolePermissionCreator.getRoleId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.PERMISSION_DOMAIN, rolePermissionCreator.getPermission().getDomain()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.PERMISSION_ACTION, rolePermissionCreator.getPermission().getAction()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.PERMISSION_TARGET_SCOPE_ID, rolePermissionCreator.getPermission().getTargetScopeId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.PERMISSION_GROUP_ID, rolePermissionCreator.getPermission().getGroupId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.PERMISSION_FORWARDABLE, rolePermissionCreator.getPermission().getForwardable()));
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(KapuaEntityAttributes.SCOPE_ID, rolePermissionCreator.getScopeId()));
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.ROLE_ID, rolePermissionCreator.getRoleId()));
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.PERMISSION_DOMAIN, rolePermissionCreator.getPermission().getDomain()));
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.PERMISSION_ACTION, rolePermissionCreator.getPermission().getAction()));
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.PERMISSION_TARGET_SCOPE_ID, rolePermissionCreator.getPermission().getTargetScopeId()));
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.PERMISSION_GROUP_ID, rolePermissionCreator.getPermission().getGroupId()));
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.PERMISSION_FORWARDABLE, rolePermissionCreator.getPermission().getForwardable()));
 
-            throw new KapuaEntityUniquenessException(RolePermission.TYPE, uniquesFieldValues);
-        }
+                throw new KapuaEntityUniquenessException(RolePermission.TYPE, uniquesFieldValues);
+            }
+            RolePermission rolePermission = new RolePermissionImpl(rolePermissionCreator.getScopeId());
 
-        return entityManagerSession.doTransactedAction(EntityManagerContainer.<RolePermission>create().onResultHandler(em -> RolePermissionDAO.create(em, rolePermissionCreator))
-                .onAfterHandler((entity) -> entityCache.removeList(entity.getScopeId(), entity.getRoleId())));
+            rolePermission.setRoleId(rolePermissionCreator.getRoleId());
+            rolePermission.setPermission(rolePermissionCreator.getPermission());
+            return rolePermissionRepository.create(tx, rolePermission);
+        });
     }
 
     @Override
@@ -133,21 +144,12 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.delete, scopeId));
 
-        entityManagerSession.doTransactedAction(EntityManagerContainer.<RolePermission>create().onResultHandler(em -> {
-            // TODO: check if it is correct to remove this statement (already thrown by the delete method, but
-            //  without TYPE)
-            RolePermission rolePermission = RolePermissionDAO.find(em, scopeId, rolePermissionId);
-            if (rolePermission == null) {
-                throw new KapuaEntityNotFoundException(RolePermission.TYPE, rolePermissionId);
-            } else if (KapuaId.ONE.equals(rolePermissionId)) {
-                throw new KapuaException(KapuaErrorCodes.PERMISSION_DELETE_NOT_ALLOWED);
-            }
-
-            return RolePermissionDAO.delete(em, scopeId, rolePermissionId);
-        }).onAfterHandler((entity) -> {
-            entityCache.remove(scopeId, rolePermissionId);
-            entityCache.removeList(scopeId, entity.getRoleId());
-        }));
+        if (KapuaId.ONE.equals(rolePermissionId)) {
+            throw new KapuaException(KapuaErrorCodes.PERMISSION_DELETE_NOT_ALLOWED);
+        }
+        txManager.executeNoResult(tx -> {
+            rolePermissionRepository.delete(tx, scopeId, rolePermissionId);
+        });
     }
 
     @Override
@@ -163,9 +165,7 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, scopeId));
 
-        return entityManagerSession.doAction(EntityManagerContainer.<RolePermission>create().onResultHandler(em -> RolePermissionDAO.find(em, scopeId, rolePermissionId))
-                .onBeforeHandler(() -> (RolePermission) entityCache.get(scopeId, rolePermissionId))
-                .onAfterHandler((entity) -> entityCache.put(entity)));
+        return txManager.executeWithResult(tx -> rolePermissionRepository.find(tx, scopeId, rolePermissionId));
     }
 
     @Override
@@ -181,18 +181,7 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, scopeId));
 
-        RolePermissionListResult listResult = (RolePermissionListResult) entityCache.getList(scopeId, roleId);
-        if (listResult == null) {
-
-            //
-            // Build query
-            RolePermissionQuery query = new RolePermissionQueryImpl(scopeId);
-            query.setPredicate(query.attributePredicate(RolePermissionAttributes.ROLE_ID, roleId));
-
-            listResult = query(query);
-            entityCache.putList(scopeId, roleId, listResult);
-        }
-        return listResult;
+        return txManager.executeWithResult(tx -> rolePermissionRepository.findByRoleId(tx, scopeId, roleId));
     }
 
     @Override
@@ -207,7 +196,7 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.doAction(EntityManagerContainer.<RolePermissionListResult>create().onResultHandler(em -> RolePermissionDAO.query(em, query)));
+        return txManager.executeWithResult(tx -> rolePermissionRepository.query(tx, query));
     }
 
     @Override
@@ -221,7 +210,6 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
-
-        return entityManagerSession.doAction(EntityManagerContainer.<Long>create().onResultHandler(em -> RolePermissionDAO.count(em, query)));
+        return txManager.executeWithResult(tx -> rolePermissionRepository.count(tx, query));
     }
 }

@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
-import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
+import org.eclipse.kapua.commons.jpa.AbstractNamedEntityCacheFactory;
 
 import javax.inject.Singleton;
 
@@ -20,13 +20,10 @@ import javax.inject.Singleton;
  * Cache factory for the {@link RoleServiceImpl}
  */
 @Singleton
-public class RoleCacheFactory extends AbstractEntityCacheFactory {
+public class RoleCacheFactory extends AbstractNamedEntityCacheFactory {
 
     public RoleCacheFactory() {
-        super("RoleId");
+        super("RoleId", "RoleName");
     }
 
-    protected static RoleCacheFactory getInstance() {
-        return new RoleCacheFactory();
-    }
 }
