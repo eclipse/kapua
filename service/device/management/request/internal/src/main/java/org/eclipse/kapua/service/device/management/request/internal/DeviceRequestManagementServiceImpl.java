@@ -15,19 +15,26 @@ package org.eclipse.kapua.service.device.management.request.internal;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestBadMethodException;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
 import org.eclipse.kapua.service.device.management.request.DeviceRequestManagementService;
 import org.eclipse.kapua.service.device.management.request.GenericRequestFactory;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestChannel;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestPayload;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
+import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,8 +51,28 @@ public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagement
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceRequestManagementServiceImpl.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final GenericRequestFactory FACTORY = LOCATOR.getFactory(GenericRequestFactory.class);
+    private final GenericRequestFactory genericRequestFactory;
+
+    public DeviceRequestManagementServiceImpl(
+            TxManager txManager,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            DeviceEventRepository deviceEventRepository,
+            DeviceEventFactory deviceEventFactory,
+            DeviceRepository deviceRepository,
+            DeviceManagementOperationRepository deviceManagementOperationRepository,
+            DeviceManagementOperationFactory deviceManagementOperationFactory,
+            GenericRequestFactory genericRequestFactory) {
+        super(txManager,
+                authorizationService,
+                permissionFactory,
+                deviceEventRepository,
+                deviceEventFactory,
+                deviceRepository,
+                deviceManagementOperationRepository,
+                deviceManagementOperationFactory);
+        this.genericRequestFactory = genericRequestFactory;
+    }
 
     @Override
     public GenericResponseMessage exec(GenericRequestMessage requestInput, Long timeout) throws KapuaException {
@@ -79,21 +106,21 @@ public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagement
             default:
                 throw new DeviceManagementRequestBadMethodException(requestInput.getChannel().getMethod());
         }
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, action, requestInput.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, action, requestInput.getScopeId()));
 
         //
         // Prepare the request
-        GenericRequestChannel genericRequestChannel = FACTORY.newRequestChannel();
+        GenericRequestChannel genericRequestChannel = genericRequestFactory.newRequestChannel();
         genericRequestChannel.setAppName(requestInput.getChannel().getAppName());
         genericRequestChannel.setVersion(requestInput.getChannel().getVersion());
         genericRequestChannel.setMethod(requestInput.getChannel().getMethod());
         genericRequestChannel.setResources(requestInput.getChannel().getResources());
 
-        GenericRequestPayload genericRequestPayload = FACTORY.newRequestPayload();
+        GenericRequestPayload genericRequestPayload = genericRequestFactory.newRequestPayload();
         genericRequestPayload.setMetrics(requestInput.getPayload().getMetrics());
         genericRequestPayload.setBody(requestInput.getPayload().getBody());
 
-        GenericRequestMessage genericRequestMessage = FACTORY.newRequestMessage();
+        GenericRequestMessage genericRequestMessage = genericRequestFactory.newRequestMessage();
         genericRequestMessage.setScopeId(requestInput.getScopeId());
         genericRequestMessage.setDeviceId(requestInput.getDeviceId());
         genericRequestMessage.setCapturedOn(new Date());

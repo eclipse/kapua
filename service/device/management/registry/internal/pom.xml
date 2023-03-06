@@ -37,7 +37,14 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-management-registry-api</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-registry-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-keystore-internal</artifactId>
+        </dependency>
 
     </dependencies>
 </project>

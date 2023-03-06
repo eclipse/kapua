@@ -16,6 +16,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
@@ -42,6 +44,12 @@ import org.eclipse.kapua.service.device.management.inventory.model.inventory.Dev
 import org.eclipse.kapua.service.device.management.inventory.model.packages.DeviceInventoryPackages;
 import org.eclipse.kapua.service.device.management.inventory.model.system.DeviceInventorySystemPackages;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
+import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +69,25 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
     private static final String SCOPE_ID = "scopeId";
     private static final String DEVICE_ID = "deviceId";
 
+    public DeviceInventoryManagementServiceImpl(
+            TxManager txManager,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            DeviceEventRepository deviceEventRepository,
+            DeviceEventFactory deviceEventFactory,
+            DeviceRepository deviceRepository,
+            DeviceManagementOperationRepository deviceManagementOperationRepository,
+            DeviceManagementOperationFactory deviceManagementOperationFactory) {
+        super(txManager,
+                authorizationService,
+                permissionFactory,
+                deviceEventRepository,
+                deviceEventFactory,
+                deviceRepository,
+                deviceManagementOperationRepository,
+                deviceManagementOperationFactory);
+    }
+
     @Override
     public DeviceInventory getInventory(KapuaId scopeId, KapuaId deviceId, Long timeout)
             throws KapuaException {
@@ -71,7 +98,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -133,7 +160,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -197,7 +224,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
 
         //
         // Prepare the request
@@ -265,7 +292,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -331,7 +358,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
 
         //
         // Prepare the request
@@ -399,7 +426,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -461,7 +488,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
 
         //
         // Prepare the request

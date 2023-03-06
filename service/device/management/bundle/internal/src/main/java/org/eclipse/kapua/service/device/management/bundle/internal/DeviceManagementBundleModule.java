@@ -12,14 +12,47 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle.internal;
 
+import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
+import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
+
+import javax.inject.Singleton;
 
 public class DeviceManagementBundleModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(DeviceBundleFactory.class).to(DeviceBundleFactoryImpl.class);
-        bind(DeviceBundleManagementService.class).to(DeviceBundleManagementServiceImpl.class);
+    }
+
+    @Provides
+    @Singleton
+    DeviceBundleManagementService deviceBundleManagementService(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            DeviceEventRepository deviceEventRepository,
+            DeviceEventFactory deviceEventFactory,
+            DeviceRepository deviceRepository,
+            DeviceManagementOperationRepository deviceManagementOperationRepository,
+            DeviceManagementOperationFactory deviceManagementOperationFactory) {
+        return new DeviceBundleManagementServiceImpl(
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device_management_operation_registry")),
+                authorizationService,
+                permissionFactory,
+                deviceEventRepository,
+                deviceEventFactory,
+                deviceRepository,
+                deviceManagementOperationRepository,
+                deviceManagementOperationFactory
+        );
     }
 }

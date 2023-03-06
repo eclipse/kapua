@@ -16,18 +16,26 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationAppProperties;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestChannel;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestMessage;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestPayload;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotResponseMessage;
+import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +49,24 @@ import java.util.Date;
  */
 @Singleton
 public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceSnapshotManagementService {
+    public DeviceSnapshotManagementServiceImpl(
+            TxManager txManager,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            DeviceEventRepository deviceEventRepository,
+            DeviceEventFactory deviceEventFactory,
+            DeviceRepository deviceRepository,
+            DeviceManagementOperationRepository deviceManagementOperationRepository,
+            DeviceManagementOperationFactory deviceManagementOperationFactory) {
+        super(txManager,
+                authorizationService,
+                permissionFactory,
+                deviceEventRepository,
+                deviceEventFactory,
+                deviceRepository,
+                deviceManagementOperationRepository,
+                deviceManagementOperationFactory);
+    }
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceConfigurationManagementServiceImpl.class);
 
@@ -54,7 +80,7 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -110,7 +136,7 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.execute, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.execute, scopeId));
 
         //
         // Prepare the request

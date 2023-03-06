@@ -29,6 +29,10 @@
         <class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
         <class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
         <class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
+        <class>org.eclipse.kapua.service.device.registry.internal.DeviceImpl</class>
+        <class>org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImpl</class>
+        <class>org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImpl</class>
+        <class>org.eclipse.kapua.service.device.management.keystore.internal.DeviceKeystoreManagementServiceImpl</class>
 
         <properties>
             <!-- <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" /> -->

@@ -17,9 +17,10 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
@@ -35,6 +36,12 @@ import org.eclipse.kapua.service.device.management.configuration.store.DeviceCon
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 import org.eclipse.kapua.service.device.management.exception.DeviceNeverConnectedException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
+import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -53,12 +60,34 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceConfigurationManagementServiceImpl.class);
 
-    private static final DeviceConfigurationFactory DEVICE_CONFIGURATION_FACTORY = LOCATOR.getFactory(DeviceConfigurationFactory.class);
-
-    private static final DeviceConfigurationStoreService CONFIGURATION_STORE_SERVICE = KapuaLocator.getInstance().getService(DeviceConfigurationStoreService.class);
+    private final DeviceConfigurationFactory deviceConfigurationFactory;
 
     private static final String SCOPE_ID = "scopeId";
     private static final String DEVICE_ID = "deviceId";
+
+    private final DeviceConfigurationStoreService deviceConfigurationStoreService;
+
+    public DeviceConfigurationManagementServiceImpl(TxManager txManager,
+                                                    AuthorizationService authorizationService,
+                                                    PermissionFactory permissionFactory,
+                                                    DeviceEventRepository deviceEventRepository,
+                                                    DeviceEventFactory deviceEventFactory,
+                                                    DeviceRepository deviceRepository,
+                                                    DeviceManagementOperationRepository deviceManagementOperationRepository,
+                                                    DeviceManagementOperationFactory deviceManagementOperationFactory,
+                                                    DeviceConfigurationFactory deviceConfigurationFactory,
+                                                    DeviceConfigurationStoreService deviceConfigurationStoreService) {
+        super(txManager,
+                authorizationService,
+                permissionFactory,
+                deviceEventRepository,
+                deviceEventFactory,
+                deviceRepository,
+                deviceManagementOperationRepository,
+                deviceManagementOperationFactory);
+        this.deviceConfigurationFactory = deviceConfigurationFactory;
+        this.deviceConfigurationStoreService = deviceConfigurationStoreService;
+    }
 
     @Override
     public DeviceConfiguration get(KapuaId scopeId, KapuaId deviceId, String configurationId, String configurationComponentPid, Long timeout)
@@ -70,7 +99,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -119,22 +148,22 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
             //
             // Store config and return
-            if (CONFIGURATION_STORE_SERVICE.isServiceEnabled(scopeId) &&
-                    CONFIGURATION_STORE_SERVICE.isApplicationEnabled(scopeId, deviceId)) {
+            if (deviceConfigurationStoreService.isServiceEnabled(scopeId) &&
+                    deviceConfigurationStoreService.isApplicationEnabled(scopeId, deviceId)) {
                 if (Strings.isNullOrEmpty(configurationComponentPid)) {
                     // If all DeviceConfiguration has been requested, store it overriding any previous value
-                    CONFIGURATION_STORE_SERVICE.storeConfigurations(scopeId, deviceId, onlineDeviceConfiguration);
+                    deviceConfigurationStoreService.storeConfigurations(scopeId, deviceId, onlineDeviceConfiguration);
                 } else {
                     // If only one DeviceComponentConfiguration has been requested, store it overriding only the selected DeviceComponentConfiguration
-                    CONFIGURATION_STORE_SERVICE.storeConfigurations(scopeId, deviceId, onlineDeviceConfiguration.getComponentConfigurations().get(0));
+                    deviceConfigurationStoreService.storeConfigurations(scopeId, deviceId, onlineDeviceConfiguration.getComponentConfigurations().get(0));
                 }
             }
 
             return onlineDeviceConfiguration;
         } else {
-            if (CONFIGURATION_STORE_SERVICE.isServiceEnabled(scopeId) &&
-                    CONFIGURATION_STORE_SERVICE.isApplicationEnabled(scopeId, deviceId)) {
-                return CONFIGURATION_STORE_SERVICE.getConfigurations(scopeId, deviceId);
+            if (deviceConfigurationStoreService.isServiceEnabled(scopeId) &&
+                    deviceConfigurationStoreService.isApplicationEnabled(scopeId, deviceId)) {
+                return deviceConfigurationStoreService.getConfigurations(scopeId, deviceId);
             } else {
                 throw new DeviceNeverConnectedException(deviceId);
             }
@@ -153,7 +182,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
 
         //
         // Prepare the request
@@ -165,7 +194,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
         ConfigurationRequestPayload configurationRequestPayload = new ConfigurationRequestPayload();
 
-        DeviceConfiguration deviceConfiguration = DEVICE_CONFIGURATION_FACTORY.newConfigurationInstance();
+        DeviceConfiguration deviceConfiguration = deviceConfigurationFactory.newConfigurationInstance();
         try {
             deviceConfiguration.getComponentConfigurations().add(deviceComponentConfiguration);
 
@@ -232,7 +261,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
 
         //
         // Prepare the request
