@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -52,14 +51,18 @@ import java.util.Map;
 @Singleton
 public class RolePermissionServiceImpl implements RolePermissionService {
 
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
     private final TxManager txManager;
     private final RoleRepository roleRepository;
     private final RolePermissionRepository rolePermissionRepository;
 
     public RolePermissionServiceImpl(
-            TxManager txManager,
+            AuthorizationService authorizationService, PermissionFactory permissionFactory, TxManager txManager,
             RoleRepository roleRepository,
             RolePermissionRepository rolePermissionRepository) {
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
         this.txManager = txManager;
         this.roleRepository = roleRepository;
         this.rolePermissionRepository = rolePermissionRepository;
@@ -74,9 +77,6 @@ public class RolePermissionServiceImpl implements RolePermissionService {
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, rolePermissionCreator.getScopeId()));
 
         return txManager.executeWithResult(tx -> {
@@ -139,17 +139,12 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         ArgumentValidator.notNull(rolePermissionId, KapuaEntityAttributes.ENTITY_ID);
 
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.delete, scopeId));
 
         if (KapuaId.ONE.equals(rolePermissionId)) {
             throw new KapuaException(KapuaErrorCodes.PERMISSION_DELETE_NOT_ALLOWED);
         }
-        txManager.executeNoResult(tx -> {
-            rolePermissionRepository.delete(tx, scopeId, rolePermissionId);
-        });
+        txManager.executeNoResult(tx -> rolePermissionRepository.delete(tx, scopeId, rolePermissionId));
     }
 
     @Override
@@ -160,9 +155,6 @@ public class RolePermissionServiceImpl implements RolePermissionService {
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, scopeId));
 
         return txManager.executeWithResult(tx -> rolePermissionRepository.find(tx, scopeId, rolePermissionId));
@@ -176,9 +168,6 @@ public class RolePermissionServiceImpl implements RolePermissionService {
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, scopeId));
 
         return txManager.executeWithResult(tx -> rolePermissionRepository.findByRoleId(tx, scopeId, roleId));
@@ -191,9 +180,6 @@ public class RolePermissionServiceImpl implements RolePermissionService {
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
 
         return txManager.executeWithResult(tx -> rolePermissionRepository.query(tx, query));
@@ -206,10 +192,8 @@ public class RolePermissionServiceImpl implements RolePermissionService {
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
+
         return txManager.executeWithResult(tx -> rolePermissionRepository.count(tx, query));
     }
 }
