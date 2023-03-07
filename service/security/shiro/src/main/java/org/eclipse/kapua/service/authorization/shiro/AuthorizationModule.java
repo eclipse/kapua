@@ -60,6 +60,7 @@ import org.eclipse.kapua.service.authorization.group.GroupRepository;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupImplJpaRepository;
+import org.eclipse.kapua.service.authorization.group.shiro.GroupQueryImpl;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
@@ -106,9 +107,13 @@ public class AuthorizationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    RolePermissionService rolePermissionService(RoleRepository roleRepository,
+    RolePermissionService rolePermissionService(PermissionFactory permissionFactory,
+                                                AuthorizationService authorizationService,
+                                                RoleRepository roleRepository,
                                                 RolePermissionRepository rolePermissionRepository) {
         return new RolePermissionServiceImpl(
+                authorizationService,
+                permissionFactory,
                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
                 roleRepository,
                 rolePermissionRepository
@@ -184,18 +189,20 @@ public class AuthorizationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    GroupService groupService(AuthorizationEntityManagerFactory authorizationEntityManagerFactory,
-                              PermissionFactory permissionFactory,
+    GroupService groupService(PermissionFactory permissionFactory,
                               AuthorizationService authorizationService,
-                              @Named("GroupServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
-        return new GroupServiceImpl(authorizationEntityManagerFactory, permissionFactory, authorizationService, serviceConfigurationManager);
+                              @Named("GroupServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
+                              GroupRepository groupRepository) {
+        return new GroupServiceImpl(permissionFactory, authorizationService, serviceConfigurationManager,
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                groupRepository,
+                new DuplicateNameCheckerImpl<>(groupRepository, scopeId -> new GroupQueryImpl(scopeId)));
     }
 
     @Provides
     @Singleton
     @Named("GroupServiceConfigurationManager")
     public ServiceConfigurationManager groupServiceConfigurationManager(
-            AuthorizationEntityManagerFactory authorizationEntityManagerFactory,
             GroupFactory factory,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,

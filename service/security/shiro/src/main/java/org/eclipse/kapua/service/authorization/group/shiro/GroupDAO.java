@@ -27,16 +27,16 @@ import org.eclipse.kapua.service.authorization.group.GroupQuery;
  * {@link Group} DAO
  *
  * @since 1.0.0
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.authorization.group.GroupRepository} instead
  */
+@Deprecated
 public class GroupDAO extends ServiceDAO {
 
     /**
      * Creates and returns new {@link Group}
      *
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param creator
-     *            The {@link GroupCreator} object from which create the new {@link Group}.
+     * @param em      The {@link EntityManager} that holds the transaction.
+     * @param creator The {@link GroupCreator} object from which create the new {@link Group}.
      * @return The newly created {@link Group}.
      * @throws KapuaException
      * @since 1.0.0
@@ -53,13 +53,10 @@ public class GroupDAO extends ServiceDAO {
     /**
      * Updates and returns the updated {@link Group}
      *
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param group
-     *            The {@link Group} to update
+     * @param em    The {@link EntityManager} that holds the transaction.
+     * @param group The {@link Group} to update
      * @return The updated {@link Group}.
-     * @throws KapuaEntityNotFoundException
-     *             If {@link Group} is not found.
+     * @throws KapuaEntityNotFoundException If {@link Group} is not found.
      */
     public static Group update(EntityManager em, Group group) throws KapuaEntityNotFoundException {
         GroupImpl groupImpl = (GroupImpl) group;
@@ -69,10 +66,8 @@ public class GroupDAO extends ServiceDAO {
     /**
      * Finds the {@link Group} by {@link Group} identifier
      *
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param groupId
-     *            The {@link Group} id to search.
+     * @param em      The {@link EntityManager} that holds the transaction.
+     * @param groupId The {@link Group} id to search.
      * @return The found {@link Group} or {@code null} if not found.
      * @since 1.0.0
      */
@@ -83,10 +78,8 @@ public class GroupDAO extends ServiceDAO {
     /**
      * Returns the {@link Group} list matching the provided query.
      *
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param groupQuery
-     *            The {@link GroupQuery} used to filter results.
+     * @param em         The {@link EntityManager} that holds the transaction.
+     * @param groupQuery The {@link GroupQuery} used to filter results.
      * @return The list of {@link Group}s that matches the given query.
      * @throws KapuaException
      * @since 1.0.0
@@ -99,10 +92,8 @@ public class GroupDAO extends ServiceDAO {
     /**
      * Return the {@link Group} count matching the provided query
      *
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param groupQuery
-     *            The {@link GroupQuery} used to filter results.
+     * @param em         The {@link EntityManager} that holds the transaction.
+     * @param groupQuery The {@link GroupQuery} used to filter results.
      * @return The count of {@link Group}s that matches the given query.
      * @throws KapuaException
      * @since 1.0.0
@@ -115,14 +106,11 @@ public class GroupDAO extends ServiceDAO {
     /**
      * Deletes the {@link Group} by {@link Group} identifier
      *
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
+     * @param em      The {@link EntityManager} that holds the transaction.
      * @param scopeId
-     * @param groupId
-     *            The {@link Group} id to delete.
+     * @param groupId The {@link Group} id to delete.
      * @return deleted entity
-     * @throws KapuaEntityNotFoundException
-     *             If {@link Group} is not found.
+     * @throws KapuaEntityNotFoundException If {@link Group} is not found.
      * @since 1.0.0
      */
     public static Group delete(EntityManager em, KapuaId scopeId, KapuaId groupId) throws KapuaEntityNotFoundException {

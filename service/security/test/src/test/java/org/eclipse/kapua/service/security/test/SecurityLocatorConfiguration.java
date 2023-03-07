@@ -42,6 +42,8 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
+import org.eclipse.kapua.service.authorization.group.shiro.GroupImplJpaRepository;
+import org.eclipse.kapua.service.authorization.group.shiro.GroupQueryImpl;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -109,10 +111,14 @@ public class SecurityLocatorConfiguration {
                 bind(RoleFactory.class).toInstance(new RoleFactoryImpl());
                 bind(RolePermissionFactory.class).toInstance(new RolePermissionFactoryImpl());
 
-                bind(GroupService.class).toInstance(new GroupServiceImpl(authorizationEntityManagerFactory,
+                bind(GroupService.class).toInstance(new GroupServiceImpl(
                         mockPermissionFactory,
                         mockedAuthorization,
-                        Mockito.mock(ServiceConfigurationManager.class)));
+                        Mockito.mock(ServiceConfigurationManager.class),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                        new GroupImplJpaRepository(),
+                        new DuplicateNameCheckerImpl<>(new GroupImplJpaRepository(), scopeId -> new GroupQueryImpl(scopeId))
+                ));
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
                 bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
                 bind(CredentialService.class).toInstance(new CredentialServiceImpl(

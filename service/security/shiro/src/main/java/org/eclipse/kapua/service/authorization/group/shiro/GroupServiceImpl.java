@@ -12,15 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.group.shiro;
 
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
-import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
-import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
+import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -30,9 +29,10 @@ import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
+import org.eclipse.kapua.service.authorization.group.GroupRepository;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,38 +45,37 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
-public class GroupServiceImpl extends KapuaConfigurableServiceBase implements GroupService {
+public class GroupServiceImpl extends KapuaConfigurableServiceLinker implements GroupService {
 
     private static final Logger LOG = LoggerFactory.getLogger(GroupServiceImpl.class);
-    private PermissionFactory permissionFactory;
-    private AuthorizationService authorizationService;
-
-    /**
-     * @deprecated since 2.0.0 - please use {@link #GroupServiceImpl(AuthorizationEntityManagerFactory, PermissionFactory, AuthorizationService, ServiceConfigurationManager)} instead. This constructor might be removed in later releases.
-     */
-    @Deprecated
-    public GroupServiceImpl() {
-        super(AuthorizationEntityManagerFactory.getInstance(), null, null);
-    }
+    private final PermissionFactory permissionFactory;
+    private final AuthorizationService authorizationService;
+    private final TxManager txManager;
+    private final GroupRepository groupRepository;
+    private final DuplicateNameChecker<Group> duplicateNameChecker;
 
     /**
      * Injectable constructor
      *
-     * @param authorizationEntityManagerFactory The {@link AuthorizationEntityManagerFactory} instance.
-     * @param permissionFactory                 The {@link PermissionFactory} instance.
-     * @param authorizationService              The {@link AuthorizationService} instance.
-     * @param serviceConfigurationManager       The {@link ServiceConfigurationManager} instance.
+     * @param permissionFactory           The {@link PermissionFactory} instance.
+     * @param authorizationService        The {@link AuthorizationService} instance.
+     * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance.
+     * @param txManager
+     * @param groupRepository
+     * @param duplicateNameChecker
      * @since 2.0.0
      */
     @Inject
-    public GroupServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory,
-                            PermissionFactory permissionFactory,
+    public GroupServiceImpl(PermissionFactory permissionFactory,
                             AuthorizationService authorizationService,
-                            ServiceConfigurationManager serviceConfigurationManager
-    ) {
-        super(authorizationEntityManagerFactory, null, serviceConfigurationManager);
+                            ServiceConfigurationManager serviceConfigurationManager,
+                            TxManager txManager, GroupRepository groupRepository, DuplicateNameChecker<Group> duplicateNameChecker) {
+        super(serviceConfigurationManager);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
+        this.txManager = txManager;
+        this.groupRepository = groupRepository;
+        this.duplicateNameChecker = duplicateNameChecker;
     }
 
     @Override
@@ -89,20 +88,25 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.write, groupCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.write, groupCreator.getScopeId()));
 
         //
         // Check entity limit
         serviceConfigurationManager.checkAllowedEntities(groupCreator.getScopeId(), "Groups");
 
         //
-        // Check duplicate name
-        // TODO: INJECT
-        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, groupCreator);
-
-        //
         // Do create
-        return entityManagerSession.doTransactedAction(em -> GroupDAO.create(em, groupCreator));
+        Group group = new GroupImpl(groupCreator.getScopeId());
+        group.setName(groupCreator.getName());
+        group.setDescription(groupCreator.getDescription());
+        return txManager.executeWithResult(tx -> {
+            //
+            // Check duplicate name
+            if (duplicateNameChecker.countOtherEntitiesWithName(tx, group.getScopeId(), group.getName()) > 0) {
+                throw new KapuaDuplicateNameException(group.getName());
+            }
+            return groupRepository.create(tx, group);
+        });
     }
 
     @Override
@@ -116,7 +120,7 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.write, group.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.write, group.getScopeId()));
 
         //
         // Check existence
@@ -125,13 +129,15 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
         }
 
         //
-        // Check duplicate name
-        // TODO: INJECT
-        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, group);
-
-        //
         // Do update
-        return entityManagerSession.doTransactedAction(em -> GroupDAO.update(em, group));
+        return txManager.executeWithResult(tx -> {
+            //
+            // Check duplicate name
+            if (duplicateNameChecker.countOtherEntitiesWithName(tx, group.getScopeId(), group.getId(), group.getName()) > 0) {
+                throw new KapuaDuplicateNameException(group.getName());
+            }
+            return groupRepository.update(tx, group);
+        });
     }
 
     @Override
@@ -143,17 +149,9 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.delete, scopeId));
 
-        //
-        // Check existence
-        if (find(scopeId, groupId) == null) {
-            throw new KapuaEntityNotFoundException(Group.TYPE, groupId);
-        }
-
-        //
-        // Do delete
-        entityManagerSession.doTransactedAction(em -> GroupDAO.delete(em, scopeId, groupId));
+        txManager.executeNoResult(tx -> groupRepository.delete(tx, scopeId, groupId));
     }
 
     @Override
@@ -165,11 +163,11 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
-        return entityManagerSession.doAction(em -> GroupDAO.find(em, scopeId, groupId));
+        return txManager.executeWithResult(tx -> groupRepository.find(tx, scopeId, groupId));
     }
 
     @Override
@@ -180,11 +178,11 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
-        return entityManagerSession.doAction(em -> GroupDAO.query(em, query));
+        return txManager.executeWithResult(tx -> groupRepository.query(tx, query));
     }
 
     @Override
@@ -195,11 +193,11 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
-        return entityManagerSession.doAction(em -> GroupDAO.count(em, query));
+        return txManager.executeWithResult(tx -> groupRepository.count(tx, query));
     }
 
     //@ListenServiceEvent(fromAddress="account")
@@ -222,34 +220,5 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
         for (Group g : groupsToDelete.getItems()) {
             delete(g.getScopeId(), g.getId());
         }
-    }
-
-
-    /**
-     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link AuthorizationService} instance
-     */
-    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
-    protected AuthorizationService getAuthorizationService() {
-        if (authorizationService == null) {
-            authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
-        }
-        return authorizationService;
-    }
-
-    /**
-     * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link PermissionFactory} instance
-     */
-    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
-    protected PermissionFactory getPermissionFactory() {
-        if (permissionFactory == null) {
-            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
-        }
-        return permissionFactory;
     }
 }
