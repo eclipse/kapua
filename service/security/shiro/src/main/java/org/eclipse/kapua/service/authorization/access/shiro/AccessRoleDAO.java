@@ -26,7 +26,9 @@ import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
  * {@link AccessRole} {@link ServiceDAO}
  *
  * @since 1.0
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.authorization.access.AccessRoleRepository} instead
  */
+@Deprecated
 public class AccessRoleDAO extends ServiceDAO {
 
     /**
@@ -56,7 +58,7 @@ public class AccessRoleDAO extends ServiceDAO {
      * @return
      */
     public static AccessRole find(EntityManager em, KapuaId scopeId, KapuaId accessRoleId) {
-        return ServiceDAO.find(em , AccessRoleImpl.class, scopeId, accessRoleId);
+        return ServiceDAO.find(em, AccessRoleImpl.class, scopeId, accessRoleId);
     }
 
     /**
@@ -92,8 +94,7 @@ public class AccessRoleDAO extends ServiceDAO {
      * @param scopeId
      * @param accessRoleId
      * @return the deleted {@link AccessRole}
-     * @throws KapuaEntityNotFoundException
-     *             If {@link AccessRole} is not found.
+     * @throws KapuaEntityNotFoundException If {@link AccessRole} is not found.
      */
     public static AccessRole delete(EntityManager em, KapuaId scopeId, KapuaId accessRoleId) throws KapuaEntityNotFoundException {
         return ServiceDAO.delete(em, AccessRoleImpl.class, scopeId, accessRoleId);

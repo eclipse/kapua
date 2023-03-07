@@ -38,6 +38,9 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
 import org.eclipse.kapua.service.authorization.access.AccessRoleRepository;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoCache;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoCacheFactory;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoCachingRepository;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoFactoryImpl;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoImplJpaRepository;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoServiceImpl;
@@ -238,14 +241,35 @@ public class AuthorizationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    AccessInfoService accessInfoService() {
-        return new AccessInfoServiceImpl();
+    AccessInfoService accessInfoService(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            RoleRepository roleRepository,
+            AccessRoleFactory accessRoleFactory,
+            AccessRoleRepository accessRoleRepository,
+            AccessInfoRepository accessInfoRepository,
+            AccessInfoFactory accessInfoFactory,
+            AccessPermissionRepository accessPermissionRepository,
+            AccessPermissionFactory accessPermissionFactory) {
+        return new AccessInfoServiceImpl(authorizationService,
+                permissionFactory,
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                roleRepository,
+                accessRoleFactory,
+                accessRoleRepository,
+                accessInfoRepository,
+                accessInfoFactory,
+                accessPermissionRepository,
+                accessPermissionFactory);
     }
 
     @Provides
     @Singleton
     AccessInfoRepository accessInfoRepository() {
-        return new AccessInfoImplJpaRepository();
+        return new AccessInfoCachingRepository(
+                new AccessInfoImplJpaRepository(),
+                (AccessInfoCache) new AccessInfoCacheFactory().createCache()
+        );
     }
 
     @Provides
@@ -267,8 +291,8 @@ public class AuthorizationModule extends AbstractKapuaModule {
     @Singleton
     AccessPermissionRepository accessPermissionRepository() {
         return new CachingAccessPermissionRepository(
-                new AccessPermissionImplJpaRepository()
-                , new AccessPermissionCacheFactory().createCache()
+                new AccessPermissionImplJpaRepository(),
+                new AccessPermissionCacheFactory().createCache()
         );
     }
 

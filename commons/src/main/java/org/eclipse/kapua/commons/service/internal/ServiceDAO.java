@@ -895,7 +895,7 @@ public class ServiceDAO {
      * @param groupPredicateName The name of the {@link Group} id field.
      * @since 1.0.0
      */
-    protected static void handleKapuaQueryGroupPredicate(@NonNull KapuaQuery query, @NonNull Domain domain, @NonNull String groupPredicateName) throws KapuaException {
+    public static void handleKapuaQueryGroupPredicate(@NonNull KapuaQuery query, @NonNull Domain domain, @NonNull String groupPredicateName) throws KapuaException {
         KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
         if (ACCESS_INFO_FACTORY != null) {
             if (kapuaSession != null && !kapuaSession.isTrustedMode()) {
