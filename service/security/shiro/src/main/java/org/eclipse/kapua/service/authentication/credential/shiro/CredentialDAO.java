@@ -30,7 +30,9 @@ import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
  * {@link Credential} {@link ServiceDAO}
  *
  * @since 1.0
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.authentication.credential.CredentialRepository} instead
  */
+@Deprecated
 public class CredentialDAO extends ServiceDAO {
 
     /**
@@ -48,13 +50,13 @@ public class CredentialDAO extends ServiceDAO {
         // Crypto credential
         String cryptedCredential;
         switch (credentialCreator.getCredentialType()) {
-        case API_KEY:
-            cryptedCredential = cryptApiKey(credentialCreator.getCredentialPlainKey());
-            break;
-        case PASSWORD:
-        default:
-            cryptedCredential = cryptPassword(credentialCreator.getCredentialPlainKey());
-            break;
+            case API_KEY:
+                cryptedCredential = cryptApiKey(credentialCreator.getCredentialPlainKey());
+                break;
+            case PASSWORD:
+            default:
+                cryptedCredential = cryptPassword(credentialCreator.getCredentialPlainKey());
+                break;
         }
 
         //

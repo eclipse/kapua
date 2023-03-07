@@ -14,49 +14,54 @@ package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.EntityManager;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.authentication.AuthenticationDomains;
-import org.eclipse.kapua.service.authentication.credential.mfa.KapuaExistingScratchCodesException;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeAttributes;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeCreator;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeFactory;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeQuery;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeRepository;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeService;
-import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
-import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
-import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorServiceLocator;
+import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
+import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
-import java.util.List;
 
 /**
  * {@link ScratchCodeService} implementation.
  */
 @Singleton
-public class ScratchCodeServiceImpl extends AbstractKapuaService implements ScratchCodeService {
+public class ScratchCodeServiceImpl implements ScratchCodeService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScratchCodeServiceImpl.class);
+    private final TxManager txManager;
+    private final ScratchCodeRepository scratchCodeRepository;
+    private final ScratchCodeFactory scratchCodeFactory;
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
 
-    private static final MfaAuthenticatorServiceLocator MFA_AUTH_SERVICE_LOCATOR = MfaAuthenticatorServiceLocator.getInstance();
-    private static final MfaAuthenticator MFA_AUTHENTICATOR = MFA_AUTH_SERVICE_LOCATOR.getMfaAuthenticator();
-
-    public ScratchCodeServiceImpl() {
-        super(AuthenticationEntityManagerFactory.getInstance());
+    public ScratchCodeServiceImpl(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            TxManager txManager,
+            ScratchCodeRepository scratchCodeRepository,
+            ScratchCodeFactory scratchCodeFactory) {
+        this.txManager = txManager;
+        this.scratchCodeRepository = scratchCodeRepository;
+        this.scratchCodeFactory = scratchCodeFactory;
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
     }
 
     @Override
@@ -70,36 +75,25 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
 
         //
         // Check access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write,
                 scratchCodeCreator.getScopeId()));
 
         //
         // Do create
-        ScratchCode scratchCode = null;
-        EntityManager em = AuthenticationEntityManagerFactory.getEntityManager();
-        try {
-            em.beginTransaction();
-
+        return txManager.executeWithResult(tx -> {
             //
             // Do pre persist magic on key values
             String fullKey = scratchCodeCreator.getCode();
-            scratchCode = ScratchCodeDAO.create(em, scratchCodeCreator);
-            scratchCode = ScratchCodeDAO.find(em, scratchCode.getScopeId(), scratchCode.getId());
-            em.commit();
+            //
+            // Crypto code (it's ok to do than if BCrypt is used when checking a provided scratch code against the stored one)
+            String encryptedCode = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, scratchCodeCreator.getCode());
 
-            // Do post persist magic on key values
-            scratchCode.setCode(fullKey);
-        } catch (Exception pe) {
-            em.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(pe);
-        } finally {
-            em.close();
-        }
-
-        return scratchCode;
+            //
+            // Create code
+            ScratchCodeImpl codeImpl = new ScratchCodeImpl(scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaOptionId(), encryptedCode);
+            codeImpl.setCode(fullKey);
+            return scratchCodeRepository.create(tx, codeImpl);
+        });
     }
 
     @Override
@@ -114,20 +108,17 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
 
         //
         // Check access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, scratchCode.getScopeId()));
 
-        return entityManagerSession.doTransactedAction(em -> {
-            ScratchCode currentscratchCode = ScratchCodeDAO.find(em, scratchCode.getScopeId(), scratchCode.getId());
+        return txManager.executeWithResult(tx -> {
+            ScratchCode currentscratchCode = scratchCodeRepository.find(tx, scratchCode.getScopeId(), scratchCode.getId());
 
             if (currentscratchCode == null) {
                 throw new KapuaEntityNotFoundException(ScratchCode.TYPE, scratchCode.getId());
             }
 
             // Passing attributes??
-            return ScratchCodeDAO.update(em, scratchCode);
+            return scratchCodeRepository.update(tx, scratchCode);
         });
     }
 
@@ -139,12 +130,9 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
-        return entityManagerSession.doAction(em -> ScratchCodeDAO.find(em, scopeId, scratchCodeId));
+        return txManager.executeWithResult(tx -> scratchCodeRepository.find(tx, scopeId, scratchCodeId));
     }
 
     @Override
@@ -155,12 +143,9 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.doAction(em -> ScratchCodeDAO.query(em, query));
+        return txManager.executeWithResult(tx -> scratchCodeRepository.query(tx, query));
     }
 
     @Override
@@ -171,12 +156,9 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.doAction(em -> ScratchCodeDAO.count(em, query));
+        return txManager.executeWithResult(tx -> scratchCodeRepository.count(tx, query));
     }
 
     @Override
@@ -188,45 +170,11 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.delete, scopeId));
 
-        entityManagerSession.doTransactedAction(em -> {
-            if (ScratchCodeDAO.find(em, scopeId, scratchCodeId) == null) {
-                throw new KapuaEntityNotFoundException(ScratchCode.TYPE, scratchCodeId);
-            }
-            return ScratchCodeDAO.delete(em, scopeId, scratchCodeId);
-        });
+        txManager.executeNoResult(tx -> scratchCodeRepository.delete(tx, scopeId, scratchCodeId));
     }
 
-    @Override
-    public ScratchCodeListResult createAllScratchCodes(ScratchCodeCreator scratchCodeCreator) throws KapuaException {
-        //
-        // Argument Validation
-        ArgumentValidator.notNull(scratchCodeCreator, "scratchCodeCreator");
-        ArgumentValidator.notNull(scratchCodeCreator.getScopeId(), "scratchCodeCreator.scopeId");
-        ArgumentValidator.notNull(scratchCodeCreator.getMfaOptionId(), "scratchCodeCreator.mfaOptionId");
-
-        List<String> codes = MFA_AUTHENTICATOR.generateCodes();
-        ScratchCodeListResult scratchCodeListResult = new ScratchCodeListResultImpl();
-
-        //
-        // Check existing ScratchCodes
-        ScratchCodeListResult existingScratchCodeListResult = findByMfaOptionId(scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaOptionId());
-        if (!existingScratchCodeListResult.isEmpty()) {
-            throw new KapuaExistingScratchCodesException();
-        }
-
-        for (String code : codes) {
-            scratchCodeCreator.setCode(code);
-            ScratchCode scratchCode = create(scratchCodeCreator);
-            scratchCodeListResult.addItem(scratchCode);
-        }
-
-        return scratchCodeListResult;
-    }
 
     @Override
     public ScratchCodeListResult findByMfaOptionId(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
@@ -237,47 +185,33 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
-        //
-        // Build query
-        ScratchCodeQuery query = new ScratchCodeQueryImpl(scopeId);
-        QueryPredicate predicate = query.attributePredicate(ScratchCodeAttributes.MFA_OPTION_ID, mfaOptionId);
-        query.setPredicate(predicate);
-
-        //
-        // Query and return result
-        return query(query);
+        return txManager.executeWithResult(tx -> scratchCodeRepository.findByMfaOptionId(tx, scopeId, mfaOptionId));
     }
 
     private void deleteScratchCodeByMfaOptionId(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        ScratchCodeFactory scratchCodeFactory = locator.getFactory(ScratchCodeFactory.class);
-
         ScratchCodeQuery query = scratchCodeFactory.newQuery(scopeId);
         query.setPredicate(query.attributePredicate(ScratchCodeAttributes.MFA_OPTION_ID, mfaOptionId));
 
-        ScratchCodeListResult scratchCodesToDelete = query(query);
+        txManager.executeNoResult(tx -> {
+            ScratchCodeListResult scratchCodesToDelete = scratchCodeRepository.query(tx, query);
 
-        for (ScratchCode c : scratchCodesToDelete.getItems()) {
-            delete(c.getScopeId(), c.getId());
-        }
+            for (ScratchCode c : scratchCodesToDelete.getItems()) {
+                scratchCodeRepository.delete(tx, c.getScopeId(), c.getId());
+            }
+        });
     }
 
     private void deleteScratchCodeByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        ScratchCodeFactory scratchCodeFactory = locator.getFactory(ScratchCodeFactory.class);
-
         ScratchCodeQuery query = scratchCodeFactory.newQuery(accountId);
 
-        ScratchCodeListResult scratchCodesToDelete = query(query);
-
-        for (ScratchCode c : scratchCodesToDelete.getItems()) {
-            delete(c.getScopeId(), c.getId());
-        }
+        txManager.executeNoResult(tx -> {
+            ScratchCodeListResult scratchCodesToDelete = scratchCodeRepository.query(tx, query);
+            for (ScratchCode c : scratchCodesToDelete.getItems()) {
+                scratchCodeRepository.delete(tx, c.getScopeId(), c.getId());
+            }
+        });
     }
 
 }

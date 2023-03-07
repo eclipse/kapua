@@ -26,7 +26,10 @@ import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 
 /**
  * {@link ScratchCode} {@link ServiceDAO}
+ *
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeRepository} instead
  */
+@Deprecated
 public class ScratchCodeDAO extends ServiceDAO {
 
     /**

@@ -17,11 +17,9 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
-import org.eclipse.kapua.commons.jpa.EntityManager;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
-import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
@@ -38,23 +36,26 @@ import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
+import org.eclipse.kapua.service.authentication.credential.CredentialRepository;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.exception.DuplicatedPasswordCredentialException;
 import org.eclipse.kapua.service.authentication.exception.PasswordLengthException;
-import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authentication.shiro.CredentialServiceConfigurationManager;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
+import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
+import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * {@link CredentialService} implementation.
@@ -62,7 +63,8 @@ import java.security.SecureRandom;
  * @since 1.0
  */
 @Singleton
-public class CredentialServiceImpl extends KapuaConfigurableServiceBase implements CredentialService {
+public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implements CredentialService {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CredentialServiceImpl.class);
 
     public static final String PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY = "password.minLength";
@@ -71,12 +73,25 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
 
     public static final int SYSTEM_MAXIMUM_PASSWORD_LENGTH = 255;
 
-    /**
-     * @deprecated since 2.0.0 - please use {@link #CredentialServiceImpl(AuthenticationEntityManagerFactory, CredentialServiceConfigurationManager)} instead. This constructor might be removed in future releases
-     */
-    @Deprecated
-    public CredentialServiceImpl() {
-        super(AuthenticationEntityManagerFactory.getInstance(), null, null);
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
+    private final TxManager txManager;
+    private final CredentialRepository credentialRepository;
+    private final CredentialFactory credentialFactory;
+
+    public CredentialServiceImpl(
+            CredentialServiceConfigurationManager serviceConfigurationManager,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            TxManager txManager,
+            CredentialRepository credentialRepository,
+            CredentialFactory credentialFactory) {
+        super(serviceConfigurationManager);
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.txManager = txManager;
+        this.credentialRepository = credentialRepository;
+        this.credentialFactory = credentialFactory;
         try {
             random = SecureRandom.getInstance("SHA1PRNG");
         } catch (NoSuchAlgorithmException e) {
@@ -84,18 +99,8 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
         }
     }
 
-    /*
-     *
-     * */
-    @Inject
-    public CredentialServiceImpl(
-            AuthenticationEntityManagerFactory authenticationEntityManagerFactory,
-            CredentialServiceConfigurationManager serviceConfigurationManager) {
-        super(authenticationEntityManagerFactory, null, serviceConfigurationManager);
-    }
-
     @Override
-    public Credential create(CredentialCreator credentialCreator)
+    public Credential create(final CredentialCreator credentialCreator)
             throws KapuaException {
         //
         // Argument Validation
@@ -107,42 +112,34 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
         if (credentialCreator.getCredentialType() != CredentialType.API_KEY) {
             ArgumentValidator.notEmptyOrNull(credentialCreator.getCredentialPlainKey(), "credentialCreator.credentialKey");
         }
+        AtomicReference<String> fullKey = new AtomicReference<>(null);
 
-        if (credentialCreator.getCredentialType() == CredentialType.PASSWORD) {
-            //
-            //
-            // Check if a PASSWORD credential already exists for the user
-            CredentialListResult existingCredentials = findByUserId(credentialCreator.getScopeId(), credentialCreator.getUserId());
-            for (Credential credential : existingCredentials.getItems()) {
-                if (credential.getCredentialType().equals(CredentialType.PASSWORD)) {
-                    throw new DuplicatedPasswordCredentialException();
+        Credential newCredential = txManager.executeWithResult(tx -> {
+            if (credentialCreator.getCredentialType() == CredentialType.PASSWORD) {
+                //
+                //
+                // Check if a PASSWORD credential already exists for the user
+                CredentialListResult existingCredentials = credentialRepository.findByUserId(tx, credentialCreator.getScopeId(), credentialCreator.getUserId());
+                for (Credential credential : existingCredentials.getItems()) {
+                    if (credential.getCredentialType().equals(CredentialType.PASSWORD)) {
+                        throw new DuplicatedPasswordCredentialException();
+                    }
+                }
+
+                try {
+                    validatePassword(credentialCreator.getScopeId(), credentialCreator.getCredentialPlainKey());
+                } catch (KapuaIllegalArgumentException ignored) {
+                    throw new KapuaIllegalArgumentException("credentialCreator.credentialKey", credentialCreator.getCredentialPlainKey());
                 }
             }
 
-            try {
-                validatePassword(credentialCreator.getScopeId(), credentialCreator.getCredentialPlainKey());
-            } catch (KapuaIllegalArgumentException ignored) {
-                throw new KapuaIllegalArgumentException("credentialCreator.credentialKey", credentialCreator.getCredentialPlainKey());
-            }
-        }
-
-        //
-        // Check access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, credentialCreator.getScopeId()));
-
-        //
-        // Do create
-        Credential credential;
-        EntityManager em = AuthenticationEntityManagerFactory.getEntityManager();
-        try {
-            em.beginTransaction();
+            //
+            // Check access
+            authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, credentialCreator.getScopeId()));
 
             //
+            // Do create
             // Do pre persist magic on key values
-            String fullKey = null;
             switch (credentialCreator.getCredentialType()) {
                 case API_KEY: // Generate new api key
                     KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
@@ -157,12 +154,12 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
                     random.nextBytes(bKey);
                     String key = Base64.encodeToString(bKey);
 
-                    fullKey = pre + key;
+                    fullKey.set(pre + key);
 
-                    credentialCreator = new CredentialCreatorImpl(credentialCreator.getScopeId(),
+                    final CredentialCreatorImpl creator = new CredentialCreatorImpl(credentialCreator.getScopeId(),
                             credentialCreator.getUserId(),
                             credentialCreator.getCredentialType(),
-                            fullKey,
+                            fullKey.get(),
                             credentialCreator.getCredentialStatus(),
                             credentialCreator.getExpirationDate());
 
@@ -174,29 +171,43 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
 
             }
 
-            credential = CredentialDAO.create(em, credentialCreator);
-            credential = CredentialDAO.find(em, credential.getScopeId(), credential.getId());
-
-            em.commit();
-
             //
-            // Do post persist magic on key values
+            // Crypto credential
+            String cryptedCredential;
             switch (credentialCreator.getCredentialType()) {
                 case API_KEY:
-                    credential.setCredentialKey(fullKey);
+                    cryptedCredential = cryptApiKey(credentialCreator.getCredentialPlainKey());
                     break;
                 case PASSWORD:
                 default:
-                    credential.setCredentialKey(null);
+                    cryptedCredential = cryptPassword(credentialCreator.getCredentialPlainKey());
+                    break;
             }
-        } catch (Exception pe) {
-            em.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(pe);
-        } finally {
-            em.close();
-        }
 
-        return credential;
+            //
+            // Create Credential
+            Credential credentialImpl = new CredentialImpl(credentialCreator.getScopeId(),
+                    credentialCreator.getUserId(),
+                    credentialCreator.getCredentialType(),
+                    cryptedCredential,
+                    credentialCreator.getCredentialStatus(),
+                    credentialCreator.getExpirationDate());
+
+            //
+            // Do create
+            return credentialRepository.create(tx, credentialImpl);
+        });
+        //
+        // Do post persist magic on key values
+        switch (credentialCreator.getCredentialType()) {
+            case API_KEY:
+                newCredential.setCredentialKey(fullKey.get());
+                break;
+            case PASSWORD:
+            default:
+                newCredential.setCredentialKey(null);
+        }
+        return newCredential;
     }
 
     @Override
@@ -212,13 +223,10 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
 
         //
         // Check access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, credential.getScopeId()));
 
-        return entityManagerSession.doTransactedAction(em -> {
-            Credential currentCredential = CredentialDAO.find(em, credential.getScopeId(), credential.getId());
+        final Credential updatedCredential = txManager.executeWithResult(tx -> {
+            Credential currentCredential = credentialRepository.find(tx, credential.getScopeId(), credential.getId());
 
             if (currentCredential == null) {
                 throw new KapuaEntityNotFoundException(Credential.TYPE, credential.getId());
@@ -229,12 +237,11 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
             }
 
             // Passing attributes??
-            Credential updatedCredential = CredentialDAO.update(em, credential);
-            updatedCredential.setCredentialKey(null);
-            return updatedCredential;
+            return credentialRepository.update(tx, credential);
         });
+        updatedCredential.setCredentialKey(null);
+        return updatedCredential;
     }
-
 
     @Override
     public Credential find(KapuaId scopeId, KapuaId credentialId)
@@ -245,16 +252,11 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
-        return entityManagerSession.doAction(em -> {
-            Credential credential = CredentialDAO.find(em, scopeId, credentialId);
-            credential.setCredentialKey(null);
-            return credential;
-        });
+        Credential credential = txManager.executeWithResult(tx -> credentialRepository.find(tx, scopeId, credentialId));
+        credential.setCredentialKey(null);
+        return credential;
     }
 
     @Override
@@ -266,16 +268,11 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.doAction(em -> {
-            CredentialListResult credentials = CredentialDAO.query(em, query);
-            credentials.getItems().forEach(credential -> credential.setCredentialKey(null));
-            return credentials;
-        });
+        final CredentialListResult credentials = txManager.executeWithResult(tx -> credentialRepository.query(tx, query));
+        credentials.getItems().forEach(credential -> credential.setCredentialKey(null));
+        return credentials;
     }
 
     @Override
@@ -291,8 +288,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
-
-        return entityManagerSession.doAction(em -> CredentialDAO.count(em, query));
+        return txManager.executeWithResult(tx -> credentialRepository.count(tx, query));
     }
 
     @Override
@@ -305,17 +301,8 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.delete, scopeId));
-
-        entityManagerSession.doTransactedAction(em -> {
-            if (CredentialDAO.find(em, scopeId, credentialId) == null) {
-                throw new KapuaEntityNotFoundException(Credential.TYPE, credentialId);
-            }
-            return CredentialDAO.delete(em, scopeId, credentialId);
-        });
+        txManager.executeNoResult(tx -> credentialRepository.delete(tx, scopeId, credentialId));
     }
 
     @Override
@@ -328,27 +315,15 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
-        //
-        // Build query
-        CredentialQuery query = new CredentialQueryImpl(scopeId);
-        QueryPredicate predicate = query.attributePredicate(CredentialAttributes.USER_ID, userId);
-        query.setPredicate(predicate);
-
-        //
-        // Query and return result
-        CredentialListResult credentials = query(query);
+        final CredentialListResult credentials = txManager.executeWithResult(tx -> credentialRepository.findByUserId(tx, scopeId, userId));
         credentials.getItems().forEach(credential -> credential.setCredentialKey(null));
         return credentials;
     }
 
     @Override
     public Credential findByApiKey(String apiKey) throws KapuaException {
-
         KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
         int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
 
@@ -359,10 +334,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
 
         //
         // Do the find
-        Credential credential;
-        EntityManager em = AuthenticationEntityManagerFactory.getEntityManager();
-        try {
-
+        Credential credential = txManager.executeWithResult(tx -> {
             //
             // Build search query
             String preSeparator = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR);
@@ -383,24 +355,16 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
 
             //
             // Query
-            CredentialListResult credentialListResult = CredentialDAO.query(em, query);
+            CredentialListResult credentialListResult = credentialRepository.query(tx, query);
 
             //
             // Parse the result
-            credential = credentialListResult.getFirstItem();
+            return credentialListResult.getFirstItem();
+        });
 
-        } catch (Exception e) {
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        } finally {
-            em.close();
-        }
-
-        //
+        ///FIXME: why the permission check here? it does not rollback!
         // Check Access
         if (credential != null) {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-            PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
             authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, credential.getId()));
             credential.setCredentialKey(null);
         }
@@ -417,17 +381,16 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, scopeId));
 
-        Credential credential = find(scopeId, credentialId);
-        credential.setLoginFailures(0);
-        credential.setFirstLoginFailure(null);
-        credential.setLoginFailuresReset(null);
-        credential.setLockoutReset(null);
-        update(credential);
+        txManager.executeNoResult(tx -> {
+            Credential credential = credentialRepository.find(tx, scopeId, credentialId);
+            credential.setLoginFailures(0);
+            credential.setFirstLoginFailure(null);
+            credential.setLoginFailuresReset(null);
+            credential.setLockoutReset(null);
+            credentialRepository.update(tx, credential);
+        });
     }
 
     @Override
@@ -451,8 +414,6 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
     }
 
     private long countExistingCredentials(CredentialType credentialType, KapuaId scopeId, KapuaId userId) throws KapuaException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
         KapuaQuery query = credentialFactory.newQuery(scopeId);
 
         QueryPredicate credentialTypePredicate = query.attributePredicate(CredentialAttributes.CREDENTIAL_TYPE, credentialType);
@@ -535,11 +496,24 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, null));
 
-        return entityManagerSession.doAction(em -> CredentialDAO.find(em, scopeId, credentialId));
+        return txManager.executeWithResult(tx -> credentialRepository.find(tx, scopeId, credentialId));
+    }
+
+    private String cryptPassword(String credentialPlainKey) throws KapuaException {
+        return AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey);
+    }
+
+    private String cryptApiKey(String credentialPlainKey) throws KapuaException {
+        KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
+        int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
+        String preSeparator = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR);
+
+        String hashedValue = credentialPlainKey.substring(0, preLength); // Add the pre in clear text
+        hashedValue += preSeparator; // Add separator
+        hashedValue += AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey.substring(preLength, credentialPlainKey.length())); // Bcrypt the rest
+
+        return hashedValue;
     }
 }

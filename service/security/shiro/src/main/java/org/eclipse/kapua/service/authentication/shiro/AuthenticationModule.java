@@ -26,28 +26,39 @@ import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.account.AccountRepository;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
+import org.eclipse.kapua.service.authentication.credential.CredentialRepository;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionFactory;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionRepository;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeFactory;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeRepository;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeService;
 import org.eclipse.kapua.service.authentication.credential.mfa.shiro.MfaOptionFactoryImpl;
+import org.eclipse.kapua.service.authentication.credential.mfa.shiro.MfaOptionImplJpaRepository;
 import org.eclipse.kapua.service.authentication.credential.mfa.shiro.MfaOptionServiceImpl;
 import org.eclipse.kapua.service.authentication.credential.mfa.shiro.ScratchCodeFactoryImpl;
+import org.eclipse.kapua.service.authentication.credential.mfa.shiro.ScratchCodeImplJpaRepository;
 import org.eclipse.kapua.service.authentication.credential.mfa.shiro.ScratchCodeServiceImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFactoryImpl;
+import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImplJpaRepository;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
+import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.registration.RegistrationService;
 import org.eclipse.kapua.service.authentication.shiro.registration.RegistrationServiceImpl;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenFactoryImpl;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenServiceImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.user.UserRepository;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -66,9 +77,7 @@ public class AuthenticationModule extends AbstractKapuaModule {
         bind(CredentialsFactory.class).to(CredentialsFactoryImpl.class);
 
         bind(MfaOptionFactory.class).to(MfaOptionFactoryImpl.class);
-        bind(MfaOptionService.class).to(MfaOptionServiceImpl.class);
         bind(ScratchCodeFactory.class).to(ScratchCodeFactoryImpl.class);
-        bind(ScratchCodeService.class).to(ScratchCodeServiceImpl.class);
 
         bind(AccessTokenFactory.class).to(AccessTokenFactoryImpl.class);
         bind(AccessTokenService.class).to(AccessTokenServiceImpl.class);
@@ -78,10 +87,80 @@ public class AuthenticationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
+    MfaOptionService mfaOptionService(
+            MfaAuthenticator mfaAuthenticator,
+            MfaOptionRepository mfaOptionRepository,
+            AccountRepository accountRepository,
+            ScratchCodeRepository scratchCodeRepository,
+            ScratchCodeFactory scratchCodeFactory,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            UserRepository userRepository) {
+
+        final KapuaAuthenticationSetting authenticationSetting = KapuaAuthenticationSetting.getInstance();
+        int trustKeyDuration = authenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TRUST_KEY_DURATION);
+
+        return new MfaOptionServiceImpl(
+                trustKeyDuration,
+                mfaAuthenticator,
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication")),
+                mfaOptionRepository,
+                accountRepository,
+                scratchCodeRepository,
+                scratchCodeFactory,
+                authorizationService,
+                permissionFactory,
+                userRepository
+        );
+    }
+
+    @Provides
+    @Singleton
+    ScratchCodeService scratchCodeService(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            ScratchCodeRepository scratchCodeRepository,
+            ScratchCodeFactory scratchCodeFactory) {
+        return new ScratchCodeServiceImpl(
+                authorizationService,
+                permissionFactory,
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication")),
+                scratchCodeRepository,
+                scratchCodeFactory);
+    }
+
+    @Provides
+    @Singleton
+    public MfaOptionRepository mfaOptionRepository() {
+        return new MfaOptionImplJpaRepository();
+    }
+
+    @Provides
+    @Singleton
+    public ScratchCodeRepository scratchCodeRepository() {
+        return new ScratchCodeImplJpaRepository();
+    }
+
+    @Provides
+    @Singleton
     public CredentialService credentialService(
-            AuthenticationEntityManagerFactory authenticationEntityManagerFactory,
-            @Named("CredentialServiceConfigurationManager") CredentialServiceConfigurationManager serviceConfigurationManager) {
-        return new CredentialServiceImpl(authenticationEntityManagerFactory, serviceConfigurationManager);
+            @Named("CredentialServiceConfigurationManager") CredentialServiceConfigurationManager serviceConfigurationManager,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            CredentialRepository credentialRepository,
+            CredentialFactory credentialFactory) {
+        return new CredentialServiceImpl(serviceConfigurationManager,
+                authorizationService,
+                permissionFactory,
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication")),
+                credentialRepository,
+                credentialFactory);
+    }
+
+    @Provides
+    @Singleton
+    CredentialRepository credentialRepository() {
+        return new CredentialImplJpaRepository();
     }
 
     @Provides
