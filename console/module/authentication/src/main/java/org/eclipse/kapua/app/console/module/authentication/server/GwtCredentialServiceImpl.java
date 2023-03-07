@@ -49,6 +49,7 @@ import org.eclipse.kapua.service.authentication.exception.PasswordLengthExceptio
 import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
+import org.eclipse.kapua.service.authentication.user.PasswordResetRequest;
 import org.eclipse.kapua.service.authentication.user.UserCredentialsFactory;
 import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
 import org.eclipse.kapua.service.user.User;
@@ -124,7 +125,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
             }
 
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
 
         return new BasePagingLoadResult<GwtCredential>(gwtCredentials, loadConfig.getOffset(), totalLength);
@@ -140,7 +141,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
 
             CREDENTIAL_SERVICE.delete(scopeId, credentialId);
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
     }
 
@@ -166,7 +167,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
             gwtCredential.setCredentialKey(credential.getCredentialKey());
 
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
 
         //
@@ -204,7 +205,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
             gwtCredentialUpdated = KapuaGwtAuthenticationModelConverter.convertCredential(credentialUpdated, user);
 
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
 
         //
@@ -244,14 +245,14 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
             );
 
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
     }
 
 
     @Override
     public void changePassword(GwtXSRFToken gwtXsrfToken, String oldPassword, final String newPassword, String mfaCode, String stringUserId, String stringScopeId) throws GwtKapuaException {
-        String username = null;
+        String username;
         try {
             final KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(stringScopeId);
             final KapuaId userId = GwtKapuaCommonsModelConverter.convertKapuaId(stringUserId);
@@ -280,9 +281,27 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
             USER_CREDENTIALS_SERVICE.changePasswordRequest(passwordChangeRequest);
 
         } catch (Exception e) {
-            KapuaExceptionHandler.handle(e);
+            throw KapuaExceptionHandler.buildExceptionFromError(e);
         }
     }
+
+
+    @Override
+    public void resetPassword(GwtXSRFToken gwtXsrfToken, String stringScopeId, String gwtCredentialId, final String newPassword) throws GwtKapuaException {
+        checkXSRFToken(gwtXsrfToken);
+
+        try {
+            final KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(stringScopeId);
+            final KapuaId credentialId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredentialId);
+
+            PasswordResetRequest passwordResetRequest = USER_CREDENTIALS_FACTORY.newPasswordResetRequest();
+            passwordResetRequest.setNewPassword(newPassword);
+            USER_CREDENTIALS_SERVICE.resetPassword(scopeId, credentialId, passwordResetRequest);
+        } catch (KapuaException e) {
+            throw KapuaExceptionHandler.buildExceptionFromError(e);
+        }
+    }
+
 
     @Override
     public void unlock(GwtXSRFToken xsrfToken, String stringScopeId, String gwtCredentialId) throws GwtKapuaException {
@@ -297,7 +316,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
 
             CREDENTIAL_SERVICE.unlock(scopeId, credentialId);
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
     }
 
