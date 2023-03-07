@@ -12,12 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.domain.shiro;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -29,8 +26,9 @@ import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
+import org.eclipse.kapua.service.authorization.domain.DomainRepository;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,16 +40,27 @@ import javax.inject.Singleton;
  * @since 1.0
  */
 @Singleton
-public class DomainRegistryServiceImpl extends AbstractKapuaService implements DomainRegistryService {
+public class DomainRegistryServiceImpl implements DomainRegistryService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DomainRegistryServiceImpl.class);
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-    private final PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
+    private final TxManager txManager;
+    private final DomainRepository domainRepository;
+    private final DomainFactory domainFactory;
 
-    public DomainRegistryServiceImpl() {
-        super(AuthorizationEntityManagerFactory.getInstance());
+    public DomainRegistryServiceImpl(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            TxManager txManager,
+            DomainRepository domainRepository,
+            DomainFactory domainFactory) {
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.txManager = txManager;
+        this.domainRepository = domainRepository;
+        this.domainFactory = domainFactory;
     }
 
     @Override
@@ -64,8 +73,16 @@ public class DomainRegistryServiceImpl extends AbstractKapuaService implements D
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.write, null));
+        Domain domain = new DomainImpl();
 
-        return entityManagerSession.doTransactedAction(em -> DomainDAO.create(em, domainCreator));
+        domain.setName(domainCreator.getName());
+        domain.setGroupable(domainCreator.getGroupable());
+
+        if (domainCreator.getActions() != null) {
+            domain.setActions(domainCreator.getActions());
+        }
+
+        return txManager.executeWithResult(tx -> domainRepository.create(tx, domain));
     }
 
     @Override
@@ -76,13 +93,7 @@ public class DomainRegistryServiceImpl extends AbstractKapuaService implements D
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.delete, null));
 
-        entityManagerSession.doTransactedAction(em -> {
-            if (DomainDAO.find(em, scopeId, domainId) == null) {
-                throw new KapuaEntityNotFoundException(Domain.TYPE, domainId);
-            }
-
-            return DomainDAO.delete(em, scopeId, domainId);
-        });
+        txManager.executeNoResult(tx -> domainRepository.delete(tx, scopeId, domainId));
     }
 
     @Override
@@ -94,7 +105,7 @@ public class DomainRegistryServiceImpl extends AbstractKapuaService implements D
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
 
-        return entityManagerSession.doAction(em -> DomainDAO.find(em, scopeId, domainId));
+        return txManager.executeWithResult(tx -> domainRepository.find(tx, scopeId, domainId));
     }
 
     @Override
@@ -105,15 +116,11 @@ public class DomainRegistryServiceImpl extends AbstractKapuaService implements D
 
         //
         // Do find
-        return entityManagerSession.doAction(em -> {
-            Domain domain = DomainDAO.findByName(em, name);
-
-            if (domain != null) {
-                authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
-            }
-
-            return domain;
-        });
+        final Domain foundDomain = txManager.executeWithResult(tx -> domainRepository.findByName(tx, KapuaId.ANY, name));
+        if (foundDomain != null) {
+            authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
+        }
+        return foundDomain;
     }
 
     @Override
@@ -125,7 +132,7 @@ public class DomainRegistryServiceImpl extends AbstractKapuaService implements D
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
 
-        return entityManagerSession.doAction(em -> DomainDAO.query(em, query));
+        return txManager.executeWithResult(tx -> domainRepository.query(tx, query));
     }
 
     @Override
@@ -137,7 +144,7 @@ public class DomainRegistryServiceImpl extends AbstractKapuaService implements D
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
 
-        return entityManagerSession.doAction(em -> DomainDAO.count(em, query));
+        return txManager.executeWithResult(tx -> domainRepository.count(tx, query));
     }
 
     //@ListenServiceEvent(fromAddress="account")
@@ -152,8 +159,6 @@ public class DomainRegistryServiceImpl extends AbstractKapuaService implements D
     }
 
     private void deleteDomainByAccountId(KapuaId accountId) throws KapuaException {
-        DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
-
         DomainQuery query = domainFactory.newQuery(accountId);
 
         DomainListResult domainsToDelete = query(query);
