@@ -35,8 +35,8 @@ import org.eclipse.kapua.qa.common.MockedLocator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFactoryImpl;
+import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImplJpaRepository;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
-import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authentication.shiro.CredentialServiceConfigurationManagerImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
@@ -122,13 +122,17 @@ public class SecurityLocatorConfiguration {
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
                 bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
                 bind(CredentialService.class).toInstance(new CredentialServiceImpl(
-                        new AuthenticationEntityManagerFactory(),
                         new CredentialServiceConfigurationManagerImpl(
                                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
                                 new ServiceConfigImplJpaRepository(),
                                 mockPermissionFactory,
                                 mockedAuthorization,
-                                Mockito.mock(RootUserTester.class))
+                                Mockito.mock(RootUserTester.class)),
+                        mockedAuthorization,
+                        mockPermissionFactory,
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                        new CredentialImplJpaRepository(),
+                        new CredentialFactoryImpl()
                 ));
                 final UserFactoryImpl userFactory = new UserFactoryImpl();
                 bind(UserFactory.class).toInstance(userFactory);

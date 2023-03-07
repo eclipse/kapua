@@ -13,14 +13,22 @@
 package org.eclipse.kapua.extras.migrator.encryption.authentication;
 
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResult;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionRepository;
+import org.eclipse.kapua.storage.TxContext;
 
 public class MfaOptionMigratorJpaRepository
         extends KapuaUpdatableEntityJpaRepository<MfaOption, MfaOptionMigrator, MfaOptionListResult>
         implements MfaOptionRepository {
     public MfaOptionMigratorJpaRepository() {
         super(MfaOptionMigrator.class, () -> new MfaOptionMigratorListResultImpl());
+    }
+
+
+    @Override
+    public MfaOption findByUserId(TxContext tx, KapuaId scopeId, KapuaId userId) {
+        throw new UnsupportedOperationException();
     }
 }

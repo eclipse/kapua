@@ -10,14 +10,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.credential.mfa;
+package org.eclipse.kapua.service.authentication.credential;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.storage.KapuaUpdatableEntityRepository;
 import org.eclipse.kapua.storage.TxContext;
 
-public interface MfaOptionRepository
-        extends KapuaUpdatableEntityRepository<MfaOption, MfaOptionListResult> {
-    MfaOption findByUserId(TxContext tx, KapuaId scopeId, KapuaId userId) throws KapuaException;
+public interface CredentialRepository
+        extends KapuaUpdatableEntityRepository<Credential, CredentialListResult> {
+
+
+    CredentialListResult findByUserId(TxContext txContext, KapuaId scopeId, KapuaId userId) throws KapuaException;
 }

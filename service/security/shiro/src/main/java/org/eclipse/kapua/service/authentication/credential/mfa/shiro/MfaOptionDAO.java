@@ -24,7 +24,10 @@ import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResu
 
 /**
  * {@link MfaOption} {@link ServiceDAO}
+ *
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionRepository} instead
  */
+@Deprecated
 public class MfaOptionDAO extends ServiceDAO {
 
     /**

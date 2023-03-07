@@ -23,16 +23,6 @@ import org.eclipse.kapua.service.KapuaUpdatableEntityService;
  */
 public interface ScratchCodeService extends KapuaEntityService<ScratchCode, ScratchCodeCreator>, KapuaUpdatableEntityService<ScratchCode> {
 
-    /**
-     * Generates all the scratch codes.
-     * The number of generated scratch codes is decided through the {@link org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator} service.
-     * The scratch code provided within the scratchCodeCreator parameter is ignored.
-     *
-     * @param scratchCodeCreator
-     * @return
-     * @throws KapuaException
-     */
-    ScratchCodeListResult createAllScratchCodes(ScratchCodeCreator scratchCodeCreator) throws KapuaException;
 
     /**
      * Return the ScratchCode list result looking by {@link MfaOption} identifier (and also scope identifier)
