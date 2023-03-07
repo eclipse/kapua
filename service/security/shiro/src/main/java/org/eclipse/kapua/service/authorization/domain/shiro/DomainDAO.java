@@ -28,7 +28,9 @@ import org.eclipse.kapua.service.authorization.domain.DomainQuery;
  * {@link Domain} DAO
  *
  * @since 1.0.0
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.authorization.domain.DomainRepository} instead
  */
+@Deprecated
 public class DomainDAO extends ServiceDAO {
 
     /**

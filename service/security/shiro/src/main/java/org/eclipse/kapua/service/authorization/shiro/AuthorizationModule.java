@@ -56,7 +56,9 @@ import org.eclipse.kapua.service.authorization.access.shiro.CachingAccessPermiss
 import org.eclipse.kapua.service.authorization.access.shiro.CachingAccessRoleRepository;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
+import org.eclipse.kapua.service.authorization.domain.DomainRepository;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainFactoryImpl;
+import org.eclipse.kapua.service.authorization.domain.shiro.DomainImplJpaRepository;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainRegistryServiceImpl;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupRepository;
@@ -94,7 +96,6 @@ public class AuthorizationModule extends AbstractKapuaModule {
         bind(AuthorizationService.class).to(AuthorizationServiceImpl.class);
         bind(RoleFactory.class).to(RoleFactoryImpl.class);
 
-        bind(DomainRegistryService.class).to(DomainRegistryServiceImpl.class);
         bind(DomainFactory.class).to(DomainFactoryImpl.class);
 
         bind(PermissionFactory.class).to(PermissionFactoryImpl.class);
@@ -106,6 +107,27 @@ public class AuthorizationModule extends AbstractKapuaModule {
         bind(RolePermissionFactory.class).to(RolePermissionFactoryImpl.class);
 
         bind(GroupFactory.class).to(GroupFactoryImpl.class);
+    }
+
+    @Provides
+    @Singleton
+    DomainRegistryService domainRegistryService(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            DomainRepository domainRepository,
+            DomainFactory domainFactory) {
+        return new DomainRegistryServiceImpl(
+                authorizationService,
+                permissionFactory,
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                domainRepository,
+                domainFactory);
+    }
+
+    @Provides
+    @Singleton
+    DomainRepository domainRepository() {
+        return new DomainImplJpaRepository();
     }
 
     @Provides
