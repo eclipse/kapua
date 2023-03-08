@@ -79,11 +79,11 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
                 scratchCodeCreator.getScopeId()));
 
         //
+        // Do pre persist magic on key values
+        String fullKey = scratchCodeCreator.getCode();
+        //
         // Do create
-        return txManager.executeWithResult(tx -> {
-            //
-            // Do pre persist magic on key values
-            String fullKey = scratchCodeCreator.getCode();
+        final ScratchCode res = txManager.executeWithResult(tx -> {
             //
             // Crypto code (it's ok to do than if BCrypt is used when checking a provided scratch code against the stored one)
             String encryptedCode = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, scratchCodeCreator.getCode());
@@ -91,9 +91,10 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
             //
             // Create code
             ScratchCodeImpl codeImpl = new ScratchCodeImpl(scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaOptionId(), encryptedCode);
-            codeImpl.setCode(fullKey);
             return scratchCodeRepository.create(tx, codeImpl);
         });
+        res.setCode(fullKey);
+        return res;
     }
 
     @Override
