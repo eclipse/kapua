@@ -195,16 +195,8 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implem
             // Do create
             return credentialRepository.create(tx, credentialImpl);
         });
-        //
         // Do post persist magic on key values
-        switch (credentialCreator.getCredentialType()) {
-            case API_KEY:
-                res.setCredentialKey(fullKey.get());
-                break;
-            case PASSWORD:
-            default:
-                res.setCredentialKey(null);
-        }
+        res.setCredentialKey(fullKey.get());
         return res;
     }
 
