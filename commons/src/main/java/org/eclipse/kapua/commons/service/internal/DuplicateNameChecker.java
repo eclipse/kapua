@@ -15,11 +15,14 @@ package org.eclipse.kapua.commons.service.internal;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.storage.TxContext;
 
 public interface DuplicateNameChecker<E extends KapuaNamedEntity> extends KapuaService {
-    long countOtherEntitiesWithName(TxContext tx, KapuaId scopeId, KapuaId excludedId, String name) throws KapuaException;
+    long countOtherEntitiesWithName(TxContext tx, KapuaId scopeId, KapuaId excludedId, String nameQueryPredicate, QueryPredicate... additionalPredicates) throws KapuaException;
 
-    long countOtherEntitiesWithName(TxContext tx, KapuaId scopeId, String name) throws KapuaException;
+    long countOtherEntitiesWithName(TxContext tx, KapuaId scopeId, String name, QueryPredicate... additionalPredicates) throws KapuaException;
+
+    long countOtherEntitiesWithName(TxContext tx, String name, QueryPredicate... additionalPredicates) throws KapuaException;
 }

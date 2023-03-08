@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.definition.internal;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
+import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
@@ -24,13 +24,13 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobDomains;
-import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionCreator;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionListResult;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionRepository;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
+import org.eclipse.kapua.storage.TxManager;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -39,45 +39,63 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
-public class JobStepDefinitionServiceImpl extends AbstractKapuaService implements JobStepDefinitionService {
+public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
 
-    @Inject
-    private AuthorizationService authorizationService;
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
+    private final TxManager txManager;
+    private final JobStepDefinitionRepository repository;
+    private final DuplicateNameChecker<JobStepDefinition> duplicateNameChecker;
 
-    @Inject
-    private PermissionFactory permissionFactory;
-
-    /**
-     * Constructor.
-     *
-     * @since 1.0.0
-     */
-    public JobStepDefinitionServiceImpl() {
-        super(JobEntityManagerFactory.getInstance(), null);
+    public JobStepDefinitionServiceImpl(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            TxManager txManager,
+            JobStepDefinitionRepository repository,
+            DuplicateNameChecker<JobStepDefinition> duplicateNameChecker) {
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.txManager = txManager;
+        this.repository = repository;
+        this.duplicateNameChecker = duplicateNameChecker;
     }
 
     @Override
-    public JobStepDefinition create(JobStepDefinitionCreator creator) throws KapuaException {
+    public JobStepDefinition create(JobStepDefinitionCreator stepDefinitionCreator) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(creator, "stepDefinitionCreator");
-        ArgumentValidator.notNull(creator.getScopeId(), "stepDefinitionCreator.scopeId");
-        ArgumentValidator.notNull(creator.getStepType(), "stepDefinitionCreator.stepType");
-        ArgumentValidator.validateEntityName(creator.getName(), "stepDefinitionCreator.name");
-        ArgumentValidator.notEmptyOrNull(creator.getProcessorName(), "stepDefinitionCreator.processorName");
+        ArgumentValidator.notNull(stepDefinitionCreator, "stepDefinitionCreator");
+        ArgumentValidator.notNull(stepDefinitionCreator.getScopeId(), "stepDefinitionCreator.scopeId");
+        ArgumentValidator.notNull(stepDefinitionCreator.getStepType(), "stepDefinitionCreator.stepType");
+        ArgumentValidator.validateEntityName(stepDefinitionCreator.getName(), "stepDefinitionCreator.name");
+        ArgumentValidator.notEmptyOrNull(stepDefinitionCreator.getProcessorName(), "stepDefinitionCreator.processorName");
 
         //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
-        //
-        // Check duplicate name
-        // TODO: INJECT
-        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniquenessInAllScopes(this, creator);
+        return txManager.executeWithResult(tx -> {
+            //
+            // Check duplicate name
+            if (duplicateNameChecker.countOtherEntitiesWithName(tx, stepDefinitionCreator.getName()) > 0) {
+                throw new KapuaDuplicateNameException(stepDefinitionCreator.getName());
+            }
 
-        //
-        // Do create
-        return entityManagerSession.doTransactedAction(em -> JobStepDefinitionDAO.create(em, creator));
+            //
+            // Create JobStepDefinition
+
+            JobStepDefinitionImpl jobStepDefinitionImpl = new JobStepDefinitionImpl(stepDefinitionCreator.getScopeId());
+            jobStepDefinitionImpl.setName(stepDefinitionCreator.getName());
+            jobStepDefinitionImpl.setDescription(stepDefinitionCreator.getDescription());
+            jobStepDefinitionImpl.setStepType(stepDefinitionCreator.getStepType());
+            jobStepDefinitionImpl.setReaderName(stepDefinitionCreator.getReaderName());
+            jobStepDefinitionImpl.setProcessorName(stepDefinitionCreator.getProcessorName());
+            jobStepDefinitionImpl.setWriterName(stepDefinitionCreator.getWriterName());
+            jobStepDefinitionImpl.setStepProperties(stepDefinitionCreator.getStepProperties());
+            //
+            // Do create
+            return repository.create(tx, jobStepDefinitionImpl);
+        });
     }
 
     @Override
@@ -101,7 +119,7 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do Update
-        return entityManagerSession.doTransactedAction(em -> JobStepDefinitionDAO.update(em, jobStepDefinition));
+        return txManager.executeWithResult(tx -> repository.update(tx, jobStepDefinition));
     }
 
     @Override
@@ -116,7 +134,7 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do find
-        return entityManagerSession.doAction(em -> JobStepDefinitionDAO.find(em, scopeId, stepDefinitionId));
+        return txManager.executeWithResult(tx -> repository.find(tx, scopeId, stepDefinitionId));
     }
 
     @Override
@@ -127,9 +145,9 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do find
-        return entityManagerSession.doAction(em -> {
+        return txManager.executeWithResult(tx -> {
 
-            JobStepDefinition jobStepDefinition = JobStepDefinitionDAO.findByName(em, name);
+            JobStepDefinition jobStepDefinition = repository.findByName(tx, name);
             if (jobStepDefinition != null) {
                 //
                 // Check Access
@@ -151,7 +169,7 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do query
-        return entityManagerSession.doAction(em -> JobStepDefinitionDAO.query(em, query));
+        return txManager.executeWithResult(tx -> repository.query(tx, query));
     }
 
     @Override
@@ -166,7 +184,7 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do query
-        return entityManagerSession.doAction(em -> JobStepDefinitionDAO.count(em, query));
+        return txManager.executeWithResult(tx -> repository.count(tx, query));
     }
 
     @Override
@@ -182,13 +200,6 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do delete
-        entityManagerSession.doTransactedAction(em -> {
-            if (JobStepDefinitionDAO.find(em, scopeId, stepDefinitionId) == null) {
-                throw new KapuaEntityNotFoundException(JobStepDefinition.TYPE, stepDefinitionId);
-            }
-
-            return JobStepDefinitionDAO.delete(em, scopeId, stepDefinitionId);
-        });
-
+        txManager.executeNoResult(tx -> repository.delete(tx, scopeId, stepDefinitionId));
     }
 }

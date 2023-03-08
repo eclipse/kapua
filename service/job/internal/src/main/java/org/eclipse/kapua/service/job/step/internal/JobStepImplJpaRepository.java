@@ -13,12 +13,11 @@
 package org.eclipse.kapua.service.job.step.internal;
 
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityJpaRepository;
-import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
 import org.eclipse.kapua.service.job.step.JobStepRepository;
 
 public class JobStepImplJpaRepository
-        extends KapuaNamedEntityJpaRepository<JobStep, JobStepImpl, JobStepListResult>
+        extends KapuaNamedEntityJpaRepository<org.eclipse.kapua.service.job.step.JobStep, JobStepImpl, JobStepListResult>
         implements JobStepRepository {
     public JobStepImplJpaRepository() {
         super(JobStepImpl.class, () -> new JobStepListResultImpl());

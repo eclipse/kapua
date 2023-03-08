@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.job.targets.internal;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -24,16 +23,18 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobDomains;
-import org.eclipse.kapua.service.job.JobService;
-import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
+import org.eclipse.kapua.service.job.JobRepository;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetAttributes;
 import org.eclipse.kapua.service.job.targets.JobTargetCreator;
+import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetListResult;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
+import org.eclipse.kapua.service.job.targets.JobTargetRepository;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
+import org.eclipse.kapua.service.job.targets.JobTargetStatus;
+import org.eclipse.kapua.storage.TxManager;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -46,18 +47,27 @@ import java.util.Map;
  * @since 1.0.0
  */
 @Singleton
-public class JobTargetServiceImpl extends AbstractKapuaService implements JobTargetService {
+public class JobTargetServiceImpl implements JobTargetService {
 
-    @Inject
-    private AuthorizationService authorizationService;
-    @Inject
-    private PermissionFactory permissionFactory;
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
+    private final TxManager txManager;
+    private final JobTargetRepository jobTargetRepository;
+    private final JobTargetFactory jobTargetFactory;
+    private final JobRepository jobRepository;
 
-    @Inject
-    JobService jobService;
-
-    public JobTargetServiceImpl() {
-        super(JobEntityManagerFactory.getInstance(), null);
+    public JobTargetServiceImpl(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            TxManager txManager,
+            JobTargetRepository jobTargetRepository,
+            JobTargetFactory jobTargetFactory, JobRepository jobRepository) {
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.txManager = txManager;
+        this.jobTargetRepository = jobTargetRepository;
+        this.jobTargetFactory = jobTargetFactory;
+        this.jobRepository = jobRepository;
     }
 
     @Override
@@ -72,36 +82,44 @@ public class JobTargetServiceImpl extends AbstractKapuaService implements JobTar
         //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobTargetCreator.getScopeId()));
+        return txManager.executeWithResult(tx -> {
+            //
+            // Check Job Existing
+            final Job job = jobRepository.find(tx, jobTargetCreator.getScopeId(), jobTargetCreator.getJobId());
+            if (job == null) {
+                throw new KapuaEntityNotFoundException(Job.TYPE, jobTargetCreator.getJobId());
+            }
 
-        //
-        // Check Job Existing
-        Job job = jobService.find(jobTargetCreator.getScopeId(), jobTargetCreator.getJobId());
-        if (job == null) {
-            throw new KapuaEntityNotFoundException(Job.TYPE, jobTargetCreator.getJobId());
-        }
+            //
+            // Check duplicate
+            JobTargetQuery jobTargetQuery = new JobTargetQueryImpl(jobTargetCreator.getScopeId());
+            jobTargetQuery.setPredicate(
+                    jobTargetQuery.andPredicate(
+                            jobTargetQuery.attributePredicate(JobTargetAttributes.JOB_ID, jobTargetCreator.getJobId()),
+                            jobTargetQuery.attributePredicate(JobTargetAttributes.JOB_TARGET_ID, jobTargetCreator.getJobTargetId())
+                    )
+            );
 
-        //
-        // Check duplicate
-        JobTargetQuery jobTargetQuery = new JobTargetQueryImpl(jobTargetCreator.getScopeId());
-        jobTargetQuery.setPredicate(
-                jobTargetQuery.andPredicate(
-                        jobTargetQuery.attributePredicate(JobTargetAttributes.JOB_ID, jobTargetCreator.getJobId()),
-                        jobTargetQuery.attributePredicate(JobTargetAttributes.JOB_TARGET_ID, jobTargetCreator.getJobTargetId())
-                )
-        );
+            if (count(jobTargetQuery) > 0) {
+                List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(JobTargetAttributes.SCOPE_ID, jobTargetCreator.getScopeId()));
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(JobTargetAttributes.JOB_ID, jobTargetCreator.getJobId()));
+                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(JobTargetAttributes.ENTITY_ID, jobTargetCreator.getJobTargetId()));
 
-        if (count(jobTargetQuery) > 0) {
-            List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(JobTargetAttributes.SCOPE_ID, jobTargetCreator.getScopeId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(JobTargetAttributes.JOB_ID, jobTargetCreator.getJobId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(JobTargetAttributes.ENTITY_ID, jobTargetCreator.getJobTargetId()));
+                throw new KapuaEntityUniquenessException(JobTarget.TYPE, uniquesFieldValues);
+            }
+            //
+            // Create JobTarget
 
-            throw new KapuaEntityUniquenessException(JobTarget.TYPE, uniquesFieldValues);
-        }
-
-        //
-        // Do create
-        return entityManagerSession.doTransactedAction(em -> JobTargetDAO.create(em, jobTargetCreator));
+            final JobTarget jobTarget = jobTargetFactory.newEntity(jobTargetCreator.getScopeId());
+            jobTarget.setJobId(jobTargetCreator.getJobId());
+            jobTarget.setJobTargetId(jobTargetCreator.getJobTargetId());
+            jobTarget.setStepIndex(0);
+            jobTarget.setStatus(JobTargetStatus.PROCESS_AWAITING);
+            //
+            // Do create
+            return jobTargetRepository.create(tx, jobTarget);
+        });
     }
 
     @Override
@@ -117,7 +135,7 @@ public class JobTargetServiceImpl extends AbstractKapuaService implements JobTar
 
         //
         // Do find
-        return entityManagerSession.doAction(em -> JobTargetDAO.find(em, scopeId, jobTargetId));
+        return txManager.executeWithResult(tx -> jobTargetRepository.find(tx, scopeId, jobTargetId));
     }
 
     @Override
@@ -132,7 +150,7 @@ public class JobTargetServiceImpl extends AbstractKapuaService implements JobTar
 
         //
         // Do query
-        return entityManagerSession.doAction(em -> JobTargetDAO.query(em, query));
+        return txManager.executeWithResult(tx -> jobTargetRepository.query(tx, query));
     }
 
     @Override
@@ -147,7 +165,7 @@ public class JobTargetServiceImpl extends AbstractKapuaService implements JobTar
 
         //
         // Do query
-        return entityManagerSession.doAction(em -> JobTargetDAO.count(em, query));
+        return txManager.executeWithResult(tx -> jobTargetRepository.count(tx, query));
     }
 
     @Override
@@ -172,7 +190,7 @@ public class JobTargetServiceImpl extends AbstractKapuaService implements JobTar
 
         //
         // Do update
-        return entityManagerSession.doTransactedAction(em -> JobTargetDAO.update(em, jobTarget));
+        return txManager.executeWithResult(tx -> jobTargetRepository.update(tx, jobTarget));
     }
 
     @Override
@@ -187,13 +205,7 @@ public class JobTargetServiceImpl extends AbstractKapuaService implements JobTar
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
 
         //
-        // Check existence
-        if (find(scopeId, jobTargetId) == null) {
-            throw new KapuaEntityNotFoundException(JobTarget.TYPE, jobTargetId);
-        }
-
-        //
         // Do delete
-        entityManagerSession.doTransactedAction(em -> JobTargetDAO.delete(em, scopeId, jobTargetId));
+        txManager.executeNoResult(tx -> jobTargetRepository.delete(tx, scopeId, jobTargetId));
     }
 }

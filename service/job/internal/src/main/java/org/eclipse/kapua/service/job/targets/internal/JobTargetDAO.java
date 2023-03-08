@@ -27,7 +27,9 @@ import org.eclipse.kapua.service.job.targets.JobTargetStatus;
  * JobTarget DAO
  *
  * @since 1.0
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.service.job.targets.JobTargetRepository} instead
  */
+@Deprecated
 public class JobTargetDAO {
 
     private JobTargetDAO() {

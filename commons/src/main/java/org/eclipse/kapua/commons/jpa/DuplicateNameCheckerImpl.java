@@ -21,6 +21,7 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.storage.KapuaNamedEntityRepository;
 import org.eclipse.kapua.storage.TxContext;
 
@@ -38,7 +39,8 @@ public class DuplicateNameCheckerImpl<E extends KapuaNamedEntity> implements Dup
     }
 
     @Override
-    public long countOtherEntitiesWithName(TxContext tx, KapuaId scopeId, KapuaId excludedId, String name) throws KapuaException {
+    public long countOtherEntitiesWithName(TxContext tx, KapuaId scopeId, KapuaId excludedId, String name,
+                                           QueryPredicate... additionalPredicates) throws KapuaException {
         KapuaQuery query = querySupplier.apply(scopeId);
         //TODO: is this necessary?
         query.setScopeId(scopeId);
@@ -47,9 +49,9 @@ public class DuplicateNameCheckerImpl<E extends KapuaNamedEntity> implements Dup
         andPredicate.and(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name));
         andPredicate.and(query.attributePredicate(KapuaNamedEntityAttributes.ENTITY_ID, excludedId, AttributePredicate.Operator.NOT_EQUAL));
 
-//            for (QueryPredicate additionalPredicate : additionalPredicates) {
-//                andPredicate.and(additionalPredicate);
-//            }
+        for (QueryPredicate additionalPredicate : additionalPredicates) {
+            andPredicate.and(additionalPredicate);
+        }
 
         query.setPredicate(andPredicate);
 
@@ -57,16 +59,34 @@ public class DuplicateNameCheckerImpl<E extends KapuaNamedEntity> implements Dup
     }
 
     @Override
-    public long countOtherEntitiesWithName(TxContext tx, KapuaId scopeId, String name) throws KapuaException {
+    public long countOtherEntitiesWithName(TxContext tx, KapuaId scopeId, String name,
+                                           QueryPredicate... additionalPredicates) throws KapuaException {
         KapuaQuery query = querySupplier.apply(scopeId);
         query.setScopeId(scopeId);
 
         AndPredicate andPredicate = query.andPredicate();
         andPredicate.and(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name));
-//
-//        for (QueryPredicate additionalPredicate : additionalPredicates) {
-//            andPredicate.and(additionalPredicate);
+        for (QueryPredicate additionalPredicate : additionalPredicates) {
+            andPredicate.and(additionalPredicate);
+        }
+
+        query.setPredicate(andPredicate);
+
+        return repository.count(tx, query);
+//        if (repository.count(query) > 0) {
+//            throw new KapuaDuplicateNameException(creator.getName());
 //        }
+    }
+
+    @Override
+    public long countOtherEntitiesWithName(TxContext tx, String name, QueryPredicate... additionalPredicates) throws KapuaException {
+        final KapuaQuery query = querySupplier.apply(KapuaId.ANY);
+
+        AndPredicate andPredicate = query.andPredicate();
+        andPredicate.and(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name));
+        for (QueryPredicate additionalPredicate : additionalPredicates) {
+            andPredicate.and(additionalPredicate);
+        }
 
         query.setPredicate(andPredicate);
 

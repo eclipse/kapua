@@ -12,14 +12,43 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.targets.internal;
 
+import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.job.JobRepository;
 import org.eclipse.kapua.service.job.targets.JobTargetFactory;
+import org.eclipse.kapua.service.job.targets.JobTargetRepository;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
+
+import javax.inject.Singleton;
 
 public class JobTargetsModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(JobTargetFactory.class).to(JobTargetFactoryImpl.class);
-        bind(JobTargetService.class).to(JobTargetServiceImpl.class);
+    }
+
+    @Provides
+    @Singleton
+    JobTargetService jobTargetService(AuthorizationService authorizationService,
+                                      PermissionFactory permissionFactory,
+                                      JobTargetRepository jobTargetRepository,
+                                      JobTargetFactory jobTargetFactory, JobRepository jobRepository) {
+        return new JobTargetServiceImpl(
+                authorizationService,
+                permissionFactory,
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                jobTargetRepository,
+                jobTargetFactory,
+                jobRepository);
+    }
+
+    @Provides
+    @Singleton
+    JobTargetRepository jobTargetRepository() {
+        return new JobTargetImplJpaRepository();
     }
 }

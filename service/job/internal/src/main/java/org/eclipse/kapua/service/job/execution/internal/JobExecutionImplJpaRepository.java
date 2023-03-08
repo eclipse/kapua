@@ -17,7 +17,9 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.execution.JobExecution;
+import org.eclipse.kapua.service.job.execution.JobExecutionAttributes;
 import org.eclipse.kapua.service.job.execution.JobExecutionListResult;
+import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
 import org.eclipse.kapua.service.job.execution.JobExecutionRepository;
 import org.eclipse.kapua.storage.TxContext;
 
@@ -35,5 +37,15 @@ public class JobExecutionImplJpaRepository
             throw new KapuaEntityNotFoundException(JobExecution.TYPE, jobExecutionId);
         }
         return this.delete(txContext, toBeDeleted);
+    }
+
+    @Override
+    public long countByJobId(TxContext tx, KapuaId scopeId, KapuaId jobId) throws KapuaException {
+
+        JobExecutionQuery jobExecutionQuery = new JobExecutionQueryImpl(scopeId);
+        jobExecutionQuery.setPredicate(
+                jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobId)
+        );
+        return this.count(tx, jobExecutionQuery);
     }
 }

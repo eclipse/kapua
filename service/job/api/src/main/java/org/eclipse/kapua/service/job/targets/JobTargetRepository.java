@@ -10,14 +10,10 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.execution;
+package org.eclipse.kapua.service.job.targets;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.storage.KapuaUpdatableEntityRepository;
-import org.eclipse.kapua.storage.TxContext;
 
-public interface JobExecutionRepository
-        extends KapuaUpdatableEntityRepository<JobExecution, JobExecutionListResult> {
-    long countByJobId(TxContext tx, KapuaId scopeId, KapuaId jobId) throws KapuaException;
+public interface JobTargetRepository
+        extends KapuaUpdatableEntityRepository<JobTarget, JobTargetListResult> {
 }
