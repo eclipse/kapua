@@ -12,11 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.execution.internal;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -26,10 +23,10 @@ import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.execution.JobExecution;
 import org.eclipse.kapua.service.job.execution.JobExecutionCreator;
 import org.eclipse.kapua.service.job.execution.JobExecutionListResult;
+import org.eclipse.kapua.service.job.execution.JobExecutionRepository;
 import org.eclipse.kapua.service.job.execution.JobExecutionService;
-import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
+import org.eclipse.kapua.storage.TxManager;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -38,33 +35,44 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
-public class JobExecutionServiceImpl extends AbstractKapuaService implements JobExecutionService {
+public class JobExecutionServiceImpl implements JobExecutionService {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
+    private final TxManager txManager;
+    private final JobExecutionRepository jobExecutionRepository;
 
-    @Inject
-    private AuthorizationService authorizationService;
-    @Inject
-    private PermissionFactory permissionFactory;
-
-    public JobExecutionServiceImpl() {
-        super(JobEntityManagerFactory.getInstance(), null);
+    public JobExecutionServiceImpl(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            TxManager txManager,
+            JobExecutionRepository jobExecutionRepository) {
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.txManager = txManager;
+        this.jobExecutionRepository = jobExecutionRepository;
     }
 
     @Override
-    public JobExecution create(JobExecutionCreator creator) throws KapuaException {
+    public JobExecution create(JobExecutionCreator jobExecutionCreator) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(creator, "jobExecutionCreator");
-        ArgumentValidator.notNull(creator.getScopeId(), "jobExecutionCreator.scopeId");
+        ArgumentValidator.notNull(jobExecutionCreator, "jobExecutionCreator");
+        ArgumentValidator.notNull(jobExecutionCreator.getScopeId(), "jobExecutionCreator.scopeId");
 
         //
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, creator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobExecutionCreator.getScopeId()));
+
+        JobExecution jobExecution = new JobExecutionImpl(jobExecutionCreator.getScopeId());
+        jobExecution.setJobId(jobExecutionCreator.getJobId());
+        jobExecution.setStartedOn(jobExecutionCreator.getStartedOn());
+        jobExecution.setEntityAttributes(jobExecutionCreator.getEntityAttributes());
+        jobExecution.setTargetIds(jobExecutionCreator.getTargetIds());
 
         //
         // Do create
-        return entityManagerSession.doTransactedAction(em -> JobExecutionDAO.create(em, creator));
+        return txManager.executeWithResult(tx -> jobExecutionRepository.create(tx, jobExecution));
     }
 
     @Override
@@ -78,7 +86,7 @@ public class JobExecutionServiceImpl extends AbstractKapuaService implements Job
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobExecution.getScopeId()));
 
-        return entityManagerSession.doTransactedAction(em -> JobExecutionDAO.update(em, jobExecution));
+        return txManager.executeWithResult(tx -> jobExecutionRepository.update(tx, jobExecution));
     }
 
     @Override
@@ -94,7 +102,7 @@ public class JobExecutionServiceImpl extends AbstractKapuaService implements Job
 
         //
         // Do find
-        return entityManagerSession.doAction(em -> JobExecutionDAO.find(em, scopeId, jobExecutionId));
+        return txManager.executeWithResult(tx -> jobExecutionRepository.find(tx, scopeId, jobExecutionId));
     }
 
     @Override
@@ -109,7 +117,7 @@ public class JobExecutionServiceImpl extends AbstractKapuaService implements Job
 
         //
         // Do query
-        return entityManagerSession.doAction(em -> JobExecutionDAO.query(em, query));
+        return txManager.executeWithResult(tx -> jobExecutionRepository.query(tx, query));
     }
 
     @Override
@@ -124,7 +132,7 @@ public class JobExecutionServiceImpl extends AbstractKapuaService implements Job
 
         //
         // Do query
-        return entityManagerSession.doAction(em -> JobExecutionDAO.count(em, query));
+        return txManager.executeWithResult(tx -> jobExecutionRepository.count(tx, query));
     }
 
     @Override
@@ -140,13 +148,6 @@ public class JobExecutionServiceImpl extends AbstractKapuaService implements Job
 
         //
         // Do delete
-        entityManagerSession.doTransactedAction(em -> {
-            if (JobExecutionDAO.find(em, scopeId, jobExecutionId) == null) {
-                throw new KapuaEntityNotFoundException(JobExecution.TYPE, jobExecutionId);
-            }
-
-            return JobExecutionDAO.delete(em, scopeId, jobExecutionId);
-        });
-
+        txManager.executeNoResult(tx -> jobExecutionRepository.delete(tx, scopeId, jobExecutionId));
     }
 }

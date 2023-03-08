@@ -34,6 +34,7 @@
         <class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
         <class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
         <class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
+        <class>org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerImpl</class>
 
         <properties>
             <property name="javax.persistence.lock.timeout" value="1000"/>
