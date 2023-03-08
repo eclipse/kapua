@@ -28,7 +28,6 @@ public class JobEngineQueueJbatchModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(QueuedJobExecutionFactory.class).to(QueuedJobExecutionFactoryImpl.class);
-        bind(QueuedJobExecutionService.class).to(QueuedJobExecutionServiceImpl.class);
     }
 
     @Provides

@@ -55,7 +55,6 @@ import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionFactory;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.credential.mfa.shiro.MfaOptionFactoryImpl;
-import org.eclipse.kapua.service.authentication.credential.mfa.shiro.MfaOptionServiceImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialQueryImpl;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
@@ -1216,7 +1215,7 @@ public class UserServiceSteps extends TestBase {
 
         MfaOptionFactory mfaFactory = KapuaLocator.getInstance().getFactory(MfaOptionFactoryImpl.class);
         MfaOptionCreator mfaCreator = mfaFactory.newCreator(scopeId, userId, "mfaSecretKey");
-        MfaOptionService mfaOptionService = KapuaLocator.getInstance().getService(MfaOptionServiceImpl.class);
+        MfaOptionService mfaOptionService = KapuaLocator.getInstance().getService(MfaOptionService.class);
         try {
             mfaOptionService.create(mfaCreator);
         } catch (KapuaException e) {
@@ -1229,7 +1228,7 @@ public class UserServiceSteps extends TestBase {
         KapuaId userId = KapuaSecurityUtils.getSession().getUserId();
         KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
 
-        MfaOptionService mfaOptionService = KapuaLocator.getInstance().getService(MfaOptionServiceImpl.class);
+        MfaOptionService mfaOptionService = KapuaLocator.getInstance().getService(MfaOptionService.class);
         MfaOption mfaOption = null;
         try {
             mfaOption = mfaOptionService.findByUserId(scopeId, userId);
