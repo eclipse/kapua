@@ -55,6 +55,10 @@
             <artifactId>kapua-locator-guice</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-scheduler-quartz</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

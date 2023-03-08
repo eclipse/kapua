@@ -16,13 +16,16 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
+import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
@@ -38,9 +41,12 @@ import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
 import org.eclipse.kapua.service.job.execution.JobExecutionService;
 import org.eclipse.kapua.service.job.execution.internal.JobExecutionFactoryImpl;
+import org.eclipse.kapua.service.job.execution.internal.JobExecutionImplJpaRepository;
 import org.eclipse.kapua.service.job.execution.internal.JobExecutionServiceImpl;
 import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.internal.JobFactoryImpl;
+import org.eclipse.kapua.service.job.internal.JobImplJpaRepository;
+import org.eclipse.kapua.service.job.internal.JobQueryImpl;
 import org.eclipse.kapua.service.job.internal.JobServiceImpl;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepService;
@@ -61,6 +67,7 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionS
 import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerDefinitionFactoryImpl;
 import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerDefinitionServiceImpl;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerFactoryImpl;
+import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerImplJpaRepository;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -100,24 +107,36 @@ public class JobLocatorConfiguration {
                 } catch (Exception e) {
                     LOG.warn("Error while setting mock AuthorizationService. This may lead to failures...", e);
                 }
-                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
+                final PermissionFactory mockedPermissionFactory = Mockito.mock(PermissionFactory.class);
+                bind(PermissionFactory.class).toInstance(mockedPermissionFactory);
 
                 // Job
                 JobEntityManagerFactory jobEntityManagerFactory = JobEntityManagerFactory.getInstance();
                 bind(JobEntityManagerFactory.class).toInstance(jobEntityManagerFactory);
 
-                bind(ServiceConfigurationManager.class)
-                        .annotatedWith(Names.named("JobServiceConfigurationManager"))
-                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
                 bind(JobFactory.class).toInstance(new JobFactoryImpl());
-                bind(JobService.class).to(JobServiceImpl.class);
+                bind(JobService.class).toInstance(new JobServiceImpl(
+                        Mockito.mock(ServiceConfigurationManager.class),
+                        Mockito.mock(JobEngineService.class),
+                        mockedPermissionFactory,
+                        mockedAuthorization,
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                        new JobImplJpaRepository(),
+                        new TriggerImplJpaRepository(),
+                        new DuplicateNameCheckerImpl<>(new JobImplJpaRepository(), scopeId -> new JobQueryImpl(scopeId))
+                ));
                 bind(JobStepDefinitionService.class).toInstance(new JobStepDefinitionServiceImpl());
                 bind(JobStepDefinitionFactory.class).toInstance(new JobStepDefinitionFactoryImpl());
                 bind(JobStepService.class).toInstance(new JobStepServiceImpl());
                 bind(JobStepFactory.class).toInstance(new JobStepFactoryImpl());
                 bind(JobTargetService.class).toInstance(new JobTargetServiceImpl());
                 bind(JobTargetFactory.class).toInstance(new JobTargetFactoryImpl());
-                bind(JobExecutionService.class).toInstance(new JobExecutionServiceImpl());
+                bind(JobExecutionService.class).toInstance(new JobExecutionServiceImpl(
+                        mockedAuthorization,
+                        mockedPermissionFactory,
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                        new JobExecutionImplJpaRepository()
+                ));
                 bind(JobExecutionFactory.class).toInstance(new JobExecutionFactoryImpl());
 
                 // Trigger
