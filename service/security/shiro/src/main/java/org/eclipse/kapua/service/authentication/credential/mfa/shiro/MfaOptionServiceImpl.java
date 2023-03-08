@@ -167,16 +167,17 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             return mfaOption;
         });
 
-        txManager.executeNoResult(tx -> {
+        final ScratchCodeListResult scratchCodes = txManager.executeWithResult(tx -> {
 
             // generating scratch codes
             final ScratchCodeCreator scratchCodeCreator = scratchCodeFactory.newCreator(mfaOptionCreator.getScopeId(), option.getId(), null);
             final ScratchCodeListResult scratchCodeListResult = createAllScratchCodes(tx, scratchCodeCreator);
-            option.setScratchCodes(scratchCodeListResult.getItems());
-
-            // Do post persist magic on key value (note that this is the only place in which the key is returned in plain-text)
-            option.setMfaSecretKey(fullKey);
+            return scratchCodeListResult;
         });
+        option.setScratchCodes(scratchCodes.getItems());
+
+        // Do post persist magic on key value (note that this is the only place in which the key is returned in plain-text)
+        option.setMfaSecretKey(fullKey);
         return option;
     }
 

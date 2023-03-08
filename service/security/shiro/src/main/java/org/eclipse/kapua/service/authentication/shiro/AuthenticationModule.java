@@ -49,6 +49,7 @@ import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImplJ
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.registration.RegistrationService;
+import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
 import org.eclipse.kapua.service.authentication.shiro.registration.RegistrationServiceImpl;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
@@ -83,6 +84,7 @@ public class AuthenticationModule extends AbstractKapuaModule {
         bind(AccessTokenService.class).to(AccessTokenServiceImpl.class);
 
         bind(RegistrationService.class).to(RegistrationServiceImpl.class);
+        bind(MfaAuthenticator.class).toInstance(new MfaAuthenticatorImpl());
     }
 
     @Provides
