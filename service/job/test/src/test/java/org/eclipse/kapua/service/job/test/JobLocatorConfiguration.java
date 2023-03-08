@@ -53,12 +53,17 @@ import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionFactoryImpl;
+import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionImplJpaRepository;
+import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionQueryImpl;
 import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionServiceImpl;
 import org.eclipse.kapua.service.job.step.internal.JobStepFactoryImpl;
+import org.eclipse.kapua.service.job.step.internal.JobStepImplJpaRepository;
+import org.eclipse.kapua.service.job.step.internal.JobStepQueryImpl;
 import org.eclipse.kapua.service.job.step.internal.JobStepServiceImpl;
 import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
 import org.eclipse.kapua.service.job.targets.internal.JobTargetFactoryImpl;
+import org.eclipse.kapua.service.job.targets.internal.JobTargetImplJpaRepository;
 import org.eclipse.kapua.service.job.targets.internal.JobTargetServiceImpl;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
@@ -125,11 +130,35 @@ public class JobLocatorConfiguration {
                         new TriggerImplJpaRepository(),
                         new DuplicateNameCheckerImpl<>(new JobImplJpaRepository(), scopeId -> new JobQueryImpl(scopeId))
                 ));
-                bind(JobStepDefinitionService.class).toInstance(new JobStepDefinitionServiceImpl());
+                bind(JobStepDefinitionService.class).toInstance(new JobStepDefinitionServiceImpl(
+                        mockedAuthorization,
+                        mockedPermissionFactory,
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                        new JobStepDefinitionImplJpaRepository(),
+                        new DuplicateNameCheckerImpl<>(new JobStepDefinitionImplJpaRepository(), scopeId -> new JobStepDefinitionQueryImpl(scopeId))
+                ));
                 bind(JobStepDefinitionFactory.class).toInstance(new JobStepDefinitionFactoryImpl());
-                bind(JobStepService.class).toInstance(new JobStepServiceImpl());
+                bind(JobStepService.class).toInstance(new JobStepServiceImpl(
+                        mockedAuthorization,
+                        mockedPermissionFactory,
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                        new JobStepImplJpaRepository(),
+                        new JobStepFactoryImpl(),
+                        new DuplicateNameCheckerImpl<>(new JobStepImplJpaRepository(), scopeId -> new JobStepQueryImpl(scopeId)),
+                        new JobExecutionImplJpaRepository(),
+                        new JobExecutionFactoryImpl(),
+                        new JobStepDefinitionImplJpaRepository(),
+                        new QueryFactoryImpl()
+                ));
                 bind(JobStepFactory.class).toInstance(new JobStepFactoryImpl());
-                bind(JobTargetService.class).toInstance(new JobTargetServiceImpl());
+                bind(JobTargetService.class).toInstance(new JobTargetServiceImpl(
+                        mockedAuthorization,
+                        mockedPermissionFactory,
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                        new JobTargetImplJpaRepository(),
+                        new JobTargetFactoryImpl(),
+                        new JobImplJpaRepository()
+                ));
                 bind(JobTargetFactory.class).toInstance(new JobTargetFactoryImpl());
                 bind(JobExecutionService.class).toInstance(new JobExecutionServiceImpl(
                         mockedAuthorization,

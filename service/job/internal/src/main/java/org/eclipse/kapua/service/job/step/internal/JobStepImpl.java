@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link JobStep} implementation.
+ * {@link org.eclipse.kapua.service.job.step.JobStep} implementation.
  *
  * @since 1.0.0
  */
@@ -75,7 +75,7 @@ public class JobStepImpl extends AbstractKapuaNamedEntity implements JobStep {
     /**
      * Constructor.
      *
-     * @param scopeId The scope {@link KapuaId} to set into the {@link JobStep}
+     * @param scopeId The scope {@link KapuaId} to set into the {@link org.eclipse.kapua.service.job.step.JobStep}
      * @since 1.0.0
      */
     public JobStepImpl(KapuaId scopeId) {
@@ -89,7 +89,7 @@ public class JobStepImpl extends AbstractKapuaNamedEntity implements JobStep {
      * @throws KapuaException
      * @since 1.1.0
      */
-    public JobStepImpl(JobStep jobStep) throws KapuaException {
+    public JobStepImpl(org.eclipse.kapua.service.job.step.JobStep jobStep) throws KapuaException {
         super(jobStep);
 
         setJobId(jobStep.getJobId());
