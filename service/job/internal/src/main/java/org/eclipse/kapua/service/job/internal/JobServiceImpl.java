@@ -12,39 +12,33 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.internal;
 
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
-import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
+import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobCreator;
 import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.JobListResult;
+import org.eclipse.kapua.service.job.JobRepository;
 import org.eclipse.kapua.service.job.JobService;
-import org.eclipse.kapua.service.scheduler.trigger.Trigger;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerRepository;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
@@ -53,44 +47,45 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
-public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobService {
+public class JobServiceImpl extends KapuaConfigurableServiceLinker implements JobService {
 
     private static final Logger LOG = LoggerFactory.getLogger(JobServiceImpl.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private final JobEngineService jobEngineService = LOCATOR.getService(JobEngineService.class);
-
-    private PermissionFactory permissionFactory;
-    private AuthorizationService authorizationService;
-    //TODO: make final
-
-    private TriggerService triggerService;
-    //TODO: make final
-    private TriggerFactory triggerFactory;
+    private final JobEngineService jobEngineService;
+    private final PermissionFactory permissionFactory;
+    private final AuthorizationService authorizationService;
+    private final TxManager txManager;
+    private final JobRepository jobRepository;
+    private final TriggerRepository triggerRepository;
+    private final DuplicateNameChecker<Job> duplicateNameChecker;
 
     /**
      * Default constructor for injection
      *
-     * @param jobEntityManagerFactory The {@link JobEntityManagerFactory} instance
-     * @param permissionFactory       The {@link PermissionFactory} instance
-     * @param authorizationService    The {@link AuthorizationService} instance
-     * @param triggerService          The {@link TriggerService} instance
-     * @param triggerFactory          The {@link TriggerFactory} instance
+     * @param permissionFactory    The {@link PermissionFactory} instance
+     * @param authorizationService The {@link AuthorizationService} instance
+     * @param jobRepository
+     * @param triggerRepository    The {@link TriggerService} instance
+     * @param duplicateNameChecker
      * @since 2.0.0
      */
-    @Inject
-    public JobServiceImpl(JobEntityManagerFactory jobEntityManagerFactory,
-                          PermissionFactory permissionFactory,
-                          AuthorizationService authorizationService,
-                          TriggerService triggerService,
-                          TriggerFactory triggerFactory,
-                          @Named("JobServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
-        super(jobEntityManagerFactory, null, serviceConfigurationManager);
+    public JobServiceImpl(
+            ServiceConfigurationManager serviceConfigurationManager,
+            JobEngineService jobEngineService,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            TxManager txManager,
+            JobRepository jobRepository,
+            TriggerRepository triggerRepository,
+            DuplicateNameChecker<Job> duplicateNameChecker) {
+        super(serviceConfigurationManager);
+        this.jobEngineService = jobEngineService;
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
-        this.triggerService = triggerService;
-        this.triggerFactory = triggerFactory;
+        this.txManager = txManager;
+        this.jobRepository = jobRepository;
+        this.triggerRepository = triggerRepository;
+        this.duplicateNameChecker = duplicateNameChecker;
     }
 
     @Override
@@ -103,7 +98,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
 
         //
         // Check access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.write, creator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, creator.getScopeId()));
 
         //
         // Check entity limit
@@ -111,12 +106,18 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
 
         //
         // Check duplicate name
-        // TODO: INJECT
-        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, creator);
+        return txManager.executeWithResult(tx -> {
+            if (duplicateNameChecker.countOtherEntitiesWithName(tx, creator.getScopeId(), creator.getName()) > 0) {
+                throw new KapuaDuplicateNameException(creator.getName());
+            }
 
-        //
-        // Do create
-        return entityManagerSession.doTransactedAction(em -> JobDAO.create(em, creator));
+            Job jobImpl = new JobImpl(creator.getScopeId());
+            jobImpl.setName(creator.getName());
+            jobImpl.setDescription(creator.getDescription());
+            //
+            // Do create
+            return jobRepository.create(tx, jobImpl);
+        });
     }
 
     @Override
@@ -129,22 +130,23 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
 
         //
         // Check access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.write, job.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, job.getScopeId()));
 
-        //
-        // Check existence
-        if (find(job.getScopeId(), job.getId()) == null) {
-            throw new KapuaEntityNotFoundException(Job.TYPE, job.getId());
-        }
-
-        //
-        // Check duplicate name
-        // TODO: INJECT
-        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, job);
-
-        //
-        // Do update
-        return entityManagerSession.doTransactedAction(em -> JobDAO.update(em, job));
+        return txManager.executeWithResult(tx -> {
+            //
+            // Check existence
+            if (jobRepository.find(tx, job.getScopeId(), job.getId()) == null) {
+                throw new KapuaEntityNotFoundException(Job.TYPE, job.getId());
+            }
+            //
+            // Check duplicate name
+            if (duplicateNameChecker.countOtherEntitiesWithName(tx, job.getScopeId(), job.getId(), job.getName()) > 0) {
+                throw new KapuaDuplicateNameException(job.getName());
+            }
+            //
+            // Do update
+            return jobRepository.update(tx, job);
+        });
     }
 
     @Override
@@ -156,11 +158,11 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
-        return entityManagerSession.doAction(em -> JobDAO.find(em, scopeId, jobId));
+        return txManager.executeWithResult(tx -> jobRepository.find(tx, scopeId, jobId));
     }
 
     @Override
@@ -171,11 +173,11 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
-        return entityManagerSession.doAction(em -> JobDAO.query(em, query));
+        return txManager.executeWithResult(tx -> jobRepository.query(tx, query));
     }
 
     @Override
@@ -186,11 +188,11 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
-        return entityManagerSession.doAction(em -> JobDAO.count(em, query));
+        return txManager.executeWithResult(tx -> jobRepository.count(tx, query));
     }
 
     @Override
@@ -228,75 +230,30 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.delete, forced ? null : scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, forced ? null : scopeId));
 
-        //
-        // Check existence
-        if (find(scopeId, jobId) == null) {
-            throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
-        }
-
-        //
-        // Find all the triggers that are associated with this job
-        TriggerQuery query = triggerFactory.newQuery(scopeId);
-        AndPredicate andPredicate = query.andPredicate(
-                query.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_NAME, "jobId"),
-                query.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_VALUE, jobId.toCompactId()),
-                query.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName())
-        );
-
-        query.setPredicate(andPredicate);
-
-        //
-        // Query for and delete all the triggers that are associated with this job
-        KapuaSecurityUtils.doPrivileged(() -> {
-            TriggerListResult triggers = triggerService.query(query);
-            for (Trigger trig : triggers.getItems()) {
-                triggerService.delete(trig.getScopeId(), trig.getId());
+        txManager.executeNoResult(tx -> {
+            //
+            // Check existence
+            if (jobRepository.find(tx, scopeId, jobId) == null) {
+                throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
             }
+
+            triggerRepository.deleteAllByJobId(tx, scopeId, jobId);
+
+            //
+            // Do delete
+            try {
+                KapuaSecurityUtils.doPrivileged(() -> jobEngineService.cleanJobData(scopeId, jobId));
+            } catch (Exception e) {
+                if (forced) {
+                    LOG.warn("Error while cleaning Job data. Ignoring exception since delete is forced! Error: {}", e.getMessage());
+                    LOG.debug("Error while cleaning Job data. Ignoring exception since delete is forced!", e);
+                } else {
+                    throw e;
+                }
+            }
+            jobRepository.delete(tx, scopeId, jobId);
         });
-
-        //
-        // Do delete
-        try {
-            KapuaSecurityUtils.doPrivileged(() -> jobEngineService.cleanJobData(scopeId, jobId));
-        } catch (Exception e) {
-            if (forced) {
-                LOG.warn("Error while cleaning Job data. Ignoring exception since delete is forced! Error: {}", e.getMessage());
-                LOG.debug("Error while cleaning Job data. Ignoring exception since delete is forced!", e);
-            } else {
-                throw e;
-            }
-        }
-
-        entityManagerSession.doTransactedAction(em -> JobDAO.delete(em, scopeId, jobId));
-    }
-
-    /**
-     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link AuthorizationService} instance
-     */
-    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
-    protected AuthorizationService getAuthorizationService() {
-        if (authorizationService == null) {
-            authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
-        }
-        return authorizationService;
-    }
-
-    /**
-     * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link PermissionFactory} instance
-     */
-    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
-    protected PermissionFactory getPermissionFactory() {
-        if (permissionFactory == null) {
-            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
-        }
-        return permissionFactory;
     }
 }

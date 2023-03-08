@@ -23,14 +23,17 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobRepository;
 import org.eclipse.kapua.service.job.JobService;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerRepository;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -39,7 +42,28 @@ public class JobModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(JobFactory.class).to(JobFactoryImpl.class);
-        bind(JobService.class).to(JobServiceImpl.class);
+    }
+
+    @Provides
+    @Singleton
+    JobService jobService(
+            @Named("JobServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
+            JobEngineService jobEngineService,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            JobRepository jobRepository,
+            TriggerRepository triggerRepository) {
+
+        return new JobServiceImpl(
+                serviceConfigurationManager,
+                jobEngineService,
+                permissionFactory,
+                authorizationService,
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                jobRepository,
+                triggerRepository,
+                new DuplicateNameCheckerImpl<>(jobRepository, scopeId -> new JobQueryImpl(scopeId))
+        );
     }
 
     @Provides

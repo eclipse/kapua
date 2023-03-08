@@ -12,14 +12,41 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.queue.jbatch;
 
+import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory;
+import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionRepository;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+
+import javax.inject.Singleton;
 
 public class JobEngineQueueJbatchModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(QueuedJobExecutionFactory.class).to(QueuedJobExecutionFactoryImpl.class);
         bind(QueuedJobExecutionService.class).to(QueuedJobExecutionServiceImpl.class);
+    }
+
+    @Provides
+    @Singleton
+    QueuedJobExecutionService queuedJobExecutionService(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            QueuedJobExecutionRepository repository) {
+        return new QueuedJobExecutionServiceImpl(
+                authorizationService,
+                permissionFactory,
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job-engine")),
+                repository);
+    }
+
+    @Provides
+    @Singleton
+    QueuedJobExecutionRepository queuedJobExecutionRepository() {
+        return new QueuedJobExecutionImplJpaRepository();
     }
 }

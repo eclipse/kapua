@@ -27,7 +27,9 @@ import org.eclipse.kapua.service.job.execution.JobExecution;
  * {@link QueuedJobExecution} {@link ServiceDAO}
  *
  * @since 1.1.0
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.job.engine.queue.QueuedJobExecutionRepository} instead
  */
+@Deprecated
 public class QueuedJobExecutionDAO {
 
     private QueuedJobExecutionDAO() {

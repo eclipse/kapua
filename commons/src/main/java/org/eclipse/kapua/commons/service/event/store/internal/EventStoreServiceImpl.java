@@ -50,7 +50,8 @@ public class EventStoreServiceImpl
     public EventStoreServiceImpl(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            TxManager txManager, EventStoreFactory entityFactory,
+            TxManager txManager,
+            EventStoreFactory entityFactory,
             EventStoreRecordRepository repository) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
