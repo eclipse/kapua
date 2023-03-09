@@ -54,8 +54,10 @@ import org.eclipse.kapua.service.authentication.shiro.registration.RegistrationS
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
+import org.eclipse.kapua.service.authentication.token.AccessTokenRepository;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenFactoryImpl;
+import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenImplJpaRepository;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenServiceImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -70,21 +72,31 @@ public class AuthenticationModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(AuthenticationService.class).to(AuthenticationServiceShiroImpl.class);
-
         bind(ServiceConfigurationManager.class)
                 .annotatedWith(Names.named("CredentialServiceConfigurationManager"))
                 .to(CredentialServiceConfigurationManager.class);
         bind(CredentialFactory.class).to(CredentialFactoryImpl.class);
         bind(CredentialsFactory.class).to(CredentialsFactoryImpl.class);
-
         bind(MfaOptionFactory.class).to(MfaOptionFactoryImpl.class);
         bind(ScratchCodeFactory.class).to(ScratchCodeFactoryImpl.class);
-
         bind(AccessTokenFactory.class).to(AccessTokenFactoryImpl.class);
-        bind(AccessTokenService.class).to(AccessTokenServiceImpl.class);
-
         bind(RegistrationService.class).to(RegistrationServiceImpl.class);
         bind(MfaAuthenticator.class).toInstance(new MfaAuthenticatorImpl());
+    }
+
+    @Provides
+    @Singleton
+    AccessTokenService accessTokenService(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            AccessTokenRepository accessTokenRepository,
+            AccessTokenFactory accessTokenFactory) {
+        return new AccessTokenServiceImpl(
+                authorizationService,
+                permissionFactory,
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication")),
+                accessTokenRepository,
+                accessTokenFactory);
     }
 
     @Provides
@@ -129,6 +141,12 @@ public class AuthenticationModule extends AbstractKapuaModule {
                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication")),
                 scratchCodeRepository,
                 scratchCodeFactory);
+    }
+
+    @Provides
+    @Singleton
+    public AccessTokenRepository accessTokenRepository() {
+        return new AccessTokenImplJpaRepository();
     }
 
     @Provides
