@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.definition.internal;
 
-import org.eclipse.kapua.KapuaDuplicateNameException;
+import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
@@ -78,7 +78,7 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
             //
             // Check duplicate name
             if (duplicateNameChecker.countOtherEntitiesWithName(tx, stepDefinitionCreator.getName()) > 0) {
-                throw new KapuaDuplicateNameException(stepDefinitionCreator.getName());
+                throw new KapuaDuplicateNameInAnotherAccountError(stepDefinitionCreator.getName());
             }
 
             //
