@@ -207,24 +207,6 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         ArgumentValidator.notNull(credential.getScopeId(), "credential.scopeId");
         ArgumentValidator.notNull(credential.getUserId(), "credential.userId");
         ArgumentValidator.notNull(credential.getCredentialType(), "credential.credentialType");
-        ArgumentValidator.notEmptyOrNull(credential.getCredentialKey(), "credential.credentialKey");
-
-        // FIXME These check are not correct, since they're applied to an
-        //  already encrypted password. Checks are moved temporary to
-        //  GwtCredentialServiceImpl#update
-//        if (CredentialType.PASSWORD == credential.getCredentialType()) {
-//            //
-//            // Validate Password length
-//            int minPasswordLength = getMinimumPasswordLength(credential.getScopeId());
-//            if (credential.getCredentialKey().length() < minPasswordLength ||
-//                    credential.getCredentialKey().length() > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
-//                throw new PasswordLengthException(minPasswordLength, SYSTEM_MAXIMUM_PASSWORD_LENGTH);
-//            }
-//
-//            //
-//            // Validate Password regex
-//            ArgumentValidator.match(credential.getCredentialKey(), CommonsValidationRegex.PASSWORD_REGEXP, "credential.credentialKey");
-//        }
 
         //
         // Check access
@@ -245,7 +227,9 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             }
 
             // Passing attributes??
-            return CredentialDAO.update(em, credential);
+            Credential updatedCredential = CredentialDAO.update(em, credential);
+            updatedCredential.setCredentialKey(null);
+            return updatedCredential;
         });
     }
 
@@ -264,7 +248,11 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
-        return entityManagerSession.doAction(em -> CredentialDAO.find(em, scopeId, credentialId));
+        return entityManagerSession.doAction(em -> {
+            Credential credential = CredentialDAO.find(em, scopeId, credentialId);
+            credential.setCredentialKey(null);
+            return credential;
+        });
     }
 
     @Override
@@ -281,7 +269,11 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.doAction(em -> CredentialDAO.query(em, query));
+        return entityManagerSession.doAction(em -> {
+            CredentialListResult credentials = CredentialDAO.query(em, query);
+            credentials.getItems().forEach(credential -> credential.setCredentialKey(null));
+            return credentials;
+        });
     }
 
     @Override
@@ -347,7 +339,9 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
 
         //
         // Query and return result
-        return query(query);
+        CredentialListResult credentials = query(query);
+        credentials.getItems().forEach(credential -> credential.setCredentialKey(null));
+        return credentials;
     }
 
     @Override
@@ -406,6 +400,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
             authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, credential.getId()));
+            credential.setCredentialKey(null);
         }
 
         return credential;
@@ -532,5 +527,22 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         //
         // Validate Password regex
         ArgumentValidator.match(plainPassword, CommonsValidationRegex.PASSWORD_REGEXP, "plainPassword");
+    }
+
+
+    @Override
+    public Credential findWithKey(KapuaId scopeId, KapuaId credentialId) throws KapuaException {
+        // Validation of the fields
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(credentialId, "credentialId");
+
+        //
+        // Check Access
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, null));
+
+        return entityManagerSession.doAction(em -> CredentialDAO.find(em, scopeId, credentialId));
     }
 }

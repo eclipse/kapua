@@ -115,7 +115,12 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
 
                 List<Credential> passwordCredentialList = userCredentialList.getItems(c -> CredentialType.PASSWORD.equals(c.getCredentialType()));
 
-                return passwordCredentialList.isEmpty() ? null : passwordCredentialList.get(0);
+                if (passwordCredentialList.isEmpty()) {
+                    return null;
+                } else {
+                    Credential passwordCredential = passwordCredentialList.get(0);
+                    return credentialService.findWithKey(passwordCredential.getScopeId(), passwordCredential.getId());
+                }
             });
         } catch (AuthenticationException ae) {
             throw ae;
