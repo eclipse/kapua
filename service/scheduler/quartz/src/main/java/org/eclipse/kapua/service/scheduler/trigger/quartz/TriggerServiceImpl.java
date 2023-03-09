@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
 import org.eclipse.kapua.KapuaDuplicateNameException;
+import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
@@ -137,7 +138,7 @@ public class TriggerServiceImpl implements TriggerService {
 
             // Check duplicate name
             if (triggerDuplicateNameChecker.countOtherEntitiesWithName(tx, triggerCreator.getName()) > 0) {
-                throw new KapuaDuplicateNameException(triggerCreator.getName());
+                throw new KapuaDuplicateNameInAnotherAccountError(triggerCreator.getName());
             }
 
             // Check dates
