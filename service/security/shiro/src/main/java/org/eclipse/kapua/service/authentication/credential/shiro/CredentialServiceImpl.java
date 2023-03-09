@@ -185,7 +185,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
                     break;
                 case PASSWORD:
                 default:
-                    credential.setCredentialKey(fullKey);
+                    credential.setCredentialKey(null);
             }
         } catch (Exception pe) {
             em.rollback();
