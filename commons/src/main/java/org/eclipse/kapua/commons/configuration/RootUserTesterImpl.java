@@ -13,29 +13,31 @@
 package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserNamedEntityService;
+import org.eclipse.kapua.service.user.UserRepository;
+import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Inject;
 import java.util.Optional;
 
 public class RootUserTesterImpl implements RootUserTester {
-    private final UserNamedEntityService userNamedEntityService;
+    private final TxManager txManager;
+    private final UserRepository userRepository;
 
     @Inject
-    public RootUserTesterImpl(UserNamedEntityService userNamedEntityService) {
-        this.userNamedEntityService = userNamedEntityService;
+    public RootUserTesterImpl(TxManager txManager, UserRepository userRepository) {
+        this.txManager = txManager;
+        this.userRepository = userRepository;
     }
 
     private KapuaId fetchRootUserId() throws KapuaException {
         //todo: remove me. This just converts root username to id - needs to be done elsewhere, preferrably in a once-at-startup way.
         final String rootUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
-        final User rootUser = KapuaSecurityUtils.doPrivileged(() -> userNamedEntityService.findByName(rootUserName));
+        final User rootUser = txManager.executeWithResult(tx -> userRepository.findByName(tx, rootUserName));
         final KapuaId rootUserId = Optional.ofNullable(rootUser).map(KapuaEntity::getId).orElse(null);
         return rootUserId;
     }

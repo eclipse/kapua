@@ -27,21 +27,23 @@ public class KapuaNamedEntityRepositoryCachingWrapper<
         extends KapuaUpdatableEntityRepositoryCachingWrapper<E, L>
         implements KapuaNamedEntityRepository<E, L> {
 
-    private final KapuaNamedEntityRepository<E, L> wrappedNamed;
+    protected final KapuaNamedEntityRepository<E, L> wrapped;
+    protected final NamedEntityCache entityCache;
 
     public KapuaNamedEntityRepositoryCachingWrapper(KapuaNamedEntityRepository<E, L> wrapped, NamedEntityCache entityCache) {
         super(wrapped, entityCache);
-        wrappedNamed = wrapped;
+        this.wrapped = wrapped;
+        this.entityCache = entityCache;
     }
 
     @Override
     public E findByName(TxContext txContext, String value) throws KapuaException {
-        return findByNameCached(KapuaId.ANY, value, (scope, name) -> wrappedNamed.findByName(txContext, scope, name));
+        return findByNameCached(txContext, KapuaId.ANY, value);
     }
 
     @Override
     public E findByName(TxContext txContext, KapuaId scopeId, String value) throws KapuaException {
-        return findByNameCached(scopeId, value, (scope, name) -> wrappedNamed.findByName(txContext, scope, name));
+        return findByNameCached(txContext, scopeId, value);
     }
 
     @FunctionalInterface
@@ -49,13 +51,12 @@ public class KapuaNamedEntityRepositoryCachingWrapper<
         E findBy(KapuaId scopeId, String entityName) throws KapuaException;
     }
 
-    private E findByNameCached(KapuaId scopeId, String value, FetchEntity<E> actualSupplier) throws KapuaException {
-        final NamedEntityCache namedEntityCache = (NamedEntityCache) entityCache;
-        final KapuaEntity cached = namedEntityCache.get(scopeId, value);
+    private E findByNameCached(TxContext txContext, KapuaId scopeId, String name) throws KapuaException {
+        final KapuaEntity cached = entityCache.get(scopeId, name);
         if (cached != null) {
             return (E) cached;
         }
-        final E found = actualSupplier.findBy(scopeId, value);
+        final E found = wrapped.findByName(txContext, scopeId, name);
         return found;
     }
 }

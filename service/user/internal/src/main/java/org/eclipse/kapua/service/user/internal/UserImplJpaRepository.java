@@ -13,9 +13,12 @@
 package org.eclipse.kapua.service.user.internal;
 
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityJpaRepository;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserAttributes;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserRepository;
+import org.eclipse.kapua.storage.TxContext;
 
 public class UserImplJpaRepository
         extends KapuaNamedEntityJpaRepository<User, UserImpl, UserListResult>
@@ -24,4 +27,8 @@ public class UserImplJpaRepository
         super(UserImpl.class, () -> new UserListResultImpl());
     }
 
+    @Override
+    public User findByExternalId(TxContext txContext, String externalId) {
+        return doFindByField(txContext, KapuaId.ANY, UserAttributes.EXTERNAL_ID, externalId);
+    }
 }

@@ -23,8 +23,11 @@ import org.eclipse.kapua.storage.TxContext;
 public class CachingServiceConfigRepository
         extends KapuaUpdatableEntityRepositoryCachingWrapper<ServiceConfig, ServiceConfigListResult>
         implements ServiceConfigRepository {
+    private final KapuaUpdatableEntityRepository<ServiceConfig, ServiceConfigListResult> wrapped;
+
     public CachingServiceConfigRepository(KapuaUpdatableEntityRepository<ServiceConfig, ServiceConfigListResult> wrapped, EntityCache entityCache) {
         super(wrapped, entityCache);
+        this.wrapped = wrapped;
     }
 
     @Override
