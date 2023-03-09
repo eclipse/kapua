@@ -27,7 +27,6 @@ import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
@@ -58,11 +57,9 @@ import org.eclipse.kapua.service.authorization.role.shiro.RoleQueryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.user.UserFactory;
-import org.eclipse.kapua.service.user.UserNamedEntityService;
 import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.internal.UserCacheFactory;
-import org.eclipse.kapua.service.user.internal.UserEntityManagerFactory;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
+import org.eclipse.kapua.service.user.internal.UserImplJpaRepository;
 import org.eclipse.kapua.service.user.internal.UserServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -141,14 +138,13 @@ public class SecurityLocatorConfiguration {
                 final AccountChildrenFinder accountChildrenFinder = Mockito.mock(AccountChildrenFinder.class);
                 bind(AccountChildrenFinder.class).toInstance(accountChildrenFinder);
                 bind(UserService.class).toInstance(new UserServiceImpl(
+                        Mockito.mock(ServiceConfigurationManager.class),
                         mockedAuthorization,
                         mockPermissionFactory,
-                        new UserEntityManagerFactory(),
-                        new UserCacheFactory(),
-                        Mockito.mock(UserNamedEntityService.class),
-                        Mockito.mock(ServiceConfigurationManager.class),
-                        SystemSetting.getInstance()
-                ));
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                        new UserImplJpaRepository(),
+                        userFactory,
+                        new DuplicateNameCheckerImpl<>(new UserImplJpaRepository(), userFactory::newQuery)));
             }
         };
 

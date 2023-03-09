@@ -24,6 +24,7 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
@@ -31,7 +32,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.UserDomains;
 import org.eclipse.kapua.service.user.UserFactory;
-import org.eclipse.kapua.service.user.UserNamedEntityService;
 import org.eclipse.kapua.service.user.UserRepository;
 import org.eclipse.kapua.service.user.UserService;
 
@@ -41,12 +41,35 @@ import javax.inject.Singleton;
 public class UserModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(RootUserTester.class).to(RootUserTesterImpl.class);
-        bind(UserNamedEntityService.class).to(UserNamedEntityServiceImpl.class);
         bind(UserFactory.class).to(UserFactoryImpl.class);
-        bind(UserService.class).to(UserServiceImpl.class);
-        bind(UserEntityManagerFactory.class).toInstance(new UserEntityManagerFactory());
         bind(UserCacheFactory.class).toInstance(new UserCacheFactory());
+    }
+
+    @Provides
+    @Singleton
+    RootUserTester rootUserTester(UserRepository userRepository) {
+        return new RootUserTesterImpl(
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
+                userRepository
+        );
+    }
+
+    @Provides
+    @Singleton
+    public UserService userService(
+            @Named("UserServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            UserRepository userRepository,
+            UserFactory userFactory) {
+        return new UserServiceImpl(
+                serviceConfigurationManager,
+                authorizationService,
+                permissionFactory,
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
+                userRepository,
+                userFactory,
+                new DuplicateNameCheckerImpl<>(userRepository, userFactory::newQuery));
     }
 
     @Provides
@@ -81,10 +104,10 @@ public class UserModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    UserRepository userRepository() {
-        return new CachingUserRepository(
+    UserRepository userRepository(UserCacheFactory userCacheFactory) {
+        return new UserCachedRepository(
                 new UserImplJpaRepository(),
-                (NamedEntityCache) new UserCacheFactory().createCache()
+                (NamedEntityCache) userCacheFactory.createCache()
         );
     }
 }

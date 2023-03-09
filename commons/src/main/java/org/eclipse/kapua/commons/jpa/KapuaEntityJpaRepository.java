@@ -41,6 +41,7 @@ import org.eclipse.kapua.storage.TxContext;
 
 import javax.persistence.Embedded;
 import javax.persistence.EntityExistsException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -615,4 +616,55 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         return SQL_ERROR_CODE_CONSTRAINT_VIOLATION.equals(innerExc.getSQLState());
     }
 
+    protected C doFindByField(@NonNull TxContext txContext,
+                              @NonNull KapuaId scopeId,
+                              @NonNull String fieldName,
+                              @NonNull Object fieldValue) {
+        final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
+        final CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<C> criteriaSelectQuery = cb.createQuery(concreteClass);
+
+        //
+        // FROM
+        Root<C> entityRoot = criteriaSelectQuery.from(concreteClass);
+
+        //
+        // SELECT
+        criteriaSelectQuery.select(entityRoot);
+
+        // fieldName
+        ParameterExpression<String> pName = cb.parameter(String.class, fieldName);
+        Predicate namePredicate = cb.equal(entityRoot.get(fieldName), pName);
+
+        ParameterExpression<KapuaId> pScopeId = null;
+
+        if (!KapuaId.ANY.equals(scopeId)) {
+            pScopeId = cb.parameter(KapuaId.class, KapuaEntityAttributes.SCOPE_ID);
+            Predicate scopeIdPredicate = cb.equal(entityRoot.get(KapuaEntityAttributes.SCOPE_ID), pScopeId);
+
+            Predicate andPredicate = cb.and(namePredicate, scopeIdPredicate);
+            criteriaSelectQuery.where(andPredicate);
+        } else {
+            criteriaSelectQuery.where(namePredicate);
+        }
+
+        TypedQuery<C> query = em.createQuery(criteriaSelectQuery);
+        query.setParameter(pName.getName(), fieldValue);
+
+        if (pScopeId != null) {
+            query.setParameter(pScopeId.getName(), scopeId);
+        }
+
+        //
+        // QUERY!
+        List<C> result = query.getResultList();
+        switch (result.size()) {
+            case 0:
+                return null;
+            case 1:
+                return result.get(0);
+            default:
+                throw new NonUniqueResultException(String.format("Multiple %s results found for field %s with value %s", concreteClass.getName(), pName, fieldValue.toString()));
+        }
+    }
 }

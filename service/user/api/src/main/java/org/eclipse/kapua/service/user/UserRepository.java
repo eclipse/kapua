@@ -13,7 +13,10 @@
 package org.eclipse.kapua.service.user;
 
 import org.eclipse.kapua.storage.KapuaNamedEntityRepository;
+import org.eclipse.kapua.storage.TxContext;
 
 public interface UserRepository extends
         KapuaNamedEntityRepository<User, UserListResult> {
+
+    User findByExternalId(TxContext txContext, final String externalId);
 }

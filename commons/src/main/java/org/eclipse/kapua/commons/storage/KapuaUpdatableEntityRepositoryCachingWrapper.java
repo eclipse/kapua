@@ -27,22 +27,24 @@ public class KapuaUpdatableEntityRepositoryCachingWrapper<
         implements KapuaUpdatableEntityRepository<E, L> {
 
 
-    private final KapuaUpdatableEntityRepository<E, L> wrappedUpdatable;
+    private final KapuaUpdatableEntityRepository<E, L> wrapped;
 
     public KapuaUpdatableEntityRepositoryCachingWrapper(KapuaUpdatableEntityRepository<E, L> wrapped, EntityCache entityCache) {
         super(wrapped, entityCache);
-        wrappedUpdatable = wrapped;
+        this.wrapped = wrapped;
     }
 
     @Override
     public E update(TxContext txContext, E entity) throws KapuaException {
+        final E updated = wrapped.update(txContext, entity);
         entityCache.remove(KapuaId.ANY, entity);
-        return wrappedUpdatable.update(txContext, entity);
+        return updated;
     }
 
     @Override
     public E update(TxContext txContext, E currentEntity, E updatedEntity) throws KapuaException {
+        final E updated = wrapped.update(txContext, currentEntity, updatedEntity);
         entityCache.remove(KapuaId.ANY, currentEntity);
-        return wrappedUpdatable.update(txContext, currentEntity, updatedEntity);
+        return updated;
     }
 }

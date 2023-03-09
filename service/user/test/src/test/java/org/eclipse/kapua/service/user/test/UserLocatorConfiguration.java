@@ -24,10 +24,10 @@ import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
@@ -37,13 +37,10 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.UserDomains;
 import org.eclipse.kapua.service.user.UserFactory;
-import org.eclipse.kapua.service.user.UserNamedEntityService;
 import org.eclipse.kapua.service.user.UserRepository;
 import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.internal.UserCacheFactory;
-import org.eclipse.kapua.service.user.internal.UserEntityManagerFactory;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
-import org.eclipse.kapua.service.user.internal.UserNamedEntityServiceImpl;
+import org.eclipse.kapua.service.user.internal.UserImplJpaRepository;
 import org.eclipse.kapua.service.user.internal.UserServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -86,14 +83,10 @@ public class UserLocatorConfiguration {
                 bind(AccountChildrenFinder.class).toInstance(accountChildrenFinder);
 
                 // Inject actual User service related services
-                UserEntityManagerFactory userEntityManagerFactory = new UserEntityManagerFactory();
-                bind(UserEntityManagerFactory.class).toInstance(userEntityManagerFactory);
                 final UserFactoryImpl userFactory = new UserFactoryImpl();
                 bind(UserFactory.class).toInstance(userFactory);
                 final RootUserTester mockRootUserTester = Mockito.mock(RootUserTester.class);
                 bind(RootUserTester.class).toInstance(mockRootUserTester);
-                final UserNamedEntityService namedEntityService = new UserNamedEntityServiceImpl(userEntityManagerFactory, new UserCacheFactory(), mockPermissionFactory, mockedAuthorization);
-                bind(UserNamedEntityService.class).toInstance(namedEntityService);
                 final UserRepository userRepository = Mockito.mock(UserRepository.class);
                 final ResourceLimitedServiceConfigurationManagerImpl userConfigurationManager = new ResourceLimitedServiceConfigurationManagerImpl(UserService.class.getName(),
                         UserDomains.USER_DOMAIN,
@@ -111,13 +104,13 @@ public class UserLocatorConfiguration {
                 );
                 bind(UserService.class).toInstance(
                         new UserServiceImpl(
+                                userConfigurationManager,
                                 mockedAuthorization,
                                 mockPermissionFactory,
-                                userEntityManagerFactory,
-                                new UserCacheFactory(),
-                                namedEntityService,
-                                userConfigurationManager,
-                                SystemSetting.getInstance())
+                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
+                                new UserImplJpaRepository(),
+                                userFactory,
+                                new DuplicateNameCheckerImpl<>(new UserImplJpaRepository(), userFactory::newQuery))
                 );
             }
         };

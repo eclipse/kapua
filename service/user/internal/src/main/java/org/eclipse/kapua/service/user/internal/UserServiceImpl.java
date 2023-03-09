@@ -15,21 +15,19 @@ package org.eclipse.kapua.service.user.internal;
 
 import org.eclipse.kapua.KapuaDuplicateExternalIdException;
 import org.eclipse.kapua.KapuaDuplicateExternalUsernameException;
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
-import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
-import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
+import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.event.ServiceEvent;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -38,17 +36,17 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserDomains;
+import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
-import org.eclipse.kapua.service.user.UserNamedEntityService;
 import org.eclipse.kapua.service.user.UserQuery;
+import org.eclipse.kapua.service.user.UserRepository;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
 import org.eclipse.kapua.service.user.UserType;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Objects;
 
@@ -58,45 +56,30 @@ import java.util.Objects;
  * @since 1.0.0
  */
 @Singleton
-public class UserServiceImpl extends KapuaConfigurableServiceBase implements UserService {
+public class UserServiceImpl extends KapuaConfigurableServiceLinker implements UserService {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
+    private final TxManager txManager;
+    private final UserRepository userRepository;
+    private final UserFactory userFactory;
+    private final DuplicateNameChecker<User> duplicateNameChecker;
 
-    public UserNamedEntityService getUserNamedEntityService() {
-        if (userNamedEntityService == null) {
-            userNamedEntityService = KapuaLocator.getInstance().getService(UserNamedEntityService.class);
-        }
-        return userNamedEntityService;
-    }
-
-    private AuthorizationService authorizationService;
-    private PermissionFactory permissionFactory;
-    private UserNamedEntityService userNamedEntityService;
-    private final SystemSetting systemSettings;
-
-    /**
-     * Injectable Constructor
-     *
-     * @param authorizationService        The {@link AuthorizationService} instance.
-     * @param permissionFactory           The {@link PermissionFactory} instance.
-     * @param userEntityManagerFactory    The {@link UserEntityManagerFactory} instance.
-     * @param userCacheFactory            The {@link UserCacheFactory} instance.
-     * @param userNamedEntityService      The {@link UserNamedEntityService} instance.
-     * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance.
-     */
-    @Inject
     public UserServiceImpl(
+            ServiceConfigurationManager serviceConfigurationManager,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            UserEntityManagerFactory userEntityManagerFactory,
-            UserCacheFactory userCacheFactory,
-            UserNamedEntityService userNamedEntityService,
-            @Named("UserServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
-            SystemSetting systemSettings) {
-        super(userEntityManagerFactory, userCacheFactory, serviceConfigurationManager);
+            TxManager txManager,
+            UserRepository userRepository, UserFactory userFactory,
+            DuplicateNameChecker<User> duplicateNameChecker) {
+        super(serviceConfigurationManager);
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
-        this.userNamedEntityService = userNamedEntityService;
-        this.systemSettings = systemSettings;
+        this.txManager = txManager;
+        this.userRepository = userRepository;
+        this.userFactory = userFactory;
+        this.duplicateNameChecker = duplicateNameChecker;
     }
 
     @Override
@@ -126,42 +109,57 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.write, userCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.write, userCreator.getScopeId()));
 
         //
         // Check entity limit
         serviceConfigurationManager.checkAllowedEntities(userCreator.getScopeId(), "Users");
 
-        //
-        // Check duplicate name
-        // TODO: INJECT
-        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, userCreator);
-        // TODO: INJECT
-        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniquenessInAllScopes(this, userCreator);
+        return txManager.executeWithResult(tx -> {
+            //
+            // Check duplicate name
+            if (duplicateNameChecker.countOtherEntitiesWithName(tx, userCreator.getScopeId(), userCreator.getName()) > 0) {
+                throw new KapuaDuplicateNameException(userCreator.getName());
+            }
+            if (duplicateNameChecker.countOtherEntitiesWithName(tx, userCreator.getName()) > 0) {
+                throw new KapuaDuplicateNameException(userCreator.getName());
+            }
 
-        //
-        // Check User.userType
-        if (userCreator.getUserType() == UserType.EXTERNAL) {
-            // Check duplicate externalId
-            if (userCreator.getExternalId() != null) {
-                User userByExternalId = KapuaSecurityUtils.doPrivileged(() -> findByExternalId(userCreator.getExternalId()));
-                if (userByExternalId != null) {
-                    throw new KapuaDuplicateExternalIdException(userCreator.getExternalId());
+            //
+            // Check User.userType
+            if (userCreator.getUserType() == UserType.EXTERNAL) {
+                // Check duplicate externalId
+                if (userCreator.getExternalId() != null) {
+                    User userByExternalId = userRepository.findByExternalId(tx, userCreator.getExternalId());
+                    if (userByExternalId != null) {
+                        throw new KapuaDuplicateExternalIdException(userCreator.getExternalId());
+                    }
+                }
+
+                // Check duplicate externalUsername
+                if (userCreator.getExternalUsername() != null) {
+                    User userByExternalPreferredUserame = userRepository.findByExternalId(tx, userCreator.getExternalUsername());
+                    if (userByExternalPreferredUserame != null) {
+                        throw new KapuaDuplicateExternalUsernameException(userCreator.getExternalUsername());
+                    }
                 }
             }
 
-            // Check duplicate externalUsername
-            if (userCreator.getExternalUsername() != null) {
-                User userByExternalPreferredUserame = KapuaSecurityUtils.doPrivileged(() -> findByExternalId(userCreator.getExternalUsername()));
-                if (userByExternalPreferredUserame != null) {
-                    throw new KapuaDuplicateExternalUsernameException(userCreator.getExternalUsername());
-                }
-            }
-        }
-
-        //
-        // Do create
-        return entityManagerSession.doTransactedAction(EntityManagerContainer.<User>create().onResultHandler(em -> UserDAO.create(em, userCreator)));
+            //
+            // Do create
+            // Create User
+            User user = userFactory.newEntity(userCreator.getScopeId());
+            user.setName(userCreator.getName());
+            user.setDisplayName(userCreator.getDisplayName());
+            user.setEmail(userCreator.getEmail());
+            user.setPhoneNumber(userCreator.getPhoneNumber());
+            user.setUserType(userCreator.getUserType());
+            user.setExternalId(userCreator.getExternalId());
+            user.setExternalUsername(userCreator.getExternalUsername());
+            user.setStatus(userCreator.getStatus());
+            user.setExpirationDate(userCreator.getExpirationDate());
+            return userRepository.create(tx, user);
+        });
     }
 
     @Override
@@ -193,70 +191,68 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.write, user.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.write, user.getScopeId()));
 
-        //
-        // Check existence
-        User currentUser = find(user.getScopeId(), user.getId());
-        if (currentUser == null) {
-            throw new KapuaEntityNotFoundException(User.TYPE, user.getId());
-        }
-
-        //
-        // Check action on Sys admin user
-        if (user.getExpirationDate() != null || !currentUser.getName().equals(user.getName())) {
+        return txManager.executeWithResult(tx -> {
             //
-            // Check not deleting environment admin
-            validateSystemUser(user.getName());
-        }
-
-        //
-        // Check disabling on logged user
-        if (user.getId().equals(KapuaSecurityUtils.getSession().getUserId())) {
-            if (user.getStatus().equals(UserStatus.DISABLED)) {
-                throw new KapuaIllegalArgumentException("user.status", user.getStatus().name());
+            // Check existence
+            User currentUser = userRepository.find(tx, user.getScopeId(), user.getId());
+            if (currentUser == null) {
+                throw new KapuaEntityNotFoundException(User.TYPE, user.getId());
             }
-        }
 
-        //
-        // Check not updatable fields
-
-        // User.userType
-        if (!Objects.equals(currentUser.getUserType(), user.getUserType())) {
-            throw new KapuaIllegalArgumentException("user.userType", user.getUserType().toString());
-        }
-
-        // User.name
-        if (!Objects.equals(currentUser.getName(), user.getName())) {
-            throw new KapuaIllegalArgumentException("user.name", user.getName());
-        }
-
-        //
-        // Check duplicates
-
-        // User.externalId
-        if (user.getExternalId() != null) {
-            User userByExternalId = KapuaSecurityUtils.doPrivileged(() -> findByExternalId(user.getExternalId()));
-            if (userByExternalId != null && !userByExternalId.getId().equals(user.getId())) {
-                throw new KapuaDuplicateExternalIdException(user.getExternalId());
+            //
+            // Check action on Sys admin user
+            if (user.getExpirationDate() != null || !currentUser.getName().equals(user.getName())) {
+                //
+                // Check not deleting environment admin
+                validateSystemUser(user.getName());
             }
-        }
 
-        // User.externalUsername
-        if (user.getExternalUsername() != null) {
-            User userByExternalPreferredUsername = KapuaSecurityUtils.doPrivileged(() -> findByExternalId(user.getExternalUsername()));
-            if (userByExternalPreferredUsername != null && !userByExternalPreferredUsername.getId().equals(user.getId())) {
-                throw new KapuaDuplicateExternalUsernameException(user.getExternalUsername());
+            //
+            // Check disabling on logged user
+            if (user.getId().equals(KapuaSecurityUtils.getSession().getUserId())) {
+                if (user.getStatus().equals(UserStatus.DISABLED)) {
+                    throw new KapuaIllegalArgumentException("user.status", user.getStatus().name());
+                }
             }
-        }
 
-        //
-        // Do update
-        return entityManagerSession.doTransactedAction(EntityManagerContainer.<User>create().onResultHandler(em -> UserDAO.update(em, user))
-                .onBeforeHandler(() -> {
-                    entityCache.remove(null, user);
-                    return null;
-                }));
+            //
+            // Check not updatable fields
+
+            // User.userType
+            if (!Objects.equals(currentUser.getUserType(), user.getUserType())) {
+                throw new KapuaIllegalArgumentException("user.userType", user.getUserType().toString());
+            }
+
+            // User.name
+            if (!Objects.equals(currentUser.getName(), user.getName())) {
+                throw new KapuaIllegalArgumentException("user.name", user.getName());
+            }
+
+            //
+            // Check duplicates
+
+            // User.externalId
+            if (user.getExternalId() != null) {
+                User userByExternalId = userRepository.findByExternalId(tx, user.getExternalId());
+                if (userByExternalId != null && !userByExternalId.getId().equals(user.getId())) {
+                    throw new KapuaDuplicateExternalIdException(user.getExternalId());
+                }
+            }
+
+            // User.externalUsername
+            if (user.getExternalUsername() != null) {
+                User userByExternalPreferredUsername = userRepository.findByExternalId(tx, user.getExternalUsername());
+                if (userByExternalPreferredUsername != null && !userByExternalPreferredUsername.getId().equals(user.getId())) {
+                    throw new KapuaDuplicateExternalUsernameException(user.getExternalUsername());
+                }
+            }
+
+            //
+            // Do update
+            return userRepository.update(tx, user);
+        });
     }
 
     @Override
@@ -267,7 +263,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
 
         //
         // Do delete
-        delete(user.getScopeId(), user.getId());
+        txManager.executeNoResult(tx -> userRepository.delete(tx, user));
     }
 
     @Override
@@ -278,29 +274,25 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
         ArgumentValidator.notNull(userId.getId(), "user.id");
         ArgumentValidator.notNull(scopeId.getId(), "user.scopeId");
 
-        //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.delete, scopeId));
 
-        //
-        // Check existence
-        User user = find(scopeId, userId);
-        if (user == null) {
-            throw new KapuaEntityNotFoundException(User.TYPE, userId);
-        }
+        txManager.executeNoResult(tx -> {
+            // Check existence
+            User user = userRepository.find(tx, scopeId, userId);
+            if (user == null) {
+                throw new KapuaEntityNotFoundException(User.TYPE, userId);
+            }
 
-        //
-        // Check not deleting environment admin
-        validateSystemUser(user.getName());
+            // Check not deleting environment admin
+            validateSystemUser(user.getName());
 
-        //
-        // Check not deleting self
-        validateSelf(user);
+            // Check not deleting self
+            validateSelf(user);
 
-        //
-        // Do  delete
-        entityManagerSession.doTransactedAction(EntityManagerContainer.<User>create().onResultHandler(em -> UserDAO.delete(em, scopeId, userId))
-                .onAfterHandler((emptyParam) -> entityCache.remove(scopeId, userId)));
+            // Do  delete
+            userRepository.delete(tx, user);
+        });
     }
 
     @Override
@@ -312,18 +304,18 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, scopeId));
 
         // Do the find
-        return entityManagerSession.doAction(EntityManagerContainer.<User>create().onResultHandler(em -> UserDAO.find(em, scopeId, userId))
-                .onBeforeHandler(() -> (User) entityCache.get(scopeId, userId))
-                .onAfterHandler((entity) -> entityCache.put(entity))
-        );
+        return txManager.executeWithResult(tx -> userRepository.find(tx, scopeId, userId));
     }
 
     @Override
     public User findByName(String name) throws KapuaException {
-        return getUserNamedEntityService().findByName(name);
+        // Validation of the fields
+        ArgumentValidator.notEmptyOrNull(name, "name");
+
+        return checkReadAccess(txManager.executeWithResult(tx -> userRepository.findByName(tx, name)));
     }
 
     @Override
@@ -334,8 +326,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
 
         //
         // Do the find
-        return entityManagerSession.doAction(EntityManagerContainer.<User>create().onResultHandler(em -> checkReadAccess(UserDAO.findByExternalId(em, externalId)))
-                .onAfterHandler((entity) -> entityCache.put(entity)));
+        return checkReadAccess(txManager.executeWithResult(tx -> userRepository.findByExternalId(tx, externalId)));
     }
 
     @Override
@@ -346,8 +337,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
 
         //
         // Do the find
-        return entityManagerSession.doAction(EntityManagerContainer.<User>create().onResultHandler(em -> checkReadAccess(UserDAO.findByExternalUsername(em, externalUsername)))
-                .onAfterHandler((entity) -> entityCache.put(entity)));
+        return checkReadAccess(txManager.executeWithResult(tx -> userRepository.findByExternalId(tx, externalUsername)));
     }
 
     @Override
@@ -359,11 +349,11 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
-        return entityManagerSession.doAction(EntityManagerContainer.<UserListResult>create().onResultHandler(em -> UserDAO.query(em, query)));
+        return txManager.executeWithResult(tx -> userRepository.query(tx, query));
     }
 
     @Override
@@ -375,11 +365,11 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
 
         //
         // Check Access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
-        return entityManagerSession.doAction(EntityManagerContainer.<Long>create().onResultHandler(em -> UserDAO.count(em, query)));
+        return txManager.executeWithResult(tx -> userRepository.count(tx, query));
     }
 
     // -----------------------------------------------------------------------------------------
@@ -390,7 +380,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
 
     private User checkReadAccess(User user) throws KapuaException {
         if (user != null) {
-            getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.read, user.getScopeId()));
+            authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, user.getScopeId()));
         }
         return user;
     }
@@ -429,31 +419,4 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
         }
     }
 
-    /**
-     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link AuthorizationService} instance
-     */
-    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
-    protected AuthorizationService getAuthorizationService() {
-        if (authorizationService == null) {
-            authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
-        }
-        return authorizationService;
-    }
-
-    /**
-     * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link PermissionFactory} instance
-     */
-    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
-    protected PermissionFactory getPermissionFactory() {
-        if (permissionFactory == null) {
-            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
-        }
-        return permissionFactory;
-    }
 }
