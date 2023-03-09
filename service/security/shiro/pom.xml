@@ -62,6 +62,14 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-certificate-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-user-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-account-internal</artifactId>
+        </dependency>
 
         <!--  -->
         <!-- External dependencies -->
