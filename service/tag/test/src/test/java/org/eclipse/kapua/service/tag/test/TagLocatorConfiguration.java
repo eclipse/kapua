@@ -60,7 +60,6 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceI
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagRepository;
 import org.eclipse.kapua.service.tag.TagService;
-import org.eclipse.kapua.service.tag.internal.TagEntityManagerFactory;
 import org.eclipse.kapua.service.tag.internal.TagFactoryImpl;
 import org.eclipse.kapua.service.tag.internal.TagImplJpaRepository;
 import org.eclipse.kapua.service.tag.internal.TagServiceImpl;
@@ -112,8 +111,6 @@ public class TagLocatorConfiguration {
 
                 bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
 
-                // Inject actual Tag service related services
-                bind(TagEntityManagerFactory.class).toInstance(new TagEntityManagerFactory());
                 // Inject actual Device service related services
                 DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.getInstance();
                 bind(DeviceEntityManagerFactory.class).toInstance(deviceEntityManagerFactory);

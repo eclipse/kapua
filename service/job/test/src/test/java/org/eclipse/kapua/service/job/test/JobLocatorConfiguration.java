@@ -43,7 +43,6 @@ import org.eclipse.kapua.service.job.execution.JobExecutionService;
 import org.eclipse.kapua.service.job.execution.internal.JobExecutionFactoryImpl;
 import org.eclipse.kapua.service.job.execution.internal.JobExecutionImplJpaRepository;
 import org.eclipse.kapua.service.job.execution.internal.JobExecutionServiceImpl;
-import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.internal.JobFactoryImpl;
 import org.eclipse.kapua.service.job.internal.JobImplJpaRepository;
 import org.eclipse.kapua.service.job.internal.JobQueryImpl;
@@ -116,9 +115,6 @@ public class JobLocatorConfiguration {
                 bind(PermissionFactory.class).toInstance(mockedPermissionFactory);
 
                 // Job
-                JobEntityManagerFactory jobEntityManagerFactory = JobEntityManagerFactory.getInstance();
-                bind(JobEntityManagerFactory.class).toInstance(jobEntityManagerFactory);
-
                 bind(JobFactory.class).toInstance(new JobFactoryImpl());
                 bind(JobService.class).toInstance(new JobServiceImpl(
                         Mockito.mock(ServiceConfigurationManager.class),
