@@ -100,20 +100,23 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implem
     }
 
     @Override
-    public Credential create(final CredentialCreator credentialCreator)
+    public Credential create(CredentialCreator credentialCreatorer)
             throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(credentialCreator, "credentialCreator");
-        ArgumentValidator.notNull(credentialCreator.getScopeId(), "credentialCreator.scopeId");
-        ArgumentValidator.notNull(credentialCreator.getUserId(), "credentialCreator.userId");
-        ArgumentValidator.notNull(credentialCreator.getCredentialType(), "credentialCreator.credentialType");
-        ArgumentValidator.notNull(credentialCreator.getCredentialStatus(), "credentialCreator.credentialStatus");
-        if (credentialCreator.getCredentialType() != CredentialType.API_KEY) {
-            ArgumentValidator.notEmptyOrNull(credentialCreator.getCredentialPlainKey(), "credentialCreator.credentialKey");
+        ArgumentValidator.notNull(credentialCreatorer, "credentialCreator");
+        ArgumentValidator.notNull(credentialCreatorer.getScopeId(), "credentialCreator.scopeId");
+        ArgumentValidator.notNull(credentialCreatorer.getUserId(), "credentialCreator.userId");
+        ArgumentValidator.notNull(credentialCreatorer.getCredentialType(), "credentialCreator.credentialType");
+        ArgumentValidator.notNull(credentialCreatorer.getCredentialStatus(), "credentialCreator.credentialStatus");
+        if (credentialCreatorer.getCredentialType() != CredentialType.API_KEY) {
+            ArgumentValidator.notEmptyOrNull(credentialCreatorer.getCredentialPlainKey(), "credentialCreator.credentialKey");
         }
         final AtomicReference<String> fullKey = new AtomicReference<>(null);
+        final AtomicReference<CredentialCreator> credentialCreatorRef = new AtomicReference<>(credentialCreatorer);
+
         final Credential res = txManager.executeWithResult(tx -> {
+            CredentialCreator credentialCreator = credentialCreatorRef.get();
             if (credentialCreator.getCredentialType() == CredentialType.PASSWORD) {
                 //
                 //
@@ -155,7 +158,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implem
 
                     fullKey.set(pre + key);
 
-                    final CredentialCreatorImpl creator = new CredentialCreatorImpl(credentialCreator.getScopeId(),
+                    credentialCreator = new CredentialCreatorImpl(credentialCreator.getScopeId(),
                             credentialCreator.getUserId(),
                             credentialCreator.getCredentialType(),
                             fullKey.get(),
@@ -184,12 +187,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implem
 
             //
             // Create Credential
-            Credential credentialImpl = new CredentialImpl(credentialCreator.getScopeId(),
-                    credentialCreator.getUserId(),
-                    credentialCreator.getCredentialType(),
-                    cryptedCredential,
-                    credentialCreator.getCredentialStatus(),
-                    credentialCreator.getExpirationDate());
+            Credential credentialImpl = convertCredential(credentialCreator, cryptedCredential);
 
             //
             // Do create
@@ -198,6 +196,15 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implem
         // Do post persist magic on key values
         res.setCredentialKey(fullKey.get());
         return res;
+    }
+
+    private static CredentialImpl convertCredential(CredentialCreator credentialCreator, String credentialKey) {
+        return new CredentialImpl(credentialCreator.getScopeId(),
+                credentialCreator.getUserId(),
+                credentialCreator.getCredentialType(),
+                credentialKey,
+                credentialCreator.getCredentialStatus(),
+                credentialCreator.getExpirationDate());
     }
 
     @Override

@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.scheduler.trigger.fired.quartz;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
@@ -23,15 +22,16 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobDomains;
-import org.eclipse.kapua.service.scheduler.quartz.SchedulerEntityManagerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerRepository;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTrigger;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerCreator;
+import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerListResult;
+import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerRepository;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerService;
+import org.eclipse.kapua.storage.TxManager;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -40,24 +40,32 @@ import javax.inject.Singleton;
  * @since 1.5.0
  */
 @Singleton
-public class FiredTriggerServiceImpl extends AbstractKapuaService implements FiredTriggerService {
+public class FiredTriggerServiceImpl implements FiredTriggerService {
 
-    @Inject
-    private AuthorizationService authorizationService;
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
+    private final TxManager txManager;
+    private final FiredTriggerRepository firedTriggerRepository;
+    private final FiredTriggerFactory firedTriggerFactory;
+    private final TriggerRepository triggerRepository;
 
-    @Inject
-    private PermissionFactory permissionFactory;
-
-    @Inject
-    private TriggerService triggerService;
-
-    public FiredTriggerServiceImpl() {
-        super(SchedulerEntityManagerFactory.getInstance());
+    public FiredTriggerServiceImpl(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            TxManager txManager,
+            FiredTriggerRepository firedTriggerRepository,
+            FiredTriggerFactory firedTriggerFactory,
+            TriggerRepository triggerRepository) {
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.txManager = txManager;
+        this.firedTriggerRepository = firedTriggerRepository;
+        this.firedTriggerFactory = firedTriggerFactory;
+        this.triggerRepository = triggerRepository;
     }
 
     @Override
     public FiredTrigger create(FiredTriggerCreator firedTriggerCreator) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(firedTriggerCreator, "firedTriggerCreator");
         ArgumentValidator.notNull(firedTriggerCreator.getScopeId(), "firedTriggerCreator.scopeId");
@@ -65,19 +73,23 @@ public class FiredTriggerServiceImpl extends AbstractKapuaService implements Fir
         ArgumentValidator.notNull(firedTriggerCreator.getFiredOn(), "firedTriggerCreator.firedOn");
         ArgumentValidator.notNull(firedTriggerCreator.getStatus(), "firedTriggerCreator.status");
 
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
-        //
-        // Check existence of Trigger
-        if (triggerService.find(firedTriggerCreator.getScopeId(), firedTriggerCreator.getTriggerId()) == null) {
-            throw new KapuaEntityNotFoundException(Trigger.TYPE, firedTriggerCreator.getTriggerId());
-        }
+        return txManager.executeWithResult(tx -> {
+            // Check existence of Trigger
+            if (triggerRepository.find(tx, firedTriggerCreator.getScopeId(), firedTriggerCreator.getTriggerId()) == null) {
+                throw new KapuaEntityNotFoundException(Trigger.TYPE, firedTriggerCreator.getTriggerId());
+            }
 
-        //
-        // Do create
-        return entityManagerSession.doTransactedAction(em -> FiredTriggerDAO.create(em, firedTriggerCreator));
+            // Do create
+            FiredTrigger toBeCreated = firedTriggerFactory.newEntity(firedTriggerCreator.getScopeId());
+            toBeCreated.setTriggerId(firedTriggerCreator.getTriggerId());
+            toBeCreated.setFiredOn(firedTriggerCreator.getFiredOn());
+            toBeCreated.setStatus(firedTriggerCreator.getStatus());
+            toBeCreated.setMessage(firedTriggerCreator.getMessage());
+            return firedTriggerRepository.create(tx, toBeCreated);
+        });
     }
 
     @Override
@@ -92,7 +104,7 @@ public class FiredTriggerServiceImpl extends AbstractKapuaService implements Fir
 
         //
         // Do find
-        return entityManagerSession.doAction(em -> FiredTriggerDAO.find(em, scopeId, firedTriggerId));
+        return txManager.executeWithResult(tx -> firedTriggerRepository.find(tx, scopeId, firedTriggerId));
     }
 
     @Override
@@ -107,7 +119,7 @@ public class FiredTriggerServiceImpl extends AbstractKapuaService implements Fir
 
         //
         // Do query
-        return entityManagerSession.doAction(em -> FiredTriggerDAO.query(em, query));
+        return txManager.executeWithResult(tx -> firedTriggerRepository.query(tx, query));
     }
 
     @Override
@@ -122,7 +134,7 @@ public class FiredTriggerServiceImpl extends AbstractKapuaService implements Fir
 
         //
         // Do query
-        return entityManagerSession.doAction(em -> FiredTriggerDAO.count(em, query));
+        return txManager.executeWithResult(tx -> firedTriggerRepository.count(tx, query));
     }
 
     @Override
@@ -138,13 +150,7 @@ public class FiredTriggerServiceImpl extends AbstractKapuaService implements Fir
 
         //
         // Do delete
-        entityManagerSession.doTransactedAction(em -> {
-            if (FiredTriggerDAO.find(em, scopeId, firedTriggerId) == null) {
-                throw new KapuaEntityNotFoundException(FiredTrigger.TYPE, firedTriggerId);
-            }
-
-            return FiredTriggerDAO.delete(em, scopeId, firedTriggerId);
-        });
+        txManager.executeWithResult(tx -> firedTriggerRepository.delete(tx, scopeId, firedTriggerId));
 
     }
 }

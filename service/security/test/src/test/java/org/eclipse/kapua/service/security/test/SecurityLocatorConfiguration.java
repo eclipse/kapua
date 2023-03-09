@@ -141,7 +141,7 @@ public class SecurityLocatorConfiguration {
                         Mockito.mock(ServiceConfigurationManager.class),
                         mockedAuthorization,
                         mockPermissionFactory,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
                         new UserImplJpaRepository(),
                         userFactory,
                         new DuplicateNameCheckerImpl<>(new UserImplJpaRepository(), userFactory::newQuery)));

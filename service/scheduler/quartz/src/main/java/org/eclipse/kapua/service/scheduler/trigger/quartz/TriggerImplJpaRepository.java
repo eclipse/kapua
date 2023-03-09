@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -50,5 +51,14 @@ public class TriggerImplJpaRepository
         for (Trigger trig : triggers.getItems()) {
             this.delete(tx, trig);
         }
+    }
+
+    @Override
+    public Trigger delete(TxContext tx, KapuaId scopeId, KapuaId triggerId) throws KapuaException {
+        final Trigger toBeDeleted = this.find(tx, scopeId, triggerId);
+        if (toBeDeleted == null) {
+            throw new KapuaEntityNotFoundException(Trigger.TYPE, triggerId);
+        }
+        return this.delete(tx, toBeDeleted);
     }
 }
