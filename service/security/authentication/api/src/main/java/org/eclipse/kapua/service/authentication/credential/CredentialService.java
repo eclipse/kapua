@@ -85,4 +85,16 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
      * @throws KapuaException   When something goes wrong
      */
     void validatePassword(KapuaId scopeId, String plainPassword) throws KapuaException;
+
+
+    /**
+     * Return the {@link Credential} within the provided scopeId with the provided credentialId.
+     * The returned object contains the field credentialKey filled with the actual value.
+     *
+     * @param scopeId         The scope ID in which to perform the find
+     * @param credentialId    The ID of the credential to find
+     * @return                The searched Credential
+     * @throws KapuaException When something goes wrong
+     */
+    Credential findWithKey(KapuaId scopeId, KapuaId credentialId) throws KapuaException;
 }

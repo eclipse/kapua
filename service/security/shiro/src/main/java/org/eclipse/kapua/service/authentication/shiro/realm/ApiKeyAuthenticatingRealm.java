@@ -87,7 +87,14 @@ public class ApiKeyAuthenticatingRealm extends KapuaAuthenticatingRealm {
         // Find credential
         Credential credential = null;
         try {
-            credential = KapuaSecurityUtils.doPrivileged(() -> credentialService.findByApiKey(tokenApiKey));
+            credential = KapuaSecurityUtils.doPrivileged(() -> {
+                Credential apiCredential = credentialService.findByApiKey(tokenApiKey);
+                if (apiCredential == null) {
+                    return null;
+                } else {
+                    return credentialService.findWithKey(apiCredential.getScopeId(), apiCredential.getId());
+                }
+            });
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (KapuaIllegalArgumentException ae) {
