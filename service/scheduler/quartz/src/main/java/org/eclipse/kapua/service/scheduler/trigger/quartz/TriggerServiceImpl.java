@@ -12,11 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
-import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
+import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -26,26 +25,31 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.scheduler.SchedulerDomains;
 import org.eclipse.kapua.service.scheduler.exception.TriggerInvalidDatesException;
 import org.eclipse.kapua.service.scheduler.exception.TriggerInvalidSchedulingException;
-import org.eclipse.kapua.service.scheduler.quartz.SchedulerEntityManagerFactory;
 import org.eclipse.kapua.service.scheduler.quartz.driver.QuartzTriggerDriver;
 import org.eclipse.kapua.service.scheduler.quartz.driver.exception.TriggerNeverFiresException;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerRepository;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
-import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionRepository;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
+import org.eclipse.kapua.storage.TxContext;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * {@link TriggerService} implementation.
@@ -53,7 +57,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @Singleton
-public class TriggerServiceImpl extends AbstractKapuaService implements TriggerService {
+public class TriggerServiceImpl implements TriggerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TriggerServiceImpl.class);
 
@@ -62,93 +66,103 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
      *
      * @since 1.2.0
      */
-    private static TriggerDefinition intervalJobTriggerDefinition;
+    private TriggerDefinition intervalJobTriggerDefinition;
 
     /**
      * Lazy {@code static} reference to {@link TriggerDefinition} named "Cron Job".
      *
      * @since 1.2.0
      */
-    private static TriggerDefinition cronJobTriggerDefinition;
+    private TriggerDefinition cronJobTriggerDefinition;
 
-    @Inject
-    private AuthorizationService authorizationService;
-    @Inject
-    private PermissionFactory permissionFactory;
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
+    private final TxManager txManager;
+    private final TriggerRepository triggerRepository;
+    private final TriggerFactory triggerFactory;
+    private final TriggerDefinitionRepository triggerDefinitionRepository;
+    private final TriggerDefinitionFactory triggerDefinitionFactory;
+    private final DuplicateNameChecker<Trigger> triggerDuplicateNameChecker;
 
-    @Inject
-    private TriggerDefinitionService triggerDefinitionService;
-    @Inject
-    private TriggerDefinitionFactory triggerDefinitionFactory;
-
-    /**
-     * Constructor.
-     *
-     * @since 1.0.0
-     */
-    public TriggerServiceImpl() {
-        super(SchedulerEntityManagerFactory.getInstance(), null);
+    public TriggerServiceImpl(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            TxManager txManager,
+            TriggerRepository triggerRepository,
+            TriggerFactory triggerFactory,
+            TriggerDefinitionRepository triggerDefinitionRepository,
+            TriggerDefinitionFactory triggerDefinitionFactory,
+            DuplicateNameChecker<Trigger> triggerDuplicateNameChecker) {
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.txManager = txManager;
+        this.triggerRepository = triggerRepository;
+        this.triggerFactory = triggerFactory;
+        this.triggerDefinitionRepository = triggerDefinitionRepository;
+        this.triggerDefinitionFactory = triggerDefinitionFactory;
+        this.triggerDuplicateNameChecker = triggerDuplicateNameChecker;
     }
 
     @Override
     public Trigger create(TriggerCreator triggerCreator) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(triggerCreator, "triggerCreator");
         ArgumentValidator.notNull(triggerCreator.getScopeId(), "triggerCreator.scopeId");
         ArgumentValidator.validateEntityName(triggerCreator.getName(), "triggerCreator.name");
         ArgumentValidator.notNull(triggerCreator.getStartsOn(), "triggerCreator.startsOn");
 
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.write, triggerCreator.getScopeId()));
 
-        //
         // Convert creator to new model.
         // To be removed after removing of TriggerCreator.cronScheduling and TriggerCreator.retryInterval
         adaptTriggerCreator(triggerCreator);
 
-        //
-        // Check trigger definition
-        TriggerDefinition triggerDefinition = triggerDefinitionService.find(triggerCreator.getTriggerDefinitionId());
-        if (triggerDefinition == null) {
-            throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, triggerCreator.getTriggerDefinitionId());
-        }
+        return txManager.executeWithResult(tx -> {
+            // Check trigger definition
+            TriggerDefinition triggerDefinition = triggerDefinitionRepository.find(tx, KapuaId.ANY, triggerCreator.getTriggerDefinitionId());
+            if (triggerDefinition == null) {
+                throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, triggerCreator.getTriggerDefinitionId());
+            }
 
-        for (TriggerProperty jsp : triggerCreator.getTriggerProperties()) {
-            for (TriggerProperty jsdp : triggerDefinition.getTriggerProperties()) {
-                if (jsp.getName().equals(jsdp.getName())) {
-                    ArgumentValidator.areEqual(jsp.getPropertyType(), jsdp.getPropertyType(), "triggerCreator.triggerProperties{}." + jsp.getName() + ".propertyType");
-                    ArgumentValidator.notNull(jsp.getPropertyValue(), "triggerCreator.triggerProperties{}." + jsp.getName() + ".propertyValue");
-                    break;
+            final Map<String, TriggerProperty> triggerDefinitionPropertiesByName = triggerDefinition.getTriggerProperties().stream().collect(Collectors.toMap(jsdp -> jsdp.getName(), Function.identity()));
+            for (TriggerProperty jsp : triggerCreator.getTriggerProperties()) {
+                final TriggerProperty jsdp = triggerDefinitionPropertiesByName.get(jsp.getName());
+                if (jsdp == null) {
+                    continue;
+                }
+                ArgumentValidator.areEqual(jsp.getPropertyType(), jsdp.getPropertyType(), "triggerCreator.triggerProperties{}." + jsp.getName() + ".propertyType");
+                ArgumentValidator.notNull(jsp.getPropertyValue(), "triggerCreator.triggerProperties{}." + jsp.getName() + ".propertyValue");
+            }
+
+            // Check duplicate name
+            if (triggerDuplicateNameChecker.countOtherEntitiesWithName(tx, triggerCreator.getName()) > 0) {
+                throw new KapuaDuplicateNameException(triggerCreator.getName());
+            }
+
+            // Check dates
+            if (triggerCreator.getEndsOn() != null) {
+                Date startTime = triggerCreator.getStartsOn();
+                Date endTime = triggerCreator.getEndsOn();
+
+                if (endTime.before(new Date()) ||
+                        startTime.getTime() == endTime.getTime() ||
+                        startTime.after(endTime)) {
+                    throw new TriggerInvalidDatesException(startTime, endTime, new Date());
                 }
             }
-        }
 
-        //
-        // Check duplicate name
-        // TODO: INJECT
-        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, triggerCreator);
+            //
+            // Do create
+            try {
+                Trigger toBeCreated = triggerFactory.newEntity(triggerCreator.getScopeId());
+                toBeCreated.setName(triggerCreator.getName());
+                toBeCreated.setStartsOn(triggerCreator.getStartsOn());
+                toBeCreated.setEndsOn(triggerCreator.getEndsOn());
+                toBeCreated.setTriggerDefinitionId(triggerCreator.getTriggerDefinitionId());
+                toBeCreated.setTriggerProperties(triggerCreator.getTriggerProperties());
 
-        //
-        // Check dates
-        if (triggerCreator.getEndsOn() != null) {
-            Date startTime = triggerCreator.getStartsOn();
-            Date endTime = triggerCreator.getEndsOn();
-
-            if (endTime.before(new Date()) ||
-                    startTime.getTime() == endTime.getTime() ||
-                    startTime.after(endTime)) {
-                throw new TriggerInvalidDatesException(startTime, endTime, new Date());
-            }
-        }
-
-        //
-        // Do create
-        try {
-            return entityManagerSession.doTransactedAction(em -> {
-
-                Trigger trigger = TriggerDAO.create(em, triggerCreator);
+                Trigger trigger = triggerRepository.create(tx, toBeCreated);
 
                 // Quartz Job definition and creation
                 if (getIntervalJobTriggerDefinition().getId().equals(triggerCreator.getTriggerDefinitionId())) {
@@ -159,117 +173,111 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
                 //else {
                 // Is a DeviceConnect trigger
                 //}
-
                 return trigger;
-            });
-        } catch (TriggerNeverFiresException tnfe) {
-            TriggerProperty schedulingTriggerProperty = null;
-            if (getIntervalJobTriggerDefinition().getId().equals(triggerCreator.getTriggerDefinitionId())) {
-                schedulingTriggerProperty = triggerCreator.getTriggerProperty("interval");
-            } else if (getCronJobTriggerDefinition().getId().equals(triggerCreator.getTriggerDefinitionId())) {
-                schedulingTriggerProperty = triggerCreator.getTriggerProperty("cronExpression");
-            }
+            } catch (TriggerNeverFiresException tnfe) {
+                TriggerProperty schedulingTriggerProperty = null;
+                if (getIntervalJobTriggerDefinition().getId().equals(triggerCreator.getTriggerDefinitionId())) {
+                    schedulingTriggerProperty = triggerCreator.getTriggerProperty("interval");
+                } else if (getCronJobTriggerDefinition().getId().equals(triggerCreator.getTriggerDefinitionId())) {
+                    schedulingTriggerProperty = triggerCreator.getTriggerProperty("cronExpression");
+                }
 
-            throw new TriggerInvalidSchedulingException(
-                    tnfe,
-                    triggerCreator.getStartsOn(),
-                    triggerCreator.getEndsOn(),
-                    triggerCreator.getTriggerDefinitionId(),
-                    schedulingTriggerProperty != null ? schedulingTriggerProperty.getPropertyValue() : null);
-        }
+                throw new TriggerInvalidSchedulingException(
+                        tnfe,
+                        triggerCreator.getStartsOn(),
+                        triggerCreator.getEndsOn(),
+                        triggerCreator.getTriggerDefinitionId(),
+                        schedulingTriggerProperty != null ? schedulingTriggerProperty.getPropertyValue() : null);
+            }
+        });
     }
 
     @Override
     public Trigger update(Trigger trigger) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(trigger.getScopeId(), "trigger.scopeId");
         ArgumentValidator.notNull(trigger.getId(), "trigger.id");
         ArgumentValidator.validateEntityName(trigger.getName(), "trigger.name");
 
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.write, trigger.getScopeId()));
 
-        //
-        // Check existence
-        if (find(trigger.getScopeId(), trigger.getId()) == null) {
-            throw new KapuaEntityNotFoundException(trigger.getType(), trigger.getId());
-        }
+        return txManager.executeWithResult(tx -> {
+            // Check existence
+            if (triggerRepository.find(tx, trigger.getScopeId(), trigger.getId()) == null) {
+                throw new KapuaEntityNotFoundException(trigger.getType(), trigger.getId());
+            }
 
-        adaptTrigger(trigger);
+            final Trigger adapted = adaptTrigger(tx, trigger);
+            // Check trigger definition
+            TriggerDefinition triggerDefinition = triggerDefinitionRepository.find(tx, KapuaId.ANY, adapted.getTriggerDefinitionId());
+            if (triggerDefinition == null) {
+                throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, adapted.getTriggerDefinitionId());
+            }
 
-        //
-        // Check trigger definition
-        TriggerDefinition triggerDefinition = triggerDefinitionService.find(trigger.getTriggerDefinitionId());
-        if (triggerDefinition == null) {
-            throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, trigger.getTriggerDefinitionId());
-        }
-
-        for (TriggerProperty jsp : trigger.getTriggerProperties()) {
-            for (TriggerProperty jsdp : triggerDefinition.getTriggerProperties()) {
-                if (jsp.getName().equals(jsdp.getName())) {
-                    ArgumentValidator.areEqual(jsp.getPropertyType(), jsdp.getPropertyType(), "trigger.triggerProperties[]." + jsp.getName());
-                    ArgumentValidator.notNull(jsp.getPropertyType(), "trigger.triggerProperties{}." + jsp.getName());
-                    break;
+            for (TriggerProperty jsp : adapted.getTriggerProperties()) {
+                for (TriggerProperty jsdp : triggerDefinition.getTriggerProperties()) {
+                    if (jsp.getName().equals(jsdp.getName())) {
+                        ArgumentValidator.areEqual(jsp.getPropertyType(), jsdp.getPropertyType(), "trigger.triggerProperties[]." + jsp.getName());
+                        ArgumentValidator.notNull(jsp.getPropertyType(), "trigger.triggerProperties{}." + jsp.getName());
+                        break;
+                    }
                 }
             }
-        }
 
-        //
-        // Check duplicate name
-        // TODO: INJECT
-        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, trigger);
-
-        //
-        // Check dates
-        if (trigger.getEndsOn() != null) {
-            Date startTime = new Date(trigger.getStartsOn().getTime());
-            Date endTime = new Date(trigger.getEndsOn().getTime());
-
-            if (endTime.before(new Date()) ||
-                    startTime.getTime() == (endTime.getTime()) ||
-                    startTime.after(endTime)) {
-                throw new TriggerInvalidDatesException(startTime, endTime, new Date());
+            // Check duplicate name
+            if (triggerDuplicateNameChecker.countOtherEntitiesWithName(tx, adapted.getId(), adapted.getName()) > 0) {
+                throw new KapuaDuplicateNameException(adapted.getName());
             }
-        }
 
-        //
-        // Do update
-        try {
-            return entityManagerSession.doTransactedAction(em -> {
-                Trigger updatedTrigger = TriggerDAO.update(em, trigger);
+            //
+            // Check dates
+            if (adapted.getEndsOn() != null) {
+                Date startTime = new Date(adapted.getStartsOn().getTime());
+                Date endTime = new Date(adapted.getEndsOn().getTime());
+
+                if (endTime.before(new Date()) ||
+                        startTime.getTime() == (endTime.getTime()) ||
+                        startTime.after(endTime)) {
+                    throw new TriggerInvalidDatesException(startTime, endTime, new Date());
+                }
+            }
+
+            //
+            // Do update
+            try {
+                Trigger updatedTrigger = triggerRepository.update(tx, adapted);
 
                 // Quartz Job definition and creation
                 if (getIntervalJobTriggerDefinition().getId().equals(updatedTrigger.getTriggerDefinitionId())) {
                     QuartzTriggerDriver.deleteTrigger(updatedTrigger);
-                    QuartzTriggerDriver.createIntervalJobTrigger(trigger);
+                    QuartzTriggerDriver.createIntervalJobTrigger(adapted);
                 } else if (getCronJobTriggerDefinition().getId().equals(updatedTrigger.getTriggerDefinitionId())) {
                     QuartzTriggerDriver.deleteTrigger(updatedTrigger);
-                    QuartzTriggerDriver.createCronJobTrigger(trigger);
+                    QuartzTriggerDriver.createCronJobTrigger(adapted);
                 }
                 //else {
                 // Is a DeviceConnect trigger
                 //}
 
                 return updatedTrigger;
-            });
-        } catch (TriggerNeverFiresException tnfe) {
-            TriggerProperty schedulingTriggerProperty = null;
-            if (getIntervalJobTriggerDefinition().getId().equals(trigger.getTriggerDefinitionId())) {
-                schedulingTriggerProperty = trigger.getTriggerProperty("interval");
-            } else if (getCronJobTriggerDefinition().getId().equals(trigger.getTriggerDefinitionId())) {
-                schedulingTriggerProperty = trigger.getTriggerProperty("cronExpression");
-            }
+            } catch (TriggerNeverFiresException tnfe) {
+                TriggerProperty schedulingTriggerProperty = null;
+                if (getIntervalJobTriggerDefinition().getId().equals(adapted.getTriggerDefinitionId())) {
+                    schedulingTriggerProperty = adapted.getTriggerProperty("interval");
+                } else if (getCronJobTriggerDefinition().getId().equals(adapted.getTriggerDefinitionId())) {
+                    schedulingTriggerProperty = adapted.getTriggerProperty("cronExpression");
+                }
 
-            throw new TriggerInvalidSchedulingException(
-                    tnfe,
-                    trigger.getStartsOn(),
-                    trigger.getEndsOn(),
-                    trigger.getTriggerDefinitionId(),
-                    schedulingTriggerProperty != null ? schedulingTriggerProperty.getPropertyValue() : null
-            );
-        }
+                throw new TriggerInvalidSchedulingException(
+                        tnfe,
+                        adapted.getStartsOn(),
+                        adapted.getEndsOn(),
+                        adapted.getTriggerDefinitionId(),
+                        schedulingTriggerProperty != null ? schedulingTriggerProperty.getPropertyValue() : null
+                );
+            }
+        });
     }
 
     @Override
@@ -283,43 +291,29 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.delete, scopeId));
 
-        //
-        // Check existence
-        if (find(scopeId, triggerId) == null) {
-            throw new KapuaEntityNotFoundException(Trigger.TYPE, triggerId);
-        }
-
-        //
         // Do delete
-        entityManagerSession.doTransactedAction(em -> {
-            Trigger trigger = TriggerDAO.delete(em, scopeId, triggerId);
-
-            QuartzTriggerDriver.deleteTrigger(trigger);
-
-            return trigger;
-        });
+        QuartzTriggerDriver.deleteTrigger(txManager.executeWithResult(tx -> {
+            return triggerRepository.delete(tx, scopeId, triggerId);
+        }));
     }
 
     @Override
     public Trigger find(KapuaId scopeId, KapuaId triggerId) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(triggerId, "triggerId");
 
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, scopeId));
 
-        //
         // Do find
-        Trigger trigger = entityManagerSession.doAction(em -> TriggerDAO.find(em, scopeId, triggerId));
-
-        if (trigger != null) {
-            adaptTrigger(trigger);
-        }
-
-        return trigger;
+        return txManager.executeWithResult(tx -> {
+            final Trigger trigger = triggerRepository.find(tx, scopeId, triggerId);
+            if (trigger == null) {
+                return null;
+            }
+            return adaptTrigger(tx, trigger);
+        });
     }
 
     @Override
@@ -331,16 +325,17 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, query.getScopeId()));
+        return txManager.executeWithResult(tx -> {
+            //
+            // Do query
+            TriggerListResult triggers = triggerRepository.query(tx, query);
+            final TriggerListResult res = triggerFactory.newListResult();
+            for (Trigger trigger : triggers.getItems()) {
+                res.addItem(adaptTrigger(tx, trigger));
+            }
 
-        //
-        // Do query
-        TriggerListResult triggers = entityManagerSession.doAction(em -> TriggerDAO.query(em, query));
-
-        for (Trigger trigger : triggers.getItems()) {
-            adaptTrigger(trigger);
-        }
-
-        return triggers;
+            return triggers;
+        });
     }
 
     @Override
@@ -355,7 +350,7 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
 
         //
         // Do count
-        return entityManagerSession.doAction(em -> TriggerDAO.count(em, query));
+        return txManager.executeWithResult(tx -> triggerRepository.count(tx, query));
     }
 
     //
@@ -401,7 +396,8 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
      * @since 1.1.0
      */
     private synchronized TriggerDefinition getTriggerDefinition(String triggerDefinitionName) throws KapuaException {
-        TriggerDefinition triggerDefinition = triggerDefinitionService.findByName(triggerDefinitionName);
+        final TriggerDefinition triggerDefinition = txManager.executeWithResult(
+                tx -> triggerDefinitionRepository.findByName(tx, triggerDefinitionName));
 
         if (triggerDefinition == null) {
             throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, triggerDefinitionName);
@@ -433,10 +429,11 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
      * which make use of {@link TriggerDefinition}s
      *
      * @param trigger The {@link Trigger} to adapt.
+     * @return
      * @throws KapuaException In case that {@link TriggerDefinition} is not found.
      * @since 1.1.0
      */
-    private void adaptTrigger(@NotNull Trigger trigger) throws KapuaException {
+    private @NotNull Trigger adaptTrigger(TxContext tx, @NotNull Trigger trigger) throws KapuaException {
         boolean converted = false;
         if (trigger.getRetryInterval() != null) {
             trigger.setTriggerDefinitionId(getIntervalJobTriggerDefinition().getId());
@@ -463,10 +460,11 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
 
         if (converted) {
             try {
-                entityManagerSession.doTransactedAction(em -> TriggerDAO.update(em, trigger));
+                return triggerRepository.update(tx, trigger);
             } catch (Exception e) {
                 LOG.warn("Cannot convert Trigger to new format!", e);
             }
         }
+        return trigger;
     }
 }

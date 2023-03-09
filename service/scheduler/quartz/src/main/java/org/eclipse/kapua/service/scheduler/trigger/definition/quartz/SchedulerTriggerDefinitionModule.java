@@ -12,14 +12,42 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.definition.quartz;
 
+import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionRepository;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService;
+
+import javax.inject.Singleton;
 
 public class SchedulerTriggerDefinitionModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(TriggerDefinitionFactory.class).to(TriggerDefinitionFactoryImpl.class);
-        bind(TriggerDefinitionService.class).to(TriggerDefinitionServiceImpl.class);
+    }
+
+    @Provides
+    @Singleton
+    TriggerDefinitionService triggerDefinitionService(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            TriggerDefinitionRepository triggerDefinitionRepository,
+            TriggerDefinitionFactory triggerDefinitionFactory) {
+        return new TriggerDefinitionServiceImpl(
+                authorizationService,
+                permissionFactory,
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler")),
+                triggerDefinitionRepository,
+                triggerDefinitionFactory);
+    }
+
+    @Provides
+    @Singleton
+    TriggerDefinitionRepository triggerDefinitionRepository() {
+        return new TriggerDefinitionImplJpaRepository();
     }
 }

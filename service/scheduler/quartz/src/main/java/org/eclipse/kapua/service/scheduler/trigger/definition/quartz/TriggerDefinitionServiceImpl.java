@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.scheduler.trigger.definition.quartz;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
@@ -23,13 +22,14 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobDomains;
-import org.eclipse.kapua.service.scheduler.quartz.SchedulerEntityManagerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionCreator;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionListResult;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionRepository;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService;
+import org.eclipse.kapua.storage.TxManager;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -38,35 +38,46 @@ import javax.inject.Singleton;
  * @since 1.1.0
  */
 @Singleton
-public class TriggerDefinitionServiceImpl extends AbstractKapuaService implements TriggerDefinitionService {
+public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
 
-    @Inject
-    private AuthorizationService authorizationService;
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
+    private final TxManager txManager;
+    private final TriggerDefinitionRepository triggerDefinitionRepository;
+    private final TriggerDefinitionFactory triggerDefinitionFactory;
 
-    @Inject
-    private PermissionFactory permissionFactory;
-
-    public TriggerDefinitionServiceImpl() {
-        super(SchedulerEntityManagerFactory.getInstance());
+    public TriggerDefinitionServiceImpl(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            TxManager txManager,
+            TriggerDefinitionRepository triggerDefinitionRepository,
+            TriggerDefinitionFactory triggerDefinitionFactory) {
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.txManager = txManager;
+        this.triggerDefinitionRepository = triggerDefinitionRepository;
+        this.triggerDefinitionFactory = triggerDefinitionFactory;
     }
 
     @Override
-    public TriggerDefinition create(TriggerDefinitionCreator creator) throws KapuaException {
-        //
+    public TriggerDefinition create(TriggerDefinitionCreator triggerDefinitionCreator) throws KapuaException {
         // Argument Validation
-        ArgumentValidator.notNull(creator, "stepDefinitionCreator");
-        ArgumentValidator.notNull(creator.getScopeId(), "stepDefinitionCreator.scopeId");
-        ArgumentValidator.notNull(creator.getTriggerType(), "stepDefinitionCreator.stepType");
-        ArgumentValidator.validateEntityName(creator.getName(), "stepDefinitionCreator.name");
-        ArgumentValidator.notEmptyOrNull(creator.getProcessorName(), "stepDefinitionCreator.processorName");
+        ArgumentValidator.notNull(triggerDefinitionCreator, "triggerDefinitionCreator");
+        ArgumentValidator.notNull(triggerDefinitionCreator.getScopeId(), "triggerDefinitionCreator.scopeId");
+        ArgumentValidator.notNull(triggerDefinitionCreator.getTriggerType(), "triggerDefinitionCreator.stepType");
+        ArgumentValidator.validateEntityName(triggerDefinitionCreator.getName(), "triggerDefinitionCreator.name");
+        ArgumentValidator.notEmptyOrNull(triggerDefinitionCreator.getProcessorName(), "triggerDefinitionCreator.processorName");
 
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
-        //
         // Do create
-        return entityManagerSession.doTransactedAction(em -> TriggerDefinitionDAO.create(em, creator));
+        TriggerDefinition toBeCreated = triggerDefinitionFactory.newEntity(triggerDefinitionCreator.getScopeId());
+        toBeCreated.setName(triggerDefinitionCreator.getName());
+        toBeCreated.setDescription(triggerDefinitionCreator.getDescription());
+        toBeCreated.setProcessorName(triggerDefinitionCreator.getProcessorName());
+        toBeCreated.setTriggerProperties(triggerDefinitionCreator.getTriggerProperties());
+        return txManager.executeWithResult(tx -> triggerDefinitionRepository.create(tx, toBeCreated));
     }
 
     @Override
@@ -83,7 +94,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
-        return entityManagerSession.doTransactedAction(em -> TriggerDefinitionDAO.update(em, triggerDefinition));
+        return txManager.executeWithResult(tx -> triggerDefinitionRepository.update(tx, triggerDefinition));
     }
 
     @Override
@@ -98,7 +109,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do find
-        return entityManagerSession.doAction(em -> TriggerDefinitionDAO.find(em, stepDefinitionId));
+        return txManager.executeWithResult(tx -> triggerDefinitionRepository.find(tx, KapuaId.ANY, stepDefinitionId));
     }
 
     @Override
@@ -113,7 +124,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do find
-        return entityManagerSession.doAction(em -> TriggerDefinitionDAO.find(em, scopeId, stepDefinitionId));
+        return txManager.executeWithResult(tx -> triggerDefinitionRepository.find(tx, scopeId, stepDefinitionId));
     }
 
     @Override
@@ -124,8 +135,8 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do find
-        return entityManagerSession.doAction(em -> {
-            TriggerDefinition triggerDefinition = TriggerDefinitionDAO.findByName(em, name);
+        return txManager.executeWithResult(tx -> {
+            TriggerDefinition triggerDefinition = triggerDefinitionRepository.findByName(tx, name);
             if (triggerDefinition != null) {
                 //
                 // Check Access
@@ -147,7 +158,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do query
-        return entityManagerSession.doAction(em -> TriggerDefinitionDAO.query(em, query));
+        return txManager.executeWithResult(tx -> triggerDefinitionRepository.query(tx, query));
     }
 
     @Override
@@ -162,7 +173,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do query
-        return entityManagerSession.doAction(em -> TriggerDefinitionDAO.count(em, query));
+        return txManager.executeWithResult(tx -> triggerDefinitionRepository.count(tx, query));
     }
 
     @Override
@@ -178,12 +189,12 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do delete
-        entityManagerSession.doTransactedAction(em -> {
-            if (TriggerDefinitionDAO.find(em, scopeId, stepDefinitionId) == null) {
+        txManager.executeWithResult(tx -> {
+            if (triggerDefinitionRepository.find(tx, scopeId, stepDefinitionId) == null) {
                 throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, stepDefinitionId);
             }
 
-            return TriggerDefinitionDAO.delete(em, scopeId, stepDefinitionId);
+            return triggerDefinitionRepository.delete(tx, scopeId, stepDefinitionId);
         });
 
     }

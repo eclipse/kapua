@@ -23,6 +23,9 @@ import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
@@ -44,8 +47,11 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerDefinitionFactoryImpl;
+import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerDefinitionImplJpaRepository;
 import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerDefinitionServiceImpl;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerFactoryImpl;
+import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerImplJpaRepository;
+import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerQueryImpl;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -71,7 +77,8 @@ public class SchedulerLocatorConfiguration {
                 }
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
                 // Inject mocked Permission Factory
-                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
+                final PermissionFactory permissionFactory = Mockito.mock(PermissionFactory.class);
+                bind(PermissionFactory.class).toInstance(permissionFactory);
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
@@ -89,10 +96,28 @@ public class SchedulerLocatorConfiguration {
                         .annotatedWith(Names.named("JobServiceConfigurationManager"))
                         .toInstance(Mockito.mock(ServiceConfigurationManager.class));
                 bind(JobService.class).to(JobServiceImpl.class);
-                bind(TriggerService.class).toInstance(new TriggerServiceImpl());
-                bind(TriggerFactory.class).toInstance(new TriggerFactoryImpl());
-                bind(TriggerDefinitionService.class).toInstance(new TriggerDefinitionServiceImpl());
-                bind(TriggerDefinitionFactory.class).toInstance(new TriggerDefinitionFactoryImpl());
+                final TriggerDefinitionFactoryImpl triggerDefinitionFactory = new TriggerDefinitionFactoryImpl();
+                final TriggerDefinitionImplJpaRepository triggerDefinitionRepository = new TriggerDefinitionImplJpaRepository();
+                final TriggerImplJpaRepository triggerRepository = new TriggerImplJpaRepository();
+                final TriggerFactoryImpl triggerFactory = new TriggerFactoryImpl();
+                bind(TriggerService.class).toInstance(new TriggerServiceImpl(
+                        mockedAuthorization,
+                        permissionFactory,
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler")),
+                        triggerRepository,
+                        triggerFactory,
+                        triggerDefinitionRepository,
+                        triggerDefinitionFactory,
+                        new DuplicateNameCheckerImpl<>(triggerRepository, scopeId -> new TriggerQueryImpl(scopeId))
+                ));
+                bind(TriggerFactory.class).toInstance(triggerFactory);
+                bind(TriggerDefinitionService.class).toInstance(new TriggerDefinitionServiceImpl(
+                        mockedAuthorization,
+                        permissionFactory,
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler")),
+                        triggerDefinitionRepository,
+                        triggerDefinitionFactory));
+                bind(TriggerDefinitionFactory.class).toInstance(triggerDefinitionFactory);
 
                 // bind Query related services
                 bind(QueryFactory.class).toInstance(new QueryFactoryImpl());
