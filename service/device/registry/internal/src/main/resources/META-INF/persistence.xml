@@ -38,6 +38,12 @@
         <class>org.eclipse.kapua.commons.configuration.ServiceConfigImpl</class>
         <class>org.eclipse.kapua.message.internal.KapuaPositionImpl</class>
 
+        <class>org.eclipse.kapua.service.authorization.access.shiro.AccessInfoImpl</class>
+        <class>org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionImpl</class>
+        <class>org.eclipse.kapua.service.authorization.access.shiro.AccessRoleImpl</class>
+        <class>org.eclipse.kapua.service.authorization.role.shiro.RoleImpl</class>
+        <class>org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl</class>
+
         <properties>
             <property name="javax.persistence.lock.timeout" value="1000"/>
             <!-- <property name="eclipselink.logging.level.sql" value="FINE"/>

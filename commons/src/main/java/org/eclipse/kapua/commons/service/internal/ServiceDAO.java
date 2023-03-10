@@ -102,6 +102,9 @@ public class ServiceDAO {
         }
     }
 
+    protected ServiceDAO() {
+    }
+
     /**
      * Persists the {@link KapuaEntity}.
      * <p>
