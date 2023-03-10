@@ -144,15 +144,11 @@ public class AccessRoleServiceImpl implements AccessRoleService {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(accessInfoId, "accessInfoId");
 
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
 
-        //
         // Check cache
-        AccessRoleQuery query = new AccessRoleQueryImpl(scopeId);
-        query.setPredicate(query.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));
-        return txManager.executeWithResult(tx -> accessRoleRepository.query(tx, query));
+        return txManager.executeWithResult(tx -> accessRoleRepository.findByAccessInfoId(tx, scopeId, accessInfoId));
     }
 
     @Override

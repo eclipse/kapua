@@ -27,7 +27,13 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
+import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionRepository;
+import org.eclipse.kapua.service.authorization.access.AccessRoleRepository;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.role.RolePermissionRepository;
+import org.eclipse.kapua.service.authorization.role.RoleRepository;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionRepository;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
@@ -76,12 +82,25 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     @Singleton
     DeviceRegistryService deviceRegistryService(
             @Named("DeviceRegistryServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
-            DeviceRepository repository,
-            DeviceFactory entityFactory) {
-        return new DeviceRegistryServiceImpl(serviceConfigurationManager,
+            DeviceRepository deviceRepository,
+            DeviceFactory deviceFactory,
+            AccessInfoFactory accessInfoFactory,
+            AccessInfoRepository accessInfoRepository,
+            AccessPermissionRepository accessPermissionRepository,
+            AccessRoleRepository accessRoleRepository,
+            RoleRepository roleRepository,
+            RolePermissionRepository rolePermissionRepository) {
+        return new DeviceRegistryServiceImpl(
+                serviceConfigurationManager,
                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
-                repository,
-                entityFactory);
+                deviceRepository,
+                deviceFactory,
+                accessInfoFactory,
+                accessInfoRepository,
+                accessPermissionRepository,
+                accessRoleRepository,
+                roleRepository,
+                rolePermissionRepository);
     }
 
     @Provides

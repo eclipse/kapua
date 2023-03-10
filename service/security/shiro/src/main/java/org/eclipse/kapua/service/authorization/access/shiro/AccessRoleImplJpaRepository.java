@@ -40,6 +40,13 @@ public class AccessRoleImplJpaRepository
     }
 
     @Override
+    public AccessRoleListResult findByAccessInfoId(TxContext txContext, KapuaId scopeId, KapuaId accessInfoId) throws KapuaException {
+        AccessRoleQuery query = new AccessRoleQueryImpl(scopeId);
+        query.setPredicate(query.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));
+        return this.query(txContext, query);
+    }
+
+    @Override
     // This method is overridden for the sole purpose of throwing a different exception if the role did not exist in the first place
     public AccessRole delete(TxContext tx, KapuaId scopeId, KapuaId accessRoleId) throws KapuaException {
         //
