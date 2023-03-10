@@ -32,8 +32,14 @@ import org.eclipse.kapua.qa.common.MockedLocator;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoFactoryImpl;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoImplJpaRepository;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionImplJpaRepository;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleImplJpaRepository;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleImplJpaRepository;
+import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImplJpaRepository;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
@@ -124,7 +130,13 @@ public class DeviceRegistryLocatorConfiguration {
                         Mockito.mock(ServiceConfigurationManager.class),
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
                         new DeviceImplJpaRepository(),
-                        new DeviceFactoryImpl())
+                        new DeviceFactoryImpl(),
+                        new AccessInfoFactoryImpl(),
+                        new AccessInfoImplJpaRepository(),
+                        new AccessPermissionImplJpaRepository(),
+                        new AccessRoleImplJpaRepository(),
+                        new RoleImplJpaRepository(),
+                        new RolePermissionImplJpaRepository())
                 );
             }
         };

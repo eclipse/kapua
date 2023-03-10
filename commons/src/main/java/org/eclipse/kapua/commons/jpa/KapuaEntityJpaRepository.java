@@ -602,7 +602,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
      * @return {@code true} if it is a constraint validation error, {@code false} otherwise.
      * @since 1.0.0
      */
-    private boolean isInsertConstraintViolation(@NonNull PersistenceException persistenceException) {
+    public static boolean isInsertConstraintViolation(@NonNull PersistenceException persistenceException) {
         Throwable cause = persistenceException.getCause();
         while (cause != null && !(cause instanceof SQLException)) {
             cause = cause.getCause();

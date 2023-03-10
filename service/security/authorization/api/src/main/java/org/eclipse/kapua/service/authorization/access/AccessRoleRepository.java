@@ -20,4 +20,6 @@ import org.eclipse.kapua.storage.TxContext;
 public interface AccessRoleRepository extends KapuaEntityRepository<AccessRole, AccessRoleListResult> {
 
     AccessRoleListResult findAll(TxContext txContext, KapuaId scopeId, KapuaId accessInfoId) throws KapuaException;
+
+    AccessRoleListResult findByAccessInfoId(TxContext txContext, KapuaId scopeId, KapuaId accessInfoId) throws KapuaException;
 }

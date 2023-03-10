@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
-import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -173,9 +172,6 @@ public class DeviceManagementOperationRegistryServiceImpl
         return txManager.executeWithResult(tx -> repository.findByOperationId(tx, scopeId, operationId));
     }
 
-    /**
-     * TODO: implement equivalent logic of {@link org.eclipse.kapua.commons.service.internal.ServiceDAO#handleKapuaQueryGroupPredicate(KapuaQuery, Domain, String)}
-     */
     @Override
     public DeviceManagementOperationListResult query(KapuaQuery query) throws KapuaException {
         //
@@ -191,9 +187,6 @@ public class DeviceManagementOperationRegistryServiceImpl
         return txManager.executeWithResult(tx -> repository.query(tx, query));
     }
 
-    /**
-     * TODO: implement equivalent logic of {@link org.eclipse.kapua.commons.service.internal.ServiceDAO#handleKapuaQueryGroupPredicate(KapuaQuery, Domain, String)}
-     */
     @Override
     public long count(KapuaQuery query) throws KapuaException {
         //
