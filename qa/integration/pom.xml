@@ -20,7 +20,9 @@
         <artifactId>kapua-qa</artifactId>
         <version>2.0.0-REPO-SNAPSHOT</version>
     </parent>
-
+    <properties>
+        <maven.toolchain.jdk.version>${kapua-client.maven.toolchain.jdk.version}</maven.toolchain.jdk.version>
+    </properties>
     <artifactId>kapua-qa-integration</artifactId>
 
     <dependencies>

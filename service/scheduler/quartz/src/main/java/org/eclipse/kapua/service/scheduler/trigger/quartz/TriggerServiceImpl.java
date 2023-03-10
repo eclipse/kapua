@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
 import org.eclipse.kapua.KapuaDuplicateNameException;
-import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
@@ -118,6 +117,8 @@ public class TriggerServiceImpl implements TriggerService {
         // Convert creator to new model.
         // To be removed after removing of TriggerCreator.cronScheduling and TriggerCreator.retryInterval
         adaptTriggerCreator(triggerCreator);
+        //TODO: review, added this back just to pass tests, not sure if it is a legit check
+        ArgumentValidator.notNull(triggerCreator.getTriggerDefinitionId(), "triggerCreator.triggerDefinitionId");
 
         return txManager.executeWithResult(tx -> {
             // Check trigger definition
@@ -138,7 +139,7 @@ public class TriggerServiceImpl implements TriggerService {
 
             // Check duplicate name
             if (triggerDuplicateNameChecker.countOtherEntitiesWithName(tx, triggerCreator.getName()) > 0) {
-                throw new KapuaDuplicateNameInAnotherAccountError(triggerCreator.getName());
+                throw new KapuaDuplicateNameException(triggerCreator.getName());
             }
 
             // Check dates
