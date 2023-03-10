@@ -84,7 +84,7 @@ public class AccountLocatorConfiguration {
                 final AccountFactory accountFactory = new AccountFactoryImpl();
                 bind(AccountFactory.class).toInstance(accountFactory);
                 bind(AccountChildrenFinder.class).toInstance(Mockito.mock(AccountChildrenFinder.class));
-                final AccountRepository accountRepository = Mockito.mock(AccountRepository.class);
+                final AccountRepository accountRepository = new AccountImplJpaRepository();
                 bind(AccountService.class).toInstance(new AccountServiceImpl(
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-account")),
                         new AccountImplJpaRepository(),
