@@ -14,15 +14,16 @@
 package org.eclipse.kapua.service.account.internal;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.kapua.KapuaDuplicateNameException;
+import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
-import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
+import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -64,6 +65,7 @@ public class AccountServiceImpl
     private final AccountRepository accountRepository;
     private final PermissionFactory permissionFactory;
     private final AuthorizationService authorizationService;
+    private final DuplicateNameChecker<Account> duplicateNameChecker;
 
     /**
      * Injectable constructor
@@ -72,6 +74,7 @@ public class AccountServiceImpl
      * @param permissionFactory           The {@link PermissionFactory} instance
      * @param authorizationService        The {@link AuthorizationService} instance
      * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance
+     * @param duplicateNameChecker
      * @since 2.0.0
      */
     @Inject
@@ -80,12 +83,13 @@ public class AccountServiceImpl
             AccountRepository accountRepository,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
-            ServiceConfigurationManager serviceConfigurationManager) {
+            ServiceConfigurationManager serviceConfigurationManager, DuplicateNameChecker<Account> duplicateNameChecker) {
         super(serviceConfigurationManager);
         this.txManager = txManager;
         this.accountRepository = accountRepository;
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
+        this.duplicateNameChecker = duplicateNameChecker;
     }
 
     @Override
@@ -125,13 +129,16 @@ public class AccountServiceImpl
 
             //
             // Check duplicate name
-            // TODO: INJECT
-            new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniqueness(this, accountCreator);
-            new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniquenessInAllScopes(this, accountCreator);
+            if (duplicateNameChecker.countOtherEntitiesWithName(tx, accountCreator.getScopeId(), accountCreator.getName()) > 0) {
+                throw new KapuaDuplicateNameException(accountCreator.getName());
+            }
+            if (duplicateNameChecker.countOtherEntitiesWithName(tx, accountCreator.getName()) > 0) {
+                throw new KapuaDuplicateNameInAnotherAccountError(accountCreator.getName());
+            }
 
             //
             // Check that expiration date is no later than parent expiration date
-            Account parentAccount = KapuaSecurityUtils.doPrivileged(() -> find(accountCreator.getScopeId()));
+            Account parentAccount = accountRepository.find(tx, KapuaId.ANY, accountCreator.getScopeId());
             if (parentAccount != null && parentAccount.getExpirationDate() != null) {
                 // parent account never expires no check is needed
                 if (accountCreator.getExpirationDate() == null || parentAccount.getExpirationDate().before(accountCreator.getExpirationDate())) {

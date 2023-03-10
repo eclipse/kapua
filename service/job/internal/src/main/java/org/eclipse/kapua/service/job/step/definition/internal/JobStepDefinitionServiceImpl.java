@@ -14,9 +14,7 @@ package org.eclipse.kapua.service.job.step.definition.internal;
 
 import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
-import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -100,7 +98,6 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
 
     @Override
     public JobStepDefinition update(JobStepDefinition jobStepDefinition) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(jobStepDefinition, "stepDefinition");
         ArgumentValidator.notNull(jobStepDefinition.getScopeId(), "stepDefinition.scopeId");
@@ -108,31 +105,29 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
         ArgumentValidator.validateEntityName(jobStepDefinition.getName(), "jobStepDefinition.name");
         ArgumentValidator.notEmptyOrNull(jobStepDefinition.getProcessorName(), "jobStepDefinition.processorName");
 
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
-        //
-        // Check duplicate name
-        // TODO: INJECT
-        new KapuaNamedEntityServiceUtils(new QueryFactoryImpl()).checkEntityNameUniquenessInAllScopes(this, jobStepDefinition);
+        return txManager.executeWithResult(tx -> {
+            // Check duplicate name
+            if (duplicateNameChecker.countOtherEntitiesWithName(
+                    tx, jobStepDefinition.getScopeId(), jobStepDefinition.getId(), jobStepDefinition.getName()) > 0) {
+                throw new KapuaDuplicateNameInAnotherAccountError(jobStepDefinition.getName());
+            }
 
-        //
-        // Do Update
-        return txManager.executeWithResult(tx -> repository.update(tx, jobStepDefinition));
+            // Do Update
+            return repository.update(tx, jobStepDefinition);
+        });
     }
 
     @Override
     public JobStepDefinition find(KapuaId scopeId, KapuaId stepDefinitionId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(stepDefinitionId, "stepDefinitionId");
 
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
 
-        //
         // Do find
         return txManager.executeWithResult(tx -> repository.find(tx, scopeId, stepDefinitionId));
     }

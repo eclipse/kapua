@@ -69,7 +69,7 @@ public class AccountModule extends AbstractKapuaModule implements Module {
                 accountRepository,
                 permissionFactory,
                 authorizationService,
-                serviceConfigurationManager);
+                serviceConfigurationManager, duplicateNameChecker);
     }
 
     @Provides

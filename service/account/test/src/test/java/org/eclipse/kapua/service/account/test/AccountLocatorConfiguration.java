@@ -102,8 +102,8 @@ public class AccountLocatorConfiguration {
                                         accountFactory,
                                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-account")),
                                         accountRepository)
-                        )
-                ));
+                        ),
+                        duplicateNameChecker));
                 bind(AccountRepository.class).toInstance(new AccountImplJpaRepository());
             }
         };

@@ -15,7 +15,7 @@ package org.eclipse.kapua.commons.jpa;
 import org.eclipse.kapua.KapuaException;
 
 /**
- * Defines the transaction manager behavior used by the {@link EntityManagerSession}
+ * Defines the transaction manager behavior used by the services to wrap repositories
  *
  * @since 1.0
  */

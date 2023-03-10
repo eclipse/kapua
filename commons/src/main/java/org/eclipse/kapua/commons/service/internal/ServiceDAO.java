@@ -15,7 +15,6 @@ package org.eclipse.kapua.commons.service.internal;
 import com.google.common.base.MoreObjects;
 import org.apache.commons.lang.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.KapuaEntityExistsException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
@@ -25,18 +24,12 @@ import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.OrPredicateImpl;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
-import org.eclipse.kapua.model.KapuaNamedEntity;
-import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
-import org.eclipse.kapua.model.domain.Actions;
-import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.FieldSortCriteria;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -48,32 +41,13 @@ import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.model.query.predicate.MatchPredicate;
 import org.eclipse.kapua.model.query.predicate.OrPredicate;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
-import org.eclipse.kapua.service.authorization.access.AccessInfo;
-import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
-import org.eclipse.kapua.service.authorization.access.AccessInfoService;
-import org.eclipse.kapua.service.authorization.access.AccessPermission;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
-import org.eclipse.kapua.service.authorization.access.AccessRole;
-import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
-import org.eclipse.kapua.service.authorization.access.AccessRoleService;
-import org.eclipse.kapua.service.authorization.group.Group;
-import org.eclipse.kapua.service.authorization.group.Groupable;
-import org.eclipse.kapua.service.authorization.permission.Permission;
-import org.eclipse.kapua.service.authorization.role.Role;
-import org.eclipse.kapua.service.authorization.role.RolePermission;
-import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
-import org.eclipse.kapua.service.authorization.role.RolePermissionService;
-import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.storage.KapuaEntityRepository;
-import org.eclipse.kapua.storage.KapuaNamedEntityRepository;
 import org.eclipse.kapua.storage.KapuaUpdatableEntityRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.Embedded;
 import javax.persistence.EntityExistsException;
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -89,7 +63,6 @@ import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EntityType;
 import javax.validation.constraints.Null;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -106,15 +79,6 @@ import java.util.Map;
 public class ServiceDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServiceDAO.class);
-
-    private static final AccessInfoService ACCESS_INFO_SERVICE;
-    private static final AccessInfoFactory ACCESS_INFO_FACTORY;
-
-    private static final AccessPermissionService ACCESS_PERMISSION_SERVICE;
-    private static final AccessRoleService ACCESS_ROLE_SERVICE;
-
-    private static final RoleService ROLE_SERVICE;
-    private static final RolePermissionService ROLE_PERMISSION_SERVICE;
 
     private static final String SQL_ERROR_CODE_CONSTRAINT_VIOLATION = "23505";
 
@@ -136,36 +100,6 @@ public class ServiceDAO {
         } catch (ExceptionInInitializerError kre) {
             LOG.warn("KapuaLocator not available! Access Group feature may be not supported!", kre);
         }
-
-        if (locator != null) {
-            ACCESS_INFO_SERVICE = KapuaLocator.getInstance().getService(AccessInfoService.class);
-            ACCESS_INFO_FACTORY = KapuaLocator.getInstance().getFactory(AccessInfoFactory.class);
-
-            ACCESS_PERMISSION_SERVICE = KapuaLocator.getInstance().getService(AccessPermissionService.class);
-            ACCESS_ROLE_SERVICE = KapuaLocator.getInstance().getService(AccessRoleService.class);
-
-            ROLE_SERVICE = KapuaLocator.getInstance().getService(RoleService.class);
-            ROLE_PERMISSION_SERVICE = KapuaLocator.getInstance().getService(RolePermissionService.class);
-        } else {
-            ACCESS_INFO_SERVICE = null;
-            ACCESS_INFO_FACTORY = null;
-
-            ACCESS_PERMISSION_SERVICE = null;
-            ACCESS_ROLE_SERVICE = null;
-
-            ROLE_SERVICE = null;
-            ROLE_PERMISSION_SERVICE = null;
-        }
-    }
-
-    /**
-     * Constructor.
-     *
-     * @since 1.0.0
-     * @deprecated since 2.0.0 - this is not testable, consider using {@link KapuaEntityRepository} instead
-     */
-    @Deprecated
-    protected ServiceDAO() {
     }
 
     /**
@@ -267,130 +201,6 @@ public class ServiceDAO {
             }
         } else {
             return null;
-        }
-    }
-
-    /**
-     * Finds a {@link KapuaNamedEntity} by {@link KapuaNamedEntity#getName()}.
-     *
-     * @param em    The {@link EntityManager} that holds the transaction.
-     * @param clazz The {@link KapuaNamedEntity} class. This must be the implementing {@code class}.
-     * @param value The value of the {@link KapuaNamedEntity#getName()} to search.
-     * @return The {@link KapuaNamedEntity} found, or {@code null} if not found.
-     * @throws NonUniqueResultException When more than one result is returned
-     * @since 2.0.0
-     * @deprecated since 2.0.0 - this is not testable, consider using {@link KapuaNamedEntityRepository#findByName(org.eclipse.kapua.storage.TxContext, String)} instead
-     */
-    @Nullable
-    @Deprecated
-    public static <E extends KapuaNamedEntity> E findByName(@NonNull EntityManager em,
-                                                            @NonNull Class<E> clazz,
-                                                            @NonNull Object value) {
-        return findByName(em, clazz, KapuaId.ANY, value);
-    }
-
-    /**
-     * Finds a {@link KapuaNamedEntity} by {@link KapuaNamedEntity#getName()}.
-     *
-     * @param em      The {@link EntityManager} that holds the transaction.
-     * @param clazz   The {@link KapuaNamedEntity} class. This must be the implementing {@code class}.
-     * @param scopeId The {@link KapuaNamedEntity#getScopeId()} in which to look for results.
-     * @param value   The value of the field from which to search.
-     * @return The {@link KapuaNamedEntity} found, or {@code null} if not found.
-     * @throws NonUniqueResultException When more than one result is returned.
-     * @since 1.0.0
-     * @deprecated since 2.0.0 - this is not testable, consider using {@link KapuaNamedEntityRepository#findByName(org.eclipse.kapua.storage.TxContext, KapuaId, String)} instead
-     */
-    @Nullable
-    @Deprecated
-    public static <E extends KapuaNamedEntity> E findByName(@NonNull EntityManager em,
-                                                            @NonNull Class<E> clazz,
-                                                            @NonNull KapuaId scopeId,
-                                                            @NonNull Object value) {
-        return findByField(em, clazz, scopeId, KapuaNamedEntityAttributes.NAME, value);
-    }
-
-    /**
-     * Find a {@link KapuaEntity} by one of its fields.
-     *
-     * @param em    The {@link EntityManager} that holds the transaction.
-     * @param clazz The {@link KapuaEntity} class. This must be the implementing {@code class}.
-     * @param name  The {@link KapuaEntity} name of the field from which to search.
-     * @param value The value of the field from which to search.
-     * @return The {@link KapuaEntity} found, or {@code null} if not found.
-     * @throws NonUniqueResultException When more than one result is returned.
-     * @since 1.0.0
-     */
-    @Nullable
-    public static <E extends KapuaEntity> E findByField(@NonNull EntityManager em,
-                                                        @NonNull Class<E> clazz,
-                                                        @NonNull String name,
-                                                        @NonNull Object value) {
-        return findByField(em, clazz, KapuaId.ANY, name, value);
-    }
-
-    /**
-     * Find a {@link KapuaEntity} by one of its fields.
-     *
-     * @param em      The {@link EntityManager} that holds the transaction.
-     * @param clazz   The {@link KapuaEntity} class. This must be the implementing {@code class}.
-     * @param scopeId The {@link KapuaEntity#getScopeId()} in which to look for results.
-     * @param name    The {@link KapuaEntity} name of the field from which to search.
-     * @param value   The value of the field from which to search.
-     * @return The {@link KapuaEntity} found, or {@code null} if not found.
-     * @throws NonUniqueResultException When more than one result is returned.
-     * @since 1.0.0
-     */
-    @Nullable
-    public static <E extends KapuaEntity> E findByField(@NonNull EntityManager em,
-                                                        @NonNull Class<E> clazz,
-                                                        @NonNull KapuaId scopeId,
-                                                        @NonNull String name,
-                                                        @NonNull Object value) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<E> criteriaSelectQuery = cb.createQuery(clazz);
-
-        //
-        // FROM
-        Root<E> entityRoot = criteriaSelectQuery.from(clazz);
-
-        //
-        // SELECT
-        criteriaSelectQuery.select(entityRoot);
-
-        // name
-        ParameterExpression<String> pName = cb.parameter(String.class, name);
-        Predicate namePredicate = cb.equal(entityRoot.get(name), pName);
-
-        ParameterExpression<KapuaId> pScopeId = null;
-
-        if (!KapuaId.ANY.equals(scopeId)) {
-            pScopeId = cb.parameter(KapuaId.class, KapuaEntityAttributes.SCOPE_ID);
-            Predicate scopeIdPredicate = cb.equal(entityRoot.get(KapuaEntityAttributes.SCOPE_ID), pScopeId);
-
-            Predicate andPredicate = cb.and(namePredicate, scopeIdPredicate);
-            criteriaSelectQuery.where(andPredicate);
-        } else {
-            criteriaSelectQuery.where(namePredicate);
-        }
-
-        TypedQuery<E> query = em.createQuery(criteriaSelectQuery);
-        query.setParameter(pName.getName(), value);
-
-        if (pScopeId != null) {
-            query.setParameter(pScopeId.getName(), scopeId);
-        }
-
-        //
-        // QUERY!
-        List<E> result = query.getResultList();
-        switch (result.size()) {
-            case 0:
-                return null;
-            case 1:
-                return result.get(0);
-            default:
-                throw new NonUniqueResultException(String.format("Multiple %s results found for field %s with value %s", clazz.getName(), pName, value.toString()));
         }
     }
 
@@ -586,39 +396,6 @@ public class ServiceDAO {
         binds.forEach(query::setParameter);
 
         return query.getSingleResult();
-    }
-
-    /**
-     * Deletes a {@link KapuaEntity}.
-     *
-     * @param em       The {@link EntityManager} that holds the transaction.
-     * @param clazz    The {@link KapuaEntity} class. This must be the implementing {@code class}.
-     * @param scopeId  The {@link KapuaEntity#getScopeId()} of the entity to be deleted.
-     * @param entityId The {@link KapuaEntity#getId()} of the entity to be deleted.
-     * @return The deleted {@link KapuaEntity}.
-     * @throws KapuaEntityNotFoundException If the {@link KapuaEntity} does not exists.
-     * @since 1.0.0
-     * @deprecated since 2.0.0 - this is not testable, consider using {@link KapuaEntityRepository#delete(org.eclipse.kapua.storage.TxContext, KapuaId, KapuaId)} instead
-     */
-    @Deprecated
-    public static <E extends KapuaEntity> E delete(@NonNull EntityManager em, @NonNull Class<E> clazz, @NonNull KapuaId scopeId, @NonNull KapuaId entityId)
-            throws KapuaEntityNotFoundException {
-        //
-        // Checking existence
-        E entityToDelete = find(em, clazz, scopeId, entityId);
-
-        //
-        // Deleting if found
-        if (entityToDelete != null) {
-            em.remove(entityToDelete);
-            em.flush();
-        } else {
-            throw new KapuaEntityNotFoundException(clazz.getSimpleName(), entityId);
-        }
-
-        //
-        // Returning deleted entity
-        return entityToDelete;
     }
 
     //
@@ -885,107 +662,6 @@ public class ServiceDAO {
             expressionPath = entityRoot.get(attributeName);
         }
         return expressionPath;
-    }
-
-    /**
-     * Handles the {@link Groupable} property of the {@link KapuaEntity}.
-     *
-     * @param query              The {@link KapuaQuery} to manage.
-     * @param domain             The {@link Domain} inside which the {@link KapuaQuery} param targets.
-     * @param groupPredicateName The name of the {@link Group} id field.
-     * @since 1.0.0
-     */
-    public static void handleKapuaQueryGroupPredicate(@NonNull KapuaQuery query, @NonNull Domain domain, @NonNull String groupPredicateName) throws KapuaException {
-        KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
-        if (ACCESS_INFO_FACTORY != null) {
-            if (kapuaSession != null && !kapuaSession.isTrustedMode()) {
-                handleKapuaQueryGroupPredicate(kapuaSession, query, domain, groupPredicateName);
-            }
-        } else {
-            LOG.warn("'Access Group Permission' feature is disabled");
-        }
-    }
-
-    /**
-     * @param kapuaSession
-     * @param query
-     * @param domain
-     * @param groupPredicateName
-     * @throws KapuaException
-     * @since 1.0.0
-     */
-    private static void handleKapuaQueryGroupPredicate(KapuaSession kapuaSession, KapuaQuery query, Domain domain, String groupPredicateName) throws KapuaException {
-        try {
-            KapuaId userId = kapuaSession.getUserId();
-
-            AccessInfo accessInfo = KapuaSecurityUtils.doPrivileged(() -> ACCESS_INFO_SERVICE.findByUserId(kapuaSession.getScopeId(), userId));
-
-            List<Permission> groupPermissions = new ArrayList<>();
-            if (accessInfo != null) {
-
-                AccessPermissionListResult accessPermissions = KapuaSecurityUtils.doPrivileged(() -> ACCESS_PERMISSION_SERVICE.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
-
-                for (AccessPermission ap : accessPermissions.getItems()) {
-                    if (checkGroupPermission(domain, groupPermissions, ap.getPermission())) {
-                        break;
-                    }
-                }
-
-                AccessRoleListResult accessRoles = KapuaSecurityUtils.doPrivileged(() -> ACCESS_ROLE_SERVICE.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
-
-                for (AccessRole ar : accessRoles.getItems()) {
-                    KapuaId roleId = ar.getRoleId();
-
-                    Role role = KapuaSecurityUtils.doPrivileged(() -> ROLE_SERVICE.find(ar.getScopeId(), roleId));
-
-                    RolePermissionListResult rolePermissions = KapuaSecurityUtils.doPrivileged(() -> ROLE_PERMISSION_SERVICE.findByRoleId(role.getScopeId(), role.getId()));
-
-                    for (RolePermission rp : rolePermissions.getItems()) {
-                        if (checkGroupPermission(domain, groupPermissions, rp.getPermission())) {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            AndPredicate andPredicate = query.andPredicate();
-            if (!groupPermissions.isEmpty()) {
-                int i = 0;
-                KapuaId[] groupsIds = new KapuaEid[groupPermissions.size()];
-                for (Permission p : groupPermissions) {
-                    groupsIds[i++] = p.getGroupId();
-                }
-                andPredicate.and(query.attributePredicate(groupPredicateName, groupsIds));
-            }
-
-            if (query.getPredicate() != null) {
-                andPredicate.and(query.getPredicate());
-            }
-
-            query.setPredicate(andPredicate);
-        } catch (Exception e) {
-            throw KapuaException.internalError(e, "Error while grouping!");
-        }
-    }
-
-    /**
-     * @param domain
-     * @param groupPermissions
-     * @param permission
-     * @return
-     * @since 1.0.0
-     */
-    private static boolean checkGroupPermission(@NonNull Domain domain, @NonNull List<Permission> groupPermissions, @NonNull Permission permission) {
-        if ((permission.getDomain() == null || domain.getName().equals(permission.getDomain())) &&
-                (permission.getAction() == null || Actions.read.equals(permission.getAction()))) {
-            if (permission.getGroupId() == null) {
-                groupPermissions.clear();
-                return true;
-            } else {
-                groupPermissions.add(permission);
-            }
-        }
-        return false;
     }
 
     /**
