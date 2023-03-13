@@ -116,33 +116,28 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
 
     @Override
     public Tag update(Tag tag) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(tag, "tag");
         ArgumentValidator.notNull(tag.getId(), "tag.id");
         ArgumentValidator.notNull(tag.getScopeId(), "tag.scopeId");
         ArgumentValidator.validateEntityName(tag.getName(), "tag.name");
 
-        //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.write, tag.getScopeId()));
+        authorizationService.checkPermission(
+                permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.write, tag.getScopeId()));
 
         // Check duplicate name
         return txManager.executeWithResult(tx -> {
-            //
             // Check existence
             if (tagRepository.find(tx, tag.getScopeId(), tag.getId()) == null) {
                 throw new KapuaEntityNotFoundException(Tag.TYPE, tag.getId());
             }
-
-            //
             // Check duplicate name
-            final long otherEntitiesWithSameName = duplicateNameChecker.countOtherEntitiesWithName(tx, tag.getScopeId(), tag.getId(), tag.getName());
+            final long otherEntitiesWithSameName = duplicateNameChecker.countOtherEntitiesWithName(
+                    tx, tag.getScopeId(), tag.getId(), tag.getName());
             if (otherEntitiesWithSameName > 0) {
                 throw new KapuaDuplicateNameException(tag.getName());
             }
-
-            //
             // Do Update
             return tagRepository.update(tx, tag);
         });

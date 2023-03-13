@@ -188,8 +188,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    DeviceConnectionRepository deviceConnectionRepository(DeviceConnectionFactory entityFactory,
-                                                          DeviceRegistryCache deviceRegistryCache) {
+    DeviceConnectionRepository deviceConnectionRepository(DeviceRegistryCache deviceRegistryCache) {
         return new CachingDeviceConnectionRepository(
                 new DeviceConnectionImplJpaRepository(),
                 deviceRegistryCache

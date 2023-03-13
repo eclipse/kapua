@@ -20,9 +20,10 @@ import org.eclipse.kapua.service.tag.TagRepository;
 import javax.inject.Singleton;
 
 @Singleton
-public class TagImplJpaRepository extends KapuaNamedEntityJpaRepository<Tag, TagImpl, TagListResult> implements TagRepository {
+public class TagImplJpaRepository
+        extends KapuaNamedEntityJpaRepository<Tag, TagImpl, TagListResult>
+        implements TagRepository {
     public TagImplJpaRepository() {
         super(TagImpl.class, () -> new TagListResultImpl());
     }
-
 }

@@ -29,5 +29,4 @@ public interface TxManager {
     public interface TxResultlessConsumer {
         void executeWithoutResult(TxContext txHolder) throws KapuaException;
     }
-
 }

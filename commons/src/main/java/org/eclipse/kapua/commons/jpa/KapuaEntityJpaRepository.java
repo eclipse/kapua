@@ -38,6 +38,8 @@ import org.eclipse.kapua.model.query.predicate.OrPredicate;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.storage.KapuaEntityRepository;
 import org.eclipse.kapua.storage.TxContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.Embedded;
 import javax.persistence.EntityExistsException;
@@ -66,15 +68,17 @@ import java.util.function.Supplier;
 public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L extends KapuaListResult<E>> implements KapuaEntityRepository<E, L> {
     public final Class<C> concreteClass;
     public final Supplier<? extends L> listSupplier;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String SQL_ERROR_CODE_CONSTRAINT_VIOLATION = "23505";
     private static final SystemSetting SYSTEM_SETTING = SystemSetting.getInstance();
     private static final String ESCAPE = SYSTEM_SETTING.getString(SystemSettingKey.DB_CHARACTER_ESCAPE, "\\");
     private static final String LIKE = SYSTEM_SETTING.getString(SystemSettingKey.DB_CHARACTER_WILDCARD_ANY, "%");
     private static final String ANY = SYSTEM_SETTING.getString(SystemSettingKey.DB_CHARACTER_WILDCARD_SINGLE, "_");
-
+    private static final int MAX_INSERT_ALLOWED_RETRY = SYSTEM_SETTING.getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY);
     private static final String ATTRIBUTE_SEPARATOR = ".";
     private static final String ATTRIBUTE_SEPARATOR_ESCAPED = "\\.";
     private static final String COMPARE_ERROR_MESSAGE = "Trying to compare a non-comparable value";
+
 
     public KapuaEntityJpaRepository(
             Class<C> concreteClass,
@@ -86,15 +90,34 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     @Override
     public E create(TxContext txContext, E entity) throws KapuaException {
         final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
+        int retry = 0;
+        boolean succeeded = false;
+        E res = null;
+        do {
+            try {
+                res = doCreate(em, entity);
+                succeeded = true;
+            } catch (KapuaEntityExistsException e) {
+                if (++retry >= MAX_INSERT_ALLOWED_RETRY) {
+                    throw e;
+                }
+                logger.warn("Entity already exists. Cannot insert the entity, try again!");
+            }
+        } while (!succeeded);
+        return res;
+    }
+
+    E doCreate(javax.persistence.EntityManager em, E entity) {
         try {
             em.persist(entity);
             em.flush();
             em.refresh(entity);
+            return entity;
         } catch (EntityExistsException e) {
             throw new KapuaEntityExistsException(e, entity.getId());
         } catch (PersistenceException e) {
             if (isInsertConstraintViolation(e)) {
-                KapuaEntity entityFound = em.find(entity.getClass(), entity.getId());
+                final KapuaEntity entityFound = em.find(entity.getClass(), entity.getId());
                 if (entityFound == null) {
                     throw e;
                 }
@@ -103,7 +126,6 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
                 throw e;
             }
         }
-        return entity;
     }
 
     @Override
