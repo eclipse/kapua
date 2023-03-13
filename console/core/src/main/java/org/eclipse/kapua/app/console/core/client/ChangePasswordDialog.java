@@ -106,7 +106,7 @@ public class ChangePasswordDialog extends SimpleDialog {
         code.setFieldLabel(MSGS.loginCode());
         if (gwtMfaCredentialOptions != null) {
             credentialFormPanel.add(code);
-            DialogUtils.resizeDialog(ChangePasswordDialog.this, 400, 250);
+            DialogUtils.resizeDialog(ChangePasswordDialog.this, 400, 290);
         }
         bodyPanel.add(credentialFormPanel);
     }
