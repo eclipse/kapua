@@ -33,6 +33,7 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
     private String selectedUserName;
 
     private final KapuaButton unlockButton;
+    private final KapuaButton resetPasswordButton;
 
     private static final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
 
@@ -48,6 +49,16 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
                 }
             }
         });
+        resetPasswordButton = new KapuaButton(MSGS.resetPasswordButton(), new KapuaIcon(IconSet.UNDO), new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                GwtCredential selectedCredential = gridSelectionModel.getSelectedItem();
+                if (selectedUserId != null && selectedCredential != null) {
+                    showResetPasswordDialog(selectedCredential);
+                }
+            }
+        });
     }
 
     @Override
@@ -55,6 +66,8 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
         super.onRender(target, index);
         add(new SeparatorToolItem());
         add(getUnlockButton());
+        add(new SeparatorToolItem());
+        add(getResetPasswordButton());
 
         updateButtonsEnabled();
         getEditEntityButton().disable();
@@ -64,6 +77,7 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
         if (getFilterButton() != null) {
             getFilterButton().hide();
         }
+        resetPasswordButton.disable();
         setBorders(true);
     }
 
@@ -115,10 +129,22 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
         return unlockButton;
     }
 
+
+    public KapuaButton getResetPasswordButton() {
+        return resetPasswordButton;
+    }
+
+
     private void showUnlockDialog(GwtCredential selectedCredential) {
         CredentialUnlockDialog dialog = new CredentialUnlockDialog(selectedCredential);
         dialog.addListener(Events.Hide, getHideDialogListener());
         dialog.show();
     }
 
+
+    private void showResetPasswordDialog(GwtCredential selectedCredential) {
+        CredentialResetDialog dialog = new CredentialResetDialog(currentSession, selectedUserId, selectedUserName, selectedCredential);
+        dialog.addListener(Events.Hide, getHideDialogListener());
+        dialog.show();
+    }
 }
