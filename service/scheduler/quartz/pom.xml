@@ -62,5 +62,11 @@
             <artifactId>kapua-job-engine-api</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
+            <version>${eclipselink.version}</version>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 </project>
