@@ -110,19 +110,14 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, roleCreator.getScopeId()));
 
         return txManager.executeWithResult(tx -> {
-
-            //
             // Check entity limit
             serviceConfigurationManager.checkAllowedEntities(roleCreator.getScopeId(), "Roles");
 
-            //
             // Check duplicate name
-            // TODO: INJECT
             if (duplicateNameChecker.countOtherEntitiesWithName(tx, roleCreator.getScopeId(), roleCreator.getName()) > 0) {
                 throw new KapuaDuplicateNameException(roleCreator.getName());
             }
 
-            //
             // If permission are created out of the role scope, check that the current user has the permission on the external scopeId.
             if (roleCreator.getPermissions() != null) {
                 for (Permission p : roleCreator.getPermissions()) {
@@ -132,11 +127,9 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
                 }
             }
 
-            //
             // Check that the given permission matches the definition of the Domains.
             PermissionValidator.validatePermissions(roleCreator.getPermissions());
 
-            //
             // Do create
             Role newRole = new RoleImpl(roleCreator.getScopeId());
 
