@@ -24,7 +24,7 @@ import javax.validation.constraints.Null;
 /**
  * {@link KapuaEntityRepository} utility methods.
  *
- * @since 1.0.0
+ * @since 2.0.0
  */
 public interface KapuaEntityRepository<E extends KapuaEntity, L extends KapuaListResult<E>> {
 

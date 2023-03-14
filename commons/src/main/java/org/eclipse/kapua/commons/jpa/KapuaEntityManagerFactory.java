@@ -39,13 +39,9 @@ import java.util.Map;
  * @since 1.0.0
  */
 public class KapuaEntityManagerFactory implements EntityManagerFactory {
-
     private static final Logger LOG = LoggerFactory.getLogger(KapuaEntityManagerFactory.class);
-
     private static final SystemSetting SYSTEM_SETTING = SystemSetting.getInstance();
-
     private static final String DEFAULT_DATASOURCE_NAME = "kapua-dbpool";
-
     private final EntityManagerFactory entityManagerFactory;
 
     /**
@@ -66,17 +62,15 @@ public class KapuaEntityManagerFactory implements EntityManagerFactory {
      * @since 2.0.0
      */
     public KapuaEntityManagerFactory(String persistenceUnitName, String datasourceName) {
-        //
         // Initialize the EntityManagerFactory
         try {
-
             // JPA configuration overrides
-            Map<String, Object> configOverrides = new HashMap<>();
-
-            configOverrides.put(PersistenceUnitProperties.CACHE_SHARED_DEFAULT, "false"); // This has to be set to false in order to disable the local object cache of EclipseLink.
+            final Map<String, Object> configOverrides = new HashMap<>();
+            // This has to be set to false in order to disable the local object cache of EclipseLink.
+            configOverrides.put(PersistenceUnitProperties.CACHE_SHARED_DEFAULT, "false");
             configOverrides.put(PersistenceUnitProperties.NON_JTA_DATASOURCE, DataSource.getDataSource());
 
-            String targetDatabase = SYSTEM_SETTING.getString(SystemSettingKey.DB_JDBC_DATABASE_TARGET);
+            final String targetDatabase = SYSTEM_SETTING.getString(SystemSettingKey.DB_JDBC_DATABASE_TARGET);
             if (!Strings.isNullOrEmpty(targetDatabase)) {
                 configOverrides.put(PersistenceUnitProperties.TARGET_DATABASE, targetDatabase);
             }

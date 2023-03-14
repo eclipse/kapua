@@ -14,15 +14,19 @@ package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.JpaTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityJpaRepository;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerRepository;
 import org.eclipse.kapua.storage.TxContext;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.Root;
 
 public class TriggerImplJpaRepository
         extends KapuaNamedEntityJpaRepository<Trigger, TriggerImpl, TriggerListResult>
@@ -33,24 +37,21 @@ public class TriggerImplJpaRepository
     }
 
     @Override
-    public void deleteAllByJobId(TxContext tx, KapuaId scopeId, KapuaId jobId) throws KapuaException {
-        //
-        // Find all the triggers that are associated with this job
-        final TriggerQuery query = new TriggerQueryImpl(scopeId);
-        AndPredicate andPredicate = query.andPredicate(
-                query.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_NAME, "jobId"),
-                query.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_VALUE, jobId.toCompactId()),
-                query.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName())
+    public void deleteAllByJobId(TxContext txContext, KapuaId scopeId, KapuaId jobId) {
+        final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
+        final CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        final CriteriaDelete<TriggerImpl> delete = cb.createCriteriaDelete(concreteClass);
+        final Root<TriggerImpl> root = delete.from(concreteClass);
+        final KapuaEid actualScopeId = KapuaEid.parseKapuaId(scopeId);
+        delete.where(
+                // Find all the triggers that are associated with this job
+                cb.and(
+                        cb.equal(root.get(KapuaEntityAttributes.SCOPE_ID), actualScopeId),
+                        cb.equal(root.get("jobId"), jobId.toCompactId())
+                )
         );
-
-        query.setPredicate(andPredicate);
-
-        //
-        // Query for and delete all the triggers that are associated with this job
-        TriggerListResult triggers = this.query(tx, query);
-        for (Trigger trig : triggers.getItems()) {
-            this.delete(tx, trig);
-        }
+        em.createQuery(delete).executeUpdate();
     }
 
     @Override
