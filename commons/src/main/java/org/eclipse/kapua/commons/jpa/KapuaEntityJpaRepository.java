@@ -107,7 +107,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         return res;
     }
 
-    E doCreate(javax.persistence.EntityManager em, E entity) {
+    protected E doCreate(javax.persistence.EntityManager em, E entity) {
         try {
             em.persist(entity);
             em.flush();

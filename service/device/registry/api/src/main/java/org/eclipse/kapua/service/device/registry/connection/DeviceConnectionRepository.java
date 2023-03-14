@@ -12,8 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.storage.KapuaUpdatableEntityRepository;
+import org.eclipse.kapua.storage.TxContext;
 
 public interface DeviceConnectionRepository
         extends KapuaUpdatableEntityRepository<DeviceConnection, DeviceConnectionListResult> {
+    long countByClientId(TxContext tx, KapuaId scopeId, String clientId) throws KapuaException;
 }

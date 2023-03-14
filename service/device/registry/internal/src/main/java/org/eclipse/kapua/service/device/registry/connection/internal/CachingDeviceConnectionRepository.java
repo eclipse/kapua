@@ -74,4 +74,9 @@ public class CachingDeviceConnectionRepository
     public DeviceConnection update(TxContext txContext, DeviceConnection currentEntity, DeviceConnection updatedEntity) throws KapuaException {
         return wrapped.update(txContext, currentEntity, updatedEntity);
     }
+
+    @Override
+    public long countByClientId(TxContext tx, KapuaId scopeId, String clientId) throws KapuaException {
+        return wrapped.countByClientId(tx, scopeId, clientId);
+    }
 }

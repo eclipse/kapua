@@ -94,15 +94,11 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
 
-        //
-        // Check duplicate ClientId
-        DeviceConnectionQuery query = new DeviceConnectionQueryImpl(deviceConnectionCreator.getScopeId());
-        query.setPredicate(query.attributePredicate(DeviceConnectionAttributes.CLIENT_ID, deviceConnectionCreator.getClientId()));
-
         return txManager.executeWithResult(tx -> {
 
             //TODO: check whether this is anywhere efficient
-            if (repository.count(tx, query) > 0) {
+            // Check duplicate ClientId
+            if (repository.countByClientId(tx, deviceConnectionCreator.getScopeId(), deviceConnectionCreator.getClientId()) > 0) {
                 throw new KapuaDuplicateNameException(deviceConnectionCreator.getClientId());
             }
 
