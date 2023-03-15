@@ -18,8 +18,6 @@ import org.eclipse.kapua.commons.core.InterceptorBind;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -57,10 +55,7 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(RaiseServiceEventInterceptor.class);
 
-    private final TxManager txManager = new JpaTxManager(new KapuaEntityManagerFactory("kapua-events"));
     private final EventStoreRecordRepository repository = new EventStoreRecordImplJpaRepository();
-
-    private static final MetricsService METRIC_SERVICE = MetricServiceFactory.getInstance();
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -247,6 +242,8 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
 
     private void updateEventStatus(ServiceEvent serviceEventBus, EventStatus newServiceEventStatus) {
         try {
+            final TxManager txManager = new JpaTxManager(new KapuaEntityManagerFactory("kapua-events"));
+
             serviceEventBus.setStatus(newServiceEventStatus);
             txManager.executeNoResult(tx -> {
                 final EventStoreRecord eventStoreRecord = repository.find(tx, serviceEventBus.getScopeId(), KapuaEid.parseCompactId(serviceEventBus.getId()));
