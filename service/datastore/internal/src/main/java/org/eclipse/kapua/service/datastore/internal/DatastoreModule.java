@@ -24,6 +24,7 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.ChannelInfoFactory;
@@ -49,9 +50,22 @@ public class DatastoreModule extends AbstractKapuaModule {
         bind(ClientInfoFactory.class).to(ClientInfoFactoryImpl.class);
         bind(ClientInfoRegistryService.class).to(ClientInfoRegistryServiceImpl.class);
         bind(MessageStoreFactory.class).to(MessageStoreFactoryImpl.class);
-        bind(MessageStoreService.class).to(MessageStoreServiceImpl.class);
         bind(MetricInfoFactory.class).to(MetricInfoFactoryImpl.class);
         bind(MetricInfoRegistryService.class).to(MetricInfoRegistryServiceImpl.class);
+    }
+
+    @Provides
+    @Singleton
+    MessageStoreService messageStoreService(
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            AccountService accountService,
+            @Named("MessageStoreServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
+        return new MessageStoreServiceImpl(
+                permissionFactory,
+                authorizationService,
+                accountService,
+                serviceConfigurationManager);
     }
 
     @Provides

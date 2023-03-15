@@ -18,7 +18,7 @@ import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreFactoryImpl;
-import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordTransactedJpaRepository;
+import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -103,7 +103,7 @@ public abstract class ServiceEventModule implements ServiceModule {
                         //FIXME: can we inject collaborators here?
                         new JpaTxManager(new KapuaEntityManagerFactory("FIXME!!!")),
                         new EventStoreFactoryImpl(),
-                        new EventStoreRecordTransactedJpaRepository()
+                        new EventStoreRecordImplJpaRepository()
                 ),
                 serviceEventModuleConfiguration.getEntityManagerFactory(),
                 eventbus,

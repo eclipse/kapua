@@ -20,10 +20,10 @@ import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListRes
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.storage.TxContext;
 
-public class EventStoreRecordTransactedJpaRepository
+public class EventStoreRecordImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<EventStoreRecord, EventStoreRecordImpl, EventStoreRecordListResult>
         implements EventStoreRecordRepository {
-    public EventStoreRecordTransactedJpaRepository() {
+    public EventStoreRecordImplJpaRepository() {
         super(EventStoreRecordImpl.class, () -> new EventStoreRecordListResultImpl());
     }
 
