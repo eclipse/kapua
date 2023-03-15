@@ -22,7 +22,6 @@
 
         <!-- event -->
         <class>org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImpl</class>
-        <class>org.eclipse.kapua.commons.event.ServiceEventHousekeeper</class>
 
         <!-- Device -->
         <class>org.eclipse.kapua.service.device.registry.internal.DeviceImpl</class>

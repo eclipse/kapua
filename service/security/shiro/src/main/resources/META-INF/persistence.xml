@@ -37,7 +37,6 @@
 
         <!-- event -->
         <class>org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImpl</class>
-        <class>org.eclipse.kapua.commons.event.ServiceEventHousekeeper</class>
         <class>org.eclipse.kapua.service.user.internal.UserImpl</class>
         <class>org.eclipse.kapua.service.account.internal.AccountImpl</class>
 
@@ -76,7 +75,6 @@
         <class>org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl</class>
         <!-- event -->
         <class>org.eclipse.kapua.commons.event.service.internal.ServiceEventImpl</class>
-        <class>org.eclipse.kapua.commons.event.ServiceEventHousekeeper</class>
 
         <properties>
             <property name="javax.persistence.lock.timeout" value="1000"/>

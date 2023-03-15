@@ -13,7 +13,6 @@
 package org.eclipse.kapua.commons.model.misc;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -27,7 +26,7 @@ public class CollisionServiceImpl extends AbstractKapuaService implements Collis
 
     public CollisionEntity insert(String testField) throws KapuaException {
         CollisionEntityCreator collisionEntityCreator = new CollisionEntityCreator(testField);
-        return entityManagerSession.doAction(EntityManagerContainer.<CollisionEntity>create().onResultHandler(em -> {
+        return entityManagerSession.doAction(em -> {
             CollisionEntity collisionEntity = null;
             try {
                 em.beginTransaction();
@@ -40,7 +39,7 @@ public class CollisionServiceImpl extends AbstractKapuaService implements Collis
                 }
                 throw e;
             }
-        }));
+        });
     }
 
     @Override
