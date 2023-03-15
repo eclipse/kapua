@@ -28,21 +28,29 @@ import com.ibm.jbatch.container.status.JobStatus;
 import com.ibm.jbatch.container.status.StepStatus;
 import com.ibm.jbatch.spi.services.IBatchConfig;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaCheckpointData;
-import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaCheckpointDataDAO;
+import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaCheckpointDataRepository;
+import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaCheckpointDataRepositoryImpl;
 import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaExecutionInstanceData;
-import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaExecutionInstanceDataDAO;
 import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaExecutionInstanceDataFields;
+import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaExecutionInstanceDataRepository;
+import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaExecutionInstanceDataRepositoryImpl;
 import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaJobInstanceData;
-import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaJobInstanceDataDAO;
+import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaJobInstanceDataRepository;
+import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaJobInstanceDataRepositoryImpl;
 import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaJobStatus;
-import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaJobStatusDAO;
+import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaJobStatusRepository;
+import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaJobStatusRepositoryImpl;
 import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaStepExecutionInstanceData;
-import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaStepExecutionInstanceDataDAO;
+import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaStepExecutionInstanceDataRepository;
+import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaStepExecutionInstanceDataRepositoryImpl;
 import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaStepStatus;
-import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaStepStatusDAO;
+import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaStepStatusRepository;
+import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaStepStatusRepositoryImpl;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,12 +90,26 @@ import java.util.stream.Collectors;
  *
  * @since 1.2.0
  */
-public class JPAPersistenceManagerImpl extends AbstractKapuaService implements IPersistenceManagerService {
+public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(JPAPersistenceManagerImpl.class);
+    private final TxManager txManager;
+    private final JpaCheckpointDataRepository checkpointDataRepository;
+    private final JpaExecutionInstanceDataRepository executionInstanceDataRepository;
+    private final JpaJobInstanceDataRepository jobInstanceDataRepository;
+    private final JpaStepStatusRepository stepStatusRepository;
+    private final JpaStepExecutionInstanceDataRepository stepExecutionInstanceDataRepository;
+    private final JpaJobStatusRepository jobStatusRepository;
 
+    //TODO: can these be injected instead?
     public JPAPersistenceManagerImpl() {
-        super(JbatchEntityManagerFactory.getInstance());
+        this.txManager = new JpaTxManager(new KapuaEntityManagerFactory("jbatch"));
+        this.checkpointDataRepository = new JpaCheckpointDataRepositoryImpl();
+        this.executionInstanceDataRepository = new JpaExecutionInstanceDataRepositoryImpl();
+        this.jobInstanceDataRepository = new JpaJobInstanceDataRepositoryImpl();
+        this.stepStatusRepository = new JpaStepStatusRepositoryImpl();
+        this.stepExecutionInstanceDataRepository = new JpaStepExecutionInstanceDataRepositoryImpl();
+        this.jobStatusRepository = new JpaJobStatusRepositoryImpl();
     }
 
     @Override
@@ -100,13 +122,11 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
         LOG.info("jBatch persistence implementation tear down with no actions...");
     }
 
-    //
     // Checkpoint Data
-    //
     @Override
     public void createCheckpointData(CheckpointDataKey checkpointDataKey, CheckpointData checkpointData) {
         try {
-            entityManagerSession.doTransactedAction(em -> JpaCheckpointDataDAO.create(em, checkpointDataKey, checkpointData));
+            txManager.executeNoResult(tx -> checkpointDataRepository.create(tx, checkpointDataKey, checkpointData));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -115,7 +135,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public void updateCheckpointData(CheckpointDataKey checkpointDataKey, CheckpointData checkpointData) {
         try {
-            entityManagerSession.doTransactedAction(em -> JpaCheckpointDataDAO.update(em, checkpointDataKey, checkpointData));
+            txManager.executeNoResult(tx -> checkpointDataRepository.update(tx, checkpointDataKey, checkpointData));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -124,7 +144,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public CheckpointData getCheckpointData(CheckpointDataKey checkpointDataKey) {
         try {
-            JpaCheckpointData jpaCheckpointData = entityManagerSession.doAction(em -> JpaCheckpointDataDAO.find(em, checkpointDataKey));
+            JpaCheckpointData jpaCheckpointData = txManager.executeWithResult(tx -> checkpointDataRepository.find(tx, checkpointDataKey));
             return jpaCheckpointData != null ? jpaCheckpointData.toCheckpointData() : null;
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -142,7 +162,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public JobInstance createJobInstance(String name, String appTag, String jobXml) {
         try {
-            JpaJobInstanceData jpaJobInstanceData = entityManagerSession.doTransactedAction(em -> JpaJobInstanceDataDAO.create(em, name, appTag, jobXml));
+            JpaJobInstanceData jpaJobInstanceData = txManager.executeWithResult(tx -> jobInstanceDataRepository.create(tx, name, appTag, jobXml));
             return jpaJobInstanceData != null ? jpaJobInstanceData.toJobInstance() : null;
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -157,7 +177,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public int jobOperatorGetJobInstanceCount(String jobName, String appTag) {
         try {
-            return entityManagerSession.doAction(em -> JpaJobInstanceDataDAO.getJobInstanceCount(em, jobName, appTag));
+            return txManager.executeWithResult(tx -> jobInstanceDataRepository.getJobInstanceCount(tx, jobName, appTag));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -171,7 +191,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public List<Long> jobOperatorGetJobInstanceIds(String jobName, String appTag, int offset, int limit) {
         try {
-            return entityManagerSession.doAction(em -> JpaJobInstanceDataDAO.getJobInstanceIds(em, jobName, appTag, offset, limit));
+            return txManager.executeWithResult(tx -> jobInstanceDataRepository.getJobInstanceIds(tx, jobName, appTag, offset, limit));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -180,7 +200,8 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public Map<Long, String> jobOperatorGetExternalJobInstanceData() {
         try {
-            return entityManagerSession.doAction(JpaJobInstanceDataDAO::getExternalJobInstanceData);
+            final List<JpaJobInstanceData> jpaJobInstanceData = txManager.executeWithResult(tx -> jobInstanceDataRepository.getExternalJobInstanceData(tx));
+            return jpaJobInstanceData.stream().collect(Collectors.toMap(JpaJobInstanceData::getId, JpaJobInstanceData::getName));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -191,7 +212,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
         // We are currently not using app tags. They always default to "NOTSET".
         // It, at some point, we want to use them. This code below can be uncommented.
         //        try {
-        //            JpaJobInstanceData jobInstanceData = entityManagerSession.onResult(em -> JpaJobInstanceDataDAO.find(em, jobInstanceId));
+        //            JpaJobInstanceData jobInstanceData = entityManagerSession.onResult(tx -> jobInstanceDataRepository.find(tx, jobInstanceId));
         //            return jobInstanceData != null ? jobInstanceData.getAppTag() : null;
         //        } catch (Exception e) {
         //            throw new PersistenceException(e);
@@ -212,7 +233,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
      */
     public int purgeByName(String jobName) {
         try {
-            return entityManagerSession.doTransactedAction(em -> JpaJobInstanceDataDAO.deleteByName(em, jobName));
+            return txManager.executeWithResult(tx -> jobInstanceDataRepository.deleteByName(tx, jobName));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -225,7 +246,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public JobStatus createJobStatus(long jobInstanceId) {
         try {
-            JpaJobStatus jpaJobStatus = entityManagerSession.doTransactedAction(em -> JpaJobStatusDAO.create(em, jobInstanceId));
+            JpaJobStatus jpaJobStatus = txManager.executeWithResult(tx -> jobStatusRepository.create(tx, jobInstanceId));
             return jpaJobStatus != null ? jpaJobStatus.toJobStatus() : null;
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -235,7 +256,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public JobStatus getJobStatus(long jobInstanceId) {
         try {
-            JpaJobStatus jpaJobStatus = entityManagerSession.doAction(em -> JpaJobStatusDAO.find(em, jobInstanceId));
+            JpaJobStatus jpaJobStatus = txManager.executeWithResult(tx -> jobStatusRepository.find(tx, jobInstanceId));
 
             JobStatus jobStatus;
             if (jpaJobStatus != null) {
@@ -245,7 +266,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
             }
 
             if (jobStatus.getJobInstance() == null) {
-                JobInstance jobInstance = entityManagerSession.doAction(em -> JpaJobInstanceDataDAO.find(em, jobInstanceId).toJobInstance());
+                JobInstance jobInstance = txManager.executeWithResult(tx -> jobInstanceDataRepository.find(tx, jobInstanceId).toJobInstance());
 
                 if (jobInstance == null) {
                     jobInstance = new JobInstanceImpl(jobInstanceId);
@@ -262,7 +283,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public void updateJobStatus(long jobInstanceId, JobStatus jobStatus) {
         try {
-            entityManagerSession.doTransactedAction(em -> JpaJobStatusDAO.update(em, jobInstanceId, jobStatus));
+            txManager.executeNoResult(tx -> jobStatusRepository.update(tx, jobInstanceId, jobStatus));
         } catch (KapuaException e) {
             throw new PersistenceException(e);
         }
@@ -275,7 +296,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public RuntimeJobExecution createJobExecution(JobInstance jobInstance, Properties jobParameters, BatchStatus batchStatus) {
         try {
-            JpaExecutionInstanceData jpaExecutionInstanceData = entityManagerSession.doTransactedAction(em -> JpaExecutionInstanceDataDAO.create(em, jobInstance.getInstanceId(), jobParameters, batchStatus, new Timestamp(new Date().getTime())));
+            JpaExecutionInstanceData jpaExecutionInstanceData = txManager.executeWithResult(tx -> executionInstanceDataRepository.create(tx, jobInstance.getInstanceId(), jobParameters, batchStatus, new Timestamp(new Date().getTime())));
 
             RuntimeJobExecution runtimeJobExecution = new RuntimeJobExecution(jobInstance, jpaExecutionInstanceData.getId());
             runtimeJobExecution.setBatchStatus(batchStatus.name());
@@ -291,7 +312,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public RuntimeFlowInSplitExecution createFlowInSplitExecution(JobInstance jobInstance, BatchStatus batchStatus) {
         try {
-            JpaExecutionInstanceData jpaExecutionInstanceData = entityManagerSession.doTransactedAction(em -> JpaExecutionInstanceDataDAO.create(em, jobInstance.getInstanceId(), null, batchStatus, new Timestamp(new Date().getTime())));
+            JpaExecutionInstanceData jpaExecutionInstanceData = txManager.executeWithResult(tx -> executionInstanceDataRepository.create(tx, jobInstance.getInstanceId(), null, batchStatus, new Timestamp(new Date().getTime())));
 
             RuntimeFlowInSplitExecution runtimeFlowInSplitExecution = new RuntimeFlowInSplitExecution(jobInstance, jpaExecutionInstanceData.getId());
             runtimeFlowInSplitExecution.setBatchStatus(batchStatus.name());
@@ -326,7 +347,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
                     throw new IllegalArgumentException(timestampType.name());
             }
 
-            return entityManagerSession.doAction(em -> JpaExecutionInstanceDataDAO.getJobExecutionField(em, jobExecutionId, selectField));
+            return txManager.executeWithResult(tx -> executionInstanceDataRepository.getJobExecutionField(tx, jobExecutionId, selectField));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -335,7 +356,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public String jobOperatorQueryJobExecutionBatchStatus(long jobExecutionId) {
         try {
-            return entityManagerSession.doAction(em -> JpaExecutionInstanceDataDAO.<BatchStatus>getJobExecutionField(em, jobExecutionId, JpaExecutionInstanceDataFields.BATCH_STATUS)).name();
+            return txManager.executeWithResult(tx -> executionInstanceDataRepository.<BatchStatus>getJobExecutionField(tx, jobExecutionId, JpaExecutionInstanceDataFields.BATCH_STATUS)).name();
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -344,7 +365,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public String jobOperatorQueryJobExecutionExitStatus(long key) {
         try {
-            return entityManagerSession.doAction(em -> JpaExecutionInstanceDataDAO.getJobExecutionField(em, key, JpaExecutionInstanceDataFields.EXIT_STATUS));
+            return txManager.executeWithResult(tx -> executionInstanceDataRepository.getJobExecutionField(tx, key, JpaExecutionInstanceDataFields.EXIT_STATUS));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -358,7 +379,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public long jobOperatorQueryJobExecutionJobInstanceId(long key) throws NoSuchJobExecutionException {
         try {
-            Long jobInstanceId = entityManagerSession.doAction(em -> JpaExecutionInstanceDataDAO.getJobExecutionField(em, key, JpaExecutionInstanceDataFields.JOB_INSTANCE_ID));
+            Long jobInstanceId = txManager.executeWithResult(tx -> executionInstanceDataRepository.getJobExecutionField(tx, key, JpaExecutionInstanceDataFields.JOB_INSTANCE_ID));
 
             if (jobInstanceId != null) {
                 return jobInstanceId;
@@ -376,7 +397,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public Properties getParameters(long jobExecutionId) throws NoSuchJobExecutionException {
         try {
-            Properties jobParameters = entityManagerSession.doAction(em -> JpaExecutionInstanceDataDAO.getJobExecutionField(em, jobExecutionId, JpaExecutionInstanceDataFields.PARAMETERS));
+            Properties jobParameters = txManager.executeWithResult(tx -> executionInstanceDataRepository.getJobExecutionField(tx, jobExecutionId, JpaExecutionInstanceDataFields.PARAMETERS));
 
             if (jobParameters != null) {
                 return jobParameters;
@@ -393,7 +414,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public void updateBatchStatusOnly(long executionInstanceDataId, BatchStatus batchStatus, Timestamp updatedOn) {
         try {
-            entityManagerSession.doTransactedAction(em -> JpaExecutionInstanceDataDAO.updateBatchStatus(em, executionInstanceDataId, batchStatus, updatedOn));
+            txManager.executeNoResult(tx -> executionInstanceDataRepository.updateBatchStatus(tx, executionInstanceDataId, batchStatus, updatedOn));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -402,7 +423,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public void updateWithFinalExecutionStatusesAndTimestamps(long executionInstanceDataId, BatchStatus batchStatus, String exitStatus, Timestamp endedOn) {
         try {
-            entityManagerSession.doTransactedAction(em -> JpaExecutionInstanceDataDAO.updateBatchStatusEnded(em, executionInstanceDataId, batchStatus, exitStatus, endedOn));
+            txManager.executeNoResult(tx -> executionInstanceDataRepository.updateBatchStatusEnded(tx, executionInstanceDataId, batchStatus, exitStatus, endedOn));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -411,7 +432,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public void markJobStarted(long executionInstanceDataId, Timestamp startedOn) {
         try {
-            entityManagerSession.doTransactedAction(em -> JpaExecutionInstanceDataDAO.updateBatchStatusStarted(em, executionInstanceDataId, startedOn));
+            txManager.executeNoResult(tx -> executionInstanceDataRepository.updateBatchStatusStarted(tx, executionInstanceDataId, startedOn));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -420,13 +441,15 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public IJobExecution jobOperatorGetJobExecution(long jobExecutionId) {
         try {
-            JpaExecutionInstanceData jpaExecutionInstanceData = entityManagerSession.doAction(em -> JpaExecutionInstanceDataDAO.find(em, jobExecutionId));
-            JpaJobInstanceData jpaJobInstanceData = entityManagerSession.doAction(em -> JpaJobInstanceDataDAO.find(em, jpaExecutionInstanceData.getJobInstanceId()));
+            return txManager.executeWithResult(tx -> {
+                JpaExecutionInstanceData jpaExecutionInstanceData = executionInstanceDataRepository.find(tx, jobExecutionId);
+                JpaJobInstanceData jpaJobInstanceData = jobInstanceDataRepository.find(tx, jpaExecutionInstanceData.getJobInstanceId());
 
-            JobOperatorJobExecution jobExecution = jpaExecutionInstanceData.toJobExecution();
-            jobExecution.setJobName(jpaJobInstanceData.getName());
+                JobOperatorJobExecution jobExecution = jpaExecutionInstanceData.toJobExecution();
+                jobExecution.setJobName(jpaJobInstanceData.getName());
 
-            return jobExecution;
+                return jobExecution;
+            });
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -435,7 +458,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public List<IJobExecution> jobOperatorGetJobExecutions(long jobInstanceId) {
         try {
-            List<JpaExecutionInstanceData> jpaExecutionInstanceDataResult = entityManagerSession.doAction(em -> JpaExecutionInstanceDataDAO.getJobExecutions(em, jobInstanceId));
+            List<JpaExecutionInstanceData> jpaExecutionInstanceDataResult = txManager.executeWithResult(tx -> executionInstanceDataRepository.getJobExecutions(tx, jobInstanceId));
             return jpaExecutionInstanceDataResult.stream().map(JpaExecutionInstanceData::toJobExecution).collect(Collectors.toList());
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -445,7 +468,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public Set<Long> jobOperatorGetRunningExecutions(String jobName) {
         try {
-            return entityManagerSession.doAction(em -> JpaExecutionInstanceDataDAO.getJobRunningExecutions(em, jobName));
+            return txManager.executeWithResult(tx -> executionInstanceDataRepository.getJobRunningExecutions(tx, jobName));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -454,10 +477,10 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public JobStatus getJobStatusFromExecution(long jobExecutionId) {
         try {
-            return entityManagerSession.doAction(em -> {
-                JpaExecutionInstanceData jpaExecutionInstanceData = JpaExecutionInstanceDataDAO.find(em, jobExecutionId);
+            return txManager.executeWithResult(tx -> {
+                JpaExecutionInstanceData jpaExecutionInstanceData = executionInstanceDataRepository.find(tx, jobExecutionId);
 
-                JpaJobStatus jobStatus = JpaJobStatusDAO.find(em, jpaExecutionInstanceData.getJobInstanceId());
+                JpaJobStatus jobStatus = jobStatusRepository.find(tx, jpaExecutionInstanceData.getJobInstanceId());
 
                 return jobStatus.getObjAsJobStatus();
             });
@@ -470,9 +493,9 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public String getTagName(long jobExecutionId) {
         try {
-            JpaJobInstanceData jpaJobInstanceData = entityManagerSession.doAction(em -> {
-                JpaExecutionInstanceData jpaExecutionInstanceData = JpaExecutionInstanceDataDAO.find(em, jobExecutionId);
-                return JpaJobInstanceDataDAO.find(em, jpaExecutionInstanceData.getJobInstanceId());
+            JpaJobInstanceData jpaJobInstanceData = txManager.executeWithResult(tx -> {
+                JpaExecutionInstanceData jpaExecutionInstanceData = executionInstanceDataRepository.find(tx, jobExecutionId);
+                return jobInstanceDataRepository.find(tx, jpaExecutionInstanceData.getJobInstanceId());
             });
             return jpaJobInstanceData.getAppTag();
         } catch (Exception e) {
@@ -483,7 +506,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public long getMostRecentExecutionId(long jobInstanceId) {
         try {
-            JpaExecutionInstanceData jpaExecutionInstanceData = entityManagerSession.doAction(em -> JpaExecutionInstanceDataDAO.getMostRecentByJobInstance(em, jobInstanceId));
+            JpaExecutionInstanceData jpaExecutionInstanceData = txManager.executeWithResult(tx -> executionInstanceDataRepository.getMostRecentByJobInstance(tx, jobInstanceId));
             return jpaExecutionInstanceData.getId();
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -496,7 +519,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public StepExecutionImpl createStepExecution(long jobExecutionId, StepContextImpl stepContext) {
         try {
-            JpaStepExecutionInstanceData jpaStepExecutionInstanceData = entityManagerSession.doTransactedAction(em -> JpaStepExecutionInstanceDataDAO.insert(em, jobExecutionId, stepContext));
+            JpaStepExecutionInstanceData jpaStepExecutionInstanceData = txManager.executeWithResult(tx -> stepExecutionInstanceDataRepository.insert(tx, jobExecutionId, stepContext));
             return jpaStepExecutionInstanceData != null ? jpaStepExecutionInstanceData.toStepExecution() : null;
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -506,7 +529,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public void updateStepExecution(StepContextImpl stepContext) {
         try {
-            entityManagerSession.doTransactedAction(em -> JpaStepExecutionInstanceDataDAO.update(em, stepContext));
+            txManager.executeNoResult(tx -> stepExecutionInstanceDataRepository.update(tx, stepContext));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -515,7 +538,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public Map<String, StepExecution> getMostRecentStepExecutionsForJobInstance(long jobInstanceId) {
         try {
-            return entityManagerSession.doAction(em -> JpaStepExecutionInstanceDataDAO.getExternalJobInstanceData(em, jobInstanceId));
+            return txManager.executeWithResult(tx -> stepExecutionInstanceDataRepository.getExternalJobInstanceData(tx, jobInstanceId));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -524,7 +547,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public List<StepExecution> getStepExecutionsForJobExecution(long jobExecutionId) {
         try {
-            return entityManagerSession.doAction(em -> JpaStepExecutionInstanceDataDAO.getStepExecutionsByJobExecution(em, jobExecutionId));
+            return txManager.executeWithResult(tx -> stepExecutionInstanceDataRepository.getStepExecutionsByJobExecution(tx, jobExecutionId));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -533,7 +556,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public StepExecution getStepExecutionByStepExecutionId(long stepExecId) {
         try {
-            JpaStepExecutionInstanceData jpaStepExecutionInstanceData = entityManagerSession.doAction(em -> JpaStepExecutionInstanceDataDAO.find(em, stepExecId));
+            JpaStepExecutionInstanceData jpaStepExecutionInstanceData = txManager.executeWithResult(tx -> stepExecutionInstanceDataRepository.find(tx, stepExecId));
             return jpaStepExecutionInstanceData != null ? jpaStepExecutionInstanceData.toStepExecution() : null;
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -546,7 +569,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public StepStatus createStepStatus(long stepExecutionId) {
         try {
-            JpaStepStatus jpaStepStatus = entityManagerSession.doTransactedAction(em -> JpaStepStatusDAO.create(em, stepExecutionId));
+            JpaStepStatus jpaStepStatus = txManager.executeWithResult(tx -> stepStatusRepository.create(tx, stepExecutionId));
             return jpaStepStatus != null ? jpaStepStatus.toStepStatus() : null;
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -556,7 +579,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public StepStatus getStepStatus(long jobInstanceId, String stepName) {
         try {
-            JpaStepStatus jpaStepStatus = entityManagerSession.doAction(em -> JpaStepStatusDAO.getStepStatusByJobInstance(em, jobInstanceId, stepName));
+            JpaStepStatus jpaStepStatus = txManager.executeWithResult(tx -> stepStatusRepository.getStepStatusByJobInstance(tx, jobInstanceId, stepName));
             return jpaStepStatus != null ? jpaStepStatus.toStepStatus() : null;
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -566,7 +589,7 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
     @Override
     public void updateStepStatus(long stepExecutionId, StepStatus stepStatus) {
         try {
-            entityManagerSession.doTransactedAction(em -> JpaStepStatusDAO.update(em, stepExecutionId, stepStatus));
+            txManager.executeNoResult(tx -> stepStatusRepository.update(tx, stepExecutionId, stepStatus));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }

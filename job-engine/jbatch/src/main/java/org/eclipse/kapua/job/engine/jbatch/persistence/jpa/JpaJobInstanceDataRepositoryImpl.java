@@ -13,24 +13,18 @@
 package org.eclipse.kapua.job.engine.jbatch.persistence.jpa;
 
 import com.ibm.jbatch.container.impl.PartitionedStepBuilder;
-import org.eclipse.kapua.commons.jpa.EntityManager;
+import org.eclipse.kapua.commons.jpa.JpaTxContext;
+import org.eclipse.kapua.storage.TxContext;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-/**
- * Service DAO for {@link JpaJobInstanceData}.
- *
- * @since 1.2.0
- */
-public class JpaJobInstanceDataDAO {
+public class JpaJobInstanceDataRepositoryImpl implements JpaJobInstanceDataRepository {
 
-    private JpaJobInstanceDataDAO() {
-    }
-
-    public static JpaJobInstanceData create(EntityManager em, String name, String appTag, String jobXml) {
+    @Override
+    public JpaJobInstanceData create(TxContext tx, String name, String appTag, String jobXml) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
 
         JpaJobInstanceData jpaJobInstanceData = new JpaJobInstanceData();
         jpaJobInstanceData.setName(name);
@@ -44,17 +38,24 @@ public class JpaJobInstanceDataDAO {
         return jpaJobInstanceData;
     }
 
-    public static int deleteByName(EntityManager em, String jobName) {
+    @Override
+    public int deleteByName(TxContext tx, String jobName) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+
         TypedQuery<Integer> deleteByNameQuery = em.createNamedQuery("JobInstanceData.deleteByName", Integer.class);
         deleteByNameQuery.setParameter("name", jobName);
         return deleteByNameQuery.executeUpdate();
     }
 
-    public static JpaJobInstanceData find(EntityManager em, long id) {
+    @Override
+    public JpaJobInstanceData find(TxContext tx, long id) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
         return em.find(JpaJobInstanceData.class, id);
     }
 
-    public static Integer getJobInstanceCount(EntityManager em, String jobName, String appTag) {
+    @Override
+    public Integer getJobInstanceCount(TxContext tx, String jobName, String appTag) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
 
         TypedQuery<Long> countQuery = appTag != null ?
                 em.createNamedQuery("JobInstanceData.countByNameTagApp", Long.class) :
@@ -69,7 +70,9 @@ public class JpaJobInstanceDataDAO {
         return countQuery.getSingleResult().intValue();
     }
 
-    public static List<Long> getJobInstanceIds(EntityManager em, String jobName, String appTag, Integer offset, Integer limit) {
+    @Override
+    public List<Long> getJobInstanceIds(TxContext tx, String jobName, String appTag, Integer offset, Integer limit) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
 
         TypedQuery<Long> selectQuery = appTag != null ?
                 em.createNamedQuery("JobInstanceData.selectIdsByNameTagApp", Long.class) :
@@ -91,13 +94,12 @@ public class JpaJobInstanceDataDAO {
         return selectQuery.getResultList();
     }
 
-    public static Map<Long, String> getExternalJobInstanceData(EntityManager em) {
-        TypedQuery<JpaJobInstanceData> selectQuery = em.createNamedQuery("JobInstanceData.selectByName", JpaJobInstanceData.class);
-
+    @Override
+    public List<JpaJobInstanceData> getExternalJobInstanceData(TxContext tx) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final TypedQuery<JpaJobInstanceData> selectQuery = em.createNamedQuery("JobInstanceData.selectByName", JpaJobInstanceData.class);
         selectQuery.setParameter("name", PartitionedStepBuilder.JOB_ID_SEPARATOR + "%");
-
-        List<JpaJobInstanceData> queryResult = selectQuery.getResultList();
-
-        return queryResult.stream().collect(Collectors.toMap(JpaJobInstanceData::getId, JpaJobInstanceData::getName));
+        final List<JpaJobInstanceData> queryResult = selectQuery.getResultList();
+        return queryResult;
     }
 }

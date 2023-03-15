@@ -13,19 +13,16 @@
 package org.eclipse.kapua.job.engine.jbatch.persistence.jpa;
 
 import com.ibm.jbatch.container.status.JobStatus;
-import org.eclipse.kapua.commons.jpa.EntityManager;
+import org.eclipse.kapua.commons.jpa.JpaTxContext;
+import org.eclipse.kapua.storage.TxContext;
 
-/**
- * Service DAO for {@link JpaJobStatus}
- *
- * @since 1.2.0
- */
-public class JpaJobStatusDAO {
+import javax.persistence.EntityManager;
 
-    private JpaJobStatusDAO() {
-    }
+public class JpaJobStatusRepositoryImpl implements JpaJobStatusRepository {
 
-    public static JpaJobStatus create(EntityManager em, long jobInstanceId) {
+    @Override
+    public JpaJobStatus create(TxContext tx, long jobInstanceId) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
         JpaJobStatus jpaJobStatus = new JpaJobStatus();
         jpaJobStatus.setJobInstanceId(jobInstanceId);
         jpaJobStatus.setObj(new JobStatus(jobInstanceId));
@@ -37,8 +34,10 @@ public class JpaJobStatusDAO {
         return jpaJobStatus;
     }
 
-    public static JpaJobStatus update(EntityManager em, long jobInstanceId, JobStatus jobStatus) {
-        JpaJobStatus jpaJobStatus = find(em, jobInstanceId);
+    @Override
+    public JpaJobStatus update(TxContext tx, long jobInstanceId, JobStatus jobStatus) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        JpaJobStatus jpaJobStatus = doFind(em, jobInstanceId);
         jpaJobStatus.setObj(jobStatus);
 
         em.merge(jpaJobStatus);
@@ -48,7 +47,14 @@ public class JpaJobStatusDAO {
         return jpaJobStatus;
     }
 
-    public static JpaJobStatus find(EntityManager em, long jobInstanceId) {
+    @Override
+    public JpaJobStatus find(TxContext tx, long jobInstanceId) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        return doFind(em, jobInstanceId);
+    }
+
+    @Override
+    public JpaJobStatus doFind(EntityManager em, long jobInstanceId) {
         return em.find(JpaJobStatus.class, jobInstanceId);
     }
 }

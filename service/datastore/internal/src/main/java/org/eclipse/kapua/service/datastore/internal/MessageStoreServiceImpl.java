@@ -16,7 +16,7 @@ import com.codahale.metrics.Timer.Context;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -56,7 +56,8 @@ import java.util.UUID;
  * @since 1.0.0
  */
 @Singleton
-public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implements MessageStoreService {
+public class MessageStoreServiceImpl extends KapuaConfigurableServiceLinker implements MessageStoreService {
+
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceImpl.class);
 
     //TODO inject!!!
@@ -90,7 +91,7 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
             AccountService accountService,
             @Named("MessageStoreServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager
     ) {
-        super(entityManagerFactory, null, serviceConfigurationManager);
+        super(serviceConfigurationManager);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         final ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this, accountService);

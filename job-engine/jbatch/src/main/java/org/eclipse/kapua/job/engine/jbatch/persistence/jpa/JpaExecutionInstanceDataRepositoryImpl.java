@@ -14,26 +14,22 @@ package org.eclipse.kapua.job.engine.jbatch.persistence.jpa;
 
 import com.google.common.collect.Sets;
 import com.ibm.jbatch.container.exception.PersistenceException;
-import org.eclipse.kapua.commons.jpa.EntityManager;
+import org.eclipse.kapua.commons.jpa.JpaTxContext;
+import org.eclipse.kapua.storage.TxContext;
 
 import javax.batch.runtime.BatchStatus;
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-/**
- * Service DAO for {@link JpaExecutionInstanceData}.
- *
- * @since 1.2.0
- */
-public class JpaExecutionInstanceDataDAO {
+public class JpaExecutionInstanceDataRepositoryImpl implements JpaExecutionInstanceDataRepository {
 
-    private JpaExecutionInstanceDataDAO() {
-    }
-
-    public static JpaExecutionInstanceData create(EntityManager em, long jobInstanceId, Properties jobParameters, BatchStatus batchStatus, Timestamp timestamp) {
+    @Override
+    public JpaExecutionInstanceData create(TxContext tx, long jobInstanceId, Properties jobParameters, BatchStatus batchStatus, Timestamp timestamp) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
         try {
             JpaExecutionInstanceData jpaExecutionInstanceData = new JpaExecutionInstanceData();
             jpaExecutionInstanceData.setJobInstanceId(jobInstanceId);
@@ -52,9 +48,11 @@ public class JpaExecutionInstanceDataDAO {
         }
     }
 
-    public static JpaExecutionInstanceData updateBatchStatus(EntityManager em, long jobExecutionId, BatchStatus batchStatus, Timestamp updatedOn) {
+    @Override
+    public JpaExecutionInstanceData updateBatchStatus(TxContext tx, long jobExecutionId, BatchStatus batchStatus, Timestamp updatedOn) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
         try {
-            JpaExecutionInstanceData jpaExecutionInstanceData = find(em, jobExecutionId);
+            JpaExecutionInstanceData jpaExecutionInstanceData = JpaExecutionInstanceDataRepository.doFind(em, jobExecutionId);
 
             if (jpaExecutionInstanceData != null) {
                 jpaExecutionInstanceData.setBatchStatus(batchStatus);
@@ -71,9 +69,11 @@ public class JpaExecutionInstanceDataDAO {
         }
     }
 
-    public static JpaExecutionInstanceData updateBatchStatusStarted(EntityManager em, long jobExecutionId, Timestamp startedOn) {
+    @Override
+    public JpaExecutionInstanceData updateBatchStatusStarted(TxContext tx, long jobExecutionId, Timestamp startedOn) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
         try {
-            JpaExecutionInstanceData jpaExecutionInstanceData = find(em, jobExecutionId);
+            JpaExecutionInstanceData jpaExecutionInstanceData = JpaExecutionInstanceDataRepository.doFind(em, jobExecutionId);
 
             if (jpaExecutionInstanceData != null) {
                 jpaExecutionInstanceData.setBatchStatus(BatchStatus.STARTED);
@@ -91,9 +91,11 @@ public class JpaExecutionInstanceDataDAO {
         }
     }
 
-    public static JpaExecutionInstanceData updateBatchStatusEnded(EntityManager em, long jobExecutionId, BatchStatus batchStatus, String exitStatus, Timestamp endedOn) {
+    @Override
+    public JpaExecutionInstanceData updateBatchStatusEnded(TxContext tx, long jobExecutionId, BatchStatus batchStatus, String exitStatus, Timestamp endedOn) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
         try {
-            JpaExecutionInstanceData jpaExecutionInstanceData = find(em, jobExecutionId);
+            JpaExecutionInstanceData jpaExecutionInstanceData = JpaExecutionInstanceDataRepository.doFind(em, jobExecutionId);
 
             if (jpaExecutionInstanceData != null) {
                 jpaExecutionInstanceData.setBatchStatus(batchStatus);
@@ -112,29 +114,33 @@ public class JpaExecutionInstanceDataDAO {
         }
     }
 
-    public static JpaExecutionInstanceData find(EntityManager em, long jobExecutionId) {
-        try {
-            return em.find(JpaExecutionInstanceData.class, jobExecutionId);
-        } catch (Exception e) {
-            throw new PersistenceException(e);
-        }
+    @Override
+    public JpaExecutionInstanceData find(TxContext tx, long jobExecutionId) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        return JpaExecutionInstanceDataRepository.doFind(em, jobExecutionId);
     }
 
-    public static List<JpaExecutionInstanceData> getJobExecutions(EntityManager em, long jobInstanceId) {
+    @Override
+    public List<JpaExecutionInstanceData> getJobExecutions(TxContext tx, long jobInstanceId) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
         TypedQuery<JpaExecutionInstanceData> selectQuery = em.createNamedQuery("ExecutionInstanceData.getByJobInstance", JpaExecutionInstanceData.class);
         selectQuery.setParameter("jobInstanceId", jobInstanceId);
 
         return selectQuery.getResultList();
     }
 
-    public static JpaExecutionInstanceData getMostRecentByJobInstance(EntityManager em, long jobInstanceId) {
+    @Override
+    public JpaExecutionInstanceData getMostRecentByJobInstance(TxContext tx, long jobInstanceId) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
         TypedQuery<JpaExecutionInstanceData> selectQuery = em.createNamedQuery("ExecutionInstanceData.getByJobInstance", JpaExecutionInstanceData.class);
         selectQuery.setParameter("jobInstanceId", jobInstanceId);
 
         return selectQuery.getSingleResult();
     }
 
-    public static Set<Long> getJobRunningExecutions(EntityManager em, String jobName) {
+    @Override
+    public Set<Long> getJobRunningExecutions(TxContext tx, String jobName) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
         TypedQuery<Long> selectQuery = em.createNamedQuery("ExecutionInstanceData.getRunningByJobName", Long.class);
         selectQuery.setParameter("status1", BatchStatus.STARTED);
         selectQuery.setParameter("status2", BatchStatus.STARTING);
@@ -144,7 +150,9 @@ public class JpaExecutionInstanceDataDAO {
         return Sets.newHashSet(selectQuery.getResultList());
     }
 
-    public static <T> T getJobExecutionField(EntityManager em, long jobExecutionId, JpaExecutionInstanceDataFields field) {
+    @Override
+    public <T> T getJobExecutionField(TxContext tx, long jobExecutionId, JpaExecutionInstanceDataFields field) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
         JpaExecutionInstanceData jpaExecutionInstanceData = em.find(JpaExecutionInstanceData.class, jobExecutionId);
 
         switch (field) {

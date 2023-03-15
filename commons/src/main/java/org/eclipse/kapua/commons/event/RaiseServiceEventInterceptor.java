@@ -15,20 +15,18 @@ package org.eclipse.kapua.commons.event;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.eclipse.kapua.commons.core.InterceptorBind;
-import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
 import org.eclipse.kapua.commons.service.event.store.api.ServiceEventUtil;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreDAO;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.event.RaiseServiceEvent;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.event.ServiceEvent.EventStatus;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.event.ServiceEventBusException;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
@@ -95,14 +93,13 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
         List<KapuaId> ids = new ArrayList<>();
         Class<?>[] parametersClass = invocation.getMethod().getParameterTypes();
         Object[] arguments = invocation.getArguments();
-        for (int i = 0; i<parametersClass.length; i++) {
+        for (int i = 0; i < parametersClass.length; i++) {
             Class<?> parameterClass = parametersClass[i];
             LOG.debug("Parameter '{}' type {}", i, parameterClass);
             if (KapuaId.class.isAssignableFrom(parameterClass)) {
-                ids.add((KapuaId)arguments[i]);
-            }
-            else if (KapuaEntity.class.isAssignableFrom(parameterClass)) {
-                entities.add((KapuaEntity)arguments[i]);
+                ids.add((KapuaId) arguments[i]);
+            } else if (KapuaEntity.class.isAssignableFrom(parameterClass)) {
+                entities.add((KapuaEntity) arguments[i]);
             }
             // fill the inputs
             inputs.append(arguments[i] != null ? arguments[i].toString() : "null");
@@ -115,12 +112,12 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
         if (LOG.isDebugEnabled()) {
             logFoundEntities(entities, ids);
         }
-        if (invocation.getThis() instanceof AbstractKapuaService) {
+        if (invocation.getThis() instanceof KapuaService) {
             // get the service name
             // the service is wrapped by guice so getThis --> getSuperclass() should provide the intercepted class
             // then keep the interface from this object
             serviceEvent.setOperation(invocation.getMethod().getName());
-            Class<?> wrappedClass = ((AbstractKapuaService) invocation.getThis()).getClass().getSuperclass(); // this object should be not null
+            Class<?> wrappedClass = ((KapuaService) invocation.getThis()).getClass().getSuperclass(); // this object should be not null
             Class<?>[] implementedClass = wrappedClass.getInterfaces();
             // assuming that the KapuaService implemented is specified by the first implementing interface
             String serviceInterfaceName = implementedClass[0].getName();
@@ -130,10 +127,9 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
             String cleanedServiceName = serviceInterfaceName;
             LOG.debug("Service name '{}' ", cleanedServiceName);
             serviceEvent.setService(cleanedServiceName);
-            if (entities.size()>0) {
+            if (entities.size() > 0) {
                 useEntityToFillEvent(serviceEvent, entities);
-            }
-            else if (ids.size()>0) {
+            } else if (ids.size() > 0) {
                 // otherwise assume that the second identifier is the entity id (and the first the scope id, if there are more than one) or take the first one (if there is one)
                 useKapuaIdsToFillEvent(serviceEvent, ids, implementedClass);
             }
@@ -153,7 +149,7 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
     }
 
     private void useEntityToFillEvent(ServiceEvent serviceEvent, List<KapuaEntity> entities) {
-        if (entities.size()>1) {
+        if (entities.size() > 1) {
             LOG.warn("Found more than one KapuaEntity in the parameters! Assuming to use the first one!");
             CommonsMetric.getInstance().getRaiseEventWrongEntity().inc();
         }
@@ -165,15 +161,14 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
     }
 
     private void useKapuaIdsToFillEvent(ServiceEvent serviceEvent, List<KapuaId> ids, Class<?>[] implementedClass) {
-        if (ids.size()>2) {
+        if (ids.size() > 2) {
             LOG.warn("Found more than two KapuaId in the parameters! Assuming to use the first two!");
             CommonsMetric.getInstance().getRaiseEventWrongId().inc();
         }
         if (ids.size() >= 2) {
             serviceEvent.setEntityScopeId(ids.get(0));
             serviceEvent.setEntityId(ids.get(1));
-        }
-        else {
+        } else {
             serviceEvent.setEntityId(ids.get(0));
         }
         String serviceInterface = implementedClass[0].getAnnotatedInterfaces()[0].getType().getTypeName();
@@ -243,10 +238,10 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
         if (invocation.getThis() instanceof AbstractKapuaService) {
             try {
                 serviceEventBus.setStatus(newServiceEventStatus);
-                ((AbstractKapuaService) invocation.getThis()).getEntityManagerSession().doTransactedAction(EntityManagerContainer.<EventStoreRecord>create().onResultHandler(em -> {
+                ((AbstractKapuaService) invocation.getThis()).getEntityManagerSession().doTransactedAction(em -> {
                     return EventStoreDAO.update(em,
                             ServiceEventUtil.mergeToEntity(EventStoreDAO.find(em, serviceEventBus.getScopeId(), KapuaEid.parseCompactId(serviceEventBus.getId())), serviceEventBus));
-                }));
+                });
             } catch (Throwable t) {
                 // this may be a valid condition if the HouseKeeper is doing the update concurrently with this task
                 LOG.warn("Error updating event status: {}", t.getMessage(), t);
