@@ -44,13 +44,16 @@ public class KapuaUpdatableEntityJpaRepository<E extends KapuaUpdatableEntity, C
             throw new KapuaEntityNotFoundException(concreteClass.getSimpleName(), updatedEntity.getId());
         }
 
-        return update(txContext, currentEntity, updatedEntity);
+        return doUpdate(em, currentEntity, updatedEntity);
     }
 
     @Override
     public E update(TxContext txContext, E currentEntity, E updatedEntity) throws KapuaEntityNotFoundException {
         final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
+        return doUpdate(em, currentEntity, updatedEntity);
+    }
 
+    private E doUpdate(javax.persistence.EntityManager em, E currentEntity, E updatedEntity) {
         AbstractKapuaUpdatableEntity updatableEntity = (AbstractKapuaUpdatableEntity) updatedEntity;
         updatableEntity.setCreatedOn(currentEntity.getCreatedOn());
         updatableEntity.setCreatedBy(currentEntity.getCreatedBy());
