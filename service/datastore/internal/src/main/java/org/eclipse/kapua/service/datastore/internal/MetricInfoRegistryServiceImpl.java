@@ -14,7 +14,6 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -63,7 +62,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @Singleton
-public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implements MetricInfoRegistryService {
+public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MetricInfoRegistryServiceImpl.class);
 
@@ -87,8 +86,6 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
      * @throws ClientInitializationException
      */
     public MetricInfoRegistryServiceImpl() throws ClientInitializationException {
-        super(DatastoreEntityManagerFactory.getInstance());
-
         KapuaLocator locator = KapuaLocator.getInstance();
         accountService = locator.getService(AccountService.class);
         authorizationService = locator.getService(AuthorizationService.class);

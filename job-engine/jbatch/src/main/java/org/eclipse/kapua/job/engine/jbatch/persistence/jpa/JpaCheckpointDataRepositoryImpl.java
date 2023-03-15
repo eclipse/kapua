@@ -14,20 +14,21 @@ package org.eclipse.kapua.job.engine.jbatch.persistence.jpa;
 
 import com.ibm.jbatch.container.persistence.CheckpointData;
 import com.ibm.jbatch.container.persistence.CheckpointDataKey;
-import org.eclipse.kapua.commons.jpa.EntityManager;
+import org.eclipse.kapua.commons.jpa.JpaTxContext;
+import org.eclipse.kapua.storage.TxContext;
 
-/**
- * Service DAO for {@link JpaCheckpointData}
- *
- * @since 1.2.0
- */
-public class JpaCheckpointDataDAO {
+import javax.persistence.EntityManager;
 
-    private JpaCheckpointDataDAO() {
+public class JpaCheckpointDataRepositoryImpl implements JpaCheckpointDataRepository {
+
+    @Override
+    public JpaCheckpointData create(TxContext tx, CheckpointDataKey checkpointDataKey, CheckpointData checkpointData) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        return doCreate(em, checkpointDataKey, checkpointData);
     }
 
-    public static JpaCheckpointData create(EntityManager em, CheckpointDataKey checkpointDataKey, CheckpointData checkpointData) {
-
+    @Override
+    public JpaCheckpointData doCreate(EntityManager em, CheckpointDataKey checkpointDataKey, CheckpointData checkpointData) {
         JpaCheckpointData jpaCheckpointData = new JpaCheckpointData();
         jpaCheckpointData.setJobInstanceId(checkpointDataKey.getJobInstanceId());
         jpaCheckpointData.setId(checkpointDataKey.getCommaSeparatedKey());
@@ -40,7 +41,9 @@ public class JpaCheckpointDataDAO {
         return jpaCheckpointData;
     }
 
-    public static JpaCheckpointData update(EntityManager em, CheckpointDataKey key, CheckpointData value) {
+    @Override
+    public JpaCheckpointData update(TxContext tx, CheckpointDataKey key, CheckpointData value) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
 
         JpaCheckpointData jpaCheckpointData = em.find(JpaCheckpointData.class, key.getCommaSeparatedKey());
 
@@ -51,13 +54,15 @@ public class JpaCheckpointDataDAO {
             em.flush();
             em.refresh(jpaCheckpointData);
         } else {
-            jpaCheckpointData = create(em, key, value);
+            jpaCheckpointData = doCreate(em, key, value);
         }
 
         return jpaCheckpointData;
     }
 
-    public static JpaCheckpointData find(EntityManager em, CheckpointDataKey key) {
+    @Override
+    public JpaCheckpointData find(TxContext tx, CheckpointDataKey key) {
+        final EntityManager em = JpaTxContext.extractEntityManager(tx);
         return em.find(JpaCheckpointData.class, key.getCommaSeparatedKey());
     }
 }

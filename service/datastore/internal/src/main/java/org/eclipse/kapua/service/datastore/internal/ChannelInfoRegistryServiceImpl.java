@@ -14,7 +14,6 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -60,7 +59,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @Singleton
-public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService implements ChannelInfoRegistryService {
+public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ChannelInfoRegistryServiceImpl.class);
 
@@ -82,8 +81,6 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
      * @since 1.0.0
      */
     public ChannelInfoRegistryServiceImpl() {
-        super(DatastoreEntityManagerFactory.getInstance());
-
         KapuaLocator locator = KapuaLocator.getInstance();
         accountService = locator.getService(AccountService.class);
         authorizationService = locator.getService(AuthorizationService.class);
