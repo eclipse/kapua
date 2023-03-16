@@ -56,8 +56,6 @@ public class EndpointToolbarGrid extends EntityCRUDToolbar<GwtEndpoint> {
     @Override
     protected void updateButtonEnablement() {
         super.updateButtonEnablement();
-
-        //
         // Force disabled if entity is inherited from parent scopes
         addEntityButton.setEnabled(currentSession.hasPermission(EndpointSessionPermission.writeAll()));
 

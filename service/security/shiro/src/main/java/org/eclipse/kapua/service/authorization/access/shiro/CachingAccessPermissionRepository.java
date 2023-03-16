@@ -55,7 +55,6 @@ public class CachingAccessPermissionRepository
     public AccessPermissionListResult findByAccessInfoId(TxContext tx, KapuaId scopeId, KapuaId accessInfoId) throws KapuaException {
         AccessPermissionListResult listResult = (AccessPermissionListResult) entityCache.getList(scopeId, accessInfoId);
         if (listResult == null) {
-            //
             // Build query
             AccessPermissionQuery query = new AccessPermissionQueryImpl(scopeId);
             query.setPredicate(query.attributePredicate(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfoId));

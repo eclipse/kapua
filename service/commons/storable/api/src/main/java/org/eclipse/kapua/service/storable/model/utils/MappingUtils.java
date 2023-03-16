@@ -44,10 +44,7 @@ public class MappingUtils {
 
     private MappingUtils() {
     }
-
-    //
     // Appends
-    //
 
     /**
      * Appends the provided field/value to the object node
@@ -79,11 +76,11 @@ public class MappingUtils {
                 node.set(name, JSON_NODE_FACTORY.textNode(KapuaDateUtils.formatDate((Date) value)));
             } catch (ParseException e) {
                 LOG.warn(
-                    "The value of mapping {} of value {} is not compatible with type {}. Error: {}",
-                    name,
-                    value,
-                    Date.class,
-                    e.getMessage()
+                        "The value of mapping {} of value {} is not compatible with type {}. Error: {}",
+                        name,
+                        value,
+                        Date.class,
+                        e.getMessage()
                 );
                 throw new InvalidValueMappingException(e, name, value, Date.class);
             }
@@ -95,10 +92,7 @@ public class MappingUtils {
             throw new UnsupportedTypeMappingException(name, value);
         }
     }
-
-    //
     // New
-    //
 
     /**
      * Instantiates a new {@link ArrayNode}.

@@ -60,8 +60,6 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
      */
     public MqttFacade(@NotNull String nodeUri) throws TransportException {
         this.nodeUri = nodeUri;
-
-        //
         // Get the client form the pool
         try {
             MqttClientPool perBrokerMqttClientPool = MqttClientPool.getInstance(nodeUri);
@@ -80,10 +78,7 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
             throw new TransportClientGetException(e, nodeUri);
         }
     }
-
-    //
     // Message management
-    //
 
     @Override
     public void sendAsync(@NotNull MqttMessage mqttMessage) throws TransportTimeoutException, TransportSendException {
@@ -162,10 +157,7 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
             borrowedClient = null;
         }
     }
-
-    //
     // Private methods
-    //
 
     /**
      * Publish the given {@link MqttMessage} using the {@link MqttClient}.

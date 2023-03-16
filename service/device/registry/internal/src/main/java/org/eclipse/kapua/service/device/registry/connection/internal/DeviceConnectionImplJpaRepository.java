@@ -36,8 +36,6 @@ public class DeviceConnectionImplJpaRepository
     //  without TYPE)
     public DeviceConnection update(TxContext tx, DeviceConnection updatedEntity) throws KapuaException {
         DeviceConnection currentEntity = this.find(tx, KapuaId.ANY, updatedEntity.getId());
-
-        //
         // Updating if not null
         if (currentEntity == null) {
             throw new KapuaEntityNotFoundException(DeviceConnection.TYPE, updatedEntity.getId());
@@ -50,11 +48,8 @@ public class DeviceConnectionImplJpaRepository
     // TODO: check if it is correct to remove this statement (already thrown by the delete method, but
     //  without TYPE)
     public DeviceConnection delete(TxContext tx, KapuaId scopeId, KapuaId deviceConnectionId) throws KapuaException {
-        //
         // Checking existence
         DeviceConnection entityToDelete = this.find(tx, scopeId, deviceConnectionId);
-
-        //
         // Deleting if found
         if (entityToDelete == null) {
             throw new KapuaEntityNotFoundException(DeviceConnection.TYPE, deviceConnectionId);

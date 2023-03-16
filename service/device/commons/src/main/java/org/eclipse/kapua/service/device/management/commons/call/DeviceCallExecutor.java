@@ -103,8 +103,6 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
      * @since 1.0.0
      */
     public RS send() throws KapuaEntityNotFoundException, DeviceNotConnectedException, DeviceManagementTimeoutException, DeviceManagementSendException, TransportException {
-
-        //
         // Check Device existence
         Device device;
         try {
@@ -115,20 +113,14 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
         if (device == null) {
             throw new KapuaEntityNotFoundException(Device.TYPE, requestMessage.getDeviceId());
         }
-
-        //
         // Check Device Connection
         if (device.getConnection() == null) {
             throw new DeviceNeverConnectedException(device.getId());
         }
-
-        //
         // Check Device Connection status
         if (!DeviceConnectionStatus.CONNECTED.equals(device.getConnection().getStatus())) {
             throw new DeviceNotConnectedException(device.getId(), device.getConnection().getStatus());
         }
-
-        //
         // Translate the request from Kapua to Device
         try {
             requestMessage.setSentOn(new Date());
@@ -136,8 +128,6 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
             DeviceCall<DeviceRequestMessage<?, ?>, DeviceResponseMessage<?, ?>> deviceCall = DEVICE_CALL_FACTORY.newDeviceCall();
             Translator<RQ, DeviceRequestMessage<?, ?>> tKapuaToClient = Translator.getTranslatorFor(requestMessage.getRequestClass(), deviceCall.getBaseMessageClass());
             DeviceRequestMessage<?, ?> deviceRequestMessage = tKapuaToClient.translate(requestMessage);
-
-            //
             // Send the request
             DeviceResponseMessage<?, ?> responseMessage = null;
             switch (requestMessage.getChannel().getMethod()) {
@@ -167,8 +157,6 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
                 default:
                     throw new DeviceManagementRequestBadMethodException(requestMessage.getChannel().getMethod());
             }
-
-            //
             // Translate the response from Device to Kapua
             Translator<DeviceResponseMessage<?, ?>, RS> tClientToKapua = Translator.getTranslatorFor(deviceCall.getBaseMessageClass(), requestMessage.getResponseClass());
             return tClientToKapua.translate(responseMessage);

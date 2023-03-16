@@ -66,29 +66,20 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
 
     @Override
     public ScratchCode create(ScratchCodeCreator scratchCodeCreator) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scratchCodeCreator, "scratchCodeCreator");
         ArgumentValidator.notNull(scratchCodeCreator.getScopeId(), "scratchCodeCreator.scopeId");
         ArgumentValidator.notNull(scratchCodeCreator.getMfaOptionId(), "scratchCodeCreator.mfaOptionId");
         ArgumentValidator.notEmptyOrNull(scratchCodeCreator.getCode(), "scratchCodeCreator.code");
-
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write,
                 scratchCodeCreator.getScopeId()));
-
-        //
         // Do pre persist magic on key values
         String fullKey = scratchCodeCreator.getCode();
-        //
         // Do create
         final ScratchCode res = txManager.execute(tx -> {
-            //
             // Crypto code (it's ok to do than if BCrypt is used when checking a provided scratch code against the stored one)
             String encryptedCode = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, scratchCodeCreator.getCode());
-
-            //
             // Create code
             ScratchCodeImpl codeImpl = new ScratchCodeImpl(scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaOptionId(), encryptedCode);
             return scratchCodeRepository.create(tx, codeImpl);
@@ -99,15 +90,12 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
 
     @Override
     public ScratchCode update(ScratchCode scratchCode) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scratchCode, "scratchCode");
         ArgumentValidator.notNull(scratchCode.getId(), "scratchCode.id");
         ArgumentValidator.notNull(scratchCode.getScopeId(), "scratchCode.scopeId");
         ArgumentValidator.notNull(scratchCode.getMfaOptionId(), "scratchCode.mfaOptionId");
         ArgumentValidator.notEmptyOrNull(scratchCode.getCode(), "scratchCode.code");
-
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, scratchCode.getScopeId()));
 
@@ -128,8 +116,6 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
         // Validation of the fields
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(scratchCodeId, "scratchCodeId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
@@ -138,11 +124,8 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
 
     @Override
     public ScratchCodeListResult query(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
 
@@ -151,11 +134,8 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
 
@@ -164,12 +144,9 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
 
     @Override
     public void delete(KapuaId scopeId, KapuaId scratchCodeId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scratchCodeId, "scratchCode.id");
         ArgumentValidator.notNull(scopeId, "scratchCode.scopeId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.delete, scopeId));
 
@@ -179,12 +156,9 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
 
     @Override
     public ScratchCodeListResult findByMfaOptionId(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(mfaOptionId, ScratchCodeAttributes.MFA_OPTION_ID);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 

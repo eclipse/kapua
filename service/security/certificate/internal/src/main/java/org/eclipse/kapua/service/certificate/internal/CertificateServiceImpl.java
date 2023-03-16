@@ -102,15 +102,10 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public CertificateListResult query(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(CertificateDomains.CERTIFICATE_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Create the default certificate
         CertificateUsage jwtCertificateUsage = new CertificateUsageImpl("JWT");
         Set<CertificateUsage> certificateUsages = Sets.newHashSet(jwtCertificateUsage);

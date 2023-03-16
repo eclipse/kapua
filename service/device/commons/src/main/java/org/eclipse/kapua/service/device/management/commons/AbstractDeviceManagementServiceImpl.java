@@ -94,11 +94,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
         this.deviceManagementOperationRepository = deviceManagementOperationRepository;
         this.deviceManagementOperationFactory = deviceManagementOperationFactory;
     }
-
-
-    //
     // Device Registry
-    //
 
     /**
      * Creates a {@link org.eclipse.kapua.service.device.registry.event.DeviceEvent} extracting data from the given {@link KapuaRequestMessage} and {@link KapuaResponseMessage}.
@@ -149,28 +145,20 @@ public abstract class AbstractDeviceManagementServiceImpl {
      * @throws KapuaException
      */
     public boolean isDeviceConnected(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
-        //
         // Validate arguments
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(deviceId, "deviceId");
-
-        //
         // Check Device existence
         Device device = txManager.execute(tx -> deviceRepository.find(tx, scopeId, deviceId));
 
         if (device == null) {
             throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
         }
-
-        //
         // Check Device Connection status
         return device.getConnection() != null &&
                 DeviceConnectionStatus.CONNECTED.equals(device.getConnection().getStatus());
     }
-
-    //
     // Device Management Operations
-    //
 
     protected KapuaId createManagementOperation(KapuaId scopeId, KapuaId deviceId, KapuaId operationId, KapuaRequestMessage<?, ?> requestMessage) throws KapuaException {
 
@@ -222,11 +210,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
             return deviceManagementOperationRepository.update(tx, deviceManagementOperation);
         });
     }
-
-
-    //
     // Response handling
-    //
 
     /**
      * Checks the {@link KapuaResponseMessage#getResponseCode()} if it is {@link KapuaResponseCode#ACCEPTED} or throws the proper {@link DeviceManagementResponseCodeException}.
@@ -295,10 +279,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
                 return new DeviceManagementResponseUnknownCodeException(kapuaResponseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionMessage());
         }
     }
-
-    //
     // Private methods
-    //
 
     private List<DeviceManagementOperationProperty> extractInputProperties(KapuaRequestMessage<?, ?> requestMessage) {
 

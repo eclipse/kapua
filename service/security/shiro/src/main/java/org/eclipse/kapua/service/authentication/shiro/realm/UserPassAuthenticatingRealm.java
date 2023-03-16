@@ -69,12 +69,9 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken)
             throws AuthenticationException {
-        //
         // Extract credentials
         UsernamePasswordCredentialsImpl token = (UsernamePasswordCredentialsImpl) authenticationToken;
         String tokenUsername = token.getUsername();
-
-        //
         // Get Services
         UserService userService;
         CredentialService credentialService;
@@ -85,8 +82,6 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
         } catch (KapuaRuntimeException kre) {
             throw new ShiroException("Unexpected error while loading KapuaServices!", kre);
         }
-
-        //
         // Get the associated user by name
         final User user;
         try {
@@ -96,16 +91,10 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
         } catch (Exception e) {
             throw new ShiroException("Unexpected error while looking for the user!", e);
         }
-
-        //
         // Check user
         checkUser(user);
-
-        //
         // Check account
         Account account = checkAccount(user.getScopeId());
-
-        //
         // Find credentials
         // FIXME: manage multiple credentials and multiple credentials type
         Credential credential;
@@ -127,20 +116,12 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
         } catch (Exception e) {
             throw new ShiroException("Unexpected error while looking for the credentials!", e);
         }
-
-        //
         // Check credential
         checkCredential(credential);
-
-        //
         // Get CredentialService config
         Map<String, Object> credentialServiceConfig = getCredentialServiceConfig(credential.getScopeId());
-
-        //
         // Check credential lockout
         checkCredentialLockout(credential, credentialServiceConfig);
-
-        //
         // BuildAuthenticationInfo
         return new LoginAuthenticationInfo(getName(),
                 account,
@@ -159,18 +140,13 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
         } catch (MfaRequiredException mfaRequiredException) {
             throw mfaRequiredException;
         } catch (AuthenticationException authenticationException) {
-            //
             // Increase count of failed attempts
             increaseLockoutPolicyCount(kapuaInfo);
 
             throw authenticationException;
         }
-
-        //
         // Reset Credential lockout policy after successful login
         resetCredentialLockout((Credential) kapuaInfo.getCredentials());
-
-        //
         // Populate Session with info
         populateSession(SecurityUtils.getSubject(), kapuaInfo);
     }

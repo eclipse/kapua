@@ -56,10 +56,7 @@ public class MfaOptionMigratorServiceImpl implements MfaOptionService {
     public long count(KapuaQuery query) throws KapuaException {
         return txManager.execute(tx -> repository.count(tx, query));
     }
-
-    //
     // Unsupported methods
-    //
 
     @Override
     public MfaOption create(MfaOptionCreator mfaOptionCreator) {

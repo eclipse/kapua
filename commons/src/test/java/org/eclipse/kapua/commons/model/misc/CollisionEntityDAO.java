@@ -27,7 +27,6 @@ public class CollisionEntityDAO {
 
     public static CollisionEntity create(EntityManager em, CollisionEntityCreator collisionEntityCreator)
             throws KapuaException {
-        //
         // Create User
         CollisionEntity collisionEntity = new CollisionEntity(collisionEntityCreator.getTestField());
 

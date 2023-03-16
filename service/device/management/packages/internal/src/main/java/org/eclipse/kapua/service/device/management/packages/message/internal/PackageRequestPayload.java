@@ -96,10 +96,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
             getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_REBOOT_DELAY.getValue(), rebootDelay);
         }
     }
-
-    //
     // Download
-    //
 
     /**
      * See {@link DevicePackageDownloadRequest#getUri()}
@@ -389,11 +386,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
             getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_INSTALL_VERIFIER_URI.getValue(), installVerifierURI);
         }
     }
-
-
-    //
     // Install
-    //
 
     /**
      * Get the package install name
@@ -438,10 +431,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
             getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_VERSION.getValue(), packageVersion);
         }
     }
-
-    //
     // Uninstall
-    //
 
     /**
      * Get the package uninstall name
@@ -486,10 +476,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
             getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_VERSION.getValue(), packageVersion);
         }
     }
-
-    //
     // Utility methods
-    //
 
     /**
      * Get the is a download request flag

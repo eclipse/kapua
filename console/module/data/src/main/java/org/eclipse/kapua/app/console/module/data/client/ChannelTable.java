@@ -135,9 +135,7 @@ public class ChannelTable extends LayoutContainer {
     }
 
     // --------------------------------------------------------------------------------------
-    //
     // Unload of the GXT Component
-    //
     // --------------------------------------------------------------------------------------
     @Override
     public void onUnload() {

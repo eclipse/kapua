@@ -94,61 +94,41 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
 
     @Override
     public FiredTrigger find(KapuaId scopeId, KapuaId firedTriggerId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(firedTriggerId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
-
-        //
         // Do find
         return txManager.execute(tx -> firedTriggerRepository.find(tx, scopeId, firedTriggerId));
     }
 
     @Override
     public FiredTriggerListResult query(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do query
         return txManager.execute(tx -> firedTriggerRepository.query(tx, query));
     }
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do query
         return txManager.execute(tx -> firedTriggerRepository.count(tx, query));
     }
 
     @Override
     public void delete(KapuaId scopeId, KapuaId firedTriggerId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(firedTriggerId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, null));
-
-        //
         // Do delete
         txManager.execute(tx -> firedTriggerRepository.delete(tx, scopeId, firedTriggerId));
 

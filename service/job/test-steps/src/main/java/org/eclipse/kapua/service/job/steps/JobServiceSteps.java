@@ -459,10 +459,7 @@ public class JobServiceSteps extends JobServiceTestBase {
             verifyException(e);
         }
     }
-
-    //
     // Private methods
-    //
 
     private void tryToCreateJob(String characters) throws Exception {
         JobCreator jobCreator = jobFactory.newCreator(getCurrentScopeId());

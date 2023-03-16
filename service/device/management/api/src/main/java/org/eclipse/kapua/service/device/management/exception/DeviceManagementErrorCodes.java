@@ -15,10 +15,7 @@ package org.eclipse.kapua.service.device.management.exception;
 import org.eclipse.kapua.KapuaErrorCode;
 
 public enum DeviceManagementErrorCodes implements KapuaErrorCode {
-
-    //
     // Request
-    //
     /**
      * See {@link DeviceManagementRequestBadMethodException}.
      *
@@ -32,10 +29,7 @@ public enum DeviceManagementErrorCodes implements KapuaErrorCode {
      * @since 1.5.0
      */
     REQUEST_CONTENT,
-
-    //
     // Response
-    //
 
     /**
      * See {@link DeviceManagementResponseContentException}.
@@ -71,10 +65,7 @@ public enum DeviceManagementErrorCodes implements KapuaErrorCode {
      * @since 1.5.0
      */
     RESPONSE_UNKNOWN_CODE,
-
-    //
     // Misc
-    //
 
     /**
      * See {@link DeviceManagementApplicationDisabledException}.

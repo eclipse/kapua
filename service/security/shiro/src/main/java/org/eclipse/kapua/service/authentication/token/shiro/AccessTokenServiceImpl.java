@@ -90,129 +90,88 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
     @Override
     public AccessToken update(AccessToken accessToken) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(accessToken, "accessToken");
         ArgumentValidator.notNull(accessToken.getId(), "accessToken.id");
         ArgumentValidator.notNull(accessToken.getScopeId(), "accessToken.scopeId");
         ArgumentValidator.notNull(accessToken.getUserId(), "accessToken.userId");
         ArgumentValidator.notNull(accessToken.getExpiresOn(), "accessToken.expiresOn");
-
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.write, accessToken.getScopeId()));
-
-        //
         // Check existence
         if (find(accessToken.getScopeId(), accessToken.getId()) == null) {
             throw new KapuaEntityNotFoundException(AccessToken.TYPE, accessToken.getId());
         }
-
-        //
         // Do update
         return txManager.execute(tx -> accessTokenRepository.update(tx, accessToken));
     }
 
     @Override
     public AccessToken find(KapuaId scopeId, KapuaId accessTokenId) throws KapuaException {
-        //
         // Validation of the fields
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(accessTokenId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
-
-        //
         // Do find
         return txManager.execute(tx -> accessTokenRepository.find(tx, scopeId, accessTokenId));
     }
 
     @Override
     public AccessTokenListResult query(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do query
         return txManager.execute(tx -> accessTokenRepository.query(tx, query));
     }
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do count
         return txManager.execute(tx -> accessTokenRepository.count(tx, query));
     }
 
     @Override
     public void delete(KapuaId scopeId, KapuaId accessTokenId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(accessTokenId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.delete, scopeId));
-
-        //
         // Check existence
         if (find(scopeId, accessTokenId) == null) {
             throw new KapuaEntityNotFoundException(AccessToken.TYPE, accessTokenId);
         }
-
-        //
         // Do delete
         txManager.execute(tx -> accessTokenRepository.delete(tx, scopeId, accessTokenId));
     }
 
     @Override
     public AccessTokenListResult findByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(userId, "userId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
-
-        //
         // Build query
         AccessTokenQuery query = new AccessTokenQueryImpl(scopeId);
         query.setPredicate(query.attributePredicate(AccessTokenAttributes.USER_ID, userId));
-
-        //
         // Do query
         return query(query);
     }
 
     @Override
     public AccessToken findByTokenId(String tokenId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(tokenId, "tokenId");
-
-        //
         // Do find
         AccessToken accessToken = txManager.execute(tx -> accessTokenRepository.findByTokenId(tx, tokenId));
-
-        //
         // Check Access
         if (accessToken != null) {
             authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, accessToken.getScopeId()));
@@ -223,16 +182,11 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
     @Override
     public void invalidate(KapuaId scopeId, KapuaId accessTokenId) throws KapuaException {
-        //
         // Validation of the fields
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(accessTokenId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.write, scopeId));
-
-        //
         // Do find
         txManager.execute(tx -> {
             AccessToken accessToken = accessTokenRepository.find(tx, scopeId, accessTokenId);

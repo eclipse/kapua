@@ -88,7 +88,6 @@ public final class DeviceValidation {
      * @since 1.0.0
      */
     public static void validateCreatePreconditions(DeviceCreator deviceCreator) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(deviceCreator, "deviceCreator");
         ArgumentValidator.notNull(deviceCreator.getScopeId(), "deviceCreator.scopeId");
@@ -250,8 +249,6 @@ public final class DeviceValidation {
                 ArgumentValidator.lengthRange(deviceExtendedProperty.getValue(), 1, BIRTH_FIELDS_EXTENDED_PROPERTY_VALUE_MAX_LENGTH, "deviceCreator.extendedProperties[].value");
             }
         }
-
-        //
         // Check access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DEVICE_DOMAIN, Actions.write, deviceCreator.getScopeId(), deviceCreator.getGroupId()));
     }
@@ -266,7 +263,6 @@ public final class DeviceValidation {
      * @since 1.0.0
      */
     public static void validateUpdatePreconditions(Device device) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(device, "device");
         ArgumentValidator.notNull(device.getScopeId(), "device.scopeId");
@@ -457,12 +453,9 @@ public final class DeviceValidation {
      * @since 1.0.0
      */
     public static void validateFindPreconditions(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(deviceId, "deviceId");
-
-        //
         // Check access
         KapuaId groupId = findCurrentGroupId(scopeId, deviceId);
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DEVICE_DOMAIN, Actions.read, scopeId, groupId));
@@ -478,7 +471,6 @@ public final class DeviceValidation {
      * @since 1.0.0
      */
     public static void validateQueryPreconditions(KapuaQuery query) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
 
@@ -489,8 +481,6 @@ public final class DeviceValidation {
                 ArgumentValidator.match(fetchAttribute, DeviceValidationRegex.QUERY_FETCH_ATTRIBUTES, "fetchAttributes");
             }
         }
-
-        //
         // Check access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DEVICE_DOMAIN, Actions.read, query.getScopeId(), Group.ANY));
     }
@@ -505,11 +495,8 @@ public final class DeviceValidation {
      * @since 1.0.0
      */
     public static void validateCountPreconditions(KapuaQuery query) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DEVICE_DOMAIN, Actions.read, query.getScopeId(), Group.ANY));
     }
@@ -525,12 +512,9 @@ public final class DeviceValidation {
      * @since 1.0.0
      */
     public static void validateDeletePreconditions(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(deviceId, "deviceId");
-
-        //
         // Check access
         KapuaId groupId = findCurrentGroupId(scopeId, deviceId);
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DEVICE_DOMAIN, Actions.delete, scopeId, groupId));
@@ -547,12 +531,9 @@ public final class DeviceValidation {
      * @since 1.0.0
      */
     public static void validateFindByClientIdPreconditions(KapuaId scopeId, String clientId) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notEmptyOrNull(clientId, "clientId");
-
-        //
         // Check access is performed by the query method.
     }
 

@@ -107,11 +107,11 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
                 exitStatus = false;
                 if (!isPermissionErrorMessage(cause)) {
                     switch (((GwtKapuaException) cause).getCode()) {
-                    case DUPLICATE_NAME:
-                        exitMessage = MSGS.dialogAddRoleDuplicateError();
-                        break;
-                    default:
-                        exitMessage = MSGS.dialogAddError(MSGS.dialogAddRoleError(cause.getLocalizedMessage()));
+                        case DUPLICATE_NAME:
+                            exitMessage = MSGS.dialogAddRoleDuplicateError();
+                            break;
+                        default:
+                            exitMessage = MSGS.dialogAddError(MSGS.dialogAddRoleError(cause.getLocalizedMessage()));
                     }
                 }
                 rolesCombo.markInvalid(exitMessage);
@@ -133,8 +133,6 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
     @Override
     public void createBody() {
         FormPanel roleFormPanel = new FormPanel(FORM_LABEL_WIDTH);
-
-        //
         // Role
         rolesCombo = new ComboBox<GwtRole>();
         rolesCombo.setEditable(false);
@@ -171,8 +169,6 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
             }
         });
         roleFormPanel.add(rolesCombo);
-
-        //
         // Add form panel to body
         bodyPanel.add(roleFormPanel);
     }

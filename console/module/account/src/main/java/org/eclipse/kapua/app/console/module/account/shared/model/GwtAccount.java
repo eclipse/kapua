@@ -12,20 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.shared.model;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
-
 public class GwtAccount extends GwtUpdatableEntityModel implements Serializable {
 
     private static final long serialVersionUID = -5999185569672904770L;
-
-    //
     // Defines value for service plan
     public static final int ADMIN_ACCOUNT_ID = 1;
     public static final int SERVICE_PLAN_UNLIMITED = -1;
@@ -67,7 +64,7 @@ public class GwtAccount extends GwtUpdatableEntityModel implements Serializable 
     }
 
     @Override
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({"unchecked"})
     public <X> X get(String property) {
         if ("expirationDateFormatted".equals(property)) {
             if (getExpirationDate() != null) {

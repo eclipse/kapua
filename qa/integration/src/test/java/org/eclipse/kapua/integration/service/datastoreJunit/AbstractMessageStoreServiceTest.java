@@ -64,8 +64,6 @@ public abstract class AbstractMessageStoreServiceTest {
             connection = DriverManager.getConnection(jdbcUrl, dbUsername, dbPassword);
 
             new KapuaLiquibaseClient(jdbcUrl, dbUsername, dbPassword, schema).update();
-
-            //
             // Login
             String username = "kapua-sys";
             String password = "kapua-password";
@@ -73,8 +71,6 @@ public abstract class AbstractMessageStoreServiceTest {
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
             CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
             authenticationService.login(credentialsFactory.newUsernamePasswordCredentials(username, password));
-
-            //
             // Get current user Id
             adminUserId = KapuaSecurityUtils.getSession().getUserId();
             adminScopeId = KapuaSecurityUtils.getSession().getScopeId();
@@ -105,10 +101,7 @@ public abstract class AbstractMessageStoreServiceTest {
             logger.warn("Error", exc);
         }
     }
-
-    //
     // Test utility methods
-    //
 
     /**
      * Generates a random {@link String} from the given parameters

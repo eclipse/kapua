@@ -30,10 +30,7 @@ import java.util.Collection;
  * @since 1.3.0
  */
 public abstract class StorablePredicateImpl implements StorablePredicate {
-
-    //
     // Appends
-    //
 
     /**
      * Appends a field to the given {@link ObjectNode} using {@link MappingUtils#appendField(ObjectNode, String, Object)}.
@@ -48,10 +45,7 @@ public abstract class StorablePredicateImpl implements StorablePredicate {
     protected void appendField(ObjectNode node, String name, Object value) throws MappingException {
         MappingUtils.appendField(node, name, value);
     }
-
-    //
     // New
-    //
 
     /**
      * Instantiates a new {@link ArrayNode} using {@link MappingUtils#newArrayNode()}

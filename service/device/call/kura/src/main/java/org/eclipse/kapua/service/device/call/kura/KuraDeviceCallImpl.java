@@ -119,10 +119,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
     public Class<KuraMessage> getBaseMessageClass() {
         return KuraMessage.class;
     }
-
-    //
     // Private methods
-    //
 
     /**
      * Sends the {@link KuraRequestMessage} and waits for the response if the {@code timeout} is given.
@@ -138,15 +135,11 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
 
         KuraResponseMessage response = null;
         try {
-            //
             // Borrow a TransportClient
             try (TransportFacade transportFacade = borrowClient(requestMessage)) {
-                //
                 // Get Kura to transport translator for the request and vice versa
                 Translator<KuraRequestMessage, TransportMessage<?, ?>> translatorKuraTransport = getTranslator(requestMessage.getClass(), transportFacade.getMessageClass());
                 Translator<TransportMessage<?, ?>, KuraResponseMessage> translatorTransportKura = getTranslator(transportFacade.getMessageClass(), KuraResponseMessage.class);
-
-                //
                 // Make the request
                 // Add requestId and requesterClientId to both payload and channel if response is expected
                 // Note: Adding to both payload and channel to let the translator choose what to do base on the transport used.
@@ -161,8 +154,6 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
 
                     requestPayload.setRequestId(requestId);
                 }
-
-                //
                 // Do send
                 // Set current timestamp
                 requestMessage.setTimestamp(new Date());

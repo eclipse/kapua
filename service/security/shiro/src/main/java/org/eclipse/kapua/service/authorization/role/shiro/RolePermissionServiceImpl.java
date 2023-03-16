@@ -74,31 +74,22 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         ArgumentValidator.notNull(rolePermissionCreator, "rolePermissionCreator");
         ArgumentValidator.notNull(rolePermissionCreator.getRoleId(), "rolePermissionCreator.roleId");
         ArgumentValidator.notNull(rolePermissionCreator.getPermission(), "rolePermissionCreator.permission");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, rolePermissionCreator.getScopeId()));
 
         return txManager.execute(tx -> {
-            //
             // Check role existence
             final Role role = roleRepository.find(tx, rolePermissionCreator.getScopeId(), rolePermissionCreator.getRoleId());
             if (role == null) {
                 throw new KapuaEntityNotFoundException(Role.TYPE, rolePermissionCreator.getRoleId());
             }
-
-            //
             // Check that the given permission matches the definition of the Domains.
             PermissionValidator.validatePermission(rolePermissionCreator.getPermission());
-
-            //
             // If permission are created out of the role permission scope, check that the current user has the permission on the external scopeId.
             Permission permission = rolePermissionCreator.getPermission();
             if (permission.getTargetScopeId() == null || !permission.getTargetScopeId().equals(rolePermissionCreator.getScopeId())) {
                 authorizationService.checkPermission(permission);
             }
-
-            //
             // Check duplicates
             RolePermissionQuery query = new RolePermissionQueryImpl(rolePermissionCreator.getScopeId());
             query.setPredicate(
@@ -152,8 +143,6 @@ public class RolePermissionServiceImpl implements RolePermissionService {
             throws KapuaException {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(rolePermissionId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, scopeId));
 
@@ -165,8 +154,6 @@ public class RolePermissionServiceImpl implements RolePermissionService {
             throws KapuaException {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(roleId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, scopeId));
 
@@ -177,8 +164,6 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     public RolePermissionListResult query(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
 
@@ -189,8 +174,6 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     public long count(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
 

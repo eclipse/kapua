@@ -132,20 +132,14 @@ public class KuraPayload implements DevicePayload {
     @Override
     public byte[] toByteArray() {
         KuraPayloadProto.KuraPayload.Builder protoMsg = KuraPayloadProto.KuraPayload.newBuilder();
-
-        //
         // Set the timestamp
         if (getTimestamp() != null) {
             protoMsg.setTimestamp(getTimestamp().getTime());
         }
-
-        //
         // Set the position
         if (getPosition() != null) {
             protoMsg.setPosition(buildPositionProtoBuf(getPosition()));
         }
-
-        //
         // Set the metrics
         getMetrics().forEach((name, value) -> {
             if (value != null) {
@@ -162,8 +156,6 @@ public class KuraPayload implements DevicePayload {
                 }
             }
         });
-
-        //
         // Set the body
         if (hasBody()) {
             protoMsg.setBody(ByteString.copyFrom(getBody()));
@@ -174,7 +166,6 @@ public class KuraPayload implements DevicePayload {
 
     @Override
     public void readFromByteArray(byte[] bytes) throws MessageException {
-        //
         // Decompress
         if (GZIPUtils.isCompressed(bytes)) {
             try {
@@ -183,8 +174,6 @@ public class KuraPayload implements DevicePayload {
                 throw new MessageException(MessageErrorCodes.INVALID_MESSAGE, ioe, (Object[]) null);
             }
         }
-
-        //
         // Convert protobuf
         KuraPayloadProto.KuraPayload protoMsg = null;
         try {
@@ -192,20 +181,14 @@ public class KuraPayload implements DevicePayload {
         } catch (InvalidProtocolBufferException ipbe) {
             throw new MessageException(MessageErrorCodes.INVALID_MESSAGE, ipbe, (Object[]) null);
         }
-
-        //
         // Add timestamp
         if (protoMsg.hasTimestamp()) {
             timestamp = (new Date(protoMsg.getTimestamp()));
         }
-
-        //
         // Add position
         if (protoMsg.hasPosition()) {
             position = (buildFromProtoBuf(protoMsg.getPosition()));
         }
-
-        //
         // Add metrics
         protoMsg.getMetricList().forEach(kuraMetric -> {
             try {
@@ -215,17 +198,13 @@ public class KuraPayload implements DevicePayload {
                 LOG.warn("During deserialization, ignoring metric named: {}. Unrecognized value type: {}", kuraMetric.getName(), kuraMetric.getType(), me);
             }
         });
-
-        //
         // Set the body
         if (protoMsg.hasBody()) {
             setBody(protoMsg.getBody().toByteArray());
         }
     }
 
-    //
     // Private methods
-    //
     private Object getProtoKuraMetricValue(KuraPayloadProto.KuraPayload.KuraMetric metric, KuraPayloadProto.KuraPayload.KuraMetric.ValueType type) throws MessageException {
         switch (type) {
             case DOUBLE:

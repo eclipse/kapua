@@ -139,8 +139,6 @@ public class DeviceTabEvents extends KapuaTabItem<GwtDevice> {
     private void initToolBar() {
         toolBar = new ToolBar();
         toolBar.setBorders(true);
-
-        //
         // Refresh Button
         refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 
@@ -327,9 +325,7 @@ public class DeviceTabEvents extends KapuaTabItem<GwtDevice> {
     }
 
     // --------------------------------------------------------------------------------------
-    //
     // Device Event List Management
-    //
     // --------------------------------------------------------------------------------------
 
     @Override
@@ -365,9 +361,7 @@ public class DeviceTabEvents extends KapuaTabItem<GwtDevice> {
     }
 
     // --------------------------------------------------------------------------------------
-    //
     // Data Load Listener
-    //
     // --------------------------------------------------------------------------------------
 
     private class DeviceEventsLoadListener extends KapuaLoadListener {

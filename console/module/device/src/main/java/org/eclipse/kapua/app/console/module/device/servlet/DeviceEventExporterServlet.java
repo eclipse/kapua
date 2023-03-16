@@ -84,8 +84,6 @@ public class DeviceEventExporterServlet extends HttpServlet {
             if (deviceId == null || deviceId.isEmpty()) {
                 throw new IllegalArgumentException("deviceId");
             }
-
-            //
             // get the devices and append them to the exporter
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceEventService des = locator.getService(DeviceEventService.class);

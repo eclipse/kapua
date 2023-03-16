@@ -317,7 +317,6 @@ public abstract class AbstractOpenIDService implements OpenIDService {
     }
 
     private void logRequest(URL url, HttpURLConnection urlConnection, List<NameValuePair> parameters, JsonObject result) throws IOException {
-        //
         // Log operation details
         ConfigurationPrinter reqLogger =
                 ConfigurationPrinter

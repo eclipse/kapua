@@ -58,12 +58,8 @@ public class DomainImplJpaRepository
         final EntityManager em = JpaTxContext.extractEntityManager(txContext);
         final CriteriaBuilder cb = em.getCriteriaBuilder();
         final CriteriaQuery<DomainImpl> criteriaSelectQuery = cb.createQuery(concreteClass);
-
-        //
         // FROM
         final Root<DomainImpl> entityRoot = criteriaSelectQuery.from(concreteClass);
-
-        //
         // SELECT
         criteriaSelectQuery.select(entityRoot);
 
@@ -89,8 +85,6 @@ public class DomainImplJpaRepository
         if (pScopeId != null) {
             query.setParameter(pScopeId.getName(), scopeId);
         }
-
-        //
         // QUERY!
         final List<DomainImpl> result = query.getResultList();
         switch (result.size()) {

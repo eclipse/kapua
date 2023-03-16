@@ -168,7 +168,6 @@ public abstract class AbstractKapuaQuery implements KapuaQuery {
         this.askTotalCount = askTotalCount;
     }
 
-    //
     // Predicate factory
     @Override
     public <T> AttributePredicate<T> attributePredicate(String attributeName, T attributeValue) {

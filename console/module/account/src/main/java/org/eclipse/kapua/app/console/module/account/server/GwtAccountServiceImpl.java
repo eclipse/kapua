@@ -126,7 +126,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     @Override
     public GwtAccount create(GwtXSRFToken xsrfToken, GwtAccountCreator gwtAccountCreator)
             throws GwtKapuaException {
-        //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
 
@@ -148,12 +147,8 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             accountCreator.setOrganizationStateProvinceCounty(gwtAccountCreator.getOrganizationStateProvinceCounty());
             accountCreator.setOrganizationCountry(gwtAccountCreator.getOrganizationCountry());
             accountCreator.setExpirationDate(gwtAccountCreator.getExpirationDate());
-
-            //
             // Create the Account
             final Account account = ACCOUNT_SERVICE.create(accountCreator);
-
-            //
             // Create roles
             KapuaSecurityUtils.doPrivileged(new ThrowingRunnable() {
 
@@ -180,8 +175,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                     ROLE_SERVICE.create(thingRoleCreator);
                 }
             });
-
-            //
             // Convert Account to GwtAccount
             gwtAccount = KapuaGwtAccountModelConverter.convertAccount(account);
         } catch (Throwable t) {
@@ -284,7 +277,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     @Override
     public GwtAccount updateAccountProperties(GwtXSRFToken xsrfToken, GwtAccount gwtAccount)
             throws GwtKapuaException {
-        //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
 
@@ -314,7 +306,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     @Override
     public GwtAccount update(GwtXSRFToken xsrfToken, GwtAccount gwtAccount)
             throws GwtKapuaException {
-        //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
 
@@ -350,7 +341,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     @Override
     public void delete(GwtXSRFToken xsrfToken, GwtAccount gwtAccount)
             throws GwtKapuaException {
-        //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
 
@@ -529,8 +519,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         ConsoleSetting config = ConsoleSetting.getInstance();
 
         String iconResource = icon.getResource();
-
-        //
         // Check if the resource is an HTTP URL or not
         if (iconResource != null &&
                 (iconResource.toLowerCase().startsWith("http://") ||
@@ -539,8 +527,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
             try {
                 LOG.info("Got configuration component icon from URL: {}", iconResource);
-
-                //
                 // Tmp file name creation
                 String systemTmpDir = System.getProperty("java.io.tmpdir");
                 String iconResourcesTmpDir = config.getString(ConsoleSettingKeys.DEVICE_CONFIGURATION_ICON_FOLDER);
@@ -552,8 +538,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                 tmpFileName = tmpFileName.replaceAll("/", "a");
                 tmpFileName = tmpFileName.replaceAll("\\+", "m");
                 tmpFileName = tmpFileName.replaceAll("=", "z");
-
-                //
                 // Tmp dir check and creation
                 StringBuilder tmpDirPathSb = new StringBuilder().append(systemTmpDir);
                 if (!systemTmpDir.endsWith("/")) {
@@ -566,8 +550,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                     LOG.info("Creating tmp dir on path: {}", tmpDir);
                     tmpDir.mkdir();
                 }
-
-                //
                 // Tmp file check and creation
                 tmpDirPathSb.append("/")
                         .append(tmpFileName);
@@ -657,8 +639,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                 } else {
                     LOG.info("Using cached file: {}", tmpFile);
                 }
-
-                //
                 // Injecting new URL for the icon resource
                 String newResourceURL = "img://console/file/icons?id=" +
                         tmpFileName;
@@ -675,7 +655,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                 LOG.error("Error while checking component configuration icon. Using the default plugin icon.", e);
             }
         }
-        //
         // If not, all is fine.
     }
 

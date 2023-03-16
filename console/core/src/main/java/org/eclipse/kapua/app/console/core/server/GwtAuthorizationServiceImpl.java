@@ -253,13 +253,9 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
     }
 
     private GwtSession establishSession() throws KapuaException {
-
-        //
         // Get info from session
         final KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
         LOG.debug("Kapua session: {}", kapuaSession);
-
-        //
         // Get user info
         LOG.debug("Looking up - scopeId: {}, userId: {}", kapuaSession.getScopeId(), kapuaSession.getUserId());
         final User user = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
@@ -269,8 +265,6 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
                 return USER_SERVICE.find(kapuaSession.getScopeId(), kapuaSession.getUserId());
             }
         });
-
-        //
         // Get account info
         Account account = KapuaSecurityUtils.doPrivileged(new Callable<Account>() {
 
@@ -279,13 +273,9 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
                 return ACCOUNT_SERVICE.find(kapuaSession.getScopeId());
             }
         });
-
-        //
         // Convert entities
         GwtUser gwtUser = KapuaGwtUserModelConverter.convertUser(user);
         GwtAccount gwtAccount = KapuaGwtAccountModelConverter.convertAccount(account);
-
-        //
         // Build the session
         final GwtSession gwtSession = new GwtSession();
 
@@ -323,8 +313,6 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         if (trustKey != null && !trustKey.isEmpty()) {
             gwtSession.setTrustKey(kapuaSession.getAccessToken().getTrustKey());
         }
-
-        //
         // Load permissions
         KapuaSecurityUtils.doPrivileged(new ThrowingRunnable() {
 
@@ -354,8 +342,6 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
                 }
             }
         });
-
-        //
         // Return session
         return gwtSession;
     }

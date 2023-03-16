@@ -222,10 +222,7 @@ public class JobEngineServiceClient implements JobEngineService {
             throw KapuaException.internalError(clientErrorException);
         }
     }
-
-    //
     // Private methods
-    //
 
     /**
      * Prepares the request from the {@link WebTarget} with

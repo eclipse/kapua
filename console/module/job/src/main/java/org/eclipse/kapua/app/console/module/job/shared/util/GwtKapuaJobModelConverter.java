@@ -249,8 +249,6 @@ public class GwtKapuaJobModelConverter {
         jobStepCreator.setJobStepDefinitionId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStepCreator.getJobStepDefinitionId()));
         jobStepCreator.setStepIndex(gwtJobStepCreator.getStepIndex());
         jobStepCreator.setJobStepProperties(convertJobStepProperties(gwtJobStepCreator.getProperties()));
-
-        //
         // Return converted
         return jobStepCreator;
     }

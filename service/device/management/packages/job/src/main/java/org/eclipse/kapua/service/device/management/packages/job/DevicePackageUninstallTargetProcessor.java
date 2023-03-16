@@ -56,20 +56,14 @@ public class DevicePackageUninstallTargetProcessor extends AbstractDevicePackage
 
         KapuaId scopeId = jobTarget.getScopeId();
         KapuaId jobId = jobTarget.getJobId();
-
-        //
         // Extract parameters from context
         DevicePackageUninstallRequest packageUninstallRequest = stepContextWrapper.getStepProperty(DevicePackageUninstallPropertyKeys.PACKAGE_UNINSTALL_REQUEST, DevicePackageUninstallRequest.class);
         Long timeout = stepContextWrapper.getStepProperty(DevicePackageUninstallPropertyKeys.TIMEOUT, Long.class);
-
-        //
         // Send the request
         DevicePackageUninstallOptions packageUninstallOptions = DEVICE_PACKAGE_FACTORY.newPackageUninstallOptions();
         packageUninstallOptions.setTimeout(timeout);
 
         KapuaId operationId = KapuaSecurityUtils.doPrivileged(() -> PACKAGES_MANAGEMENT_SERVICE.uninstallExec(scopeId, jobTarget.getJobTargetId(), packageUninstallRequest, packageUninstallOptions));
-
-        //
         // Save the jobId-deviceManagementOperationId pair to track resuming
         createJobDeviceManagementOperation(scopeId, jobId, jobTarget, operationId);
     }

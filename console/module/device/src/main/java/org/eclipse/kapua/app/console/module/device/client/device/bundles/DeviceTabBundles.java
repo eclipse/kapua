@@ -134,8 +134,6 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
     private void initToolBar() {
         toolBar = new ToolBar();
         toolBar.setBorders(true);
-
-        //
         // Refresh Button
         refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 
@@ -182,8 +180,6 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
                 refresh();
             }
         };
-
-        //
         // Start Button
         startButton = new BundleStartButton(new SelectionListener<ButtonEvent>() {
 
@@ -193,8 +189,6 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
                     toolBar.disable();
                     disableButtons();
                     grid.mask(MSGS.loading());
-
-                    //
                     // Getting XSRF token
                     gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
 
@@ -240,8 +234,6 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
         startButton.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.execute()));
         toolBar.add(startButton);
         toolBar.add(new SeparatorToolItem());
-
-        //
         // Stop Button
         stopButton = new BundleStopButton(new SelectionListener<ButtonEvent>() {
 
@@ -261,7 +253,6 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
                                     if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
                                         toolBar.disable();
                                         grid.mask(MSGS.loading());
-                                        //
                                         // Getting XSRF token
                                         gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
 
@@ -391,9 +382,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
     }
 
     // --------------------------------------------------------------------------------------
-    //
     // Data Load Listener
-    //
     // --------------------------------------------------------------------------------------
 
     private class DataLoadListener extends KapuaLoadListener {

@@ -329,15 +329,10 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
      */
     @Override
     public Map<String, Object> getConfigValues(KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
-
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
-
-        //
         // Get configuration values
         final ServiceConfigListResult result = txManager.execute(tx -> serviceConfigRepository.findByScopeAndPid(tx, scopeId, pid));
 
@@ -383,17 +378,12 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
      */
     @Override
     public KapuaTocd getConfigMetadata(KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
-
-        //
         // Check disabled service
         if (!isServiceEnabled(scopeId)) {
             throw new KapuaServiceDisabledException(pid);
         }
-
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
 

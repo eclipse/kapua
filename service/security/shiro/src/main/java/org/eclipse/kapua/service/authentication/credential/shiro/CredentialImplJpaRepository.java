@@ -34,13 +34,10 @@ public class CredentialImplJpaRepository
 
     @Override
     public CredentialListResult findByUserId(TxContext txContext, KapuaId scopeId, KapuaId userId) throws KapuaException {
-        //
         // Build query
         CredentialQuery query = new CredentialQueryImpl(scopeId);
         QueryPredicate predicate = query.attributePredicate(CredentialAttributes.USER_ID, userId);
         query.setPredicate(predicate);
-
-        //
         // Query and return result
         return this.query(txContext, query);
     }

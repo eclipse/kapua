@@ -181,16 +181,12 @@ public class JbatchDriver {
         } catch (Exception e) {
             throw new CannotBuildJobDefDriverException(e, jobName);
         }
-
-        //
         // Retrieve temporary directory for job XML definition
         String tmpDirectory = SystemUtils.getJavaIoTmpDir().getAbsolutePath();
         File jobTempDirectory = new File(tmpDirectory, "kapua-job/" + scopeId.toCompactId());
         if (!jobTempDirectory.exists() && !jobTempDirectory.mkdirs()) {
             throw new CannotCreateTmpDirDriverException(jobName, jobTempDirectory.getAbsolutePath());
         }
-
-        //
         // Retrieve job XML definition file. Delete it if exist
         File jobXmlDefinitionFile = new File(jobTempDirectory, jobId.toCompactId().concat("-").concat(String.valueOf(System.nanoTime())).concat(".xml"));
         if (jobXmlDefinitionFile.exists() && !jobXmlDefinitionFile.delete()) {
@@ -202,8 +198,6 @@ public class JbatchDriver {
         } catch (IOException e) {
             throw new CannotWriteJobDefFileDriverException(e, jobName, jobXmlDefinitionFile.getAbsolutePath());
         }
-
-        //
         // Start job
         try {
             JOB_OPERATOR.start(jobXmlDefinitionFile.getAbsolutePath().replaceAll("\\.xml$", ""), new Properties());
@@ -231,15 +225,11 @@ public class JbatchDriver {
     public static void stopJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, KapuaId toStopJobExecutionId) throws JbatchDriverException, KapuaException {
 
         String jobName = getJbatchJobName(scopeId, jobId);
-
-        //
         // Check running
         List<JobExecution> runningExecutions = getRunningJobExecutions(scopeId, jobId);
         if (runningExecutions.isEmpty()) {
             throw new ExecutionNotRunningDriverException(jobName);
         }
-
-        //
         // Filter execution to stop
         if (toStopJobExecutionId != null) {
             org.eclipse.kapua.service.job.execution.JobExecution je = JOB_EXECUTION_SERVICE.find(scopeId, toStopJobExecutionId);
@@ -248,8 +238,6 @@ public class JbatchDriver {
 
             runningExecutions = runningExecutions.stream().filter(re -> re.getExecutionId() == toStopJbatchExecutionId).collect(Collectors.toList());
         }
-
-        //
         // Do stop
         try {
             runningExecutions.forEach((runningExecution -> {
@@ -265,23 +253,17 @@ public class JbatchDriver {
     public static void resumeJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull KapuaId toResumeJobExecutionId) throws JbatchDriverException, KapuaException {
 
         String jobName = getJbatchJobName(scopeId, jobId);
-
-        //
         // Get list
         List<JobExecution> stoppedJobExecutions = getJobExecutions(scopeId, jobId);
         if (stoppedJobExecutions.isEmpty()) {
             throw new ExecutionNotFoundDriverException(jobName);
         }
-
-        //
         // Filter execution to resume
         org.eclipse.kapua.service.job.execution.JobExecution je = JOB_EXECUTION_SERVICE.find(scopeId, toResumeJobExecutionId);
 
         long toResumeJbatchExecutionId = Long.parseLong((String) je.getEntityAttributes().get(JBATCH_EXECUTION_ID));
 
         stoppedJobExecutions = stoppedJobExecutions.stream().filter(re -> re.getExecutionId() == toResumeJbatchExecutionId).collect(Collectors.toList());
-
-        //
         // Do stop
         try {
             stoppedJobExecutions.forEach((stoppedExecution -> {
@@ -332,9 +314,7 @@ public class JbatchDriver {
         }
     }
 
-    //
     // Private methods
-    //
     private static List<JobExecution> getRunningJobExecutions(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
         return getJobExecutions(scopeId, jobId).stream().filter(je -> JbatchJobRunningStatuses.getStatuses().contains(je.getBatchStatus())).collect(Collectors.toList());
     }

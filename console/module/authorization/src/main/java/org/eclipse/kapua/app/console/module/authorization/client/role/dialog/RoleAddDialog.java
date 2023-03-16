@@ -113,8 +113,6 @@ public class RoleAddDialog extends EntityAddEditDialog {
     public void createBody() {
         submitButton.disable();
         FormPanel roleFormPanel = new FormPanel(FORM_LABEL_WIDTH);
-
-        //
         // Name
         roleNameField = new KapuaTextField<String>();
         roleNameField.setAllowBlank(false);

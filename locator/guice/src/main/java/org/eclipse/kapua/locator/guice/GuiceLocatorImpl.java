@@ -122,7 +122,6 @@ public class GuiceLocatorImpl extends KapuaLocator {
      * @since 1.0.0
      */
     private void init(String locatorConfigName) throws Exception {
-        //
         // Read configurations from locator file
         URL locatorConfigURL = ResourceUtils.getResource(locatorConfigName);
         if (locatorConfigURL == null) {
@@ -130,14 +129,10 @@ public class GuiceLocatorImpl extends KapuaLocator {
         }
 
         LocatorConfig locatorConfig = LocatorConfig.fromURL(locatorConfigURL);
-
-        //
         // Scan packages listed in to find KapuaModules
         Collection<String> packageNames = locatorConfig.getIncludedPackageNames();
         Reflections reflections = new Reflections(packageNames);
         Set<Class<? extends AbstractKapuaModule>> kapuaModuleClasses = reflections.getSubTypesOf(AbstractKapuaModule.class);
-
-        //
         // Instantiate Kapua modules
         List<AbstractKapuaModule> kapuaModules = new ArrayList<>();
         List<Class<? extends AbstractKapuaModule>> excludedKapuaModules = new ArrayList<>();
@@ -152,12 +147,8 @@ public class GuiceLocatorImpl extends KapuaLocator {
 
         // KapuaModule will be removed as soon as bindings will be moved to local modules
         kapuaModules.add(new KapuaModule(locatorConfigName));
-
-        //
         // Print loaded stuff
         printLoadedKapuaModuleConfiguration(locatorConfigURL, locatorConfig, kapuaModules, excludedKapuaModules);
-
-        //
         // Scan XmlSerializable
         Set<Class<?>> xmlSerializableClasses = reflections.getTypesAnnotatedWith(XmlRootElement.class);
         List<Class<?>> loadedXmlSerializables = new ArrayList<>();
@@ -171,12 +162,8 @@ public class GuiceLocatorImpl extends KapuaLocator {
             loadedXmlSerializables.add(xmlSerializableClass);
         }
         ServiceModuleJaxbClassConfig.setSerializables(loadedXmlSerializables);
-
-        //
         // Print loaded stuff
         printLoadedXmlSerializableConfiguration(locatorConfigURL, locatorConfig, loadedXmlSerializables, excludedXmlSerializables);
-
-        //
         // Create injector
         injector = Guice.createInjector(kapuaModules);
         ServiceModuleConfiguration.setConfigurationProvider(() -> injector.getInstance(ServiceModuleProvider.class));

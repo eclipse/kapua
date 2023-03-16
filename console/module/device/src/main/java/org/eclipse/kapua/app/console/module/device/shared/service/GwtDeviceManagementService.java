@@ -36,10 +36,7 @@ import java.util.List;
  */
 @RemoteServiceRelativePath("deviceManagement")
 public interface GwtDeviceManagementService extends RemoteService {
-
-    //
     // Packages
-    //
 
     /**
      * Returns the packages installed on a Device.
@@ -86,10 +83,7 @@ public interface GwtDeviceManagementService extends RemoteService {
      */
     void uninstallPackage(GwtXSRFToken xsrfToken, GwtPackageUninstallRequest gwtPackageUninstallRequest)
             throws GwtKapuaException;
-
-    //
     // Configurations
-    //
 
     List<GwtConfigComponent> findDeviceConfigurations(GwtDevice device)
             throws GwtKapuaException;
@@ -103,18 +97,14 @@ public interface GwtDeviceManagementService extends RemoteService {
 
     void setApplicationSettings(GwtXSRFToken xsrfToken, String scopeId, String deviceId, GwtDeviceConfigurationStoreSettings gwtDeviceConfigurationStoreSettings) throws GwtKapuaException;
 
-    //
     // Snapshots
-    //
     ListLoadResult<GwtSnapshot> findDeviceSnapshots(GwtDevice device)
             throws GwtKapuaException;
 
     void rollbackDeviceSnapshot(GwtXSRFToken xsfrToken, GwtDevice device, GwtSnapshot snapshot)
             throws GwtKapuaException;
 
-    //
     // Bundles
-    //
     ListLoadResult<GwtBundle> findBundles(GwtDevice device)
             throws GwtKapuaException;
 
@@ -124,9 +114,7 @@ public interface GwtDeviceManagementService extends RemoteService {
     void stopBundle(GwtXSRFToken xsfrToken, GwtDevice device, GwtBundle pair)
             throws GwtKapuaException;
 
-    //
     // Commands
-    //
     GwtDeviceCommandOutput executeCommand(GwtXSRFToken xsfrToken, GwtDevice device, GwtDeviceCommandInput commandInput)
             throws GwtKapuaException;
 

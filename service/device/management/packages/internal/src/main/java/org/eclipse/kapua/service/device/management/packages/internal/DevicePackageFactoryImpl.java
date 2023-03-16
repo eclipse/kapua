@@ -72,9 +72,7 @@ public class DevicePackageFactoryImpl implements DevicePackageFactory {
         return new DevicePackageBundleInfosImpl();
     }
 
-    //
     // Download operation
-    //
     @Override
     public DevicePackageDownloadRequest newPackageDownloadRequest() {
         return new DevicePackageDownloadRequestImpl();
@@ -95,9 +93,7 @@ public class DevicePackageFactoryImpl implements DevicePackageFactory {
         return new AdvancedPackageDownloadOptionsImpl();
     }
 
-    //
     // Install operation
-    //
     @Override
     public DevicePackageInstallRequest newPackageInstallRequest() {
         return new DevicePackageInstallRequestImpl();
@@ -113,9 +109,7 @@ public class DevicePackageFactoryImpl implements DevicePackageFactory {
         return new DevicePackageInstallOperationImpl();
     }
 
-    //
     // Uninstall operation
-    //
     @Override
     public DevicePackageUninstallRequest newPackageUninstallRequest() {
         return new DevicePackageUninstallRequestImpl();

@@ -93,10 +93,7 @@ public class CryptoUtil {
      */
     private CryptoUtil() {
     }
-
-    //
     // SHA-1
-    //
 
     /**
      * Evaluates the SHA-1 hash for the provided String
@@ -112,10 +109,7 @@ public class CryptoUtil {
         byte[] encodedBytes = md.digest(value.getBytes(StandardCharsets.UTF_8));
         return DatatypeConverter.printBase64Binary(encodedBytes);
     }
-
-    //
     // AES
-    //
 
     /**
      * Decrypts an AES-encrypted value. It uses {@link CryptoSettingKeys#CRYPTO_SECRET_KEY} to decrypt the value.
@@ -174,11 +168,7 @@ public class CryptoUtil {
 
         return encryptAes(value, encryptCipher);
     }
-
-
-    //
     // Base 64
-    //
 
     /**
      * Decodes the given Base64 {@link String} value in a {@link String}.
@@ -203,10 +193,7 @@ public class CryptoUtil {
         byte[] bytesValue = value.getBytes(StandardCharsets.UTF_8);
         return DatatypeConverter.printBase64Binary(bytesValue);
     }
-
-    //
     // Private Methods
-    //
 
     /**
      * Decrypts an AES-encrypted value using the given {@link Cipher}

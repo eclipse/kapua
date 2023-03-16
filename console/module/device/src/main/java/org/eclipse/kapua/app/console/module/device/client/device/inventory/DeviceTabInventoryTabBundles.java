@@ -90,8 +90,6 @@ public class DeviceTabInventoryTabBundles extends TabItem {
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
-
-        //
         // Column Configuration
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 

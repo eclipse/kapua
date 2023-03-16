@@ -44,14 +44,10 @@ public class ScratchCodeImplJpaRepository
 
     @Override
     public ScratchCodeListResult findByMfaOptionId(TxContext tx, KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
-
-        //
         // Build query
         ScratchCodeQuery query = new ScratchCodeQueryImpl(scopeId);
         QueryPredicate predicate = query.attributePredicate(ScratchCodeAttributes.MFA_OPTION_ID, mfaOptionId);
         query.setPredicate(predicate);
-
-        //
         // Query and return result
         return this.query(tx, query);
     }

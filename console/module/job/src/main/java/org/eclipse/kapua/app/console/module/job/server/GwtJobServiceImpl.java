@@ -64,8 +64,6 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
 
     @Override
     public PagingLoadResult<GwtJob> query(PagingLoadConfig loadConfig, GwtJobQuery gwtJobQuery) throws GwtKapuaException {
-
-        //
         // Do query
         int totalLength = 0;
         List<GwtJob> gwtJobs = new ArrayList<GwtJob>();
@@ -118,8 +116,6 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
             JobCreator jobCreator = JOB_FACTORY.newCreator(scopeId);
             jobCreator.setName(gwtJobCreator.getName());
             jobCreator.setDescription(gwtJobCreator.getDescription());
-
-            //
             // Create the Job
             Job job = JOB_SERVICE.create(jobCreator);
 
@@ -163,8 +159,6 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
             Job job = JOB_SERVICE.find(scopeId, jobId);
 
             if (job != null) {
-
-                //
                 // Update job
                 job.setName(gwtJob.getJobName());
                 job.setDescription(gwtJob.getUnescapedDescription());

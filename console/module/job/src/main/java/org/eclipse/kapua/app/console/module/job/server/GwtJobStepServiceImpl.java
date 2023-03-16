@@ -55,7 +55,6 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
 
     @Override
     public PagingLoadResult<GwtJobStep> query(PagingLoadConfig loadConfig, GwtJobStepQuery gwtJobStepQuery) throws GwtKapuaException {
-        //
         // Do query
         int totalLength = 0;
         List<GwtJobStep> gwtJobStepList = new ArrayList<GwtJobStep>();
@@ -117,11 +116,8 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
 
     @Override
     public GwtJobStep create(GwtXSRFToken xsrfToken, GwtJobStepCreator gwtJobStepCreator) throws GwtKapuaException {
-        //
         // Checking XSRF token
         checkXSRFToken(xsrfToken);
-
-        //
         // Do create
         GwtJobStep gwtJobStep = null;
         try {
@@ -135,8 +131,6 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
             gwtJobStep = KapuaGwtJobModelConverter.convertJobStep(jobStep);
 
             setEnumOnJobStepProperty(gwtJobStep.getStepProperties());
-
-            //
             // Return result
             return gwtJobStep;
         } catch (Exception e) {
@@ -192,8 +186,6 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
             JobStep jobStep = JOB_STEP_SERVICE.find(scopeId, userId);
 
             if (jobStep != null) {
-
-                //
                 // Update job step
                 jobStep.setName(gwtJobStep.getUnescapedJobStepName());
                 jobStep.setDescription(gwtJobStep.getUnescapedDescription());
@@ -206,8 +198,6 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
 
                 // update the user
                 JobStep jobStepUpdated = JOB_STEP_SERVICE.update(jobStep);
-
-                //
                 // convert to GwtAccount and return
                 // reload the user as we want to load all its permissions
                 gwtJobStepUpdated = KapuaGwtJobModelConverter.convertJobStep(jobStepUpdated);

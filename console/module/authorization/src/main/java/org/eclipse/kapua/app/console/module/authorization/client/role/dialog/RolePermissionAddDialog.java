@@ -87,8 +87,6 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
     @Override
     public void createBody() {
         FormPanel permissionFormPanel = new FormPanel(FORM_LABEL_WIDTH);
-
-        //
         // Domain
         domainsCombo = new ComboBox<GwtDomain>();
         domainsCombo.setStore(new ListStore<GwtDomain>());
@@ -165,8 +163,6 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
             }
         });
         permissionFormPanel.add(domainsCombo);
-
-        //
         // Action
         actionsCombo = new SimpleComboBox<GwtAction>();
         actionsCombo.disable();
@@ -188,8 +184,6 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
                 groupsCombo.clearInvalid();
             }
         });
-
-        //
         // Target Scope Id
         LabelField labelField = new LabelField();
         labelField.setFieldLabel("Target Scope");
@@ -197,8 +191,6 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         labelField.setToolTip("The scope on which the permission is given.");
         labelField.setValue(currentSession.getSelectedAccountName());
         permissionFormPanel.add(labelField);
-
-        //
         // Groups
         groupsCombo = new ComboBox<GwtGroup>();
         groupsCombo.setStore(new ListStore<GwtGroup>());
@@ -249,8 +241,6 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
             groupsCombo.getStore().add(allGroup);
             groupsCombo.setValue(allGroup);
         }
-
-        //
         // Forwardable
         forwardableChecbox = new CheckBox();
         forwardableChecbox.setBoxLabel("");
@@ -260,8 +250,6 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         forwardableChecboxGroup.setFieldLabel(MSGS.permissionAddDialogForwardable());
         forwardableChecboxGroup.add(forwardableChecbox);
         permissionFormPanel.add(forwardableChecboxGroup);
-
-        //
         // Add form panel to body
         bodyPanel.add(permissionFormPanel);
 

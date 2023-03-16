@@ -103,9 +103,7 @@ public class KapuaRuntimeException extends RuntimeException {
         return new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, null, message);
     }
 
-    //
     // Getters
-    //
     protected String getKapuaErrorMessagesBundle() {
         return KAPUA_ERROR_MESSAGES;
     }
@@ -129,10 +127,7 @@ public class KapuaRuntimeException extends RuntimeException {
     private Object[] getArgs() {
         return args;
     }
-
-    //
     // Exception messages.
-    //
 
     /**
      * @since 1.0.0

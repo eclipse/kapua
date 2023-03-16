@@ -67,11 +67,8 @@ public class AuthenticationUtils {
      */
     public static String cryptCredential(CryptAlgorithm algorithm, String plainValue)
             throws KapuaException {
-        //
         // Argument validator
         ArgumentValidator.notEmptyOrNull(plainValue, "plainValue");
-
-        //
         // Do crypt
         String cryptedValue;
         switch (algorithm) {

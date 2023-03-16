@@ -74,7 +74,6 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
      * @since 2.0.0
      */
     protected AbstractEntityManagerFactory(String persistenceUnitName, String datasourceName) {
-        //
         // Initialize the EntityManagerFactory
         try {
 
@@ -110,10 +109,7 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
     public EntityManager createEntityManager() throws KapuaException {
         return new EntityManager(entityManagerFactory.createEntityManager());
     }
-
-    //
     // Private Methods
-    //
 
     /**
      * Prints the {@link EntityManager}'s configuration.

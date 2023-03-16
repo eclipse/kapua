@@ -177,8 +177,6 @@ public class AccountConfigComponents extends LayoutContainer {
     private void initToolBar() {
         toolBar = new ToolBar();
         toolBar.setBorders(true);
-
-        //
         // Refresh Button
         refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 
@@ -292,8 +290,6 @@ public class AccountConfigComponents extends LayoutContainer {
         tree.setStyleAttribute("background-color", "white");
 
         configPanel.add(tree, westData);
-
-        //
         // Selection Listener for the component
         // make sure the form is not dirty before switching.
         tree.getSelectionModel().addListener(Events.BeforeSelect, new Listener<BaseEvent>() {
@@ -437,8 +433,6 @@ public class AccountConfigComponents extends LayoutContainer {
                             reset.setEnabled(false);
                             refreshButton.setEnabled(false);
                             gwtSession.setFormDirty(false);
-
-                            //
                             // Getting XSRF token
                             GWT_SECURITY_TOKEN_SERVICE.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
 
@@ -536,9 +530,7 @@ public class AccountConfigComponents extends LayoutContainer {
     }
 
     // --------------------------------------------------------------------------------------
-    //
     // Data Load Listener
-    //
     // --------------------------------------------------------------------------------------
 
     private class DataLoadListener extends KapuaLoadListener {

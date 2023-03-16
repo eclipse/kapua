@@ -48,15 +48,10 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
     @Override
     public KapuaDataMessage translate(KuraDataMessage kuraMessage) throws TranslateException {
         try {
-            //
             // Kapua Channel
             KapuaDataChannel kapuaDataChannel = translate(kuraMessage.getChannel());
-
-            //
             // Kapua payload
             KapuaDataPayload kapuaDataPayload = translate(kuraMessage.getPayload());
-
-            //
             // Kapua message
             Account account = ACCOUNT_SERVICE.findByName(kuraMessage.getChannel().getScope());
 

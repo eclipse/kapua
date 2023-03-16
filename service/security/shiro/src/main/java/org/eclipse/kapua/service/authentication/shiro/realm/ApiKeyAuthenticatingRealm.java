@@ -66,12 +66,9 @@ public class ApiKeyAuthenticatingRealm extends KapuaAuthenticatingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken)
             throws AuthenticationException {
-        //
         // Extract credentials
         ApiKeyCredentialsImpl token = (ApiKeyCredentialsImpl) authenticationToken;
         String tokenApiKey = token.getApiKey();
-
-        //
         // Get Services
         UserService userService;
         CredentialService credentialService;
@@ -82,8 +79,6 @@ public class ApiKeyAuthenticatingRealm extends KapuaAuthenticatingRealm {
         } catch (KapuaRuntimeException kre) {
             throw new ShiroException("Unexpected error while loading KapuaServices!", kre);
         }
-
-        //
         // Find credential
         Credential credential = null;
         try {
@@ -102,20 +97,12 @@ public class ApiKeyAuthenticatingRealm extends KapuaAuthenticatingRealm {
         } catch (Exception e) {
             throw new ShiroException("Unexpected error while looking for the credentials!", e);
         }
-
-        //
         // Check credential
         checkCredential(credential);
-
-        //
         // Get CredentialService config
         Map<String, Object> credentialServiceConfig = getCredentialServiceConfig(credential.getScopeId());
-
-        //
         // Check credential lockout
         checkCredentialLockout(credential, credentialServiceConfig);
-
-        //
         // Get the associated user by name
         User user;
         try {
@@ -126,16 +113,10 @@ public class ApiKeyAuthenticatingRealm extends KapuaAuthenticatingRealm {
         } catch (Exception e) {
             throw new ShiroException("Unexpected error while looking for the user!", e);
         }
-
-        //
         // Check user
         checkUser(user);
-
-        //
         // Check account
         Account account = checkAccount(user.getScopeId());
-
-        //
         // BuildAuthenticationInfo
         return new LoginAuthenticationInfo(getName(),
                 account,
@@ -152,18 +133,13 @@ public class ApiKeyAuthenticatingRealm extends KapuaAuthenticatingRealm {
         try {
             super.assertCredentialsMatch(authcToken, info);
         } catch (AuthenticationException authenticationException) {
-            //
             // Increase count of failed attempts
             increaseLockoutPolicyCount(kapuaInfo);
 
             throw authenticationException;
         }
-
-        //
         // Reset Credential lockout policy after successful login
         resetCredentialLockout((Credential) kapuaInfo.getCredentials());
-
-        //
         // Populate Session with info
         populateSession(SecurityUtils.getSubject(), kapuaInfo);
     }

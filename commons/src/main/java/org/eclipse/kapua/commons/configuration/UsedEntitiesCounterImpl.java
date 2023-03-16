@@ -48,12 +48,8 @@ public class UsedEntitiesCounterImpl<
     public long countEntitiesInScope(KapuaId scopeId) throws KapuaException {
         return txManager.execute(tx -> {
             final Q query = factory.newQuery(scopeId);
-
-            //
             // Argument Validator
             ArgumentValidator.notNull(query, "query");
-
-            //
             // Do count
             return entityRepository.count(tx, query);
         });

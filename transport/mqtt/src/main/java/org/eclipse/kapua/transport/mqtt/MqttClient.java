@@ -66,10 +66,7 @@ public class MqttClient {
      * @since 1.2.0
      */
     private String clientId;
-
-    //
     // Connection management
-    //
 
     /**
      * Connects the {@link MqttClient#pahoMqttClient} according to the given {@link TransportClientConnectOptions}.
@@ -165,10 +162,7 @@ public class MqttClient {
             return false;
         }
     }
-
-    //
     // Message management
-    //
 
     /**
      * Publish a {@link MqttMessage}.
@@ -273,10 +267,7 @@ public class MqttClient {
         }
 
     }
-
-    //
     // Utilities
-    //
 
     /**
      * Gets the clientId of the wrapped {@link MqttClient#pahoMqttClient}.

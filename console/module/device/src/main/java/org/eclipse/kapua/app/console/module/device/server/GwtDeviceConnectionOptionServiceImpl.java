@@ -32,11 +32,8 @@ public class GwtDeviceConnectionOptionServiceImpl extends KapuaRemoteServiceServ
 
     @Override
     public GwtDeviceConnectionOption update(GwtXSRFToken gwtXsrfToken, GwtDeviceConnectionOption gwtDeviceConnectionOption) throws GwtKapuaException {
-        //
         // Checking XSRF token
         checkXSRFToken(gwtXsrfToken);
-
-        //
         // Do update
         try {
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceConnectionOption.getScopeId());
@@ -58,8 +55,6 @@ public class GwtDeviceConnectionOptionServiceImpl extends KapuaRemoteServiceServ
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
-
-        //
         // Return result
         return gwtDeviceConnectionOption;
     }

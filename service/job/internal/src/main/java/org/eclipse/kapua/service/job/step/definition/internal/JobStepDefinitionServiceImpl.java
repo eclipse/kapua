@@ -60,26 +60,20 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
 
     @Override
     public JobStepDefinition create(JobStepDefinitionCreator stepDefinitionCreator) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(stepDefinitionCreator, "stepDefinitionCreator");
         ArgumentValidator.notNull(stepDefinitionCreator.getScopeId(), "stepDefinitionCreator.scopeId");
         ArgumentValidator.notNull(stepDefinitionCreator.getStepType(), "stepDefinitionCreator.stepType");
         ArgumentValidator.validateEntityName(stepDefinitionCreator.getName(), "stepDefinitionCreator.name");
         ArgumentValidator.notEmptyOrNull(stepDefinitionCreator.getProcessorName(), "stepDefinitionCreator.processorName");
-
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
         return txManager.execute(tx -> {
-            //
             // Check duplicate name
             if (duplicateNameChecker.countOtherEntitiesWithName(tx, stepDefinitionCreator.getName()) > 0) {
                 throw new KapuaDuplicateNameInAnotherAccountError(stepDefinitionCreator.getName());
             }
-
-            //
             // Create JobStepDefinition
 
             JobStepDefinitionImpl jobStepDefinitionImpl = new JobStepDefinitionImpl(stepDefinitionCreator.getScopeId());
@@ -90,7 +84,6 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
             jobStepDefinitionImpl.setProcessorName(stepDefinitionCreator.getProcessorName());
             jobStepDefinitionImpl.setWriterName(stepDefinitionCreator.getWriterName());
             jobStepDefinitionImpl.setStepProperties(stepDefinitionCreator.getStepProperties());
-            //
             // Do create
             return repository.create(tx, jobStepDefinitionImpl);
         });
@@ -134,17 +127,13 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
 
     @Override
     public JobStepDefinition findByName(String name) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(name, "name");
-
-        //
         // Do find
         return txManager.execute(tx -> {
 
             JobStepDefinition jobStepDefinition = repository.findByName(tx, name);
             if (jobStepDefinition != null) {
-                //
                 // Check Access
                 authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
             }
@@ -154,46 +143,31 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
 
     @Override
     public JobStepDefinitionListResult query(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
-
-        //
         // Do query
         return txManager.execute(tx -> repository.query(tx, query));
     }
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
-
-        //
         // Do query
         return txManager.execute(tx -> repository.count(tx, query));
     }
 
     @Override
     public void delete(KapuaId scopeId, KapuaId stepDefinitionId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(stepDefinitionId, "stepDefinitionId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, null));
-
-        //
         // Do delete
         txManager.execute(tx -> repository.delete(tx, scopeId, stepDefinitionId));
     }

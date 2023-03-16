@@ -77,29 +77,22 @@ public class AccessRoleServiceImpl implements AccessRoleService {
         ArgumentValidator.notNull(accessRoleCreator, "accessRoleCreator");
         ArgumentValidator.notNull(accessRoleCreator.getAccessInfoId(), "accessRoleCreator.accessInfoId");
         ArgumentValidator.notNull(accessRoleCreator.getRoleId(), "accessRoleCreator.roleId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.write, accessRoleCreator.getScopeId()));
 
         return txManager.execute(tx -> {
-            //
             // Check that AccessInfo exists
             final AccessInfo accessInfo = accessInfoRepository.find(tx, accessRoleCreator.getScopeId(), accessRoleCreator.getAccessInfoId());
 
             if (accessInfo == null) {
                 throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessRoleCreator.getAccessInfoId());
             }
-
-            //
             // Check that Role exists
             final Role role = roleRepository.find(tx, accessRoleCreator.getScopeId(), accessRoleCreator.getRoleId());
 
             if (role == null) {
                 throw new KapuaEntityNotFoundException(Role.TYPE, accessRoleCreator.getRoleId());
             }
-
-            //
             // Check that Role is not already assigned
             AccessRoleQuery query = new AccessRoleQueryImpl(accessRoleCreator.getScopeId());
             query.setPredicate(
@@ -112,8 +105,6 @@ public class AccessRoleServiceImpl implements AccessRoleService {
             if (accessRoleRepository.count(tx, query) > 0) {
                 throw new KapuaDuplicateNameException(role.getName());
             }
-
-            //
             // Do create
             AccessRole accessRole = new AccessRoleImpl(accessRoleCreator.getScopeId());
 
@@ -128,12 +119,8 @@ public class AccessRoleServiceImpl implements AccessRoleService {
             throws KapuaException {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(accessRoleId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
-
-        //
         // Do find
         return txManager.execute(tx -> accessRoleRepository.find(tx, scopeId, accessRoleId));
     }
@@ -155,12 +142,8 @@ public class AccessRoleServiceImpl implements AccessRoleService {
     public AccessRoleListResult query(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do query
         return txManager.execute(tx -> accessRoleRepository.query(tx, query));
     }
@@ -169,12 +152,8 @@ public class AccessRoleServiceImpl implements AccessRoleService {
     public long count(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do count
         return txManager.execute(tx -> accessRoleRepository.count(tx, query));
     }
@@ -187,8 +166,6 @@ public class AccessRoleServiceImpl implements AccessRoleService {
 
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.delete, scopeId));
-
-        //
         // Do delete
         txManager.execute(tx -> accessRoleRepository.delete(tx, scopeId, accessRoleId));
     }

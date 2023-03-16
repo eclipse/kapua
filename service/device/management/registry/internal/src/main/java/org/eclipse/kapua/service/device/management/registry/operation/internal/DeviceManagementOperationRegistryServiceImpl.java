@@ -63,7 +63,6 @@ public class DeviceManagementOperationRegistryServiceImpl
 
     @Override
     public DeviceManagementOperation create(DeviceManagementOperationCreator creator) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(creator, "creator");
         ArgumentValidator.notNull(creator.getScopeId(), "creator.scopeId");
@@ -73,19 +72,14 @@ public class DeviceManagementOperationRegistryServiceImpl
         ArgumentValidator.notNull(creator.getStatus(), "creator.status");
         ArgumentValidator.notNull(creator.getAppId(), "creator.appId");
         ArgumentValidator.notNull(creator.getAction(), "creator.action");
-
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
 
         return txManager.execute(tx -> {
-            //
             // Check device existence
             if (deviceRepository.find(tx, creator.getScopeId(), creator.getDeviceId()) == null) {
                 throw new KapuaEntityNotFoundException(Device.TYPE, creator.getDeviceId());
             }
-
-            //
             // Create DeviceManagementOperationNotification
             DeviceManagementOperation newEntity = entityFactory.newEntity(creator.getScopeId());
             newEntity.setStartedOn(creator.getStartedOn());
@@ -97,8 +91,6 @@ public class DeviceManagementOperationRegistryServiceImpl
             newEntity.setStatus(creator.getStatus());
             newEntity.setStatus(creator.getStatus());
             newEntity.setInputProperties(creator.getInputProperties());
-
-            //
             // Do create
             return repository.create(tx, newEntity);
         });
@@ -106,7 +98,6 @@ public class DeviceManagementOperationRegistryServiceImpl
 
     @Override
     public DeviceManagementOperation update(DeviceManagementOperation entity) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(entity, "deviceManagementOperation");
         ArgumentValidator.notNull(entity.getScopeId(), "deviceManagementOperation.scopeId");
@@ -117,25 +108,18 @@ public class DeviceManagementOperationRegistryServiceImpl
         ArgumentValidator.notNull(entity.getStatus(), "deviceManagementOperation.status");
         ArgumentValidator.notNull(entity.getAppId(), "deviceManagementOperation.appId");
         ArgumentValidator.notNull(entity.getAction(), "deviceManagementOperation.action");
-
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
 
         return txManager.execute(tx -> {
-            //
             // Check device existence
             if (deviceRepository.find(tx, entity.getScopeId(), entity.getDeviceId()) == null) {
                 throw new KapuaEntityNotFoundException(Device.TYPE, entity.getDeviceId());
             }
-
-            //
             // Check existence
             if (repository.find(tx, entity.getScopeId(), entity.getId()) == null) {
                 throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, entity.getId());
             }
-
-            //
             // Do update
             return repository.update(tx, entity);
         });
@@ -143,61 +127,43 @@ public class DeviceManagementOperationRegistryServiceImpl
 
     @Override
     public DeviceManagementOperation find(KapuaId scopeId, KapuaId entityId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(entityId, "deviceManagementOperationId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, scopeId));
-
-        //
         // Do find
         return txManager.execute(tx -> repository.find(tx, scopeId, entityId));
     }
 
     @Override
     public DeviceManagementOperation findByOperationId(KapuaId scopeId, KapuaId operationId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(operationId, "operationId");
 
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, scopeId));
-
-        //
         // Do find
         return txManager.execute(tx -> repository.findByOperationId(tx, scopeId, operationId));
     }
 
     @Override
     public DeviceManagementOperationListResult query(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do query
         return txManager.execute(tx -> repository.query(tx, query));
     }
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do count
         return txManager.execute(tx -> repository.count(tx, query));
     }

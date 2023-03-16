@@ -107,7 +107,6 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
             KapuaService service = locator.getService(serviceClass);
             if (service instanceof KapuaConfigurableService) {
                 KapuaConfigurableService configurableService = (KapuaConfigurableService) service;
-                //
                 // Checking validity of the given XSRF Token
                 checkXSRFToken(xsrfToken);
                 KapuaId kapuaScopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeId);

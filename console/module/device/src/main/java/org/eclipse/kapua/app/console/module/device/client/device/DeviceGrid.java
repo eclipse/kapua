@@ -103,7 +103,6 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
 
     @Override
     protected List<ColumnConfig> getColumns() {
-        //
         // Column Configuration
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 

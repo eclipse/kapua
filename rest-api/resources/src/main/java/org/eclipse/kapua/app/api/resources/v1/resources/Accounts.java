@@ -15,10 +15,10 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.query.SortOrder;
@@ -54,15 +54,15 @@ public class Accounts extends AbstractKapuaResource {
     /**
      * Gets the {@link Account} list in the scope.
      *
-     * @param scopeId       The {@link ScopeId} in which to search results.
-     * @param name          The {@link Account} name in which to search results.
-     * @param recursive     The {@link Account} name in which to search results.
-     * @param sortParam     The name of the parameter that will be used as a sorting key
-     * @param sortDir       The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
-     * @param offset        The result set offset.
-     * @param limit         The result set limit.
-     * @return              The {@link AccountListResult} of all the accounts associated to the current selected scope.
-     * @throws              KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @param scopeId   The {@link ScopeId} in which to search results.
+     * @param name      The {@link Account} name in which to search results.
+     * @param recursive The {@link Account} name in which to search results.
+     * @param sortParam The name of the parameter that will be used as a sorting key
+     * @param sortDir   The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
+     * @param offset    The result set offset.
+     * @param limit     The result set limit.
+     * @return The {@link AccountListResult} of all the accounts associated to the current selected scope.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -105,7 +105,6 @@ public class Accounts extends AbstractKapuaResource {
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    //
     @POST
     @Path("_query")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})

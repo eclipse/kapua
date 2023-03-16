@@ -57,7 +57,6 @@ public class PooledMqttClientFactory extends BasePooledObjectFactory<MqttClient>
      */
     @Override
     public MqttClient create() throws Exception {
-        //
         // User pwd generation
         MqttClientSetting mqttClientSettings = MqttClientSetting.getInstance();
         MqttClientPoolSetting mqttClientPoolSettings = MqttClientPoolSetting.getInstance();
@@ -65,16 +64,12 @@ public class PooledMqttClientFactory extends BasePooledObjectFactory<MqttClient>
         String username = mqttClientSettings.getString(MqttClientSettingKeys.TRANSPORT_CREDENTIAL_USERNAME);
         char[] password = mqttClientSettings.getString(MqttClientSettingKeys.TRANSPORT_CREDENTIAL_PASSWORD).toCharArray();
         String clientId = CLIENT_ID_GENERATOR.next(mqttClientPoolSettings.getString(MqttClientPoolSettingKeys.CLIENT_POOL_CLIENT_ID_PREFIX));
-
-        //
         // Get new client and connection options
         MqttClientConnectionOptions connectionOptions = new MqttClientConnectionOptions();
         connectionOptions.setClientId(clientId);
         connectionOptions.setUsername(username);
         connectionOptions.setPassword(password);
         connectionOptions.setEndpointURI(URI.create(serverURI));
-
-        //
         // Connect client
         MqttClient kapuaClient = new MqttClient();
         try {

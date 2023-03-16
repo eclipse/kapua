@@ -113,8 +113,6 @@ public class GwtPackageInstallRequest extends KapuaBaseModel {
     public Integer getRebootDelay() {
         return get("rebootDelay");
     }
-
-    //
     // Advanced
 
     public void setRestart(Boolean restart) {

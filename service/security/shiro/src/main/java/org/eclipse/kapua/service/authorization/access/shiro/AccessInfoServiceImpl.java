@@ -94,12 +94,8 @@ public class AccessInfoServiceImpl implements AccessInfoService {
     public AccessInfo create(AccessInfoCreator accessInfoCreator)
             throws KapuaException {
         ArgumentValidator.notNull(accessInfoCreator, "accessInfoCreator");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.write, accessInfoCreator.getScopeId()));
-
-        //
         // If permission are created out of the access info scope, check that the current user has the permission on the external scopeId.
         if (accessInfoCreator.getPermissions() != null) {
             for (Permission p : accessInfoCreator.getPermissions()) {
@@ -166,8 +162,6 @@ public class AccessInfoServiceImpl implements AccessInfoService {
             throws KapuaException {
         ArgumentValidator.notNull(scopeId, "accountId");
         ArgumentValidator.notNull(accessInfoId, "accessInfoId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
 
@@ -178,8 +172,6 @@ public class AccessInfoServiceImpl implements AccessInfoService {
     public AccessInfo findByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
         ArgumentValidator.notNull(scopeId, "accountId");
         ArgumentValidator.notNull(userId, "userId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
 
@@ -190,8 +182,6 @@ public class AccessInfoServiceImpl implements AccessInfoService {
     public AccessInfoListResult query(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
 
@@ -202,8 +192,6 @@ public class AccessInfoServiceImpl implements AccessInfoService {
     public long count(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
 

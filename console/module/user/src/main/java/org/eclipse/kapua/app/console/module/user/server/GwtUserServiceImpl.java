@@ -118,12 +118,8 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             userCreator.setStatus(GwtKapuaUserModelConverter.convertUserStatus(gwtUserCreator.getUserStatus()));
             userCreator.setExternalId(gwtUserCreator.getExternalId());
             userCreator.setExternalUsername(gwtUserCreator.getExternalUsername());
-
-            //
             // Create the User
             User user = USER_SERVICE.create(userCreator);
-
-            //
             // Create credentials
             if (UserType.INTERNAL.equals(user.getUserType()) &&
                     gwtUserCreator.getPassword() != null) {
@@ -238,7 +234,6 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     @Override
     public PagingLoadResult<GwtUser> query(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery) throws GwtKapuaException {
-        //
         // Do query
         int totalLength = 0;
         List<GwtUser> gwtUsers = new ArrayList<GwtUser>();

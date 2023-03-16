@@ -117,8 +117,6 @@ public class DeviceTagAddDialog extends EntityAddEditDialog {
                 DeviceTagAddDialog.this.formPanel.fireEvent(Events.OnClick);
             }
         };
-
-        //
         // Tags
         tagsCombo = new ComboBox<GwtTag>();
         tagsCombo.setStore(new ListStore<GwtTag>());

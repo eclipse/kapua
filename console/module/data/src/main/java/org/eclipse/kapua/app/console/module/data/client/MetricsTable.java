@@ -90,18 +90,18 @@ public class MetricsTable extends LayoutContainer {
         tableContainer.setBodyBorder(true);
         tableContainer.setHeaderVisible(true);
         switch (type) {
-        case TOPIC:
-            tableContainer.setHeading(MSGS.metricsTableHeaderTopic(""));
-            break;
-        case DEVICE:
-            tableContainer.setHeading(MSGS.metricsTableHeaderDevice(""));
-            break;
+            case TOPIC:
+                tableContainer.setHeading(MSGS.metricsTableHeaderTopic(""));
+                break;
+            case DEVICE:
+                tableContainer.setHeading(MSGS.metricsTableHeaderDevice(""));
+                break;
 
-        case ASSET:
-            tableContainer.setHeading(MSGS.metricsTableHeaderAssets());
-            break;
-        default:
-            break;
+            case ASSET:
+                tableContainer.setHeading(MSGS.metricsTableHeaderAssets());
+                break;
+            default:
+                break;
         }
         tableContainer.setScrollMode(Scroll.AUTOY);
         tableContainer.setLayout(new FitLayout());
@@ -220,9 +220,7 @@ public class MetricsTable extends LayoutContainer {
     }
 
     // --------------------------------------------------------------------------------------
-    //
     // Unload of the GXT Component
-    //
     // --------------------------------------------------------------------------------------
     @Override
     public void onUnload() {

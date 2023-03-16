@@ -124,10 +124,7 @@ public class DatastoreMediator implements MessageStoreMediator,
     public void setMetricInfoStoreFacade(MetricInfoRegistryFacade metricInfoStoreFacade) {
         this.metricInfoStoreFacade = metricInfoStoreFacade;
     }
-
-    //
     // Message Store Mediator methods
-    //
 
     @Override
     public Metadata getMetadata(KapuaId scopeId, long indexedOn) throws ClientException, MappingException {

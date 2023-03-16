@@ -62,7 +62,6 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
 
     @Override
     public ManagementOperationNotification create(ManagementOperationNotificationCreator creator) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(creator, "managementOperationNotificationCreator");
         ArgumentValidator.notNull(creator.getScopeId(), "managementOperationNotificationCreator.scopeId");
@@ -71,18 +70,14 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
         ArgumentValidator.notNull(creator.getStatus(), "managementOperationNotificationCreator.status");
         ArgumentValidator.notNull(creator.getProgress(), "managementOperationNotificationCreator.progress");
         ArgumentValidator.notNegative(creator.getProgress(), "managementOperationNotificationCreator.progress");
-
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
 
         return txManager.execute(tx -> {
-            //
             // Check operation existence
             if (deviceManagementOperationRepository.find(tx, creator.getScopeId(), creator.getOperationId()) == null) {
                 throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, creator.getOperationId());
             }
-            //
             // Create DeviceManagementOperationNotification
             final ManagementOperationNotification newEntity = entityFactory.newEntity(creator.getScopeId());
             newEntity.setOperationId(creator.getOperationId());
@@ -91,7 +86,6 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
             newEntity.setResource(creator.getResource());
             newEntity.setProgress(creator.getProgress());
             newEntity.setMessage(creator.getMessage());
-            //
             // Do create
             return repository.create(tx, newEntity);
         });
@@ -99,46 +93,31 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
 
     @Override
     public ManagementOperationNotification find(KapuaId scopeId, KapuaId entityId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(entityId, "managementOperationNotificationId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, scopeId));
-
-        //
         // Do find
         return txManager.execute(tx -> repository.find(tx, scopeId, entityId));
     }
 
     @Override
     public ManagementOperationNotificationListResult query(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do query
         return txManager.execute(tx -> repository.query(tx, query));
     }
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do count
         return txManager.execute(tx -> repository.count(tx, query));
     }

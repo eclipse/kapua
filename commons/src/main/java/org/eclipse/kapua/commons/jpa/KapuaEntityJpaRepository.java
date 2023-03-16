@@ -136,15 +136,11 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
 
     protected E doFind(javax.persistence.EntityManager em, KapuaId scopeId, KapuaId entityId) {
         KapuaEid eId = KapuaEid.parseKapuaId(entityId);
-
-        //
         // Checking existence
         final E entityToFind = em.find(concreteClass, eId);
 
         // If 'null' ScopeId has been requested, it means that we need to look for ANY ScopeId.
         final KapuaId scopeIdToMatch = scopeId != null ? scopeId : KapuaId.ANY;
-
-        //
         // Return if not null and ScopeIds matches
         if (entityToFind != null) {
             if (KapuaId.ANY.equals(scopeIdToMatch)) { // If requested ScopeId is ANY, return whatever Entity has been found
@@ -165,13 +161,9 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<C> criteriaSelectQuery = cb.createQuery(concreteClass);
-
-        //
         // FROM
         Root<C> entityRoot = criteriaSelectQuery.from(concreteClass);
         EntityType<C> entityType = entityRoot.getModel();
-
-        //
         // SELECT
         criteriaSelectQuery.select(entityRoot).distinct(true);
 
@@ -183,8 +175,6 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
                 entityRoot.fetch(fetchAttribute);
             }
         }
-
-        //
         // WHERE
         QueryPredicate kapuaPredicates = listQuery.getPredicate();
         // Add ScopeId to query if has been defined one specific
@@ -214,8 +204,6 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         if (expr != null) {
             criteriaSelectQuery.where(expr);
         }
-
-        //
         // ORDER BY
         // Default to the KapuaEntity id if no ordering is specified.
         Order order;
@@ -275,16 +263,10 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> criteriaSelectQuery = cb.createQuery(Long.class);
-
-        //
         // FROM
         Root<C> entityRoot = criteriaSelectQuery.from(concreteClass);
-
-        //
         // SELECT
         criteriaSelectQuery.select(cb.countDistinct(entityRoot));
-
-        //
         // WHERE
         QueryPredicate kapuaPredicates = countQuery.getPredicate();
         // Add ScopeId to query if has been defined one specific
@@ -313,8 +295,6 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         if (expr != null) {
             criteriaSelectQuery.where(expr);
         }
-
-        //
         // COUNT!
         TypedQuery<Long> query = em.createQuery(criteriaSelectQuery);
 
@@ -327,12 +307,8 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     @Override
     public E delete(TxContext txContext, KapuaId scopeId, KapuaId entityId) throws KapuaException {
         final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
-
-        //
         // Checking existence
         E entityToDelete = doFind(em, scopeId, entityId);
-
-        //
         // Deleting if found
         if (entityToDelete == null) {
             throw new KapuaEntityNotFoundException(concreteClass.getSimpleName(), entityId);
@@ -345,15 +321,10 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
         em.remove(entityToDelete);
         em.flush();
-
-        //
         // Returning deleted entity
         return entityToDelete;
     }
-
-    //
     // Private Methods
-    //
 
     /**
      * Handles {@link QueryPredicate} contained of a {@link KapuaQuery}.
@@ -645,12 +616,8 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
         final CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<C> criteriaSelectQuery = cb.createQuery(concreteClass);
-
-        //
         // FROM
         Root<C> entityRoot = criteriaSelectQuery.from(concreteClass);
-
-        //
         // SELECT
         criteriaSelectQuery.select(entityRoot);
 
@@ -676,8 +643,6 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         if (pScopeId != null) {
             query.setParameter(pScopeId.getName(), scopeId);
         }
-
-        //
         // QUERY!
         List<C> result = query.getResultList();
         switch (result.size()) {

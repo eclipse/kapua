@@ -13,7 +13,6 @@
 package org.eclipse.kapua.app.console.module.api.client.resources.icons;
 
 public enum IconSet {
-    //
     ADJUST("fa-adjust"), //
     ADN("fa-adn"), //
     ALIGN_CENTER("fa-align-center"), //

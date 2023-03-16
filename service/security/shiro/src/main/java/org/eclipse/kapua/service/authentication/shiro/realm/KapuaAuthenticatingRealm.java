@@ -48,8 +48,6 @@ import java.util.Map;
 public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    //
     // Session
 
     /**
@@ -67,8 +65,6 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
         session.setAttribute(ShiroSessionKeys.USER_ID, loginAuthenticationInfo.getUser().getId());
         session.setAttribute(ShiroSessionKeys.USER_NAME, loginAuthenticationInfo.getUser().getName());
     }
-
-    //
     // Account
 
     /**
@@ -108,9 +104,6 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
 
         return account;
     }
-
-
-    //
     // Credential
 
     /**
@@ -252,12 +245,11 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
 
     private boolean shouldResetCredentialLockout(Credential credential) {
         return credential.getFirstLoginFailure() != null ||
-            credential.getLoginFailuresReset() != null ||
-            credential.getLockoutReset() != null ||
-            credential.getLoginFailures() != 0;
+                credential.getLoginFailuresReset() != null ||
+                credential.getLockoutReset() != null ||
+                credential.getLoginFailures() != 0;
     }
 
-    //
     // User
 
     /**

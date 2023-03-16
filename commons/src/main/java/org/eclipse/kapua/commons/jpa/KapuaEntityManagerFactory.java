@@ -95,10 +95,7 @@ public class KapuaEntityManagerFactory implements EntityManagerFactory {
     public javax.persistence.EntityManager createEntityManager() {
         return entityManagerFactory.createEntityManager();
     }
-
-    //
     // Private Methods
-    //
 
     /**
      * Prints the {@link EntityManager}'s configuration.

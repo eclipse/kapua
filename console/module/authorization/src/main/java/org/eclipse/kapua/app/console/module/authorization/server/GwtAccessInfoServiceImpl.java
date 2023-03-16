@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.server;
 
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessInfo;
@@ -41,12 +41,8 @@ public class GwtAccessInfoServiceImpl extends KapuaRemoteServiceServlet implemen
 
     @Override
     public GwtAccessInfo create(GwtXSRFToken xsrfToken, GwtAccessInfoCreator gwtAccessInfoCreator) throws GwtKapuaException {
-
-        //
         // Checking XSRF token
         checkXSRFToken(xsrfToken);
-
-        //
         // Do create
         GwtAccessInfo gwtAccessInfo = null;
         try {
@@ -64,20 +60,14 @@ public class GwtAccessInfoServiceImpl extends KapuaRemoteServiceServlet implemen
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
-
-        //
         // Return result
         return gwtAccessInfo;
     }
 
     @Override
     public void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String accessInfoShortId) throws GwtKapuaException {
-
-        //
         // Checking XSRF token
         checkXSRFToken(gwtXsrfToken);
-
-        //
         // Do delete
         try {
             // Convert from GWT Entity

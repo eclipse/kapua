@@ -159,8 +159,6 @@ public class DeviceAssetsValues extends LayoutContainer {
     private void initToolBar() {
         toolBar = new ToolBar();
         toolBar.setBorders(true);
-
-        //
         // Refresh Button
         refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 
@@ -286,8 +284,6 @@ public class DeviceAssetsValues extends LayoutContainer {
         tree.setStyleAttribute("background-color", "white");
 
         assetValuesContainer.add(tree, westData);
-
-        //
         // Selection Listener for the component
         // make sure the form is not dirty before switching.
         tree.getSelectionModel().addListener(Events.BeforeSelect, new Listener<BaseEvent>() {
@@ -441,8 +437,6 @@ public class DeviceAssetsValues extends LayoutContainer {
                             apply.setEnabled(false);
                             reset.setEnabled(false);
                             refreshButton.setEnabled(false);
-
-                            //
                             // Getting XSRF token
                             gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
 
@@ -519,9 +513,7 @@ public class DeviceAssetsValues extends LayoutContainer {
     };
 
     // --------------------------------------------------------------------------------------
-    //
     // Data Load Listener
-    //
     // --------------------------------------------------------------------------------------
 
     private class DataLoadListener extends KapuaLoadListener {

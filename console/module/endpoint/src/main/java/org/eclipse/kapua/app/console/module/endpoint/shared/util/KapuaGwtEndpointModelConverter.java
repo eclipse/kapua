@@ -31,11 +31,8 @@ public class KapuaGwtEndpointModelConverter {
     public static GwtEndpoint convertEndpoint(EndpointInfo endpoint) {
 
         GwtEndpoint gwtEndpoint = new GwtEndpoint();
-        //
         // Covert commons attributes
         KapuaGwtCommonsModelConverter.convertEntity(endpoint, gwtEndpoint);
-
-        //
         // Convert other attributes
         gwtEndpoint.setSchema(endpoint.getSchema());
         gwtEndpoint.setDns(endpoint.getDns());

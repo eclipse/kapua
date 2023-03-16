@@ -30,8 +30,8 @@ import org.eclipse.kapua.app.console.module.account.shared.model.permission.Acco
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.EditButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.EntityDescriptionTabItem;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
@@ -62,8 +62,6 @@ public class AccountDetailsTabDescription extends EntityDescriptionTabItem<GwtAc
 
         ToolBar accountsToolBar = new ToolBar();
         accountsToolBar.setHeight("27px");
-
-        //
         // Edit Account Button
         KapuaButton editButton = new EditButton(new SelectionListener<ButtonEvent>() {
 

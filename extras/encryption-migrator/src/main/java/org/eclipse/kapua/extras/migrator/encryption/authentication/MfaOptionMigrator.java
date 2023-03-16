@@ -102,10 +102,7 @@ public class MfaOptionMigrator extends AbstractKapuaUpdatableEntity implements M
     public void setMfaSecretKey(String mfaSecretKey) {
         this.mfaSecretKey = SecretAttributeMigratorModelUtils.write(mfaSecretKey);
     }
-
-    //
     // Attributes below do not require migration
-    //
 
     @Override
     public KapuaId getUserId() {

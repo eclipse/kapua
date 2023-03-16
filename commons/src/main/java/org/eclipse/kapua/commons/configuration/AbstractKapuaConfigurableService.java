@@ -409,20 +409,14 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @since 1.3.0
      */
     private KapuaTocd getConfigMetadata(KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
-
-        //
         // Check disabled service
         if (!isServiceEnabled(scopeId)) {
             throw new KapuaServiceDisabledException(pid);
         }
-
-        //
         // Check access
         getAuthorizationService().checkPermission(getPermissionFactory().newPermission(domain, Actions.read, scopeId));
-
         // Get the Tocd
         // Keep distinct values for service PID, Scope ID and disabled properties included/excluded from AD
         Triple<String, KapuaId, Boolean> cacheKey = Triple.of(pid, scopeId, excludeDisabled);
@@ -484,16 +478,10 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @since 1.3.0
      */
     protected Map<String, Object> getConfigValues(KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
-        //
-        //
         // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
-
-        //
         // Check access
         getAuthorizationService().checkPermission(getPermissionFactory().newPermission(domain, Actions.read, scopeId));
-
-        //
         // Get configuration values
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
 

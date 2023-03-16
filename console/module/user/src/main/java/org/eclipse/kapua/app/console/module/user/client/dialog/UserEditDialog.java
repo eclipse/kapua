@@ -181,8 +181,6 @@ public class UserEditDialog extends UserAddDialog {
         confirmPassword.disable();
         passwordTooltip.hide();
         passwordTooltip.disable();
-
-        //
         // Populate Fields
         usernameLabel.setValue(gwtUser.getUsername());
         usernameLabel.setToolTip(createTooltipForLongValues(gwtUser.getUsername()));

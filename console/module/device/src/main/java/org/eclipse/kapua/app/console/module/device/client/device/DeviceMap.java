@@ -20,7 +20,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPr
 public class DeviceMap extends LayoutContainer {
 
     public DeviceMap(DeviceView devicesView,
-            GwtSession currentSession) {
+                     GwtSession currentSession) {
     }
 
     @Override
@@ -32,9 +32,7 @@ public class DeviceMap extends LayoutContainer {
     }
 
     // --------------------------------------------------------------------------------------
-    //
     // Unload of the GXT Component
-    //
     // --------------------------------------------------------------------------------------
 
     @Override

@@ -98,14 +98,11 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
 
     @Override
     public Role create(RoleCreator roleCreator) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(roleCreator, "roleCreator");
         ArgumentValidator.notNull(roleCreator.getScopeId(), "roleCreator.scopeId");
         ArgumentValidator.validateEntityName(roleCreator.getName(), "roleCreator.name");
         ArgumentValidator.notNull(roleCreator.getPermissions(), "roleCreator.permissions");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, roleCreator.getScopeId()));
 
@@ -159,30 +156,23 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
 
     @Override
     public Role update(Role role) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(role, "role");
         ArgumentValidator.notNull(role.getId(), "role.id");
         ArgumentValidator.notNull(role.getScopeId(), "role.scopeId");
         ArgumentValidator.validateEntityName(role.getName(), "role.name");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, role.getScopeId()));
 
         return txManager.execute(tx -> {
-            //
             // Check existence
             if (roleRepository.find(tx, role.getScopeId(), role.getId()) == null) {
                 throw new KapuaEntityNotFoundException(Role.TYPE, role.getId());
             }
-            //
             // Check duplicate name
             if (duplicateNameChecker.countOtherEntitiesWithName(tx, role.getScopeId(), role.getId(), role.getName()) > 0) {
                 throw new KapuaDuplicateNameException(role.getName());
             }
-
-            //
             // Do update
             return roleRepository.update(tx, role);
         });
@@ -190,12 +180,9 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
 
     @Override
     public void delete(KapuaId scopeId, KapuaId roleId) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(roleId, "roleId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.delete, scopeId));
 
@@ -204,15 +191,11 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
         }
 
         txManager.execute(tx -> {
-
-            //
             // Check existence
             final Role roleToDelete = roleRepository.find(tx, scopeId, roleId);
             if (roleToDelete == null) {
                 throw new KapuaEntityNotFoundException(Role.TYPE, roleId);
             }
-
-            //
             // Do delete
             return roleRepository.delete(tx, roleToDelete);
         });
@@ -220,46 +203,31 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
 
     @Override
     public Role find(KapuaId scopeId, KapuaId roleId) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(roleId, "roleId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, scopeId));
-
-        //
         // Do find
         return txManager.execute(tx -> roleRepository.find(tx, scopeId, roleId));
     }
 
     @Override
     public RoleListResult query(KapuaQuery query) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do query
         return txManager.execute(tx -> roleRepository.query(tx, query));
     }
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do count
         return txManager.execute(tx -> roleRepository.count(tx, query));
     }

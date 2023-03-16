@@ -294,8 +294,6 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 pairs.add(new GwtGroupedNVPair(MODEM_INFO, "modemImei", device.getImei()));
                 pairs.add(new GwtGroupedNVPair(MODEM_INFO, "modemImsi", device.getImsi()));
                 pairs.add(new GwtGroupedNVPair(MODEM_INFO, "modemIccid", device.getIccid()));
-
-                //
                 // Extended Properties
                 for (DeviceExtendedProperty deviceExtendedProperty : device.getExtendedProperties()) {
                     pairs.add(
@@ -376,7 +374,6 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
     @Override
     public GwtDevice createDevice(GwtXSRFToken xsrfToken, GwtDeviceCreator gwtDeviceCreator)
             throws GwtKapuaException {
-        //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
 
@@ -415,7 +412,6 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
     @Override
     public GwtDevice updateAttributes(GwtXSRFToken xsrfToken, GwtDevice gwtDevice)
             throws GwtKapuaException {
-        //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
 
@@ -425,13 +421,10 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
         GwtDevice gwtDeviceUpdated = null;
 
         try {
-            //
             // Find original device
             KapuaId scopeId = KapuaEid.parseCompactId(gwtDevice.getScopeId());
             KapuaId deviceId = KapuaEid.parseCompactId(gwtDevice.getId());
             device = deviceRegistryService.find(scopeId, deviceId);
-
-            //
             // Updated values
             // Gerenal info
             device.setDisplayName(gwtDevice.getUnescapedDisplayName());
@@ -467,7 +460,6 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
     @Override
     public void deleteDevice(GwtXSRFToken xsrfToken, String scopeIdString, String clientId)
             throws GwtKapuaException {
-        //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
 
@@ -485,7 +477,6 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
     @Override
     public void addDeviceTag(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, String tagIdString) throws GwtKapuaException {
-        //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
 
@@ -519,7 +510,6 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
     @Override
     public void deleteDeviceTag(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, String tagIdString) throws GwtKapuaException {
-        //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
 

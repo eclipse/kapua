@@ -49,11 +49,8 @@ public class AccessRoleImplJpaRepository
     @Override
     // This method is overridden for the sole purpose of throwing a different exception if the role did not exist in the first place
     public AccessRole delete(TxContext tx, KapuaId scopeId, KapuaId accessRoleId) throws KapuaException {
-        //
         // Checking existence
         AccessRole entityToDelete = this.find(tx, scopeId, accessRoleId);
-
-        //
         // Deleting if found
         if (entityToDelete == null) {
             throw new KapuaEntityNotFoundException(AccessRole.TYPE, accessRoleId);

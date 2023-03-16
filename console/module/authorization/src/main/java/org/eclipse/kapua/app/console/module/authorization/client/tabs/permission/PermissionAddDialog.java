@@ -112,8 +112,6 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     @Override
     public void createBody() {
         FormPanel permissionFormPanel = new FormPanel(FORM_LABEL_WIDTH);
-
-        //
         // Domain
         domainsCombo = new ComboBox<GwtDomain>();
         domainsCombo.setStore(new ListStore<GwtDomain>());
@@ -188,8 +186,6 @@ public class PermissionAddDialog extends EntityAddEditDialog {
             }
         });
         permissionFormPanel.add(domainsCombo);
-
-        //
         // Action
         actionsCombo = new SimpleComboBox<GwtAction>();
         actionsCombo.disable();
@@ -212,8 +208,6 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         });
 
         permissionFormPanel.add(actionsCombo);
-
-        //
         // Target Scope Id
         LabelField labelField = new LabelField();
         labelField.setFieldLabel("Target Scope");
@@ -272,8 +266,6 @@ public class PermissionAddDialog extends EntityAddEditDialog {
             groupsCombo.getStore().add(allGroup);
             groupsCombo.setValue(allGroup);
         }
-
-        //
         // Forwardable
         forwardableChecbox = new CheckBox();
         forwardableChecbox.setBoxLabel("");
@@ -283,8 +275,6 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         forwardableChecboxGroup.setFieldLabel(MSGS.dialogAddPermissionForwardable());
         forwardableChecboxGroup.add(forwardableChecbox);
         permissionFormPanel.add(forwardableChecboxGroup);
-
-        //
         // Add form panel to body
         bodyPanel.add(permissionFormPanel);
     }

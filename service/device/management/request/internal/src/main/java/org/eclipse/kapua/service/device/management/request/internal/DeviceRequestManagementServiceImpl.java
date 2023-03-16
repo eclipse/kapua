@@ -81,11 +81,8 @@ public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagement
 
     @Override
     public GenericResponseMessage exec(KapuaId scopeId, KapuaId deviceId, GenericRequestMessage requestInput, Long timeout) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(requestInput, "requestInput");
-
-        //
         // Check Access
         Actions action;
         switch (requestInput.getChannel().getMethod()) {
@@ -107,8 +104,6 @@ public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagement
                 throw new DeviceManagementRequestBadMethodException(requestInput.getChannel().getMethod());
         }
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, action, requestInput.getScopeId()));
-
-        //
         // Prepare the request
         GenericRequestChannel genericRequestChannel = genericRequestFactory.newRequestChannel();
         genericRequestChannel.setAppName(requestInput.getChannel().getAppName());
@@ -128,7 +123,6 @@ public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagement
         genericRequestMessage.setPayload(genericRequestPayload);
         genericRequestMessage.setPosition(requestInput.getPosition());
 
-        //
         // Build request
         DeviceCallBuilder<GenericRequestChannel, GenericRequestPayload, GenericRequestMessage, GenericResponseMessage> genericDeviceCallBuilder =
                 DeviceCallBuilder
@@ -136,7 +130,6 @@ public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagement
                         .withRequestMessage(genericRequestMessage)
                         .withTimeoutOrDefault(timeout);
 
-        //
         // Do it
         GenericResponseMessage responseMessage;
         try {
@@ -146,7 +139,6 @@ public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagement
             throw e;
         }
 
-        //
         // Create event
         createDeviceEvent(scopeId, deviceId, genericRequestMessage, responseMessage);
 

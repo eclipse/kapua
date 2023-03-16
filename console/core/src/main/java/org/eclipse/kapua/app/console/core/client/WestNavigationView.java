@@ -43,10 +43,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
-import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.MainViewDescriptor;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
 import org.eclipse.kapua.app.console.module.account.client.AccountDetailsView;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
@@ -55,10 +51,14 @@ import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.ContentPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.MainViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
 
 import java.util.Arrays;
 import java.util.List;
@@ -126,8 +126,6 @@ public class WestNavigationView extends LayoutContainer {
 
                 setLayout(new FitLayout());
                 setBorders(false);
-
-                //
                 // Accordion Panel
                 AccordionLayout accordionLayout = new AccordionLayout();
                 accordionLayout.setFill(true);
@@ -137,8 +135,6 @@ public class WestNavigationView extends LayoutContainer {
                 accordionPanel.setBodyBorder(false);
                 accordionPanel.setHeaderVisible(false);
                 add(accordionPanel);
-
-                //
                 // Top managing panel
                 cloudResourcesPanel = new ContentPanel();
                 cloudResourcesPanel.setLayout(new FitLayout());
@@ -147,8 +143,6 @@ public class WestNavigationView extends LayoutContainer {
                 cloudResourcesPanel.setBodyBorder(true);
                 cloudResourcesPanel.setHeaderVisible(false);
                 cloudResourcesPanel.setScrollMode(Scroll.AUTOY);
-
-                //
                 // Bottom manage panel
                 accountManagementPanel = new ContentPanel();
                 accountManagementPanel.setBorders(false);
@@ -157,10 +151,7 @@ public class WestNavigationView extends LayoutContainer {
 
                 cloudResourcesTreeStore = new TreeStore<ModelData>();
                 accountManagementTreeStore = new TreeStore<ModelData>();
-
-                //
                 // Adding item to stores
-                //
                 addMenuItems(additionalViewDescriptors);
 
                 ColumnConfig name = new ColumnConfig("name", "Name", 200);
@@ -180,7 +171,7 @@ public class WestNavigationView extends LayoutContainer {
 
                     @Override
                     public void selectionChanged(final SelectionChangedEvent<ModelData> se) {
-                        cloudResourcesTreeGrid.getView().ensureVisible(getLastSelection(se),0, false);
+                        cloudResourcesTreeGrid.getView().ensureVisible(getLastSelection(se), 0, false);
 
                         if ((currentSession.isFormDirty()) && (!skipNextSelChange)) {
                             // ask for confirmation before switching
@@ -422,8 +413,6 @@ public class WestNavigationView extends LayoutContainer {
             lc.setStyleAttribute("margin-top", "3px");
             lc.setWidth(170);
             lc.setScrollMode(Scroll.NONE);
-
-            //
             // Icon
             KapuaIcon icon = new KapuaIcon((IconSet) model.get("icon"));
             icon.setEmSize(2);
@@ -431,16 +420,12 @@ public class WestNavigationView extends LayoutContainer {
             TableData iconTableData = new TableData(Style.HorizontalAlignment.CENTER, Style.VerticalAlignment.MIDDLE);
             iconTableData.setWidth("35px");
             lc.add(icon, iconTableData);
-
-            //
             // Label
             Label label = new Label((String) model.get(property));
             label.setStyleAttribute("margin-left", "5px");
 
             TableData labelTableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
             lc.add(label, labelTableData);
-
-            //
             // Return component
             return lc;
         }

@@ -211,7 +211,6 @@ public class KapuaLiquibaseClient {
     }
 
     protected static void executeMasters(Connection connection, String schema, File changelogDir, List<String> contexts) throws LiquibaseException {
-        //
         // Find and execute all master scripts
         LOG.info("Executing pre master files...");
         executeMasters(connection, schema, changelogDir, "-master.pre.xml", contexts);

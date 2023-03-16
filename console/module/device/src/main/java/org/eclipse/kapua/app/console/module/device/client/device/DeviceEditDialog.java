@@ -88,8 +88,6 @@ public class DeviceEditDialog extends DeviceAddDialog {
 
         // Optlock
         selectedDevice.setOptlock(optlock.getValue().intValue());
-
-        //
         // Submit
         gwtDeviceService.updateAttributes(xsrfToken, selectedDevice, new AsyncCallback<GwtDevice>() {
 
@@ -118,7 +116,7 @@ public class DeviceEditDialog extends DeviceAddDialog {
 
     @Override
     public String getInfoMessage() {
-         return DEVICE_MSGS.dialogEditInfo();
+        return DEVICE_MSGS.dialogEditInfo();
     }
 
     private void populateDialog(GwtDevice device) {
@@ -128,11 +126,11 @@ public class DeviceEditDialog extends DeviceAddDialog {
             String toolTipText = SplitTooltipStringUtil.splitTooltipString(device.getClientId(), MAX_LINE_LENGTH);
             toolTipConfig.setText(toolTipText);
             // General info data
-                clientIdLabel.setValue(device.getClientId());
-                clientIdLabel.setStyleAttribute("white-space", "nowrap");
-                clientIdLabel.setStyleAttribute("text-overflow", "ellipsis");
-                clientIdLabel.setStyleAttribute("overflow", "hidden");
-                clientIdLabel.setToolTip(toolTipConfig);
+            clientIdLabel.setValue(device.getClientId());
+            clientIdLabel.setStyleAttribute("white-space", "nowrap");
+            clientIdLabel.setStyleAttribute("text-overflow", "ellipsis");
+            clientIdLabel.setStyleAttribute("overflow", "hidden");
+            clientIdLabel.setToolTip(toolTipConfig);
 
             displayNameField.setValue(device.getUnescapedDisplayName());
             statusCombo.setSimpleValue(GwtDeviceQueryPredicates.GwtDeviceStatus.valueOf(device.getGwtDeviceStatus()));

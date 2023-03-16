@@ -56,10 +56,7 @@ public enum TranslatorErrorCodes implements KapuaErrorCode {
      * @since 1.2.0
      */
     TRANSLATOR_NOT_FOUND,
-
-    //
     // Deprecated
-    //
 
     /**
      * @since 1.0.0

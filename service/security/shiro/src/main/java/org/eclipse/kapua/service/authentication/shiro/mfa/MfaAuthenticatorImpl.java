@@ -89,12 +89,9 @@ public class MfaAuthenticatorImpl implements MfaAuthenticator {
 
     @Override
     public boolean authorize(String mfaSecretKey, int verificationCode) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(mfaSecretKey, "mfaSecretKey");
         ArgumentValidator.notNegative(verificationCode, "verificationCode");
-
-        //
         // Do check
         GoogleAuthenticator ga = new GoogleAuthenticator(GOOGLE_AUTHENTICATOR_CONFIG);
 
@@ -103,12 +100,9 @@ public class MfaAuthenticatorImpl implements MfaAuthenticator {
 
     @Override
     public boolean authorize(String hashedScratchCode, String verificationCode) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notEmptyOrNull(hashedScratchCode, "hashedScratchCode");
         ArgumentValidator.notEmptyOrNull(verificationCode, "verificationCode");
-
-        //
         // Do check
         return BCrypt.checkpw(verificationCode, hashedScratchCode);
     }

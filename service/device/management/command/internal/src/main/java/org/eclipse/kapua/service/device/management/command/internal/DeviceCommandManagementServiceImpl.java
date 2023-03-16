@@ -73,18 +73,13 @@ public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagement
     @Override
     public DeviceCommandOutput exec(KapuaId scopeId, KapuaId deviceId, DeviceCommandInput commandInput, Long timeout)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(deviceId, "deviceId");
         ArgumentValidator.notNull(commandInput, "commandInput");
         ArgumentValidator.notNull(commandInput.getTimeout(), "commandInput.timeout");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.execute, scopeId));
-
-        //
         // Prepare the request
         CommandRequestChannel commandRequestChannel = new CommandRequestChannel();
         commandRequestChannel.setAppName(CommandAppProperties.APP_NAME);
@@ -109,7 +104,6 @@ public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagement
         commandRequestMessage.setPayload(commandRequestPayload);
         commandRequestMessage.setChannel(commandRequestChannel);
 
-        //
         // Build request
         DeviceCallBuilder<CommandRequestChannel, CommandRequestPayload, CommandRequestMessage, CommandResponseMessage> commandDeviceCallBuilder =
                 DeviceCallBuilder
@@ -117,7 +111,6 @@ public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagement
                         .withRequestMessage(commandRequestMessage)
                         .withTimeoutOrDefault(timeout);
 
-        //
         // Do exec
         CommandResponseMessage responseMessage;
 
@@ -128,11 +121,8 @@ public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagement
             throw e;
         }
 
-        //
         // Create event
         createDeviceEvent(scopeId, deviceId, commandRequestMessage, responseMessage);
-
-        //
         // Check response
         return checkResponseAcceptedOrThrowError(responseMessage, () -> {
             CommandResponsePayload responsePayload = responseMessage.getPayload();

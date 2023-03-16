@@ -14,8 +14,8 @@ package org.eclipse.kapua.app.console.module.endpoint.client;
 
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
@@ -26,8 +26,8 @@ import org.eclipse.kapua.app.console.module.api.client.util.CssLiterals;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.endpoint.client.messages.ConsoleEndpointMessages;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpoint;
-import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpointQuery;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpoint.GwtEndpointSecure;
+import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpointQuery;
 
 public class EndpointFilterPanel extends EntityFilterPanel<GwtEndpoint> {
 
@@ -51,8 +51,6 @@ public class EndpointFilterPanel extends EntityFilterPanel<GwtEndpoint> {
         setHeading(MSGS.filterHeader());
 
         VerticalPanel verticalPanel = getFieldsPanel();
-
-        //
         // Schema
         Label schemaLabel = new Label(MSGS.filterFieldEndpointSchemaLabel());
         schemaLabel.setWidth(WIDTH);
@@ -69,8 +67,6 @@ public class EndpointFilterPanel extends EntityFilterPanel<GwtEndpoint> {
         schemaField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
 
         verticalPanel.add(schemaField);
-
-        //
         // DNS
         Label nameLabel = new Label(MSGS.filterFieldEndpointDnsLabel());
         nameLabel.setWidth(WIDTH);
@@ -87,8 +83,6 @@ public class EndpointFilterPanel extends EntityFilterPanel<GwtEndpoint> {
         dnsField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
 
         verticalPanel.add(dnsField);
-
-        //
         // Port
         Label portLabel = new Label(MSGS.filterFieldEndpointPortLabel());
         portLabel.setWidth(WIDTH);

@@ -15,11 +15,8 @@ package org.eclipse.kapua.service.authentication.user.shiro;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationDomains;
@@ -27,15 +24,14 @@ import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
-import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
-import org.eclipse.kapua.service.authentication.credential.CredentialService;
+import org.eclipse.kapua.service.authentication.credential.CredentialRepository;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDAO;
+import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapper;
+import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidator;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
-import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
 import org.eclipse.kapua.service.authentication.user.PasswordResetRequest;
 import org.eclipse.kapua.service.authentication.user.UserCredentialsFactory;
@@ -43,7 +39,8 @@ import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserService;
+import org.eclipse.kapua.service.user.UserRepository;
+import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Singleton;
 
@@ -54,24 +51,50 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class UserCredentialsServiceImpl implements UserCredentialsService {
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final CredentialService credentialService = locator.getService(CredentialService.class);
+    private final AuthenticationService authenticationService;
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
+    private final UserCredentialsFactory userCredentialsFactory;
+    private final CredentialsFactory credentialsFactory;
+    private final CredentialFactory credentialFactory;
+    private final TxManager txManager;
+    private final UserRepository userRepository;
+    private final CredentialRepository credentialRepository;
+    private final CredentialMapper credentialMapper;
+    private final PasswordValidator passwordValidator;
 
+    public UserCredentialsServiceImpl(
+            AuthenticationService authenticationService,
+            AuthorizationService authorizationService, PermissionFactory permissionFactory,
+            UserCredentialsFactory userCredentialsFactory, CredentialsFactory credentialsFactory,
+            CredentialFactory credentialFactory, TxManager txManager,
+            UserRepository userRepository,
+            CredentialRepository credentialRepository,
+            CredentialMapper credentialMapper,
+            PasswordValidator passwordValidator) {
+        this.authenticationService = authenticationService;
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.userCredentialsFactory = userCredentialsFactory;
+        this.credentialsFactory = credentialsFactory;
+        this.credentialFactory = credentialFactory;
+        this.txManager = txManager;
+        this.userRepository = userRepository;
+        this.credentialRepository = credentialRepository;
+        this.credentialMapper = credentialMapper;
+        this.passwordValidator = passwordValidator;
+    }
 
     @Override
     public Credential changePassword(PasswordChangeRequest passwordChangeRequest) throws KapuaException {
         ArgumentValidator.notNull(passwordChangeRequest.getNewPassword(), "passwordChangeRequest.newPassword");
         ArgumentValidator.notNull(passwordChangeRequest.getCurrentPassword(), "passwordChangeRequest.currentPassword");
 
-        return KapuaSecurityUtils.doPrivileged(() -> {
-            UserService userService = locator.getService(UserService.class);
-            User user = userService.find(KapuaSecurityUtils.getSession().getScopeId(), KapuaSecurityUtils.getSession().getUserId());
+        return txManager.execute(tx -> {
+            User user = userRepository.find(tx, KapuaSecurityUtils.getSession().getScopeId(), KapuaSecurityUtils.getSession().getUserId());
             if (user == null) {
                 throw new KapuaEntityNotFoundException(User.TYPE, KapuaSecurityUtils.getSession().getUserId());
             }
-
-            AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
-            CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
             UsernamePasswordCredentials usernamePasswordCredentials = credentialsFactory.newUsernamePasswordCredentials(user.getName(), passwordChangeRequest.getCurrentPassword());
             try {
                 authenticationService.verifyCredentials(usernamePasswordCredentials);
@@ -79,13 +102,12 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
                 throw new KapuaIllegalArgumentException("passwordChangeRequest.currentPassword", passwordChangeRequest.getCurrentPassword());
             }
 
-            CredentialListResult credentials = credentialService.findByUserId(KapuaSecurityUtils.getSession().getScopeId(), KapuaSecurityUtils.getSession().getUserId());
+            CredentialListResult credentials = credentialRepository.findByUserId(tx, KapuaSecurityUtils.getSession().getScopeId(), KapuaSecurityUtils.getSession().getUserId());
             Credential passwordCredential = credentials.getItems().stream()
-                                                       .filter(credential -> credential.getCredentialType().equals(CredentialType.PASSWORD))
-                                                       .findAny()
-                                                       .orElseThrow(() -> new IllegalStateException("User does not have any credential of type password"));
+                    .filter(credential -> credential.getCredentialType().equals(CredentialType.PASSWORD))
+                    .findAny()
+                    .orElseThrow(() -> new IllegalStateException("User does not have any credential of type password"));
 
-            UserCredentialsFactory userCredentialsFactory = locator.getFactory(UserCredentialsFactory.class);
             PasswordResetRequest passwordResetRequest = userCredentialsFactory.newPasswordResetRequest();
             passwordResetRequest.setNewPassword(passwordChangeRequest.getNewPassword());
             try {
@@ -99,50 +121,35 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
 
     @Override
     public Credential resetPassword(KapuaId scopeId, KapuaId credentialId, PasswordResetRequest passwordResetRequest) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(credentialId, "credentialId");
         ArgumentValidator.notNull(passwordResetRequest.getNewPassword(), "passwordResetRequest.newPassword");
 
-        //
         // Check access
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, scopeId));
 
-        Credential credential = credentialService.find(scopeId, credentialId);
-        if (credential == null) {
-            throw new KapuaEntityNotFoundException(Credential.TYPE, credentialId);
-        }
+        return txManager.execute(tx -> {
+            Credential credential = credentialRepository.find(tx, scopeId, credentialId);
+            if (credential == null) {
+                throw new KapuaEntityNotFoundException(Credential.TYPE, credentialId);
+            }
 
-        String plainNewPassword = passwordResetRequest.getNewPassword();
-        try {
-            credentialService.validatePassword(credential.getScopeId(), plainNewPassword);
-        } catch (KapuaIllegalArgumentException ignored) {
-            throw new KapuaIllegalArgumentException("passwordResetRequest.newPassword", plainNewPassword);
-        }
+            String plainNewPassword = passwordResetRequest.getNewPassword();
+            try {
+                passwordValidator.validatePassword(credential.getScopeId(), plainNewPassword);
+            } catch (KapuaIllegalArgumentException ignored) {
+                throw new KapuaIllegalArgumentException("passwordResetRequest.newPassword", plainNewPassword);
+            }
 
-        CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
-        CredentialCreator credentialCreator = credentialFactory.newCreator(scopeId,
-                                                                           credential.getUserId(),
-                                                                           CredentialType.PASSWORD,
-                                                                           plainNewPassword,
-                                                                           CredentialStatus.ENABLED,
-                                                                           null);
-
-        EntityManager em = AuthenticationEntityManagerFactory.getEntityManager();
-        try {
-            em.beginTransaction();
-
-            CredentialDAO.delete(em, scopeId, credentialId);
-            credential = CredentialDAO.create(em, credentialCreator);
-
-            em.commit();
-            return credential;
-        } catch (KapuaException e) {
-            em.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
+            final Credential toPersists = credentialMapper.map(credentialFactory.newCreator(scopeId,
+                    credential.getUserId(),
+                    CredentialType.PASSWORD,
+                    plainNewPassword,
+                    CredentialStatus.ENABLED,
+                    null));
+            credentialRepository.delete(tx, scopeId, credentialId);
+            return credentialRepository.create(tx, toPersists);
+        });
     }
 }

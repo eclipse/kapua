@@ -224,8 +224,6 @@ public class NorthView extends LayoutContainer {
                 });
                 userActionMenu.add(manageMfa);
                 userActionMenu.add(new SeparatorMenuItem());
-
-                //
                 // Logout menu item
                 KapuaMenuItem userLogoutMenuItem = new KapuaMenuItem();
                 userLogoutMenuItem.setText(MSGS.consoleHeaderUserActionLogout());

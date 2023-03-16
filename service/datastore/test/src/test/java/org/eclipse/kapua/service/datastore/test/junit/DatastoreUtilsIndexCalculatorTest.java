@@ -72,7 +72,6 @@ public class DatastoreUtilsIndexCalculatorTest {
         // 52,// 2018
         // 52,// 2019
         // 53// 2020 for locale us - 52 for locale "Europe"
-        //
         // }));
         performTest(sdf.parse("02/01/2017 13:12 +0100"), sdf.parse("02/07/2017 13:12 +0100"), buildExpectedResult("1", 2, 2017, 25, 2017, null));
         performTest(sdf.parse("02/01/2017 13:12 +0100"), sdf.parse("01/07/2017 13:12 +0100"), buildExpectedResult("1", 2, 2017, 25, 2017, null));

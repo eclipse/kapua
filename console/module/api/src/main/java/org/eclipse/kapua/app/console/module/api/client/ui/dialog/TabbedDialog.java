@@ -27,8 +27,6 @@ public abstract class TabbedDialog extends ActionDialog {
     @Override
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
-
-        //
         // Tabs setup
         tabsPanel = new TabPanel();
         tabsPanel.setPlain(true);

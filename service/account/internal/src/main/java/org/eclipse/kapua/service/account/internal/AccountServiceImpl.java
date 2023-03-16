@@ -116,13 +116,10 @@ public class AccountServiceImpl
         serviceConfigurationManager.checkAllowedEntities(accountCreator.getScopeId(), "Accounts");
 
         return txManager.execute(tx -> {
-            //
             // Check if the parent account exists
             if (accountRepository.find(tx, KapuaId.ANY, accountCreator.getScopeId()) == null) {
                 throw new KapuaIllegalArgumentException(KapuaEntityAttributes.SCOPE_ID, "parent account does not exist: " + accountCreator.getScopeId() + "::");
             }
-
-            //
             // check if the account collides with the SystemSettingKey#COMMONS_CONTROL_TOPIC_CLASSIFIER
             if (!StringUtils.isEmpty(SystemSetting.getInstance().getMessageClassifier())) {
                 if (SystemSetting.getInstance().getMessageClassifier().equals(accountCreator.getName())) {
@@ -130,8 +127,6 @@ public class AccountServiceImpl
                     // configuration parameter"?
                 }
             }
-
-            //
             // Check duplicate name
             if (duplicateNameChecker.countOtherEntitiesWithName(tx, accountCreator.getScopeId(), accountCreator.getName()) > 0) {
                 throw new KapuaDuplicateNameException(accountCreator.getName());
@@ -139,8 +134,6 @@ public class AccountServiceImpl
             if (duplicateNameChecker.countOtherEntitiesWithName(tx, accountCreator.getName()) > 0) {
                 throw new KapuaDuplicateNameInAnotherAccountError(accountCreator.getName());
             }
-
-            //
             // Check that expiration date is no later than parent expiration date
             Account parentAccount = accountRepository.find(tx, KapuaId.ANY, accountCreator.getScopeId());
             if (parentAccount != null && parentAccount.getExpirationDate() != null) {
@@ -150,8 +143,6 @@ public class AccountServiceImpl
                     throw new KapuaIllegalArgumentException(AccountAttributes.EXPIRATION_DATE, accountCreator.getExpirationDate() != null ? accountCreator.getExpirationDate().toString() : NO_EXPIRATION_DATE_SET);
                 }
             }
-
-            //
             // Do create
             final OrganizationImpl organizationImpl = new OrganizationImpl();
             organizationImpl.setName(accountCreator.getOrganizationName());
@@ -209,8 +200,6 @@ public class AccountServiceImpl
             if (oldAccount == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, account.getId());
             }
-
-            //
             // Check if user tries to change expiration date of the account in which it is defined (the account is not the admin one considering previous checks)
             if (KapuaSecurityUtils.getSession().getScopeId().equals(account.getId())) {
                 // Editing self - aka user that edits its account
@@ -220,8 +209,6 @@ public class AccountServiceImpl
                     throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "A user cannot modify expiration date of the account in which it's defined");
                 }
             }
-
-            //
             // Check that expiration date is no later than parent expiration date
             Account parentAccount = null;
             if (oldAccount.getScopeId() != null) {
@@ -245,8 +232,6 @@ public class AccountServiceImpl
                     throw new KapuaIllegalArgumentException(AccountAttributes.EXPIRATION_DATE, account.getExpirationDate() != null ? account.getExpirationDate().toString() : NO_EXPIRATION_DATE_SET);
                 }
             }
-
-            //
             // Verify unchanged parent account ID and parent account path
             if (!Objects.equals(oldAccount.getScopeId(), account.getScopeId())) {
                 throw new KapuaIllegalArgumentException("account.scopeId", account.getScopeId().toStringId());
@@ -266,17 +251,12 @@ public class AccountServiceImpl
     @Override
     //@RaiseServiceEvent
     public void delete(KapuaId scopeId, KapuaId accountId) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(accountId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         Actions action = Actions.delete;
         authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, action, scopeId));
-
-        //
         // Check if it has children
         if (!findChildAccountsTrusted(accountId).isEmpty()) {
             throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "This account cannot be deleted. Delete its child first.");
@@ -284,7 +264,6 @@ public class AccountServiceImpl
 
         txManager.execute(
                 tx -> {
-                    //
                     // Do delete
                     Account account = scopeId.equals(accountId) ?
                             accountRepository.find(tx, KapuaId.ANY, accountId) :
@@ -399,27 +378,19 @@ public class AccountServiceImpl
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do count
         return txManager.execute(tx -> accountRepository.count(tx, query));
     }
 
     private AccountListResult findChildAccountsTrusted(KapuaId accountId)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(accountId, KapuaEntityAttributes.ENTITY_ID);
         ArgumentValidator.notNull(accountId.getId(), "accountId.id");
-
-        //
         // Do find
         return txManager.execute(tx -> accountRepository.query(tx, new AccountQueryImpl(accountId)));
     }

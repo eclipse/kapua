@@ -69,8 +69,6 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
         ArgumentValidator.notNull(domainCreator, "domainCreator");
         ArgumentValidator.notEmptyOrNull(domainCreator.getName(), "domainCreator.name");
         ArgumentValidator.notNull(domainCreator.getActions(), "domainCreator.actions");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.write, null));
         Domain domain = new DomainImpl();
@@ -88,8 +86,6 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
     @Override
     public void delete(KapuaId scopeId, KapuaId domainId) throws KapuaException {
         ArgumentValidator.notNull(domainId, "domainId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.delete, null));
 
@@ -100,8 +96,6 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
     public Domain find(KapuaId scopeId, KapuaId domainId)
             throws KapuaException {
         ArgumentValidator.notNull(domainId, "domainId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
 
@@ -113,8 +107,6 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
             throws KapuaException {
 
         ArgumentValidator.notNull(name, "name");
-
-        //
         // Do find
         final Domain foundDomain = txManager.execute(tx -> domainRepository.findByName(tx, KapuaId.ANY, name));
         if (foundDomain != null) {
@@ -127,8 +119,6 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
     public DomainListResult query(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
 
@@ -139,8 +129,6 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
     public long count(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
 

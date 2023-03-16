@@ -182,8 +182,6 @@ public interface KapuaQuery {
      * @since 1.2.0
      */
     void setAskTotalCount(Boolean askTotalCount);
-
-    //
     // Predicates factory
 
     /**

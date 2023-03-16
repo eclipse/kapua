@@ -34,11 +34,8 @@ public class KapuaUpdatableEntityJpaRepository<E extends KapuaUpdatableEntity, C
     @Override
     public E update(TxContext txContext, E updatedEntity) throws KapuaException {
         final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
-        //
         // Checking existence
         E currentEntity = doFind(em, updatedEntity.getScopeId(), updatedEntity.getId());
-
-        //
         // Updating if not null
         if (currentEntity == null) {
             throw new KapuaEntityNotFoundException(concreteClass.getSimpleName(), updatedEntity.getId());

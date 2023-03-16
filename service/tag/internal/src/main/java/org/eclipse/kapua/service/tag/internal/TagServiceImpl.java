@@ -83,21 +83,14 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
 
     @Override
     public Tag create(TagCreator tagCreator) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(tagCreator, "tagCreator");
         ArgumentValidator.notNull(tagCreator.getScopeId(), "tagCreator.scopeId");
         ArgumentValidator.validateEntityName(tagCreator.getName(), "tagCreator.name");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.write, tagCreator.getScopeId()));
-
-        //
         // Check entity limit
         serviceConfigurationManager.checkAllowedEntities(tagCreator.getScopeId(), "Tags");
-
-        //
         // Check duplicate name
         return txManager.execute(tx -> {
             final long otherEntitiesWithSameName = duplicateNameChecker.countOtherEntitiesWithName(tx, tagCreator.getScopeId(), tagCreator.getName());
@@ -108,7 +101,6 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
             final Tag toBeCreated = tagFactory.newEntity(tagCreator.getScopeId());
             toBeCreated.setName(tagCreator.getName());
             toBeCreated.setDescription(tagCreator.getDescription());
-            //
             // Do create
             return tagRepository.create(tx, toBeCreated);
         });
@@ -145,69 +137,46 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
 
     @Override
     public void delete(KapuaId scopeId, KapuaId tagId) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(tagId, "tagId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.delete, scopeId));
-
-        //
         // Check existence
         if (find(scopeId, tagId) == null) {
             throw new KapuaEntityNotFoundException(Tag.TYPE, tagId);
         }
-
-        //
         // Do delete
-        //
         txManager.execute(tx -> tagRepository.delete(tx, scopeId, tagId));
     }
 
     @Override
     public Tag find(KapuaId scopeId, KapuaId tagId) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(tagId, "tagId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.read, scopeId));
-
-        //
         // Do find
         return txManager.execute(tx -> tagRepository.find(tx, scopeId, tagId));
     }
 
     @Override
     public TagListResult query(KapuaQuery query) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do query
         return txManager.execute(tx -> tagRepository.query(tx, query));
     }
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do count
         return txManager.execute(tx -> tagRepository.count(tx, query));
     }

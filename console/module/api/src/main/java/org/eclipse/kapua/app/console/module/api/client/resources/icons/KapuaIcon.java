@@ -68,40 +68,34 @@ public class KapuaIcon extends Text {
     public String getInlineHTML() {
         StringBuilder sb = new StringBuilder("<i class='fa ");
         sb.append(icon.getStyleName());
-
-        //
         // Spin
         if (spin) {
             sb.append(" fa-spin");
         }
-
-        //
         // Size
         if (emSize != null) {
             switch (emSize) {
-            case 2:
-                sb.append(" fa-2x");
-                break;
-            case 3:
-                sb.append(" fa-3x");
-                break;
-            case 4:
-                sb.append(" fa-4x");
-                break;
-            case 5:
-                sb.append(" fa-5x");
-                break;
-            default:
-                sb.append(" fa-lg");
-                break;
+                case 2:
+                    sb.append(" fa-2x");
+                    break;
+                case 3:
+                    sb.append(" fa-3x");
+                    break;
+                case 4:
+                    sb.append(" fa-4x");
+                    break;
+                case 5:
+                    sb.append(" fa-5x");
+                    break;
+                default:
+                    sb.append(" fa-lg");
+                    break;
             }
         } else {
             sb.append(" fa-lg");
         }
 
         sb.append("' ");
-
-        //
         // Color
         if (color != null) {
             sb.append("style='color:rgb(") //
@@ -112,8 +106,6 @@ public class KapuaIcon extends Text {
                     .append(color.getB()) //
                     .append(")' ");
         }
-
-        //
         // Tooltip
         if (title != null) {
             sb.append("title='")

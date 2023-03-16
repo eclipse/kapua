@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.xml;
 
-import java.math.BigDecimal;
-
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.internal.MessageJAXBContextProvider;
 import org.eclipse.kapua.message.xml.XmlAdaptedMetric;
@@ -23,13 +21,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.math.BigDecimal;
+
 
 @Category(JUnitTests.class)
 public class KapuaMetricTest {
 
     private static final String NEWLINE = System.lineSeparator();
 
-    private static final byte[] BYTES = { 'b', 'y', 't', 'e', 's' };
+    private static final byte[] BYTES = {'b', 'y', 't', 'e', 's'};
 
     private static final String BASE64_BYTES = "Ynl0ZXM=";
 
@@ -158,87 +158,61 @@ public class KapuaMetricTest {
         Assert.assertEquals(kapuaMetric.getValue().getClass(), String.class);
         Assert.assertEquals(kapuaMetric.getValueType(), BigDecimal.class);
     }
-    //
     // @Test
     // public void initWithTypeConstructor() throws Exception {
     // KapuaMetric kapuaMetric = new KapuaMetric("name", String.class, "value");
-    //
     // assertEquals("name", kapuaMetric.getName());
     // assertEquals("value", kapuaMetric.getValue());
     // assertTrue(kapuaMetric.getValue() instanceof String);
     // }
-    //
     // @Test
     // public void getMetricTypeString() throws Exception {
-    //
     // assertEquals("string", KapuaMetric.getMetricType(String.class));
     // }
-    //
     // @Test
     // public void getMetricTypeDouble() throws Exception {
-    //
     // assertEquals("double", KapuaMetric.getMetricType(Double.class));
     // }
-    //
     // @Test
     // public void getMetricTypeInteger() throws Exception {
-    //
     // assertEquals("int", KapuaMetric.getMetricType(Integer.class));
     // }
-    //
     // @Test
     // public void getMetricTypeFloat() throws Exception {
-    //
     // assertEquals("float", KapuaMetric.getMetricType(Float.class));
     // }
-    //
     // @Test
     // public void getMetricTypeLong() throws Exception {
-    //
     // assertEquals("long", KapuaMetric.getMetricType(Long.class));
     // }
-    //
     // @Test
     // public void getMetricTypeBoolean() throws Exception {
-    //
     // assertEquals("boolean", KapuaMetric.getMetricType(Boolean.class));
     // }
-    //
     // @Test
     // public void getMetricTypeByteArray() throws Exception {
-    //
     // assertEquals("base64Binary", KapuaMetric.getMetricType(BYTES.getClass()));
     // }
-    //
     // @Test
     // public void getMetricTypeUnknown() throws Exception {
-    //
     // // FIXME Unknown types should be hadeled
     // assertEquals("class java.math.BigDecimal", KapuaMetric.getMetricType(BigDecimal.class));
     // }
-    //
     // @Test
     // public void getMetricTypeNull() throws Exception {
-    //
     // assertNull(KapuaMetric.getMetricType(null));
     // }
-    //
     // @Test
     // public void getStringValueNull() throws Exception {
-    //
     // assertNull(KapuaMetric.getStringValue(null));
     // }
-    //
     // @Test
     // public void getStringValueOfByteArray() throws Exception {
-    //
     // assertEquals(BASE64_BYTES, KapuaMetric.getStringValue(BYTES));
     // }
-    //
     // @Test
     // public void marshallMetric() throws Exception {
     // KapuaMetric kapuaMetric = new KapuaMetric("name", "string", "value");
-    //
     // StringWriter strWriter = new StringWriter();
     // XmlUtil.marshal(kapuaMetric, strWriter);
     // assertEquals(METRIC_XML_STR, strWriter.toString());

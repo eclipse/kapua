@@ -21,7 +21,6 @@ import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationDomains;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
-import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -38,6 +37,8 @@ public class CredentialServiceConfigurationManagerImpl extends ServiceConfigurat
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CredentialServiceConfigurationManagerImpl.class);
     private final int systemMinimumPasswordLength;
+    public static final int SYSTEM_MAXIMUM_PASSWORD_LENGTH = 255;
+    public static final String PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY = "password.minLength";
 
     public CredentialServiceConfigurationManagerImpl(
             TxManager txManager,
@@ -57,11 +58,11 @@ public class CredentialServiceConfigurationManagerImpl extends ServiceConfigurat
 
     @Override
     protected boolean validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, Optional<KapuaId> parentId) throws KapuaException {
-        if (updatedProps.get(CredentialServiceImpl.PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY) != null) {
+        if (updatedProps.get(PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY) != null) {
             // If we're going to set a new limit, check that it's not less than system limit
-            int newPasswordLimit = Integer.parseInt(updatedProps.get(CredentialServiceImpl.PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY).toString());
-            if (newPasswordLimit < systemMinimumPasswordLength || newPasswordLimit > CredentialServiceImpl.SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
-                throw new KapuaIllegalArgumentException(CredentialServiceImpl.PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY, String.valueOf(newPasswordLimit));
+            int newPasswordLimit = Integer.parseInt(updatedProps.get(PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY).toString());
+            if (newPasswordLimit < systemMinimumPasswordLength || newPasswordLimit > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
+                throw new KapuaIllegalArgumentException(PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY, String.valueOf(newPasswordLimit));
             }
         }
         return true;

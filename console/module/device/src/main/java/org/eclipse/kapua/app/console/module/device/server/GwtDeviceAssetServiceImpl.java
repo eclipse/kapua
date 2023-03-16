@@ -57,7 +57,6 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
 
     @Override
     public void write(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtDeviceAsset gwtAsset) throws GwtKapuaException {
-        //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
 
@@ -106,9 +105,7 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
         return gwtAssets.getAssets();
     }
 
-    //
     // Asset Store Settings
-    //
     public boolean isStoreServiceEnabled(String scopeIdString, String deviceIdString) throws GwtKapuaException {
         try {
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);

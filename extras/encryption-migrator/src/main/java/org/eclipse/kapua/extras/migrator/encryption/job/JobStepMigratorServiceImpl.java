@@ -53,10 +53,7 @@ public class JobStepMigratorServiceImpl implements JobStepService {
     public long count(KapuaQuery query) throws KapuaException {
         return txManager.execute(tx -> jobStepRepository.count(tx, query));
     }
-
-    //
     // Unsupported methods
-    //
 
     @Override
     public JobStep create(JobStepCreator jobStepCreator) {

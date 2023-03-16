@@ -50,10 +50,7 @@ public class KuraDevice implements MqttCallback {
     private static final String KEYS_V1_REPLY = "/KEYS-V1/REPLY/";
 
     private static final String COMPLETED = "COMPLETED";
-
-    //
     // Topics that Kura device is listening to.
-    //
     private String assetExecRead;
     private String assetExecWrite;
     private String cmdExecCommand;

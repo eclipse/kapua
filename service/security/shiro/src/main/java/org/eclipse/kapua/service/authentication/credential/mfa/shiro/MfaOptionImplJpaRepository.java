@@ -47,13 +47,10 @@ public class MfaOptionImplJpaRepository
 
     @Override
     public MfaOption findByUserId(TxContext tx, KapuaId scopeId, KapuaId userId) throws KapuaException {
-        //
         // Build query
         MfaOptionQuery query = new MfaOptionQueryImpl(scopeId);
         QueryPredicate predicate = query.attributePredicate(MfaOptionAttributes.USER_ID, userId);
         query.setPredicate(predicate);
-
-        //
         // Query and return result
         MfaOptionListResult result = this.query(tx, query);
 

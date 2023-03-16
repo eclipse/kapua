@@ -109,7 +109,6 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
             deviceConnection.setProtocol(deviceConnectionCreator.getProtocol());
             deviceConnection.setClientIp(deviceConnectionCreator.getClientIp());
             deviceConnection.setServerIp(deviceConnectionCreator.getServerIp());
-            //
             // Do create
             return repository.create(tx, deviceConnection);
         });
@@ -221,10 +220,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
             deleteConnectionByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
         }
     }
-
-    //
     // Private methods
-    //
 
     private void deleteConnectionByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
         DeviceConnectionQuery query = entityFactory.newQuery(accountId);

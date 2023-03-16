@@ -33,10 +33,7 @@ public class CryptoUtilTest {
 
     private static final String PLAIN_VALUE = "aPlainValue";
     private static final String ALTERNATIVE_KEY = "alternativeKey!!";
-
-    //
     // SHA1
-    //
 
     @Test
     public void testSha1Hashing() throws NoSuchAlgorithmException {
@@ -45,11 +42,7 @@ public class CryptoUtilTest {
         Assert.assertNotNull(hashedValue);
         Assert.assertEquals("3VAfPtmZ+ldn8WsYl+hsDlITf+k=", hashedValue);
     }
-
-
-    //
     // AES
-    //
 
     @Test
     public void testAesCryptDecrypt() throws AesEncryptionException, AesDecryptionException {
@@ -111,10 +104,7 @@ public class CryptoUtilTest {
     public void testAesDecryptInvalidEncryptedValue() throws AesDecryptionException {
         CryptoUtil.decryptAes("kYwVe4immFI/SuaSupaMxw==");
     }
-
-    //
     // Base64
-    //
 
     @Test
     public void testBase64EncodeDecode() {

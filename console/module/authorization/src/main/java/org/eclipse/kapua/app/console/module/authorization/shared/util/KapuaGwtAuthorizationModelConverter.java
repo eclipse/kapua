@@ -47,11 +47,8 @@ public class KapuaGwtAuthorizationModelConverter {
     public static GwtGroup convertGroup(Group group) {
 
         GwtGroup gwtGroup = new GwtGroup();
-        //
         // Covert commons attributes
         KapuaGwtCommonsModelConverter.convertUpdatableEntity(group, gwtGroup);
-
-        //
         // Convert other attributes
         gwtGroup.setGroupName(group.getName());
         gwtGroup.setGroupDescription(group.getDescription());
@@ -68,17 +65,11 @@ public class KapuaGwtAuthorizationModelConverter {
      */
     public static GwtRole convertRole(Role role) {
         GwtRole gwtRole = new GwtRole();
-
-        //
         // Covert commons attributes
         KapuaGwtCommonsModelConverter.convertUpdatableEntity(role, gwtRole);
-
-        //
         // Convert other attributes
         gwtRole.setName(role.getName());
         gwtRole.setDescription(role.getDescription());
-
-        //
         // Return converted entity
         return gwtRole;
     }
@@ -93,18 +84,13 @@ public class KapuaGwtAuthorizationModelConverter {
      */
     public static GwtAccessRole mergeRoleAccessRole(Role role, AccessRole accessRole) {
         GwtAccessRole gwtAccessRole = new GwtAccessRole();
-
-        //
         // Covert commons attributes
         KapuaGwtCommonsModelConverter.convertEntity(accessRole, gwtAccessRole);
-
-        //
         // Convert other attributes
         gwtAccessRole.setRoleName(role.getName());
         gwtAccessRole.setRoleDescription(role.getDescription());
         gwtAccessRole.setRoleId(role.getId().toCompactId());
         gwtAccessRole.setAccessInfoId(accessRole.getAccessInfoId().toCompactId());
-        //
         // Return converted entity
         return gwtAccessRole;
     }
@@ -118,15 +104,11 @@ public class KapuaGwtAuthorizationModelConverter {
      */
     public static GwtAccessRole convertAccessRole(AccessRole accessRole) {
         GwtAccessRole gwtAccessRole = new GwtAccessRole();
-
-        //
         // Covert commons attributes
         KapuaGwtCommonsModelConverter.convertEntity(accessRole, gwtAccessRole);
 
         gwtAccessRole.setRoleId(accessRole.getRoleId().toCompactId());
         gwtAccessRole.setAccessInfoId(accessRole.getAccessInfoId().toCompactId());
-
-        //
         // Return converted entity
         return gwtAccessRole;
     }
@@ -140,8 +122,6 @@ public class KapuaGwtAuthorizationModelConverter {
      */
     public static GwtAccessPermission convertAccessPermission(AccessPermission accessPermission) {
         GwtAccessPermission gwtAccessPermission = new GwtAccessPermission();
-
-        //
         // Covert commons attributes
         KapuaGwtCommonsModelConverter.convertEntity(accessPermission, gwtAccessPermission);
 
@@ -167,8 +147,6 @@ public class KapuaGwtAuthorizationModelConverter {
         }
 
         gwtAccessPermission.setPermissionForwardable(accessPermission.getPermission().getForwardable());
-
-        //
         // Return converted entity
         return gwtAccessPermission;
     }
@@ -182,13 +160,10 @@ public class KapuaGwtAuthorizationModelConverter {
      */
     public static GwtAccessInfo convertAccessInfo(AccessInfo accessInfo) {
         GwtAccessInfo gwtAccessInfo = new GwtAccessInfo();
-        //
         // Covert commons attributes
         KapuaGwtCommonsModelConverter.convertEntity(accessInfo, gwtAccessInfo);
 
         gwtAccessInfo.setUserId(accessInfo.getUserId().toCompactId());
-
-        //
         // Return converted entity
         return gwtAccessInfo;
     }
@@ -202,12 +177,8 @@ public class KapuaGwtAuthorizationModelConverter {
      */
     public static GwtRolePermission convertRolePermission(RolePermission rolePermission) {
         GwtRolePermission gwtRolePermission = new GwtRolePermission();
-
-        //
         // Covert commons attributes
         KapuaGwtCommonsModelConverter.convertEntity(rolePermission, gwtRolePermission);
-
-        //
         // Convert other attributes
         GwtPermission gwtPermission = convertPermission((Permission) rolePermission.getPermission());
 
@@ -217,8 +188,6 @@ public class KapuaGwtAuthorizationModelConverter {
         gwtRolePermission.setGroupId(gwtPermission.getGroupId());
         gwtRolePermission.setTargetScopeId(gwtPermission.getTargetScopeId());
         gwtRolePermission.setForwardable(gwtPermission.getForwardable());
-
-        //
         // Return converted entity
         return gwtRolePermission;
     }

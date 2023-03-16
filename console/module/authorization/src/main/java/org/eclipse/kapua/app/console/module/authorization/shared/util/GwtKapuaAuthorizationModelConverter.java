@@ -150,7 +150,6 @@ public class GwtKapuaAuthorizationModelConverter {
         query.setLimit(loadConfig.getLimit());
         query.setPredicate(predicate);
         query.setAskTotalCount(gwtRoleQuery.getAskTotalCount());
-        //
         // Return converted
         return query;
     }
@@ -212,8 +211,6 @@ public class GwtKapuaAuthorizationModelConverter {
                 rolePermissions.add(rp);
             }
         }
-
-        //
         // Return converted
         return role;
     }
@@ -247,8 +244,6 @@ public class GwtKapuaAuthorizationModelConverter {
         }
 
         roleCreator.setPermissions(permissions);
-
-        //
         // Return converted
         return roleCreator;
     }
@@ -275,8 +270,6 @@ public class GwtKapuaAuthorizationModelConverter {
 
         // Convert roleId
         accessRoleCreator.setRoleId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtAccessRoleCreator.getRoleId()));
-
-        //
         // Return converted
         return accessRoleCreator;
     }
@@ -303,8 +296,6 @@ public class GwtKapuaAuthorizationModelConverter {
 
         // Convert Permission
         accessPermissionCreator.setPermission(convertPermission(gwtAccessPermissionCreator.getPermission()));
-
-        //
         // Return converted
         return accessPermissionCreator;
     }
@@ -320,8 +311,6 @@ public class GwtKapuaAuthorizationModelConverter {
 
         // Convert userId
         accessInfoCreator.setUserId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtAccessInfoCreator.getUserId()));
-
-        //
         // Return converted
         return accessInfoCreator;
     }
@@ -337,8 +326,6 @@ public class GwtKapuaAuthorizationModelConverter {
         // Get Services
         KapuaLocator locator = KapuaLocator.getInstance();
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-
-        //
         // Return converted
         return permissionFactory.newPermission(convertDomain(new GwtDomain(gwtPermission.getDomain())),
                 convertAction(gwtPermission.getActionEnum()),

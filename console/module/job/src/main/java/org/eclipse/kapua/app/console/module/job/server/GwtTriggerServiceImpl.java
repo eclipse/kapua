@@ -106,7 +106,6 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
 
     @Override
     public PagingLoadResult<GwtTrigger> findByJobId(PagingLoadConfig loadConfig, String gwtScopeId, String gwtJobId) throws GwtKapuaException {
-        //
         // Do query
         int totalLength = 0;
         List<GwtTrigger> gwtTriggerList = new ArrayList<GwtTrigger>();
@@ -150,7 +149,6 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
 
         GwtTrigger gwtTrigger = null;
         try {
-            //
             KapuaId scopeId = KapuaEid.parseCompactId(gwtTriggerCreator.getScopeId());
 
             TriggerCreator triggerCreator = TRIGGER_FACTORY.newCreator(scopeId);
@@ -174,8 +172,6 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
                 triggerDefinitionName = TRIGGER_DEFINITION_DEVICE_CONNECT_NAME;
                 triggerCreator.setTriggerDefinitionId(TRIGGER_DEFINITION_DEVICE_CONNECT.getId());
             }
-
-            //
             // Create the User
             Trigger trigger = TRIGGER_SERVICE.create(triggerCreator);
 

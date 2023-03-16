@@ -28,9 +28,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.AddButton;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.DeleteButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.EditButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.ActionDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
@@ -164,9 +164,7 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         return extraButtons;
     }
 
-    //
     // Add button methods
-    //
     protected SelectionListener<ButtonEvent> getAddButtonSelectionListener() {
         return new SelectionListener<ButtonEvent>() {
 
@@ -189,9 +187,7 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         this.addEntityButtonShow = show;
     }
 
-    //
     // Edit button methods
-    //
     protected SelectionListener<ButtonEvent> getEditButtonSelectionListener() {
         return new SelectionListener<ButtonEvent>() {
 
@@ -218,9 +214,7 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         this.filterButtonShow = show;
     }
 
-    //
     // Delete button methods
-    //
     protected SelectionListener<ButtonEvent> getDeleteButtonSelectionListener() {
         return new SelectionListener<ButtonEvent>() {
 
@@ -243,9 +237,7 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         this.deleteEntityButtonShow = show;
     }
 
-    //
     // Refresh button methods
-    //
     protected SelectionListener<ButtonEvent> getRefreshButtonSelectionListener() {
         return new SelectionListener<ButtonEvent>() {
 
@@ -260,15 +252,12 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         this.refreshEntityButtonShow = show;
     }
 
-    //
     // Other methods
-    //
     protected Listener<? extends BaseEvent> getHideDialogListener() {
         return new Listener<ComponentEvent>() {
 
             @Override
             public void handleEvent(ComponentEvent be) {
-                //
                 // Show exit popup
                 ActionDialog dialog = be.getComponent();
                 if (dialog.getExitStatus() != null) {

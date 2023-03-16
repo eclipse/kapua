@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.transport;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.transport.exception.TransportSendException;
 import org.eclipse.kapua.transport.exception.TransportTimeoutException;
 import org.eclipse.kapua.transport.message.TransportChannel;
 import org.eclipse.kapua.transport.message.TransportMessage;
 import org.eclipse.kapua.transport.message.TransportPayload;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -35,10 +35,7 @@ import javax.validation.constraints.NotNull;
  * @since 1.0.0
  */
 public interface TransportFacade<C extends TransportChannel, P extends TransportPayload, MQ extends TransportMessage<C, P>, MS extends TransportMessage<C, P>> extends AutoCloseable {
-
-    //
     // Message management
-    //
 
     /**
      * Send a request message to a device waiting for the response.
@@ -63,10 +60,7 @@ public interface TransportFacade<C extends TransportChannel, P extends Transport
      * @since 1.0.0
      */
     void sendAsync(@NotNull MQ message) throws TransportTimeoutException, TransportSendException;
-
-    //
     // Utilities
-    //
 
     /**
      * Gets the id of the instance of {@link TransportFacade}

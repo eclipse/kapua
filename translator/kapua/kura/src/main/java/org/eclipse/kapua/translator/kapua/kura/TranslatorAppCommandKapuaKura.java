@@ -52,8 +52,6 @@ public class TranslatorAppCommandKapuaKura extends AbstractTranslatorKapuaKura<C
         try {
             KuraRequestChannel kuraRequestChannel = TranslatorKapuaKuraUtils.buildBaseRequestChannel(CommandMetrics.APP_ID, CommandMetrics.APP_VERSION, kapuaChannel.getMethod());
             kuraRequestChannel.setResources(new String[]{"command"});
-
-            //
             // Return Kura Channel
             return kuraRequestChannel;
         } catch (Exception e) {

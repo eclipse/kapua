@@ -324,8 +324,6 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         gwtDeviceCreator.setCustomAttribute3(KapuaSafeHtmlUtils.htmlUnescape(customAttribute3Field.getValue()));
         gwtDeviceCreator.setCustomAttribute4(KapuaSafeHtmlUtils.htmlUnescape(customAttribute4Field.getValue()));
         gwtDeviceCreator.setCustomAttribute5(KapuaSafeHtmlUtils.htmlUnescape(customAttribute5Field.getValue()));
-
-        //
         // Submit
         gwtDeviceService.createDevice(xsrfToken, gwtDeviceCreator, new AsyncCallback<GwtDevice>() {
 

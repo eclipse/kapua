@@ -68,20 +68,15 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals)
             throws AuthenticationException {
-        //
         // Extract principal
         String username = ((User) principals.getPrimaryPrincipal()).getName();
         logger.debug("Getting authorization info for: {}", username);
-
-        //
         // Get Services
         KapuaLocator locator = KapuaLocator.getInstance();
 
         UserService userService = locator.getService(UserService.class);
         AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
         AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
-
-        //
         // Get the associated user by name
         final User user;
         try {
@@ -91,16 +86,12 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
         } catch (Exception e) {
             throw new ShiroException("Error while find user!", e);
         }
-
-        //
         // Check existence
         if (user == null) {
             SecurityUtils.getSubject().logout();
 
             throw new AuthenticationException();
         }
-
-        //
         // Get user access infos
         AccessInfoQuery accessInfoQuery = accessInfoFactory.newQuery(user.getScopeId());
         accessInfoQuery.setPredicate(accessInfoQuery.attributePredicate(AccessInfoAttributes.USER_ID, user.getId()));
@@ -113,14 +104,10 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
         } catch (Exception e) {
             throw new ShiroException("Error while find access info!", e);
         }
-
-        //
         // Check existence
         if (accessInfos == null) {
             throw new UnknownAccountException();
         }
-
-        //
         // Create SimpleAuthorizationInfo with principals permissions
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
@@ -186,8 +173,6 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
                 }
             }
         }
-
-        //
         // Return authorization info
         return info;
     }
