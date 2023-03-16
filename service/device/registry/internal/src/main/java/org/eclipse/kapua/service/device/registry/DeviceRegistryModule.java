@@ -24,6 +24,7 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachin
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -89,7 +90,8 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
             AccessPermissionRepository accessPermissionRepository,
             AccessRoleRepository accessRoleRepository,
             RoleRepository roleRepository,
-            RolePermissionRepository rolePermissionRepository) {
+            RolePermissionRepository rolePermissionRepository,
+            EventStorer eventStorer) {
         return new DeviceRegistryServiceImpl(
                 serviceConfigurationManager,
                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
@@ -100,7 +102,8 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                 accessPermissionRepository,
                 accessRoleRepository,
                 roleRepository,
-                rolePermissionRepository, eventStorer);
+                rolePermissionRepository,
+                eventStorer);
     }
 
     @Provides
@@ -157,7 +160,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                 permissionFactory,
                 entityFactory,
                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
-                repository, eventStorer);
+                repository);
     }
 
     @Provides

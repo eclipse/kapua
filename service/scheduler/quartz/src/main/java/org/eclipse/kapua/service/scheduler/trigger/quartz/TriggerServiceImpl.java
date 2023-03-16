@@ -120,7 +120,7 @@ public class TriggerServiceImpl implements TriggerService {
         //TODO: review, added this back just to pass tests, not sure if it is a legit check
         ArgumentValidator.notNull(triggerCreator.getTriggerDefinitionId(), "triggerCreator.triggerDefinitionId");
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             // Check trigger definition
             TriggerDefinition triggerDefinition = triggerDefinitionRepository.find(tx, KapuaId.ANY, triggerCreator.getTriggerDefinitionId());
             if (triggerDefinition == null) {
@@ -204,7 +204,7 @@ public class TriggerServiceImpl implements TriggerService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.write, trigger.getScopeId()));
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             // Check existence
             if (triggerRepository.find(tx, trigger.getScopeId(), trigger.getId()) == null) {
                 throw new KapuaEntityNotFoundException(trigger.getType(), trigger.getId());
@@ -294,7 +294,7 @@ public class TriggerServiceImpl implements TriggerService {
         authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.delete, scopeId));
 
         // Do delete
-        QuartzTriggerDriver.deleteTrigger(txManager.executeWithResult(tx -> {
+        QuartzTriggerDriver.deleteTrigger(txManager.execute(tx -> {
             return triggerRepository.delete(tx, scopeId, triggerId);
         }));
     }
@@ -309,7 +309,7 @@ public class TriggerServiceImpl implements TriggerService {
         authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, scopeId));
 
         // Do find
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             final Trigger trigger = triggerRepository.find(tx, scopeId, triggerId);
             if (trigger == null) {
                 return null;
@@ -327,7 +327,7 @@ public class TriggerServiceImpl implements TriggerService {
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, query.getScopeId()));
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             //
             // Do query
             TriggerListResult triggers = triggerRepository.query(tx, query);
@@ -352,7 +352,7 @@ public class TriggerServiceImpl implements TriggerService {
 
         //
         // Do count
-        return txManager.executeWithResult(tx -> triggerRepository.count(tx, query));
+        return txManager.execute(tx -> triggerRepository.count(tx, query));
     }
 
     //
@@ -398,7 +398,7 @@ public class TriggerServiceImpl implements TriggerService {
      * @since 1.1.0
      */
     private synchronized TriggerDefinition getTriggerDefinition(String triggerDefinitionName) throws KapuaException {
-        final TriggerDefinition triggerDefinition = txManager.executeWithResult(
+        final TriggerDefinition triggerDefinition = txManager.execute(
                 tx -> triggerDefinitionRepository.findByName(tx, triggerDefinitionName));
 
         if (triggerDefinition == null) {

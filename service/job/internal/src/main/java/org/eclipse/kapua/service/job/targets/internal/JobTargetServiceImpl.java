@@ -82,7 +82,7 @@ public class JobTargetServiceImpl implements JobTargetService {
         //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobTargetCreator.getScopeId()));
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             //
             // Check Job Existing
             final Job job = jobRepository.find(tx, jobTargetCreator.getScopeId(), jobTargetCreator.getJobId());
@@ -135,7 +135,7 @@ public class JobTargetServiceImpl implements JobTargetService {
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> jobTargetRepository.find(tx, scopeId, jobTargetId));
+        return txManager.execute(tx -> jobTargetRepository.find(tx, scopeId, jobTargetId));
     }
 
     @Override
@@ -150,7 +150,7 @@ public class JobTargetServiceImpl implements JobTargetService {
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> jobTargetRepository.query(tx, query));
+        return txManager.execute(tx -> jobTargetRepository.query(tx, query));
     }
 
     @Override
@@ -165,7 +165,7 @@ public class JobTargetServiceImpl implements JobTargetService {
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> jobTargetRepository.count(tx, query));
+        return txManager.execute(tx -> jobTargetRepository.count(tx, query));
     }
 
     @Override
@@ -190,7 +190,7 @@ public class JobTargetServiceImpl implements JobTargetService {
 
         //
         // Do update
-        return txManager.executeWithResult(tx -> jobTargetRepository.update(tx, jobTarget));
+        return txManager.execute(tx -> jobTargetRepository.update(tx, jobTarget));
     }
 
     @Override
@@ -206,6 +206,6 @@ public class JobTargetServiceImpl implements JobTargetService {
 
         //
         // Do delete
-        txManager.executeWithResult(tx -> jobTargetRepository.delete(tx, scopeId, jobTargetId));
+        txManager.execute(tx -> jobTargetRepository.delete(tx, scopeId, jobTargetId));
     }
 }

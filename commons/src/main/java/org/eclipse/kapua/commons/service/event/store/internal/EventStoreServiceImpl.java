@@ -82,7 +82,7 @@ public class EventStoreServiceImpl
 
         //
         // Do update
-        return txManager.executeWithResult(tx -> repository.update(tx, kapuaEvent));
+        return txManager.execute(tx -> repository.update(tx, kapuaEvent));
     }
 
     @Override
@@ -102,7 +102,7 @@ public class EventStoreServiceImpl
 
         //
         // Do delete
-        txManager.executeWithResult(tx -> repository.delete(tx, scopeId, kapuaEventId));
+        txManager.execute(tx -> repository.delete(tx, scopeId, kapuaEventId));
     }
 
     @Override
@@ -119,7 +119,7 @@ public class EventStoreServiceImpl
 
         //
         // Make sure kapuaEvent exists
-        return txManager.executeWithResult(tx -> repository.find(tx, scopeId, kapuaEventId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, kapuaEventId));
     }
 
     @Override
@@ -133,7 +133,7 @@ public class EventStoreServiceImpl
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, kapuaEventId));
 
-        return txManager.executeWithResult(tx -> repository.find(tx, KapuaId.ANY, kapuaEventId));
+        return txManager.execute(tx -> repository.find(tx, KapuaId.ANY, kapuaEventId));
     }
 
     @Override
@@ -144,7 +144,7 @@ public class EventStoreServiceImpl
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, query.getScopeId()));
-        return txManager.executeWithResult(tx -> repository.query(tx, query));
+        return txManager.execute(tx -> repository.query(tx, query));
     }
 
     @Override
@@ -155,6 +155,6 @@ public class EventStoreServiceImpl
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, query.getScopeId()));
-        return txManager.executeWithResult(tx -> repository.count(tx, query));
+        return txManager.execute(tx -> repository.count(tx, query));
     }
 }

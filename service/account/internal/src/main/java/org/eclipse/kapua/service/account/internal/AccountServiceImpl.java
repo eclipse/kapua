@@ -115,7 +115,7 @@ public class AccountServiceImpl
         // Check entity limit
         serviceConfigurationManager.checkAllowedEntities(accountCreator.getScopeId(), "Accounts");
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             //
             // Check if the parent account exists
             if (accountRepository.find(tx, KapuaId.ANY, accountCreator.getScopeId()) == null) {
@@ -203,7 +203,7 @@ public class AccountServiceImpl
             }
         }
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             // Check existence
             Account oldAccount = accountRepository.find(tx, KapuaId.ANY, account.getId());
             if (oldAccount == null) {
@@ -282,7 +282,7 @@ public class AccountServiceImpl
             throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "This account cannot be deleted. Delete its child first.");
         }
 
-        txManager.executeWithResult(
+        txManager.execute(
                 tx -> {
                     //
                     // Do delete
@@ -326,7 +326,7 @@ public class AccountServiceImpl
         checkAccountPermission(scopeId, accountId, AccountDomains.ACCOUNT_DOMAIN, Actions.read);
 
         // Do find
-        return txManager.executeWithResult(tx -> accountRepository.find(tx, scopeId, accountId));
+        return txManager.execute(tx -> accountRepository.find(tx, scopeId, accountId));
     }
 
     @Override
@@ -335,7 +335,7 @@ public class AccountServiceImpl
         ArgumentValidator.notNull(accountId, KapuaEntityAttributes.ENTITY_ID);
 
         // Do find
-        Account account = txManager.executeWithResult(tx -> accountRepository.find(tx, KapuaId.ANY, accountId));
+        Account account = txManager.execute(tx -> accountRepository.find(tx, KapuaId.ANY, accountId));
 
         // Check Access
         if (account != null) {
@@ -352,7 +352,7 @@ public class AccountServiceImpl
         ArgumentValidator.notEmptyOrNull(name, "name");
 
         // Do find
-        Account account = txManager.executeWithResult(tx -> accountRepository.findByName(tx, name));
+        Account account = txManager.execute(tx -> accountRepository.findByName(tx, name));
 
         // Check access
         if (account != null) {
@@ -368,7 +368,7 @@ public class AccountServiceImpl
         // Argument validation
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             // Check Access
             Account account = accountRepository.find(tx, KapuaId.ANY, scopeId);
 
@@ -394,7 +394,7 @@ public class AccountServiceImpl
         authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
 
         // Do query
-        return txManager.executeWithResult(tx -> accountRepository.query(tx, query));
+        return txManager.execute(tx -> accountRepository.query(tx, query));
     }
 
     @Override
@@ -409,7 +409,7 @@ public class AccountServiceImpl
 
         //
         // Do count
-        return txManager.executeWithResult(tx -> accountRepository.count(tx, query));
+        return txManager.execute(tx -> accountRepository.count(tx, query));
     }
 
     private AccountListResult findChildAccountsTrusted(KapuaId accountId)
@@ -421,7 +421,7 @@ public class AccountServiceImpl
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> accountRepository.query(tx, new AccountQueryImpl(accountId)));
+        return txManager.execute(tx -> accountRepository.query(tx, new AccountQueryImpl(accountId)));
     }
 
     private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, Domain domain, Actions action) throws KapuaException {

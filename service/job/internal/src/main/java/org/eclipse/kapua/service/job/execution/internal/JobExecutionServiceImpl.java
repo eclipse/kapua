@@ -72,7 +72,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
         //
         // Do create
-        return txManager.executeWithResult(tx -> jobExecutionRepository.create(tx, jobExecution));
+        return txManager.execute(tx -> jobExecutionRepository.create(tx, jobExecution));
     }
 
     @Override
@@ -86,7 +86,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobExecution.getScopeId()));
 
-        return txManager.executeWithResult(tx -> jobExecutionRepository.update(tx, jobExecution));
+        return txManager.execute(tx -> jobExecutionRepository.update(tx, jobExecution));
     }
 
     @Override
@@ -102,7 +102,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> jobExecutionRepository.find(tx, scopeId, jobExecutionId));
+        return txManager.execute(tx -> jobExecutionRepository.find(tx, scopeId, jobExecutionId));
     }
 
     @Override
@@ -117,7 +117,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> jobExecutionRepository.query(tx, query));
+        return txManager.execute(tx -> jobExecutionRepository.query(tx, query));
     }
 
     @Override
@@ -132,7 +132,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> jobExecutionRepository.count(tx, query));
+        return txManager.execute(tx -> jobExecutionRepository.count(tx, query));
     }
 
     @Override
@@ -148,6 +148,6 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
         //
         // Do delete
-        txManager.executeWithResult(tx -> jobExecutionRepository.delete(tx, scopeId, jobExecutionId));
+        txManager.execute(tx -> jobExecutionRepository.delete(tx, scopeId, jobExecutionId));
     }
 }

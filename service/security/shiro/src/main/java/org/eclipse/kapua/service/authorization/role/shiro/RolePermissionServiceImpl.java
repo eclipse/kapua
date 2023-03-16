@@ -79,7 +79,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, rolePermissionCreator.getScopeId()));
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             //
             // Check role existence
             final Role role = roleRepository.find(tx, rolePermissionCreator.getScopeId(), rolePermissionCreator.getRoleId());
@@ -144,7 +144,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         if (KapuaId.ONE.equals(rolePermissionId)) {
             throw new KapuaException(KapuaErrorCodes.PERMISSION_DELETE_NOT_ALLOWED);
         }
-        txManager.executeWithResult(tx -> rolePermissionRepository.delete(tx, scopeId, rolePermissionId));
+        txManager.execute(tx -> rolePermissionRepository.delete(tx, scopeId, rolePermissionId));
     }
 
     @Override
@@ -157,7 +157,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, scopeId));
 
-        return txManager.executeWithResult(tx -> rolePermissionRepository.find(tx, scopeId, rolePermissionId));
+        return txManager.execute(tx -> rolePermissionRepository.find(tx, scopeId, rolePermissionId));
     }
 
     @Override
@@ -170,7 +170,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, scopeId));
 
-        return txManager.executeWithResult(tx -> rolePermissionRepository.findByRoleId(tx, scopeId, roleId));
+        return txManager.execute(tx -> rolePermissionRepository.findByRoleId(tx, scopeId, roleId));
     }
 
     @Override
@@ -182,7 +182,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
 
-        return txManager.executeWithResult(tx -> rolePermissionRepository.query(tx, query));
+        return txManager.execute(tx -> rolePermissionRepository.query(tx, query));
     }
 
     @Override
@@ -194,6 +194,6 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
 
-        return txManager.executeWithResult(tx -> rolePermissionRepository.count(tx, query));
+        return txManager.execute(tx -> rolePermissionRepository.count(tx, query));
     }
 }

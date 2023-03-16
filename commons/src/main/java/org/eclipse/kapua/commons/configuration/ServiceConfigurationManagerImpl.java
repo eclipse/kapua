@@ -158,7 +158,7 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
                 )
         );
 
-        ServiceConfigListResult result = txManager.executeWithResult(tx -> serviceConfigRepository.query(tx, query));
+        ServiceConfigListResult result = txManager.execute(tx -> serviceConfigRepository.query(tx, query));
 
         Properties props = toProperties(values);
         if (result == null || result.isEmpty()) {
@@ -186,7 +186,7 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
      * @since 1.0.0
      */
     private ServiceConfig createConfig(ServiceConfig serviceConfig) throws KapuaException {
-        return txManager.executeWithResult(tx -> serviceConfigRepository.create(tx, serviceConfig));
+        return txManager.execute(tx -> serviceConfigRepository.create(tx, serviceConfig));
     }
 
     /**
@@ -198,7 +198,7 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
      */
     private ServiceConfig updateConfig(ServiceConfig serviceConfig)
             throws KapuaException {
-        final ServiceConfig oldServiceConfig = txManager.executeWithResult(tx -> serviceConfigRepository.find(tx, serviceConfig.getScopeId(), serviceConfig.getId()));
+        final ServiceConfig oldServiceConfig = txManager.execute(tx -> serviceConfigRepository.find(tx, serviceConfig.getScopeId(), serviceConfig.getId()));
         if (oldServiceConfig == null) {
             throw new KapuaEntityNotFoundException(ServiceConfig.TYPE, serviceConfig.getId());
         }
@@ -212,7 +212,7 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
         }
 
         // Update
-        return txManager.executeWithResult(tx -> serviceConfigRepository.update(tx, serviceConfig));
+        return txManager.execute(tx -> serviceConfigRepository.update(tx, serviceConfig));
     }
 
     /**
@@ -339,7 +339,7 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
 
         //
         // Get configuration values
-        final ServiceConfigListResult result = txManager.executeWithResult(tx -> serviceConfigRepository.findByScopeAndPid(tx, scopeId, pid));
+        final ServiceConfigListResult result = txManager.execute(tx -> serviceConfigRepository.findByScopeAndPid(tx, scopeId, pid));
 
         Properties properties = null;
         if (result != null && !result.isEmpty()) {

@@ -110,7 +110,7 @@ public class AccessInfoServiceImpl implements AccessInfoService {
         }
 
         PermissionValidator.validatePermissions(accessInfoCreator.getPermissions());
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             if (accessInfoCreator.getRoleIds() != null) {
                 for (KapuaId roleId : accessInfoCreator.getRoleIds()) {
                     // This checks also that the role belong to the same scopeId in which the access info is created
@@ -171,7 +171,7 @@ public class AccessInfoServiceImpl implements AccessInfoService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
 
-        return txManager.executeWithResult(tx -> accessInfoRepository.find(tx, scopeId, accessInfoId));
+        return txManager.execute(tx -> accessInfoRepository.find(tx, scopeId, accessInfoId));
     }
 
     @Override
@@ -183,7 +183,7 @@ public class AccessInfoServiceImpl implements AccessInfoService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
 
-        return txManager.executeWithResult(tx -> accessInfoRepository.findByUserId(tx, scopeId, userId));
+        return txManager.execute(tx -> accessInfoRepository.findByUserId(tx, scopeId, userId));
     }
 
     @Override
@@ -195,7 +195,7 @@ public class AccessInfoServiceImpl implements AccessInfoService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
 
-        return txManager.executeWithResult(tx -> accessInfoRepository.query(tx, query));
+        return txManager.execute(tx -> accessInfoRepository.query(tx, query));
     }
 
     @Override
@@ -207,7 +207,7 @@ public class AccessInfoServiceImpl implements AccessInfoService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
 
-        return txManager.executeWithResult(tx -> accessInfoRepository.count(tx, query));
+        return txManager.execute(tx -> accessInfoRepository.count(tx, query));
     }
 
     @Override
@@ -215,7 +215,7 @@ public class AccessInfoServiceImpl implements AccessInfoService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.delete, scopeId));
 
-        txManager.executeWithResult(tx -> accessInfoRepository.delete(tx, scopeId, accessInfoId));
+        txManager.execute(tx -> accessInfoRepository.delete(tx, scopeId, accessInfoId));
     }
 
     //@ListenServiceEvent(fromAddress="account")

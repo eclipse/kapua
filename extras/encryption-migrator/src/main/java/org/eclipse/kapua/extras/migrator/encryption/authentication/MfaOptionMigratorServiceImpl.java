@@ -44,17 +44,17 @@ public class MfaOptionMigratorServiceImpl implements MfaOptionService {
 
     @Override
     public MfaOption update(MfaOption mfaOption) throws KapuaException {
-        return txManager.executeWithResult(tx -> repository.update(tx, mfaOption));
+        return txManager.execute(tx -> repository.update(tx, mfaOption));
     }
 
     @Override
     public MfaOptionListResult query(KapuaQuery query) throws KapuaException {
-        return txManager.executeWithResult(tx -> repository.query(tx, query));
+        return txManager.execute(tx -> repository.query(tx, query));
     }
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        return txManager.executeWithResult(tx -> repository.count(tx, query));
+        return txManager.execute(tx -> repository.count(tx, query));
     }
 
     //

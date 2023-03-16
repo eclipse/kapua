@@ -120,7 +120,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
         // Check entity limit
         serviceConfigurationManager.checkAllowedEntities(userCreator.getScopeId(), "Users");
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             //
             // Check duplicate name
             if (duplicateNameChecker.countOtherEntitiesWithName(tx, userCreator.getScopeId(), userCreator.getName()) > 0) {
@@ -198,7 +198,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.write, user.getScopeId()));
 
-        return txManager.executeWithResult(
+        return txManager.execute(
                 tx -> {
                     //
                     // Check existence
@@ -270,7 +270,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
 
         //
         // Do delete
-        txManager.executeWithResult(tx -> userRepository.delete(tx, user));
+        txManager.execute(tx -> userRepository.delete(tx, user));
     }
 
     @Override
@@ -284,7 +284,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.delete, scopeId));
 
-        txManager.executeWithResult(
+        txManager.execute(
                 tx -> {
                     // Check existence
                     User user = userRepository.find(tx, scopeId, userId);
@@ -316,7 +316,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, scopeId));
 
         // Do the find
-        return txManager.executeWithResult(tx -> userRepository.find(tx, scopeId, userId));
+        return txManager.execute(tx -> userRepository.find(tx, scopeId, userId));
     }
 
     @Override
@@ -324,7 +324,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
         // Validation of the fields
         ArgumentValidator.notEmptyOrNull(name, "name");
 
-        return checkReadAccess(txManager.executeWithResult(tx -> userRepository.findByName(tx, name)));
+        return checkReadAccess(txManager.execute(tx -> userRepository.findByName(tx, name)));
     }
 
     @Override
@@ -335,7 +335,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
 
         //
         // Do the find
-        return checkReadAccess(txManager.executeWithResult(tx -> userRepository.findByExternalId(tx, externalId)));
+        return checkReadAccess(txManager.execute(tx -> userRepository.findByExternalId(tx, externalId)));
     }
 
     @Override
@@ -346,7 +346,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
 
         //
         // Do the find
-        return checkReadAccess(txManager.executeWithResult(tx -> userRepository.findByExternalId(tx, externalUsername)));
+        return checkReadAccess(txManager.execute(tx -> userRepository.findByExternalId(tx, externalUsername)));
     }
 
     @Override
@@ -362,7 +362,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> userRepository.query(tx, query));
+        return txManager.execute(tx -> userRepository.query(tx, query));
     }
 
     @Override
@@ -378,7 +378,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
 
         //
         // Do count
-        return txManager.executeWithResult(tx -> userRepository.count(tx, query));
+        return txManager.execute(tx -> userRepository.count(tx, query));
     }
 
     // -----------------------------------------------------------------------------------------

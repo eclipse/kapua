@@ -42,7 +42,7 @@ public class AccountChildrenFinderImpl implements AccountChildrenFinder, KapuaSe
 
     @Override
     public AccountListResult findChildren(KapuaId scopeId, Optional<KapuaId> excludeTargetScopeId) throws KapuaException {
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             final AccountQuery childAccountsQuery = accountFactory.newQuery(scopeId);
             // Exclude the scope that is under config update
             if (excludeTargetScopeId.isPresent()) {

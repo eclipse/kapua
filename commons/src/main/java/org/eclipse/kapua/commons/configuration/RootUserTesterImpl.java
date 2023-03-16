@@ -37,7 +37,7 @@ public class RootUserTesterImpl implements RootUserTester {
     private KapuaId fetchRootUserId() throws KapuaException {
         //todo: remove me. This just converts root username to id - needs to be done elsewhere, preferrably in a once-at-startup way.
         final String rootUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
-        final User rootUser = txManager.executeWithResult(tx -> userRepository.findByName(tx, rootUserName));
+        final User rootUser = txManager.execute(tx -> userRepository.findByName(tx, rootUserName));
         final KapuaId rootUserId = Optional.ofNullable(rootUser).map(KapuaEntity::getId).orElse(null);
         return rootUserId;
     }

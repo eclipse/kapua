@@ -127,7 +127,7 @@ public class DeviceRegistryServiceImpl
         query.setPredicate(query.attributePredicate(DeviceAttributes.CLIENT_ID, deviceCreator.getClientId()));
 
         //TODO: check whether this is anywhere efficient
-        if (txManager.executeWithResult(tx -> deviceRepository.count(tx, query)) > 0) {
+        if (txManager.execute(tx -> deviceRepository.count(tx, query)) > 0) {
             throw new KapuaDuplicateNameException(deviceCreator.getClientId());
         }
 
@@ -165,7 +165,7 @@ public class DeviceRegistryServiceImpl
 
         //
         // Do create
-        return txManager.executeWithResult(
+        return txManager.execute(
                 tx -> deviceRepository.create(tx, device),
                 eventStorer::accept);
     }
@@ -177,7 +177,7 @@ public class DeviceRegistryServiceImpl
 
         //
         // Do update
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
                     final Device currentDevice = deviceRepository.find(tx, device.getScopeId(), device.getId());
                     if (currentDevice == null) {
                         throw new KapuaEntityNotFoundException(Device.TYPE, device.getId());
@@ -195,7 +195,7 @@ public class DeviceRegistryServiceImpl
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> deviceRepository.find(tx, scopeId, entityId));
+        return txManager.execute(tx -> deviceRepository.find(tx, scopeId, entityId));
     }
 
     @Override
@@ -204,7 +204,7 @@ public class DeviceRegistryServiceImpl
 
         //
         // Check cache and/or do find
-        return txManager.executeWithResult(tx -> deviceRepository.findByClientId(tx, scopeId, clientId));
+        return txManager.execute(tx -> deviceRepository.findByClientId(tx, scopeId, clientId));
     }
 
     @Override
@@ -213,7 +213,7 @@ public class DeviceRegistryServiceImpl
         DeviceValidation.validateQueryPreconditions(query);
 
         // Do query
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             handleKapuaQueryGroupPredicate(tx, query, DeviceDomains.DEVICE_DOMAIN, DeviceAttributes.GROUP_ID);
             return deviceRepository.query(tx, query);
         });
@@ -300,7 +300,7 @@ public class DeviceRegistryServiceImpl
         DeviceValidation.validateCountPreconditions(query);
 
         // Do count
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             handleKapuaQueryGroupPredicate(tx, query, DeviceDomains.DEVICE_DOMAIN, DeviceAttributes.GROUP_ID);
             return deviceRepository.count(tx, query);
         });
@@ -311,7 +311,7 @@ public class DeviceRegistryServiceImpl
         DeviceValidation.validateDeletePreconditions(scopeId, deviceId);
 
         // Do delete
-        txManager.executeWithResult(
+        txManager.execute(
                 tx -> deviceRepository.delete(tx, scopeId, deviceId),
                 eventStorer::accept);
     }
@@ -338,7 +338,7 @@ public class DeviceRegistryServiceImpl
         DeviceQuery query = entityFactory.newQuery(scopeId);
         query.setPredicate(query.attributePredicate(DeviceAttributes.GROUP_ID, groupId));
 
-        txManager.<Void>executeWithResult(tx -> {
+        txManager.<Void>execute(tx -> {
             DeviceListResult devicesToDelete = deviceRepository.query(tx, query);
 
             for (Device d : devicesToDelete.getItems()) {
@@ -355,7 +355,7 @@ public class DeviceRegistryServiceImpl
 
         DeviceQuery query = deviceFactory.newQuery(accountId);
 
-        txManager.<Void>executeWithResult(tx -> {
+        txManager.<Void>execute(tx -> {
             DeviceListResult devicesToDelete = deviceRepository.query(tx, query);
 
             for (Device d : devicesToDelete.getItems()) {

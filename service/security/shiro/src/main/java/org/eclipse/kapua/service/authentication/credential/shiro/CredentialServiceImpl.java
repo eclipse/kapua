@@ -115,7 +115,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implem
         final AtomicReference<String> fullKey = new AtomicReference<>(null);
         final AtomicReference<CredentialCreator> credentialCreatorRef = new AtomicReference<>(credentialCreatorer);
 
-        final Credential res = txManager.executeWithResult(tx -> {
+        final Credential res = txManager.execute(tx -> {
             CredentialCreator credentialCreator = credentialCreatorRef.get();
             if (credentialCreator.getCredentialType() == CredentialType.PASSWORD) {
                 //
@@ -222,7 +222,13 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implem
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, credential.getScopeId()));
 
+<<<<<<< HEAD
         final Credential updatedCredential = txManager.executeWithResult(tx -> {
+||||||| parent of 003cc3d551 (as there is only one transaction method left, the name can be simplified)
+        return txManager.executeWithResult(tx -> {
+=======
+        return txManager.execute(tx -> {
+>>>>>>> 003cc3d551 (as there is only one transaction method left, the name can be simplified)
             Credential currentCredential = credentialRepository.find(tx, credential.getScopeId(), credential.getId());
 
             if (currentCredential == null) {
@@ -251,9 +257,15 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implem
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
+<<<<<<< HEAD
         Credential credential = txManager.executeWithResult(tx -> credentialRepository.find(tx, scopeId, credentialId));
         credential.setCredentialKey(null);
         return credential;
+||||||| parent of 003cc3d551 (as there is only one transaction method left, the name can be simplified)
+        return txManager.executeWithResult(tx -> credentialRepository.find(tx, scopeId, credentialId));
+=======
+        return txManager.execute(tx -> credentialRepository.find(tx, scopeId, credentialId));
+>>>>>>> 003cc3d551 (as there is only one transaction method left, the name can be simplified)
     }
 
     @Override
@@ -267,9 +279,15 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implem
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
 
+<<<<<<< HEAD
         final CredentialListResult credentials = txManager.executeWithResult(tx -> credentialRepository.query(tx, query));
         credentials.getItems().forEach(credential -> credential.setCredentialKey(null));
         return credentials;
+||||||| parent of 003cc3d551 (as there is only one transaction method left, the name can be simplified)
+        return txManager.executeWithResult(tx -> credentialRepository.query(tx, query));
+=======
+        return txManager.execute(tx -> credentialRepository.query(tx, query));
+>>>>>>> 003cc3d551 (as there is only one transaction method left, the name can be simplified)
     }
 
     @Override
@@ -285,7 +303,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implem
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
-        return txManager.executeWithResult(tx -> credentialRepository.count(tx, query));
+        return txManager.execute(tx -> credentialRepository.count(tx, query));
     }
 
     @Override
@@ -299,7 +317,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implem
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.delete, scopeId));
-        txManager.executeWithResult(tx -> credentialRepository.delete(tx, scopeId, credentialId));
+        txManager.execute(tx -> credentialRepository.delete(tx, scopeId, credentialId));
     }
 
     @Override
@@ -314,9 +332,15 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implem
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
+<<<<<<< HEAD
         final CredentialListResult credentials = txManager.executeWithResult(tx -> credentialRepository.findByUserId(tx, scopeId, userId));
         credentials.getItems().forEach(credential -> credential.setCredentialKey(null));
         return credentials;
+||||||| parent of 003cc3d551 (as there is only one transaction method left, the name can be simplified)
+        return txManager.executeWithResult(tx -> credentialRepository.findByUserId(tx, scopeId, userId));
+=======
+        return txManager.execute(tx -> credentialRepository.findByUserId(tx, scopeId, userId));
+>>>>>>> 003cc3d551 (as there is only one transaction method left, the name can be simplified)
     }
 
     @Override
@@ -331,7 +355,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implem
 
         //
         // Do the find
-        Credential credential = txManager.executeWithResult(tx -> {
+        Credential credential = txManager.execute(tx -> {
             //
             // Build search query
             String preSeparator = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR);
@@ -380,7 +404,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implem
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, scopeId));
 
-        txManager.executeWithResult(tx -> {
+        txManager.execute(tx -> {
             Credential credential = credentialRepository.find(tx, scopeId, credentialId);
             credential.setLoginFailures(0);
             credential.setFirstLoginFailure(null);

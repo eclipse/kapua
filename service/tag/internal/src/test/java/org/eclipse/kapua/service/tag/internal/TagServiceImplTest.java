@@ -65,7 +65,7 @@ public class TagServiceImplTest {
         tagFactory = Mockito.mock(TagFactory.class);
         final TxManager txManager = new TxManager() {
             @Override
-            public <R> R executeWithResult(TxConsumer<R> transactionConsumer, BiConsumer<TxContext, R>... afterCommitConsumers) throws KapuaException {
+            public <R> R execute(TxConsumer<R> transactionConsumer, BiConsumer<TxContext, R>... afterCommitConsumers) throws KapuaException {
                 return null;
             }
         };

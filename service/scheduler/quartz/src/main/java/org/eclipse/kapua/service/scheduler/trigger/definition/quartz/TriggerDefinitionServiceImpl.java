@@ -77,7 +77,7 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
         toBeCreated.setDescription(triggerDefinitionCreator.getDescription());
         toBeCreated.setProcessorName(triggerDefinitionCreator.getProcessorName());
         toBeCreated.setTriggerProperties(triggerDefinitionCreator.getTriggerProperties());
-        return txManager.executeWithResult(tx -> triggerDefinitionRepository.create(tx, toBeCreated));
+        return txManager.execute(tx -> triggerDefinitionRepository.create(tx, toBeCreated));
     }
 
     @Override
@@ -94,7 +94,7 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
-        return txManager.executeWithResult(tx -> triggerDefinitionRepository.update(tx, triggerDefinition));
+        return txManager.execute(tx -> triggerDefinitionRepository.update(tx, triggerDefinition));
     }
 
     @Override
@@ -109,7 +109,7 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> triggerDefinitionRepository.find(tx, KapuaId.ANY, stepDefinitionId));
+        return txManager.execute(tx -> triggerDefinitionRepository.find(tx, KapuaId.ANY, stepDefinitionId));
     }
 
     @Override
@@ -124,7 +124,7 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> triggerDefinitionRepository.find(tx, scopeId, stepDefinitionId));
+        return txManager.execute(tx -> triggerDefinitionRepository.find(tx, scopeId, stepDefinitionId));
     }
 
     @Override
@@ -135,7 +135,7 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             TriggerDefinition triggerDefinition = triggerDefinitionRepository.findByName(tx, name);
             if (triggerDefinition != null) {
                 //
@@ -158,7 +158,7 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> triggerDefinitionRepository.query(tx, query));
+        return txManager.execute(tx -> triggerDefinitionRepository.query(tx, query));
     }
 
     @Override
@@ -173,7 +173,7 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> triggerDefinitionRepository.count(tx, query));
+        return txManager.execute(tx -> triggerDefinitionRepository.count(tx, query));
     }
 
     @Override
@@ -189,7 +189,7 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
 
         //
         // Do delete
-        txManager.executeWithResult(tx -> {
+        txManager.execute(tx -> {
             if (triggerDefinitionRepository.find(tx, scopeId, stepDefinitionId) == null) {
                 throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, stepDefinitionId);
             }

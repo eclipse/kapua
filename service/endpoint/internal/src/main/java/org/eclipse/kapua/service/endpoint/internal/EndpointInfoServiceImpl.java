@@ -132,7 +132,7 @@ public class EndpointInfoServiceImpl
         endpointInfo.setUsages(endpointInfoCreator.getUsages());
         endpointInfo.setEndpointType(endpointInfoCreator.getEndpointType());
 
-        return txManager.executeWithResult(tx -> repository.create(tx, endpointInfo));
+        return txManager.execute(tx -> repository.create(tx, endpointInfo));
     }
 
     @Override
@@ -171,7 +171,7 @@ public class EndpointInfoServiceImpl
 
         //
         // Do update
-        return txManager.executeWithResult(tx -> repository.update(tx, endpointInfo));
+        return txManager.execute(tx -> repository.update(tx, endpointInfo));
     }
 
     @Override
@@ -181,7 +181,7 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        txManager.executeWithResult(tx -> {
+        txManager.execute(tx -> {
             EndpointInfo endpointInfoToDelete = repository.find(tx, scopeId, endpointInfoId);
             KapuaId scopeIdPermission = null;
             if (endpointInfoToDelete != null && endpointInfoToDelete.getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS)) {
@@ -206,7 +206,7 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             authorizationService.checkPermission(
                     permissionFactory.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, scopeId)
             );
@@ -236,13 +236,13 @@ public class EndpointInfoServiceImpl
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        return txManager.executeWithResult(txContext -> doCount(txContext, query, EndpointInfo.ENDPOINT_TYPE_RESOURCE));
+        return txManager.execute(txContext -> doCount(txContext, query, EndpointInfo.ENDPOINT_TYPE_RESOURCE));
     }
 
     @Override
     public long count(KapuaQuery query, String section)
             throws KapuaException {
-        return txManager.executeWithResult(txContext -> doCount(txContext, query, section));
+        return txManager.execute(txContext -> doCount(txContext, query, section));
     }
 
     private Long doCount(TxContext txContext, KapuaQuery query, String section) throws KapuaException {
@@ -263,12 +263,12 @@ public class EndpointInfoServiceImpl
 
     @Override
     public EndpointInfoListResult query(KapuaQuery query) throws KapuaException {
-        return txManager.executeWithResult(tx -> doQuery(tx, query, EndpointInfo.ENDPOINT_TYPE_RESOURCE));
+        return txManager.execute(tx -> doQuery(tx, query, EndpointInfo.ENDPOINT_TYPE_RESOURCE));
     }
 
     @Override
     public EndpointInfoListResult query(KapuaQuery query, String section) throws KapuaException {
-        return txManager.executeWithResult(tx -> doQuery(tx, query, section));
+        return txManager.execute(tx -> doQuery(tx, query, section));
     }
 
     private EndpointInfoListResult doQuery(TxContext tx, KapuaQuery query, String section) throws KapuaException {

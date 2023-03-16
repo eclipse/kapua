@@ -83,7 +83,7 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
         String fullKey = scratchCodeCreator.getCode();
         //
         // Do create
-        final ScratchCode res = txManager.executeWithResult(tx -> {
+        final ScratchCode res = txManager.execute(tx -> {
             //
             // Crypto code (it's ok to do than if BCrypt is used when checking a provided scratch code against the stored one)
             String encryptedCode = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, scratchCodeCreator.getCode());
@@ -111,7 +111,7 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, scratchCode.getScopeId()));
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             ScratchCode currentscratchCode = scratchCodeRepository.find(tx, scratchCode.getScopeId(), scratchCode.getId());
 
             if (currentscratchCode == null) {
@@ -133,7 +133,7 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
-        return txManager.executeWithResult(tx -> scratchCodeRepository.find(tx, scopeId, scratchCodeId));
+        return txManager.execute(tx -> scratchCodeRepository.find(tx, scopeId, scratchCodeId));
     }
 
     @Override
@@ -146,7 +146,7 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
 
-        return txManager.executeWithResult(tx -> scratchCodeRepository.query(tx, query));
+        return txManager.execute(tx -> scratchCodeRepository.query(tx, query));
     }
 
     @Override
@@ -159,7 +159,7 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
 
-        return txManager.executeWithResult(tx -> scratchCodeRepository.count(tx, query));
+        return txManager.execute(tx -> scratchCodeRepository.count(tx, query));
     }
 
     @Override
@@ -173,7 +173,7 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.delete, scopeId));
 
-        txManager.executeWithResult(tx -> scratchCodeRepository.delete(tx, scopeId, scratchCodeId));
+        txManager.execute(tx -> scratchCodeRepository.delete(tx, scopeId, scratchCodeId));
     }
 
 
@@ -188,14 +188,14 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
-        return txManager.executeWithResult(tx -> scratchCodeRepository.findByMfaOptionId(tx, scopeId, mfaOptionId));
+        return txManager.execute(tx -> scratchCodeRepository.findByMfaOptionId(tx, scopeId, mfaOptionId));
     }
 
     private void deleteScratchCodeByMfaOptionId(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
         ScratchCodeQuery query = scratchCodeFactory.newQuery(scopeId);
         query.setPredicate(query.attributePredicate(ScratchCodeAttributes.MFA_OPTION_ID, mfaOptionId));
 
-        txManager.executeWithResult(tx -> {
+        txManager.execute(tx -> {
             ScratchCodeListResult scratchCodesToDelete = scratchCodeRepository.query(tx, query);
 
             for (ScratchCode c : scratchCodesToDelete.getItems()) {
@@ -208,7 +208,7 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
     private void deleteScratchCodeByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
         ScratchCodeQuery query = scratchCodeFactory.newQuery(accountId);
 
-        txManager.<Void>executeWithResult(tx -> {
+        txManager.<Void>execute(tx -> {
             ScratchCodeListResult scratchCodesToDelete = scratchCodeRepository.query(tx, query);
             for (ScratchCode c : scratchCodesToDelete.getItems()) {
                 scratchCodeRepository.delete(tx, c.getScopeId(), c.getId());

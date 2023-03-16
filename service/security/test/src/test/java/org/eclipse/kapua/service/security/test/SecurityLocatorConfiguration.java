@@ -24,9 +24,11 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
+import org.eclipse.kapua.commons.jpa.EventStorerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
+import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
@@ -144,7 +146,8 @@ public class SecurityLocatorConfiguration {
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
                         new UserImplJpaRepository(),
                         userFactory,
-                        new DuplicateNameCheckerImpl<>(new UserImplJpaRepository(), userFactory::newQuery), eventStorer));
+                        new DuplicateNameCheckerImpl<>(new UserImplJpaRepository(), userFactory::newQuery),
+                        new EventStorerImpl(new EventStoreRecordImplJpaRepository())));
             }
         };
 

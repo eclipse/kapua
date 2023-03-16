@@ -92,7 +92,7 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
 
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, deviceConnectionOptions.getScopeId()));
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             if (deviceConnectionOptions.getReservedUserId() != null) {
                 DeviceConnectionQuery query = entityFactory.newQuery(deviceConnectionOptions.getScopeId());
 
@@ -127,7 +127,7 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, scopeId));
 
-        return txManager.executeWithResult(tx -> repository.find(tx, scopeId, entityId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, entityId));
     }
 
     @Override
@@ -141,7 +141,7 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
 
-        return txManager.executeWithResult(tx -> repository.query(tx, query));
+        return txManager.execute(tx -> repository.query(tx, query));
     }
 
     @Override
@@ -155,7 +155,7 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
 
-        return txManager.executeWithResult(tx -> repository.count(tx, query));
+        return txManager.execute(tx -> repository.count(tx, query));
     }
 
     @Override

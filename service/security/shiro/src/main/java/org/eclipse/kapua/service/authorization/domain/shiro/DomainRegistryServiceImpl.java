@@ -82,7 +82,7 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
             domain.setActions(domainCreator.getActions());
         }
 
-        return txManager.executeWithResult(tx -> domainRepository.create(tx, domain));
+        return txManager.execute(tx -> domainRepository.create(tx, domain));
     }
 
     @Override
@@ -93,7 +93,7 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.delete, null));
 
-        txManager.executeWithResult(tx -> domainRepository.delete(tx, scopeId, domainId));
+        txManager.execute(tx -> domainRepository.delete(tx, scopeId, domainId));
     }
 
     @Override
@@ -105,7 +105,7 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
 
-        return txManager.executeWithResult(tx -> domainRepository.find(tx, scopeId, domainId));
+        return txManager.execute(tx -> domainRepository.find(tx, scopeId, domainId));
     }
 
     @Override
@@ -116,7 +116,7 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
 
         //
         // Do find
-        final Domain foundDomain = txManager.executeWithResult(tx -> domainRepository.findByName(tx, KapuaId.ANY, name));
+        final Domain foundDomain = txManager.execute(tx -> domainRepository.findByName(tx, KapuaId.ANY, name));
         if (foundDomain != null) {
             authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
         }
@@ -132,7 +132,7 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
 
-        return txManager.executeWithResult(tx -> domainRepository.query(tx, query));
+        return txManager.execute(tx -> domainRepository.query(tx, query));
     }
 
     @Override
@@ -144,7 +144,7 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
 
-        return txManager.executeWithResult(tx -> domainRepository.count(tx, query));
+        return txManager.execute(tx -> domainRepository.count(tx, query));
     }
 
     //@ListenServiceEvent(fromAddress="account")

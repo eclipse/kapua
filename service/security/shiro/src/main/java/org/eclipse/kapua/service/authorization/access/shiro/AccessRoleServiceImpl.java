@@ -82,7 +82,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.write, accessRoleCreator.getScopeId()));
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             //
             // Check that AccessInfo exists
             final AccessInfo accessInfo = accessInfoRepository.find(tx, accessRoleCreator.getScopeId(), accessRoleCreator.getAccessInfoId());
@@ -135,7 +135,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> accessRoleRepository.find(tx, scopeId, accessRoleId));
+        return txManager.execute(tx -> accessRoleRepository.find(tx, scopeId, accessRoleId));
     }
 
     @Override
@@ -148,7 +148,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
 
         // Check cache
-        return txManager.executeWithResult(tx -> accessRoleRepository.findByAccessInfoId(tx, scopeId, accessInfoId));
+        return txManager.execute(tx -> accessRoleRepository.findByAccessInfoId(tx, scopeId, accessInfoId));
     }
 
     @Override
@@ -162,7 +162,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> accessRoleRepository.query(tx, query));
+        return txManager.execute(tx -> accessRoleRepository.query(tx, query));
     }
 
     @Override
@@ -176,7 +176,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
 
         //
         // Do count
-        return txManager.executeWithResult(tx -> accessRoleRepository.count(tx, query));
+        return txManager.execute(tx -> accessRoleRepository.count(tx, query));
     }
 
     @Override
@@ -190,6 +190,6 @@ public class AccessRoleServiceImpl implements AccessRoleService {
 
         //
         // Do delete
-        txManager.executeWithResult(tx -> accessRoleRepository.delete(tx, scopeId, accessRoleId));
+        txManager.execute(tx -> accessRoleRepository.delete(tx, scopeId, accessRoleId));
     }
 }

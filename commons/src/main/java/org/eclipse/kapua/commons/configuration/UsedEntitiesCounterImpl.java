@@ -46,7 +46,7 @@ public class UsedEntitiesCounterImpl<
 
     @Override
     public long countEntitiesInScope(KapuaId scopeId) throws KapuaException {
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             final Q query = factory.newQuery(scopeId);
 
             //
