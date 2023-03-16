@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.job.internal;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
@@ -164,23 +163,14 @@ public class JobDeviceManagementOperationServiceImpl
 
     @Override
     public void delete(KapuaId scopeId, KapuaId jobDeviceManagementOperationId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobDeviceManagementOperationId, "jobDeviceManagementOperationId");
 
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
 
-        //
-        // Check existence
-        if (find(scopeId, jobDeviceManagementOperationId) == null) {
-            throw new KapuaEntityNotFoundException(JobDeviceManagementOperation.TYPE, jobDeviceManagementOperationId);
-        }
-
-        //
         // Do delete
-        txManager.executeNoResult(tx -> repository.delete(tx, scopeId, jobDeviceManagementOperationId));
+        txManager.executeWithResult(tx -> repository.delete(tx, scopeId, jobDeviceManagementOperationId));
     }
 }

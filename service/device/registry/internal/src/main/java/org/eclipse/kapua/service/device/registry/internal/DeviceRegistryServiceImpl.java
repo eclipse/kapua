@@ -18,6 +18,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -84,6 +85,7 @@ public class DeviceRegistryServiceImpl
     private final AccessRoleRepository accessRoleRepository;
     private final RoleRepository roleRepository;
     private final RolePermissionRepository rolePermissionRepository;
+    private final EventStorer eventStorer;
 
     @Inject
     public DeviceRegistryServiceImpl(
@@ -96,7 +98,7 @@ public class DeviceRegistryServiceImpl
             AccessPermissionRepository accessPermissionRepository,
             AccessRoleRepository accessRoleRepository,
             RoleRepository roleRepository,
-            RolePermissionRepository rolePermissionRepository) {
+            RolePermissionRepository rolePermissionRepository, EventStorer eventStorer) {
         super(serviceConfigurationManager);
         this.txManager = txManager;
         this.deviceRepository = deviceRepository;
@@ -107,6 +109,7 @@ public class DeviceRegistryServiceImpl
         this.accessRoleRepository = accessRoleRepository;
         this.roleRepository = roleRepository;
         this.rolePermissionRepository = rolePermissionRepository;
+        this.eventStorer = eventStorer;
     }
 
     @Override
@@ -162,7 +165,9 @@ public class DeviceRegistryServiceImpl
 
         //
         // Do create
-        return txManager.executeWithResult(tx -> deviceRepository.create(tx, device));
+        return txManager.executeWithResult(
+                tx -> deviceRepository.create(tx, device),
+                eventStorer::accept);
     }
 
     @Override
@@ -173,13 +178,14 @@ public class DeviceRegistryServiceImpl
         //
         // Do update
         return txManager.executeWithResult(tx -> {
-            final Device currentDevice = deviceRepository.find(tx, device.getScopeId(), device.getId());
-            if (currentDevice == null) {
-                throw new KapuaEntityNotFoundException(Device.TYPE, device.getId());
-            }
-            // Update
-            return deviceRepository.update(tx, device);
-        });
+                    final Device currentDevice = deviceRepository.find(tx, device.getScopeId(), device.getId());
+                    if (currentDevice == null) {
+                        throw new KapuaEntityNotFoundException(Device.TYPE, device.getId());
+                    }
+                    // Update
+                    return deviceRepository.update(tx, device);
+                },
+                eventStorer::accept);
     }
 
     @Override
@@ -304,9 +310,10 @@ public class DeviceRegistryServiceImpl
     public void delete(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
         DeviceValidation.validateDeletePreconditions(scopeId, deviceId);
 
-        //
         // Do delete
-        txManager.executeNoResult(tx -> deviceRepository.delete(tx, scopeId, deviceId));
+        txManager.executeWithResult(
+                tx -> deviceRepository.delete(tx, scopeId, deviceId),
+                eventStorer::accept);
     }
 
     //@ListenServiceEvent(fromAddress="account")
@@ -331,13 +338,14 @@ public class DeviceRegistryServiceImpl
         DeviceQuery query = entityFactory.newQuery(scopeId);
         query.setPredicate(query.attributePredicate(DeviceAttributes.GROUP_ID, groupId));
 
-        txManager.executeNoResult(tx -> {
+        txManager.<Void>executeWithResult(tx -> {
             DeviceListResult devicesToDelete = deviceRepository.query(tx, query);
 
             for (Device d : devicesToDelete.getItems()) {
                 d.setGroupId(null);
                 deviceRepository.update(tx, d);
             }
+            return null;
         });
     }
 
@@ -347,12 +355,13 @@ public class DeviceRegistryServiceImpl
 
         DeviceQuery query = deviceFactory.newQuery(accountId);
 
-        txManager.executeNoResult(tx -> {
+        txManager.<Void>executeWithResult(tx -> {
             DeviceListResult devicesToDelete = deviceRepository.query(tx, query);
 
             for (Device d : devicesToDelete.getItems()) {
                 deviceRepository.delete(tx, d);
             }
+            return null;
         });
     }
 }

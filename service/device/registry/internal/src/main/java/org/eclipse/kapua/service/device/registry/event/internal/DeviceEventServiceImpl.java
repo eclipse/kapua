@@ -162,16 +162,14 @@ public class DeviceEventServiceImpl
 
     @Override
     public void delete(KapuaId scopeId, KapuaId deviceEventId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(deviceEventId, "deviceEvent.id");
         ArgumentValidator.notNull(scopeId, "deviceEvent.scopeId");
 
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.delete, scopeId));
 
-        txManager.executeNoResult(tx -> repository.delete(tx, scopeId, deviceEventId));
+        txManager.executeWithResult(tx -> repository.delete(tx, scopeId, deviceEventId));
     }
 
 

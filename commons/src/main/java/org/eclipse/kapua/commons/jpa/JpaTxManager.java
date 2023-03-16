@@ -14,11 +14,13 @@ package org.eclipse.kapua.commons.jpa;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
+import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import java.util.function.BiConsumer;
 
 public class JpaTxManager implements TxManager {
 
@@ -29,32 +31,18 @@ public class JpaTxManager implements TxManager {
     }
 
     @Override
-    public <R> R executeWithResult(TxConsumer<R> transactionConsumer) throws KapuaException {
+    public <R> R executeWithResult(TxConsumer<R> transactionConsumer, BiConsumer<TxContext, R>... additionalTxConsumers) throws KapuaException {
         final EntityManager em = entityManagerFactory.createEntityManager();
         final EntityTransaction tx = em.getTransaction();
         tx.begin();
         try {
             final JpaTxContext txHolder = new JpaTxContext(em);
             final R res = transactionConsumer.<R>executeWithResult(txHolder);
+            for (final BiConsumer<TxContext, R> additionalTxConsumer : additionalTxConsumers) {
+                additionalTxConsumer.accept(txHolder, res);
+            }
             tx.commit();
             return res;
-        } catch (Exception ex) {
-            tx.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(ex);
-        } finally {
-            em.close();
-        }
-    }
-
-    @Override
-    public void executeNoResult(TxResultlessConsumer transactionConsumer) throws KapuaException {
-        final EntityManager em = entityManagerFactory.createEntityManager();
-        final EntityTransaction tx = em.getTransaction();
-        tx.begin();
-        try {
-            final JpaTxContext txHolder = new JpaTxContext(em);
-            transactionConsumer.executeWithoutResult(txHolder);
-            tx.commit();
         } catch (Exception ex) {
             tx.rollback();
             throw KapuaExceptionUtils.convertPersistenceException(ex);

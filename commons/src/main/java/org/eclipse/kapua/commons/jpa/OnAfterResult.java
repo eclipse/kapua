@@ -19,7 +19,9 @@ import org.eclipse.kapua.KapuaException;
  *
  * @param <T> Execution result return type
  * @since 1.0
+ * @deprecated since 2.0.0 - use repository wrapping instead
  */
+@Deprecated
 public interface OnAfterResult<T> {
 
     void onAfter(T result) throws KapuaException;

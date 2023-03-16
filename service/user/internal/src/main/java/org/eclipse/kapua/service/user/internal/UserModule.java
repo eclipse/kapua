@@ -69,7 +69,7 @@ public class UserModule extends AbstractKapuaModule {
                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
                 userRepository,
                 userFactory,
-                new DuplicateNameCheckerImpl<>(userRepository, userFactory::newQuery));
+                new DuplicateNameCheckerImpl<>(userRepository, userFactory::newQuery), eventStorer);
     }
 
     @Provides

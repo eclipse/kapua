@@ -215,7 +215,7 @@ public class AccessInfoServiceImpl implements AccessInfoService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.delete, scopeId));
 
-        txManager.executeNoResult(tx -> accessInfoRepository.delete(tx, scopeId, accessInfoId));
+        txManager.executeWithResult(tx -> accessInfoRepository.delete(tx, scopeId, accessInfoId));
     }
 
     //@ListenServiceEvent(fromAddress="account")

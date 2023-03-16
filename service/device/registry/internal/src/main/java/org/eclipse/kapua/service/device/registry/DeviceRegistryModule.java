@@ -100,7 +100,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                 accessPermissionRepository,
                 accessRoleRepository,
                 roleRepository,
-                rolePermissionRepository);
+                rolePermissionRepository, eventStorer);
     }
 
     @Provides
@@ -157,7 +157,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                 permissionFactory,
                 entityFactory,
                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
-                repository);
+                repository, eventStorer);
     }
 
     @Provides

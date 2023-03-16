@@ -195,6 +195,6 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
 
         //
         // Do delete
-        txManager.executeNoResult(tx -> repository.delete(tx, scopeId, stepDefinitionId));
+        txManager.executeWithResult(tx -> repository.delete(tx, scopeId, stepDefinitionId));
     }
 }

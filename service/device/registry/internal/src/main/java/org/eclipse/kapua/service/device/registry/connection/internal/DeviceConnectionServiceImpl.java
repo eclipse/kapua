@@ -81,7 +81,6 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
     @Override
     public DeviceConnection create(DeviceConnectionCreator deviceConnectionCreator)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(deviceConnectionCreator, "deviceConnectionCreator");
         ArgumentValidator.notNull(deviceConnectionCreator.getScopeId(), "deviceConnectionCreator.scopeId");
@@ -90,12 +89,10 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
         ArgumentValidator.lengthRange(deviceConnectionCreator.getClientId(), 1, 255, "deviceCreator.clientId");
         ArgumentValidator.match(deviceConnectionCreator.getClientId(), DeviceValidationRegex.CLIENT_ID, "deviceCreator.clientId");
 
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
 
         return txManager.executeWithResult(tx -> {
-
             //TODO: check whether this is anywhere efficient
             // Check duplicate ClientId
             if (repository.countByClientId(tx, deviceConnectionCreator.getScopeId(), deviceConnectionCreator.getClientId()) > 0) {
@@ -122,17 +119,14 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
     @Override
     public DeviceConnection update(DeviceConnection deviceConnection)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(deviceConnection, "deviceConnection");
         ArgumentValidator.notNull(deviceConnection.getId(), "deviceConnection.id");
         ArgumentValidator.notNull(deviceConnection.getScopeId(), "deviceConnection.scopeId");
 
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
 
-        //
         // Do Update
         return txManager.executeWithResult(tx -> repository.update(tx, deviceConnection));
     }
@@ -140,16 +134,13 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
     @Override
     public DeviceConnection find(KapuaId scopeId, KapuaId entityId)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(entityId, "entityId");
 
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, scopeId));
 
-        //
         // Do find
         return txManager.executeWithResult(tx -> repository.find(tx, scopeId, entityId));
     }
@@ -157,17 +148,14 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
     @Override
     public DeviceConnection findByClientId(KapuaId scopeId, String clientId)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notEmptyOrNull(clientId, "clientId");
 
-        //
         // Build query
         DeviceConnectionQueryImpl query = new DeviceConnectionQueryImpl(scopeId);
         query.setPredicate(query.attributePredicate(DeviceConnectionAttributes.CLIENT_ID, clientId));
 
-        //
         // Do find
         return txManager.executeWithResult(tx -> repository.query(tx, query).getFirstItem());
     }
@@ -175,15 +163,12 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
     @Override
     public DeviceConnectionListResult query(KapuaQuery query)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
 
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
 
-        //
         // Do query
         return txManager.executeWithResult(tx -> repository.query(tx, query));
     }
@@ -191,15 +176,12 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
     @Override
     public long count(KapuaQuery query)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
 
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
 
-        //
         // Do count
         return txManager.executeWithResult(tx -> repository.count(tx, query));
     }
@@ -207,16 +189,14 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
     @Override
     public void delete(KapuaId scopeId, KapuaId deviceConnectionId)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(deviceConnectionId, "deviceConnection.id");
         ArgumentValidator.notNull(scopeId, "deviceConnection.scopeId");
 
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
 
-        txManager.executeNoResult(tx -> repository.delete(tx, scopeId, deviceConnectionId));
+        txManager.executeWithResult(tx -> repository.delete(tx, scopeId, deviceConnectionId));
     }
 
     @Override
@@ -249,12 +229,13 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
     private void deleteConnectionByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
         DeviceConnectionQuery query = entityFactory.newQuery(accountId);
 
-        txManager.executeNoResult(tx -> {
+        txManager.executeWithResult(tx -> {
             final DeviceConnectionListResult deviceConnectionsToDelete = repository.query(tx, query);
 
             for (DeviceConnection dc : deviceConnectionsToDelete.getItems()) {
                 repository.delete(tx, dc.getScopeId(), dc.getId());
             }
+            return null;
         });
     }
 }

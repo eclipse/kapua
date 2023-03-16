@@ -126,7 +126,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public void createCheckpointData(CheckpointDataKey checkpointDataKey, CheckpointData checkpointData) {
         try {
-            txManager.executeNoResult(tx -> checkpointDataRepository.create(tx, checkpointDataKey, checkpointData));
+            txManager.executeWithResult(tx -> checkpointDataRepository.create(tx, checkpointDataKey, checkpointData));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -135,7 +135,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public void updateCheckpointData(CheckpointDataKey checkpointDataKey, CheckpointData checkpointData) {
         try {
-            txManager.executeNoResult(tx -> checkpointDataRepository.update(tx, checkpointDataKey, checkpointData));
+            txManager.executeWithResult(tx -> checkpointDataRepository.update(tx, checkpointDataKey, checkpointData));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -283,7 +283,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public void updateJobStatus(long jobInstanceId, JobStatus jobStatus) {
         try {
-            txManager.executeNoResult(tx -> jobStatusRepository.update(tx, jobInstanceId, jobStatus));
+            txManager.executeWithResult(tx -> jobStatusRepository.update(tx, jobInstanceId, jobStatus));
         } catch (KapuaException e) {
             throw new PersistenceException(e);
         }
@@ -414,7 +414,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public void updateBatchStatusOnly(long executionInstanceDataId, BatchStatus batchStatus, Timestamp updatedOn) {
         try {
-            txManager.executeNoResult(tx -> executionInstanceDataRepository.updateBatchStatus(tx, executionInstanceDataId, batchStatus, updatedOn));
+            txManager.executeWithResult(tx -> executionInstanceDataRepository.updateBatchStatus(tx, executionInstanceDataId, batchStatus, updatedOn));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -423,7 +423,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public void updateWithFinalExecutionStatusesAndTimestamps(long executionInstanceDataId, BatchStatus batchStatus, String exitStatus, Timestamp endedOn) {
         try {
-            txManager.executeNoResult(tx -> executionInstanceDataRepository.updateBatchStatusEnded(tx, executionInstanceDataId, batchStatus, exitStatus, endedOn));
+            txManager.executeWithResult(tx -> executionInstanceDataRepository.updateBatchStatusEnded(tx, executionInstanceDataId, batchStatus, exitStatus, endedOn));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -432,7 +432,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public void markJobStarted(long executionInstanceDataId, Timestamp startedOn) {
         try {
-            txManager.executeNoResult(tx -> executionInstanceDataRepository.updateBatchStatusStarted(tx, executionInstanceDataId, startedOn));
+            txManager.executeWithResult(tx -> executionInstanceDataRepository.updateBatchStatusStarted(tx, executionInstanceDataId, startedOn));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -529,7 +529,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public void updateStepExecution(StepContextImpl stepContext) {
         try {
-            txManager.executeNoResult(tx -> stepExecutionInstanceDataRepository.update(tx, stepContext));
+            txManager.executeWithResult(tx -> stepExecutionInstanceDataRepository.update(tx, stepContext));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -589,7 +589,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public void updateStepStatus(long stepExecutionId, StepStatus stepStatus) {
         try {
-            txManager.executeNoResult(tx -> stepStatusRepository.update(tx, stepExecutionId, stepStatus));
+            txManager.executeWithResult(tx -> stepStatusRepository.update(tx, stepExecutionId, stepStatus));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }

@@ -190,6 +190,6 @@ public class AccessRoleServiceImpl implements AccessRoleService {
 
         //
         // Do delete
-        txManager.executeNoResult(tx -> accessRoleRepository.delete(tx, scopeId, accessRoleId));
+        txManager.executeWithResult(tx -> accessRoleRepository.delete(tx, scopeId, accessRoleId));
     }
 }

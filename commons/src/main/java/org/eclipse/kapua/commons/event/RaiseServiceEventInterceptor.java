@@ -245,10 +245,10 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
             final TxManager txManager = new JpaTxManager(new KapuaEntityManagerFactory("kapua-events"));
 
             serviceEventBus.setStatus(newServiceEventStatus);
-            txManager.executeNoResult(tx -> {
+            txManager.executeWithResult(tx -> {
                 final EventStoreRecord eventStoreRecord = repository.find(tx, serviceEventBus.getScopeId(), KapuaEid.parseCompactId(serviceEventBus.getId()));
                 final EventStoreRecord updatedEventStoreRecord = ServiceEventUtil.mergeToEntity(eventStoreRecord, serviceEventBus);
-                repository.update(tx, eventStoreRecord, updatedEventStoreRecord);
+                return repository.update(tx, eventStoreRecord, updatedEventStoreRecord);
             });
         } catch (Throwable t) {
             // this may be a valid condition if the HouseKeeper is doing the update concurrently with this task

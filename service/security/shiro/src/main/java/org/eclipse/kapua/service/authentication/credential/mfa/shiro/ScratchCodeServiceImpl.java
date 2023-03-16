@@ -173,7 +173,7 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.delete, scopeId));
 
-        txManager.executeNoResult(tx -> scratchCodeRepository.delete(tx, scopeId, scratchCodeId));
+        txManager.executeWithResult(tx -> scratchCodeRepository.delete(tx, scopeId, scratchCodeId));
     }
 
 
@@ -195,23 +195,25 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
         ScratchCodeQuery query = scratchCodeFactory.newQuery(scopeId);
         query.setPredicate(query.attributePredicate(ScratchCodeAttributes.MFA_OPTION_ID, mfaOptionId));
 
-        txManager.executeNoResult(tx -> {
+        txManager.executeWithResult(tx -> {
             ScratchCodeListResult scratchCodesToDelete = scratchCodeRepository.query(tx, query);
 
             for (ScratchCode c : scratchCodesToDelete.getItems()) {
                 scratchCodeRepository.delete(tx, c.getScopeId(), c.getId());
             }
+            return null;
         });
     }
 
     private void deleteScratchCodeByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
         ScratchCodeQuery query = scratchCodeFactory.newQuery(accountId);
 
-        txManager.executeNoResult(tx -> {
+        txManager.<Void>executeWithResult(tx -> {
             ScratchCodeListResult scratchCodesToDelete = scratchCodeRepository.query(tx, query);
             for (ScratchCode c : scratchCodesToDelete.getItems()) {
                 scratchCodeRepository.delete(tx, c.getScopeId(), c.getId());
             }
+            return null;
         });
     }
 

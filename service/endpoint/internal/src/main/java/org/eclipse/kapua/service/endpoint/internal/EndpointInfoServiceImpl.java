@@ -181,7 +181,7 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        txManager.executeNoResult(tx -> {
+        txManager.executeWithResult(tx -> {
             EndpointInfo endpointInfoToDelete = repository.find(tx, scopeId, endpointInfoId);
             KapuaId scopeIdPermission = null;
             if (endpointInfoToDelete != null && endpointInfoToDelete.getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS)) {
@@ -194,7 +194,7 @@ public class EndpointInfoServiceImpl
 
             //
             // Do delete
-            repository.delete(tx, scopeId, endpointInfoId);
+            return repository.delete(tx, scopeId, endpointInfoId);
         });
     }
 

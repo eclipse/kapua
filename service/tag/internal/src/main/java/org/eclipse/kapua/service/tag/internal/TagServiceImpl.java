@@ -163,7 +163,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
         //
         // Do delete
         //
-        txManager.executeNoResult(tx -> tagRepository.delete(tx, scopeId, tagId));
+        txManager.executeWithResult(tx -> tagRepository.delete(tx, scopeId, tagId));
     }
 
     @Override

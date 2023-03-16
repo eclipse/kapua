@@ -14,19 +14,14 @@ package org.eclipse.kapua.storage;
 
 import org.eclipse.kapua.KapuaException;
 
+import java.util.function.BiConsumer;
+
 public interface TxManager {
 
-    <R> R executeWithResult(TxConsumer<R> transactionConsumer) throws KapuaException;
-
-    void executeNoResult(TxResultlessConsumer transactionConsumer) throws KapuaException;
+    <R> R executeWithResult(TxConsumer<R> transactionConsumer, BiConsumer<TxContext, R>... afterCommitConsumers) throws KapuaException;
 
     @FunctionalInterface
     public interface TxConsumer<R> {
         R executeWithResult(TxContext txHolder) throws KapuaException;
-    }
-
-    @FunctionalInterface
-    public interface TxResultlessConsumer {
-        void executeWithoutResult(TxContext txHolder) throws KapuaException;
     }
 }

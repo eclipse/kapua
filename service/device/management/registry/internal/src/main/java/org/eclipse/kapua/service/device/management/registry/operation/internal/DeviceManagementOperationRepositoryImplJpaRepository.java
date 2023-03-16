@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.registry.operation.internal;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -34,5 +35,15 @@ public class DeviceManagementOperationRepositoryImplJpaRepository
         DeviceManagementOperationQuery query = new DeviceManagementOperationQueryImpl(scopeId);
         query.setPredicate(query.attributePredicate(DeviceManagementOperationAttributes.OPERATION_ID, operationId));
         return this.query(tx, query).getFirstItem();
+    }
+
+    @Override
+    public DeviceManagementOperation delete(TxContext tx, KapuaId scopeId, KapuaId entityId) throws KapuaException {
+        // Check existence
+        final DeviceManagementOperation toBeDeleted = this.find(tx, scopeId, entityId);
+        if (toBeDeleted == null) {
+            throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, entityId);
+        }
+        return this.delete(tx, toBeDeleted);
     }
 }
