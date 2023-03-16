@@ -110,7 +110,7 @@ public class UserLocatorConfiguration {
                                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
                                 new UserImplJpaRepository(),
                                 userFactory,
-                                new DuplicateNameCheckerImpl<>(new UserImplJpaRepository(), userFactory::newQuery))
+                                new DuplicateNameCheckerImpl<>(new UserImplJpaRepository(), userFactory::newQuery), eventStorer)
                 );
             }
         };

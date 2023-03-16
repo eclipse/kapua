@@ -14,6 +14,10 @@ package org.eclipse.kapua.commons.jpa;
 
 import org.eclipse.kapua.KapuaException;
 
+/**
+ * @deprecated since 2.0.0 - use repository wrapping instead
+ */
+@Deprecated
 public class EntityManagerContainer<T> {
 
     private OnAfterResult<T> onAfter;
@@ -28,7 +32,7 @@ public class EntityManagerContainer<T> {
     }
 
     public EntityManagerContainer<T> onAfterHandler(OnAfterResult<T> onAfter) {
-        this.onAfter= onAfter;
+        this.onAfter = onAfter;
         return this;
     }
 
@@ -49,8 +53,7 @@ public class EntityManagerContainer<T> {
     public T onBefore() throws KapuaException {
         if (onBefore != null) {
             return onBefore.onBefore();
-        }
-        else {
+        } else {
             return null;
         }
     }

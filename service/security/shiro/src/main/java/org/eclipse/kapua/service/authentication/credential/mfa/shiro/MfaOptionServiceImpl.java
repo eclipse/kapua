@@ -291,7 +291,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.delete, scopeId));
 
-        txManager.executeNoResult(tx -> mfaOptionRepository.delete(tx, scopeId, mfaOptionId));
+        txManager.executeWithResult(tx -> mfaOptionRepository.delete(tx, scopeId, mfaOptionId));
     }
 
     @Override
@@ -356,7 +356,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
 
     @Override
     public void disableTrust(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
-        txManager.executeNoResult(tx -> {
+        txManager.executeWithResult(tx -> {
             // Argument Validation
             ArgumentValidator.notNull(mfaOptionId, "mfaOptionId");
             ArgumentValidator.notNull(scopeId, "scopeId");
@@ -368,7 +368,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             mfaOption.setTrustKey(null);
             mfaOption.setTrustExpirationDate(null);
 
-            mfaOptionRepository.update(tx, mfaOption);
+            return mfaOptionRepository.update(tx, mfaOption);
         });
     }
 

@@ -206,6 +206,6 @@ public class JobTargetServiceImpl implements JobTargetService {
 
         //
         // Do delete
-        txManager.executeNoResult(tx -> jobTargetRepository.delete(tx, scopeId, jobTargetId));
+        txManager.executeWithResult(tx -> jobTargetRepository.delete(tx, scopeId, jobTargetId));
     }
 }

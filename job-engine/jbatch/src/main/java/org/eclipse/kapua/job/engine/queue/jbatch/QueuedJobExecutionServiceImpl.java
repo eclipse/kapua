@@ -146,6 +146,6 @@ public class QueuedJobExecutionServiceImpl implements QueuedJobExecutionService 
 
         //
         // Do delete
-        txManager.executeNoResult(tx -> repository.delete(tx, scopeId, queuedJobExecutionId));
+        txManager.executeWithResult(tx -> repository.delete(tx, scopeId, queuedJobExecutionId));
     }
 }

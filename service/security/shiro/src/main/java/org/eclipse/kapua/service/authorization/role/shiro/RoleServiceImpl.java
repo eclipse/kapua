@@ -203,7 +203,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
             throw new KapuaException(KapuaErrorCodes.ADMIN_ROLE_DELETED_ERROR);
         }
 
-        txManager.executeNoResult(tx -> {
+        txManager.executeWithResult(tx -> {
 
             //
             // Check existence
@@ -214,7 +214,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
 
             //
             // Do delete
-            roleRepository.delete(tx, roleToDelete);
+            return roleRepository.delete(tx, roleToDelete);
         });
     }
 

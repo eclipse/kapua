@@ -148,6 +148,6 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
         //
         // Do delete
-        txManager.executeNoResult(tx -> jobExecutionRepository.delete(tx, scopeId, jobExecutionId));
+        txManager.executeWithResult(tx -> jobExecutionRepository.delete(tx, scopeId, jobExecutionId));
     }
 }

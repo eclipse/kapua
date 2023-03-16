@@ -93,7 +93,7 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.delete, null));
 
-        txManager.executeNoResult(tx -> domainRepository.delete(tx, scopeId, domainId));
+        txManager.executeWithResult(tx -> domainRepository.delete(tx, scopeId, domainId));
     }
 
     @Override

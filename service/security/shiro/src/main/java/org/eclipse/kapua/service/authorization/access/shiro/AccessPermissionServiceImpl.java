@@ -144,7 +144,7 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.delete, scopeId));
 
-        txManager.executeNoResult(tx -> accessPermissionRepository.delete(tx, scopeId, accessPermissionId));
+        txManager.executeWithResult(tx -> accessPermissionRepository.delete(tx, scopeId, accessPermissionId));
     }
 
     @Override

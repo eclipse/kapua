@@ -299,7 +299,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implem
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.delete, scopeId));
-        txManager.executeNoResult(tx -> credentialRepository.delete(tx, scopeId, credentialId));
+        txManager.executeWithResult(tx -> credentialRepository.delete(tx, scopeId, credentialId));
     }
 
     @Override
@@ -380,13 +380,13 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implem
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, scopeId));
 
-        txManager.executeNoResult(tx -> {
+        txManager.executeWithResult(tx -> {
             Credential credential = credentialRepository.find(tx, scopeId, credentialId);
             credential.setLoginFailures(0);
             credential.setFirstLoginFailure(null);
             credential.setLoginFailuresReset(null);
             credential.setLockoutReset(null);
-            credentialRepository.update(tx, credential);
+            return credentialRepository.update(tx, credential);
         });
     }
 

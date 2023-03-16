@@ -137,7 +137,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
         deviceEvent.setResponseCode(deviceEventCreator.getResponseCode());
         deviceEvent.setEventMessage(deviceEventCreator.getEventMessage());
         deviceEvent.setPosition(deviceEventCreator.getPosition());
-        txManager.executeNoResult(tx -> deviceEventRepository.create(tx, deviceEvent));
+        txManager.executeWithResult(tx -> deviceEventRepository.create(tx, deviceEvent));
     }
 
     /**
@@ -205,7 +205,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
     }
 
     protected void closeManagementOperation(KapuaId scopeId, KapuaId deviceId, KapuaId operationId, KapuaResponseMessage<?, ?> responseMessageMessage) throws KapuaException {
-        txManager.executeNoResult(tx -> {
+        txManager.executeWithResult(tx -> {
             DeviceManagementOperation deviceManagementOperation = deviceManagementOperationRepository.findByOperationId(tx, scopeId, operationId);
 
             if (deviceManagementOperation == null) {
@@ -219,7 +219,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
                 deviceManagementOperation.setStatus(NotifyStatus.FAILED);
                 deviceManagementOperation.setEndedOn(new Date());
             }
-            deviceManagementOperationRepository.update(tx, deviceManagementOperation);
+            return deviceManagementOperationRepository.update(tx, deviceManagementOperation);
         });
     }
 

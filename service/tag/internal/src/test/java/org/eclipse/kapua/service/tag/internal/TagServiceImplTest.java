@@ -35,6 +35,7 @@ import org.mockito.MockSettings;
 import org.mockito.Mockito;
 
 import java.math.BigInteger;
+import java.util.function.BiConsumer;
 
 @Category(JUnitTests.class)
 public class TagServiceImplTest {
@@ -64,15 +65,8 @@ public class TagServiceImplTest {
         tagFactory = Mockito.mock(TagFactory.class);
         final TxManager txManager = new TxManager() {
             @Override
-            public <R> R executeWithResult(TxConsumer<R> transactionConsumer) throws KapuaException {
-                return transactionConsumer.executeWithResult(new TxContext() {
-                });
-            }
-
-            @Override
-            public void executeNoResult(TxResultlessConsumer transactionConsumer) throws KapuaException {
-                transactionConsumer.executeWithoutResult(new TxContext() {
-                });
+            public <R> R executeWithResult(TxConsumer<R> transactionConsumer, BiConsumer<TxContext, R>... afterCommitConsumers) throws KapuaException {
+                return null;
             }
         };
         Mockito.when(tagFactory.newCreator(Mockito.any(), Mockito.any()))

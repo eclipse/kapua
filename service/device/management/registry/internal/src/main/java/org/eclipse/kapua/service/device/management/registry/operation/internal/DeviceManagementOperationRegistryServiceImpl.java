@@ -204,23 +204,14 @@ public class DeviceManagementOperationRegistryServiceImpl
 
     @Override
     public void delete(KapuaId scopeId, KapuaId entityId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(entityId, "deviceManagementOperationId");
 
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.delete, scopeId));
 
-        //
-        // Check existence
-        if (find(scopeId, entityId) == null) {
-            throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, entityId);
-        }
-
-        //
         // Do delete
-        txManager.executeNoResult(tx -> repository.delete(tx, scopeId, entityId));
+        txManager.executeWithResult(tx -> repository.delete(tx, scopeId, entityId));
     }
 }

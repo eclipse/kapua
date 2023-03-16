@@ -19,7 +19,9 @@ import org.eclipse.kapua.KapuaException;
  *
  * @param <T> Insert execution result return type
  * @since 1.0
+ * @deprecated since 2.0.0 - use repository wrapping instead
  */
+@Deprecated
 public interface EntityManagerCallback<T> {
 
     /**
@@ -28,11 +30,11 @@ public interface EntityManagerCallback<T> {
      * WARNING!<br>
      * The transactionality (if needed by the code) must be managed internally to this method.<br>
      * The caller method performs only a rollback (if the transaction is active and an error occurred)!<br>
-     * @see EntityManagerSession#doAction(EntityManagerContainer)
      *
      * @param entityManager
      * @return
      * @throws KapuaException
+     * @see EntityManagerSession#doAction(EntityManagerContainer)
      */
     T onAction(EntityManager entityManager) throws KapuaException;
 

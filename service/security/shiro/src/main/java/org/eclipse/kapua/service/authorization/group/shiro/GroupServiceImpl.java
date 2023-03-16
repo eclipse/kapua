@@ -151,7 +151,7 @@ public class GroupServiceImpl extends KapuaConfigurableServiceLinker implements 
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.delete, scopeId));
 
-        txManager.executeNoResult(tx -> groupRepository.delete(tx, scopeId, groupId));
+        txManager.executeWithResult(tx -> groupRepository.delete(tx, scopeId, groupId));
     }
 
     @Override

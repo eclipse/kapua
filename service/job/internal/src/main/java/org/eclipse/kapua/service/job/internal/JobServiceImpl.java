@@ -232,7 +232,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, forced ? null : scopeId));
 
-        txManager.executeNoResult(tx -> {
+        txManager.executeWithResult(tx -> {
             //
             // Check existence
             if (jobRepository.find(tx, scopeId, jobId) == null) {
@@ -253,7 +253,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
                     throw e;
                 }
             }
-            jobRepository.delete(tx, scopeId, jobId);
+            return jobRepository.delete(tx, scopeId, jobId);
         });
     }
 }

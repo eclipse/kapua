@@ -22,6 +22,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -66,6 +67,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
     private final UserRepository userRepository;
     private final UserFactory userFactory;
     private final DuplicateNameChecker<User> duplicateNameChecker;
+    private final EventStorer eventStorer;
 
     public UserServiceImpl(
             ServiceConfigurationManager serviceConfigurationManager,
@@ -73,7 +75,8 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
             PermissionFactory permissionFactory,
             TxManager txManager,
             UserRepository userRepository, UserFactory userFactory,
-            DuplicateNameChecker<User> duplicateNameChecker) {
+            DuplicateNameChecker<User> duplicateNameChecker,
+            EventStorer eventStorer) {
         super(serviceConfigurationManager);
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
@@ -81,6 +84,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
         this.userRepository = userRepository;
         this.userFactory = userFactory;
         this.duplicateNameChecker = duplicateNameChecker;
+        this.eventStorer = eventStorer;
     }
 
     @Override
@@ -194,66 +198,68 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.write, user.getScopeId()));
 
-        return txManager.executeWithResult(tx -> {
-            //
-            // Check existence
-            User currentUser = userRepository.find(tx, user.getScopeId(), user.getId());
-            if (currentUser == null) {
-                throw new KapuaEntityNotFoundException(User.TYPE, user.getId());
-            }
+        return txManager.executeWithResult(
+                tx -> {
+                    //
+                    // Check existence
+                    User currentUser = userRepository.find(tx, user.getScopeId(), user.getId());
+                    if (currentUser == null) {
+                        throw new KapuaEntityNotFoundException(User.TYPE, user.getId());
+                    }
 
-            //
-            // Check action on Sys admin user
-            if (user.getExpirationDate() != null || !currentUser.getName().equals(user.getName())) {
-                //
-                // Check not deleting environment admin
-                validateSystemUser(user.getName());
-            }
+                    //
+                    // Check action on Sys admin user
+                    if (user.getExpirationDate() != null || !currentUser.getName().equals(user.getName())) {
+                        //
+                        // Check not deleting environment admin
+                        validateSystemUser(user.getName());
+                    }
 
-            //
-            // Check disabling on logged user
-            if (user.getId().equals(KapuaSecurityUtils.getSession().getUserId())) {
-                if (user.getStatus().equals(UserStatus.DISABLED)) {
-                    throw new KapuaIllegalArgumentException("user.status", user.getStatus().name());
-                }
-            }
+                    //
+                    // Check disabling on logged user
+                    if (user.getId().equals(KapuaSecurityUtils.getSession().getUserId())) {
+                        if (user.getStatus().equals(UserStatus.DISABLED)) {
+                            throw new KapuaIllegalArgumentException("user.status", user.getStatus().name());
+                        }
+                    }
 
-            //
-            // Check not updatable fields
+                    //
+                    // Check not updatable fields
 
-            // User.userType
-            if (!Objects.equals(currentUser.getUserType(), user.getUserType())) {
-                throw new KapuaIllegalArgumentException("user.userType", user.getUserType().toString());
-            }
+                    // User.userType
+                    if (!Objects.equals(currentUser.getUserType(), user.getUserType())) {
+                        throw new KapuaIllegalArgumentException("user.userType", user.getUserType().toString());
+                    }
 
-            // User.name
-            if (!Objects.equals(currentUser.getName(), user.getName())) {
-                throw new KapuaIllegalArgumentException("user.name", user.getName());
-            }
+                    // User.name
+                    if (!Objects.equals(currentUser.getName(), user.getName())) {
+                        throw new KapuaIllegalArgumentException("user.name", user.getName());
+                    }
 
-            //
-            // Check duplicates
+                    //
+                    // Check duplicates
 
-            // User.externalId
-            if (user.getExternalId() != null) {
-                User userByExternalId = userRepository.findByExternalId(tx, user.getExternalId());
-                if (userByExternalId != null && !userByExternalId.getId().equals(user.getId())) {
-                    throw new KapuaDuplicateExternalIdException(user.getExternalId());
-                }
-            }
+                    // User.externalId
+                    if (user.getExternalId() != null) {
+                        User userByExternalId = userRepository.findByExternalId(tx, user.getExternalId());
+                        if (userByExternalId != null && !userByExternalId.getId().equals(user.getId())) {
+                            throw new KapuaDuplicateExternalIdException(user.getExternalId());
+                        }
+                    }
 
-            // User.externalUsername
-            if (user.getExternalUsername() != null) {
-                User userByExternalPreferredUsername = userRepository.findByExternalId(tx, user.getExternalUsername());
-                if (userByExternalPreferredUsername != null && !userByExternalPreferredUsername.getId().equals(user.getId())) {
-                    throw new KapuaDuplicateExternalUsernameException(user.getExternalUsername());
-                }
-            }
+                    // User.externalUsername
+                    if (user.getExternalUsername() != null) {
+                        User userByExternalPreferredUsername = userRepository.findByExternalId(tx, user.getExternalUsername());
+                        if (userByExternalPreferredUsername != null && !userByExternalPreferredUsername.getId().equals(user.getId())) {
+                            throw new KapuaDuplicateExternalUsernameException(user.getExternalUsername());
+                        }
+                    }
 
-            //
-            // Do update
-            return userRepository.update(tx, user);
-        });
+                    //
+                    // Do update
+                    return userRepository.update(tx, user);
+                },
+                eventStorer::accept);
     }
 
     @Override
@@ -264,7 +270,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
 
         //
         // Do delete
-        txManager.executeNoResult(tx -> userRepository.delete(tx, user));
+        txManager.executeWithResult(tx -> userRepository.delete(tx, user));
     }
 
     @Override
@@ -278,22 +284,24 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.delete, scopeId));
 
-        txManager.executeNoResult(tx -> {
-            // Check existence
-            User user = userRepository.find(tx, scopeId, userId);
-            if (user == null) {
-                throw new KapuaEntityNotFoundException(User.TYPE, userId);
-            }
+        txManager.executeWithResult(
+                tx -> {
+                    // Check existence
+                    User user = userRepository.find(tx, scopeId, userId);
+                    if (user == null) {
+                        throw new KapuaEntityNotFoundException(User.TYPE, userId);
+                    }
 
-            // Check not deleting environment admin
-            validateSystemUser(user.getName());
+                    // Check not deleting environment admin
+                    validateSystemUser(user.getName());
 
-            // Check not deleting self
-            validateSelf(user);
+                    // Check not deleting self
+                    validateSelf(user);
 
-            // Do  delete
-            userRepository.delete(tx, user);
-        });
+                    // Do  delete
+                    return userRepository.delete(tx, user);
+                },
+                eventStorer::accept);
     }
 
     @Override

@@ -360,7 +360,7 @@ public class JobStepServiceImpl implements JobStepService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
 
-        txManager.executeNoResult(tx -> {
+        txManager.executeWithResult(tx -> {
             //
             // Check existence
             final JobStep jobStep = jobStepRepository.find(tx, scopeId, jobStepId);
@@ -403,6 +403,7 @@ public class JobStepServiceImpl implements JobStepService {
 
                 jobStepRepository.update(tx, js);
             }
+            return jobStep.getJobId();
         });
     }
 

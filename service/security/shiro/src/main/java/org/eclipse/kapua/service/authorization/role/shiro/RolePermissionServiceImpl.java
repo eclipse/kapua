@@ -144,7 +144,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         if (KapuaId.ONE.equals(rolePermissionId)) {
             throw new KapuaException(KapuaErrorCodes.PERMISSION_DELETE_NOT_ALLOWED);
         }
-        txManager.executeNoResult(tx -> rolePermissionRepository.delete(tx, scopeId, rolePermissionId));
+        txManager.executeWithResult(tx -> rolePermissionRepository.delete(tx, scopeId, rolePermissionId));
     }
 
     @Override
