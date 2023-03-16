@@ -77,26 +77,18 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
     protected EntityGrid(AbstractEntityView<M> entityView, GwtSession currentSession) {
         super(new FitLayout());
-
-        //
         // Set other properties
         this.parentEntityView = entityView;
         this.currentSession = currentSession;
-
-        //
         // Container borders
         setBorders(false);
         setBodyBorder(true);
         setHeaderVisible(false);
-
-        //
         // CRUD toolbar
         entityCRUDToolbar = getToolbar();
         if (entityCRUDToolbar != null) {
             setTopComponent(entityCRUDToolbar);
         }
-
-        //
         // Paging toolbar
         entityPagingToolbar = getPagingToolbar();
         if (entityPagingToolbar != null) {
@@ -107,8 +99,6 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
-
-        //
         // Configure Entity Grid
         if (!entityGridConfigured) {
             configureEntityGrid();
@@ -116,12 +106,8 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
         // Force layout so the entityGrid gets rendered and its listeners initialized
         layout();
-
-        //
         // Bind the grid to CRUD toolbar
         entityCRUDToolbar.setEntityGrid(this);
-
-        //
         // Grid selection mode
         final GridSelectionModel<M> selectionModel = entityGrid.getSelectionModel();
         selectionModel.setSelectionMode(selectionMode);
@@ -133,20 +119,21 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
                 if (selectionModel.getSelectedItem() != null && selectedAgain == false && !deselectable) {
                     selectionChangedEvent(se.getSelectedItem());
                     selectedItem = selectionModel.getSelectedItem();
-                } if (selectionModel.getSelectedItem() == null && !deselectable) {
+                }
+                if (selectionModel.getSelectedItem() == null && !deselectable) {
                     selectedAgain = true;
                     selectionModel.select(true, selectedItem);
-                } if (selectedItem != selectionModel.getSelectedItem() && !deselectable) {
+                }
+                if (selectedItem != selectionModel.getSelectedItem() && !deselectable) {
                     selectedAgain = false;
                     selectionChangedEvent(se.getSelectedItem());
                     selectedItem = selectionModel.getSelectedItem();
-                } if (deselectable) {
+                }
+                if (deselectable) {
                     selectionChangedEvent(se.getSelectedItem());
                 }
             }
         });
-
-        //
         // Do first load
         if (refreshOnRender) {
             refresh();
@@ -189,6 +176,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
             }
         };
     }
+
     /**
      * Configuring entity grid, because it needs to be configured before onRender method is called.
      */
@@ -202,25 +190,17 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
         // Data Store
         entityStore = new ListStore<M>(entityLoader);
-
-        //
         // Grid Data Load Listener
         EntityGridLoadListener<M> entityGridLoadListener = new EntityGridLoadListener<M>(this, entityStore, EntityFilterPanel.getSearchButton(), EntityFilterPanel.getResetButton());
         entityGridLoadListener.setKeepSelectedOnLoad(keepSelectedItemsAfterLoad);
 
         entityLoader.addLoadListener(entityGridLoadListener);
-
-        //
         // Bind Entity Paging Toolbar
         if (entityPagingToolbar != null) {
             entityPagingToolbar.bind(entityLoader);
         }
-
-        //
         // Configure columns
         ColumnModel columnModel = new ColumnModel(getColumns());
-
-        //
         // Set grid
         entityGrid = new KapuaGrid<M>(entityStore, columnModel);
         add(entityGrid);

@@ -73,16 +73,11 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
     @Override
     public DeviceSnapshots get(KapuaId scopeId, KapuaId deviceId, Long timeout)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(deviceId, "deviceId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
-
-        //
         // Prepare the request
         SnapshotRequestChannel snapshotRequestChannel = new SnapshotRequestChannel();
         snapshotRequestChannel.setAppName(DeviceConfigurationAppProperties.APP_NAME);
@@ -98,7 +93,6 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
         snapshotRequestMessage.setPayload(snapshotRequestPayload);
         snapshotRequestMessage.setChannel(snapshotRequestChannel);
 
-        //
         // Build request
         DeviceCallBuilder<SnapshotRequestChannel, SnapshotRequestPayload, SnapshotRequestMessage, SnapshotResponseMessage> snapshotDeviceCallBuilder =
                 DeviceCallBuilder
@@ -106,7 +100,6 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
                         .withRequestMessage(snapshotRequestMessage)
                         .withTimeoutOrDefault(timeout);
 
-        //
         // Do get
         SnapshotResponseMessage responseMessage;
         try {
@@ -116,11 +109,8 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
             throw e;
         }
 
-        //
         // Create event
         createDeviceEvent(scopeId, deviceId, snapshotRequestMessage, responseMessage);
-
-        //
         // Check response
         return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceSnapshots());
     }
@@ -128,17 +118,12 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
     @Override
     public void rollback(KapuaId scopeId, KapuaId deviceId, String snapshotId, Long timeout)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(deviceId, "deviceId");
         ArgumentValidator.notEmptyOrNull(snapshotId, "snapshotId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.execute, scopeId));
-
-        //
         // Prepare the request
         SnapshotRequestChannel snapshotRequestChannel = new SnapshotRequestChannel();
         snapshotRequestChannel.setAppName(DeviceConfigurationAppProperties.APP_NAME);
@@ -155,7 +140,6 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
         snapshotRequestMessage.setPayload(snapshotRequestPayload);
         snapshotRequestMessage.setChannel(snapshotRequestChannel);
 
-        //
         // Build request
         DeviceCallBuilder<SnapshotRequestChannel, SnapshotRequestPayload, SnapshotRequestMessage, SnapshotResponseMessage> snapshotDeviceCallBuilder =
                 DeviceCallBuilder
@@ -163,7 +147,6 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
                         .withRequestMessage(snapshotRequestMessage)
                         .withTimeoutOrDefault(timeout);
 
-        //
         // Do exec
         SnapshotResponseMessage responseMessage;
         try {
@@ -173,11 +156,8 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
             throw e;
         }
 
-        //
         // Create event
         createDeviceEvent(scopeId, deviceId, snapshotRequestMessage, responseMessage);
-
-        //
         // Check response
         checkResponseAcceptedOrThrowError(responseMessage);
     }

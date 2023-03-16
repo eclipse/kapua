@@ -53,16 +53,11 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
-        //
         // Token data
         String jwt = (String) authenticationToken.getCredentials();
-
-        //
         // Info data
         SessionAuthenticationInfo info = (SessionAuthenticationInfo) authenticationInfo;
         AccessToken infoCredential = info.getAccessToken();
-
-        //
         // Match token with info
         boolean credentialMatch = false;
         if (jwt.equals(infoCredential.getTokenId())) {
@@ -86,8 +81,6 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
                 if (certificateInfo == null) {
                     throw new JwtCertificateNotFoundException();
                 }
-
-                //
                 // Set validator
                 JwtConsumer jwtConsumer = new JwtConsumerBuilder()
                         .setVerificationKey(CertificateUtils.stringToCertificate(certificateInfo.getCertificate()).getPublicKey()) // Set public key
@@ -96,8 +89,6 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
                         .setRequireExpirationTime() // Set require reserved claim: exp
                         .setRequireSubject() // // Set require reserved claim: sub
                         .build();
-
-                //
                 // This validates JWT
                 jwtConsumer.processToClaims(jwt);
 

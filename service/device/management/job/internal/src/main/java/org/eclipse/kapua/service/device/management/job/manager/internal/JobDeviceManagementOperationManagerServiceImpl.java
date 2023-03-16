@@ -76,14 +76,10 @@ public class JobDeviceManagementOperationManagerServiceImpl implements JobDevice
         }
 
         DeviceManagementOperation deviceManagementOperation = getDeviceManagementOperation(scopeId, operationId);
-
-        //
         // UGLY 'DEPLOY-V2'-related part
         if (checkLastNotification(deviceManagementOperation, status, resource)) {
             return;
         }
-
-        //
         // Update the job target
         JobDeviceManagementOperation jobDeviceManagementOperation;
         try {
@@ -145,14 +141,10 @@ public class JobDeviceManagementOperationManagerServiceImpl implements JobDevice
                 }
             }
         } while (failed);
-
-        //
         // If PROCESS_FAILED no need to continue the JobTarget processing
         if (JobTargetStatus.PROCESS_FAILED.equals(jobTarget.getStatus())) {
             return;
         }
-
-        //
         // Start the job
         JobStartOptions jobStartOptions = JOB_ENGINE_FACTORY.newJobStartOptions();
         jobStartOptions.addTargetIdToSublist(jobTarget.getId());

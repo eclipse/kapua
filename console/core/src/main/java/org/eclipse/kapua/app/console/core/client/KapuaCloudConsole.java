@@ -143,8 +143,6 @@ public class KapuaCloudConsole implements EntryPoint {
             @Override
             public void onSuccess(GwtProductInformation result) {
                 productInformation = result;
-
-                //
                 // Check if a session has already been established on the server-side
                 GWT_AUTHORIZATION_SERVICE.getCurrentSession(new AsyncCallback<GwtSession>() {
 
@@ -160,7 +158,6 @@ public class KapuaCloudConsole implements EntryPoint {
                             // We do not have a valid session: display the login page
                             renderLoginDialog();
                         } else {
-                            //
                             // We have a valid session
                             currentSession = gwtSession;
 
@@ -180,8 +177,6 @@ public class KapuaCloudConsole implements EntryPoint {
 
         // Set class name based on account. This allows for styling based on account
         RootPanel.getBodyElement().addClassName(gwtSession.getSelectedAccountName());
-
-        //
         // North View
         BorderLayoutData northData = new BorderLayoutData(LayoutRegion.NORTH, 36);
         northData.setCollapsible(false);
@@ -193,8 +188,6 @@ public class KapuaCloudConsole implements EntryPoint {
         northView = new NorthView(currentSession, this);
 
         viewport.add(northView, northData);
-
-        //
         // Center View
         BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
         centerData.setMargins(new Margins(0, 5, 0, 0));
@@ -204,8 +197,6 @@ public class KapuaCloudConsole implements EntryPoint {
         centerView.setBorders(false);
 
         viewport.add(centerView, centerData);
-
-        //
         // West View
         BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 200);
         westData.setSplit(false);
@@ -214,8 +205,6 @@ public class KapuaCloudConsole implements EntryPoint {
         westView = new WestNavigationView(currentSession, centerView, this);
 
         viewport.add(westView, westData);
-
-        //
         // East View
 
         filterPanel = new ContentPanel();
@@ -229,8 +218,6 @@ public class KapuaCloudConsole implements EntryPoint {
         filterPanelData.setSplit(false);
 
         viewport.add(filterPanel, filterPanelData);
-
-        //
         // South view
         BorderLayoutData southData = new BorderLayoutData(LayoutRegion.SOUTH, 18);
         southData.setCollapsible(false);
@@ -266,8 +253,6 @@ public class KapuaCloudConsole implements EntryPoint {
         southView.add(version, tdVersion);
 
         viewport.add(southView, southData);
-
-        //
         // RootPanel
         RootPanel.get().add(viewport);
     }
@@ -283,8 +268,6 @@ public class KapuaCloudConsole implements EntryPoint {
         } else {
             viewport.setStyleName("login-ie8");
         }
-
-        //
         // Center Login Page
         BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
         centerData.setMargins(new Margins(0));
@@ -295,8 +278,6 @@ public class KapuaCloudConsole implements EntryPoint {
 
         LayoutContainer splash = new LayoutContainer(new FillLayout());
         viewport.add(splash, centerData);
-
-        //
         // Header login page
         SimplePanel kapuaLogo = new SimplePanel();
         if (!UserAgentUtils.isIE() || UserAgentUtils.getIEDocumentMode() > 8) {
@@ -331,8 +312,6 @@ public class KapuaCloudConsole implements EntryPoint {
         northData.setSplit(false);
         northData.setMargins(new Margins(0));
         viewport.add(lcHeader, northData);
-
-        //
         // Footer login page
         creditLabel = new Label();
         creditLabel.setStyleAttribute("margin-right", "10px");
@@ -534,8 +513,6 @@ public class KapuaCloudConsole implements EntryPoint {
         if (currentSession != null) {
             String username = currentSession.getUserName();
             if (username != null) {
-
-                //
                 // Enter into the normal viewport
                 RootPanel.get().remove(viewport);
                 render(currentSession);

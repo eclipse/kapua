@@ -73,27 +73,18 @@ public class StreamServiceImpl implements StreamService {
     @Override
     public KapuaResponseMessage<?, ?> publish(KapuaDataMessage kapuaDataMessage, Long timeout)
             throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(kapuaDataMessage.getScopeId(), "dataMessage.scopeId");
         ArgumentValidator.notNull(kapuaDataMessage.getChannel(), "dataMessage.channel");
-
-        //
         // Check Access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(StreamDomains.STREAM_DOMAIN, Actions.write, kapuaDataMessage.getScopeId()));
-
-        //
         // Do publish
         try (TransportFacade transportFacade = borrowClient(kapuaDataMessage)) {
-
-            //
             // Get Kura to transport translator for the request and vice versa
             Translator<KapuaDataMessage, KuraDataMessage> translatorKapuaKura = getTranslator(KapuaDataMessage.class, KuraDataMessage.class);
             Translator<KuraDataMessage, ?> translatorKuraTransport = getTranslator(KuraDataMessage.class, transportFacade.getMessageClass());
 
             KuraDataMessage kuraDataMessage = translatorKapuaKura.translate(kapuaDataMessage);
-
-            //
             // Do send
 
             // Set current timestamp
@@ -108,10 +99,7 @@ public class StreamServiceImpl implements StreamService {
 
         return null;
     }
-
-    //
     // Private methods
-    //
 
     /**
      * Picks a {@link TransportFacade} to send the {@link KuraResponseMessage}.
@@ -124,7 +112,6 @@ public class StreamServiceImpl implements StreamService {
     protected TransportFacade<?, ?, ?, ?> borrowClient(KapuaDataMessage kapuaDataMessage) throws KuraDeviceCallException {
         String serverURI = null;
         try {
-            //
             // Check Device existence
             Device device = checkDeviceInfo(kapuaDataMessage);
 

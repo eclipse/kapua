@@ -36,7 +36,6 @@ public class ServiceConfigDAO extends ServiceDAO {
      */
     public static ServiceConfig update(EntityManager em, ServiceConfig serviceConfig)
             throws KapuaException {
-        //
         // Update service configuration
         ServiceConfigImpl serviceConfigImpl = (ServiceConfigImpl) serviceConfig;
 

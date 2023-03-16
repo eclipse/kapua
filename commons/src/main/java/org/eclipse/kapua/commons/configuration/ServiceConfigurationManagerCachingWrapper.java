@@ -79,8 +79,6 @@ public class ServiceConfigurationManagerCachingWrapper implements ServiceConfigu
 
     @Override
     public KapuaTocd getConfigMetadata(KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
-
-        //
         // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
 

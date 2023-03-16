@@ -83,30 +83,20 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
         String stepName = stepContextWrapper.getKapuaStepName();
 
         jobLogger.info("Reading target chunk. Step:{} (index:{})...", stepName, stepIndex);
-
-        //
         // Job Id and JobTarget status filtering
         JobTargetQuery query = jobTargetFactory.newQuery(jobContextWrapper.getScopeId());
 
         AndPredicate andPredicate = query.andPredicate(
                 query.attributePredicate(JobTargetAttributes.JOB_ID, jobContextWrapper.getJobId())
         );
-
-        //
         // Step index filtering
         stepIndexFiltering(jobContextWrapper, stepContextWrapper, query, andPredicate);
-
-        //
         // Filter selected target
         targetSublistFiltering(jobContextWrapper, query, andPredicate);
-
-        //
         // Query the targets
         query.setPredicate(andPredicate);
 
         JobTargetListResult jobTargets = KapuaSecurityUtils.doPrivileged(() -> jobTargetService.query(query));
-
-        //
         // Wrap the JobTargets in a wrapper object to store additional informations
         jobTargets.getItems().forEach(jt -> wrappedJobTargets.add(new JobTargetWrapper(jt)));
 

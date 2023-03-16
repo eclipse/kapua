@@ -82,15 +82,12 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
 
     @Override
     public TriggerDefinition update(TriggerDefinition triggerDefinition) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(triggerDefinition, "stepDefinition");
         ArgumentValidator.notNull(triggerDefinition.getScopeId(), "stepDefinition.scopeId");
         ArgumentValidator.notNull(triggerDefinition.getTriggerType(), "triggerDefinition.stepType");
         ArgumentValidator.validateEntityName(triggerDefinition.getName(), "triggerDefinition.name");
         ArgumentValidator.notEmptyOrNull(triggerDefinition.getProcessorName(), "triggerDefinition.processorName");
-
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
@@ -99,46 +96,32 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
 
     @Override
     public TriggerDefinition find(KapuaId stepDefinitionId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(stepDefinitionId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
-
-        //
         // Do find
         return txManager.execute(tx -> triggerDefinitionRepository.find(tx, KapuaId.ANY, stepDefinitionId));
     }
 
     @Override
     public TriggerDefinition find(KapuaId scopeId, KapuaId stepDefinitionId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(stepDefinitionId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
-
-        //
         // Do find
         return txManager.execute(tx -> triggerDefinitionRepository.find(tx, scopeId, stepDefinitionId));
     }
 
     @Override
     public TriggerDefinition findByName(String name) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(name, "name");
-
-        //
         // Do find
         return txManager.execute(tx -> {
             TriggerDefinition triggerDefinition = triggerDefinitionRepository.findByName(tx, name);
             if (triggerDefinition != null) {
-                //
                 // Check Access
                 authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
             }
@@ -148,46 +131,31 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
 
     @Override
     public TriggerDefinitionListResult query(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
-
-        //
         // Do query
         return txManager.execute(tx -> triggerDefinitionRepository.query(tx, query));
     }
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
-
-        //
         // Do query
         return txManager.execute(tx -> triggerDefinitionRepository.count(tx, query));
     }
 
     @Override
     public void delete(KapuaId scopeId, KapuaId stepDefinitionId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(stepDefinitionId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, null));
-
-        //
         // Do delete
         txManager.execute(tx -> {
             if (triggerDefinitionRepository.find(tx, scopeId, stepDefinitionId) == null) {

@@ -374,10 +374,7 @@ public class JobExecutionServiceSteps extends JobServiceTestBase {
         Assert.assertNotNull(jobExecutionFactory.newListResult());
         Assert.assertNotNull(jobExecutionFactory.newQuery(SYS_SCOPE_ID));
     }
-
-    //
     // Private methods
-    //
 
     private JobExecutionCreator prepareDefaultJobExecutionCreator() {
         KapuaId currentJobId = (KapuaId) stepData.get(CURRENT_JOB_ID);

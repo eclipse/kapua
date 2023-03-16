@@ -13,13 +13,11 @@
 package org.eclipse.kapua.service.authentication.shiro;
 
 import com.google.inject.Provides;
-import com.google.inject.name.Names;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
-import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
@@ -46,7 +44,11 @@ import org.eclipse.kapua.service.authentication.credential.mfa.shiro.ScratchCode
 import org.eclipse.kapua.service.authentication.credential.mfa.shiro.ScratchCodeServiceImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFactoryImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImplJpaRepository;
+import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapper;
+import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapperImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
+import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidator;
+import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidatorImpl;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.registration.RegistrationService;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
@@ -63,7 +65,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.UserRepository;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Map;
 import java.util.Optional;
@@ -72,9 +73,6 @@ public class AuthenticationModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(AuthenticationService.class).to(AuthenticationServiceShiroImpl.class);
-        bind(ServiceConfigurationManager.class)
-                .annotatedWith(Names.named("CredentialServiceConfigurationManager"))
-                .to(CredentialServiceConfigurationManager.class);
         bind(CredentialFactory.class).to(CredentialFactoryImpl.class);
         bind(CredentialsFactory.class).to(CredentialsFactoryImpl.class);
         bind(MfaOptionFactory.class).to(MfaOptionFactoryImpl.class);
@@ -82,6 +80,18 @@ public class AuthenticationModule extends AbstractKapuaModule {
         bind(AccessTokenFactory.class).to(AccessTokenFactoryImpl.class);
         bind(RegistrationService.class).to(RegistrationServiceImpl.class);
         bind(MfaAuthenticator.class).toInstance(new MfaAuthenticatorImpl());
+    }
+
+    @Provides
+    @Singleton
+    PasswordValidator passwordValidator(CredentialServiceConfigurationManager credentialServiceConfigurationManager) {
+        return new PasswordValidatorImpl(credentialServiceConfigurationManager);
+    }
+
+    @Provides
+    @Singleton
+    CredentialMapper credentialMapper(CredentialFactory credentialFactory) {
+        return new CredentialMapperImpl(credentialFactory);
     }
 
     @Provides
@@ -164,17 +174,21 @@ public class AuthenticationModule extends AbstractKapuaModule {
     @Provides
     @Singleton
     public CredentialService credentialService(
-            @Named("CredentialServiceConfigurationManager") CredentialServiceConfigurationManager serviceConfigurationManager,
+            CredentialServiceConfigurationManager serviceConfigurationManager,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             CredentialRepository credentialRepository,
-            CredentialFactory credentialFactory) {
+            CredentialFactory credentialFactory,
+            CredentialMapper credentialMapper,
+            PasswordValidator passwordValidator) {
         return new CredentialServiceImpl(serviceConfigurationManager,
                 authorizationService,
                 permissionFactory,
                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication")),
                 credentialRepository,
-                credentialFactory);
+                credentialFactory,
+                credentialMapper,
+                passwordValidator);
     }
 
     @Provides
@@ -185,9 +199,7 @@ public class AuthenticationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    @Named("CredentialServiceConfigurationManager")
     public CredentialServiceConfigurationManager credentialServiceConfigurationManager(
-            AuthenticationEntityManagerFactory authenticationEntityManagerFactory,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester) {

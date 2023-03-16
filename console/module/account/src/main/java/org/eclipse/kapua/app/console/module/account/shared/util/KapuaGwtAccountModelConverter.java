@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.shared.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtOrganization;
+import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.Organization;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class KapuaGwtAccountModelConverter {
 
@@ -35,12 +35,8 @@ public class KapuaGwtAccountModelConverter {
      */
     public static GwtAccount convertAccount(Account account) {
         GwtAccount gwtAccount = new GwtAccount();
-
-        //
         // Convert commons attributes
         KapuaGwtCommonsModelConverter.convertUpdatableEntity(account, gwtAccount);
-
-        //
         // Convert other attributes
         gwtAccount.setName(account.getName());
         gwtAccount.setGwtOrganization(convertOrganization(account.getOrganization()));
@@ -60,7 +56,6 @@ public class KapuaGwtAccountModelConverter {
         gwtAccount.setCity(account.getOrganization().getCity());
         gwtAccount.setStateProvince(account.getOrganization().getStateProvinceCounty());
         gwtAccount.setCountry(account.getOrganization().getCountry());
-        //
         // Return converted entity
         return gwtAccount;
     }
@@ -94,8 +89,6 @@ public class KapuaGwtAccountModelConverter {
         gwtOrganization.setCity(organization.getCity());
         gwtOrganization.setStateProvinceCounty(organization.getStateProvinceCounty());
         gwtOrganization.setCountry(organization.getCountry());
-
-        //
         // Return converted entity
         return gwtOrganization;
     }

@@ -32,12 +32,8 @@ public class KapuaGwtUserModelConverter {
     public static GwtUser convertUser(User user) throws KapuaException {
 
         GwtUser gwtUser = new GwtUser();
-
-        //
         // Convert commons attributes
         KapuaGwtCommonsModelConverter.convertUpdatableEntity(user, gwtUser);
-
-        //
         // Convert other attributes
         gwtUser.setUsername(user.getName());
         gwtUser.setDisplayName(user.getDisplayName());
@@ -48,8 +44,6 @@ public class KapuaGwtUserModelConverter {
         gwtUser.setUserType(user.getUserType().toString());
         gwtUser.setExternalId(user.getExternalId());
         gwtUser.setExternalUsername(user.getExternalUsername());
-
-        //
         // Return converted entity
         return gwtUser;
     }

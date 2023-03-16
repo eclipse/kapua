@@ -68,7 +68,6 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
         contentPanel.setBorders(false);
         contentPanel.setHeaderVisible(false);
         contentPanel.setLayout(new FitLayout());
-        //
         // Container borders
         setBorders(false);
 
@@ -78,8 +77,6 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
 
         descriptionValuesStore = new GroupingStore<GwtGroupedNVPair>(descriptionValuesLoader);
         descriptionValuesStore.groupBy("groupLoc");
-
-        //
         // Columns
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
@@ -107,8 +104,6 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
         valueColumn.setWidth(50);
         valueColumn.setRenderer(valueColumnRenderer);
         columns.add(valueColumn);
-
-        //
         // Grid
         groupingView.setShowGroupedColumn(false);
         groupingView.setForceFit(true);

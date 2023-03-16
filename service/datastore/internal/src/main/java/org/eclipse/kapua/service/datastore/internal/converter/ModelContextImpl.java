@@ -305,7 +305,6 @@ public class ModelContextImpl implements ModelContext {
      * @since 1.0.0
      */
     private Map<String, Object> marshalDatastoreMessage(DatastoreMessage message) throws ParseException {
-        //
         // Message
         Map<String, Object> unmarshalledMessage = new HashMap<>();
         String scopeId = message.getScopeId().toStringId();
@@ -319,15 +318,11 @@ public class ModelContextImpl implements ModelContext {
         unmarshalledMessage.put(MessageSchema.MESSAGE_SCOPE_ID, scopeId);
         unmarshalledMessage.put(MessageSchema.MESSAGE_DEVICE_ID, deviceIdStr);
         unmarshalledMessage.put(MessageSchema.MESSAGE_CLIENT_ID, message.getClientId());
-
-        //
         // Channel
         unmarshalledMessage.put(MessageSchema.MESSAGE_CHANNEL, message.getChannel().toString());
         unmarshalledMessage.put(MessageSchema.MESSAGE_CHANNEL_PARTS, message.getChannel().getSemanticParts());
         unmarshalledMessage.put(MessageSchema.MESSAGE_CAPTURED_ON, KapuaDateUtils.formatDate(message.getCapturedOn()));
         unmarshalledMessage.put(MessageSchema.MESSAGE_SENT_ON, KapuaDateUtils.formatDate(message.getSentOn()));
-
-        //
         // Position
         KapuaPosition kapuaPosition = message.getPosition();
         if (kapuaPosition != null) {
@@ -348,8 +343,6 @@ public class ModelContextImpl implements ModelContext {
             position.put(MessageSchema.MESSAGE_POS_STATUS, kapuaPosition.getStatus());
             unmarshalledMessage.put(MessageSchema.MESSAGE_POSITION, position);
         }
-
-        //
         // Payload
         KapuaPayload payload = message.getPayload();
         if (payload == null) {

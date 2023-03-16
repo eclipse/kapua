@@ -66,10 +66,7 @@ public interface DevicePackageFactory extends KapuaObjectFactory {
      * @since 1.0.0
      */
     DevicePackageBundleInfos newDevicePackageBundleInfos();
-
-    //
     // Download operation
-    //
 
     /**
      * Creates a new {@link DevicePackageDownloadRequest}
@@ -102,10 +99,7 @@ public interface DevicePackageFactory extends KapuaObjectFactory {
      * @since 1.0.0
      */
     DevicePackageDownloadOperation newPackageDownloadOperation();
-
-    //
     // Install operation
-    //
 
     /**
      * Creates a new {@link DevicePackageInstallRequest}
@@ -130,10 +124,7 @@ public interface DevicePackageFactory extends KapuaObjectFactory {
      * @since 1.5.0
      */
     DevicePackageInstallOperation newPackageInstallOperation();
-
-    //
     // Uninstall operation
-    //
 
     /**
      * Creates a new {@link DevicePackageUninstallRequest}

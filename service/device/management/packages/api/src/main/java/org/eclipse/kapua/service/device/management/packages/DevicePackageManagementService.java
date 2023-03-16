@@ -48,10 +48,7 @@ public interface DevicePackageManagementService extends DeviceManagementService 
      * @since 1.0.0
      */
     DevicePackages getInstalled(KapuaId scopeId, KapuaId deviceId, Long timeout) throws KapuaException;
-
-    //
     // Download
-    //
 
     /**
      * Downloads a {@link org.eclipse.kapua.service.device.management.packages.model.DevicePackage}
@@ -103,10 +100,7 @@ public interface DevicePackageManagementService extends DeviceManagementService 
      * @since 1.0.0
      */
     DevicePackageDownloadOperation downloadStatus(KapuaId scopeId, KapuaId deviceId, Long timeout) throws KapuaException;
-
-    //
     // Install
-    //
 
     /**
      * Installs a {@link org.eclipse.kapua.service.device.management.packages.model.DevicePackage}
@@ -147,10 +141,7 @@ public interface DevicePackageManagementService extends DeviceManagementService 
      * @since 1.0.0
      */
     DevicePackageInstallOperation installStatus(KapuaId scopeId, KapuaId deviceId, Long timeout) throws KapuaException;
-
-    //
     // Uninstall
-    //
 
     /**
      * Uninstalls a {@link org.eclipse.kapua.service.device.management.packages.model.DevicePackage}

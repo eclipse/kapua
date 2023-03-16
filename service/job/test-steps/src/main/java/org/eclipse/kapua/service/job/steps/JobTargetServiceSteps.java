@@ -323,9 +323,7 @@ public class JobTargetServiceSteps extends JobServiceTestBase {
         Assert.assertNotNull(jobTargetFactory.newQuery(SYS_SCOPE_ID));
     }
 
-    //
     // Private methods
-    //
     private JobTargetCreator prepareJobTargetCreator() {
         KapuaId currentJobId = (KapuaId) stepData.get(CURRENT_JOB_ID);
         Device device = (Device) stepData.get(DEVICE);

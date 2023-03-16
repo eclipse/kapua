@@ -42,10 +42,7 @@ public class MetricsXmlAdapter extends XmlAdapter<XmlAdaptedMetrics, Map<String,
 
         return new XmlAdaptedMetrics(adaptedMapItems);
     }
-
-    //
     // Unmarshal
-    //
 
     @Override
     public Map<String, Object> unmarshal(XmlAdaptedMetrics sourceAdapter) throws Exception {

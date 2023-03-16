@@ -130,8 +130,6 @@ public abstract class ActionDialog extends KapuaDialog {
         if (disabledFormPanelEvents) {
             formPanel.disableEvents(true);
         }
-
-        //
         // Buttons setup
         createButtons();
     }

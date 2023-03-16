@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.ui.dialog;
 
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -27,6 +24,8 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 
 public abstract class KapuaDialog extends Dialog {
 
@@ -48,15 +47,11 @@ public abstract class KapuaDialog extends Dialog {
     @Override
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
-
-        //
         // Dialog layout setup
         setLayout(new RowLayout(Orientation.VERTICAL));
         setBodyBorder(false);
         setButtons("");
         setScrollMode(Scroll.NONE);
-
-        //
         // Info setup
         infoPanel = new ContentPanel();
         infoPanel.setBorders(false);
@@ -104,8 +99,6 @@ public abstract class KapuaDialog extends Dialog {
 
             infoPanel.add(dialogTextInfo, tableData);
         }
-
-        //
         // Buttons setup
         createButtons();
     }

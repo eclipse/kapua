@@ -18,7 +18,8 @@ import org.eclipse.kapua.service.tag.Tag;
 
 public class KapuaGwtTagModelConverter {
 
-    private KapuaGwtTagModelConverter() { }
+    private KapuaGwtTagModelConverter() {
+    }
 
     /**
      * Converts a {@link Tag} into a {@link GwtTag}
@@ -30,11 +31,8 @@ public class KapuaGwtTagModelConverter {
     public static GwtTag convertTag(Tag tag) {
 
         GwtTag gwtTag = new GwtTag();
-        //
         // Covert commons attributes
         KapuaGwtCommonsModelConverter.convertEntity(tag, gwtTag);
-
-        //
         // Convert other attributes
         gwtTag.setTagName(tag.getName());
         gwtTag.setTagDescription(tag.getDescription());

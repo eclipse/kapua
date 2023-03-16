@@ -26,8 +26,6 @@ public abstract class SimpleDialog extends ActionDialog {
     @Override
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
-
-        //
         // Body setup
         bodyPanel = new ContentPanel();
         bodyPanel.setBorders(false);

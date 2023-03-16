@@ -75,7 +75,6 @@ public class DeviceManagementInventorySteps extends TestBase {
         deviceInventoryManagementService = locator.getService(DeviceInventoryManagementService.class);
     }
 
-    //
     // /inventory
     @When("Inventory Items are requested")
     public void inventoryItemsRequested() throws Exception {
@@ -125,7 +124,6 @@ public class DeviceManagementInventorySteps extends TestBase {
         Assert.assertEquals(version, inventoryItem.getVersion());
     }
 
-    //
     // /bundles
     @When("Inventory Bundles are requested")
     public void inventoryBundlesRequested() throws Exception {
@@ -221,7 +219,6 @@ public class DeviceManagementInventorySteps extends TestBase {
         }
     }
 
-    //
     // /containers
     @When("Inventory Containers are requested")
     public void inventoryContainersRequested() throws Exception {
@@ -301,7 +298,6 @@ public class DeviceManagementInventorySteps extends TestBase {
         }
     }
 
-    //
     // /systemPackages
     @When("Inventory System Packages are requested")
     public void inventorySystemPackagesRequested() throws Exception {
@@ -351,7 +347,6 @@ public class DeviceManagementInventorySteps extends TestBase {
         Assert.assertEquals(inventorySystemPackageType, inventorySystemPackage.getPackageType());
     }
 
-    //
     // /deploymentPackages
     @When("Inventory Deployment Packages are requested")
     public void inventoryDeploymentPackagesRequested() throws Exception {

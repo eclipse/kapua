@@ -332,11 +332,11 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
 
     private HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder, SSLContext sslContext, CredentialsProvider credentialsProvider) {
         try {
-            if(sslContext != null) {
+            if (sslContext != null) {
                 httpClientBuilder.setSSLContext(sslContext);
             }
 
-            if(credentialsProvider != null) {
+            if (credentialsProvider != null) {
                 httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
             }
 
@@ -361,8 +361,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
             });
 
             httpClientBuilder.setConnectionManager(new PoolingNHttpClientConnectionManager(ioReactor));
-        }
-        catch (IOReactorException e) {
+        } catch (IOReactorException e) {
             throw new RuntimeException(e);
         }
 
@@ -395,10 +394,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
 
         return restElasticsearchClient;
     }
-
-    //
     // Private methods
-    //
 
     /**
      * Gets the {@link ElasticsearchClientConfiguration}.

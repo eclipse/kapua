@@ -151,8 +151,6 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
         Map<String, Object> properties = new HashMap<>();
 
         kuraProperties.forEach((key, value) -> {
-
-            //
             // Special management of Password type field
             if (value instanceof KuraPassword) {
                 value = new Password(((KuraPassword) value).getPassword());
@@ -167,8 +165,6 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
 
                 value = passwords;
             }
-
-            //
             // Set property
             properties.put(key, value);
         });

@@ -27,12 +27,12 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccess
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessPermissionService;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAuthorizationModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
-import org.eclipse.kapua.model.query.FieldSortCriteria;
-import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.FieldSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
@@ -69,12 +69,8 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
 
     @Override
     public GwtAccessPermission create(GwtXSRFToken xsrfToken, GwtAccessPermissionCreator gwtAccessPermissionCreator) throws GwtKapuaException {
-
-        //
         // Checking XSRF token
         checkXSRFToken(xsrfToken);
-
-        //
         // Do create
         GwtAccessPermission gwtAccessPermission = null;
         try {
@@ -90,20 +86,14 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
-
-        //
         // Return result
         return gwtAccessPermission;
     }
 
     @Override
     public void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String accessPermissionShortId) throws GwtKapuaException {
-
-        //
         // Checking XSRF token
         checkXSRFToken(gwtXsrfToken);
-
-        //
         // Do delete
         try {
             // Convert from GWT Entity
@@ -119,7 +109,6 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
 
     @Override
     public PagingLoadResult<GwtAccessPermission> findByUserId(PagingLoadConfig loadConfig, String scopeShortId, String userShortId) throws GwtKapuaException {
-        //
         // Do get
         int totalLength = 0;
         List<GwtAccessPermission> gwtAccessPermissions = new ArrayList<GwtAccessPermission>();

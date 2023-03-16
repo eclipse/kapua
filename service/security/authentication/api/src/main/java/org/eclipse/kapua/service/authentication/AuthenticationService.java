@@ -23,8 +23,6 @@ import org.eclipse.kapua.service.authentication.token.LoginInfo;
  * @since 1.0.0
  */
 public interface AuthenticationService extends KapuaService {
-
-    //
     // Session
 
     /**
@@ -101,8 +99,6 @@ public interface AuthenticationService extends KapuaService {
      * @since 1.0.0
      */
     void logout() throws KapuaException;
-
-    //
     // Access token
 
     /**
@@ -119,7 +115,7 @@ public interface AuthenticationService extends KapuaService {
     /**
      * Refreshes the current {@link AccessToken} with a new one.
      *
-     * @param tokenId The current {@link AccessToken#getTokenId()}
+     * @param tokenId      The current {@link AccessToken#getTokenId()}
      * @param refreshToken The current {@link AccessToken#getRefreshToken()}
      * @return A new {@link AccessToken}.
      * @throws KapuaException

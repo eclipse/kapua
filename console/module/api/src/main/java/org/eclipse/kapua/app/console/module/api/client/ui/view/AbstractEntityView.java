@@ -84,8 +84,6 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
         resultContainer.setBorders(false);
 
         mf.add(resultContainer, centerMainPanel);
-
-        //
         // North sub panel: Entity grid
         entityGrid = getEntityGrid(this, currentSession);
 

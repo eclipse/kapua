@@ -147,11 +147,8 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
 
     @Override
     public GwtCredential create(GwtXSRFToken xsrfToken, GwtCredentialCreator gwtCredentialCreator) throws GwtKapuaException {
-        //
         // Checking XSRF token
         checkXSRFToken(xsrfToken);
-
-        //
         // Do create
         GwtCredential gwtCredential = null;
         try {
@@ -169,21 +166,16 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
         } catch (Throwable t) {
             throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
-
-        //
         // Return result
         return gwtCredential;
     }
 
     @Override
     public GwtCredential update(GwtXSRFToken gwtXsrfToken, GwtCredential gwtCredential) throws GwtKapuaException {
-        //
         // Checking XSRF token
         checkXSRFToken(gwtXsrfToken);
 
         fixPasswordValidationBypass(gwtCredential);
-
-        //
         // Do update
         GwtCredential gwtCredentialUpdated = null;
         try {
@@ -207,8 +199,6 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
         } catch (Throwable t) {
             throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
-
-        //
         // Return result
         return gwtCredentialUpdated;
     }
@@ -218,30 +208,31 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
      * Validate password, this check should be moved to
      * CredentialServiceImpl. There, this check already exist,
      * but it's useless since it's done on the already encrypted password
+     *
      * @param gwtCredential
      * @throws GwtKapuaException
      */
     private void fixPasswordValidationBypass(GwtCredential gwtCredential)
-    throws GwtKapuaException {
+            throws GwtKapuaException {
         Credential credential =
-            GwtKapuaAuthenticationModelConverter.convertCredential(
-                gwtCredential);
+                GwtKapuaAuthenticationModelConverter.convertCredential(
+                        gwtCredential);
         try {
             // Validate Password length
             int minPasswordLength = CREDENTIAL_SERVICE.getMinimumPasswordLength(
-                credential.getScopeId());
+                    credential.getScopeId());
             if (gwtCredential.getCredentialKey().length() < minPasswordLength ||
-                gwtCredential.getCredentialKey().length() >
-                    SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
+                    gwtCredential.getCredentialKey().length() >
+                            SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
                 throw new PasswordLengthException(
-                    minPasswordLength, SYSTEM_MAXIMUM_PASSWORD_LENGTH);
+                        minPasswordLength, SYSTEM_MAXIMUM_PASSWORD_LENGTH);
             }
 
             // Validate Password regex
             ArgumentValidator.match(
-                gwtCredential.getCredentialKey(),
-                CommonsValidationRegex.PASSWORD_REGEXP,
-                "credential.credentialKey"
+                    gwtCredential.getCredentialKey(),
+                    CommonsValidationRegex.PASSWORD_REGEXP,
+                    "credential.credentialKey"
             );
 
         } catch (Throwable t) {

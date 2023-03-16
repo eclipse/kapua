@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.ui.dialog;
 
-import java.util.List;
-
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -38,14 +36,16 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
-import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.module.api.client.util.Constants;
+
+import java.util.List;
 
 public class FileUploadDialog extends Dialog {
 
@@ -134,7 +134,7 @@ public class FileUploadDialog extends Dialog {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                if (fileUploadField.isDirty()){
+                if (fileUploadField.isDirty()) {
                     submitButton.enable();
                 } else {
                     submitButton.disable();
@@ -150,10 +150,7 @@ public class FileUploadDialog extends Dialog {
                 formPanel.add(hf);
             }
         }
-
-        //
         // xsrfToken Hidden field
-        //
         gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
 
             @Override
@@ -173,7 +170,6 @@ public class FileUploadDialog extends Dialog {
         xsrfTokenField.setValue("");
 
         formPanel.add(xsrfTokenField);
-        //
 
         add(formPanel);
     }

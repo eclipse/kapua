@@ -92,8 +92,6 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
 
         KapuaBirthPayload birthPayload = birthMessage.getPayload();
         KapuaBirthChannel birthChannel = birthMessage.getChannel();
-
-        //
         // Device update
         Device device;
         if (deviceId == null) {
@@ -127,8 +125,6 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
         } else {
             device = updateDeviceInfoFromMessage(scopeId, deviceId, birthPayload, connectionId);
         }
-
-        //
         // Event create
         createLifecycleEvent(device, "BIRTH", birthMessage);
     }
@@ -137,8 +133,6 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
     public void applications(KapuaId connectionId, KapuaAppsMessage message) throws KapuaException {
 
         Device device = updateDeviceInfoFromMessage(message.getScopeId(), message.getDeviceId(), message.getPayload(), connectionId);
-
-        //
         // Event create
         createLifecycleEvent(device, "APPLICATION", message);
     }
@@ -147,8 +141,6 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
     public void missing(KapuaId connectionId, KapuaMissingMessage message) throws KapuaException {
         KapuaId scopeId = message.getScopeId();
         KapuaId deviceId = message.getDeviceId();
-
-        //
         // Event create
         createLifecycleEvent(scopeId, deviceId, "MISSING", message);
     }
@@ -157,8 +149,6 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
     public void death(KapuaId connectionId, KapuaDisconnectMessage message) throws KapuaException {
         KapuaId scopeId = message.getScopeId();
         KapuaId deviceId = message.getDeviceId();
-
-        //
         // Event create
         createLifecycleEvent(scopeId, deviceId, "DEATH", message);
     }

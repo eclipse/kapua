@@ -12,12 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.servlet;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
@@ -29,9 +23,14 @@ import org.eclipse.kapua.service.job.targets.JobTargetAttributes;
 import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class JobTargetExporterServlet extends HttpServlet {
 
@@ -73,8 +72,6 @@ public class JobTargetExporterServlet extends HttpServlet {
             if (jobId == null || jobId.isEmpty()) {
                 throw new IllegalArgumentException("jobId");
             }
-
-            //
             // get the job and the targets and append them to the exporter
             KapuaLocator locator = KapuaLocator.getInstance();
             KapuaIdFactory kapuaIdFactory = locator.getFactory(KapuaIdFactory.class);

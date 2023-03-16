@@ -23,11 +23,11 @@ import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCrede
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialStatus;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialType;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtMfaCredentialOptionsCreator;
-import org.eclipse.kapua.model.query.FieldSortCriteria;
-import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.FieldSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authentication.credential.Credential;
@@ -89,8 +89,6 @@ public class GwtKapuaAuthenticationModelConverter {
         query.setOffset(loadConfig.getOffset());
         query.setLimit(loadConfig.getLimit());
         query.setAskTotalCount(gwtCredentialQuery.getAskTotalCount());
-
-        //
         // Return converted
         return query;
     }
@@ -112,7 +110,6 @@ public class GwtKapuaAuthenticationModelConverter {
                         gwtCredentialCreator.getCredentialPlainKey(),
                         convertCredentialStatus(gwtCredentialCreator.getCredentialStatus()),
                         gwtCredentialCreator.getExpirationDate());
-        //
         // Return converted
         return credentialCreator;
     }
@@ -141,7 +138,6 @@ public class GwtKapuaAuthenticationModelConverter {
         credential.setFirstLoginFailure(gwtCredential.getFirstLoginFailure());
         credential.setLoginFailuresReset(gwtCredential.getLoginFailuresReset());
         credential.setLockoutReset(gwtCredential.getLockoutReset());
-        //
         // Return converted
         return credential;
     }

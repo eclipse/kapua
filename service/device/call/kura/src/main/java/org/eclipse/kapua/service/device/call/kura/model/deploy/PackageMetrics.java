@@ -37,8 +37,6 @@ public enum PackageMetrics implements DeviceAppMetrics {
      * @since 1.0.0
      */
     APP_VERSION("V2"),
-
-    //
     // Commons metrics
     /**
      * Operation identifier metric name.
@@ -60,8 +58,6 @@ public enum PackageMetrics implements DeviceAppMetrics {
      * @since 1.0.0
      */
     APP_METRIC_PACKAGE_REBOOT_DELAY("dp.reboot.delay"),
-
-    //
     // Download Exec
 
     /**
@@ -168,8 +164,6 @@ public enum PackageMetrics implements DeviceAppMetrics {
      * @since 1.1.0
      */
     APP_METRIC_PACKAGE_DOWNLOAD_NOTIFY_BLOCK_SIZE("dp.download.notify.block.size"),
-
-    //
     // Download Get
 
     /**
@@ -192,8 +186,6 @@ public enum PackageMetrics implements DeviceAppMetrics {
      * @since 1.0.0
      */
     APP_METRIC_PACKAGE_DOWNLOAD_PROGRESS("dp.download.progress"),
-
-    //
     // Install Exec
 
     /**
@@ -216,8 +208,6 @@ public enum PackageMetrics implements DeviceAppMetrics {
      * @since 1.0.0
      */
     APP_METRIC_PACKAGE_INSTALL_SYS_UPDATE("dp.install.system.update"),
-
-    //
     // Request exec uninstall
 
     /**

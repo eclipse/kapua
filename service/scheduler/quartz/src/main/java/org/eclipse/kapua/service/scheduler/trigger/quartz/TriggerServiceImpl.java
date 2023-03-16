@@ -153,8 +153,6 @@ public class TriggerServiceImpl implements TriggerService {
                     throw new TriggerInvalidDatesException(startTime, endTime, new Date());
                 }
             }
-
-            //
             // Do create
             try {
                 Trigger toBeCreated = triggerFactory.newEntity(triggerCreator.getScopeId());
@@ -231,8 +229,6 @@ public class TriggerServiceImpl implements TriggerService {
             if (triggerDuplicateNameChecker.countOtherEntitiesWithName(tx, adapted.getId(), adapted.getName()) > 0) {
                 throw new KapuaDuplicateNameException(adapted.getName());
             }
-
-            //
             // Check dates
             if (adapted.getEndsOn() != null) {
                 Date startTime = new Date(adapted.getStartsOn().getTime());
@@ -244,8 +240,6 @@ public class TriggerServiceImpl implements TriggerService {
                     throw new TriggerInvalidDatesException(startTime, endTime, new Date());
                 }
             }
-
-            //
             // Do update
             try {
                 Trigger updatedTrigger = triggerRepository.update(tx, adapted);
@@ -284,12 +278,9 @@ public class TriggerServiceImpl implements TriggerService {
 
     @Override
     public void delete(KapuaId scopeId, KapuaId triggerId) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(triggerId, "scopeId");
         ArgumentValidator.notNull(scopeId, "triggerId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.delete, scopeId));
 
@@ -320,15 +311,11 @@ public class TriggerServiceImpl implements TriggerService {
 
     @Override
     public TriggerListResult query(KapuaQuery query) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, query.getScopeId()));
         return txManager.execute(tx -> {
-            //
             // Do query
             TriggerListResult triggers = triggerRepository.query(tx, query);
             final TriggerListResult res = triggerFactory.newListResult();
@@ -342,22 +329,14 @@ public class TriggerServiceImpl implements TriggerService {
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do count
         return txManager.execute(tx -> triggerRepository.count(tx, query));
     }
-
-    //
     // Private methods
-    //
 
     /**
      * Gets the {@link TriggerDefinition} named 'Interval Job'

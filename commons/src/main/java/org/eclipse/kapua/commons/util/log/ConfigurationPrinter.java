@@ -325,7 +325,6 @@ public class ConfigurationPrinter {
      * @since 1.3.0
      */
     public void printLog() {
-        //
         // Check Provided data
         if (getTitle() == null) {
             LOG.warn("Title was not provided. Using default 'Info'");
@@ -344,19 +343,13 @@ public class ConfigurationPrinter {
             LOG.warn("To fix this please use .withLogLevel(org.eclipse.kapua.commons.util.log.ConfigurationPrinter.LogLevel) providing the desired level!");
             withLogLevel(LogLevel.INFO);
         }
-
-        //
         // Title
         String alignedTitleFormat = buildAlignedTitleFormat();
         printLogLeveled(alignedTitleFormat, getTitle());
-
-        //
         // Parameters
         for (Configuration configuration : getConfigurations()) {
             printLogLeveled("|  {}", configuration);
         }
-
-        //
         // End Line - Same length of Title
         String footerLog = new String(new char[alignedTitleFormat.length()]).replace('\0', '=').concat("========================================");
         printLogLeveled(footerLog);
@@ -416,10 +409,7 @@ public class ConfigurationPrinter {
                 break;
         }
     }
-
-    //
     // Creator
-    //
 
     /**
      * Creates a {@code new} {@link ConfigurationPrinter}.
@@ -430,11 +420,7 @@ public class ConfigurationPrinter {
     public static ConfigurationPrinter create() {
         return new ConfigurationPrinter();
     }
-
-
-    //
     // Configuration Classes
-    //
 
     /**
      * Base class of {@link Configuration}s which handles the {@link #indentation}.
@@ -514,10 +500,7 @@ public class ConfigurationPrinter {
             return super.toString().concat(": ").concat(value != null ? value.toString() : "N/A");
         }
     }
-
-    //
     // Log Level
-    //
 
     /**
      * Identifies the log level to use on {@link #printLog()}.
@@ -562,10 +545,7 @@ public class ConfigurationPrinter {
          */
         WARN
     }
-
-    //
     // Title
-    //
 
     /**
      * Sets the alignement for {@link #getTitle()}

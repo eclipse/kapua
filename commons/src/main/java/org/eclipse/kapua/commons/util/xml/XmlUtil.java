@@ -116,10 +116,7 @@ public class XmlUtil {
         }
         return context;
     }
-
-    //
     // Marshall
-    //
 
     /**
      * Marshals the given {@link Object} to an XML {@link String}.
@@ -239,10 +236,7 @@ public class XmlUtil {
             }
         }
     }
-
-    //
     // Unmarshall
-    //
 
     /**
      * Unmarshals the given XML {@link String} as the given {@link Class type}.

@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.server;
 
-import java.util.concurrent.Callable;
-
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -31,6 +29,8 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
+
+import java.util.concurrent.Callable;
 
 public class GwtMfaCredentialOptionsServiceImpl extends KapuaRemoteServiceServlet implements GwtMfaCredentialOptionsService {
 
@@ -124,11 +124,8 @@ public class GwtMfaCredentialOptionsServiceImpl extends KapuaRemoteServiceServle
 
     @Override
     public GwtMfaCredentialOptions create(GwtXSRFToken xsrfToken, GwtMfaCredentialOptionsCreator gwtMfaCredentialOptionsCreator, boolean selfManagement) throws GwtKapuaException {
-        //
         // Checking XSRF token
         checkXSRFToken(xsrfToken);
-
-        //
         // Do create
         GwtMfaCredentialOptions gwtMfaCredentialOptions = null;
         try {
@@ -154,8 +151,6 @@ public class GwtMfaCredentialOptionsServiceImpl extends KapuaRemoteServiceServle
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
-
-        //
         // Return result
         return gwtMfaCredentialOptions;
     }

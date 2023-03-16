@@ -29,13 +29,11 @@ public class Metadata {
     private final String channelRegistryIndexName;
     private final String clientRegistryIndexName;
     private final String metricRegistryIndexName;
-    //
 
     // Custom mappings can only increase within the same account
     // No removal of existing cached mappings or changes in the
     // existing mappings.
     private final Map<String, Metric> messageMappingsCache;
-    //
 
     /**
      * Get the mappings cache

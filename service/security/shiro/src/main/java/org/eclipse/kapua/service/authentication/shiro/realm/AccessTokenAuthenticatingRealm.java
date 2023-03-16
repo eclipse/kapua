@@ -73,13 +73,11 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken)
             throws AuthenticationException {
-        //
         // Extract credentials
         AccessTokenCredentialsImpl token = (AccessTokenCredentialsImpl) authenticationToken;
         String tokenTokenId = token.getTokenId();
 
         Date now = new Date();
-        //
         // Find accessToken
         final AccessToken accessToken;
         try {
@@ -108,8 +106,6 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
                 (accessToken.getInvalidatedOn() != null && accessToken.getInvalidatedOn().before(now))) {
             throw new ExpiredCredentialsException();
         }
-
-        //
         // Get the associated user by name
         final User user;
         try {
@@ -119,16 +115,10 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
         } catch (Exception e) {
             throw new ShiroException("Unexpected error while looking for the user!", e);
         }
-
-        //
         // Check user
         checkUser(user);
-
-        //
         // Check account
         Account account = checkAccount(user.getScopeId());
-
-        //
         // BuildAuthenticationInfo
         return new SessionAuthenticationInfo(getName(),
                 account,
@@ -140,18 +130,12 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
     protected void assertCredentialsMatch(AuthenticationToken authcToken, AuthenticationInfo info)
             throws AuthenticationException {
         SessionAuthenticationInfo kapuaInfo = (SessionAuthenticationInfo) info;
-
-        //
         // Credential match
         super.assertCredentialsMatch(authcToken, info);
-
-        //
         // Set kapua session
         AccessToken accessToken = kapuaInfo.getAccessToken();
         KapuaSession kapuaSession = new KapuaSession(accessToken, accessToken.getScopeId(), accessToken.getUserId());
         KapuaSecurityUtils.setSession(kapuaSession);
-
-        //
         // Set shiro session
         Subject currentSubject = SecurityUtils.getSubject();
         currentSubject.getSession().setAttribute(KapuaSession.KAPUA_SESSION_KEY, kapuaSession);

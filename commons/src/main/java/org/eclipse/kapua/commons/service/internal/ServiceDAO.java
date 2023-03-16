@@ -152,11 +152,8 @@ public class ServiceDAO {
      */
     @Deprecated
     public static <E extends KapuaUpdatableEntity> E update(@NonNull EntityManager em, @NonNull Class<E> clazz, @NonNull E entity) throws KapuaEntityNotFoundException {
-        //
         // Checking existence
         E entityToUpdate = em.find(clazz, entity.getId());
-
-        //
         // Updating if not null
         if (entityToUpdate != null) {
             AbstractKapuaUpdatableEntity updatableEntity = (AbstractKapuaUpdatableEntity) entity;
@@ -185,14 +182,11 @@ public class ServiceDAO {
      */
     @Deprecated
     public static <E extends KapuaEntity> E find(@NonNull EntityManager em, @NonNull Class<E> clazz, @Null KapuaId scopeId, @NonNull KapuaId entityId) {
-        //
         // Checking existence
         E entityToFind = em.find(clazz, entityId);
 
         // If 'null' ScopeId has been requested, it means that we need to look for ANY ScopeId.
         KapuaId scopeIdToMatch = scopeId != null ? scopeId : KapuaId.ANY;
-
-        //
         // Return if not null and ScopeIds matches
         if (entityToFind != null) {
             if (KapuaId.ANY.equals(scopeIdToMatch)) { // If requested ScopeId is ANY, return whatever Entity has been found
@@ -229,13 +223,9 @@ public class ServiceDAO {
             throws KapuaException {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<E> criteriaSelectQuery = cb.createQuery(implementingClass);
-
-        //
         // FROM
         Root<E> entityRoot = criteriaSelectQuery.from(implementingClass);
         EntityType<E> entityType = entityRoot.getModel();
-
-        //
         // SELECT
         criteriaSelectQuery.select(entityRoot).distinct(true);
 
@@ -247,8 +237,6 @@ public class ServiceDAO {
                 entityRoot.fetch(fetchAttribute);
             }
         }
-
-        //
         // WHERE
         QueryPredicate kapuaPredicates = kapuaQuery.getPredicate();
         // Add ScopeId to query if has been defined one specific
@@ -278,8 +266,6 @@ public class ServiceDAO {
         if (expr != null) {
             criteriaSelectQuery.where(expr);
         }
-
-        //
         // ORDER BY
         // Default to the KapuaEntity id if no ordering is specified.
         Order order;
@@ -295,8 +281,6 @@ public class ServiceDAO {
             order = cb.asc(entityRoot.get(entityType.getSingularAttribute(KapuaEntityAttributes.ENTITY_ID)));
         }
         criteriaSelectQuery.orderBy(order);
-
-        //
         // QUERY!
         TypedQuery<E> query = em.createQuery(criteriaSelectQuery);
 
@@ -352,16 +336,10 @@ public class ServiceDAO {
             throws KapuaException {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> criteriaSelectQuery = cb.createQuery(Long.class);
-
-        //
         // FROM
         Root<E> entityRoot = criteriaSelectQuery.from(implementingClass);
-
-        //
         // SELECT
         criteriaSelectQuery.select(cb.countDistinct(entityRoot));
-
-        //
         // WHERE
         QueryPredicate kapuaPredicates = kapuaQuery.getPredicate();
         // Add ScopeId to query if has been defined one specific
@@ -390,8 +368,6 @@ public class ServiceDAO {
         if (expr != null) {
             criteriaSelectQuery.where(expr);
         }
-
-        //
         // COUNT!
         TypedQuery<Long> query = em.createQuery(criteriaSelectQuery);
 
@@ -400,10 +376,7 @@ public class ServiceDAO {
 
         return query.getSingleResult();
     }
-
-    //
     // Private Methods
-    //
 
     /**
      * Handles {@link QueryPredicate} contained of a {@link KapuaQuery}.

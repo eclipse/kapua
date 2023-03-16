@@ -148,9 +148,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
     }
 
     // -------------------------------------------------
-    //
     // Attributes APIs
-    //
     // -------------------------------------------------
 
     @Override
@@ -172,9 +170,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
     }
 
     // -------------------------------------------------
-    //
     // Properties APIs
-    //
     // -------------------------------------------------
 
     @Override

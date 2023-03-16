@@ -56,7 +56,6 @@ public class CorsToolbarGrid extends EntityCRUDToolbar<GwtEndpoint> {
     @Override
     protected void updateButtonEnablement() {
         super.updateButtonEnablement();
-        //
         // Force disabled if entity is inherited from parent scopes
         addEntityButton.setEnabled(currentSession.hasPermission(EndpointSessionPermission.write()));
         editEntityButton.setEnabled(selectedEntity != null && currentSession.hasPermission(EndpointSessionPermission.write()));

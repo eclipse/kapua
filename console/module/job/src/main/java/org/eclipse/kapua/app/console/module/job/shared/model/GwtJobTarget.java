@@ -73,9 +73,7 @@ public class GwtJobTarget extends GwtUpdatableEntityModel {
         set("statusMessage", statusMessage);
     }
 
-    //
     // Additional fields
-    //
     public String getClientId() {
         return get("clientId");
     }

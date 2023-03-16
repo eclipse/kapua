@@ -76,10 +76,7 @@ public interface DeviceManagementRegistryManagerService extends KapuaService {
     default void processCompletedNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, String resource, String message) throws KapuaException {
 
         DeviceManagementOperation deviceManagementOperation = getDeviceManagementOperation(scopeId, operationId);
-
-        //
         // UGLY 'DEPLOY-V2'-related part
-        //
         boolean isLastNotification = true;
         for (DeviceManagementOperationProperty ip : deviceManagementOperation.getInputProperties()) {
             if (ip.getName().equals("kapua.package.download.install")) {

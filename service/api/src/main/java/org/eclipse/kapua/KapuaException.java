@@ -109,10 +109,7 @@ public class KapuaException extends Exception {
     public static KapuaException internalError(@NotNull String message) {
         return new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, null, message);
     }
-
-    //
     // Getters
-    //
 
     /**
      * Gets the {@link java.util.ResourceBundle} name from which to source the error messages for {@link KapuaException}s.
@@ -143,10 +140,7 @@ public class KapuaException extends Exception {
     private Object[] getArgs() {
         return args;
     }
-
-    //
     // Exception messages.
-    //
 
     /**
      * Gets the defined message by the {@link #getCode()}.

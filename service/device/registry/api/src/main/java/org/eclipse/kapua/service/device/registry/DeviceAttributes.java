@@ -267,8 +267,6 @@ public class DeviceAttributes extends KapuaUpdatableEntityAttributes {
      * @since 1.0.0
      */
     public static final String CONNECTION_IP = "connectionIp";
-
-    //
     // Extended properties
     /**
      * {@link DeviceExtendedProperty}es

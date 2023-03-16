@@ -145,15 +145,10 @@ public class QuartzTriggerDriver {
             throw new CannotUnscheduleJobException(se, triggerKey);
         }
     }
-
-    //
     // Private methods
-    //
 
     private static void createQuartzTriggerWithSchedule(Trigger trigger, ScheduleBuilder<?> scheduleBuilder) throws QuartzTriggerDriverException {
         JobDetail kapuaJobLauncherJobDetail = getJobDetail();
-
-        //
         // Quartz Trigger data map definition
         TriggerKey triggerKey = TriggerKey.triggerKey(trigger.getId().toCompactId(), trigger.getScopeId().toCompactId());
 
@@ -169,8 +164,6 @@ public class QuartzTriggerDriver {
         } catch (ClassNotFoundException cnfe) {
             throw new RuntimeException(cnfe);
         }
-
-        //
         // Quartz Trigger definition
         TriggerBuilder<org.quartz.Trigger> triggerBuilder = TriggerBuilder.newTrigger()
                 .forJob(kapuaJobLauncherJobDetail)
@@ -182,14 +175,10 @@ public class QuartzTriggerDriver {
         triggerBuilder.withSchedule(scheduleBuilder);
 
         org.quartz.Trigger quartzTrigger = triggerBuilder.build();
-
-        //
         // Check that fires
         if (quartzTrigger.getFireTimeAfter(new Date()) == null) {
             throw new TriggerNeverFiresException(quartzTrigger);
         }
-
-        //
         // Schedule trigger
         try {
             getScheduler().scheduleJob(quartzTrigger);

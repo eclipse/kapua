@@ -86,10 +86,7 @@ public class JobStepPropertyMigrator implements JobStepProperty {
     public static JobStepPropertyMigrator parse(JobStepProperty jobStepProperty) {
         return jobStepProperty != null ? (jobStepProperty instanceof JobStepPropertyMigrator ? (JobStepPropertyMigrator) jobStepProperty : new JobStepPropertyMigrator(jobStepProperty)) : null;
     }
-
-    //
     // Attributes below do not require migration
-    //
 
     @Override
     public String getName() {

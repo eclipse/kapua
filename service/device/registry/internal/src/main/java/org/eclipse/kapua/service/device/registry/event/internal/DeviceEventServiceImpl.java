@@ -79,19 +79,15 @@ public class DeviceEventServiceImpl
 
     @Override
     public DeviceEvent create(DeviceEventCreator deviceEventCreator) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(deviceEventCreator, "deviceEventCreator");
         ArgumentValidator.notNull(deviceEventCreator.getScopeId(), "deviceEventCreator.scopeId");
         ArgumentValidator.notNull(deviceEventCreator.getDeviceId(), "deviceEventCreator.deviceId");
         ArgumentValidator.notNull(deviceEventCreator.getReceivedOn(), "deviceEventCreator.receivedOn");
         ArgumentValidator.notEmptyOrNull(deviceEventCreator.getResource(), "deviceEventCreator.eventType");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.write, deviceEventCreator.getScopeId()));
         return txManager.execute(tx -> {
-            //
             // Check that device exists
             final Device device = deviceRepository.find(tx, deviceEventCreator.getScopeId(), deviceEventCreator.getDeviceId());
             if (device == null) {
@@ -120,12 +116,9 @@ public class DeviceEventServiceImpl
     @Override
     public DeviceEvent find(KapuaId scopeId, KapuaId entityId)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(entityId, "entityId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, scopeId));
 
@@ -135,11 +128,8 @@ public class DeviceEventServiceImpl
     @Override
     public DeviceEventListResult query(KapuaQuery query)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, query.getScopeId()));
 
@@ -149,11 +139,8 @@ public class DeviceEventServiceImpl
     @Override
     public long count(KapuaQuery query)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, query.getScopeId()));
 

@@ -92,22 +92,16 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
-
-        //
         // Token data
         UsernamePasswordCredentials token = (UsernamePasswordCredentials) authenticationToken;
         String tokenUsername = token.getUsername();
         String tokenPassword = token.getPassword();
         String tokenAuthenticationCode = token.getAuthenticationCode();
         String tokenTrustKey = token.getTrustKey();
-
-        //
         // Info data
         LoginAuthenticationInfo info = (LoginAuthenticationInfo) authenticationInfo;
         User infoUser = (User) info.getPrincipals().getPrimaryPrincipal();
         Credential infoCredential = (Credential) info.getCredentials();
-
-        //
         // Match token with info
         boolean credentialMatch = false;
         if (tokenUsername.equals(infoUser.getName()) &&

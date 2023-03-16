@@ -299,10 +299,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
     private void updatePayload(KapuaDataMessage message, KapuaDataPayload messagePayload) {
         message.setPayload(messagePayload);
     }
-
-    //
     // Utility methods to help to to create message queries
-    //
 
     /**
      * Creates a new query setting the default base parameters (fetch style, sort, limit, offset, ...) for the Message schema

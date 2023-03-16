@@ -67,12 +67,8 @@ public abstract class AbstractTranslatorKapuaKura<FROM_C extends KapuaChannel, F
             KuraRequestChannel kuraRequestChannel = translateChannel(kapuaMessage.getChannel());
             kuraRequestChannel.setScope(account.getName());
             kuraRequestChannel.setClientId(device != null ? device.getClientId() : kapuaMessage.getClientId());
-
-            //
             // Kura payload
             KuraRequestPayload kuraPayload = translatePayload(kapuaMessage.getPayload());
-
-            //
             // Return Kura Message
             return new KuraRequestMessage(kuraRequestChannel, kapuaMessage.getReceivedOn(), kuraPayload);
         } catch (InvalidChannelException | InvalidPayloadException te) {

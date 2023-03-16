@@ -83,17 +83,12 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
     @Override
     public DeviceAssets get(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
         ArgumentValidator.notNull(deviceAssets, DEVICE_ASSETS);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
-
-        //
         // Prepare the request
         AssetRequestChannel assetRequestChannel = new AssetRequestChannel();
         assetRequestChannel.setAppName(DeviceAssetAppProperties.APP_NAME);
@@ -114,7 +109,6 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         assetRequestMessage.setPayload(assetRequestPayload);
         assetRequestMessage.setChannel(assetRequestChannel);
 
-        //
         // Build call
         DeviceCallBuilder<AssetRequestChannel, AssetRequestPayload, AssetRequestMessage, AssetResponseMessage> assetDeviceCallBuilder =
                 DeviceCallBuilder
@@ -122,7 +116,6 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
                         .withRequestMessage(assetRequestMessage)
                         .withTimeoutOrDefault(timeout);
 
-        //
         // Do get
         if (isDeviceConnected(scopeId, deviceId)) {
             AssetResponseMessage responseMessage;
@@ -133,15 +126,10 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
                 throw e;
             }
 
-            //
             // Create event
             createDeviceEvent(scopeId, deviceId, assetRequestMessage, responseMessage);
-
-            //
             // Check response
             DeviceAssets onlineDeviceAssets = checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets());
-
-            //
             // Store value and return
             if (deviceAssetStoreService.isServiceEnabled(scopeId) &&
                     deviceAssetStoreService.isApplicationEnabled(scopeId, deviceId)) {
@@ -160,17 +148,12 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
     @Override
     public DeviceAssets read(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
         ArgumentValidator.notNull(deviceAssets, DEVICE_ASSETS);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
-
-        //
         // Prepare the request
         AssetRequestChannel assetRequestChannel = new AssetRequestChannel();
         assetRequestChannel.setAppName(DeviceAssetAppProperties.APP_NAME);
@@ -192,7 +175,6 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         assetRequestMessage.setPayload(assetRequestPayload);
         assetRequestMessage.setChannel(assetRequestChannel);
 
-        //
         // Build call
         DeviceCallBuilder<AssetRequestChannel, AssetRequestPayload, AssetRequestMessage, AssetResponseMessage> assetDeviceCallBuilder =
                 DeviceCallBuilder
@@ -200,7 +182,6 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
                         .withRequestMessage(assetRequestMessage)
                         .withTimeoutOrDefault(timeout);
 
-        //
         // Do read
         if (isDeviceConnected(scopeId, deviceId)) {
             AssetResponseMessage responseMessage;
@@ -211,15 +192,10 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
                 throw e;
             }
 
-            //
             // Create event
             createDeviceEvent(scopeId, deviceId, assetRequestMessage, responseMessage);
-
-            //
             // Check response
             DeviceAssets onlineDeviceAssets = checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets());
-
-            //
             // Store value and return
             if (deviceAssetStoreService.isServiceEnabled(scopeId) &&
                     deviceAssetStoreService.isApplicationEnabled(scopeId, deviceId)) {
@@ -239,17 +215,12 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
     @Override
     public DeviceAssets write(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
         ArgumentValidator.notNull(deviceAssets, DEVICE_ASSETS);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
-
-        //
         // Prepare the request
         AssetRequestChannel assetRequestChannel = new AssetRequestChannel();
         assetRequestChannel.setAppName(DeviceAssetAppProperties.APP_NAME);
@@ -271,7 +242,6 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         assetRequestMessage.setPayload(assetRequestPayload);
         assetRequestMessage.setChannel(assetRequestChannel);
 
-        //
         // Build call
         DeviceCallBuilder<AssetRequestChannel, AssetRequestPayload, AssetRequestMessage, AssetResponseMessage> assetDeviceCallBuilder =
                 DeviceCallBuilder
@@ -279,7 +249,6 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
                         .withRequestMessage(assetRequestMessage)
                         .withTimeoutOrDefault(timeout);
 
-        //
         // Do write
         AssetResponseMessage responseMessage;
         try {
@@ -289,11 +258,8 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
             throw e;
         }
 
-        //
         // Create event
         createDeviceEvent(scopeId, deviceId, assetRequestMessage, responseMessage);
-
-        //
         // Check response
         return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets());
     }

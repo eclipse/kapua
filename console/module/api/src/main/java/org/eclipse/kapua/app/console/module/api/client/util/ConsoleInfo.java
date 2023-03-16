@@ -37,6 +37,7 @@ public class ConsoleInfo extends Info {
 
     /**
      * Method for returning ConsoleInfo singleton instance.
+     *
      * @return static instance of ConsoleInfo class
      */
     public static ConsoleInfo getInstance() {
@@ -53,7 +54,6 @@ public class ConsoleInfo extends Info {
 
     public static void display(String title, String text, int delay,
                                boolean keepOnMouseOver) {
-        //
         // XSS escaping
         if (text != null) {
             text = KapuaSafeHtmlUtils.htmlEscape(text);
@@ -123,10 +123,10 @@ public class ConsoleInfo extends Info {
                 config.title = Format.substitute(config.title, config.params);
             }
             setHeading(config.title);
-            } else {
-                head.setVisible(false);
-            }
+        } else {
+            head.setVisible(false);
         }
+    }
 
     private void setText() {
         if (config.text != null) {
@@ -135,7 +135,7 @@ public class ConsoleInfo extends Info {
             }
             removeAll();
             addText(config.text);
-            }
+        }
     }
 
     protected void afterHide() {

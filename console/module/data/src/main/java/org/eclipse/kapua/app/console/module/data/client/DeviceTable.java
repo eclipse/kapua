@@ -121,7 +121,7 @@ public class DeviceTable extends LayoutContainer {
         filterField.setEmptyText(DATA_MSGS.deviceInfoTableFilter());
         new KeyNav<ComponentEvent>(filterField) {
             public void onKeyPress(ComponentEvent ce) {
-                if (ce.getKeyCode() == KeyCodes.KEY_ENTER ) {
+                if (ce.getKeyCode() == KeyCodes.KEY_ENTER) {
                     refresh();
                 }
             }
@@ -161,7 +161,6 @@ public class DeviceTable extends LayoutContainer {
         loader.setRemoteSort(true);
         loader.setSortDir(SortDir.ASC);
         loader.setSortField("friendlyDevice");
-        //
         SwappableListStore<GwtDatastoreDevice> store = new SwappableListStore<GwtDatastoreDevice>(loader);
         deviceGrid = new Grid<GwtDatastoreDevice>(store, new ColumnModel(configs));
         deviceGrid.setBorders(false);

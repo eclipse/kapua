@@ -210,10 +210,7 @@ public interface ElasticsearchClient<C extends Closeable> {
      * @since 1.0.0
      */
     void deleteByQuery(TypeDescriptor typeDescriptor, Object query) throws ClientException;
-
-    //
     // Indexes / mappings section
-    //
 
     /**
      * Checks if the index exists.

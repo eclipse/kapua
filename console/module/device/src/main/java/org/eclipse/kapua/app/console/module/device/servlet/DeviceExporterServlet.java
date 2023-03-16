@@ -17,11 +17,11 @@ import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.account.Account;
@@ -78,8 +78,6 @@ public class DeviceExporterServlet extends HttpServlet {
             if (scopeIdString == null || scopeIdString.isEmpty()) {
                 throw new IllegalArgumentException("scopeIdString");
             }
-
-            //
             // get the devices and append them to the exporter
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceRegistryService drs = locator.getService(DeviceRegistryService.class);

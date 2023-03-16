@@ -74,17 +74,12 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
     @Override
     public AccessPermission create(AccessPermissionCreator accessPermissionCreator)
             throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(accessPermissionCreator, "accessPermissionCreator");
         ArgumentValidator.notNull(accessPermissionCreator.getAccessInfoId(), "accessPermissionCreator.accessInfoId");
         ArgumentValidator.notNull(accessPermissionCreator.getPermission(), "accessPermissionCreator.permission");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.write, accessPermissionCreator.getScopeId()));
-
-        //
         // If permission are created out of the access permission scope, check that the current user has the permission on the external scopeId.
         final Permission permission = accessPermissionCreator.getPermission();
         if (permission.getTargetScopeId() == null || !permission.getTargetScopeId().equals(accessPermissionCreator.getScopeId())) {
@@ -94,7 +89,6 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
         PermissionValidator.validatePermission(permission);
 
         return txManager.execute(tx -> {
-            //
             // Check duplicates
             AccessPermissionQuery query = new AccessPermissionQueryImpl(accessPermissionCreator.getScopeId());
             query.setPredicate(
@@ -122,8 +116,6 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
 
                 throw new KapuaEntityUniquenessException(AccessPermission.TYPE, uniquesFieldValues);
             }
-
-            //
             // Do create
             final AccessInfo accessInfo = accessInfoRepository.find(tx, accessPermissionCreator.getScopeId(), accessPermissionCreator.getAccessInfoId());
             if (accessInfo == null) {
@@ -152,8 +144,6 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
             throws KapuaException {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(accessPermissionId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
         return txManager.execute(tx -> accessPermissionRepository.find(tx, scopeId, accessPermissionId));
@@ -164,8 +154,6 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
             throws KapuaException {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(accessInfoId, "accessInfoId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN,
                 Actions.read, scopeId));
@@ -177,8 +165,6 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
     public AccessPermissionListResult query(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
         return txManager.execute(tx -> accessPermissionRepository.query(tx, query));
@@ -188,8 +174,6 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
     public long count(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
         return txManager.execute(tx -> accessPermissionRepository.count(tx, query));

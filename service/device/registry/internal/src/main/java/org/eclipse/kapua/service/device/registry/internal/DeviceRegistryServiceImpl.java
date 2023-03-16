@@ -116,12 +116,8 @@ public class DeviceRegistryServiceImpl
     public Device create(DeviceCreator deviceCreator)
             throws KapuaException {
         DeviceValidation.validateCreatePreconditions(deviceCreator);
-
-        //
         // Check entity limit
         serviceConfigurationManager.checkAllowedEntities(deviceCreator.getScopeId(), "Devices");
-
-        //
         // Check duplicate clientId
         DeviceQuery query = entityFactory.newQuery(deviceCreator.getScopeId());
         query.setPredicate(query.attributePredicate(DeviceAttributes.CLIENT_ID, deviceCreator.getClientId()));
@@ -162,8 +158,6 @@ public class DeviceRegistryServiceImpl
 
         device.setConnectionId(deviceCreator.getConnectionId());
         device.setLastEventId(deviceCreator.getLastEventId());
-
-        //
         // Do create
         return txManager.execute(
                 tx -> deviceRepository.create(tx, device),
@@ -174,8 +168,6 @@ public class DeviceRegistryServiceImpl
     public Device update(Device device)
             throws KapuaException {
         DeviceValidation.validateUpdatePreconditions(device);
-
-        //
         // Do update
         return txManager.execute(tx -> {
                     final Device currentDevice = deviceRepository.find(tx, device.getScopeId(), device.getId());
@@ -192,8 +184,6 @@ public class DeviceRegistryServiceImpl
     public Device find(KapuaId scopeId, KapuaId entityId)
             throws KapuaException {
         DeviceValidation.validateFindPreconditions(scopeId, entityId);
-
-        //
         // Do find
         return txManager.execute(tx -> deviceRepository.find(tx, scopeId, entityId));
     }
@@ -201,8 +191,6 @@ public class DeviceRegistryServiceImpl
     @Override
     public Device findByClientId(KapuaId scopeId, String clientId) throws KapuaException {
         DeviceValidation.validateFindByClientIdPreconditions(scopeId, clientId);
-
-        //
         // Check cache and/or do find
         return txManager.execute(tx -> deviceRepository.findByClientId(tx, scopeId, clientId));
     }
@@ -329,10 +317,7 @@ public class DeviceRegistryServiceImpl
             deleteDeviceByAccountId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
         }
     }
-
-    //
     // Private methods
-    //
 
     private void deleteDeviceByGroupId(KapuaId scopeId, KapuaId groupId) throws KapuaException {
         DeviceQuery query = entityFactory.newQuery(scopeId);

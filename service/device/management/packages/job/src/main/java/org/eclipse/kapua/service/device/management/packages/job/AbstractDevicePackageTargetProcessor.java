@@ -47,15 +47,12 @@ public abstract class AbstractDevicePackageTargetProcessor extends AbstractDevic
 
 
     protected void createJobDeviceManagementOperation(KapuaId scopeId, KapuaId jobId, JobTarget jobTarget, KapuaId operationId) throws KapuaException {
-        //
         // Save the jobId-deviceManagementOperationId pair to track resuming
         JobDeviceManagementOperationCreator jobDeviceManagementOperationCreator = JOB_DEVICE_MANAGEMENT_OPERATION_FACTORY.newCreator(scopeId);
         jobDeviceManagementOperationCreator.setJobId(jobId);
         jobDeviceManagementOperationCreator.setDeviceManagementOperationId(operationId);
 
         JobDeviceManagementOperation jobDeviceManagementOperation = KapuaSecurityUtils.doPrivileged(() -> JOB_DEVICE_MANAGEMENT_OPERATION_SERVICE.create(jobDeviceManagementOperationCreator));
-
-        //
         // Check if the operation has already COMPLETED/FAILED
         DeviceManagementOperation deviceManagementOperation = KapuaSecurityUtils.doPrivileged(() -> DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.find(scopeId, operationId));
 
@@ -74,14 +71,10 @@ public abstract class AbstractDevicePackageTargetProcessor extends AbstractDevic
             }
 
             jobTarget.setStatus(jobTargetStatus);
-
-            //
             // If PROCESS_FAILED no need to continue the JobTarget processing
             if (JobTargetStatus.PROCESS_FAILED.equals(jobTarget.getStatus())) {
                 return;
             }
-
-            //
             // Enqueue the job
             JobStartOptions jobStartOptions = JOB_ENGINE_FACTORY.newJobStartOptions();
             jobStartOptions.addTargetIdToSublist(jobTarget.getId());

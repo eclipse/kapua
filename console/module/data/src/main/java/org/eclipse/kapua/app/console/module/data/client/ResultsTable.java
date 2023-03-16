@@ -41,7 +41,6 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
@@ -361,9 +360,7 @@ public class ResultsTable extends LayoutContainer {
     }
 
     // --------------------------------------------------------------------------------------
-    //
     // Unload of the GXT Component
-    //
     // --------------------------------------------------------------------------------------
     @Override
     public void onUnload() {

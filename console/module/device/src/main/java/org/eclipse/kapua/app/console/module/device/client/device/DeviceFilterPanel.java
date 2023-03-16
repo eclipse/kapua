@@ -83,8 +83,6 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         setHeading(DEVICE_MSGS.deviceFilteringPanelHeading());
 
         VerticalPanel fieldsPanel = getFieldsPanel();
-
-        //
         // ClientId
         Label clientIdLabel = new Label(DEVICE_MSGS.deviceFilteringPanelClientId());
         clientIdLabel.setWidth(WIDTH);
@@ -101,8 +99,6 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         clientIdField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
         clientIdField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(clientIdField);
-
-        //
         // DisplayName
         Label displayNameLabel = new Label(DEVICE_MSGS.deviceFilteringPanelDisplayName());
         displayNameLabel.setWidth(WIDTH);
@@ -118,8 +114,6 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         displayNameField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
         displayNameField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(displayNameField);
-
-        //
         // Serial Number
         Label serialNumberLabel = new Label(DEVICE_MSGS.deviceFilteringPanelSerialNumber());
         serialNumberLabel.setWidth(WIDTH);
@@ -135,8 +129,6 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         serialNumberField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
         serialNumberField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(serialNumberField);
-
-        //
         // Status
         Label statusLabel = new Label(DEVICE_MSGS.deviceFilteringPanelStatus());
         statusLabel.setWidth(WIDTH);
@@ -161,8 +153,6 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         statusCombo.setSimpleValue(GwtDeviceQueryPredicates.GwtDeviceStatus.ANY);
 
         fieldsPanel.add(statusCombo);
-
-        //
         // Connection Status
         Label connectionStatusLabel = new Label(DEVICE_MSGS.deviceFilteringPanelConnectionStatus());
         connectionStatusLabel.setWidth(WIDTH);
@@ -189,8 +179,6 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         connectionStatusCombo.setSimpleValue(GwtDeviceQueryPredicates.GwtDeviceConnectionStatus.ANY);
 
         fieldsPanel.add(connectionStatusCombo);
-
-        //
         // Esf Version
         Label iotFrameworkVersionLabel = new Label(DEVICE_MSGS.deviceFilteringPanelESFVersion());
         iotFrameworkVersionLabel.setWidth(WIDTH);
@@ -206,8 +194,6 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         iotFrameworkVersionField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
         iotFrameworkVersionField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(iotFrameworkVersionField);
-
-        //
         // Application Identifiers
         Label applicationIdentifiersLabel = new Label(DEVICE_MSGS.deviceFilteringPanelApplications());
         applicationIdentifiersLabel.setWidth(WIDTH);
@@ -223,8 +209,6 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         applicationIdentifiersField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
         applicationIdentifiersField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(applicationIdentifiersField);
-
-        //
         // Custom Attribute 1
         Label customAttribute1Label = new Label(DEVICE_MSGS.deviceFilteringPanelCustomAttribute1());
         customAttribute1Label.setWidth(WIDTH);
@@ -240,8 +224,6 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         customAttribute1Field.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
         customAttribute1Field.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(customAttribute1Field);
-
-        //
         // Custom Attribute 2
         Label customAttribute2Label = new Label(DEVICE_MSGS.deviceFilteringPanelCustomAttribute2());
         customAttribute2Label.setWidth(WIDTH);
@@ -257,8 +239,6 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         customAttribute2Field.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
         customAttribute2Field.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "5px");
         fieldsPanel.add(customAttribute2Field);
-
-        //
         // Groups
         if (currentSession.hasPermission(GroupSessionPermission.read())) {
             Label groupLabel = new Label(DEVICE_MSGS.deviceFilteringPanelGroup());
@@ -312,8 +292,6 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
 
             fieldsPanel.add(groupsCombo);
         }
-
-        //
         // Tags
         if (currentSession.hasPermission(TagSessionPermission.read())) {
             Label tagLabel = new Label(DEVICE_MSGS.deviceFilteringPanelTag());

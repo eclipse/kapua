@@ -315,8 +315,6 @@ public class PackageInstallDialog extends TabbedDialog {
             installVerifierURIField.setToolTip(DEVICE_MSGS.packageInstallDpDialogAdvancedInstallVerifierURITooltip());
             advancedOptionsForm.add(installVerifierURIField, formData);
         }
-
-        //
         // Tabs setup
         packageInfoTab = new TabItem(DEVICE_MSGS.packageInstallDpDialogTabTitle());
         packageInfoTab.setBorders(false);

@@ -153,12 +153,8 @@ public class KapuaGwtDeviceModelConverter {
 
     public static GwtDeviceConnection convertDeviceConnection(DeviceConnection deviceConnection) {
         GwtDeviceConnection gwtDeviceConnection = new GwtDeviceConnection();
-
-        //
         // Convert commons attributes
         KapuaGwtCommonsModelConverter.convertUpdatableEntity(deviceConnection, gwtDeviceConnection);
-
-        //
         // Convert other attributes
         gwtDeviceConnection.setClientId(deviceConnection.getClientId());
         gwtDeviceConnection.setUserId(KapuaGwtCommonsModelConverter.convertKapuaId(deviceConnection.getUserId()));
@@ -177,8 +173,6 @@ public class KapuaGwtDeviceModelConverter {
             gwtDeviceConnection.setConnectionUserCouplingMode(gwtConnectionUserCouplingMode != null ? gwtConnectionUserCouplingMode.getLabel() : "");
         }
         gwtDeviceConnection.setAllowUserChange(deviceConnection.getAllowUserChange());
-
-        //
         // Return converted entity
         return gwtDeviceConnection;
     }
@@ -221,8 +215,6 @@ public class KapuaGwtDeviceModelConverter {
 
     public static GwtDeviceConnectionOption convertDeviceConnectionOption(DeviceConnectionOption deviceConnectionOption) {
         GwtDeviceConnectionOption gwtDeviceConnectionOption = new GwtDeviceConnectionOption();
-
-        //
         // Convert commons attributes
         KapuaGwtCommonsModelConverter.convertUpdatableEntity(deviceConnectionOption, gwtDeviceConnectionOption);
 
@@ -233,8 +225,6 @@ public class KapuaGwtDeviceModelConverter {
             gwtDeviceConnectionOption.setConnectionUserCouplingMode(gwtConnectionUserCouplingMode != null ? gwtConnectionUserCouplingMode.getLabel() : "");
         }
         gwtDeviceConnectionOption.setAllowUserChange(deviceConnectionOption.getAllowUserChange());
-
-        //
         // Return converted entity
         return gwtDeviceConnectionOption;
     }

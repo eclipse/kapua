@@ -97,10 +97,7 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
 
         initialized = true;
     }
-
-    //
     // INITIALIZERS
-    //
 
     private void initToolBar() {
 
@@ -111,8 +108,6 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
         tabsPanel.setPlain(true);
         tabsPanel.setBorders(false);
         tabsPanel.setTabPosition(TabPosition.BOTTOM);
-
-        //
         // Inventory Sub-tab
         inventoryTab = new DeviceTabInventoryTabInventory(this);
         inventoryTab.setBorders(false);
@@ -126,8 +121,6 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
             }
         });
         tabsPanel.add(inventoryTab);
-
-        //
         // Bundle Sub-tab
         inventoryBundlesTab = new DeviceTabInventoryTabBundles(this);
         inventoryBundlesTab.setBorders(false);
@@ -142,8 +135,6 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
             }
         });
         tabsPanel.add(inventoryBundlesTab);
-
-        //
         // Container Sub-tab
         inventoryContainerTab = new DeviceTabInventoryTabContainer(this);
         inventoryContainerTab.setBorders(false);
@@ -158,8 +149,6 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
             }
         });
         tabsPanel.add(inventoryContainerTab);
-
-        //
         // System Packages Sub-tab
         inventorySystemPackagesTab = new DeviceTabInventoryTabSystemPackages(this);
         inventorySystemPackagesTab.setBorders(false);
@@ -174,8 +163,6 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
             }
         });
         tabsPanel.add(inventorySystemPackagesTab);
-
-        //
         // Deployment Packages Sub-tab
         inventoryDeploymentPackageTab = new DeviceTabInventoryTabDeploymentPackages(this);
         inventoryDeploymentPackageTab.setBorders(false);
@@ -191,13 +178,10 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
         tabsPanel.add(inventoryDeploymentPackageTab);
     }
 
-    //
     // REFRESHER
-    //
     @Override
     public void doRefresh() {
         if (initialized) {
-            //
             // Refresh the installed tab if selected
             if (tabsPanel.getSelectedItem().equals(inventoryTab)) {
                 inventoryTab.refresh();
@@ -220,10 +204,7 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
             }
         }
     }
-
-    //
     // ACCESSORS
-    //
 
     public GwtDevice getSelectedDevice() {
         return selectedEntity;

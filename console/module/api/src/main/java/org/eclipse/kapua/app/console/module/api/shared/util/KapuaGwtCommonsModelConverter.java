@@ -334,13 +334,9 @@ public class KapuaGwtCommonsModelConverter {
         if (kapuaId == null) {
             return null;
         }
-
-        //
         // Return converted entity
         return kapuaId.toCompactId();
     }
-
-//
 //    /**
 //     * Converts a {@link User} into a {@link GwtUser} for GWT usage.
 //     *

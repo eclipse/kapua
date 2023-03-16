@@ -90,21 +90,14 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
 
     @Override
     public Job create(JobCreator creator) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(creator, "jobCreator");
         ArgumentValidator.notNull(creator.getScopeId(), "jobCreator.scopeId");
         ArgumentValidator.validateJobName(creator.getName(), "jobCreator.name");
-
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, creator.getScopeId()));
-
-        //
         // Check entity limit
         serviceConfigurationManager.checkAllowedEntities(creator.getScopeId(), "Jobs");
-
-        //
         // Check duplicate name
         return txManager.execute(tx -> {
             if (duplicateNameChecker.countOtherEntitiesWithName(tx, creator.getScopeId(), creator.getName()) > 0) {
@@ -114,7 +107,6 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
             Job jobImpl = new JobImpl(creator.getScopeId());
             jobImpl.setName(creator.getName());
             jobImpl.setDescription(creator.getDescription());
-            //
             // Do create
             return jobRepository.create(tx, jobImpl);
         });
@@ -122,28 +114,22 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
 
     @Override
     public Job update(Job job) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(job, "job");
         ArgumentValidator.notNull(job.getScopeId(), "job.scopeId");
         ArgumentValidator.validateEntityName(job.getName(), "job.name");
-
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, job.getScopeId()));
 
         return txManager.execute(tx -> {
-            //
             // Check existence
             if (jobRepository.find(tx, job.getScopeId(), job.getId()) == null) {
                 throw new KapuaEntityNotFoundException(Job.TYPE, job.getId());
             }
-            //
             // Check duplicate name
             if (duplicateNameChecker.countOtherEntitiesWithName(tx, job.getScopeId(), job.getId(), job.getName()) > 0) {
                 throw new KapuaDuplicateNameException(job.getName());
             }
-            //
             // Do update
             return jobRepository.update(tx, job);
         });
@@ -151,46 +137,31 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
 
     @Override
     public Job find(KapuaId scopeId, KapuaId jobId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
-
-        //
         // Do find
         return txManager.execute(tx -> jobRepository.find(tx, scopeId, jobId));
     }
 
     @Override
     public JobListResult query(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do query
         return txManager.execute(tx -> jobRepository.query(tx, query));
     }
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do query
         return txManager.execute(tx -> jobRepository.count(tx, query));
     }
@@ -204,10 +175,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
     public void deleteForced(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         deleteInternal(scopeId, jobId, true);
     }
-
-    //
     // Private methods
-    //
 
     /**
      * Deletes the {@link Job} like {@link #delete(KapuaId, KapuaId)}.
@@ -222,26 +190,19 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
      * @since 1.1.0
      */
     private void deleteInternal(KapuaId scopeId, KapuaId jobId, boolean forced) throws KapuaException {
-
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, forced ? null : scopeId));
 
         txManager.execute(tx -> {
-            //
             // Check existence
             if (jobRepository.find(tx, scopeId, jobId) == null) {
                 throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
             }
 
             triggerRepository.deleteAllByJobId(tx, scopeId, jobId);
-
-            //
             // Do delete
             try {
                 KapuaSecurityUtils.doPrivileged(() -> jobEngineService.cleanJobData(scopeId, jobId));

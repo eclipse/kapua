@@ -72,15 +72,10 @@ public class EventStoreServiceImpl
     @RaiseServiceEvent
     public EventStoreRecord update(EventStoreRecord kapuaEvent)
             throws KapuaException {
-        //
         // Validation of the fields
         ArgumentValidator.notNull(kapuaEvent.getId(), "kapuaEvent.id");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.write, kapuaEvent.getScopeId()));
-
-        //
         // Do update
         return txManager.execute(tx -> repository.update(tx, kapuaEvent));
     }
@@ -89,18 +84,12 @@ public class EventStoreServiceImpl
     @RaiseServiceEvent
     public void delete(KapuaId scopeId, KapuaId kapuaEventId)
             throws KapuaException {
-
-        //
         // Validation of the fields
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(kapuaEventId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         Actions action = Actions.write;
         authorizationService.checkPermission(permissionFactory.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, action, scopeId));
-
-        //
         // Do delete
         txManager.execute(tx -> repository.delete(tx, scopeId, kapuaEventId));
     }
@@ -108,16 +97,11 @@ public class EventStoreServiceImpl
     @Override
     public EventStoreRecord find(KapuaId scopeId, KapuaId kapuaEventId)
             throws KapuaException {
-        //
         // Validation of the fields
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(kapuaEventId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, scopeId));
-
-        //
         // Make sure kapuaEvent exists
         return txManager.execute(tx -> repository.find(tx, scopeId, kapuaEventId));
     }
@@ -125,11 +109,8 @@ public class EventStoreServiceImpl
     @Override
     public EventStoreRecord find(KapuaId kapuaEventId)
             throws KapuaException {
-        //
         // Validation of the fields
         ArgumentValidator.notNull(kapuaEventId, KapuaEntityAttributes.ENTITY_ID);
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, kapuaEventId));
 
@@ -140,8 +121,6 @@ public class EventStoreServiceImpl
     public EventStoreRecordListResult query(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, query.getScopeId()));
         return txManager.execute(tx -> repository.query(tx, query));
@@ -151,8 +130,6 @@ public class EventStoreServiceImpl
     public long count(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, query.getScopeId()));
         return txManager.execute(tx -> repository.count(tx, query));

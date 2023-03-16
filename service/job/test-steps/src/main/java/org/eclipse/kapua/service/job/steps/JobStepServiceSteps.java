@@ -71,10 +71,7 @@ public class JobStepServiceSteps extends JobServiceTestBase {
         jobStepService = locator.getService(JobStepService.class);
         jobStepFactory = locator.getFactory(JobStepFactory.class);
     }
-
-    //
     // Prepare
-    //
 
     @Given("I prepare a JobStepCreator with the name {string}")
     public void iPrepareAJobStepCreator(String name) {
@@ -146,10 +143,7 @@ public class JobStepServiceSteps extends JobServiceTestBase {
             }
         }
     }
-
-    //
     // Create
-    //
 
     @When("I create a new JobStep from the existing creator")
     public void iCreateAJobStepFromTheCreator() throws Exception {
@@ -195,9 +189,7 @@ public class JobStepServiceSteps extends JobServiceTestBase {
         }
     }
 
-    //
     // Update
-    //
     @When("I update the JobStep.name to {string}")
     public void iUpdateJobStepName(String name) throws Exception {
         JobStep jobStep = (JobStep) stepData.get(JOB_STEP);
@@ -223,10 +215,7 @@ public class JobStepServiceSteps extends JobServiceTestBase {
 
         updateJobStep(jobStep);
     }
-
-    //
     // Search
-    //
 
     @When("I look for the last JobStep")
     public void iLookForLastJobStep() throws Exception {
@@ -253,10 +242,7 @@ public class JobStepServiceSteps extends JobServiceTestBase {
             verifyException(ex);
         }
     }
-
-    //
     // Query
-    //
 
     @When("I query for a JobStep with the name {string}")
     public void iQueryForJobStepWithName(String name) throws Exception {
@@ -273,10 +259,7 @@ public class JobStepServiceSteps extends JobServiceTestBase {
             verifyException(ex);
         }
     }
-
-    //
     // Count
-    //
 
     @When("I count the JobSteps and I find {int} JobStep within {int} second(s)")
     public void iCountJobStepAndCheck(int count, int timeout) throws Exception {
@@ -312,10 +295,7 @@ public class JobStepServiceSteps extends JobServiceTestBase {
     public void iCountJobStepInCurrentScope() throws Exception {
         updateCount(() -> (int) jobStepService.count(jobStepFactory.newQuery(getCurrentScopeId())));
     }
-
-    //
     // Delete
-    //
 
     @When("I delete the last JobStep")
     public void iDeleteLastJobStep() throws Exception {
@@ -328,10 +308,7 @@ public class JobStepServiceSteps extends JobServiceTestBase {
             verifyException(ex);
         }
     }
-
-    //
     // Check
-    //
 
     @Then("The JobStep matches the creator")
     public void checkJobStepMatchesCreator() {
@@ -357,10 +334,7 @@ public class JobStepServiceSteps extends JobServiceTestBase {
     public void checkJobStepNotFound() {
         Assert.assertNull(stepData.get(JOB_STEP));
     }
-
-    //
     // Others
-    //
 
     @When("I test the JobStepFactory")
     public void testTheStepFactory() {
@@ -370,10 +344,7 @@ public class JobStepServiceSteps extends JobServiceTestBase {
         Assert.assertNotNull(jobStepFactory.newQuery(SYS_SCOPE_ID));
         Assert.assertNotNull(jobStepFactory.newStepProperty("TestName", "TestType", "TestValue"));
     }
-
-    //
     // Private methods
-    //
 
     private JobStepCreator prepareDefaultJobStepCreator() {
         JobStepCreator tmpCr = jobStepFactory.newCreator(getCurrentScopeId());

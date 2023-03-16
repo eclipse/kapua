@@ -53,12 +53,9 @@ public class QueuedJobExecutionServiceImpl implements QueuedJobExecutionService 
 
     @Override
     public QueuedJobExecution create(QueuedJobExecutionCreator creator) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(creator, "queuedJobExecutionCreator");
         ArgumentValidator.notNull(creator.getScopeId(), "queuedJobExecutionCreator.scopeId");
-
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
@@ -67,20 +64,15 @@ public class QueuedJobExecutionServiceImpl implements QueuedJobExecutionService 
         queuedJobExecutionImpl.setJobExecutionId(creator.getJobExecutionId());
         queuedJobExecutionImpl.setWaitForJobExecutionId(creator.getWaitForJobExecutionId());
         queuedJobExecutionImpl.setStatus(creator.getStatus());
-
-        //
         // Do create
         return txManager.execute(tx -> repository.create(tx, queuedJobExecutionImpl));
     }
 
     @Override
     public QueuedJobExecution update(QueuedJobExecution queuedJobExecution) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(queuedJobExecution, "queuedJobExecution");
         ArgumentValidator.notNull(queuedJobExecution.getScopeId(), "queuedJobExecution.scopeId");
-
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
@@ -89,62 +81,42 @@ public class QueuedJobExecutionServiceImpl implements QueuedJobExecutionService 
 
     @Override
     public QueuedJobExecution find(KapuaId scopeId, KapuaId queuedJobExecutionId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(queuedJobExecutionId, "queuedJobExecutionId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
-
-        //
         // Do find
         return txManager.execute(tx -> repository.find(tx, scopeId, queuedJobExecutionId));
     }
 
     @Override
     public QueuedJobExecutionListResult query(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do query
         return txManager.execute(tx -> repository.query(tx, query));
     }
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do query
         return txManager.execute(tx -> repository.count(tx, query));
     }
 
     @Override
     public void delete(KapuaId scopeId, KapuaId queuedJobExecutionId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(queuedJobExecutionId, "queuedJobExecutionId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
-
-        //
         // Do delete
         txManager.execute(tx -> repository.delete(tx, scopeId, queuedJobExecutionId));
     }

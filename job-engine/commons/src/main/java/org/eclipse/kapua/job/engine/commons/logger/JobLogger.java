@@ -125,7 +125,6 @@ public class JobLogger {
         checkFormatAndArguments(format, arguments);
 
         try {
-            //
             // Standard Logging
             if (containerClassLog.isInfoEnabled()) {
                 StringBuilder formatSb = new StringBuilder();
@@ -135,8 +134,6 @@ public class JobLogger {
 
                 containerClassLog.info(formatSb.toString(), finalArguments.toArray());
             }
-
-            //
             // Job Execution Logging
             StringBuilder formatSb = new StringBuilder();
             formatSb.append(PRE_EXEC_LOG_FORMAT_LEVEL_INFO);
@@ -203,7 +200,6 @@ public class JobLogger {
         checkFormatAndArguments(format, arguments);
 
         try {
-            //
             // Standard Logging
             if (containerClassLog.isErrorEnabled()) {
                 StringBuilder formatSb = new StringBuilder();
@@ -215,8 +211,6 @@ public class JobLogger {
 
                 containerClassLog.warn(MessageFormat.format(formatSb.toString(), finalArguments.toArray()), exception);
             }
-
-            //
             // Job Execution Logging
             StringBuilder formatSb = new StringBuilder();
             formatSb.append(PRE_EXEC_LOG_FORMAT_LEVEL_WARN);
@@ -288,7 +282,6 @@ public class JobLogger {
         checkFormatAndArguments(format, arguments);
 
         try {
-            //
             // Standard Logging
             if (containerClassLog.isErrorEnabled()) {
                 StringBuilder formatSb = new StringBuilder();
@@ -300,8 +293,6 @@ public class JobLogger {
 
                 containerClassLog.error(MessageFormat.format(formatSb.toString(), finalArguments.toArray()), exception);
             }
-
-            //
             // Job Execution Logging
             StringBuilder formatSb = new StringBuilder();
             formatSb.append(PRE_EXEC_LOG_FORMAT_LEVEL_ERROR);
@@ -338,11 +329,7 @@ public class JobLogger {
 
         return log;
     }
-
-
-    //
     // Private methods
-    //
 
     /**
      * Checks that the number of placeholders in the given format matches the number of arguments given.

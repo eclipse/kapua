@@ -210,8 +210,6 @@ public class KapuaExceptionHandler {
                 return new GwtKapuaException(GwtKapuaErrorCode.ILLEGAL_ARGUMENT, throwable, ((KapuaIllegalArgumentException) throwable).getArgumentName(), ((KapuaIllegalArgumentException) throwable).getArgumentValue());
             }
         }
-
-        //
         // Device Management
         if (throwable instanceof DeviceManagementResponseException) {
             DeviceManagementException deviceManagementException = (DeviceManagementException) throwable;
@@ -231,20 +229,14 @@ public class KapuaExceptionHandler {
         } else if (throwable instanceof DeviceManagementException) {
             return new GwtKapuaException(GwtKapuaErrorCode.DEVICE_MANAGEMENT_ERROR, throwable, throwable.getMessage());
         }
-
-        //
         // Service Limits
         else if (throwable instanceof KapuaMaxNumberOfItemsReachedException) {
             return new GwtKapuaException(GwtKapuaErrorCode.MAX_NUMBER_OF_ITEMS_REACHED, throwable, ((KapuaMaxNumberOfItemsReachedException) throwable).getEntityType());
         }
-
-        //
         // Permissions
         else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.PERMISSION_DELETE_NOT_ALLOWED.name())) {
             return new GwtKapuaException(GwtKapuaErrorCode.PERMISSION_DELETE_NOT_ALLOWED, throwable, throwable.getMessage());
         }
-
-        //
         // Default exception
         return GwtKapuaException.internalError(throwable, throwable.getMessage());
     }

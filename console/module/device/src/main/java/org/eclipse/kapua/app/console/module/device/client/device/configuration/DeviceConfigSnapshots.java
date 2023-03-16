@@ -153,8 +153,6 @@ public class DeviceConfigSnapshots extends LayoutContainer {
         toolBar = new ToolBar();
         toolBar.setEnabled(false);
         toolBar.setBorders(false);
-
-        //
         // Refresh Button
         refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 
@@ -315,9 +313,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
     }
 
     // --------------------------------------------------------------------------------------
-    //
     // Device Event List Management
-    //
     // --------------------------------------------------------------------------------------
 
     private static final int PERIOD_MILLIS = 1000;
@@ -333,8 +329,6 @@ public class DeviceConfigSnapshots extends LayoutContainer {
             public void run() {
                 if (selectedDevice != null) {
                     countdownMillis -= PERIOD_MILLIS;
-
-                    //
                     // Poll the current status of the device until is online again or timeout.
                     gwtDeviceService.findDevice(selectedDevice.getScopeId(),
                             selectedDevice.getClientId(),
@@ -465,8 +459,6 @@ public class DeviceConfigSnapshots extends LayoutContainer {
 
                                 // mark the whole config panel dirty and for reload
                                 tabConfig.setEntity(selectedDevice);
-
-                                //
                                 // Getting XSRF token
                                 gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
 
@@ -504,9 +496,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
     }
 
     // --------------------------------------------------------------------------------------
-    //
     // Data Load Listener
-    //
     // --------------------------------------------------------------------------------------
 
     private class DataLoadListener extends KapuaLoadListener {

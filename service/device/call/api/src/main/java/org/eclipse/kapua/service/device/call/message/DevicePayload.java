@@ -120,10 +120,7 @@ public interface DevicePayload extends Payload {
     default boolean hasBody() {
         return getBody() != null && getBody().length > 0;
     }
-
-    //
     // Encode/Decode stuff
-    //
 
     /**
      * Converts the {@link DevicePayload} to a protobuf encoded {@code byte[]}
@@ -142,10 +139,7 @@ public interface DevicePayload extends Payload {
      */
     void readFromByteArray(byte[] rawPayload)
             throws KapuaException;
-
-    //
     // Display methods
-    //
 
     /**
      * Returns a {@link String} for displaying the {@link DevicePayload} content.

@@ -43,8 +43,6 @@ public class RoleEditDialog extends RoleAddDialog {
     @Override
     public void createBody() {
         super.createBody();
-
-        //
         // Compile edit form
         loadRole();
     }

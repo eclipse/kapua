@@ -35,12 +35,12 @@ import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRole
 import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAuthorizationModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.query.FieldSortCriteria;
-import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.FieldSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.group.Group;
@@ -92,12 +92,8 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     @Override
     public GwtRole create(GwtXSRFToken xsrfToken, GwtRoleCreator gwtRoleCreator) throws GwtKapuaException {
-
-        //
         // Checking XSRF token
         checkXSRFToken(xsrfToken);
-
-        //
         // Do create
         GwtRole gwtRole = null;
         try {
@@ -112,19 +108,14 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
-
-        //
         // Return result
         return gwtRole;
     }
 
     @Override
     public GwtRole update(GwtXSRFToken gwtXsrfToken, GwtRole gwtRole) throws GwtKapuaException {
-        //
         // Checking XSRF token
         checkXSRFToken(gwtXsrfToken);
-
-        //
         // Do update
         GwtRole gwtRoleUpdated = null;
         try {
@@ -140,16 +131,12 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
-
-        //
         // Return result
         return gwtRoleUpdated;
     }
 
     @Override
     public GwtRole find(String scopeShortId, String roleShortId) throws GwtKapuaException {
-
-        //
         // Do find
         GwtRole gwtRole = null;
         try {
@@ -164,15 +151,12 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
-
-        //
         // Return result
         return gwtRole;
     }
 
     @Override
     public PagingLoadResult<GwtRole> query(PagingLoadConfig loadConfig, final GwtRoleQuery gwtRoleQuery) throws GwtKapuaException {
-        //
         // Do query
         int totalLength = 0;
         List<GwtRole> gwtRoles = new ArrayList<GwtRole>();
@@ -217,7 +201,6 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     @Override
     public ListLoadResult<GwtGroupedNVPair> getRoleDescription(String scopeShortId, String roleShortId) throws GwtKapuaException {
-        //
         // Do get
         List<GwtGroupedNVPair> gwtRoleDescription = new ArrayList<GwtGroupedNVPair>();
         try {
@@ -259,7 +242,6 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     @Override
     public PagingLoadResult<GwtRolePermission> getRolePermissions(PagingLoadConfig loadConfig, String scopeShortId, String roleShortId) throws GwtKapuaException {
-        //
         // Do get
         int totalLength = 0;
         List<GwtRolePermission> gwtRolePermissions = new ArrayList<GwtRolePermission>();
@@ -333,12 +315,8 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     @Override
     public void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String roleShortId) throws GwtKapuaException {
-
-        //
         // Checking XSRF token
         checkXSRFToken(gwtXsrfToken);
-
-        //
         // Do delete
         try {
             // Convert from GWT Entity

@@ -76,10 +76,7 @@ public class JobStepMigrator extends AbstractKapuaNamedEntity implements JobStep
             this.stepProperties.add(JobStepPropertyMigrator.parse(sp));
         }
     }
-
-    //
     // Attributes below do not require migration
-    //
 
     @Override
     public KapuaId getJobId() {

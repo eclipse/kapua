@@ -45,18 +45,13 @@ public abstract class EntityGridField<M extends GwtEntityModel> extends ContentP
     protected ListStore<M> entityStore;
 
     protected EntityGridField(GwtSession currentSession) {
-        //
         // Set other properties
         this.currentSession = currentSession;
-
-        //
         // Container borders
         setBorders(false);
         setBodyBorder(false);
         setHeaderVisible(false);
         setBodyStyle("background-color:transparent");
-
-        //
         // CRUD toolbar
         entityGridToolbar = getToolbar();
     }
@@ -66,46 +61,30 @@ public abstract class EntityGridField<M extends GwtEntityModel> extends ContentP
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
-
-        //
         // Grid Label
         if (label == null) {
             label = new LabelField();
         }
         add(label);
-
-        //
         // Grdi container
         ContentPanel gridContainer = new ContentPanel(new FitLayout());
         gridContainer.setHeaderVisible(false);
         add(gridContainer);
-
-        //
         // Grid toolbar
         if (entityGridToolbar != null) {
             gridContainer.setTopComponent(entityGridToolbar);
         }
-
-        //
         // Configure Entity Grid
         // Data Store
         entityStore = new ListStore<M>();
-
-        //
         // Configure columns
         ColumnModel columnModel = new ColumnModel(getColumns());
-
-        //
         // Set grid
         entityGrid = new KapuaEditableGrid<M>(entityStore, columnModel);
         entityGrid.setHeight(200);
         gridContainer.add(entityGrid);
-
-        //
         // Bind the grid to CRUD toolbar
         entityGridToolbar.setGrid(this);
-
-        //
         // Grid selection mode
         GridSelectionModel<M> selectionModel = entityGrid.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
@@ -116,8 +95,6 @@ public abstract class EntityGridField<M extends GwtEntityModel> extends ContentP
 
             }
         });
-
-        //
         // Grid view options
         GridView gridView = entityGrid.getView();
         gridView.setEmptyText(MSGS.gridEmptyResult());

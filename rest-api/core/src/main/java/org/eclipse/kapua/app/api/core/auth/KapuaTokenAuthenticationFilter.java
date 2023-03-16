@@ -49,8 +49,6 @@ public class KapuaTokenAuthenticationFilter extends AuthenticatingFilter {
 
     @Override
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
-
-        //
         // Extract token
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
@@ -59,14 +57,10 @@ public class KapuaTokenAuthenticationFilter extends AuthenticatingFilter {
         if (authorizationHeader != null) {
             tokenId = httpRequest.getHeader(AUTHORIZATION_HEADER).replace(BEARER + " ", "");
         }
-
-        //
         // Build AccessToken for Shiro Auth
         KapuaLocator locator = KapuaLocator.getInstance();
         CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
         AccessTokenCredentials accessTokenCredentials = credentialsFactory.newAccessTokenCredentials(tokenId);
-
-        //
         // Return token
         return (AuthenticationToken) accessTokenCredentials;
     }

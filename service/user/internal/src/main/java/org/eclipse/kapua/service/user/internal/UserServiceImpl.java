@@ -89,7 +89,6 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
 
     @Override
     public User create(UserCreator userCreator) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(userCreator.getScopeId().getId(), "userCreator.scopeId");
         ArgumentValidator.notEmptyOrNull(userCreator.getName(), "userCreator.name");
@@ -111,17 +110,12 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
             ArgumentValidator.isEmptyOrNull(userCreator.getExternalId(), "userCreator.externalId");
             ArgumentValidator.isEmptyOrNull(userCreator.getExternalUsername(), "userCreator.externalUsername");
         }
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.write, userCreator.getScopeId()));
-
-        //
         // Check entity limit
         serviceConfigurationManager.checkAllowedEntities(userCreator.getScopeId(), "Users");
 
         return txManager.execute(tx -> {
-            //
             // Check duplicate name
             if (duplicateNameChecker.countOtherEntitiesWithName(tx, userCreator.getScopeId(), userCreator.getName()) > 0) {
                 throw new KapuaDuplicateNameException(userCreator.getName());
@@ -129,8 +123,6 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
             if (duplicateNameChecker.countOtherEntitiesWithName(tx, userCreator.getName()) > 0) {
                 throw new KapuaDuplicateNameInAnotherAccountError(userCreator.getName());
             }
-
-            //
             // Check User.userType
             if (userCreator.getUserType() == UserType.EXTERNAL) {
                 // Check duplicate externalId
@@ -149,8 +141,6 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
                     }
                 }
             }
-
-            //
             // Do create
             // Create User
             User user = userFactory.newEntity(userCreator.getScopeId());
@@ -170,7 +160,6 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
     @Override
     //@RaiseServiceEvent
     public User update(User user) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(user.getId(), "user.id");
         ArgumentValidator.notNull(user.getScopeId(), "user.scopeId");
@@ -193,37 +182,27 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
             ArgumentValidator.isEmptyOrNull(user.getExternalId(), "user.externalId");
             ArgumentValidator.isEmptyOrNull(user.getExternalUsername(), "user.externalUsername");
         }
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.write, user.getScopeId()));
 
         return txManager.execute(
                 tx -> {
-                    //
                     // Check existence
                     User currentUser = userRepository.find(tx, user.getScopeId(), user.getId());
                     if (currentUser == null) {
                         throw new KapuaEntityNotFoundException(User.TYPE, user.getId());
                     }
-
-                    //
                     // Check action on Sys admin user
                     if (user.getExpirationDate() != null || !currentUser.getName().equals(user.getName())) {
-                        //
                         // Check not deleting environment admin
                         validateSystemUser(user.getName());
                     }
-
-                    //
                     // Check disabling on logged user
                     if (user.getId().equals(KapuaSecurityUtils.getSession().getUserId())) {
                         if (user.getStatus().equals(UserStatus.DISABLED)) {
                             throw new KapuaIllegalArgumentException("user.status", user.getStatus().name());
                         }
                     }
-
-                    //
                     // Check not updatable fields
 
                     // User.userType
@@ -235,8 +214,6 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
                     if (!Objects.equals(currentUser.getName(), user.getName())) {
                         throw new KapuaIllegalArgumentException("user.name", user.getName());
                     }
-
-                    //
                     // Check duplicates
 
                     // User.externalId
@@ -254,8 +231,6 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
                             throw new KapuaDuplicateExternalUsernameException(user.getExternalUsername());
                         }
                     }
-
-                    //
                     // Do update
                     return userRepository.update(tx, user);
                 },
@@ -264,11 +239,8 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
 
     @Override
     public void delete(User user) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(user, "user");
-
-        //
         // Do delete
         txManager.execute(tx -> userRepository.delete(tx, user));
     }
@@ -276,7 +248,6 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
     @Override
     //@RaiseServiceEvent
     public void delete(KapuaId scopeId, KapuaId userId) throws KapuaException {
-        //
         // Argument validation
         ArgumentValidator.notNull(userId.getId(), "user.id");
         ArgumentValidator.notNull(scopeId.getId(), "user.scopeId");
@@ -310,8 +281,6 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
         // Validation of the fields
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(userId, "userId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, scopeId));
 
@@ -329,22 +298,16 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
 
     @Override
     public User findByExternalId(String externalId) throws KapuaException {
-        //
         // Validation of the fields
         ArgumentValidator.notEmptyOrNull(externalId, "externalId");
-
-        //
         // Do the find
         return checkReadAccess(txManager.execute(tx -> userRepository.findByExternalId(tx, externalId)));
     }
 
     @Override
     public User findByExternalUsername(String externalUsername) throws KapuaException {
-        //
         // Validation of the fields
         ArgumentValidator.notEmptyOrNull(externalUsername, "externalUsername");
-
-        //
         // Do the find
         return checkReadAccess(txManager.execute(tx -> userRepository.findByExternalId(tx, externalUsername)));
     }
@@ -352,15 +315,10 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
     @Override
     public UserListResult query(KapuaQuery query)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do query
         return txManager.execute(tx -> userRepository.query(tx, query));
     }
@@ -368,23 +326,16 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
     @Override
     public long count(KapuaQuery query)
             throws KapuaException {
-        //
         // Argument Validator
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do count
         return txManager.execute(tx -> userRepository.count(tx, query));
     }
 
     // -----------------------------------------------------------------------------------------
-    //
     // Private Methods
-    //
     // -----------------------------------------------------------------------------------------
 
     private User checkReadAccess(User user) throws KapuaException {

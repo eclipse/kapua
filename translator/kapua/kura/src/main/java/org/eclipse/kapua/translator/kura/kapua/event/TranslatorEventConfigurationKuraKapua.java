@@ -185,10 +185,7 @@ public class TranslatorEventConfigurationKuraKapua extends Translator<KuraConfig
     public Class<DeviceConfigurationEventMessage> getClassTo() {
         return DeviceConfigurationEventMessage.class;
     }
-
-    //
     // Things copied from AbstractSimpleTranslatorResponseKuraKapua than need to be refactored
-    //
 
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper()
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)

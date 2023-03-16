@@ -60,20 +60,14 @@ public class DevicePackageDownloadTargetProcessor extends AbstractDevicePackageT
 
         KapuaId scopeId = jobTarget.getScopeId();
         KapuaId jobId = jobTarget.getJobId();
-
-        //
         // Extract parameters from context
         DevicePackageDownloadRequest packageDownloadRequest = stepContextWrapper.getStepProperty(DevicePackageDownloadPropertyKeys.PACKAGE_DOWNLOAD_REQUEST, DevicePackageDownloadRequest.class);
         Long timeout = stepContextWrapper.getStepProperty(DevicePackageDownloadPropertyKeys.TIMEOUT, Long.class);
-
-        //
         // Send the request
         DevicePackageDownloadOptions packageDownloadOptions = DEVICE_PACKAGE_FACTORY.newPackageDownloadOptions();
         packageDownloadOptions.setTimeout(timeout);
 
         KapuaId operationId = KapuaSecurityUtils.doPrivileged(() -> PACKAGES_MANAGEMENT_SERVICE.downloadExec(scopeId, jobTarget.getJobTargetId(), packageDownloadRequest, packageDownloadOptions));
-
-        //
         // Save the jobId-deviceManagementOperationId pair to track resuming
         createJobDeviceManagementOperation(scopeId, jobId, jobTarget, operationId);
     }

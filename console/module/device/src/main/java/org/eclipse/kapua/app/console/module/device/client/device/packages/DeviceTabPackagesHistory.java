@@ -288,9 +288,7 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
     }
 
     // --------------------------------------------------------------------------------------
-    //
     // Device Operation List Management
-    //
     // --------------------------------------------------------------------------------------
 
     public void showOperationLog() {

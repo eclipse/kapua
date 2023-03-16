@@ -20,10 +20,10 @@ import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModel
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser.GwtUserStatus;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser.GwtUserType;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUserQuery;
-import org.eclipse.kapua.model.query.FieldSortCriteria;
-import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.query.FieldSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.user.UserAttributes;
@@ -100,7 +100,6 @@ public class GwtKapuaUserModelConverter {
         query.setSortCriteria(sortCriteria);
         query.setPredicate(predicate);
         query.setAskTotalCount(gwtUserQuery.getAskTotalCount());
-        //
         // Return converted
         return query;
     }

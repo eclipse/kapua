@@ -26,22 +26,16 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
  * {@link UsernamePasswordCredentials} credential matcher implementation
  *
  * @since 1.0
- *
  */
 public class ApiKeyCredentialsMatcher implements CredentialsMatcher {
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
-        //
         // Token data
         String tokenApiFullKey = (String) authenticationToken.getCredentials();
-
-        //
         // Info data
         LoginAuthenticationInfo info = (LoginAuthenticationInfo) authenticationInfo;
         Credential infoCredential = (Credential) info.getCredentials();
-
-        //
         // Match token with info
         boolean credentialMatch = false;
         if (CredentialType.API_KEY.equals(infoCredential.getCredentialType())) {

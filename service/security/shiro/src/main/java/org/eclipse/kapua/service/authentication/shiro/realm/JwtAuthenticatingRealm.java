@@ -103,12 +103,9 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        //
         // Extract credentials
         JwtCredentialsImpl jwtCredentials = (JwtCredentialsImpl) authenticationToken;
         String jwtIdToken = jwtCredentials.getIdToken();
-
-        //
         // Get Services
         KapuaLocator locator;
         UserService userService;
@@ -118,8 +115,6 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
         } catch (KapuaRuntimeException kre) {
             throw new ShiroException("Unexpected error while loading KapuaServices!", kre);
         }
-
-        //
         // Get the associated user by external id
         User user;
         try {
@@ -170,16 +165,10 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
                 throw new ShiroException("Unexpected error while looking for the user", e);
             }
         }
-
-        //
         // Check user
         checkUser(user);
-
-        //
         // Check account
         Account account = checkAccount(user.getScopeId());
-
-        //
         // Create credential
         Credential credential = new CredentialImpl(user.getScopeId(), user.getId(), CredentialType.JWT, jwtIdToken, CredentialStatus.ENABLED, null);
 
@@ -197,8 +186,6 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
         LoginAuthenticationInfo kapuaInfo = (LoginAuthenticationInfo) info;
 
         super.assertCredentialsMatch(authcToken, info);
-
-        //
         // Populate Session with info
         populateSession(SecurityUtils.getSubject(), kapuaInfo);
     }
@@ -207,8 +194,6 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
     public boolean supports(AuthenticationToken authenticationToken) {
         return authenticationToken instanceof JwtCredentialsImpl;
     }
-
-    //
     // Private methods
 
     /**

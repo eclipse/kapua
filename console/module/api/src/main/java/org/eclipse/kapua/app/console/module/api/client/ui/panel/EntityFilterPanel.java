@@ -48,8 +48,6 @@ public abstract class EntityFilterPanel<M extends GwtEntityModel> extends Conten
         setBorders(false);
         setLayout(new RowLayout(Orientation.VERTICAL));
         setBodyStyle("background-color:#F0F0F0");
-
-        //
         // Top explanation
         Text infoLabel = new Text(MSGS.filteringPanelInfo());
         infoLabel.setWidth(WIDTH + 5);

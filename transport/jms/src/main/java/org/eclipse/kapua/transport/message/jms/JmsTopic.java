@@ -69,7 +69,6 @@ public class JmsTopic implements TransportChannel {
      * @since 1.0.0
      */
     public JmsTopic(String[] topicParts) {
-        //
         // Concatenate topic parts
         if (topicParts != null) {
             setTopic(String.join(TOPIC_SEPARATOR, Lists.newArrayList(topicParts)));

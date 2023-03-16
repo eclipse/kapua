@@ -27,11 +27,11 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccess
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessRoleService;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAuthorizationModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
-import org.eclipse.kapua.model.query.FieldSortCriteria;
-import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.FieldSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionAttributes;
@@ -57,12 +57,8 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
 
     @Override
     public GwtAccessRole create(GwtXSRFToken xsrfToken, GwtAccessRoleCreator gwtAccessRoleCreator) throws GwtKapuaException {
-
-        //
         // Checking XSRF token
         checkXSRFToken(xsrfToken);
-
-        //
         // Do create
         GwtAccessRole gwtAccessRole = null;
         try {
@@ -80,20 +76,14 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
-
-        //
         // Return result
         return gwtAccessRole;
     }
 
     @Override
     public void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String accessRoleShortId) throws GwtKapuaException {
-
-        //
         // Checking XSRF token
         checkXSRFToken(gwtXsrfToken);
-
-        //
         // Do delete
         try {
             // Convert from GWT Entity
@@ -111,7 +101,6 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
 
     @Override
     public PagingLoadResult<GwtAccessRole> findByUserId(PagingLoadConfig loadConfig, String scopeShortId, String userShortId) throws GwtKapuaException {
-        //
         // Do get
         int totalLegnth = 0;
         List<GwtAccessRole> gwtAccessRoles = new ArrayList<GwtAccessRole>();

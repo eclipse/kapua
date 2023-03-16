@@ -151,9 +151,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
         }
     }
 
-    //
     // Job Instance Data
-    //
     @Override
     public JobInstance createSubJobInstance(String name, String appTag) {
         return createJobInstance(name, appTag, null);
@@ -238,10 +236,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
             throw new PersistenceException(e);
         }
     }
-
-    //
     // Job Status
-    //
 
     @Override
     public JobStatus createJobStatus(long jobInstanceId) {
@@ -289,10 +284,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
         }
     }
 
-
-    //
     // Execution Instance Data
-    //
     @Override
     public RuntimeJobExecution createJobExecution(JobInstance jobInstance, Properties jobParameters, BatchStatus batchStatus) {
         try {
@@ -513,9 +505,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
         }
     }
 
-    //
     // Step Execution Instance Data
-    //
     @Override
     public StepExecutionImpl createStepExecution(long jobExecutionId, StepContextImpl stepContext) {
         try {
@@ -563,9 +553,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
         }
     }
 
-    //
     // Step Status
-    //
     @Override
     public StepStatus createStepStatus(long stepExecutionId) {
         try {
@@ -594,10 +582,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
             throw new PersistenceException(e);
         }
     }
-
-    //
     // Random
-    //
 
     @Override
     public void purge(String apptag) {

@@ -34,7 +34,6 @@ public class RolePermissionImplJpaRepository
 
     @Override
     public RolePermissionListResult findByRoleId(TxContext tx, KapuaId scopeId, KapuaId roleId) throws KapuaException {
-        //
         // Build query
         RolePermissionQuery query = new RolePermissionQueryImpl(scopeId);
         query.setPredicate(query.attributePredicate(RolePermissionAttributes.ROLE_ID, roleId));

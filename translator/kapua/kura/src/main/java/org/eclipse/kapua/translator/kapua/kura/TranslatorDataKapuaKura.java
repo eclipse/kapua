@@ -48,22 +48,16 @@ public class TranslatorDataKapuaKura extends Translator<KapuaDataMessage, KuraDa
             if (account == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kapuaMessage.getScopeId());
             }
-
-            //
             // Kapua Channel
             KuraDataChannel kuraDataChannel = translate(kapuaMessage.getChannel());
             kuraDataChannel.setClientId(kapuaMessage.getClientId());
             kuraDataChannel.setScope(account.getName());
-
-            //
             // Kapua payload
             KuraDataPayload kuraDataPayload = translate(kapuaMessage.getPayload());
             kuraDataPayload.setBody(kapuaMessage.getPayload().getBody());
             kuraDataPayload.setMetrics(kapuaMessage.getPayload().getMetrics());
             kuraDataPayload.setPosition(TranslatorKapuaKuraUtils.translate(kapuaMessage.getPosition()));
             kuraDataPayload.setTimestamp(kapuaMessage.getSentOn());
-
-            //
             // Kapua message
             KuraDataMessage kuraDataMessage = new KuraDataMessage();
             kuraDataMessage.setChannel(kuraDataChannel);

@@ -81,13 +81,10 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
     @Override
     public DeviceConnectionOption update(DeviceConnectionOption deviceConnectionOptions)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(deviceConnectionOptions, "deviceConnection");
         ArgumentValidator.notNull(deviceConnectionOptions.getId(), "deviceConnection.id");
         ArgumentValidator.notNull(deviceConnectionOptions.getScopeId(), "deviceConnection.scopeId");
-
-        //
         // Check Access
 
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, deviceConnectionOptions.getScopeId()));
@@ -118,12 +115,9 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
     @Override
     public DeviceConnectionOption find(KapuaId scopeId, KapuaId entityId)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(entityId, "entityId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, scopeId));
 
@@ -133,11 +127,8 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
     @Override
     public DeviceConnectionOptionListResult query(KapuaQuery query)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
 
@@ -147,11 +138,8 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
     @Override
     public long count(KapuaQuery query)
             throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
 

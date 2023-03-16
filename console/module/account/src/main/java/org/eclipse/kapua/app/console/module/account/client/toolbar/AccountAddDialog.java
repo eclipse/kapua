@@ -25,7 +25,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
@@ -108,10 +107,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         fieldSet.setLayout(layoutAccount);
 
         FormData accountFieldsetFormData = new FormData("-11");
-
-        //
         // Show parent account name
-        //
         parentAccountNameLabel.setName("parentAccount");
         parentAccountNameLabel.setFieldLabel(MSGS.accountFormParentAccount());
         parentAccountNameLabel.setLabelSeparator(":");
@@ -119,10 +115,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         parentAccountNameLabel.setStyleAttribute("word-wrap", "break-word");
         parentAccountNameLabel.setValue(currentSession.getSelectedAccountName());
         fieldSet.add(parentAccountNameLabel, accountFieldsetFormData);
-
-        //
         // Account name field
-        //
         accountNameLabel.setFieldLabel(MSGS.accountFormName());
         accountNameLabel.setLabelSeparator(":");
         accountNameLabel.setVisible(false);
@@ -179,20 +172,14 @@ public class AccountAddDialog extends EntityAddEditDialog {
         FormLayout layoutOrg = new FormLayout();
         layoutOrg.setLabelWidth(LABEL_WIDTH_FORM);
         fieldSetOrg.setLayout(layoutOrg);
-
-        //
         // Organization name
-        //
         organizationName.setAllowBlank(false);
         organizationName.setMaxLength(255);
         organizationName.setName("organizationName");
         organizationName.setFieldLabel("* " + MSGS.accountFormOrgName());
         organizationName.setToolTip(MSGS.accountFormOrgNameTooltip());
         fieldSetOrg.add(organizationName, accountFieldsetFormData);
-
-        //
         // Organization email
-        //
         organizationEmail.setAllowBlank(false);
         organizationEmail.setMaxLength(255);
         organizationEmail.setName("organizationEmail");
@@ -224,10 +211,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         FormLayout organizationSubLayout = new FormLayout();
         organizationSubLayout.setLabelWidth(LABEL_WIDTH_FORM - 11);
         organizationSubFieldSet.setLayout(organizationSubLayout);
-
-        //
         // Other organization data
-        //
 
         FormData subFieldsetFormData = new FormData("-11");
 

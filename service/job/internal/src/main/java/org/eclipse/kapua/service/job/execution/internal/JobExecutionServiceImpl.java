@@ -55,12 +55,9 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
     @Override
     public JobExecution create(JobExecutionCreator jobExecutionCreator) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(jobExecutionCreator, "jobExecutionCreator");
         ArgumentValidator.notNull(jobExecutionCreator.getScopeId(), "jobExecutionCreator.scopeId");
-
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobExecutionCreator.getScopeId()));
 
@@ -69,20 +66,15 @@ public class JobExecutionServiceImpl implements JobExecutionService {
         jobExecution.setStartedOn(jobExecutionCreator.getStartedOn());
         jobExecution.setEntityAttributes(jobExecutionCreator.getEntityAttributes());
         jobExecution.setTargetIds(jobExecutionCreator.getTargetIds());
-
-        //
         // Do create
         return txManager.execute(tx -> jobExecutionRepository.create(tx, jobExecution));
     }
 
     @Override
     public JobExecution update(JobExecution jobExecution) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(jobExecution, "jobExecution");
         ArgumentValidator.notNull(jobExecution.getScopeId(), "jobExecution.scopeId");
-
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobExecution.getScopeId()));
 
@@ -91,62 +83,42 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
     @Override
     public JobExecution find(KapuaId scopeId, KapuaId jobExecutionId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobExecutionId, "jobExecutionId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
-
-        //
         // Do find
         return txManager.execute(tx -> jobExecutionRepository.find(tx, scopeId, jobExecutionId));
     }
 
     @Override
     public JobExecutionListResult query(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do query
         return txManager.execute(tx -> jobExecutionRepository.query(tx, query));
     }
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
-
-        //
         // Do query
         return txManager.execute(tx -> jobExecutionRepository.count(tx, query));
     }
 
     @Override
     public void delete(KapuaId scopeId, KapuaId jobExecutionId) throws KapuaException {
-        //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobExecutionId, "jobExecutionId");
-
-        //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
-
-        //
         // Do delete
         txManager.execute(tx -> jobExecutionRepository.delete(tx, scopeId, jobExecutionId));
     }

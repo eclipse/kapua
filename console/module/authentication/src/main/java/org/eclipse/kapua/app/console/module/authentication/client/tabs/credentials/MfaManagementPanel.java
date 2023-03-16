@@ -12,24 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials;
 
-import java.util.List;
-
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
-import org.eclipse.kapua.app.console.module.api.client.ui.panel.ContentPanel;
-import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
-import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
-import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtMfaCredentialOptions;
-import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtMfaCredentialOptionsCreator;
-import org.eclipse.kapua.app.console.module.authentication.shared.model.permission.CredentialSessionPermission;
-import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtMfaCredentialOptionsService;
-import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtMfaCredentialOptionsServiceAsync;
-
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -60,6 +42,23 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.ContentPanel;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
+import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
+import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtMfaCredentialOptions;
+import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtMfaCredentialOptionsCreator;
+import org.eclipse.kapua.app.console.module.authentication.shared.model.permission.CredentialSessionPermission;
+import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtMfaCredentialOptionsService;
+import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtMfaCredentialOptionsServiceAsync;
+
+import java.util.List;
 
 public class MfaManagementPanel extends ContentPanel {
 
@@ -337,8 +336,6 @@ public class MfaManagementPanel extends ContentPanel {
         HorizontalPanel iconsPanel = new HorizontalPanel();
         iconsPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         iconsPanel.add(iconsFieldSet);
-
-        //
         LabelField text5 = new LabelField(MSGS.mfaFormBarcodeLabel5());
         text5.setName("explanation5");
 
@@ -347,8 +344,6 @@ public class MfaManagementPanel extends ContentPanel {
 
         LabelField text7 = new LabelField(MSGS.mfaFormBarcodeLabel7());
         text7.setName("explanation7");
-
-        //
         helpFieldSet.add(text3, formData);
         helpFieldSet.add(text4, formData);
 
@@ -420,8 +415,6 @@ public class MfaManagementPanel extends ContentPanel {
         explanationHeader.add(enabledText);
 
         mfaContentPanel.add(explanationHeader);
-
-        //
         // QR Code Image
         barcodeImage = new Image();
         barcodeImage.addLoadHandler(new LoadHandler() {
@@ -438,8 +431,6 @@ public class MfaManagementPanel extends ContentPanel {
                 doUnmask();
             }
         });
-
-        //
         // Scratch Codes Text Area
         scratchCodesArea = new Text();
         scratchCodesArea.setStyleAttribute("padding", "10px 0px 0px 5px");

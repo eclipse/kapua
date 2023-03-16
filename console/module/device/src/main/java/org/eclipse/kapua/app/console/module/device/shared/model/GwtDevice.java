@@ -517,10 +517,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     public boolean isOnline() {
         return "CONNECTED".equals(getGwtDeviceConnectionStatus());
     }
-
-    //
     // Utility methods
-    //
 
     public boolean hasApplication(GwtDeviceApplication application) {
         String applicationIdentifiers = getApplicationIdentifiers();
