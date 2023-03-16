@@ -25,6 +25,7 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachin
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
+import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
@@ -61,7 +62,8 @@ public class UserModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             UserRepository userRepository,
-            UserFactory userFactory) {
+            UserFactory userFactory,
+            EventStorer eventStorer) {
         return new UserServiceImpl(
                 serviceConfigurationManager,
                 authorizationService,
@@ -69,7 +71,8 @@ public class UserModule extends AbstractKapuaModule {
                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
                 userRepository,
                 userFactory,
-                new DuplicateNameCheckerImpl<>(userRepository, userFactory::newQuery), eventStorer);
+                new DuplicateNameCheckerImpl<>(userRepository, userFactory::newQuery),
+                eventStorer);
     }
 
     @Provides

@@ -72,7 +72,7 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             //
             // Check duplicate name
             if (duplicateNameChecker.countOtherEntitiesWithName(tx, stepDefinitionCreator.getName()) > 0) {
@@ -108,7 +108,7 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             // Check duplicate name
             if (duplicateNameChecker.countOtherEntitiesWithName(
                     tx, jobStepDefinition.getScopeId(), jobStepDefinition.getId(), jobStepDefinition.getName()) > 0) {
@@ -129,7 +129,7 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
 
         // Do find
-        return txManager.executeWithResult(tx -> repository.find(tx, scopeId, stepDefinitionId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, stepDefinitionId));
     }
 
     @Override
@@ -140,7 +140,7 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
 
             JobStepDefinition jobStepDefinition = repository.findByName(tx, name);
             if (jobStepDefinition != null) {
@@ -164,7 +164,7 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> repository.query(tx, query));
+        return txManager.execute(tx -> repository.query(tx, query));
     }
 
     @Override
@@ -179,7 +179,7 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> repository.count(tx, query));
+        return txManager.execute(tx -> repository.count(tx, query));
     }
 
     @Override
@@ -195,6 +195,6 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
 
         //
         // Do delete
-        txManager.executeWithResult(tx -> repository.delete(tx, scopeId, stepDefinitionId));
+        txManager.execute(tx -> repository.delete(tx, scopeId, stepDefinitionId));
     }
 }

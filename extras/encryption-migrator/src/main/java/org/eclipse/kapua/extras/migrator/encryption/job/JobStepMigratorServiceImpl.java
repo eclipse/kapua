@@ -41,17 +41,17 @@ public class JobStepMigratorServiceImpl implements JobStepService {
 
     @Override
     public JobStep update(JobStep jobStep) throws KapuaException {
-        return txManager.executeWithResult(tx -> jobStepRepository.update(tx, jobStep));
+        return txManager.execute(tx -> jobStepRepository.update(tx, jobStep));
     }
 
     @Override
     public JobStepListResult query(KapuaQuery query) throws KapuaException {
-        return txManager.executeWithResult(tx -> jobStepRepository.query(tx, query));
+        return txManager.execute(tx -> jobStepRepository.query(tx, query));
     }
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        return txManager.executeWithResult(tx -> jobStepRepository.count(tx, query));
+        return txManager.execute(tx -> jobStepRepository.count(tx, query));
     }
 
     //

@@ -85,7 +85,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         at.setExpiresOn(accessTokenCreator.getExpiresOn());
         at.setRefreshToken(accessTokenCreator.getRefreshToken());
         at.setRefreshExpiresOn(accessTokenCreator.getRefreshExpiresOn());
-        return txManager.executeWithResult(tx -> accessTokenRepository.create(tx, at));
+        return txManager.execute(tx -> accessTokenRepository.create(tx, at));
     }
 
     @Override
@@ -110,7 +110,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
         //
         // Do update
-        return txManager.executeWithResult(tx -> accessTokenRepository.update(tx, accessToken));
+        return txManager.execute(tx -> accessTokenRepository.update(tx, accessToken));
     }
 
     @Override
@@ -126,7 +126,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> accessTokenRepository.find(tx, scopeId, accessTokenId));
+        return txManager.execute(tx -> accessTokenRepository.find(tx, scopeId, accessTokenId));
     }
 
     @Override
@@ -141,7 +141,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> accessTokenRepository.query(tx, query));
+        return txManager.execute(tx -> accessTokenRepository.query(tx, query));
     }
 
     @Override
@@ -156,7 +156,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
         //
         // Do count
-        return txManager.executeWithResult(tx -> accessTokenRepository.count(tx, query));
+        return txManager.execute(tx -> accessTokenRepository.count(tx, query));
     }
 
     @Override
@@ -178,7 +178,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
         //
         // Do delete
-        txManager.executeWithResult(tx -> accessTokenRepository.delete(tx, scopeId, accessTokenId));
+        txManager.execute(tx -> accessTokenRepository.delete(tx, scopeId, accessTokenId));
     }
 
     @Override
@@ -210,7 +210,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
         //
         // Do find
-        AccessToken accessToken = txManager.executeWithResult(tx -> accessTokenRepository.findByTokenId(tx, tokenId));
+        AccessToken accessToken = txManager.execute(tx -> accessTokenRepository.findByTokenId(tx, tokenId));
 
         //
         // Check Access
@@ -234,7 +234,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
         //
         // Do find
-        txManager.executeWithResult(tx -> {
+        txManager.execute(tx -> {
             AccessToken accessToken = accessTokenRepository.find(tx, scopeId, accessTokenId);
             if (accessToken != null) {
                 accessToken.setInvalidatedOn(new Date());

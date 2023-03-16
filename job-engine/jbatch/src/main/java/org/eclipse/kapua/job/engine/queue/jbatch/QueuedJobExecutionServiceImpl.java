@@ -70,7 +70,7 @@ public class QueuedJobExecutionServiceImpl implements QueuedJobExecutionService 
 
         //
         // Do create
-        return txManager.executeWithResult(tx -> repository.create(tx, queuedJobExecutionImpl));
+        return txManager.execute(tx -> repository.create(tx, queuedJobExecutionImpl));
     }
 
     @Override
@@ -84,7 +84,7 @@ public class QueuedJobExecutionServiceImpl implements QueuedJobExecutionService 
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
-        return txManager.executeWithResult(tx -> repository.update(tx, queuedJobExecution));
+        return txManager.execute(tx -> repository.update(tx, queuedJobExecution));
     }
 
     @Override
@@ -100,7 +100,7 @@ public class QueuedJobExecutionServiceImpl implements QueuedJobExecutionService 
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> repository.find(tx, scopeId, queuedJobExecutionId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, queuedJobExecutionId));
     }
 
     @Override
@@ -115,7 +115,7 @@ public class QueuedJobExecutionServiceImpl implements QueuedJobExecutionService 
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> repository.query(tx, query));
+        return txManager.execute(tx -> repository.query(tx, query));
     }
 
     @Override
@@ -130,7 +130,7 @@ public class QueuedJobExecutionServiceImpl implements QueuedJobExecutionService 
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> repository.count(tx, query));
+        return txManager.execute(tx -> repository.count(tx, query));
     }
 
     @Override
@@ -146,6 +146,6 @@ public class QueuedJobExecutionServiceImpl implements QueuedJobExecutionService 
 
         //
         // Do delete
-        txManager.executeWithResult(tx -> repository.delete(tx, scopeId, queuedJobExecutionId));
+        txManager.execute(tx -> repository.delete(tx, scopeId, queuedJobExecutionId));
     }
 }

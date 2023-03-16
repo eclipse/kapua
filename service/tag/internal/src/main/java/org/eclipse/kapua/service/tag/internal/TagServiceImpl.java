@@ -99,7 +99,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
 
         //
         // Check duplicate name
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             final long otherEntitiesWithSameName = duplicateNameChecker.countOtherEntitiesWithName(tx, tagCreator.getScopeId(), tagCreator.getName());
             if (otherEntitiesWithSameName > 0) {
                 throw new KapuaDuplicateNameException(tagCreator.getName());
@@ -127,7 +127,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
                 permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.write, tag.getScopeId()));
 
         // Check duplicate name
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             // Check existence
             if (tagRepository.find(tx, tag.getScopeId(), tag.getId()) == null) {
                 throw new KapuaEntityNotFoundException(Tag.TYPE, tag.getId());
@@ -163,7 +163,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
         //
         // Do delete
         //
-        txManager.executeWithResult(tx -> tagRepository.delete(tx, scopeId, tagId));
+        txManager.execute(tx -> tagRepository.delete(tx, scopeId, tagId));
     }
 
     @Override
@@ -179,7 +179,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> tagRepository.find(tx, scopeId, tagId));
+        return txManager.execute(tx -> tagRepository.find(tx, scopeId, tagId));
     }
 
     @Override
@@ -194,7 +194,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> tagRepository.query(tx, query));
+        return txManager.execute(tx -> tagRepository.query(tx, query));
     }
 
     @Override
@@ -209,6 +209,6 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
 
         //
         // Do count
-        return txManager.executeWithResult(tx -> tagRepository.count(tx, query));
+        return txManager.execute(tx -> tagRepository.count(tx, query));
     }
 }

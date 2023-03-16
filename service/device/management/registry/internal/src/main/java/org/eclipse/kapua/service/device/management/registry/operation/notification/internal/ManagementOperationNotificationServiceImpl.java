@@ -76,7 +76,7 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             //
             // Check operation existence
             if (deviceManagementOperationRepository.find(tx, creator.getScopeId(), creator.getOperationId()) == null) {
@@ -110,7 +110,7 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> repository.find(tx, scopeId, entityId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, entityId));
     }
 
     @Override
@@ -125,7 +125,7 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> repository.query(tx, query));
+        return txManager.execute(tx -> repository.query(tx, query));
     }
 
     @Override
@@ -140,7 +140,7 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
 
         //
         // Do count
-        return txManager.executeWithResult(tx -> repository.count(tx, query));
+        return txManager.execute(tx -> repository.count(tx, query));
     }
 
     @Override
@@ -153,6 +153,6 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.delete, null));
 
         // Do delete
-        txManager.executeWithResult(tx -> repository.delete(tx, scopeId, entityId));
+        txManager.execute(tx -> repository.delete(tx, scopeId, entityId));
     }
 }

@@ -137,7 +137,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
         deviceEvent.setResponseCode(deviceEventCreator.getResponseCode());
         deviceEvent.setEventMessage(deviceEventCreator.getEventMessage());
         deviceEvent.setPosition(deviceEventCreator.getPosition());
-        txManager.executeWithResult(tx -> deviceEventRepository.create(tx, deviceEvent));
+        txManager.execute(tx -> deviceEventRepository.create(tx, deviceEvent));
     }
 
     /**
@@ -156,7 +156,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
 
         //
         // Check Device existence
-        Device device = txManager.executeWithResult(tx -> deviceRepository.find(tx, scopeId, deviceId));
+        Device device = txManager.execute(tx -> deviceRepository.find(tx, scopeId, deviceId));
 
         if (device == null) {
             throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
@@ -194,7 +194,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
         deviceManagementOperation.setStatus(deviceManagementOperationCreator.getStatus());
         deviceManagementOperation.setStatus(deviceManagementOperationCreator.getStatus());
         deviceManagementOperation.setInputProperties(deviceManagementOperationCreator.getInputProperties());
-        DeviceManagementOperation res = txManager.executeWithResult(tx ->
+        DeviceManagementOperation res = txManager.execute(tx ->
                 deviceManagementOperationRepository.create(tx, deviceManagementOperation));
 
         return res.getId();
@@ -205,7 +205,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
     }
 
     protected void closeManagementOperation(KapuaId scopeId, KapuaId deviceId, KapuaId operationId, KapuaResponseMessage<?, ?> responseMessageMessage) throws KapuaException {
-        txManager.executeWithResult(tx -> {
+        txManager.execute(tx -> {
             DeviceManagementOperation deviceManagementOperation = deviceManagementOperationRepository.findByOperationId(tx, scopeId, operationId);
 
             if (deviceManagementOperation == null) {

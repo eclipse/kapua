@@ -136,7 +136,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         }
         String fullKey = mfaAuthenticator.generateKey();
 
-        final MfaOption option = txManager.executeWithResult(tx -> {
+        final MfaOption option = txManager.execute(tx -> {
             //
             // Check that the user is an internal user (external users cannot have the MFA enabled)
             final MfaOptionCreator finalMfaOptionCreator = mfaOptionCreator;
@@ -167,7 +167,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             return mfaOption;
         });
 
-        final ScratchCodeListResult scratchCodes = txManager.executeWithResult(tx -> {
+        final ScratchCodeListResult scratchCodes = txManager.execute(tx -> {
 
             // generating scratch codes
             final ScratchCodeCreator scratchCodeCreator = scratchCodeFactory.newCreator(mfaOptionCreator.getScopeId(), option.getId(), null);
@@ -238,7 +238,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, mfaOption.getScopeId()));
 
-        return txManager.executeWithResult(tx -> mfaOptionRepository.update(tx, mfaOption));
+        return txManager.execute(tx -> mfaOptionRepository.update(tx, mfaOption));
     }
 
     @Override
@@ -251,7 +251,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
-        return txManager.executeWithResult(tx -> mfaOptionRepository.find(tx, scopeId, mfaOptionId));
+        return txManager.execute(tx -> mfaOptionRepository.find(tx, scopeId, mfaOptionId));
     }
 
     @Override
@@ -264,7 +264,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
 
-        return txManager.executeWithResult(tx -> mfaOptionRepository.query(tx, query));
+        return txManager.execute(tx -> mfaOptionRepository.query(tx, query));
     }
 
     @Override
@@ -277,7 +277,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
 
-        return txManager.executeWithResult(tx -> mfaOptionRepository.count(tx, query));
+        return txManager.execute(tx -> mfaOptionRepository.count(tx, query));
     }
 
     @Override
@@ -291,7 +291,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.delete, scopeId));
 
-        txManager.executeWithResult(tx -> mfaOptionRepository.delete(tx, scopeId, mfaOptionId));
+        txManager.execute(tx -> mfaOptionRepository.delete(tx, scopeId, mfaOptionId));
     }
 
     @Override
@@ -305,7 +305,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
-        return txManager.executeWithResult(tx -> mfaOptionRepository.findByUserId(tx, scopeId, userId));
+        return txManager.execute(tx -> mfaOptionRepository.findByUserId(tx, scopeId, userId));
     }
 
     @Override
@@ -327,7 +327,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(mfaOptionId, "mfaOptionId");
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
 
             //
             // Checking existence
@@ -356,7 +356,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
 
     @Override
     public void disableTrust(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
-        txManager.executeWithResult(tx -> {
+        txManager.execute(tx -> {
             // Argument Validation
             ArgumentValidator.notNull(mfaOptionId, "mfaOptionId");
             ArgumentValidator.notNull(scopeId, "scopeId");

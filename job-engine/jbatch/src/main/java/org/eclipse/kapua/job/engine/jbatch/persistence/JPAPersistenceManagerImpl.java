@@ -126,7 +126,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public void createCheckpointData(CheckpointDataKey checkpointDataKey, CheckpointData checkpointData) {
         try {
-            txManager.executeWithResult(tx -> checkpointDataRepository.create(tx, checkpointDataKey, checkpointData));
+            txManager.execute(tx -> checkpointDataRepository.create(tx, checkpointDataKey, checkpointData));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -135,7 +135,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public void updateCheckpointData(CheckpointDataKey checkpointDataKey, CheckpointData checkpointData) {
         try {
-            txManager.executeWithResult(tx -> checkpointDataRepository.update(tx, checkpointDataKey, checkpointData));
+            txManager.execute(tx -> checkpointDataRepository.update(tx, checkpointDataKey, checkpointData));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -144,7 +144,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public CheckpointData getCheckpointData(CheckpointDataKey checkpointDataKey) {
         try {
-            JpaCheckpointData jpaCheckpointData = txManager.executeWithResult(tx -> checkpointDataRepository.find(tx, checkpointDataKey));
+            JpaCheckpointData jpaCheckpointData = txManager.execute(tx -> checkpointDataRepository.find(tx, checkpointDataKey));
             return jpaCheckpointData != null ? jpaCheckpointData.toCheckpointData() : null;
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -162,7 +162,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public JobInstance createJobInstance(String name, String appTag, String jobXml) {
         try {
-            JpaJobInstanceData jpaJobInstanceData = txManager.executeWithResult(tx -> jobInstanceDataRepository.create(tx, name, appTag, jobXml));
+            JpaJobInstanceData jpaJobInstanceData = txManager.execute(tx -> jobInstanceDataRepository.create(tx, name, appTag, jobXml));
             return jpaJobInstanceData != null ? jpaJobInstanceData.toJobInstance() : null;
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -177,7 +177,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public int jobOperatorGetJobInstanceCount(String jobName, String appTag) {
         try {
-            return txManager.executeWithResult(tx -> jobInstanceDataRepository.getJobInstanceCount(tx, jobName, appTag));
+            return txManager.execute(tx -> jobInstanceDataRepository.getJobInstanceCount(tx, jobName, appTag));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -191,7 +191,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public List<Long> jobOperatorGetJobInstanceIds(String jobName, String appTag, int offset, int limit) {
         try {
-            return txManager.executeWithResult(tx -> jobInstanceDataRepository.getJobInstanceIds(tx, jobName, appTag, offset, limit));
+            return txManager.execute(tx -> jobInstanceDataRepository.getJobInstanceIds(tx, jobName, appTag, offset, limit));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -200,7 +200,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public Map<Long, String> jobOperatorGetExternalJobInstanceData() {
         try {
-            final List<JpaJobInstanceData> jpaJobInstanceData = txManager.executeWithResult(tx -> jobInstanceDataRepository.getExternalJobInstanceData(tx));
+            final List<JpaJobInstanceData> jpaJobInstanceData = txManager.execute(tx -> jobInstanceDataRepository.getExternalJobInstanceData(tx));
             return jpaJobInstanceData.stream().collect(Collectors.toMap(JpaJobInstanceData::getId, JpaJobInstanceData::getName));
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -233,7 +233,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
      */
     public int purgeByName(String jobName) {
         try {
-            return txManager.executeWithResult(tx -> jobInstanceDataRepository.deleteByName(tx, jobName));
+            return txManager.execute(tx -> jobInstanceDataRepository.deleteByName(tx, jobName));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -246,7 +246,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public JobStatus createJobStatus(long jobInstanceId) {
         try {
-            JpaJobStatus jpaJobStatus = txManager.executeWithResult(tx -> jobStatusRepository.create(tx, jobInstanceId));
+            JpaJobStatus jpaJobStatus = txManager.execute(tx -> jobStatusRepository.create(tx, jobInstanceId));
             return jpaJobStatus != null ? jpaJobStatus.toJobStatus() : null;
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -256,7 +256,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public JobStatus getJobStatus(long jobInstanceId) {
         try {
-            JpaJobStatus jpaJobStatus = txManager.executeWithResult(tx -> jobStatusRepository.find(tx, jobInstanceId));
+            JpaJobStatus jpaJobStatus = txManager.execute(tx -> jobStatusRepository.find(tx, jobInstanceId));
 
             JobStatus jobStatus;
             if (jpaJobStatus != null) {
@@ -266,7 +266,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
             }
 
             if (jobStatus.getJobInstance() == null) {
-                JobInstance jobInstance = txManager.executeWithResult(tx -> jobInstanceDataRepository.find(tx, jobInstanceId).toJobInstance());
+                JobInstance jobInstance = txManager.execute(tx -> jobInstanceDataRepository.find(tx, jobInstanceId).toJobInstance());
 
                 if (jobInstance == null) {
                     jobInstance = new JobInstanceImpl(jobInstanceId);
@@ -283,7 +283,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public void updateJobStatus(long jobInstanceId, JobStatus jobStatus) {
         try {
-            txManager.executeWithResult(tx -> jobStatusRepository.update(tx, jobInstanceId, jobStatus));
+            txManager.execute(tx -> jobStatusRepository.update(tx, jobInstanceId, jobStatus));
         } catch (KapuaException e) {
             throw new PersistenceException(e);
         }
@@ -296,7 +296,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public RuntimeJobExecution createJobExecution(JobInstance jobInstance, Properties jobParameters, BatchStatus batchStatus) {
         try {
-            JpaExecutionInstanceData jpaExecutionInstanceData = txManager.executeWithResult(tx -> executionInstanceDataRepository.create(tx, jobInstance.getInstanceId(), jobParameters, batchStatus, new Timestamp(new Date().getTime())));
+            JpaExecutionInstanceData jpaExecutionInstanceData = txManager.execute(tx -> executionInstanceDataRepository.create(tx, jobInstance.getInstanceId(), jobParameters, batchStatus, new Timestamp(new Date().getTime())));
 
             RuntimeJobExecution runtimeJobExecution = new RuntimeJobExecution(jobInstance, jpaExecutionInstanceData.getId());
             runtimeJobExecution.setBatchStatus(batchStatus.name());
@@ -312,7 +312,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public RuntimeFlowInSplitExecution createFlowInSplitExecution(JobInstance jobInstance, BatchStatus batchStatus) {
         try {
-            JpaExecutionInstanceData jpaExecutionInstanceData = txManager.executeWithResult(tx -> executionInstanceDataRepository.create(tx, jobInstance.getInstanceId(), null, batchStatus, new Timestamp(new Date().getTime())));
+            JpaExecutionInstanceData jpaExecutionInstanceData = txManager.execute(tx -> executionInstanceDataRepository.create(tx, jobInstance.getInstanceId(), null, batchStatus, new Timestamp(new Date().getTime())));
 
             RuntimeFlowInSplitExecution runtimeFlowInSplitExecution = new RuntimeFlowInSplitExecution(jobInstance, jpaExecutionInstanceData.getId());
             runtimeFlowInSplitExecution.setBatchStatus(batchStatus.name());
@@ -347,7 +347,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
                     throw new IllegalArgumentException(timestampType.name());
             }
 
-            return txManager.executeWithResult(tx -> executionInstanceDataRepository.getJobExecutionField(tx, jobExecutionId, selectField));
+            return txManager.execute(tx -> executionInstanceDataRepository.getJobExecutionField(tx, jobExecutionId, selectField));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -356,7 +356,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public String jobOperatorQueryJobExecutionBatchStatus(long jobExecutionId) {
         try {
-            return txManager.executeWithResult(tx -> executionInstanceDataRepository.<BatchStatus>getJobExecutionField(tx, jobExecutionId, JpaExecutionInstanceDataFields.BATCH_STATUS)).name();
+            return txManager.execute(tx -> executionInstanceDataRepository.<BatchStatus>getJobExecutionField(tx, jobExecutionId, JpaExecutionInstanceDataFields.BATCH_STATUS)).name();
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -365,7 +365,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public String jobOperatorQueryJobExecutionExitStatus(long key) {
         try {
-            return txManager.executeWithResult(tx -> executionInstanceDataRepository.getJobExecutionField(tx, key, JpaExecutionInstanceDataFields.EXIT_STATUS));
+            return txManager.execute(tx -> executionInstanceDataRepository.getJobExecutionField(tx, key, JpaExecutionInstanceDataFields.EXIT_STATUS));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -379,7 +379,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public long jobOperatorQueryJobExecutionJobInstanceId(long key) throws NoSuchJobExecutionException {
         try {
-            Long jobInstanceId = txManager.executeWithResult(tx -> executionInstanceDataRepository.getJobExecutionField(tx, key, JpaExecutionInstanceDataFields.JOB_INSTANCE_ID));
+            Long jobInstanceId = txManager.execute(tx -> executionInstanceDataRepository.getJobExecutionField(tx, key, JpaExecutionInstanceDataFields.JOB_INSTANCE_ID));
 
             if (jobInstanceId != null) {
                 return jobInstanceId;
@@ -397,7 +397,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public Properties getParameters(long jobExecutionId) throws NoSuchJobExecutionException {
         try {
-            Properties jobParameters = txManager.executeWithResult(tx -> executionInstanceDataRepository.getJobExecutionField(tx, jobExecutionId, JpaExecutionInstanceDataFields.PARAMETERS));
+            Properties jobParameters = txManager.execute(tx -> executionInstanceDataRepository.getJobExecutionField(tx, jobExecutionId, JpaExecutionInstanceDataFields.PARAMETERS));
 
             if (jobParameters != null) {
                 return jobParameters;
@@ -414,7 +414,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public void updateBatchStatusOnly(long executionInstanceDataId, BatchStatus batchStatus, Timestamp updatedOn) {
         try {
-            txManager.executeWithResult(tx -> executionInstanceDataRepository.updateBatchStatus(tx, executionInstanceDataId, batchStatus, updatedOn));
+            txManager.execute(tx -> executionInstanceDataRepository.updateBatchStatus(tx, executionInstanceDataId, batchStatus, updatedOn));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -423,7 +423,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public void updateWithFinalExecutionStatusesAndTimestamps(long executionInstanceDataId, BatchStatus batchStatus, String exitStatus, Timestamp endedOn) {
         try {
-            txManager.executeWithResult(tx -> executionInstanceDataRepository.updateBatchStatusEnded(tx, executionInstanceDataId, batchStatus, exitStatus, endedOn));
+            txManager.execute(tx -> executionInstanceDataRepository.updateBatchStatusEnded(tx, executionInstanceDataId, batchStatus, exitStatus, endedOn));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -432,7 +432,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public void markJobStarted(long executionInstanceDataId, Timestamp startedOn) {
         try {
-            txManager.executeWithResult(tx -> executionInstanceDataRepository.updateBatchStatusStarted(tx, executionInstanceDataId, startedOn));
+            txManager.execute(tx -> executionInstanceDataRepository.updateBatchStatusStarted(tx, executionInstanceDataId, startedOn));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -441,7 +441,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public IJobExecution jobOperatorGetJobExecution(long jobExecutionId) {
         try {
-            return txManager.executeWithResult(tx -> {
+            return txManager.execute(tx -> {
                 JpaExecutionInstanceData jpaExecutionInstanceData = executionInstanceDataRepository.find(tx, jobExecutionId);
                 JpaJobInstanceData jpaJobInstanceData = jobInstanceDataRepository.find(tx, jpaExecutionInstanceData.getJobInstanceId());
 
@@ -458,7 +458,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public List<IJobExecution> jobOperatorGetJobExecutions(long jobInstanceId) {
         try {
-            List<JpaExecutionInstanceData> jpaExecutionInstanceDataResult = txManager.executeWithResult(tx -> executionInstanceDataRepository.getJobExecutions(tx, jobInstanceId));
+            List<JpaExecutionInstanceData> jpaExecutionInstanceDataResult = txManager.execute(tx -> executionInstanceDataRepository.getJobExecutions(tx, jobInstanceId));
             return jpaExecutionInstanceDataResult.stream().map(JpaExecutionInstanceData::toJobExecution).collect(Collectors.toList());
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -468,7 +468,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public Set<Long> jobOperatorGetRunningExecutions(String jobName) {
         try {
-            return txManager.executeWithResult(tx -> executionInstanceDataRepository.getJobRunningExecutions(tx, jobName));
+            return txManager.execute(tx -> executionInstanceDataRepository.getJobRunningExecutions(tx, jobName));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -477,7 +477,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public JobStatus getJobStatusFromExecution(long jobExecutionId) {
         try {
-            return txManager.executeWithResult(tx -> {
+            return txManager.execute(tx -> {
                 JpaExecutionInstanceData jpaExecutionInstanceData = executionInstanceDataRepository.find(tx, jobExecutionId);
 
                 JpaJobStatus jobStatus = jobStatusRepository.find(tx, jpaExecutionInstanceData.getJobInstanceId());
@@ -493,7 +493,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public String getTagName(long jobExecutionId) {
         try {
-            JpaJobInstanceData jpaJobInstanceData = txManager.executeWithResult(tx -> {
+            JpaJobInstanceData jpaJobInstanceData = txManager.execute(tx -> {
                 JpaExecutionInstanceData jpaExecutionInstanceData = executionInstanceDataRepository.find(tx, jobExecutionId);
                 return jobInstanceDataRepository.find(tx, jpaExecutionInstanceData.getJobInstanceId());
             });
@@ -506,7 +506,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public long getMostRecentExecutionId(long jobInstanceId) {
         try {
-            JpaExecutionInstanceData jpaExecutionInstanceData = txManager.executeWithResult(tx -> executionInstanceDataRepository.getMostRecentByJobInstance(tx, jobInstanceId));
+            JpaExecutionInstanceData jpaExecutionInstanceData = txManager.execute(tx -> executionInstanceDataRepository.getMostRecentByJobInstance(tx, jobInstanceId));
             return jpaExecutionInstanceData.getId();
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -519,7 +519,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public StepExecutionImpl createStepExecution(long jobExecutionId, StepContextImpl stepContext) {
         try {
-            JpaStepExecutionInstanceData jpaStepExecutionInstanceData = txManager.executeWithResult(tx -> stepExecutionInstanceDataRepository.insert(tx, jobExecutionId, stepContext));
+            JpaStepExecutionInstanceData jpaStepExecutionInstanceData = txManager.execute(tx -> stepExecutionInstanceDataRepository.insert(tx, jobExecutionId, stepContext));
             return jpaStepExecutionInstanceData != null ? jpaStepExecutionInstanceData.toStepExecution() : null;
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -529,7 +529,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public void updateStepExecution(StepContextImpl stepContext) {
         try {
-            txManager.executeWithResult(tx -> stepExecutionInstanceDataRepository.update(tx, stepContext));
+            txManager.execute(tx -> stepExecutionInstanceDataRepository.update(tx, stepContext));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -538,7 +538,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public Map<String, StepExecution> getMostRecentStepExecutionsForJobInstance(long jobInstanceId) {
         try {
-            return txManager.executeWithResult(tx -> stepExecutionInstanceDataRepository.getExternalJobInstanceData(tx, jobInstanceId));
+            return txManager.execute(tx -> stepExecutionInstanceDataRepository.getExternalJobInstanceData(tx, jobInstanceId));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -547,7 +547,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public List<StepExecution> getStepExecutionsForJobExecution(long jobExecutionId) {
         try {
-            return txManager.executeWithResult(tx -> stepExecutionInstanceDataRepository.getStepExecutionsByJobExecution(tx, jobExecutionId));
+            return txManager.execute(tx -> stepExecutionInstanceDataRepository.getStepExecutionsByJobExecution(tx, jobExecutionId));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
@@ -556,7 +556,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public StepExecution getStepExecutionByStepExecutionId(long stepExecId) {
         try {
-            JpaStepExecutionInstanceData jpaStepExecutionInstanceData = txManager.executeWithResult(tx -> stepExecutionInstanceDataRepository.find(tx, stepExecId));
+            JpaStepExecutionInstanceData jpaStepExecutionInstanceData = txManager.execute(tx -> stepExecutionInstanceDataRepository.find(tx, stepExecId));
             return jpaStepExecutionInstanceData != null ? jpaStepExecutionInstanceData.toStepExecution() : null;
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -569,7 +569,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public StepStatus createStepStatus(long stepExecutionId) {
         try {
-            JpaStepStatus jpaStepStatus = txManager.executeWithResult(tx -> stepStatusRepository.create(tx, stepExecutionId));
+            JpaStepStatus jpaStepStatus = txManager.execute(tx -> stepStatusRepository.create(tx, stepExecutionId));
             return jpaStepStatus != null ? jpaStepStatus.toStepStatus() : null;
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -579,7 +579,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public StepStatus getStepStatus(long jobInstanceId, String stepName) {
         try {
-            JpaStepStatus jpaStepStatus = txManager.executeWithResult(tx -> stepStatusRepository.getStepStatusByJobInstance(tx, jobInstanceId, stepName));
+            JpaStepStatus jpaStepStatus = txManager.execute(tx -> stepStatusRepository.getStepStatusByJobInstance(tx, jobInstanceId, stepName));
             return jpaStepStatus != null ? jpaStepStatus.toStepStatus() : null;
         } catch (Exception e) {
             throw new PersistenceException(e);
@@ -589,7 +589,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
     @Override
     public void updateStepStatus(long stepExecutionId, StepStatus stepStatus) {
         try {
-            txManager.executeWithResult(tx -> stepStatusRepository.update(tx, stepExecutionId, stepStatus));
+            txManager.execute(tx -> stepStatusRepository.update(tx, stepExecutionId, stepStatus));
         } catch (Exception e) {
             throw new PersistenceException(e);
         }

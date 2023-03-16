@@ -106,7 +106,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
 
         //
         // Check duplicate name
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             if (duplicateNameChecker.countOtherEntitiesWithName(tx, creator.getScopeId(), creator.getName()) > 0) {
                 throw new KapuaDuplicateNameException(creator.getName());
             }
@@ -132,7 +132,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, job.getScopeId()));
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             //
             // Check existence
             if (jobRepository.find(tx, job.getScopeId(), job.getId()) == null) {
@@ -162,7 +162,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> jobRepository.find(tx, scopeId, jobId));
+        return txManager.execute(tx -> jobRepository.find(tx, scopeId, jobId));
     }
 
     @Override
@@ -177,7 +177,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> jobRepository.query(tx, query));
+        return txManager.execute(tx -> jobRepository.query(tx, query));
     }
 
     @Override
@@ -192,7 +192,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> jobRepository.count(tx, query));
+        return txManager.execute(tx -> jobRepository.count(tx, query));
     }
 
     @Override
@@ -232,7 +232,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, forced ? null : scopeId));
 
-        txManager.executeWithResult(tx -> {
+        txManager.execute(tx -> {
             //
             // Check existence
             if (jobRepository.find(tx, scopeId, jobId) == null) {

@@ -93,7 +93,7 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
 
         PermissionValidator.validatePermission(permission);
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             //
             // Check duplicates
             AccessPermissionQuery query = new AccessPermissionQueryImpl(accessPermissionCreator.getScopeId());
@@ -144,7 +144,7 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.delete, scopeId));
 
-        txManager.executeWithResult(tx -> accessPermissionRepository.delete(tx, scopeId, accessPermissionId));
+        txManager.execute(tx -> accessPermissionRepository.delete(tx, scopeId, accessPermissionId));
     }
 
     @Override
@@ -156,7 +156,7 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
-        return txManager.executeWithResult(tx -> accessPermissionRepository.find(tx, scopeId, accessPermissionId));
+        return txManager.execute(tx -> accessPermissionRepository.find(tx, scopeId, accessPermissionId));
     }
 
     @Override
@@ -170,7 +170,7 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN,
                 Actions.read, scopeId));
 
-        return txManager.executeWithResult(tx -> accessPermissionRepository.findByAccessInfoId(tx, scopeId, accessInfoId));
+        return txManager.execute(tx -> accessPermissionRepository.findByAccessInfoId(tx, scopeId, accessInfoId));
     }
 
     @Override
@@ -181,7 +181,7 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
-        return txManager.executeWithResult(tx -> accessPermissionRepository.query(tx, query));
+        return txManager.execute(tx -> accessPermissionRepository.query(tx, query));
     }
 
     @Override
@@ -192,6 +192,6 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
-        return txManager.executeWithResult(tx -> accessPermissionRepository.count(tx, query));
+        return txManager.execute(tx -> accessPermissionRepository.count(tx, query));
     }
 }

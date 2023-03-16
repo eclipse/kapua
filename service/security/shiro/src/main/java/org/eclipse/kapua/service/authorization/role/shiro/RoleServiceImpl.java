@@ -109,7 +109,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, roleCreator.getScopeId()));
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             // Check entity limit
             serviceConfigurationManager.checkAllowedEntities(roleCreator.getScopeId(), "Roles");
 
@@ -170,7 +170,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, role.getScopeId()));
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             //
             // Check existence
             if (roleRepository.find(tx, role.getScopeId(), role.getId()) == null) {
@@ -203,7 +203,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
             throw new KapuaException(KapuaErrorCodes.ADMIN_ROLE_DELETED_ERROR);
         }
 
-        txManager.executeWithResult(tx -> {
+        txManager.execute(tx -> {
 
             //
             // Check existence
@@ -231,7 +231,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> roleRepository.find(tx, scopeId, roleId));
+        return txManager.execute(tx -> roleRepository.find(tx, scopeId, roleId));
     }
 
     @Override
@@ -246,7 +246,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> roleRepository.query(tx, query));
+        return txManager.execute(tx -> roleRepository.query(tx, query));
     }
 
     @Override
@@ -261,7 +261,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
 
         //
         // Do count
-        return txManager.executeWithResult(tx -> roleRepository.count(tx, query));
+        return txManager.execute(tx -> roleRepository.count(tx, query));
     }
 
     //@ListenServiceEvent(fromAddress="account")

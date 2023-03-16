@@ -92,7 +92,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             //TODO: check whether this is anywhere efficient
             // Check duplicate ClientId
             if (repository.countByClientId(tx, deviceConnectionCreator.getScopeId(), deviceConnectionCreator.getClientId()) > 0) {
@@ -128,7 +128,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
 
         // Do Update
-        return txManager.executeWithResult(tx -> repository.update(tx, deviceConnection));
+        return txManager.execute(tx -> repository.update(tx, deviceConnection));
     }
 
     @Override
@@ -142,7 +142,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, scopeId));
 
         // Do find
-        return txManager.executeWithResult(tx -> repository.find(tx, scopeId, entityId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, entityId));
     }
 
     @Override
@@ -157,7 +157,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
         query.setPredicate(query.attributePredicate(DeviceConnectionAttributes.CLIENT_ID, clientId));
 
         // Do find
-        return txManager.executeWithResult(tx -> repository.query(tx, query).getFirstItem());
+        return txManager.execute(tx -> repository.query(tx, query).getFirstItem());
     }
 
     @Override
@@ -170,7 +170,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
 
         // Do query
-        return txManager.executeWithResult(tx -> repository.query(tx, query));
+        return txManager.execute(tx -> repository.query(tx, query));
     }
 
     @Override
@@ -183,7 +183,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
 
         // Do count
-        return txManager.executeWithResult(tx -> repository.count(tx, query));
+        return txManager.execute(tx -> repository.count(tx, query));
     }
 
     @Override
@@ -196,7 +196,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
 
-        txManager.executeWithResult(tx -> repository.delete(tx, scopeId, deviceConnectionId));
+        txManager.execute(tx -> repository.delete(tx, scopeId, deviceConnectionId));
     }
 
     @Override
@@ -229,7 +229,7 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
     private void deleteConnectionByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
         DeviceConnectionQuery query = entityFactory.newQuery(accountId);
 
-        txManager.executeWithResult(tx -> {
+        txManager.execute(tx -> {
             final DeviceConnectionListResult deviceConnectionsToDelete = repository.query(tx, query);
 
             for (DeviceConnection dc : deviceConnectionsToDelete.getItems()) {

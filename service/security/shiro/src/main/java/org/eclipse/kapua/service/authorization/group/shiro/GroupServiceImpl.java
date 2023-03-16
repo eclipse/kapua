@@ -99,7 +99,7 @@ public class GroupServiceImpl extends KapuaConfigurableServiceLinker implements 
         Group group = new GroupImpl(groupCreator.getScopeId());
         group.setName(groupCreator.getName());
         group.setDescription(groupCreator.getDescription());
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             //
             // Check duplicate name
             if (duplicateNameChecker.countOtherEntitiesWithName(tx, group.getScopeId(), group.getName()) > 0) {
@@ -130,7 +130,7 @@ public class GroupServiceImpl extends KapuaConfigurableServiceLinker implements 
 
         //
         // Do update
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             //
             // Check duplicate name
             if (duplicateNameChecker.countOtherEntitiesWithName(tx, group.getScopeId(), group.getId(), group.getName()) > 0) {
@@ -151,7 +151,7 @@ public class GroupServiceImpl extends KapuaConfigurableServiceLinker implements 
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.delete, scopeId));
 
-        txManager.executeWithResult(tx -> groupRepository.delete(tx, scopeId, groupId));
+        txManager.execute(tx -> groupRepository.delete(tx, scopeId, groupId));
     }
 
     @Override
@@ -167,7 +167,7 @@ public class GroupServiceImpl extends KapuaConfigurableServiceLinker implements 
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> groupRepository.find(tx, scopeId, groupId));
+        return txManager.execute(tx -> groupRepository.find(tx, scopeId, groupId));
     }
 
     @Override
@@ -182,7 +182,7 @@ public class GroupServiceImpl extends KapuaConfigurableServiceLinker implements 
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> groupRepository.query(tx, query));
+        return txManager.execute(tx -> groupRepository.query(tx, query));
     }
 
     @Override
@@ -197,7 +197,7 @@ public class GroupServiceImpl extends KapuaConfigurableServiceLinker implements 
 
         //
         // Do count
-        return txManager.executeWithResult(tx -> groupRepository.count(tx, query));
+        return txManager.execute(tx -> groupRepository.count(tx, query));
     }
 
     //@ListenServiceEvent(fromAddress="account")

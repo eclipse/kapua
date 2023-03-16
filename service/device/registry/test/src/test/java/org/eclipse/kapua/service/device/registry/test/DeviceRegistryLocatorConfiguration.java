@@ -22,8 +22,10 @@ import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.jpa.EventStorerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.internal.KapuaMessageFactoryImpl;
@@ -109,8 +111,7 @@ public class DeviceRegistryLocatorConfiguration {
                         permissionFactory,
                         new DeviceConnectionFactoryImpl(),
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
-                        new DeviceConnectionImplJpaRepository(),
-                        eventStorer));
+                        new DeviceConnectionImplJpaRepository()));
                 bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
 
                 bind(DeviceRepository.class).toInstance(new DeviceImplJpaRepository());
@@ -136,7 +137,8 @@ public class DeviceRegistryLocatorConfiguration {
                         new AccessPermissionImplJpaRepository(),
                         new AccessRoleImplJpaRepository(),
                         new RoleImplJpaRepository(),
-                        new RolePermissionImplJpaRepository(), eventStorer)
+                        new RolePermissionImplJpaRepository(),
+                        new EventStorerImpl(new EventStoreRecordImplJpaRepository()))
                 );
             }
         };

@@ -31,13 +31,13 @@ public class JpaTxManager implements TxManager {
     }
 
     @Override
-    public <R> R executeWithResult(TxConsumer<R> transactionConsumer, BiConsumer<TxContext, R>... additionalTxConsumers) throws KapuaException {
+    public <R> R execute(TxConsumer<R> transactionConsumer, BiConsumer<TxContext, R>... additionalTxConsumers) throws KapuaException {
         final EntityManager em = entityManagerFactory.createEntityManager();
         final EntityTransaction tx = em.getTransaction();
         tx.begin();
         try {
             final JpaTxContext txHolder = new JpaTxContext(em);
-            final R res = transactionConsumer.<R>executeWithResult(txHolder);
+            final R res = transactionConsumer.<R>execute(txHolder);
             for (final BiConsumer<TxContext, R> additionalTxConsumer : additionalTxConsumers) {
                 additionalTxConsumer.accept(txHolder, res);
             }

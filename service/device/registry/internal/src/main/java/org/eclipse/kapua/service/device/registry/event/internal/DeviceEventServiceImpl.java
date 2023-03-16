@@ -90,7 +90,7 @@ public class DeviceEventServiceImpl
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.write, deviceEventCreator.getScopeId()));
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             //
             // Check that device exists
             final Device device = deviceRepository.find(tx, deviceEventCreator.getScopeId(), deviceEventCreator.getDeviceId());
@@ -129,7 +129,7 @@ public class DeviceEventServiceImpl
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, scopeId));
 
-        return txManager.executeWithResult(tx -> repository.find(tx, scopeId, entityId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, entityId));
     }
 
     @Override
@@ -143,7 +143,7 @@ public class DeviceEventServiceImpl
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, query.getScopeId()));
 
-        return txManager.executeWithResult(tx -> repository.query(tx, query));
+        return txManager.execute(tx -> repository.query(tx, query));
     }
 
     @Override
@@ -157,7 +157,7 @@ public class DeviceEventServiceImpl
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, query.getScopeId()));
 
-        return txManager.executeWithResult(tx -> repository.count(tx, query));
+        return txManager.execute(tx -> repository.count(tx, query));
     }
 
     @Override
@@ -169,7 +169,7 @@ public class DeviceEventServiceImpl
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.delete, scopeId));
 
-        txManager.executeWithResult(tx -> repository.delete(tx, scopeId, deviceEventId));
+        txManager.execute(tx -> repository.delete(tx, scopeId, deviceEventId));
     }
 
 

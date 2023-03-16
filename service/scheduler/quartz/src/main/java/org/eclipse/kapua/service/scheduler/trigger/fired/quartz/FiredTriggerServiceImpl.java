@@ -76,7 +76,7 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             // Check existence of Trigger
             if (triggerRepository.find(tx, firedTriggerCreator.getScopeId(), firedTriggerCreator.getTriggerId()) == null) {
                 throw new KapuaEntityNotFoundException(Trigger.TYPE, firedTriggerCreator.getTriggerId());
@@ -104,7 +104,7 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> firedTriggerRepository.find(tx, scopeId, firedTriggerId));
+        return txManager.execute(tx -> firedTriggerRepository.find(tx, scopeId, firedTriggerId));
     }
 
     @Override
@@ -119,7 +119,7 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> firedTriggerRepository.query(tx, query));
+        return txManager.execute(tx -> firedTriggerRepository.query(tx, query));
     }
 
     @Override
@@ -134,7 +134,7 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> firedTriggerRepository.count(tx, query));
+        return txManager.execute(tx -> firedTriggerRepository.count(tx, query));
     }
 
     @Override
@@ -150,7 +150,7 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
 
         //
         // Do delete
-        txManager.executeWithResult(tx -> firedTriggerRepository.delete(tx, scopeId, firedTriggerId));
+        txManager.execute(tx -> firedTriggerRepository.delete(tx, scopeId, firedTriggerId));
 
     }
 }

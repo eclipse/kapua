@@ -78,7 +78,7 @@ public class DeviceManagementOperationRegistryServiceImpl
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             //
             // Check device existence
             if (deviceRepository.find(tx, creator.getScopeId(), creator.getDeviceId()) == null) {
@@ -122,7 +122,7 @@ public class DeviceManagementOperationRegistryServiceImpl
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             //
             // Check device existence
             if (deviceRepository.find(tx, entity.getScopeId(), entity.getDeviceId()) == null) {
@@ -154,7 +154,7 @@ public class DeviceManagementOperationRegistryServiceImpl
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> repository.find(tx, scopeId, entityId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, entityId));
     }
 
     @Override
@@ -169,7 +169,7 @@ public class DeviceManagementOperationRegistryServiceImpl
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> repository.findByOperationId(tx, scopeId, operationId));
+        return txManager.execute(tx -> repository.findByOperationId(tx, scopeId, operationId));
     }
 
     @Override
@@ -184,7 +184,7 @@ public class DeviceManagementOperationRegistryServiceImpl
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> repository.query(tx, query));
+        return txManager.execute(tx -> repository.query(tx, query));
     }
 
     @Override
@@ -199,7 +199,7 @@ public class DeviceManagementOperationRegistryServiceImpl
 
         //
         // Do count
-        return txManager.executeWithResult(tx -> repository.count(tx, query));
+        return txManager.execute(tx -> repository.count(tx, query));
     }
 
     @Override
@@ -212,6 +212,6 @@ public class DeviceManagementOperationRegistryServiceImpl
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.delete, scopeId));
 
         // Do delete
-        txManager.executeWithResult(tx -> repository.delete(tx, scopeId, entityId));
+        txManager.execute(tx -> repository.delete(tx, scopeId, entityId));
     }
 }

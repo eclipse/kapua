@@ -92,7 +92,7 @@ public class JobDeviceManagementOperationServiceImpl
                 )
         );
 
-        return txManager.executeWithResult(tx -> {
+        return txManager.execute(tx -> {
             if (repository.count(tx, query) > 0) {
                 List<Map.Entry<String, Object>> uniqueAttributes = new ArrayList<>();
 
@@ -128,7 +128,7 @@ public class JobDeviceManagementOperationServiceImpl
 
         //
         // Do find
-        return txManager.executeWithResult(tx -> repository.find(tx, scopeId, jobDeviceManagementOperationId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, jobDeviceManagementOperationId));
     }
 
     @Override
@@ -143,7 +143,7 @@ public class JobDeviceManagementOperationServiceImpl
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> repository.query(tx, query));
+        return txManager.execute(tx -> repository.query(tx, query));
     }
 
     @Override
@@ -158,7 +158,7 @@ public class JobDeviceManagementOperationServiceImpl
 
         //
         // Do query
-        return txManager.executeWithResult(tx -> repository.count(tx, query));
+        return txManager.execute(tx -> repository.count(tx, query));
     }
 
     @Override
@@ -171,6 +171,6 @@ public class JobDeviceManagementOperationServiceImpl
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
 
         // Do delete
-        txManager.executeWithResult(tx -> repository.delete(tx, scopeId, jobDeviceManagementOperationId));
+        txManager.execute(tx -> repository.delete(tx, scopeId, jobDeviceManagementOperationId));
     }
 }

@@ -18,10 +18,10 @@ import java.util.function.BiConsumer;
 
 public interface TxManager {
 
-    <R> R executeWithResult(TxConsumer<R> transactionConsumer, BiConsumer<TxContext, R>... afterCommitConsumers) throws KapuaException;
+    <R> R execute(TxConsumer<R> transactionConsumer, BiConsumer<TxContext, R>... afterCommitConsumers) throws KapuaException;
 
     @FunctionalInterface
     public interface TxConsumer<R> {
-        R executeWithResult(TxContext txHolder) throws KapuaException;
+        R execute(TxContext txHolder) throws KapuaException;
     }
 }
