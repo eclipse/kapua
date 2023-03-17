@@ -22,7 +22,7 @@ import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
  *
  * @since 2.0.0
  */
-public class UserCredentialsModule extends AbstractKapuaModule implements Module {
+public class UserCredentialsModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(UserCredentialsService.class).to(UserCredentialsServiceImpl.class);
