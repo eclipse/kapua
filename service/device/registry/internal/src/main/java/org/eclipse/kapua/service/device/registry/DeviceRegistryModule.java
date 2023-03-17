@@ -55,7 +55,6 @@ import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventFacto
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImplJpaRepository;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventServiceImpl;
 import org.eclipse.kapua.service.device.registry.internal.CachingDeviceRepository;
-import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceImplJpaRepository;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCache;
@@ -71,7 +70,6 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(DeviceRegistryCacheFactory.class).toInstance(new DeviceRegistryCacheFactory());
-        bind(DeviceEntityManagerFactory.class).toInstance(new DeviceEntityManagerFactory());
         bind(DeviceFactory.class).to(DeviceFactoryImpl.class);
         bind(DeviceConnectionFactory.class).to(DeviceConnectionFactoryImpl.class);
         bind(DeviceConnectionOptionFactory.class).to(DeviceConnectionOptionFactoryImpl.class);

@@ -15,7 +15,6 @@ package org.eclipse.kapua.commons.event;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.ServiceModule;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreFactoryImpl;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
@@ -35,29 +34,22 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Base {@link ServiceModule} implementation to be used by the modules that listen for events.
- *
- * @since 1.0
- * @deprecated since 2.0.0 - use {@link ServiceEventTransactionalModule} instead
- */
-@Deprecated
-public abstract class ServiceEventModule implements ServiceModule {
+public abstract class ServiceEventTransactionalModule implements ServiceModule {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEventModule.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEventTransactionalModule.class);
 
     private static final int MAX_WAIT_LOOP_ON_SHUTDOWN = 30;
     private static final int SCHEDULED_EXECUTION_TIME_WINDOW = 30;
     private static final long WAIT_TIME = 1000;
 
-    private ServiceEventModuleConfiguration serviceEventModuleConfiguration;
+    private ServiceEventModuleTransactionalConfiguration serviceEventModuleConfiguration;
     private Set<String> subscriberNames = new HashSet<>();
 
     private ScheduledExecutorService houseKeeperScheduler;
     private ScheduledFuture<?> houseKeeperHandler;
-    private ServiceEventHousekeeper houseKeeperJob;
+    private ServiceEventTransactionalHousekeeper houseKeeperJob;
 
-    protected abstract ServiceEventModuleConfiguration initializeConfiguration();
+    protected abstract ServiceEventModuleTransactionalConfiguration initializeConfiguration();
 
     private String getSubscriptionName(String address, String subscriber) {
         return String.format("%s-%s", address, subscriber);
@@ -98,15 +90,14 @@ public abstract class ServiceEventModule implements ServiceModule {
         LOGGER.info("Starting service event module... start housekeeper");
         houseKeeperScheduler = Executors.newScheduledThreadPool(1);
         final KapuaLocator locator = KapuaLocator.getInstance();
-        houseKeeperJob = new ServiceEventHousekeeper(
+        houseKeeperJob = new ServiceEventTransactionalHousekeeper(
                 new EventStoreServiceImpl(locator.getService(AuthorizationService.class),
                         locator.getFactory(PermissionFactory.class),
-                        //FIXME: can we inject collaborators here?
-                        new JpaTxManager(serviceEventModuleConfiguration.getEntityManagerFactory().getJpaEntityManagerFactory()),
+                        serviceEventModuleConfiguration.getTxManager(),
                         new EventStoreFactoryImpl(),
                         new EventStoreRecordImplJpaRepository()
                 ),
-                serviceEventModuleConfiguration.getEntityManagerFactory(),
+                serviceEventModuleConfiguration.getTxManager(),
                 eventbus,
                 servicesEntryList);
         // Start time can be made random from 0 to 30 seconds

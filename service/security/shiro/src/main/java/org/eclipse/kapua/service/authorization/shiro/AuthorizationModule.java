@@ -171,7 +171,6 @@ public class AuthorizationModule extends AbstractKapuaModule {
     @Named("RoleServiceConfigurationManager")
     public ServiceConfigurationManager roleServiceConfigurationManager(
             RoleFactory roleFactory,
-            AuthorizationEntityManagerFactory authorizationEntityManagerFactory,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,

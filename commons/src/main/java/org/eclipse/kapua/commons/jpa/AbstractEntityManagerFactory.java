@@ -134,4 +134,9 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
 
         configurationPrinter.printLog();
     }
+
+    @Override
+    public EntityManagerFactory getJpaEntityManagerFactory() {
+        return this.entityManagerFactory;
+    }
 }

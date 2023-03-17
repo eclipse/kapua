@@ -14,9 +14,11 @@ package org.eclipse.kapua.service.account.internal;
 
 import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
-import org.eclipse.kapua.commons.event.ServiceEventModule;
-import org.eclipse.kapua.commons.event.ServiceEventModuleConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventModuleTransactionalConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSetting;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSettingKeys;
@@ -29,7 +31,7 @@ import java.util.List;
  *
  * @since 1.0.0
  */
-public class AccountServiceModule extends ServiceEventModule implements ServiceModule {
+public class AccountServiceModule extends ServiceEventTransactionalModule implements ServiceModule {
 
     private static final KapuaAccountSetting ACCOUNT_SETTING = KapuaAccountSetting.getInstance();
 
@@ -37,14 +39,14 @@ public class AccountServiceModule extends ServiceEventModule implements ServiceM
     private AccountService accountService;
 
     @Override
-    protected ServiceEventModuleConfiguration initializeConfiguration() {
+    protected ServiceEventModuleTransactionalConfiguration initializeConfiguration() {
         String address = ACCOUNT_SETTING.getString(KapuaAccountSettingKeys.ACCOUNT_EVENT_ADDRESS);
 
         List<ServiceEventClientConfiguration> eventBusClients = ServiceInspector.getEventBusClients(accountService, AccountService.class);
 
-        return new ServiceEventModuleConfiguration(
+        return new ServiceEventModuleTransactionalConfiguration(
                 address,
-                AccountEntityManagerFactory.getInstance(),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-account")),
                 eventBusClients.toArray(new ServiceEventClientConfiguration[0]));
     }
 

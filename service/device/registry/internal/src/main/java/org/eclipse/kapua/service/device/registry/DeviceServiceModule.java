@@ -13,17 +13,18 @@
 package org.eclipse.kapua.service.device.registry;
 
 import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
-import org.eclipse.kapua.commons.event.ServiceEventModule;
-import org.eclipse.kapua.commons.event.ServiceEventModuleConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventModuleTransactionalConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
-import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeviceServiceModule extends ServiceEventModule {
+public class DeviceServiceModule extends ServiceEventTransactionalModule {
 
     @Inject
     private DeviceConnectionService deviceConnectionService;
@@ -31,16 +32,16 @@ public class DeviceServiceModule extends ServiceEventModule {
     private DeviceRegistryService deviceRegistryService;
 
     @Override
-    protected ServiceEventModuleConfiguration initializeConfiguration() {
+    protected ServiceEventModuleTransactionalConfiguration initializeConfiguration() {
         KapuaDeviceRegistrySettings kapuaDeviceRegistrySettings = KapuaDeviceRegistrySettings.getInstance();
 
         List<ServiceEventClientConfiguration> serviceEventListenerConfigurations = new ArrayList<>();
         serviceEventListenerConfigurations.addAll(ServiceInspector.getEventBusClients(deviceRegistryService, DeviceRegistryService.class));
         serviceEventListenerConfigurations.addAll(ServiceInspector.getEventBusClients(deviceConnectionService, DeviceConnectionService.class));
 
-        return new ServiceEventModuleConfiguration(
+        return new ServiceEventModuleTransactionalConfiguration(
                 kapuaDeviceRegistrySettings.getString(KapuaDeviceRegistrySettingKeys.DEVICE_EVENT_ADDRESS),
-                DeviceEntityManagerFactory.getInstance(),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
                 serviceEventListenerConfigurations.toArray(new ServiceEventClientConfiguration[0])
         );
     }

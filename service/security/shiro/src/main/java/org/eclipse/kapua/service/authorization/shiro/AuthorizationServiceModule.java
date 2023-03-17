@@ -13,9 +13,11 @@
 package org.eclipse.kapua.service.authorization.shiro;
 
 import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
-import org.eclipse.kapua.commons.event.ServiceEventModule;
-import org.eclipse.kapua.commons.event.ServiceEventModuleConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventModuleTransactionalConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.group.GroupService;
@@ -27,7 +29,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuthorizationServiceModule extends ServiceEventModule {
+public class AuthorizationServiceModule extends ServiceEventTransactionalModule {
 
     @Inject
     private AccessInfoService accessInfoService;
@@ -39,16 +41,16 @@ public class AuthorizationServiceModule extends ServiceEventModule {
     private RoleService roleService;
 
     @Override
-    protected ServiceEventModuleConfiguration initializeConfiguration() {
+    protected ServiceEventModuleTransactionalConfiguration initializeConfiguration() {
         KapuaAuthorizationSetting kdrs = KapuaAuthorizationSetting.getInstance();
         List<ServiceEventClientConfiguration> selc = new ArrayList<>();
         selc.addAll(ServiceInspector.getEventBusClients(accessInfoService, AccessInfoService.class));
         selc.addAll(ServiceInspector.getEventBusClients(roleService, RoleService.class));
         selc.addAll(ServiceInspector.getEventBusClients(domainRegistryService, DomainRegistryService.class));
         selc.addAll(ServiceInspector.getEventBusClients(groupService, GroupService.class));
-        return new ServiceEventModuleConfiguration(
+        return new ServiceEventModuleTransactionalConfiguration(
                 kdrs.getString(KapuaAuthorizationSettingKeys.AUTHORIZATION_EVENT_ADDRESS),
-                AuthorizationEntityManagerFactory.getInstance(),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
                 selc.toArray(new ServiceEventClientConfiguration[0]));
     }
 

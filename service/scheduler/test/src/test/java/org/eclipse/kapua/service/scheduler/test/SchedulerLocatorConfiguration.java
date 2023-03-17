@@ -42,7 +42,6 @@ import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.job.internal.JobFactoryImpl;
 import org.eclipse.kapua.service.job.internal.JobImplJpaRepository;
 import org.eclipse.kapua.service.job.internal.JobServiceImpl;
-import org.eclipse.kapua.service.scheduler.quartz.SchedulerEntityManagerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
@@ -90,8 +89,6 @@ public class SchedulerLocatorConfiguration {
                 bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
 
                 // Inject actual Tag service related services
-                SchedulerEntityManagerFactory schedulerEntityManagerFactory = SchedulerEntityManagerFactory.getInstance();
-                bind(SchedulerEntityManagerFactory.class).toInstance(schedulerEntityManagerFactory);
                 bind(JobFactory.class).toInstance(new JobFactoryImpl());
                 final JobFactory jobFactory = new JobFactoryImpl();
                 final JobImplJpaRepository jobRepository = new JobImplJpaRepository();

@@ -13,8 +13,7 @@
 package org.eclipse.kapua.commons.event;
 
 /**
- * Service entry used buy the {@link ServiceEventModule} and the {@link ServiceEventHousekeeper} to bind/unbind the services to the correct addresses
- *
+ * Service entry used buy the {@link ServiceEventTransactionalModule} and the {@link ServiceEventTransactionalHousekeeper} to bind/unbind the services to the correct addresses
  */
 public class ServiceEntry {
 

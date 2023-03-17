@@ -31,4 +31,11 @@ public interface EntityManagerFactory {
      */
     public EntityManager createEntityManager() throws KapuaException;
 
+    /**
+     * This method is provided as a compatibility step in the process of removing kapua's overlapping implementation of JPA's concepts.
+     * Use it as a stepping stone to remove usages of this class entirely
+     *
+     * @return A {@link javax.persistence.EntityManagerFactory}
+     */
+    javax.persistence.EntityManagerFactory getJpaEntityManagerFactory();
 }
