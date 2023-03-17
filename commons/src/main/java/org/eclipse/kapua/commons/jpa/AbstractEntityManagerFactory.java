@@ -31,7 +31,9 @@ import java.util.Map;
  * Base {@code abstract} {@link EntityManager}.
  *
  * @since 1.0.0
+ * @deprecated since 2.0.0 - use {@link KapuaEntityManagerFactory} instead
  */
+@Deprecated
 public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.commons.jpa.EntityManagerFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityManagerFactory.class);

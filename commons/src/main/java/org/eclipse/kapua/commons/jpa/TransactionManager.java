@@ -18,7 +18,9 @@ import org.eclipse.kapua.KapuaException;
  * Defines the transaction manager behavior used by the services to wrap repositories
  *
  * @since 1.0
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.storage.TxManager} instead
  */
+@Deprecated
 public interface TransactionManager {
 
     /**

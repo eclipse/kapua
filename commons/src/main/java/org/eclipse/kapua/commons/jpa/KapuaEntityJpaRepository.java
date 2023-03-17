@@ -98,6 +98,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
                 res = doCreate(em, entity);
                 succeeded = true;
             } catch (KapuaEntityExistsException e) {
+                em.detach(entity);
                 if (++retry >= MAX_INSERT_ALLOWED_RETRY) {
                     throw e;
                 }
@@ -574,10 +575,11 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
      * @since 1.0.0
      */
     private <E, P> Path<P> extractAttribute(@NonNull Root<E> entityRoot, @NonNull String attributeName) {
-        Path<P> expressionPath = null;
+        Path<P> expressionPath;
         if (attributeName.contains(ATTRIBUTE_SEPARATOR)) {
             String[] pathComponents = attributeName.split(ATTRIBUTE_SEPARATOR_ESCAPED);
             Path<P> rootPath = entityRoot.get(pathComponents[0]);
+            expressionPath = rootPath;
             for (int i = 1; i < pathComponents.length; i++) {
                 expressionPath = rootPath.get(pathComponents[i]);
                 rootPath = expressionPath;
