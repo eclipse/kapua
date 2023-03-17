@@ -13,12 +13,11 @@
 package org.eclipse.kapua.service.systeminfo;
 
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.KapuaService;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
 @XmlRegistry
-public class SystemInfoXmlRegistry implements KapuaService {
+public class SystemInfoXmlRegistry {
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final SystemInfoFactory SYSTEM_INFO_FACTORY = LOCATOR.getFactory(SystemInfoFactory.class);
 
