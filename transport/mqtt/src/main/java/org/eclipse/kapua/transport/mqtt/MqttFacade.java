@@ -12,8 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.transport.mqtt;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.transport.TransportFacade;
 import org.eclipse.kapua.transport.exception.TransportClientGetException;
+import org.eclipse.kapua.transport.exception.TransportClientPoolExhaustedException;
 import org.eclipse.kapua.transport.exception.TransportSendException;
 import org.eclipse.kapua.transport.exception.TransportTimeoutException;
 import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
@@ -22,11 +24,13 @@ import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
 import org.eclipse.kapua.transport.mqtt.exception.MqttClientCallbackSetException;
 import org.eclipse.kapua.transport.mqtt.exception.MqttClientSubscribeException;
 import org.eclipse.kapua.transport.mqtt.pooling.MqttClientPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Implementation of {@link TransportFacade} API for MQTT transport facade.
@@ -34,6 +38,8 @@ import java.util.List;
  * @since 1.0.0
  */
 public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttMessage, MqttMessage> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MqttFacade.class);
 
     /**
      * The {@link MqttClient} used to make requests.
@@ -50,16 +56,31 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
     /**
      * Initializes a {@link MqttFacade} to be used to send requests to devices.
      *
-     * @throws TransportClientGetException When MQTT client is not available for the given node URI.
+     * @throws TransportClientPoolExhaustedException When {@link MqttClient} cannot be borrowed in the configured timeout (client.pool.borrow.wait.max)
+     * @throws TransportClientGetException           When {@link MqttClient} is not available for the given node URI.
      * @since 1.0.0
      */
-    public MqttFacade(@NotNull String nodeUri) throws TransportClientGetException {
+    public MqttFacade(@NotNull String nodeUri) throws TransportClientGetException, TransportClientPoolExhaustedException {
         this.nodeUri = nodeUri;
 
         //
         // Get the client form the pool
+        Long maxBorrowTimeout = null;
         try {
-            borrowedClient = MqttClientPool.getInstance(nodeUri).borrowObject();
+            MqttClientPool perBrokerMqttClientPool = MqttClientPool.getInstance(nodeUri);
+            maxBorrowTimeout = perBrokerMqttClientPool.getMaxWaitMillis();
+
+            long borrowTimerStart = System.nanoTime();
+            borrowedClient = perBrokerMqttClientPool.borrowObject();
+            long borrowTimerStop = System.nanoTime();
+
+            if (LOG.isDebugEnabled()) {
+                // Logging statistics on borrow time
+                LOG.debug("MqttClient borrowed for BrokerNode {} in {}ns. Max time waited currently is {}ms with a {}ms timeout",
+                        nodeUri, (borrowTimerStop - borrowTimerStart), perBrokerMqttClientPool.getMaxBorrowWaitTimeMillis(), maxBorrowTimeout);
+            }
+        } catch (NoSuchElementException nsee) {
+            throw new TransportClientPoolExhaustedException(nsee, nodeUri, maxBorrowTimeout);
         } catch (Exception e) {
             throw new TransportClientGetException(e, nodeUri);
         }
