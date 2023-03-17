@@ -14,6 +14,7 @@
 package org.eclipse.kapua.service.device.call.kura;
 
 import com.google.common.base.Strings;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -39,10 +40,10 @@ import org.eclipse.kapua.translator.exception.TranslatorNotFoundException;
 import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.TransportFacade;
 import org.eclipse.kapua.transport.exception.TransportClientGetException;
+import org.eclipse.kapua.transport.exception.TransportClientPoolExhaustedException;
 import org.eclipse.kapua.transport.exception.TransportTimeoutException;
 import org.eclipse.kapua.transport.message.TransportMessage;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.HashMap;
@@ -190,10 +191,11 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
      *
      * @param kuraRequestMessage The {@link KuraRequestMessage} to send.
      * @return The {@link TransportFacade} to use to send the {@link KuraResponseMessage}.
-     * @throws TransportClientGetException If getting the {@link TransportFacade} causes an {@link Exception}.
+     * @throws TransportClientPoolExhaustedException If a {@link TransportFacade} cannot be obtained within the configured timeout.
+     * @throws TransportClientGetException           If getting the {@link TransportFacade} causes an {@link Exception}.
      * @since 1.0.0
      */
-    protected TransportFacade<?, ?, ?, ?> borrowClient(KuraRequestMessage kuraRequestMessage) throws TransportClientGetException {
+    protected TransportFacade<?, ?, ?, ?> borrowClient(KuraRequestMessage kuraRequestMessage) throws TransportClientGetException, TransportClientPoolExhaustedException {
         String serverIp = null;
         try {
             serverIp = KapuaSecurityUtils.doPrivileged(() -> {
@@ -217,9 +219,10 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
 
             Map<String, Object> configParameters = new HashMap<>(1);
             configParameters.put("serverAddress", serverIp);
+
             return TRANSPORT_CLIENT_FACTORY.getFacade(configParameters);
-        } catch (TransportClientGetException tcge) {
-            throw tcge;
+        } catch (TransportClientGetException | TransportClientPoolExhaustedException tce) {
+            throw tce;
         } catch (Exception e) {
             throw new TransportClientGetException(e, serverIp);
         }

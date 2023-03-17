@@ -15,6 +15,7 @@ package org.eclipse.kapua.transport;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.transport.exception.TransportClientGetException;
+import org.eclipse.kapua.transport.exception.TransportClientPoolExhaustedException;
 import org.eclipse.kapua.transport.message.TransportChannel;
 import org.eclipse.kapua.transport.message.TransportMessage;
 import org.eclipse.kapua.transport.message.TransportPayload;
@@ -43,10 +44,11 @@ public interface TransportClientFactory<C extends TransportChannel, P extends Tr
      *
      * @param configParameters a {@link Map} containing optional config values for the facade
      * @return An instance of the {@link TransportFacade} implementing class.
-     * @throws TransportClientGetException If error occurs when getting the {@link TransportFacade}.
+     * @throws TransportClientPoolExhaustedException If a {@link TransportFacade} cannot be obtained within the configured timeout.
+     * @throws TransportClientGetException           If error occurs when getting the {@link TransportFacade}.
      * @since 1.0.0
      */
-    T getFacade(Map<String, Object> configParameters) throws TransportClientGetException;
+    T getFacade(Map<String, Object> configParameters) throws TransportClientGetException, TransportClientPoolExhaustedException;
 
     /**
      * Gets an instance of the {@link TransportClientConnectOptions} implementing class.

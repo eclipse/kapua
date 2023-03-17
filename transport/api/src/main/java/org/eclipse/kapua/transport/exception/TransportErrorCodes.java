@@ -15,28 +15,33 @@ package org.eclipse.kapua.transport.exception;
 import org.eclipse.kapua.KapuaErrorCode;
 
 /**
+ * {@link KapuaErrorCode}s for {@link TransportException}s.
+ *
  * @since 1.1.0
  */
 public enum TransportErrorCodes implements KapuaErrorCode {
 
     /**
-     * An error occurred when sending the {@link org.eclipse.kapua.transport.message.TransportMessage}.
-     *
+     * @see TransportSendException
      * @since 1.1.0
      */
     SEND_ERROR,
 
     /**
-     * A response as not been received within the given timeout.
-     *
+     * @see TransportTimeoutException
      * @since 1.1.0
      */
     TIMEOUT,
 
     /**
-     * Getting the {@link org.eclipse.kapua.transport.TransportFacade} produces an error.
-     *
+     * @see TransportClientGetException
      * @since 1.2.0
      */
-    CLIENT_GET
+    CLIENT_GET,
+
+    /**
+     * @see TransportClientPoolExhaustedException
+     * @since 2.0.0
+     */
+    CLIENT_POOL_EXHAUSTED
 }
