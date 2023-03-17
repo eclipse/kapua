@@ -17,6 +17,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.exception.TransportClientGetException;
+import org.eclipse.kapua.transport.exception.TransportClientPoolExhaustedException;
 import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
 import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
 import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
@@ -33,7 +34,7 @@ import java.util.Map;
 public class MqttClientFactoryImpl implements TransportClientFactory<MqttTopic, MqttPayload, MqttMessage, MqttMessage, MqttFacade, MqttClientConnectionOptions> {
 
     @Override
-    public MqttFacade getFacade(Map<String, Object> configParameters) throws TransportClientGetException {
+    public MqttFacade getFacade(Map<String, Object> configParameters) throws TransportClientGetException, TransportClientPoolExhaustedException {
         String host = (String) configParameters.get("serverAddress");
 
         if (Strings.isNullOrEmpty(host)) {
