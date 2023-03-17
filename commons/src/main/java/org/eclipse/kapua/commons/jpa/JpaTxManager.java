@@ -48,7 +48,9 @@ public class JpaTxManager implements TxManager {
             tx.commit();
             return res;
         } catch (Exception ex) {
-            tx.rollback();
+            if (tx.isActive()) {
+                tx.rollback();
+            }
             throw KapuaExceptionUtils.convertPersistenceException(ex);
         } finally {
             em.close();

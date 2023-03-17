@@ -31,7 +31,9 @@ import java.io.Serializable;
  * Kapua JPA entity manager wrapper
  *
  * @since 1.0
+ * @deprecated since 2.0.0 - either use a jpa's {@link javax.persistence.EntityManager} or a {@link org.eclipse.kapua.storage.TxManager}
  */
+@Deprecated
 public class EntityManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityManagerFactory.class);

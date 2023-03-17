@@ -20,7 +20,9 @@ import org.slf4j.LoggerFactory;
  * Transactional {@link TransactionManager} implementation.
  *
  * @since 1.0
+ * @deprecated since 2.0.0 - use {@link org.eclipse.kapua.storage.TxManager} instead
  */
+@Deprecated
 public class TransactionManagerNotTransacted implements TransactionManager {
 
     private static final Logger logger = LoggerFactory.getLogger(TransactionManagerNotTransacted.class);

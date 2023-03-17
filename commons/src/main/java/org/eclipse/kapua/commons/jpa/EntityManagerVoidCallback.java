@@ -18,7 +18,9 @@ import org.eclipse.kapua.KapuaException;
  * Entity manager callback service definition.
  *
  * @since 1.0
+ * @deprecated since 2.0.0 - never used
  */
+@Deprecated
 public interface EntityManagerVoidCallback {
 
     /**
@@ -27,11 +29,10 @@ public interface EntityManagerVoidCallback {
      * WARNING!<br>
      * The transactionality (if needed by the code) must be managed internally to this method.<br>
      * The caller method performs only a rollback (if the transaction is active and an error occurred)!<br>
-     * @see EntityManager
      *
      * @param entityManager
-     *
      * @throws KapuaException
+     * @see EntityManager
      */
     void onAction(EntityManager entityManager) throws KapuaException;
 
