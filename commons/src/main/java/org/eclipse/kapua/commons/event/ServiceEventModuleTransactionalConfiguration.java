@@ -12,22 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
-import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
+import org.eclipse.kapua.storage.TxManager;
 
-/**
- * @deprecated since 2.0.0 - use {@link ServiceEventModuleTransactionalConfiguration} instead
- */
-@Deprecated
-public class ServiceEventModuleConfiguration {
+public class ServiceEventModuleTransactionalConfiguration {
 
     private String internalAddress;
-    private EntityManagerFactory entityManagerFactory;
+    private TxManager txManager;
     private ServiceEventClientConfiguration[] serviceEventClientConfigurations;
 
-    public ServiceEventModuleConfiguration(String internalAddress, EntityManagerFactory entityManagerFactory,
-                                           ServiceEventClientConfiguration[] serviceEventListenerConfigurations) {
+    public ServiceEventModuleTransactionalConfiguration(String internalAddress,
+                                                        TxManager txManager,
+                                                        ServiceEventClientConfiguration[] serviceEventListenerConfigurations) {
         this.internalAddress = internalAddress;
-        this.entityManagerFactory = entityManagerFactory;
+        this.txManager = txManager;
         this.serviceEventClientConfigurations = serviceEventListenerConfigurations;
     }
 
@@ -35,8 +32,8 @@ public class ServiceEventModuleConfiguration {
         return internalAddress;
     }
 
-    public EntityManagerFactory getEntityManagerFactory() {
-        return entityManagerFactory;
+    public TxManager getTxManager() {
+        return txManager;
     }
 
     public ServiceEventClientConfiguration[] getServiceEventClientConfigurations() {

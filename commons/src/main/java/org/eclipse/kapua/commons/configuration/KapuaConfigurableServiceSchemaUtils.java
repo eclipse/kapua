@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
-import java.io.File;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.CommonsEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 /**
  * Configurable service database schema utilities.
@@ -41,8 +41,7 @@ public class KapuaConfigurableServiceSchemaUtils {
      * Executes the database scripts in the specified path matching the specified filter
      *
      * @param path
-     * @param fileFilter
-     *            file names pattern
+     * @param fileFilter file names pattern
      */
     public static void scriptSession(String path, String fileFilter) {
         EntityManager em = null;

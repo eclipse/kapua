@@ -30,7 +30,9 @@ import org.slf4j.LoggerFactory;
  * Entity manager session reference implementation.
  *
  * @since 1.0
+ * @deprecated since 2.0.0, use {@link JpaTxManager} instead
  */
+@Deprecated
 public class EntityManagerSession {
 
     private static final Logger logger = LoggerFactory.getLogger(EntityManagerSession.class);

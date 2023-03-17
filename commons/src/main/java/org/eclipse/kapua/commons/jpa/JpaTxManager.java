@@ -30,6 +30,10 @@ public class JpaTxManager implements TxManager {
         this.entityManagerFactory = entityManagerFactory;
     }
 
+    public EntityManagerFactory getEntityManagerFactory() {
+        return entityManagerFactory;
+    }
+
     @Override
     public <R> R execute(TxConsumer<R> transactionConsumer, BiConsumer<TxContext, R>... additionalTxConsumers) throws KapuaException {
         final EntityManager em = entityManagerFactory.createEntityManager();

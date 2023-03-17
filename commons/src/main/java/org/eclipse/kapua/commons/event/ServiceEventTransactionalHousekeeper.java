@@ -13,8 +13,7 @@
 package org.eclipse.kapua.commons.event;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.EntityManager;
-import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordAttributes;
@@ -32,9 +31,12 @@ import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -44,12 +46,10 @@ import java.util.List;
  * Event bus housekeeper. It is responsible to send unsent messages or send again messages gone in error.
  *
  * @since 1.0
- * @deprecated since 2.0.0 - use {@link ServiceEventTransactionalHousekeeper} instead
  */
-@Deprecated
-public class ServiceEventHousekeeper implements Runnable {
+public class ServiceEventTransactionalHousekeeper implements Runnable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEventHousekeeper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEventTransactionalHousekeeper.class);
 
     private enum EventsProcessType {
         OLD,
@@ -73,20 +73,27 @@ public class ServiceEventHousekeeper implements Runnable {
     /**
      * Default constructor
      *
-     * @param entityManagerFactory
+     * @param txManager
      * @param eventbus
      * @param servicesEntryList
-     * @throws KapuaException
      */
-    public ServiceEventHousekeeper(EventStoreService eventStoreService, EntityManagerFactory entityManagerFactory, ServiceEventBus eventbus, List<ServiceEntry> servicesEntryList) throws KapuaException {
+    public ServiceEventTransactionalHousekeeper(EventStoreService eventStoreService, TxManager txManager, ServiceEventBus eventbus, List<ServiceEntry> servicesEntryList) {
         this.eventbus = eventbus;
         this.servicesEntryList = servicesEntryList;
-        manager = entityManagerFactory.createEntityManager();
+        //In other words, chicken out if we are not in a jpa transaction, as this class relies too heavily on jpa and would need to be rewritten to be generic
+        if (txManager instanceof JpaTxManager) {
+            manager = ((JpaTxManager) txManager).getEntityManagerFactory().createEntityManager();
+        } else {
+            manager = null;
+        }
         kapuaEventService = eventStoreService;
     }
 
     @Override
     public void run() {
+        if (manager == null) {
+            return;
+        }
         //TODO handling events table cleanup
         running = true;
         while (running) {
@@ -100,8 +107,8 @@ public class ServiceEventHousekeeper implements Runnable {
                     LOGGER.warn("Generic error {}", e.getMessage(), e);
                 } finally {
                     //remove the lock if present
-                    if (manager.isTransactionActive()) {
-                        manager.rollback();
+                    if (manager.getTransaction().isActive()) {
+                        manager.getTransaction().rollback();
                     }
                 }
             }
@@ -125,8 +132,8 @@ public class ServiceEventHousekeeper implements Runnable {
             LOGGER.trace("The lock is handled by someone else or the last execution was to close");
         } finally {
             //remove the lock if present
-            if (manager.isTransactionActive()) {
-                manager.rollback();
+            if (manager.getTransaction().isActive()) {
+                manager.getTransaction().rollback();
             }
         }
     }
@@ -204,8 +211,8 @@ public class ServiceEventHousekeeper implements Runnable {
     private HousekeeperRun getLock(String serviceName) throws LockException, NoExecutionNeededException {
         HousekeeperRun kapuaEventHousekeeper = null;
         try {
-            manager.beginTransaction();
-            kapuaEventHousekeeper = manager.findWithLock(HousekeeperRun.class, serviceName);
+            manager.getTransaction().begin();
+            kapuaEventHousekeeper = manager.find(HousekeeperRun.class, serviceName, LockModeType.PESSIMISTIC_WRITE);
         } catch (Exception e) {
             throw new LockException(String.format("Cannot acquire lock: %s", e.getMessage()), e);
         }
@@ -220,7 +227,7 @@ public class ServiceEventHousekeeper implements Runnable {
         kapuaEventHousekeeper.setLastRunBy(serviceName);
         kapuaEventHousekeeper.setLastRunOn(startRun);
         manager.persist(kapuaEventHousekeeper);
-        manager.commit();
+        manager.getTransaction().commit();
     }
 
     private class LockException extends Exception {

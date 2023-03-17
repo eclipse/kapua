@@ -59,7 +59,6 @@ import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryI
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImplJpaRepository;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleQueryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
-import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
@@ -97,8 +96,6 @@ public class SecurityLocatorConfiguration {
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
                 // Inject actual Role service related services
-                AuthorizationEntityManagerFactory authorizationEntityManagerFactory = AuthorizationEntityManagerFactory.getInstance();
-                bind(AuthorizationEntityManagerFactory.class).toInstance(authorizationEntityManagerFactory);
                 bind(RoleService.class).toInstance(new RoleServiceImpl(
                         mockPermissionFactory,
                         mockedAuthorization,

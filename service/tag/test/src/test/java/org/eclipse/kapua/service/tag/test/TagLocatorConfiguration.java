@@ -61,7 +61,6 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventFactoryImpl;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImplJpaRepository;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventServiceImpl;
-import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceImplJpaRepository;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
@@ -120,9 +119,6 @@ public class TagLocatorConfiguration {
                 bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
 
                 // Inject actual Device service related services
-                DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.getInstance();
-                bind(DeviceEntityManagerFactory.class).toInstance(deviceEntityManagerFactory);
-
                 bind(TagRepository.class).to(TagImplJpaRepository.class);
                 bind(DeviceRegistryService.class).toInstance(
                         new DeviceRegistryServiceImpl(Mockito.mock(ServiceConfigurationManager.class),

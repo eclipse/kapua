@@ -13,9 +13,11 @@
 package org.eclipse.kapua.service.user.internal;
 
 import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
-import org.eclipse.kapua.commons.event.ServiceEventModule;
-import org.eclipse.kapua.commons.event.ServiceEventModuleConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventModuleTransactionalConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
+import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.setting.KapuaUserSetting;
 import org.eclipse.kapua.service.user.internal.setting.KapuaUserSettingKeys;
@@ -23,18 +25,18 @@ import org.eclipse.kapua.service.user.internal.setting.KapuaUserSettingKeys;
 import javax.inject.Inject;
 import java.util.List;
 
-public class UserServiceModule extends ServiceEventModule {
+public class UserServiceModule extends ServiceEventTransactionalModule {
 
     @Inject
     private UserService userService;
 
     @Override
-    protected ServiceEventModuleConfiguration initializeConfiguration() {
+    protected ServiceEventModuleTransactionalConfiguration initializeConfiguration() {
         final KapuaUserSetting kas = KapuaUserSetting.getInstance();
         final List<ServiceEventClientConfiguration> selc = ServiceInspector.getEventBusClients(userService, UserService.class);
-        return new ServiceEventModuleConfiguration(
+        return new ServiceEventModuleTransactionalConfiguration(
                 kas.getString(KapuaUserSettingKeys.USER_EVENT_ADDRESS),
-                new UserEntityManagerFactory(),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
                 selc.toArray(new ServiceEventClientConfiguration[0]));
     }
 }
