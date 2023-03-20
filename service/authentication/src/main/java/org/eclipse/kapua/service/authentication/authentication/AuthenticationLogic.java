@@ -49,6 +49,8 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 /**
  * Authentication logic definition
  *
@@ -60,9 +62,11 @@ public abstract class AuthenticationLogic {
 
     protected static final String PERMISSION_LOG = "{0}/{1}/{2} - {3}";
 
+    @Inject
+    protected AclCreator aclCreator;
+
     //TODO move to configuration
     protected boolean invalidateCache = true;
-    protected String aclHash;
 
     protected LoginMetric loginMetric = LoginMetric.getInstance();
     protected PublishMetric publishMetric = PublishMetric.getInstance();
@@ -82,14 +86,6 @@ public abstract class AuthenticationLogic {
     protected DeviceRegistryService deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
 
     private static final String USER_NOT_AUTHORIZED = "User not authorized!";
-
-    /**
-     * Default constructor
-     *
-     */
-    protected AuthenticationLogic() {
-        aclHash = "#";
-    }
 
     /**
      * Execute the connect logic returning the authorization list (ACL)

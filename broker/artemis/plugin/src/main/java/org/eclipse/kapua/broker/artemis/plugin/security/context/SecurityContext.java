@@ -63,6 +63,9 @@ public final class SecurityContext {
         DetailedServer
     }
 
+    //reserved String used as separator by Artemis on NOT_DURABLE_QUEUES (and DURABLE also?)
+    private static final String DOUBLE_COLON = "::";
+
     private static final MetricsService METRIC_SERVICE = MetricServiceFactory.getInstance();
     private LoginMetric loginMetric = LoginMetric.getInstance();
     private Gauge<Integer> sessionCount;
@@ -256,20 +259,30 @@ public final class SecurityContext {
 
     public boolean checkPublisherAllowed(SessionContext sessionContext, String address) {
         Acl acl = getAcl(sessionContext.getConnectionId());
-        return acl!=null && acl.canWrite(sessionContext.getPrincipal(), address);
+        return acl!=null && acl.canWrite(sessionContext.getPrincipal(), cleanSubscriptionPrefix(address));
     }
 
     public boolean checkConsumerAllowed(SessionContext sessionContext, String address) {
         Acl acl = getAcl(sessionContext.getConnectionId());
-        return acl!=null && acl.canRead(sessionContext.getPrincipal(), address);
+        return acl!=null && acl.canRead(sessionContext.getPrincipal(), cleanSubscriptionPrefix(address));
     }
 
     public boolean checkAdminAllowed(SessionContext sessionContext, String address) {
         Acl acl = getAcl(sessionContext.getConnectionId());
-        return acl!=null && acl.canManage(sessionContext.getPrincipal(), address);
+        return acl!=null && acl.canManage(sessionContext.getPrincipal(), cleanSubscriptionPrefix(address));
     }
 
-     private Acl getAcl(String connectionId) {
+    private String cleanSubscriptionPrefix(String address) {
+        int doubleColonPos = address.indexOf(DOUBLE_COLON);
+        if (doubleColonPos > -1) {
+            return address.substring(doubleColonPos + 1 + address.substring(doubleColonPos).indexOf('.'));
+        }
+        else {
+            return address;
+        }
+    }
+
+    private Acl getAcl(String connectionId) {
         Acl acl = aclMap.get(connectionId);
         if (acl==null) {
             //try from cache

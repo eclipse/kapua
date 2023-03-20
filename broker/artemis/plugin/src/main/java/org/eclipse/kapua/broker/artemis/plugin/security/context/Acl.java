@@ -29,15 +29,19 @@ public class Acl {
 
     private static Logger logger = LoggerFactory.getLogger(Acl.class);
 
+    private static final char SINGLE_WORD = '+';
+    private static final char ANY_WORDS = '#';
+    private static final char SEPARATOR = '/';
+
     private static final WildcardConfiguration WILDCARD_CONFIGURATION;
     //TODO inject!
     private static final LoginMetric LOGIN_METRIC = LoginMetric.getInstance();
 
     static {
         WILDCARD_CONFIGURATION = new WildcardConfiguration();
-        WILDCARD_CONFIGURATION.setSingleWord('+');
-        WILDCARD_CONFIGURATION.setAnyWords('#');
-        WILDCARD_CONFIGURATION.setDelimiter('/');
+        WILDCARD_CONFIGURATION.setSingleWord(SINGLE_WORD);
+        WILDCARD_CONFIGURATION.setAnyWords(ANY_WORDS);
+        WILDCARD_CONFIGURATION.setDelimiter(SEPARATOR);
     }
 
     private HierarchicalRepository<KapuaPrincipal> read;
@@ -108,15 +112,22 @@ public class Acl {
     }
 
     public boolean canRead(KapuaPrincipal principal, String address) {
-        return principal.equals(read.getMatch(address));
+        return !containsAnyWordWildcardBeforeLastPosition(address) && principal.equals(read.getMatch(address));
     }
 
     public boolean canWrite(KapuaPrincipal principal, String address) {
-        return principal.equals(write.getMatch(address));
+        return !containsWildcards(address) && principal.equals(write.getMatch(address));
     }
 
     public boolean canManage(KapuaPrincipal principal, String address) {
-        return principal.equals(admin.getMatch(address));
+        return !containsAnyWordWildcardBeforeLastPosition(address) && principal.equals(admin.getMatch(address));
     }
 
+    private boolean containsAnyWordWildcardBeforeLastPosition(String address) {
+        return address.indexOf(ANY_WORDS)<address.length()-1 && address.indexOf(ANY_WORDS)>-1;
+    }
+
+    private boolean containsWildcards(String address) {
+        return address.indexOf(ANY_WORDS)>-1 || address.indexOf(SINGLE_WORD)>-1 ;
+    }
 }

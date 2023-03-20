@@ -12,12 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.authentication;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.client.security.bean.AuthAcl;
-import org.eclipse.kapua.client.security.bean.AuthAcl.Action;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
@@ -32,13 +30,6 @@ import org.eclipse.kapua.client.security.bean.AuthContext;
  * @since 1.0
  */
 public class AdminAuthenticationLogic extends AuthenticationLogic {
-
-    /**
-     * Default constructor
-     *
-     */
-    public AdminAuthenticationLogic() {
-    }
 
     @Override
     public List<AuthAcl> connect(AuthContext authContext) throws KapuaException {
@@ -63,10 +54,9 @@ public class AdminAuthenticationLogic extends AuthenticationLogic {
     }
 
     protected List<AuthAcl> buildAuthorizationMap(UserPermissions userPermissions, AuthContext authContext) {
-        ArrayList<AuthAcl> ael = new ArrayList<AuthAcl>();
         StringBuilder aclDestinationsLog = new StringBuilder();
-        ael.add(createAuthorizationEntry(Action.all, aclHash, aclDestinationsLog));
-        logger.info("{}", aclDestinationsLog);
+        List<AuthAcl> ael = aclCreator.buildAdminAcls(authContext.getAccountName(), authContext.getClientId(), aclDestinationsLog);
+        logger.info("Admin ACLs: {}", aclDestinationsLog);
         return ael;
     }
 
