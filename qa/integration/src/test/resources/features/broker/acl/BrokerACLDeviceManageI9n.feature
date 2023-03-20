@@ -54,7 +54,7 @@ Feature: Broker ACL tests
 # Data manage
 #
   Scenario: DM1 Data manage publish to CTRL_ACC_REPLY is allowed
-  Normal user with data manage profile publishes to topic $EDC.{0}.*.*.REPLY.>
+  Normal user with data manage profile publishes to topic $EDC/{0}/+/+/REPLY/#
   and this is allowed.
     Given Mqtt Device is started
     And data manage account and user are created
@@ -65,7 +65,7 @@ Feature: Broker ACL tests
     And Mqtt Device is stoped
 
   Scenario: DM2 Data manage create sub-topic on CTRL_ACC_REPLY
-  Normal user with data manage profile publishes to topic $EDC.{0}.*.*.REPLY.foo
+  Normal user with data manage profile publishes to topic $EDC/{0}/+/+/REPLY/foo
   This means that foo topic is created and this is allowed as data manage has admin rights
   on REPLY.
     Given Mqtt Device is started
@@ -77,7 +77,7 @@ Feature: Broker ACL tests
     And Mqtt Device is stoped
 
   Scenario: DM3 Data manage subscribe on personal CTRL_ACC_REPLY
-  Normal user with data manage profile subscribes to $EDC.{0}.*.*.REPLY
+  Normal user with data manage profile subscribes to $EDC/{0}/+/+/REPLY
   Subscribe is not allowed, but it is on client's own topic. Is that OK?
     Given Mqtt Device is started
     And data manage account and user are created
@@ -88,7 +88,7 @@ Feature: Broker ACL tests
     And Mqtt Device is stoped
 
   Scenario: DM4 Data manage subscribe on CTRL_ACC_REPLY of another account
-  Normal user with data manage profile subscribes to $EDC.{0}.*.*.REPLY of other account
+  Normal user with data manage profile subscribes to $EDC/{0}/+/+/REPLY of other account
   Subscribe is not allowed on other account.
     Given Mqtt Device is started
     And data manage account and user are created
@@ -100,7 +100,7 @@ Feature: Broker ACL tests
     And Mqtt Device is stoped
 
   Scenario: DM5 Data manage publish to CTRL_ACC is not allowed
-  Normal user with data manage profile publishes to topic $EDC.{0}.>
+  Normal user with data manage profile publishes to topic $EDC/{0}/#
     Given Mqtt Device is started
     And data manage account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
@@ -111,7 +111,7 @@ Feature: Broker ACL tests
     And Mqtt Device is stoped
 
   Scenario: DM6 Data manage create sub-topic on CTRL_ACC is not allowed
-  Normal user with data manage profile publishes to topic $EDC.{0}.foo
+  Normal user with data manage profile publishes to topic $EDC/{0}/foo
   This means that foo topic is not created as data manage has no admin rights on this topic.
     Given Mqtt Device is started
     And data manage account and user are created
@@ -123,7 +123,7 @@ Feature: Broker ACL tests
     And Mqtt Device is stoped
 
   Scenario: DM7 Data manage subscribe on CTRL_ACC is not allowed
-  Normal user with data manage profile subscribes to $EDC.{0}.>
+  Normal user with data manage profile subscribes to $EDC/{0}/#
   Subscribe is not allowed.
     Given Mqtt Device is started
     And data manage account and user are created
@@ -134,7 +134,7 @@ Feature: Broker ACL tests
     And Mqtt Device is stoped
 
   Scenario: DM8 Data manage subscribe - publish - admin on CTRL_ACC_CLI
-  Normal user with data manage profile subscribes to $EDC.{0}.{1}.> and at the same time
+  Normal user with data manage profile subscribes to $EDC/{0}/{1}/# and at the same time
   publishes to subtopic foo. All this operations are allowed.
     Given Mqtt Device is started
     And data manage account and user are created
@@ -145,7 +145,7 @@ Feature: Broker ACL tests
     And Mqtt Device is stoped
 
   Scenario: DM9 Data manage subscribe - publish - admin on ACL_DATA_ACC
-  Normal user with data manage profile subscribes to {0}.> and at the same time
+  Normal user with data manage profile subscribes to {0}/# and at the same time
   publishes to subtopic foo. All this operations are allowed.
     Given Mqtt Device is started
     And data manage account and user are created
@@ -156,7 +156,7 @@ Feature: Broker ACL tests
     And Mqtt Device is stoped
 
   Scenario: DM10 Data manage subscribe - publish - admin on ACL_DATA_ACC_CLI
-  Normal user with data manage profile subscribes to {0}.{1}.> and at the same time
+  Normal user with data manage profile subscribes to {0}/{1}/# and at the same time
   publishes to subtopic foo. All this operations are allowed.
     Given Mqtt Device is started
     And data manage account and user are created
@@ -167,7 +167,7 @@ Feature: Broker ACL tests
     And Mqtt Device is stoped
 
   Scenario: DM11 Data manage publish to ACL_CTRL_ACC_NOTIFY is allowed
-  Normal user with data manage profile publishes to topic $EDC.{0}.*.*.NOTIFY.{1}.>
+  Normal user with data manage profile publishes to topic $EDC/{0}/+/+/NOTIFY/{1}/#
   Publish is allowed, but not subscribe and admin.
     Given Mqtt Device is started
     And data manage account and user are created
@@ -179,7 +179,7 @@ Feature: Broker ACL tests
 
     #Since we cannot intercept topic creation on our broker security plugin, this test has no more sense on ActiveMQ 5.x
 #  Scenario: DM12 Data manage create sub-topic on ACL_CTRL_ACC_NOTIFY is not allowed
-#    Normal user with data manage profile publishes to topic $EDC.{0}.*.*.NOTIFY.{1}.foo
+#    Normal user with data manage profile publishes to topic $EDC/{0}/+/+/NOTIFY/{1}/foo
 #    This means that foo topic is not created as data manage has no admin rights on this topic.
 #    Given Mqtt Device is started
 #      And data manage account and user are created
@@ -191,7 +191,7 @@ Feature: Broker ACL tests
 #      And Mqtt Device is stoped
 
   Scenario: DM13 Data manage subscribe on ACL_CTRL_ACC_NOTIFY is not allowed
-  Normal user with data manage profile subscribes to $EDC.{0}.*.*.NOTIFY.{1}.>
+  Normal user with data manage profile subscribes to $EDC/{0}/+/+/NOTIFY/{1}/#
   Subscribe is not allowed.
     Given Mqtt Device is started
     And data manage account and user are created
