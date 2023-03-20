@@ -12,12 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.storage;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 
-public interface KapuaNamedEntityRepository<E extends KapuaNamedEntity, L extends KapuaListResult<E>> extends KapuaUpdatableEntityRepository<E, L> {
+import java.util.Optional;
+
+public interface KapuaNamedEntityRepository<E extends KapuaNamedEntity, L extends KapuaListResult<E>>
+        extends KapuaUpdatableEntityRepository<E, L> {
     /**
      * Finds a {@link KapuaNamedEntity} by {@link KapuaNamedEntity#getName()}.
      *
@@ -25,7 +27,7 @@ public interface KapuaNamedEntityRepository<E extends KapuaNamedEntity, L extend
      * @return The {@link KapuaNamedEntity} found, or {@code null} if not found.
      * @since 2.0.0
      */
-    E findByName(TxContext txContext, String value) throws KapuaException;
+    Optional<E> findByName(TxContext txContext, String value);
 
     /**
      * Finds a {@link KapuaNamedEntity} by {@link KapuaNamedEntity#getName()}.
@@ -35,5 +37,5 @@ public interface KapuaNamedEntityRepository<E extends KapuaNamedEntity, L extend
      * @return The {@link KapuaNamedEntity} found, or {@code null} if not found.
      * @since 2.0.0
      */
-    E findByName(TxContext txContext, KapuaId scopeId, String value) throws KapuaException;
+    Optional<E> findByName(TxContext txContext, KapuaId scopeId, String value);
 }

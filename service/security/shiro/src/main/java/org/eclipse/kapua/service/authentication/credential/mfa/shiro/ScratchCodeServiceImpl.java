@@ -100,14 +100,11 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, scratchCode.getScopeId()));
 
         return txManager.execute(tx -> {
-            ScratchCode currentscratchCode = scratchCodeRepository.find(tx, scratchCode.getScopeId(), scratchCode.getId());
-
-            if (currentscratchCode == null) {
-                throw new KapuaEntityNotFoundException(ScratchCode.TYPE, scratchCode.getId());
-            }
+            ScratchCode currentscratchCode = scratchCodeRepository.find(tx, scratchCode.getScopeId(), scratchCode.getId())
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(ScratchCode.TYPE, scratchCode.getId()));
 
             // Passing attributes??
-            return scratchCodeRepository.update(tx, scratchCode);
+            return scratchCodeRepository.update(tx, currentscratchCode, scratchCode);
         });
     }
 
@@ -119,7 +116,8 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
-        return txManager.execute(tx -> scratchCodeRepository.find(tx, scopeId, scratchCodeId));
+        return txManager.execute(tx -> scratchCodeRepository.find(tx, scopeId, scratchCodeId))
+                .orElse(null);
     }
 
     @Override

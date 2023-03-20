@@ -19,6 +19,8 @@ import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Optional;
+
 public class UserCachedRepository
         extends KapuaNamedEntityRepositoryCachingWrapper<User, UserListResult>
         implements UserRepository {
@@ -30,11 +32,9 @@ public class UserCachedRepository
     }
 
     @Override
-    public User findByExternalId(TxContext txContext, String externalId) {
-        final User found = wrapped.findByExternalId(txContext, externalId);
-        if (found != null) {
-            entityCache.put(found);
-        }
+    public Optional<User> findByExternalId(TxContext txContext, String externalId) {
+        final Optional<User> found = wrapped.findByExternalId(txContext, externalId);
+        found.ifPresent(entityCache::put);
         return found;
     }
 }

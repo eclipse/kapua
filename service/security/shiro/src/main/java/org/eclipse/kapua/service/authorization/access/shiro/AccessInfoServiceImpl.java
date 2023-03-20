@@ -110,12 +110,9 @@ public class AccessInfoServiceImpl implements AccessInfoService {
             if (accessInfoCreator.getRoleIds() != null) {
                 for (KapuaId roleId : accessInfoCreator.getRoleIds()) {
                     // This checks also that the role belong to the same scopeId in which the access info is created
-                    Role role = roleRepository.find(tx, accessInfoCreator.getScopeId(), roleId);
-
-                    // If (role == null) then roleId does not exist, or it is in another Account scope.
-                    if (role == null) {
-                        throw new KapuaEntityNotFoundException(Role.TYPE, roleId);
-                    }
+                    Role role = roleRepository.find(tx, accessInfoCreator.getScopeId(), roleId)
+                            // If role is not present then roleId does not exist, or it is in another Account scope.
+                            .orElseThrow(() -> new KapuaEntityNotFoundException(Role.TYPE, roleId));
                 }
             }
 
@@ -165,7 +162,8 @@ public class AccessInfoServiceImpl implements AccessInfoService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
 
-        return txManager.execute(tx -> accessInfoRepository.find(tx, scopeId, accessInfoId));
+        return txManager.execute(tx -> accessInfoRepository.find(tx, scopeId, accessInfoId))
+                .orElse(null);
     }
 
     @Override

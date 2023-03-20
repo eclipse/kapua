@@ -77,7 +77,7 @@ public class DeviceManagementOperationRegistryServiceImpl
 
         return txManager.execute(tx -> {
             // Check device existence
-            if (deviceRepository.find(tx, creator.getScopeId(), creator.getDeviceId()) == null) {
+            if (!deviceRepository.find(tx, creator.getScopeId(), creator.getDeviceId()).isPresent()) {
                 throw new KapuaEntityNotFoundException(Device.TYPE, creator.getDeviceId());
             }
             // Create DeviceManagementOperationNotification
@@ -113,11 +113,11 @@ public class DeviceManagementOperationRegistryServiceImpl
 
         return txManager.execute(tx -> {
             // Check device existence
-            if (deviceRepository.find(tx, entity.getScopeId(), entity.getDeviceId()) == null) {
+            if (!deviceRepository.find(tx, entity.getScopeId(), entity.getDeviceId()).isPresent()) {
                 throw new KapuaEntityNotFoundException(Device.TYPE, entity.getDeviceId());
             }
             // Check existence
-            if (repository.find(tx, entity.getScopeId(), entity.getId()) == null) {
+            if (!repository.find(tx, entity.getScopeId(), entity.getId()).isPresent()) {
                 throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, entity.getId());
             }
             // Do update
@@ -133,7 +133,9 @@ public class DeviceManagementOperationRegistryServiceImpl
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, scopeId));
         // Do find
-        return txManager.execute(tx -> repository.find(tx, scopeId, entityId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, entityId))
+                .orElse(null);
+
     }
 
     @Override

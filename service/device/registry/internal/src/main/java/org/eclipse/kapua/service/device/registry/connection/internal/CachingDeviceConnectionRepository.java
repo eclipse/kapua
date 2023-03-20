@@ -21,6 +21,8 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionRepo
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCache;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Optional;
+
 public class CachingDeviceConnectionRepository
         implements DeviceConnectionRepository {
 
@@ -44,7 +46,7 @@ public class CachingDeviceConnectionRepository
     }
 
     @Override
-    public DeviceConnection find(TxContext txContext, KapuaId scopeId, KapuaId entityId) throws KapuaException {
+    public Optional<DeviceConnection> find(TxContext txContext, KapuaId scopeId, KapuaId entityId) {
         return wrapped.find(txContext, scopeId, entityId);
     }
 
@@ -71,7 +73,7 @@ public class CachingDeviceConnectionRepository
     }
 
     @Override
-    public DeviceConnection update(TxContext txContext, DeviceConnection currentEntity, DeviceConnection updatedEntity) throws KapuaException {
+    public DeviceConnection update(TxContext txContext, DeviceConnection currentEntity, DeviceConnection updatedEntity) {
         return wrapped.update(txContext, currentEntity, updatedEntity);
     }
 

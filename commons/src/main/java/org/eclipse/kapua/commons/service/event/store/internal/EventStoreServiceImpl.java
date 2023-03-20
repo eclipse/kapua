@@ -103,7 +103,8 @@ public class EventStoreServiceImpl
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, scopeId));
         // Make sure kapuaEvent exists
-        return txManager.execute(tx -> repository.find(tx, scopeId, kapuaEventId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, kapuaEventId))
+                .orElse(null);
     }
 
     @Override
@@ -114,7 +115,8 @@ public class EventStoreServiceImpl
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, kapuaEventId));
 
-        return txManager.execute(tx -> repository.find(tx, KapuaId.ANY, kapuaEventId));
+        return txManager.execute(tx -> repository.find(tx, KapuaId.ANY, kapuaEventId))
+                .orElse(null);
     }
 
     @Override

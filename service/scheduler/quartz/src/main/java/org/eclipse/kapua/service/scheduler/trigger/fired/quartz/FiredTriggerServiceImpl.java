@@ -78,7 +78,7 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
 
         return txManager.execute(tx -> {
             // Check existence of Trigger
-            if (triggerRepository.find(tx, firedTriggerCreator.getScopeId(), firedTriggerCreator.getTriggerId()) == null) {
+            if (!triggerRepository.find(tx, firedTriggerCreator.getScopeId(), firedTriggerCreator.getTriggerId()).isPresent()) {
                 throw new KapuaEntityNotFoundException(Trigger.TYPE, firedTriggerCreator.getTriggerId());
             }
 
@@ -99,7 +99,8 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
         // Do find
-        return txManager.execute(tx -> firedTriggerRepository.find(tx, scopeId, firedTriggerId));
+        return txManager.execute(tx -> firedTriggerRepository.find(tx, scopeId, firedTriggerId))
+                .orElse(null);
     }
 
     @Override

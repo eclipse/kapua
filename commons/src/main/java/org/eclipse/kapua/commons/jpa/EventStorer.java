@@ -15,9 +15,12 @@ package org.eclipse.kapua.commons.jpa;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 
-public interface EventStorer extends BiConsumer<TxContext, KapuaEntity> {
+public interface EventStorer extends BiConsumer<TxContext, Optional<? extends KapuaEntity>> {
     @Override
+    void accept(TxContext tx, Optional<? extends KapuaEntity> kapuaEntity);
+
     void accept(TxContext tx, KapuaEntity kapuaEntity);
 }

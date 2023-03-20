@@ -40,10 +40,8 @@ public class DeviceManagementOperationRepositoryImplJpaRepository
     @Override
     public DeviceManagementOperation delete(TxContext tx, KapuaId scopeId, KapuaId entityId) throws KapuaException {
         // Check existence
-        final DeviceManagementOperation toBeDeleted = this.find(tx, scopeId, entityId);
-        if (toBeDeleted == null) {
-            throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, entityId);
-        }
+        final DeviceManagementOperation toBeDeleted = this.find(tx, scopeId, entityId)
+                .orElseThrow(() -> new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, entityId));
         return this.delete(tx, toBeDeleted);
     }
 }

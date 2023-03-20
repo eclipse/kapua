@@ -30,10 +30,8 @@ public class DeviceEventImplJpaRepository
 
     @Override
     public DeviceEvent delete(TxContext tx, KapuaId scopeId, KapuaId deviceEventId) throws KapuaException {
-        final DeviceEvent toDelete = this.find(tx, scopeId, deviceEventId);
-        if (toDelete == null) {
-            throw new KapuaEntityNotFoundException(DeviceEvent.TYPE, deviceEventId);
-        }
+        final DeviceEvent toDelete = this.find(tx, scopeId, deviceEventId)
+                .orElseThrow(() -> new KapuaEntityNotFoundException(DeviceEvent.TYPE, deviceEventId));
 
         return this.delete(tx, toDelete);
     }

@@ -81,10 +81,8 @@ public class JobTargetServiceImpl implements JobTargetService {
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobTargetCreator.getScopeId()));
         return txManager.execute(tx -> {
             // Check Job Existing
-            final Job job = jobRepository.find(tx, jobTargetCreator.getScopeId(), jobTargetCreator.getJobId());
-            if (job == null) {
-                throw new KapuaEntityNotFoundException(Job.TYPE, jobTargetCreator.getJobId());
-            }
+            final Job job = jobRepository.find(tx, jobTargetCreator.getScopeId(), jobTargetCreator.getJobId())
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(Job.TYPE, jobTargetCreator.getJobId()));
             // Check duplicate
             JobTargetQuery jobTargetQuery = new JobTargetQueryImpl(jobTargetCreator.getScopeId());
             jobTargetQuery.setPredicate(
@@ -122,7 +120,8 @@ public class JobTargetServiceImpl implements JobTargetService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, scopeId));
         // Do find
-        return txManager.execute(tx -> jobTargetRepository.find(tx, scopeId, jobTargetId));
+        return txManager.execute(tx -> jobTargetRepository.find(tx, scopeId, jobTargetId))
+                .orElse(null);
     }
 
     @Override
@@ -156,11 +155,13 @@ public class JobTargetServiceImpl implements JobTargetService {
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobTarget.getScopeId()));
         // Check existence
-        if (find(jobTarget.getScopeId(), jobTarget.getId()) == null) {
-            throw new KapuaEntityNotFoundException(jobTarget.getType(), jobTarget.getId());
-        }
-        // Do update
-        return txManager.execute(tx -> jobTargetRepository.update(tx, jobTarget));
+        return txManager.execute(tx -> {
+            if (!jobTargetRepository.find(tx, jobTarget.getScopeId(), jobTarget.getId()).isPresent()) {
+                throw new KapuaEntityNotFoundException(jobTarget.getType(), jobTarget.getId());
+            }
+            // Do update
+            return jobTargetRepository.update(tx, jobTarget);
+        });
     }
 
     @Override

@@ -45,10 +45,8 @@ public class CredentialImplJpaRepository
     //Overwritten just to change the exception type
     @Override
     public Credential delete(TxContext tx, KapuaId scopeId, KapuaId credentialId) throws KapuaException {
-        final Credential toBeDeleted = this.find(tx, scopeId, credentialId);
-        if (toBeDeleted == null) {
-            throw new KapuaEntityNotFoundException(Credential.TYPE, credentialId);
-        }
+        final Credential toBeDeleted = this.find(tx, scopeId, credentialId)
+                .orElseThrow(() -> new KapuaEntityNotFoundException(Credential.TYPE, credentialId));
         return this.delete(tx, toBeDeleted);
     }
 }

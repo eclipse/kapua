@@ -45,10 +45,8 @@ public class RolePermissionImplJpaRepository
     // TODO: check if it is correct to remove this statement (already thrown by the delete method, but
     //  without TYPE)
     public RolePermission delete(TxContext txContext, KapuaId scopeId, KapuaId rolePermissionId) throws KapuaException {
-        RolePermission rolePermission = find(txContext, scopeId, rolePermissionId);
-        if (rolePermission == null) {
-            throw new KapuaEntityNotFoundException(RolePermission.TYPE, rolePermissionId);
-        }
+        RolePermission rolePermission = find(txContext, scopeId, rolePermissionId)
+                .orElseThrow(() -> new KapuaEntityNotFoundException(RolePermission.TYPE, rolePermissionId));
         return delete(txContext, rolePermission);
     }
 }

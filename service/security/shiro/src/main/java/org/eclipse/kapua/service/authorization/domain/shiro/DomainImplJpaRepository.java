@@ -44,12 +44,8 @@ public class DomainImplJpaRepository
     //for the sole purpose of changing exception type
     @Override
     public Domain delete(TxContext tx, KapuaId scopeId, KapuaId domainId) throws KapuaException {
-
-        final Domain toDelete = this.find(tx, scopeId, domainId);
-        if (toDelete == null) {
-            throw new KapuaEntityNotFoundException(Domain.TYPE, domainId);
-        }
-
+        final Domain toDelete = this.find(tx, scopeId, domainId)
+                .orElseThrow(() -> new KapuaEntityNotFoundException(Domain.TYPE, domainId));
         return this.delete(tx, toDelete);
     }
 

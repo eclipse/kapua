@@ -30,10 +30,8 @@ public class EventStoreRecordImplJpaRepository
     @Override
     //TODO: review, this only exists to change the exception type
     public EventStoreRecord update(TxContext tx, EventStoreRecord kapuaEvent) throws KapuaException {
-        final EventStoreRecord oldKapuaEvent = this.find(tx, kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
-        if (oldKapuaEvent == null) {
-            throw new KapuaEntityNotFoundException(EventStoreRecord.TYPE, kapuaEvent.getId());
-        }
+        final EventStoreRecord oldKapuaEvent = this.find(tx, kapuaEvent.getScopeId(), kapuaEvent.getEntityId())
+                .orElseThrow(() -> new KapuaEntityNotFoundException(EventStoreRecord.TYPE, kapuaEvent.getId()));
         return this.update(tx, oldKapuaEvent, kapuaEvent);
     }
 }

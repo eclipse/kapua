@@ -31,10 +31,8 @@ public class JobStepDefinitionImplJpaRepository
 
     @Override
     public JobStepDefinition delete(TxContext tx, KapuaId scopeId, KapuaId stepDefinitionId) throws KapuaException {
-        final JobStepDefinition toDelete = this.find(tx, scopeId, stepDefinitionId);
-        if (toDelete == null) {
-            throw new KapuaEntityNotFoundException(JobStepDefinition.TYPE, stepDefinitionId);
-        }
+        final JobStepDefinition toDelete = this.find(tx, scopeId, stepDefinitionId)
+                .orElseThrow(() -> new KapuaEntityNotFoundException(JobStepDefinition.TYPE, stepDefinitionId));
 
         return this.delete(tx, toDelete);
     }

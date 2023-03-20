@@ -217,10 +217,8 @@ public class JobStepServiceImpl implements JobStepService {
 
         return txManager.execute(tx -> {
             // Check existence
-            final JobStep currentJobStep = jobStepRepository.find(tx, jobStep.getScopeId(), jobStep.getId());
-            if (currentJobStep == null) {
-                throw new KapuaEntityNotFoundException(jobStep.getType(), jobStep.getId());
-            }
+            final JobStep currentJobStep = jobStepRepository.find(tx, jobStep.getScopeId(), jobStep.getId())
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(jobStep.getType(), jobStep.getId()));
             // Check job step definition
             validateJobStepProperties(tx, jobStep);
             // Check duplicate name
@@ -285,7 +283,8 @@ public class JobStepServiceImpl implements JobStepService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, scopeId));
         // Do find
-        return txManager.execute(tx -> jobStepRepository.find(tx, scopeId, jobStepId));
+        return txManager.execute(tx -> jobStepRepository.find(tx, scopeId, jobStepId))
+                .orElse(null);
     }
 
     @Override
@@ -318,10 +317,8 @@ public class JobStepServiceImpl implements JobStepService {
 
         txManager.execute(tx -> {
             // Check existence
-            final JobStep jobStep = jobStepRepository.find(tx, scopeId, jobStepId);
-            if (jobStep == null) {
-                throw new KapuaEntityNotFoundException(JobStep.TYPE, jobStepId);
-            }
+            final JobStep jobStep = jobStepRepository.find(tx, scopeId, jobStepId)
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(JobStep.TYPE, jobStepId));
             // Check Job Executions
             final JobExecutionQuery jobExecutionQuery = jobExecutionFactory.newQuery(scopeId);
             jobExecutionQuery.setPredicate(
@@ -332,7 +329,8 @@ public class JobStepServiceImpl implements JobStepService {
                 throw new CannotModifyJobStepsException(jobStep.getJobId());
             }
             // Do delete
-            JobStep deletedJobStep = jobStepRepository.find(tx, scopeId, jobStepId);
+            JobStep deletedJobStep = jobStepRepository.find(tx, scopeId, jobStepId)
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(JobStep.TYPE, jobStepId));
 
             jobStepRepository.delete(tx, scopeId, jobStepId);
             // Shift following steps of one position in the step index
@@ -394,7 +392,7 @@ public class JobStepServiceImpl implements JobStepService {
     }
 
     private void validateJobStepProperties(TxContext txContext, JobStepCreator jobStepCreator) throws KapuaException {
-        JobStepDefinition jobStepDefinition = jobStepDefinitionRepository.find(txContext, KapuaId.ANY, jobStepCreator.getJobStepDefinitionId());
+        JobStepDefinition jobStepDefinition = jobStepDefinitionRepository.find(txContext, KapuaId.ANY, jobStepCreator.getJobStepDefinitionId()).orElse(null);
         ArgumentValidator.notNull(jobStepDefinition, "jobStepCreator.jobStepDefinitionId");
 
         try {
@@ -405,7 +403,7 @@ public class JobStepServiceImpl implements JobStepService {
     }
 
     private void validateJobStepProperties(TxContext txContext, JobStep jobStep) throws KapuaException {
-        JobStepDefinition jobStepDefinition = jobStepDefinitionRepository.find(txContext, KapuaId.ANY, jobStep.getJobStepDefinitionId());
+        JobStepDefinition jobStepDefinition = jobStepDefinitionRepository.find(txContext, KapuaId.ANY, jobStep.getJobStepDefinitionId()).orElse(null);
         ArgumentValidator.notNull(jobStepDefinition, "jobStep.jobStepDefinitionId");
 
         try {

@@ -13,14 +13,13 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.DateParam;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.query.SortOrder;
@@ -88,7 +87,7 @@ public class DeviceEvents extends AbstractKapuaResource {
         DeviceEventQuery query = deviceEventFactory.newQuery(scopeId);
 
         if (deviceRegistryService.find(scopeId, deviceId) == null) {
-             throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
+            throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
         }
 
         AndPredicate andPredicate = query.andPredicate(query.attributePredicate(DeviceEventAttributes.DEVICE_ID, deviceId));

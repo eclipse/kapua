@@ -117,10 +117,8 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
                 throw new KapuaEntityUniquenessException(AccessPermission.TYPE, uniquesFieldValues);
             }
             // Do create
-            final AccessInfo accessInfo = accessInfoRepository.find(tx, accessPermissionCreator.getScopeId(), accessPermissionCreator.getAccessInfoId());
-            if (accessInfo == null) {
-                throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessPermissionCreator.getAccessInfoId());
-            }
+            final AccessInfo accessInfo = accessInfoRepository.find(tx, accessPermissionCreator.getScopeId(), accessPermissionCreator.getAccessInfoId())
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(AccessInfo.TYPE, accessPermissionCreator.getAccessInfoId()));
             AccessPermission accessPermission = new AccessPermissionImpl(accessPermissionCreator.getScopeId());
             accessPermission.setAccessInfoId(accessPermissionCreator.getAccessInfoId());
             accessPermission.setPermission(accessPermissionCreator.getPermission());
@@ -146,7 +144,8 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
         ArgumentValidator.notNull(accessPermissionId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
-        return txManager.execute(tx -> accessPermissionRepository.find(tx, scopeId, accessPermissionId));
+        return txManager.execute(tx -> accessPermissionRepository.find(tx, scopeId, accessPermissionId))
+                .orElse(null);
     }
 
     @Override

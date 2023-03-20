@@ -141,7 +141,8 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker 
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, scopeId));
 
         // Do find
-        return txManager.execute(tx -> repository.find(tx, scopeId, entityId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, entityId))
+                .orElse(null);
     }
 
     @Override

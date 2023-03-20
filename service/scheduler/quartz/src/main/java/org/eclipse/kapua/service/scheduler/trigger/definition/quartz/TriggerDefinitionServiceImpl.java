@@ -31,6 +31,7 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionS
 import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Singleton;
+import java.util.Optional;
 
 /**
  * {@link TriggerDefinitionService} implementation.
@@ -101,7 +102,8 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
         // Do find
-        return txManager.execute(tx -> triggerDefinitionRepository.find(tx, KapuaId.ANY, stepDefinitionId));
+        return txManager.execute(tx -> triggerDefinitionRepository.find(tx, KapuaId.ANY, stepDefinitionId))
+                .orElse(null);
     }
 
     @Override
@@ -111,7 +113,8 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
         // Do find
-        return txManager.execute(tx -> triggerDefinitionRepository.find(tx, scopeId, stepDefinitionId));
+        return txManager.execute(tx -> triggerDefinitionRepository.find(tx, scopeId, stepDefinitionId))
+                .orElse(null);
     }
 
     @Override
@@ -120,13 +123,14 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
         ArgumentValidator.notNull(name, "name");
         // Do find
         return txManager.execute(tx -> {
-            TriggerDefinition triggerDefinition = triggerDefinitionRepository.findByName(tx, name);
-            if (triggerDefinition != null) {
-                // Check Access
-                authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
-            }
-            return triggerDefinition;
-        });
+                    final Optional<TriggerDefinition> triggerDefinition = triggerDefinitionRepository.findByName(tx, name);
+                    if (triggerDefinition.isPresent()) {
+                        // Check Access
+                        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+                    }
+                    return triggerDefinition;
+                })
+                .orElse(null);
     }
 
     @Override
@@ -158,11 +162,12 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, null));
         // Do delete
         txManager.execute(tx -> {
-            if (triggerDefinitionRepository.find(tx, scopeId, stepDefinitionId) == null) {
+            final Optional<TriggerDefinition> toBeDeleted = triggerDefinitionRepository.find(tx, scopeId, stepDefinitionId);
+            if (!toBeDeleted.isPresent()) {
                 throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, stepDefinitionId);
             }
 
-            return triggerDefinitionRepository.delete(tx, scopeId, stepDefinitionId);
+            return triggerDefinitionRepository.delete(tx, toBeDeleted.get());
         });
 
     }

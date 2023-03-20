@@ -75,7 +75,7 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
 
         return txManager.execute(tx -> {
             // Check operation existence
-            if (deviceManagementOperationRepository.find(tx, creator.getScopeId(), creator.getOperationId()) == null) {
+            if (!deviceManagementOperationRepository.find(tx, creator.getScopeId(), creator.getOperationId()).isPresent()) {
                 throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, creator.getOperationId());
             }
             // Create DeviceManagementOperationNotification
@@ -99,7 +99,8 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, scopeId));
         // Do find
-        return txManager.execute(tx -> repository.find(tx, scopeId, entityId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, entityId))
+                .orElse(null);
     }
 
     @Override
