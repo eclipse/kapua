@@ -42,7 +42,7 @@ public class KapuaUpdatableEntityRepositoryCachingWrapper<
     }
 
     @Override
-    public E update(TxContext txContext, E currentEntity, E updatedEntity) throws KapuaException {
+    public E update(TxContext txContext, E currentEntity, E updatedEntity) {
         final E updated = wrapped.update(txContext, currentEntity, updatedEntity);
         entityCache.remove(KapuaId.ANY, currentEntity);
         return updated;

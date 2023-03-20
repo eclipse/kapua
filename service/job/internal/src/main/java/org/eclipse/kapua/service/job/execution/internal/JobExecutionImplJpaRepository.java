@@ -32,10 +32,8 @@ public class JobExecutionImplJpaRepository
 
     @Override
     public JobExecution delete(TxContext txContext, KapuaId scopeId, KapuaId jobExecutionId) throws KapuaException {
-        final JobExecution toBeDeleted = this.find(txContext, scopeId, jobExecutionId);
-        if (toBeDeleted == null) {
-            throw new KapuaEntityNotFoundException(JobExecution.TYPE, jobExecutionId);
-        }
+        final JobExecution toBeDeleted = this.find(txContext, scopeId, jobExecutionId)
+                .orElseThrow(() -> new KapuaEntityNotFoundException(JobExecution.TYPE, jobExecutionId));
         return this.delete(txContext, toBeDeleted);
     }
 

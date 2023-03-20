@@ -20,6 +20,8 @@ import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Optional;
+
 public class UserImplJpaRepository
         extends KapuaNamedEntityJpaRepository<User, UserImpl, UserListResult>
         implements UserRepository {
@@ -28,7 +30,7 @@ public class UserImplJpaRepository
     }
 
     @Override
-    public User findByExternalId(TxContext txContext, String externalId) {
+    public Optional<User> findByExternalId(TxContext txContext, String externalId) {
         return doFindByField(txContext, KapuaId.ANY, UserAttributes.EXTERNAL_ID, externalId);
     }
 }

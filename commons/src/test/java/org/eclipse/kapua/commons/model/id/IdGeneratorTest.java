@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
+import java.util.Optional;
 
 /**
  * Test the random identifier generator retry mechanism.
@@ -86,7 +87,7 @@ public class IdGeneratorTest extends AbstractCommonServiceTest {
                 // this insert will fail for a SystemSettingKey.KAPUA_INSERT_MAX_RETRY count
                 repo.create(tx, new CollisionEntity("Collision - second record"));
                 Assert.fail("The insert should throws exception!");
-                return null;
+                return Optional.empty();
             });
             // this insert creates the record with the correct id
         } catch (KapuaException e) {
@@ -114,7 +115,7 @@ public class IdGeneratorTest extends AbstractCommonServiceTest {
                 repo.create(tx, new CollisionEntity("PartialCollision - second record"));
                 Assert.assertEquals("The generated random identifiers count is wrong!", 2,
                         collisionIdGenerator.getGeneretedValuesCount());
-                return null;
+                return Optional.empty();
             });
         } catch (KapuaException e) {
             Assert.fail("The insert shouldn't throws exception!");
@@ -140,7 +141,7 @@ public class IdGeneratorTest extends AbstractCommonServiceTest {
                 Assert.assertEquals("The generated random identifiers count is wrong!", 3, collisionIdGenerator.getGeneretedValuesCount());
                 repo.create(tx, new CollisionEntity("NoKeyCollision - third record"));
                 Assert.fail("The insert should throws exception!");
-                return null;
+                return Optional.empty();
             });
         } catch (KapuaException e) {
             Assert.assertEquals("The generated random identifiers count is wrong!", MAX_RETRIES + 3,

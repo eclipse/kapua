@@ -89,10 +89,8 @@ public class DeviceEventServiceImpl
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.write, deviceEventCreator.getScopeId()));
         return txManager.execute(tx -> {
             // Check that device exists
-            final Device device = deviceRepository.find(tx, deviceEventCreator.getScopeId(), deviceEventCreator.getDeviceId());
-            if (device == null) {
-                throw new KapuaEntityNotFoundException(Device.TYPE, deviceEventCreator.getDeviceId());
-            }
+            final Device device = deviceRepository.find(tx, deviceEventCreator.getScopeId(), deviceEventCreator.getDeviceId())
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(Device.TYPE, deviceEventCreator.getDeviceId()));
 
             // Create the event
             DeviceEvent newEvent = entityFactory.newEntity(deviceEventCreator.getScopeId());
@@ -122,7 +120,8 @@ public class DeviceEventServiceImpl
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, scopeId));
 
-        return txManager.execute(tx -> repository.find(tx, scopeId, entityId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, entityId))
+                .orElse(null);
     }
 
     @Override

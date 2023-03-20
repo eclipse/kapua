@@ -20,6 +20,7 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
 
 import javax.validation.constraints.Null;
+import java.util.Optional;
 
 /**
  * {@link KapuaEntityRepository} utility methods.
@@ -46,7 +47,7 @@ public interface KapuaEntityRepository<E extends KapuaEntity, L extends KapuaLis
      * @param entityId The {@link KapuaEntity#getId()} of the entity to be found.
      * @since 2.0.0
      */
-    E find(TxContext txContext, @Null KapuaId scopeId, KapuaId entityId) throws KapuaException;
+    Optional<E> find(TxContext txContext, @Null KapuaId scopeId, KapuaId entityId);
 
     /**
      * Queries the {@link KapuaEntity}es.

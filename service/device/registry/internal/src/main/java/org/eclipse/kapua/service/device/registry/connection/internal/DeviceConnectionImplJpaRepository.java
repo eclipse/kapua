@@ -35,13 +35,10 @@ public class DeviceConnectionImplJpaRepository
     // TODO: check if it is correct to remove this statement (already thrown by the update method, but
     //  without TYPE)
     public DeviceConnection update(TxContext tx, DeviceConnection updatedEntity) throws KapuaException {
-        DeviceConnection currentEntity = this.find(tx, KapuaId.ANY, updatedEntity.getId());
-        // Updating if not null
-        if (currentEntity == null) {
-            throw new KapuaEntityNotFoundException(DeviceConnection.TYPE, updatedEntity.getId());
-        }
-
-        return this.update(tx, currentEntity, updatedEntity);
+        return this.find(tx, KapuaId.ANY, updatedEntity.getId())
+                // Updating if not null
+                .map(current -> this.update(tx, current, updatedEntity))
+                .orElseThrow(() -> new KapuaEntityNotFoundException(DeviceConnection.TYPE, updatedEntity.getId()));
     }
 
     @Override
@@ -49,12 +46,10 @@ public class DeviceConnectionImplJpaRepository
     //  without TYPE)
     public DeviceConnection delete(TxContext tx, KapuaId scopeId, KapuaId deviceConnectionId) throws KapuaException {
         // Checking existence
-        DeviceConnection entityToDelete = this.find(tx, scopeId, deviceConnectionId);
-        // Deleting if found
-        if (entityToDelete == null) {
-            throw new KapuaEntityNotFoundException(DeviceConnection.TYPE, deviceConnectionId);
-        }
-        return this.delete(tx, entityToDelete);
+        return this.find(tx, scopeId, deviceConnectionId)
+                // Deleting if found
+                .map(found -> this.delete(tx, found))
+                .orElseThrow(() -> new KapuaEntityNotFoundException(DeviceConnection.TYPE, deviceConnectionId));
     }
 
     @Override

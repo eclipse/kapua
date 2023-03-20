@@ -20,6 +20,8 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenListResult;
 import org.eclipse.kapua.service.authentication.token.AccessTokenRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Optional;
+
 public class AccessTokenImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<AccessToken, AccessTokenImpl, AccessTokenListResult>
         implements AccessTokenRepository {
@@ -28,7 +30,7 @@ public class AccessTokenImplJpaRepository
     }
 
     @Override
-    public AccessToken findByTokenId(TxContext tx, String tokenId) {
+    public Optional<AccessToken> findByTokenId(TxContext tx, String tokenId) {
         return doFindByField(tx, KapuaId.ANY, AccessTokenAttributes.TOKEN_ID, tokenId);
     }
 }

@@ -99,7 +99,8 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
 
-        return txManager.execute(tx -> domainRepository.find(tx, scopeId, domainId));
+        return txManager.execute(tx -> domainRepository.find(tx, scopeId, domainId))
+                .orElse(null);
     }
 
     @Override

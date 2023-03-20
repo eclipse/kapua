@@ -30,10 +30,8 @@ public class FiredTriggerImplJpaRepository
 
     @Override
     public FiredTrigger delete(TxContext tx, KapuaId scopeId, KapuaId firedTriggerId) throws KapuaException {
-        final FiredTrigger toBeDeleted = this.find(tx, scopeId, firedTriggerId);
-        if (toBeDeleted == null) {
-            throw new KapuaEntityNotFoundException(FiredTrigger.TYPE, firedTriggerId);
-        }
+        final FiredTrigger toBeDeleted = this.find(tx, scopeId, firedTriggerId)
+                .orElseThrow(() -> new KapuaEntityNotFoundException(FiredTrigger.TYPE, firedTriggerId));
         return this.delete(tx, toBeDeleted);
     }
 }

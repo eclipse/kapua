@@ -30,6 +30,7 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Singleton;
+import java.util.Optional;
 
 /**
  * {@link JobStepDefinitionService} implementation.
@@ -122,7 +123,8 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
 
         // Do find
-        return txManager.execute(tx -> repository.find(tx, scopeId, stepDefinitionId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, stepDefinitionId))
+                .orElse(null);
     }
 
     @Override
@@ -132,13 +134,13 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
         // Do find
         return txManager.execute(tx -> {
 
-            JobStepDefinition jobStepDefinition = repository.findByName(tx, name);
-            if (jobStepDefinition != null) {
+            Optional<JobStepDefinition> jobStepDefinition = repository.findByName(tx, name);
+            if (jobStepDefinition.isPresent()) {
                 // Check Access
                 authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
             }
             return jobStepDefinition;
-        });
+        }).orElse(null);
     }
 
     @Override

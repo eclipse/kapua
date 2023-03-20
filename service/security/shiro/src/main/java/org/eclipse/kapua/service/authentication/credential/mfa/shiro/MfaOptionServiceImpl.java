@@ -134,7 +134,8 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         final MfaOption option = txManager.execute(tx -> {
             // Check that the user is an internal user (external users cannot have the MFA enabled)
             final MfaOptionCreator finalMfaOptionCreator = mfaOptionCreator;
-            User user = userRepository.find(tx, finalMfaOptionCreator.getScopeId(), finalMfaOptionCreator.getUserId());
+            User user = userRepository.find(tx, finalMfaOptionCreator.getScopeId(), finalMfaOptionCreator.getUserId())
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(User.TYPE, finalMfaOptionCreator.getUserId()));
             if (!user.getUserType().equals(UserType.INTERNAL) || user.getExternalId() != null) {
                 throw new InternalUserOnlyException();
             }
@@ -151,7 +152,8 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             final MfaOption mfaOption = mfaOptionRepository.create(tx, toCreate);
 
             // generating base64 QR code image
-            Account account = accountRepository.find(tx, KapuaId.ANY, finalMfaOptionCreator.getScopeId());
+            Account account = accountRepository.find(tx, KapuaId.ANY, finalMfaOptionCreator.getScopeId())
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(Account.TYPE, finalMfaOptionCreator.getScopeId()));
             mfaOption.setQRCodeImage(generateQRCode(account.getOrganization().getName(), account.getName(), user.getName(), fullKey));
 
             return mfaOption;
@@ -230,7 +232,8 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
-        return txManager.execute(tx -> mfaOptionRepository.find(tx, scopeId, mfaOptionId));
+        return txManager.execute(tx -> mfaOptionRepository.find(tx, scopeId, mfaOptionId))
+                .orElse(null);
     }
 
     @Override
@@ -295,11 +298,8 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         ArgumentValidator.notNull(mfaOptionId, "mfaOptionId");
         return txManager.execute(tx -> {
             // Checking existence
-            MfaOption mfaOption = mfaOptionRepository.find(tx, scopeId, mfaOptionId);
-
-            if (mfaOption == null) {
-                throw new KapuaEntityNotFoundException(MfaOption.TYPE, mfaOptionId);
-            }
+            MfaOption mfaOption = mfaOptionRepository.find(tx, scopeId, mfaOptionId)
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(MfaOption.TYPE, mfaOptionId));
 
             // Trust key generation always performed
             // This allows the use only of a single trusted machine,
@@ -326,7 +326,8 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             ArgumentValidator.notNull(scopeId, "scopeId");
 
             // extracting the MfaOption
-            MfaOption mfaOption = mfaOptionRepository.find(tx, scopeId, mfaOptionId);
+            MfaOption mfaOption = mfaOptionRepository.find(tx, scopeId, mfaOptionId)
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(MfaOption.TYPE, mfaOptionId));
 
             // Reset the trust machine fields
             mfaOption.setTrustKey(null);

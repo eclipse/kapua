@@ -20,6 +20,7 @@ import org.eclipse.kapua.storage.TxManager;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import java.util.Arrays;
 import java.util.function.BiConsumer;
 
 public class JpaTxManager implements TxManager {
@@ -41,10 +42,9 @@ public class JpaTxManager implements TxManager {
         tx.begin();
         try {
             final JpaTxContext txHolder = new JpaTxContext(em);
-            final R res = transactionConsumer.<R>execute(txHolder);
-            for (final BiConsumer<TxContext, R> additionalTxConsumer : additionalTxConsumers) {
-                additionalTxConsumer.accept(txHolder, res);
-            }
+            final R res = transactionConsumer.execute(txHolder);
+            Arrays.stream(additionalTxConsumers)
+                    .forEach(additionalTxConsumer -> additionalTxConsumer.accept(txHolder, res));
             tx.commit();
             return res;
         } catch (Exception ex) {

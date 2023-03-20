@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -20,6 +19,7 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.storage.KapuaNamedEntityRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class KapuaNamedEntityJpaRepository<E extends KapuaNamedEntity, C extends E, L extends KapuaListResult<E>>
@@ -30,12 +30,12 @@ public class KapuaNamedEntityJpaRepository<E extends KapuaNamedEntity, C extends
     }
 
     @Override
-    public E findByName(TxContext txContext, String name) throws KapuaException {
+    public Optional<E> findByName(TxContext txContext, String name) {
         return doFindByField(txContext, KapuaId.ANY, KapuaNamedEntityAttributes.NAME, name);
     }
 
     @Override
-    public E findByName(TxContext txContext, KapuaId scopeId, String name) throws KapuaException {
+    public Optional<E> findByName(TxContext txContext, KapuaId scopeId, String name) {
         return doFindByField(txContext, scopeId, KapuaNamedEntityAttributes.NAME, name);
     }
 }

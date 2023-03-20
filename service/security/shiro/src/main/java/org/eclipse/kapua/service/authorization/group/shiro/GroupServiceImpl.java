@@ -110,12 +110,12 @@ public class GroupServiceImpl extends KapuaConfigurableServiceLinker implements 
         ArgumentValidator.validateEntityName(group.getName(), "group.name");
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.write, group.getScopeId()));
-        // Check existence
-        if (find(group.getScopeId(), group.getId()) == null) {
-            throw new KapuaEntityNotFoundException(Group.TYPE, group.getId());
-        }
-        // Do update
         return txManager.execute(tx -> {
+            // Check existence
+            if (!groupRepository.find(tx, group.getScopeId(), group.getId()).isPresent()) {
+                throw new KapuaEntityNotFoundException(Group.TYPE, group.getId());
+            }
+            // Do update
             // Check duplicate name
             if (duplicateNameChecker.countOtherEntitiesWithName(tx, group.getScopeId(), group.getId(), group.getName()) > 0) {
                 throw new KapuaDuplicateNameException(group.getName());
@@ -143,7 +143,8 @@ public class GroupServiceImpl extends KapuaConfigurableServiceLinker implements 
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.read, scopeId));
         // Do find
-        return txManager.execute(tx -> groupRepository.find(tx, scopeId, groupId));
+        return txManager.execute(tx -> groupRepository.find(tx, scopeId, groupId))
+                .orElse(null);
     }
 
     @Override

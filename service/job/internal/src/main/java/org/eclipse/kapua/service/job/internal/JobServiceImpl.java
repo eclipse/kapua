@@ -123,7 +123,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
 
         return txManager.execute(tx -> {
             // Check existence
-            if (jobRepository.find(tx, job.getScopeId(), job.getId()) == null) {
+            if (!jobRepository.find(tx, job.getScopeId(), job.getId()).isPresent()) {
                 throw new KapuaEntityNotFoundException(Job.TYPE, job.getId());
             }
             // Check duplicate name
@@ -143,7 +143,8 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
         // Do find
-        return txManager.execute(tx -> jobRepository.find(tx, scopeId, jobId));
+        return txManager.execute(tx -> jobRepository.find(tx, scopeId, jobId))
+                .orElse(null);
     }
 
     @Override
@@ -198,7 +199,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
 
         txManager.execute(tx -> {
             // Check existence
-            if (jobRepository.find(tx, scopeId, jobId) == null) {
+            if (!jobRepository.find(tx, scopeId, jobId).isPresent()) {
                 throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
             }
 

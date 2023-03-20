@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -122,10 +123,8 @@ public class TriggerServiceImpl implements TriggerService {
 
         return txManager.execute(tx -> {
             // Check trigger definition
-            TriggerDefinition triggerDefinition = triggerDefinitionRepository.find(tx, KapuaId.ANY, triggerCreator.getTriggerDefinitionId());
-            if (triggerDefinition == null) {
-                throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, triggerCreator.getTriggerDefinitionId());
-            }
+            TriggerDefinition triggerDefinition = triggerDefinitionRepository.find(tx, KapuaId.ANY, triggerCreator.getTriggerDefinitionId())
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(TriggerDefinition.TYPE, triggerCreator.getTriggerDefinitionId()));
 
             final Map<String, TriggerProperty> triggerDefinitionPropertiesByName = triggerDefinition.getTriggerProperties().stream().collect(Collectors.toMap(jsdp -> jsdp.getName(), Function.identity()));
             for (TriggerProperty jsp : triggerCreator.getTriggerProperties()) {
@@ -204,16 +203,14 @@ public class TriggerServiceImpl implements TriggerService {
 
         return txManager.execute(tx -> {
             // Check existence
-            if (triggerRepository.find(tx, trigger.getScopeId(), trigger.getId()) == null) {
+            if (!triggerRepository.find(tx, trigger.getScopeId(), trigger.getId()).isPresent()) {
                 throw new KapuaEntityNotFoundException(trigger.getType(), trigger.getId());
             }
 
             final Trigger adapted = adaptTrigger(tx, trigger);
             // Check trigger definition
-            TriggerDefinition triggerDefinition = triggerDefinitionRepository.find(tx, KapuaId.ANY, adapted.getTriggerDefinitionId());
-            if (triggerDefinition == null) {
-                throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, adapted.getTriggerDefinitionId());
-            }
+            TriggerDefinition triggerDefinition = triggerDefinitionRepository.find(tx, KapuaId.ANY, adapted.getTriggerDefinitionId())
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(TriggerDefinition.TYPE, adapted.getTriggerDefinitionId()));
 
             for (TriggerProperty jsp : adapted.getTriggerProperties()) {
                 for (TriggerProperty jsdp : triggerDefinition.getTriggerProperties()) {
@@ -301,11 +298,11 @@ public class TriggerServiceImpl implements TriggerService {
 
         // Do find
         return txManager.execute(tx -> {
-            final Trigger trigger = triggerRepository.find(tx, scopeId, triggerId);
-            if (trigger == null) {
-                return null;
+            final Optional<Trigger> trigger = triggerRepository.find(tx, scopeId, triggerId);
+            if (trigger.isPresent()) {
+                return adaptTrigger(tx, trigger.get());
             }
-            return adaptTrigger(tx, trigger);
+            return null;
         });
     }
 
@@ -377,14 +374,9 @@ public class TriggerServiceImpl implements TriggerService {
      * @since 1.1.0
      */
     private synchronized TriggerDefinition getTriggerDefinition(String triggerDefinitionName) throws KapuaException {
-        final TriggerDefinition triggerDefinition = txManager.execute(
-                tx -> triggerDefinitionRepository.findByName(tx, triggerDefinitionName));
-
-        if (triggerDefinition == null) {
-            throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, triggerDefinitionName);
-        }
-
-        return triggerDefinition;
+        return txManager.execute(
+                        tx -> triggerDefinitionRepository.findByName(tx, triggerDefinitionName))
+                .orElseThrow(() -> new KapuaEntityNotFoundException(TriggerDefinition.TYPE, triggerDefinitionName));
     }
 
     /**

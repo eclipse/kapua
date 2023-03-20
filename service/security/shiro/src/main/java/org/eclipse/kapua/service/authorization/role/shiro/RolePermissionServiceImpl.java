@@ -79,10 +79,8 @@ public class RolePermissionServiceImpl implements RolePermissionService {
 
         return txManager.execute(tx -> {
             // Check role existence
-            final Role role = roleRepository.find(tx, rolePermissionCreator.getScopeId(), rolePermissionCreator.getRoleId());
-            if (role == null) {
-                throw new KapuaEntityNotFoundException(Role.TYPE, rolePermissionCreator.getRoleId());
-            }
+            final Role role = roleRepository.find(tx, rolePermissionCreator.getScopeId(), rolePermissionCreator.getRoleId())
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(Role.TYPE, rolePermissionCreator.getRoleId()));
             // Check that the given permission matches the definition of the Domains.
             PermissionValidator.validatePermission(rolePermissionCreator.getPermission());
             // If permission are created out of the role permission scope, check that the current user has the permission on the external scopeId.
@@ -146,7 +144,8 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, scopeId));
 
-        return txManager.execute(tx -> rolePermissionRepository.find(tx, scopeId, rolePermissionId));
+        return txManager.execute(tx -> rolePermissionRepository.find(tx, scopeId, rolePermissionId))
+                .orElse(null);
     }
 
     @Override

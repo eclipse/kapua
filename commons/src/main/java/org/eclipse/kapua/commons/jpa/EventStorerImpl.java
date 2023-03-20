@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.event.ServiceEventScope;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -24,6 +25,8 @@ import org.eclipse.kapua.storage.TxContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 public class EventStorerImpl implements EventStorer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final EventStoreRecordRepository repository;
@@ -33,7 +36,19 @@ public class EventStorerImpl implements EventStorer {
     }
 
     @Override
+    public void accept(TxContext tx, Optional<? extends KapuaEntity> maybeKapuaEntity) {
+        if (!maybeKapuaEntity.isPresent()) {
+            return;
+        }
+        doAccept(tx, maybeKapuaEntity.get());
+    }
+
+    @Override
     public void accept(TxContext tx, KapuaEntity kapuaEntity) {
+        doAccept(tx, kapuaEntity);
+    }
+
+    void doAccept(TxContext tx, KapuaEntity kapuaEntity) {
         if (kapuaEntity instanceof EventStoreRecord) {
             return;
         }
@@ -69,7 +84,10 @@ public class EventStorerImpl implements EventStorer {
                 persistedKapuaEvent = repository.create(tx, ServiceEventUtil.fromServiceEventBus(serviceEvent));
             } else {
                 persistedKapuaEvent = repository.update(tx,
-                        ServiceEventUtil.mergeToEntity(repository.find(tx, serviceEvent.getScopeId(), KapuaEid.parseCompactId(serviceEvent.getId())), serviceEvent));
+                        ServiceEventUtil.mergeToEntity(
+                                repository.find(tx, serviceEvent.getScopeId(), KapuaEid.parseCompactId(serviceEvent.getId()))
+                                        .orElseThrow(() -> new KapuaEntityNotFoundException(EventStoreRecord.TYPE, serviceEvent.getId())),
+                                serviceEvent));
             }
         } catch (KapuaException e) {
             throw new RuntimeException(e);

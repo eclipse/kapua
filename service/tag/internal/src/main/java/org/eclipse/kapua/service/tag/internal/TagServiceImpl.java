@@ -36,6 +36,7 @@ import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Optional;
 
 /**
  * {@link TagService} implementation.
@@ -121,7 +122,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
         // Check duplicate name
         return txManager.execute(tx -> {
             // Check existence
-            if (tagRepository.find(tx, tag.getScopeId(), tag.getId()) == null) {
+            if (!tagRepository.find(tx, tag.getScopeId(), tag.getId()).isPresent()) {
                 throw new KapuaEntityNotFoundException(Tag.TYPE, tag.getId());
             }
             // Check duplicate name
@@ -143,11 +144,14 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.delete, scopeId));
         // Check existence
-        if (find(scopeId, tagId) == null) {
-            throw new KapuaEntityNotFoundException(Tag.TYPE, tagId);
-        }
-        // Do delete
-        txManager.execute(tx -> tagRepository.delete(tx, scopeId, tagId));
+        txManager.execute(tx -> {
+            final Optional<Tag> toDelete = tagRepository.find(tx, scopeId, tagId);
+            if (!toDelete.isPresent()) {
+                throw new KapuaEntityNotFoundException(Tag.TYPE, tagId);
+            }
+            // Do delete
+            return tagRepository.delete(tx, toDelete.get());
+        });
     }
 
     @Override
@@ -158,7 +162,8 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.read, scopeId));
         // Do find
-        return txManager.execute(tx -> tagRepository.find(tx, scopeId, tagId));
+        return txManager.execute(tx -> tagRepository.find(tx, scopeId, tagId))
+                .orElse(null);
     }
 
     @Override

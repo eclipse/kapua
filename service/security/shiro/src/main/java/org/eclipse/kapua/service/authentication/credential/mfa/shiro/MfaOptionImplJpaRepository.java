@@ -24,6 +24,8 @@ import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionQuery;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Optional;
+
 public class MfaOptionImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<MfaOption, MfaOptionImpl, MfaOptionListResult>
         implements MfaOptionRepository {
@@ -35,11 +37,8 @@ public class MfaOptionImplJpaRepository
     //Overwritten for the sole purpose of changing the exception thrown
     @Override
     public MfaOption update(TxContext tx, MfaOption mfaOption) throws KapuaException {
-        final MfaOption currentMfaOption = this.find(tx, mfaOption.getScopeId(), mfaOption.getId());
-
-        if (currentMfaOption == null) {
-            throw new KapuaEntityNotFoundException(MfaOption.TYPE, mfaOption.getId());
-        }
+        final MfaOption currentMfaOption = this.find(tx, mfaOption.getScopeId(), mfaOption.getId())
+                .orElseThrow(() -> new KapuaEntityNotFoundException(MfaOption.TYPE, mfaOption.getId()));
 
         // Passing attributes??
         return this.update(tx, currentMfaOption, mfaOption);
@@ -59,10 +58,10 @@ public class MfaOptionImplJpaRepository
 
     @Override
     public MfaOption delete(TxContext txContext, KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
-        if (this.find(txContext, scopeId, mfaOptionId) == null) {
+        final Optional<MfaOption> toDelete = this.find(txContext, scopeId, mfaOptionId);
+        if (!toDelete.isPresent()) {
             throw new KapuaEntityNotFoundException(MfaOption.TYPE, mfaOptionId);
         }
-        return this.delete(txContext, scopeId, mfaOptionId);
-
+        return this.delete(txContext, toDelete.get());
     }
 }

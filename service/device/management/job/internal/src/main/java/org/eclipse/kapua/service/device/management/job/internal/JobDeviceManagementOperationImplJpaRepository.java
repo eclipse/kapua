@@ -32,10 +32,8 @@ public class JobDeviceManagementOperationImplJpaRepository
     @Override
     public JobDeviceManagementOperation delete(TxContext tx, KapuaId scopeId, KapuaId jobDeviceManagementOperationId) throws KapuaException {
         // Check existence
-        final JobDeviceManagementOperation toBeDeleted = this.find(tx, scopeId, jobDeviceManagementOperationId);
-        if (toBeDeleted == null) {
-            throw new KapuaEntityNotFoundException(JobDeviceManagementOperation.TYPE, jobDeviceManagementOperationId);
-        }
+        final JobDeviceManagementOperation toBeDeleted = this.find(tx, scopeId, jobDeviceManagementOperationId)
+                .orElseThrow(() -> new KapuaEntityNotFoundException(JobDeviceManagementOperation.TYPE, jobDeviceManagementOperationId));
         return this.delete(tx, toBeDeleted);
     }
 }

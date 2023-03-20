@@ -21,6 +21,8 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.storage.KapuaEntityRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Optional;
+
 public class KapuaEntityRepositoryCachingWrapper<E extends KapuaEntity, L extends KapuaListResult<E>>
         implements KapuaEntityRepository<E, L> {
     protected final KapuaEntityRepository<E, L> wrapped;
@@ -37,16 +39,13 @@ public class KapuaEntityRepositoryCachingWrapper<E extends KapuaEntity, L extend
     }
 
     @Override
-    public E find(TxContext txContext, KapuaId scopeId, KapuaId entityId) throws KapuaException {
-        final KapuaEntity cached = entityCache.get(scopeId, entityId);
-        if (cached != null) {
-            return (E) cached;
+    public Optional<E> find(TxContext txContext, KapuaId scopeId, KapuaId entityId) {
+        final Optional<E> fromCache = Optional.ofNullable(entityCache.get(scopeId, entityId)).map(e -> (E) e);
+        if (fromCache.isPresent()) {
+            return fromCache;
         }
-        final E found = wrapped.find(txContext, scopeId, entityId);
-        if (found == null) {
-            return null;
-        }
-        entityCache.put(found);
+        final Optional<E> found = wrapped.find(txContext, scopeId, entityId);
+        found.ifPresent(entityCache::put);
         return found;
     }
 

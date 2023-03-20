@@ -15,7 +15,9 @@ package org.eclipse.kapua.service.authentication.token;
 import org.eclipse.kapua.storage.KapuaUpdatableEntityRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Optional;
+
 public interface AccessTokenRepository
         extends KapuaUpdatableEntityRepository<AccessToken, AccessTokenListResult> {
-    AccessToken findByTokenId(TxContext tx, String tokenId);
+    Optional<AccessToken> findByTokenId(TxContext tx, String tokenId);
 }

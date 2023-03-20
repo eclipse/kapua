@@ -82,17 +82,13 @@ public class AccessRoleServiceImpl implements AccessRoleService {
 
         return txManager.execute(tx -> {
             // Check that AccessInfo exists
-            final AccessInfo accessInfo = accessInfoRepository.find(tx, accessRoleCreator.getScopeId(), accessRoleCreator.getAccessInfoId());
+            final AccessInfo accessInfo = accessInfoRepository.find(tx, accessRoleCreator.getScopeId(), accessRoleCreator.getAccessInfoId())
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(AccessInfo.TYPE, accessRoleCreator.getAccessInfoId()));
 
-            if (accessInfo == null) {
-                throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessRoleCreator.getAccessInfoId());
-            }
             // Check that Role exists
-            final Role role = roleRepository.find(tx, accessRoleCreator.getScopeId(), accessRoleCreator.getRoleId());
+            final Role role = roleRepository.find(tx, accessRoleCreator.getScopeId(), accessRoleCreator.getRoleId())
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(Role.TYPE, accessRoleCreator.getRoleId()));
 
-            if (role == null) {
-                throw new KapuaEntityNotFoundException(Role.TYPE, accessRoleCreator.getRoleId());
-            }
             // Check that Role is not already assigned
             AccessRoleQuery query = new AccessRoleQueryImpl(accessRoleCreator.getScopeId());
             query.setPredicate(
@@ -122,7 +118,8 @@ public class AccessRoleServiceImpl implements AccessRoleService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
         // Do find
-        return txManager.execute(tx -> accessRoleRepository.find(tx, scopeId, accessRoleId));
+        return txManager.execute(tx -> accessRoleRepository.find(tx, scopeId, accessRoleId))
+                .orElse(null);
     }
 
     @Override

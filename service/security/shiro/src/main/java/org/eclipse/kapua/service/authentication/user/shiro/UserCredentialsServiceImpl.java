@@ -67,7 +67,8 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
             AuthenticationService authenticationService,
             AuthorizationService authorizationService, PermissionFactory permissionFactory,
             UserCredentialsFactory userCredentialsFactory, CredentialsFactory credentialsFactory,
-            CredentialFactory credentialFactory, TxManager txManager,
+            CredentialFactory credentialFactory,
+            TxManager txManager,
             UserRepository userRepository,
             CredentialRepository credentialRepository,
             CredentialMapper credentialMapper,
@@ -91,10 +92,8 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
         ArgumentValidator.notNull(passwordChangeRequest.getCurrentPassword(), "passwordChangeRequest.currentPassword");
 
         return txManager.execute(tx -> {
-            User user = userRepository.find(tx, KapuaSecurityUtils.getSession().getScopeId(), KapuaSecurityUtils.getSession().getUserId());
-            if (user == null) {
-                throw new KapuaEntityNotFoundException(User.TYPE, KapuaSecurityUtils.getSession().getUserId());
-            }
+            User user = userRepository.find(tx, KapuaSecurityUtils.getSession().getScopeId(), KapuaSecurityUtils.getSession().getUserId())
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(User.TYPE, KapuaSecurityUtils.getSession().getUserId()));
             UsernamePasswordCredentials usernamePasswordCredentials = credentialsFactory.newUsernamePasswordCredentials(user.getName(), passwordChangeRequest.getCurrentPassword());
             try {
                 authenticationService.verifyCredentials(usernamePasswordCredentials);
@@ -130,10 +129,8 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, scopeId));
 
         return txManager.execute(tx -> {
-            Credential credential = credentialRepository.find(tx, scopeId, credentialId);
-            if (credential == null) {
-                throw new KapuaEntityNotFoundException(Credential.TYPE, credentialId);
-            }
+            Credential credential = credentialRepository.find(tx, scopeId, credentialId)
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(Credential.TYPE, credentialId));
 
             String plainNewPassword = passwordResetRequest.getNewPassword();
             try {

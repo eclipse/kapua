@@ -166,15 +166,14 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
 
         return txManager.execute(tx -> {
             // Check existence
-            if (roleRepository.find(tx, role.getScopeId(), role.getId()) == null) {
-                throw new KapuaEntityNotFoundException(Role.TYPE, role.getId());
-            }
+            final Role current = roleRepository.find(tx, role.getScopeId(), role.getId())
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(Role.TYPE, role.getId()));
             // Check duplicate name
             if (duplicateNameChecker.countOtherEntitiesWithName(tx, role.getScopeId(), role.getId(), role.getName()) > 0) {
                 throw new KapuaDuplicateNameException(role.getName());
             }
             // Do update
-            return roleRepository.update(tx, role);
+            return roleRepository.update(tx, current, role);
         });
     }
 
@@ -192,10 +191,8 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
 
         txManager.execute(tx -> {
             // Check existence
-            final Role roleToDelete = roleRepository.find(tx, scopeId, roleId);
-            if (roleToDelete == null) {
-                throw new KapuaEntityNotFoundException(Role.TYPE, roleId);
-            }
+            final Role roleToDelete = roleRepository.find(tx, scopeId, roleId)
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(Role.TYPE, roleId));
             // Do delete
             return roleRepository.delete(tx, roleToDelete);
         });
@@ -209,7 +206,8 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, scopeId));
         // Do find
-        return txManager.execute(tx -> roleRepository.find(tx, scopeId, roleId));
+        return txManager.execute(tx -> roleRepository.find(tx, scopeId, roleId))
+                .orElse(null);
     }
 
     @Override

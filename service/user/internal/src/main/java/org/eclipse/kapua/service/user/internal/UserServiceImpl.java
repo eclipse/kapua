@@ -51,6 +51,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * {@link UserService} implementation.
@@ -127,16 +128,16 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
             if (userCreator.getUserType() == UserType.EXTERNAL) {
                 // Check duplicate externalId
                 if (userCreator.getExternalId() != null) {
-                    User userByExternalId = userRepository.findByExternalId(tx, userCreator.getExternalId());
-                    if (userByExternalId != null) {
+                    final Optional<User> userByExternalId = userRepository.findByExternalId(tx, userCreator.getExternalId());
+                    if (userByExternalId.isPresent()) {
                         throw new KapuaDuplicateExternalIdException(userCreator.getExternalId());
                     }
                 }
 
                 // Check duplicate externalUsername
                 if (userCreator.getExternalUsername() != null) {
-                    User userByExternalPreferredUserame = userRepository.findByExternalId(tx, userCreator.getExternalUsername());
-                    if (userByExternalPreferredUserame != null) {
+                    Optional<User> userByExternalPreferredUserame = userRepository.findByExternalId(tx, userCreator.getExternalUsername());
+                    if (userByExternalPreferredUserame.isPresent()) {
                         throw new KapuaDuplicateExternalUsernameException(userCreator.getExternalUsername());
                     }
                 }
@@ -188,10 +189,8 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
         return txManager.execute(
                 tx -> {
                     // Check existence
-                    User currentUser = userRepository.find(tx, user.getScopeId(), user.getId());
-                    if (currentUser == null) {
-                        throw new KapuaEntityNotFoundException(User.TYPE, user.getId());
-                    }
+                    User currentUser = userRepository.find(tx, user.getScopeId(), user.getId())
+                            .orElseThrow(() -> new KapuaEntityNotFoundException(User.TYPE, user.getId()));
                     // Check action on Sys admin user
                     if (user.getExpirationDate() != null || !currentUser.getName().equals(user.getName())) {
                         // Check not deleting environment admin
@@ -218,16 +217,20 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
 
                     // User.externalId
                     if (user.getExternalId() != null) {
-                        User userByExternalId = userRepository.findByExternalId(tx, user.getExternalId());
-                        if (userByExternalId != null && !userByExternalId.getId().equals(user.getId())) {
+                        if (userRepository.findByExternalId(tx, user.getExternalId())
+                                .map(u -> u.getId())
+                                .map(id -> id.equals(user.getId()))
+                                .orElse(false)) {
                             throw new KapuaDuplicateExternalIdException(user.getExternalId());
                         }
                     }
 
                     // User.externalUsername
                     if (user.getExternalUsername() != null) {
-                        User userByExternalPreferredUsername = userRepository.findByExternalId(tx, user.getExternalUsername());
-                        if (userByExternalPreferredUsername != null && !userByExternalPreferredUsername.getId().equals(user.getId())) {
+                        if (userRepository.findByExternalId(tx, user.getExternalUsername())
+                                .map(u -> u.getId())
+                                .map(id -> id.equals(user.getId()))
+                                .orElse(false)) {
                             throw new KapuaDuplicateExternalUsernameException(user.getExternalUsername());
                         }
                     }
@@ -258,10 +261,8 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
         txManager.execute(
                 tx -> {
                     // Check existence
-                    User user = userRepository.find(tx, scopeId, userId);
-                    if (user == null) {
-                        throw new KapuaEntityNotFoundException(User.TYPE, userId);
-                    }
+                    User user = userRepository.find(tx, scopeId, userId)
+                            .orElseThrow(() -> new KapuaEntityNotFoundException(User.TYPE, userId));
 
                     // Check not deleting environment admin
                     validateSystemUser(user.getName());
@@ -285,7 +286,8 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, scopeId));
 
         // Do the find
-        return txManager.execute(tx -> userRepository.find(tx, scopeId, userId));
+        return txManager.execute(tx -> userRepository.find(tx, scopeId, userId))
+                .orElse(null);
     }
 
     @Override
@@ -293,7 +295,8 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
         // Validation of the fields
         ArgumentValidator.notEmptyOrNull(name, "name");
 
-        return checkReadAccess(txManager.execute(tx -> userRepository.findByName(tx, name)));
+        return checkReadAccess(txManager.execute(tx -> userRepository.findByName(tx, name)))
+                .orElse(null);
     }
 
     @Override
@@ -301,7 +304,8 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
         // Validation of the fields
         ArgumentValidator.notEmptyOrNull(externalId, "externalId");
         // Do the find
-        return checkReadAccess(txManager.execute(tx -> userRepository.findByExternalId(tx, externalId)));
+        return checkReadAccess(txManager.execute(tx -> userRepository.findByExternalId(tx, externalId)))
+                .orElse(null);
     }
 
     @Override
@@ -309,7 +313,8 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
         // Validation of the fields
         ArgumentValidator.notEmptyOrNull(externalUsername, "externalUsername");
         // Do the find
-        return checkReadAccess(txManager.execute(tx -> userRepository.findByExternalId(tx, externalUsername)));
+        return checkReadAccess(txManager.execute(tx -> userRepository.findByExternalId(tx, externalUsername)))
+                .orElse(null);
     }
 
     @Override
@@ -338,9 +343,9 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
     // Private Methods
     // -----------------------------------------------------------------------------------------
 
-    private User checkReadAccess(User user) throws KapuaException {
-        if (user != null) {
-            authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, user.getScopeId()));
+    private Optional<User> checkReadAccess(Optional<User> user) throws KapuaException {
+        if (user.isPresent()) {
+            authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, user.get().getScopeId()));
         }
         return user;
     }

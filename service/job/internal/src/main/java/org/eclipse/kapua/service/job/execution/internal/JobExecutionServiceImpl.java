@@ -89,7 +89,8 @@ public class JobExecutionServiceImpl implements JobExecutionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
         // Do find
-        return txManager.execute(tx -> jobExecutionRepository.find(tx, scopeId, jobExecutionId));
+        return txManager.execute(tx -> jobExecutionRepository.find(tx, scopeId, jobExecutionId))
+                .orElse(null);
     }
 
     @Override

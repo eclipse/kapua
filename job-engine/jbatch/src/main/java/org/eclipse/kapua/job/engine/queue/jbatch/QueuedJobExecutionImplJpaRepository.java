@@ -32,10 +32,8 @@ public class QueuedJobExecutionImplJpaRepository
     //overwritten just to change exception type
     @Override
     public QueuedJobExecution delete(TxContext tx, KapuaId scopeId, KapuaId queuedJobExecutionId) throws KapuaException {
-        final QueuedJobExecution found = this.find(tx, scopeId, queuedJobExecutionId);
-        if (found == null) {
-            throw new KapuaEntityNotFoundException(JobExecution.TYPE, queuedJobExecutionId);
-        }
+        final QueuedJobExecution found = this.find(tx, scopeId, queuedJobExecutionId)
+                .orElseThrow(() -> new KapuaEntityNotFoundException(JobExecution.TYPE, queuedJobExecutionId));
 
         return this.delete(tx, found);
     }

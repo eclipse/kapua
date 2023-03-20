@@ -149,11 +149,8 @@ public abstract class AbstractDeviceManagementServiceImpl {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(deviceId, "deviceId");
         // Check Device existence
-        Device device = txManager.execute(tx -> deviceRepository.find(tx, scopeId, deviceId));
-
-        if (device == null) {
-            throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
-        }
+        Device device = txManager.execute(tx -> deviceRepository.find(tx, scopeId, deviceId))
+                .orElseThrow(() -> new KapuaEntityNotFoundException(Device.TYPE, deviceId));
         // Check Device Connection status
         return device.getConnection() != null &&
                 DeviceConnectionStatus.CONNECTED.equals(device.getConnection().getStatus());

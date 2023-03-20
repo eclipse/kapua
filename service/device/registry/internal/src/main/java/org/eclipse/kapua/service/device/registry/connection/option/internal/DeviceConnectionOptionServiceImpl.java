@@ -103,7 +103,7 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
                     throw new UserAlreadyReservedException(deviceConnectionOptions.getScopeId(), deviceConnectionOptions.getId(), deviceConnectionOptions.getReservedUserId());
                 }
             }
-            if (deviceConnectionRepository.find(tx, deviceConnectionOptions.getScopeId(), deviceConnectionOptions.getId()) == null) {
+            if (!deviceConnectionRepository.find(tx, deviceConnectionOptions.getScopeId(), deviceConnectionOptions.getId()).isPresent()) {
                 throw new KapuaEntityNotFoundException(DeviceConnectionOption.TYPE, deviceConnectionOptions.getId());
             }
 
@@ -121,7 +121,8 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, scopeId));
 
-        return txManager.execute(tx -> repository.find(tx, scopeId, entityId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, entityId))
+                .orElse(null);
     }
 
     @Override

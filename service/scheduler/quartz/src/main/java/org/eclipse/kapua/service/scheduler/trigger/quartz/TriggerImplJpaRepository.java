@@ -64,10 +64,8 @@ public class TriggerImplJpaRepository
 
     @Override
     public Trigger delete(TxContext tx, KapuaId scopeId, KapuaId triggerId) throws KapuaException {
-        final Trigger toBeDeleted = this.find(tx, scopeId, triggerId);
-        if (toBeDeleted == null) {
-            throw new KapuaEntityNotFoundException(Trigger.TYPE, triggerId);
-        }
+        final Trigger toBeDeleted = this.find(tx, scopeId, triggerId)
+                .orElseThrow(() -> new KapuaEntityNotFoundException(Trigger.TYPE, triggerId));
         return this.delete(tx, toBeDeleted);
     }
 }

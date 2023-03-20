@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.storage;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
-import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.storage.KapuaNamedEntityRepository;
 import org.eclipse.kapua.storage.TxContext;
+
+import java.util.Optional;
 
 public class KapuaNamedEntityRepositoryCachingWrapper<
         E extends KapuaNamedEntity,
@@ -37,26 +37,22 @@ public class KapuaNamedEntityRepositoryCachingWrapper<
     }
 
     @Override
-    public E findByName(TxContext txContext, String value) throws KapuaException {
+    public Optional<E> findByName(TxContext txContext, String value) {
         return findByNameCached(txContext, KapuaId.ANY, value);
     }
 
     @Override
-    public E findByName(TxContext txContext, KapuaId scopeId, String value) throws KapuaException {
+    public Optional<E> findByName(TxContext txContext, KapuaId scopeId, String value) {
         return findByNameCached(txContext, scopeId, value);
     }
 
-    @FunctionalInterface
-    public interface FetchEntity<E> {
-        E findBy(KapuaId scopeId, String entityName) throws KapuaException;
-    }
-
-    private E findByNameCached(TxContext txContext, KapuaId scopeId, String name) throws KapuaException {
-        final KapuaEntity cached = entityCache.get(scopeId, name);
-        if (cached != null) {
-            return (E) cached;
+    private Optional<E> findByNameCached(TxContext txContext, KapuaId scopeId, String name) {
+        final Optional<E> cached = Optional.ofNullable(entityCache.get(scopeId, name)).map(ke -> (E) ke);
+        if (cached.isPresent()) {
+            return cached;
         }
-        final E found = wrapped.findByName(txContext, scopeId, name);
+        final Optional<E> found = wrapped.findByName(txContext, scopeId, name);
+        found.ifPresent(entityCache::put);
         return found;
     }
 }

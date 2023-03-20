@@ -50,6 +50,7 @@ import org.eclipse.kapua.storage.TxManager;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * {@link AccountService} implementation.
@@ -117,9 +118,8 @@ public class AccountServiceImpl
 
         return txManager.execute(tx -> {
             // Check if the parent account exists
-            if (accountRepository.find(tx, KapuaId.ANY, accountCreator.getScopeId()) == null) {
-                throw new KapuaIllegalArgumentException(KapuaEntityAttributes.SCOPE_ID, "parent account does not exist: " + accountCreator.getScopeId() + "::");
-            }
+            final Account parentAccount = accountRepository.find(tx, KapuaId.ANY, accountCreator.getScopeId())
+                    .orElseThrow(() -> new KapuaIllegalArgumentException(KapuaEntityAttributes.SCOPE_ID, "parent account does not exist: " + accountCreator.getScopeId() + "::"));
             // check if the account collides with the SystemSettingKey#COMMONS_CONTROL_TOPIC_CLASSIFIER
             if (!StringUtils.isEmpty(SystemSetting.getInstance().getMessageClassifier())) {
                 if (SystemSetting.getInstance().getMessageClassifier().equals(accountCreator.getName())) {
@@ -135,8 +135,7 @@ public class AccountServiceImpl
                 throw new KapuaDuplicateNameInAnotherAccountError(accountCreator.getName());
             }
             // Check that expiration date is no later than parent expiration date
-            Account parentAccount = accountRepository.find(tx, KapuaId.ANY, accountCreator.getScopeId());
-            if (parentAccount != null && parentAccount.getExpirationDate() != null) {
+            if (Optional.ofNullable(parentAccount.getExpirationDate()).isPresent()) {
                 // parent account never expires no check is needed
                 if (accountCreator.getExpirationDate() == null || parentAccount.getExpirationDate().before(accountCreator.getExpirationDate())) {
                     // if current account expiration date is null it will be obviously after parent expiration date
@@ -157,11 +156,11 @@ public class AccountServiceImpl
             organizationImpl.setStateProvinceCounty(accountCreator.getOrganizationStateProvinceCounty());
             organizationImpl.setCountry(accountCreator.getOrganizationCountry());
 
-            final AccountImpl accountImpl = new AccountImpl(accountCreator.getScopeId(), accountCreator.getName());
+            final Account accountImpl = new AccountImpl(accountCreator.getScopeId(), accountCreator.getName());
             accountImpl.setOrganization(organizationImpl);
             accountImpl.setExpirationDate(accountCreator.getExpirationDate());
             final Account createdAccount = accountRepository.create(tx, accountImpl);
-            String parentAccountPath = accountRepository.find(tx, KapuaId.ANY, accountCreator.getScopeId()).getParentAccountPath() + "/" + createdAccount.getId();
+            String parentAccountPath = parentAccount.getParentAccountPath() + "/" + createdAccount.getId();
             createdAccount.setParentAccountPath(parentAccountPath);
             return accountRepository.update(tx, createdAccount);
         });
@@ -196,10 +195,8 @@ public class AccountServiceImpl
 
         return txManager.execute(tx -> {
             // Check existence
-            Account oldAccount = accountRepository.find(tx, KapuaId.ANY, account.getId());
-            if (oldAccount == null) {
-                throw new KapuaEntityNotFoundException(Account.TYPE, account.getId());
-            }
+            Account oldAccount = accountRepository.find(tx, KapuaId.ANY, account.getId())
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(Account.TYPE, account.getId()));
             // Check if user tries to change expiration date of the account in which it is defined (the account is not the admin one considering previous checks)
             if (KapuaSecurityUtils.getSession().getScopeId().equals(account.getId())) {
                 // Editing self - aka user that edits its account
@@ -210,14 +207,14 @@ public class AccountServiceImpl
                 }
             }
             // Check that expiration date is no later than parent expiration date
-            Account parentAccount = null;
+            Optional<Account> parentAccount = Optional.empty();
             if (oldAccount.getScopeId() != null) {
                 parentAccount = accountRepository.find(tx, KapuaId.ANY, oldAccount.getScopeId());
             }
 
-            if (parentAccount != null && parentAccount.getExpirationDate() != null) {
+            if (parentAccount.flatMap(pa -> Optional.ofNullable(pa.getExpirationDate())).isPresent()) {
                 // if parent account never expires no check is needed
-                if (account.getExpirationDate() == null || parentAccount.getExpirationDate().before(account.getExpirationDate())) {
+                if (account.getExpirationDate() == null || parentAccount.get().getExpirationDate().before(account.getExpirationDate())) {
                     // if current account expiration date is null it will be obviously after parent expiration date
                     throw new KapuaIllegalArgumentException(AccountAttributes.EXPIRATION_DATE, account.getExpirationDate() != null ? account.getExpirationDate().toString() : NO_EXPIRATION_DATE_SET);
                 }
@@ -265,12 +262,10 @@ public class AccountServiceImpl
         txManager.execute(
                 tx -> {
                     // Do delete
-                    Account account = scopeId.equals(accountId) ?
+                    final Account account = (scopeId.equals(accountId) ?
                             accountRepository.find(tx, KapuaId.ANY, accountId) :
-                            accountRepository.find(tx, scopeId, accountId);
-                    if (account == null) {
-                        throw new KapuaEntityNotFoundException(Account.TYPE, accountId);
-                    }
+                            accountRepository.find(tx, scopeId, accountId))
+                            .orElseThrow(() -> new KapuaEntityNotFoundException(Account.TYPE, accountId));
                     // do not allow deletion of the kapua admin account
                     SystemSetting settings = SystemSetting.getInstance();
                     if (settings.getString(SystemSettingKey.SYS_PROVISION_ACCOUNT_NAME).equals(account.getName())) {
@@ -305,7 +300,8 @@ public class AccountServiceImpl
         checkAccountPermission(scopeId, accountId, AccountDomains.ACCOUNT_DOMAIN, Actions.read);
 
         // Do find
-        return txManager.execute(tx -> accountRepository.find(tx, scopeId, accountId));
+        return txManager.execute(tx -> accountRepository.find(tx, scopeId, accountId))
+                .orElse(null);
     }
 
     @Override
@@ -314,7 +310,8 @@ public class AccountServiceImpl
         ArgumentValidator.notNull(accountId, KapuaEntityAttributes.ENTITY_ID);
 
         // Do find
-        Account account = txManager.execute(tx -> accountRepository.find(tx, KapuaId.ANY, accountId));
+        Account account = txManager.execute(tx -> accountRepository.find(tx, KapuaId.ANY, accountId))
+                .orElse(null);
 
         // Check Access
         if (account != null) {
@@ -331,7 +328,8 @@ public class AccountServiceImpl
         ArgumentValidator.notEmptyOrNull(name, "name");
 
         // Do find
-        Account account = txManager.execute(tx -> accountRepository.findByName(tx, name));
+        Account account = txManager.execute(tx -> accountRepository.findByName(tx, name))
+                .orElse(null);
 
         // Check access
         if (account != null) {
@@ -349,12 +347,9 @@ public class AccountServiceImpl
 
         return txManager.execute(tx -> {
             // Check Access
-            Account account = accountRepository.find(tx, KapuaId.ANY, scopeId);
-
-            // Make sure account exists
-            if (account == null) {
-                throw new KapuaEntityNotFoundException(Account.TYPE, scopeId);
-            }
+            Account account = accountRepository.find(tx, KapuaId.ANY, scopeId)
+                    // Make sure account exists
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(Account.TYPE, scopeId));
 
             // Check access
             checkAccountPermission(account.getScopeId(), account.getId(), AccountDomains.ACCOUNT_DOMAIN, Actions.read, true);

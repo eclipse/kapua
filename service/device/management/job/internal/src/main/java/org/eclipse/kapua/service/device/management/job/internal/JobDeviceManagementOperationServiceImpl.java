@@ -114,7 +114,8 @@ public class JobDeviceManagementOperationServiceImpl
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, scopeId));
         // Do find
-        return txManager.execute(tx -> repository.find(tx, scopeId, jobDeviceManagementOperationId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, jobDeviceManagementOperationId))
+                .orElse(null);
     }
 
     @Override

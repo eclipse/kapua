@@ -87,7 +87,8 @@ public class QueuedJobExecutionServiceImpl implements QueuedJobExecutionService 
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
         // Do find
-        return txManager.execute(tx -> repository.find(tx, scopeId, queuedJobExecutionId));
+        return txManager.execute(tx -> repository.find(tx, scopeId, queuedJobExecutionId))
+                .orElse(null);
     }
 
     @Override

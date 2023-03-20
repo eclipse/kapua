@@ -45,10 +45,8 @@ public class AccessInfoImplJpaRepository
     //  without TYPE)
     @Override
     public AccessInfo delete(TxContext txContext, KapuaId scopeId, KapuaId accessInfoId) throws KapuaException {
-        final AccessInfo found = super.find(txContext, scopeId, accessInfoId);
-        if (found == null) {
-            throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessInfoId);
-        }
+        final AccessInfo found = super.find(txContext, scopeId, accessInfoId)
+                .orElseThrow(() -> new KapuaEntityNotFoundException(AccessInfo.TYPE, accessInfoId));
         return super.delete(txContext, found);
     }
 }

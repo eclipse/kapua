@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * {@link AccessTokenService} implementation.
@@ -98,12 +99,14 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         ArgumentValidator.notNull(accessToken.getExpiresOn(), "accessToken.expiresOn");
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.write, accessToken.getScopeId()));
-        // Check existence
-        if (find(accessToken.getScopeId(), accessToken.getId()) == null) {
-            throw new KapuaEntityNotFoundException(AccessToken.TYPE, accessToken.getId());
-        }
-        // Do update
-        return txManager.execute(tx -> accessTokenRepository.update(tx, accessToken));
+        return txManager.execute(tx -> {
+            // Check existence
+            if (!accessTokenRepository.find(tx, accessToken.getScopeId(), accessToken.getId()).isPresent()) {
+                throw new KapuaEntityNotFoundException(AccessToken.TYPE, accessToken.getId());
+            }
+            // Do update
+            return accessTokenRepository.update(tx, accessToken);
+        });
     }
 
     @Override
@@ -114,7 +117,8 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
         // Do find
-        return txManager.execute(tx -> accessTokenRepository.find(tx, scopeId, accessTokenId));
+        return txManager.execute(tx -> accessTokenRepository.find(tx, scopeId, accessTokenId))
+                .orElse(null);
     }
 
     @Override
@@ -145,11 +149,13 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.delete, scopeId));
         // Check existence
-        if (find(scopeId, accessTokenId) == null) {
-            throw new KapuaEntityNotFoundException(AccessToken.TYPE, accessTokenId);
-        }
-        // Do delete
-        txManager.execute(tx -> accessTokenRepository.delete(tx, scopeId, accessTokenId));
+        txManager.execute(tx -> {
+            if (!accessTokenRepository.find(tx, scopeId, accessTokenId).isPresent()) {
+                throw new KapuaEntityNotFoundException(AccessToken.TYPE, accessTokenId);
+            }
+            // Do delete
+            return accessTokenRepository.delete(tx, scopeId, accessTokenId);
+        });
     }
 
     @Override
@@ -171,13 +177,14 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         // Argument Validation
         ArgumentValidator.notNull(tokenId, "tokenId");
         // Do find
-        AccessToken accessToken = txManager.execute(tx -> accessTokenRepository.findByTokenId(tx, tokenId));
+        Optional<AccessToken> accessToken = txManager.execute(tx -> accessTokenRepository.findByTokenId(tx, tokenId));
         // Check Access
-        if (accessToken != null) {
-            authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, accessToken.getScopeId()));
+        if (accessToken.isPresent()) {
+            authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, accessToken.get().getScopeId()));
         }
 
-        return accessToken;
+        return accessToken
+                .orElse(null);
     }
 
     @Override
@@ -188,16 +195,13 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.write, scopeId));
         // Do find
-        txManager.execute(tx -> {
-            AccessToken accessToken = accessTokenRepository.find(tx, scopeId, accessTokenId);
-            if (accessToken != null) {
-                accessToken.setInvalidatedOn(new Date());
-
-                return accessTokenRepository.update(tx, accessToken);
-            } else {
-                throw new KapuaEntityNotFoundException(AccessToken.TYPE, scopeId);
-            }
-        });
+        txManager.execute(tx ->
+                accessTokenRepository.find(tx, scopeId, accessTokenId)
+                        .map(at -> {
+                            at.setInvalidatedOn(new Date());
+                            return accessTokenRepository.update(tx, at, at);
+                        })
+                        .orElseThrow(() -> new KapuaEntityNotFoundException(AccessToken.TYPE, scopeId)));
     }
 
     //@ListenServiceEvent(fromAddress="account")

@@ -20,6 +20,7 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.storage.KapuaUpdatableEntityRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class KapuaUpdatableEntityJpaRepository<E extends KapuaUpdatableEntity, C extends E, L extends KapuaListResult<E>>
@@ -35,17 +36,15 @@ public class KapuaUpdatableEntityJpaRepository<E extends KapuaUpdatableEntity, C
     public E update(TxContext txContext, E updatedEntity) throws KapuaException {
         final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
         // Checking existence
-        E currentEntity = doFind(em, updatedEntity.getScopeId(), updatedEntity.getId());
-        // Updating if not null
-        if (currentEntity == null) {
-            throw new KapuaEntityNotFoundException(concreteClass.getSimpleName(), updatedEntity.getId());
-        }
-
-        return doUpdate(em, currentEntity, updatedEntity);
+        Optional<E> currentEntity = doFind(em, updatedEntity.getScopeId(), updatedEntity.getId());
+        // Updating if present
+        return currentEntity
+                .map(ce -> doUpdate(em, ce, updatedEntity))
+                .orElseThrow(() -> new KapuaEntityNotFoundException(concreteClass.getSimpleName(), updatedEntity.getId()));
     }
 
     @Override
-    public E update(TxContext txContext, E currentEntity, E updatedEntity) throws KapuaEntityNotFoundException {
+    public E update(TxContext txContext, E currentEntity, E updatedEntity) {
         final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
         return doUpdate(em, currentEntity, updatedEntity);
     }

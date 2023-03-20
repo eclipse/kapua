@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.Embedded;
 import javax.persistence.EntityExistsException;
+import javax.persistence.EntityManager;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
@@ -63,6 +64,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L extends KapuaListResult<E>> implements KapuaEntityRepository<E, L> {
@@ -91,12 +93,9 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     public E create(TxContext txContext, E entity) throws KapuaException {
         final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
         int retry = 0;
-        boolean succeeded = false;
-        E res = null;
         do {
             try {
-                res = doCreate(em, entity);
-                succeeded = true;
+                return doCreate(em, entity);
             } catch (KapuaEntityExistsException e) {
                 em.detach(entity);
                 if (++retry >= MAX_INSERT_ALLOWED_RETRY) {
@@ -104,8 +103,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
                 }
                 logger.warn("Entity already exists. Cannot insert the entity, try again!");
             }
-        } while (!succeeded);
-        return res;
+        } while (true);
     }
 
     protected E doCreate(javax.persistence.EntityManager em, E entity) {
@@ -130,12 +128,12 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     }
 
     @Override
-    public E find(TxContext txContext, KapuaId scopeId, KapuaId entityId) throws KapuaException {
+    public Optional<E> find(TxContext txContext, KapuaId scopeId, KapuaId entityId) {
         final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
         return doFind(em, scopeId, entityId);
     }
 
-    protected E doFind(javax.persistence.EntityManager em, KapuaId scopeId, KapuaId entityId) {
+    protected Optional<E> doFind(javax.persistence.EntityManager em, KapuaId scopeId, KapuaId entityId) {
         KapuaEid eId = KapuaEid.parseKapuaId(entityId);
         // Checking existence
         final E entityToFind = em.find(concreteClass, eId);
@@ -143,16 +141,17 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         // If 'null' ScopeId has been requested, it means that we need to look for ANY ScopeId.
         final KapuaId scopeIdToMatch = scopeId != null ? scopeId : KapuaId.ANY;
         // Return if not null and ScopeIds matches
+
         if (entityToFind != null) {
             if (KapuaId.ANY.equals(scopeIdToMatch)) { // If requested ScopeId is ANY, return whatever Entity has been found
-                return entityToFind;
+                return Optional.of(entityToFind);
             } else if (scopeIdToMatch.equals(entityToFind.getScopeId())) { // If a specific ScopeId is requested, return Entity if given ScopeId matches Entity.scopeId
-                return entityToFind;
+                return Optional.of(entityToFind);
             } else { // If no match, return no result
-                return null;
+                return Optional.empty();
             }
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -309,17 +308,20 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     public E delete(TxContext txContext, KapuaId scopeId, KapuaId entityId) throws KapuaException {
         final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
         // Checking existence
-        E entityToDelete = doFind(em, scopeId, entityId);
+        Optional<E> entityToDelete = doFind(em, scopeId, entityId);
         // Deleting if found
-        if (entityToDelete == null) {
-            throw new KapuaEntityNotFoundException(concreteClass.getSimpleName(), entityId);
-        }
-        return delete(txContext, entityToDelete);
+        return entityToDelete
+                .map(e -> doDelete(em, e))
+                .orElseThrow(() -> new KapuaEntityNotFoundException(concreteClass.getSimpleName(), entityId));
     }
 
     @Override
     public E delete(TxContext txContext, E entityToDelete) {
         final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
+        return doDelete(em, entityToDelete);
+    }
+
+    private E doDelete(EntityManager em, E entityToDelete) {
         em.remove(entityToDelete);
         em.flush();
         // Returning deleted entity
@@ -611,10 +613,10 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         return SQL_ERROR_CODE_CONSTRAINT_VIOLATION.equals(innerExc.getSQLState());
     }
 
-    protected C doFindByField(@NonNull TxContext txContext,
-                              @NonNull KapuaId scopeId,
-                              @NonNull String fieldName,
-                              @NonNull Object fieldValue) {
+    protected Optional<E> doFindByField(@NonNull TxContext txContext,
+                                        @NonNull KapuaId scopeId,
+                                        @NonNull String fieldName,
+                                        @NonNull Object fieldValue) {
         final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
         final CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<C> criteriaSelectQuery = cb.createQuery(concreteClass);
@@ -649,9 +651,9 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         List<C> result = query.getResultList();
         switch (result.size()) {
             case 0:
-                return null;
+                return Optional.empty();
             case 1:
-                return result.get(0);
+                return Optional.of(result.get(0));
             default:
                 throw new NonUniqueResultException(String.format("Multiple %s results found for field %s with value %s", concreteClass.getName(), pName, fieldValue.toString()));
         }

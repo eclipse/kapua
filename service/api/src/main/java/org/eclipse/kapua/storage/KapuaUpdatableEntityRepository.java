@@ -30,5 +30,5 @@ public interface KapuaUpdatableEntityRepository<E extends KapuaUpdatableEntity, 
      */
     E update(TxContext txContext, E entity) throws KapuaException;
 
-    E update(TxContext txContext, E currentEntity, E updatedEntity) throws KapuaException;
+    E update(TxContext txContext, E currentEntity, E updatedEntity);
 }

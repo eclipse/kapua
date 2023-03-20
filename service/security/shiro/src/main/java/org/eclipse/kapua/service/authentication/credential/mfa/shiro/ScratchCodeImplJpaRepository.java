@@ -34,10 +34,8 @@ public class ScratchCodeImplJpaRepository
 
     @Override
     public ScratchCode delete(TxContext tx, KapuaId scopeId, KapuaId scratchCodeId) throws KapuaException {
-        final ScratchCode scratchCode = this.find(tx, scopeId, scratchCodeId);
-        if (scratchCode == null) {
-            throw new KapuaEntityNotFoundException(ScratchCode.TYPE, scratchCodeId);
-        }
+        final ScratchCode scratchCode = this.find(tx, scopeId, scratchCodeId)
+                .orElseThrow(() -> new KapuaEntityNotFoundException(ScratchCode.TYPE, scratchCodeId));
         return this.delete(tx, scratchCode);
 
     }

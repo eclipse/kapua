@@ -198,21 +198,20 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
      */
     private ServiceConfig updateConfig(ServiceConfig serviceConfig)
             throws KapuaException {
-        final ServiceConfig oldServiceConfig = txManager.execute(tx -> serviceConfigRepository.find(tx, serviceConfig.getScopeId(), serviceConfig.getId()));
-        if (oldServiceConfig == null) {
-            throw new KapuaEntityNotFoundException(ServiceConfig.TYPE, serviceConfig.getId());
-        }
+        return txManager.execute(tx -> {
+            final ServiceConfig oldServiceConfig = serviceConfigRepository.find(tx, serviceConfig.getScopeId(), serviceConfig.getId())
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(ServiceConfig.TYPE, serviceConfig.getId()));
 
-        if (!Objects.equals(oldServiceConfig.getScopeId(), serviceConfig.getScopeId())) {
-            throw new KapuaIllegalArgumentException("serviceConfiguration.scopeId", serviceConfig.getScopeId().toStringId());
-        }
+            if (!Objects.equals(oldServiceConfig.getScopeId(), serviceConfig.getScopeId())) {
+                throw new KapuaIllegalArgumentException("serviceConfiguration.scopeId", serviceConfig.getScopeId().toStringId());
+            }
 
-        if (!oldServiceConfig.getPid().equals(serviceConfig.getPid())) {
-            throw new KapuaIllegalArgumentException("serviceConfiguration.pid", serviceConfig.getPid());
-        }
-
-        // Update
-        return txManager.execute(tx -> serviceConfigRepository.update(tx, serviceConfig));
+            if (!oldServiceConfig.getPid().equals(serviceConfig.getPid())) {
+                throw new KapuaIllegalArgumentException("serviceConfiguration.pid", serviceConfig.getPid());
+            }
+            // Update
+            return serviceConfigRepository.update(tx, serviceConfig);
+        });
     }
 
     /**
