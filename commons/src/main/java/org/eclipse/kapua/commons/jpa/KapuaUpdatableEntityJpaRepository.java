@@ -34,7 +34,7 @@ public class KapuaUpdatableEntityJpaRepository<E extends KapuaUpdatableEntity, C
 
     @Override
     public E update(TxContext txContext, E updatedEntity) throws KapuaException {
-        final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
+        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         // Checking existence
         Optional<E> currentEntity = doFind(em, updatedEntity.getScopeId(), updatedEntity.getId());
         // Updating if present
@@ -45,7 +45,7 @@ public class KapuaUpdatableEntityJpaRepository<E extends KapuaUpdatableEntity, C
 
     @Override
     public E update(TxContext txContext, E currentEntity, E updatedEntity) {
-        final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
+        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         return doUpdate(em, currentEntity, updatedEntity);
     }
 

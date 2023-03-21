@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import org.eclipse.kapua.commons.jpa.JpaTxContext;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityJpaRepository;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountListResult;
@@ -32,7 +32,7 @@ public class AccountImplJpaRepository
 
     @Override
     public AccountListResult findChildAccountsRecursive(TxContext tx, String parentAccountPath) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         TypedQuery<Account> q = em.createNamedQuery("Account.findChildAccountsRecursive", Account.class);
         q.setParameter("parentAccountPath", "\\" + parentAccountPath + "/%");
         final AccountListResult result = new AccountListResultImpl();

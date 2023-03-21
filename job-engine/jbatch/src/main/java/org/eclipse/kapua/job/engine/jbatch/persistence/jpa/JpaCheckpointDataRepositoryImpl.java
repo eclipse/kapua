@@ -14,7 +14,7 @@ package org.eclipse.kapua.job.engine.jbatch.persistence.jpa;
 
 import com.ibm.jbatch.container.persistence.CheckpointData;
 import com.ibm.jbatch.container.persistence.CheckpointDataKey;
-import org.eclipse.kapua.commons.jpa.JpaTxContext;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.storage.TxContext;
 
 import javax.persistence.EntityManager;
@@ -23,7 +23,7 @@ public class JpaCheckpointDataRepositoryImpl implements JpaCheckpointDataReposit
 
     @Override
     public JpaCheckpointData create(TxContext tx, CheckpointDataKey checkpointDataKey, CheckpointData checkpointData) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         return doCreate(em, checkpointDataKey, checkpointData);
     }
 
@@ -43,7 +43,7 @@ public class JpaCheckpointDataRepositoryImpl implements JpaCheckpointDataReposit
 
     @Override
     public JpaCheckpointData update(TxContext tx, CheckpointDataKey key, CheckpointData value) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
 
         JpaCheckpointData jpaCheckpointData = em.find(JpaCheckpointData.class, key.getCommaSeparatedKey());
 
@@ -62,7 +62,7 @@ public class JpaCheckpointDataRepositoryImpl implements JpaCheckpointDataReposit
 
     @Override
     public JpaCheckpointData find(TxContext tx, CheckpointDataKey key) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         return em.find(JpaCheckpointData.class, key.getCommaSeparatedKey());
     }
 }

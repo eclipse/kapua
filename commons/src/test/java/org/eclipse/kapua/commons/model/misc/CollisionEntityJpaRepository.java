@@ -13,7 +13,7 @@
 package org.eclipse.kapua.commons.model.misc;
 
 import org.eclipse.kapua.KapuaEntityExistsException;
-import org.eclipse.kapua.commons.jpa.JpaTxContext;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.storage.TxContext;
@@ -36,7 +36,7 @@ public class CollisionEntityJpaRepository {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public CollisionEntity create(TxContext txContext, CollisionEntity collisionEntity) {
-        final EntityManager em = JpaTxContext.extractEntityManager(txContext);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         int retry = 0;
         boolean succeeded = false;
         CollisionEntity res = null;

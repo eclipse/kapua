@@ -91,7 +91,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
 
     @Override
     public E create(TxContext txContext, E entity) throws KapuaException {
-        final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
+        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         int retry = 0;
         do {
             try {
@@ -129,7 +129,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
 
     @Override
     public Optional<E> find(TxContext txContext, KapuaId scopeId, KapuaId entityId) {
-        final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
+        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         return doFind(em, scopeId, entityId);
     }
 
@@ -157,7 +157,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
 
     @Override
     public L query(TxContext txContext, KapuaQuery listQuery) throws KapuaException {
-        final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
+        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<C> criteriaSelectQuery = cb.createQuery(concreteClass);
@@ -259,7 +259,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
 
     @Override
     public long count(TxContext txContext, KapuaQuery countQuery) throws KapuaException {
-        final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
+        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> criteriaSelectQuery = cb.createQuery(Long.class);
@@ -306,7 +306,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
 
     @Override
     public E delete(TxContext txContext, KapuaId scopeId, KapuaId entityId) throws KapuaException {
-        final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
+        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         // Checking existence
         Optional<E> entityToDelete = doFind(em, scopeId, entityId);
         // Deleting if found
@@ -317,7 +317,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
 
     @Override
     public E delete(TxContext txContext, E entityToDelete) {
-        final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
+        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         return doDelete(em, entityToDelete);
     }
 
@@ -617,7 +617,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
                                         @NonNull KapuaId scopeId,
                                         @NonNull String fieldName,
                                         @NonNull Object fieldValue) {
-        final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
+        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         final CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<C> criteriaSelectQuery = cb.createQuery(concreteClass);
         // FROM

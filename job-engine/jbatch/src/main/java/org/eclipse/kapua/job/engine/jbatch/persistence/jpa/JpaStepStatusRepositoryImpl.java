@@ -13,7 +13,7 @@
 package org.eclipse.kapua.job.engine.jbatch.persistence.jpa;
 
 import com.ibm.jbatch.container.status.StepStatus;
-import org.eclipse.kapua.commons.jpa.JpaTxContext;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.storage.TxContext;
 
 import javax.persistence.EntityManager;
@@ -24,7 +24,7 @@ public class JpaStepStatusRepositoryImpl implements JpaStepStatusRepository {
 
     @Override
     public JpaStepStatus getStepStatusByJobInstance(TxContext tx, long jobInstanceId, String stepName) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         TypedQuery<JpaStepStatus> selectQuery = em.createNamedQuery("StepStatus.findByJobInstanceIdStepName", JpaStepStatus.class);
 
         selectQuery.setParameter("jobInstanceId", jobInstanceId);
@@ -37,7 +37,7 @@ public class JpaStepStatusRepositoryImpl implements JpaStepStatusRepository {
 
     @Override
     public JpaStepStatus create(TxContext tx, long stepExecutionId) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         JpaStepStatus jpaStepStatus = new JpaStepStatus();
         jpaStepStatus.setStepExecutionId(stepExecutionId);
         jpaStepStatus.setObj(new StepStatus(stepExecutionId));
@@ -51,7 +51,7 @@ public class JpaStepStatusRepositoryImpl implements JpaStepStatusRepository {
 
     @Override
     public JpaStepStatus update(TxContext tx, long stepExecutionId, StepStatus stepStatus) {
-        final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         JpaStepStatus jpaStepStatus = doFind(em, stepExecutionId);
         jpaStepStatus.setObj(stepStatus);
 
@@ -64,7 +64,7 @@ public class JpaStepStatusRepositoryImpl implements JpaStepStatusRepository {
 
     @Override
     public JpaStepStatus find(TxContext tx, long jobInstanceId) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         return doFind(em, jobInstanceId);
     }
 

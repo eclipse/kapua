@@ -13,7 +13,7 @@
 package org.eclipse.kapua.job.engine.jbatch.persistence.jpa;
 
 import com.ibm.jbatch.container.context.impl.StepContextImpl;
-import org.eclipse.kapua.commons.jpa.JpaTxContext;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.storage.TxContext;
 
 import javax.batch.runtime.StepExecution;
@@ -27,7 +27,7 @@ public class JpaStepExecutionInstanceDataRepositoryImpl implements JpaStepExecut
 
     @Override
     public JpaStepExecutionInstanceData insert(TxContext tx, long jobExecutionId, StepContextImpl stepContext) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         JpaStepExecutionInstanceData jpaStepExecutionInstanceData = new JpaStepExecutionInstanceData();
 
         jpaStepExecutionInstanceData.setJobExecutionId(jobExecutionId);
@@ -42,7 +42,7 @@ public class JpaStepExecutionInstanceDataRepositoryImpl implements JpaStepExecut
 
     @Override
     public JpaStepExecutionInstanceData update(TxContext tx, StepContextImpl stepContext) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         JpaStepExecutionInstanceData jpaStepExecutionInstanceData = JpaStepExecutionInstanceDataRepository.doFind(em, stepContext.getStepExecutionId());
         jpaStepExecutionInstanceData.readDataFromStepContext(stepContext);
 
@@ -55,13 +55,13 @@ public class JpaStepExecutionInstanceDataRepositoryImpl implements JpaStepExecut
 
     @Override
     public JpaStepExecutionInstanceData find(TxContext tx, long stepExecutionId) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         return JpaStepExecutionInstanceDataRepository.doFind(em, stepExecutionId);
     }
 
     @Override
     public Map<String, StepExecution> getExternalJobInstanceData(TxContext tx, long jobInstanceId) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         TypedQuery<JpaStepExecutionInstanceData> selectQuery = em.createNamedQuery("StepExecutionInstanceData.mostRecentForJobInstance", JpaStepExecutionInstanceData.class);
 
         selectQuery.setParameter("jobInstanceId", jobInstanceId);
@@ -74,7 +74,7 @@ public class JpaStepExecutionInstanceDataRepositoryImpl implements JpaStepExecut
 
     @Override
     public List<StepExecution> getStepExecutionsByJobExecution(TxContext tx, long jobExecutionId) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         TypedQuery<JpaStepExecutionInstanceData> selectQuery = em.createNamedQuery("StepExecutionInstanceData.selectByJobExecId", JpaStepExecutionInstanceData.class);
 
         selectQuery.setParameter("jobExecutionId", jobExecutionId);
