@@ -148,7 +148,6 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         // Checking existence
         final Optional<E> entityToFind = Optional.ofNullable(em.find(concreteClass, eId));
 
-
         return entityToFind
                 .filter(e -> scopeId == null || KapuaId.ANY.equals(scopeId)
                         ? true

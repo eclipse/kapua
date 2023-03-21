@@ -25,8 +25,6 @@ import org.eclipse.kapua.storage.TxContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-
 public class EventStorerImpl implements EventStorer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final EventStoreRecordRepository repository;
@@ -36,19 +34,7 @@ public class EventStorerImpl implements EventStorer {
     }
 
     @Override
-    public void accept(TxContext tx, Optional<? extends KapuaEntity> maybeKapuaEntity) {
-        if (!maybeKapuaEntity.isPresent()) {
-            return;
-        }
-        doAccept(tx, maybeKapuaEntity.get());
-    }
-
-    @Override
     public void accept(TxContext tx, KapuaEntity kapuaEntity) {
-        doAccept(tx, kapuaEntity);
-    }
-
-    void doAccept(TxContext tx, KapuaEntity kapuaEntity) {
         if (kapuaEntity instanceof EventStoreRecord) {
             return;
         }
@@ -57,25 +43,23 @@ public class EventStorerImpl implements EventStorer {
             return;
         }
 
-        if (kapuaEntity instanceof KapuaEntity) {
-            //make sense to override the entity id and type without checking for previous empty values?
-            //override only if parameters are not evaluated
-            logger.info("Updating service event entity infos (type, id and scope id) if missing...");
-            if (serviceEvent.getEntityType() == null || serviceEvent.getEntityType().trim().length() <= 0) {
-                logger.info("Kapua event - update entity type to '{}'", kapuaEntity.getClass().getName());
-                serviceEvent.setEntityType(kapuaEntity.getClass().getName());
-            }
-            if (serviceEvent.getEntityId() == null) {
-                logger.info("Kapua event - update entity id to '{}'", kapuaEntity.getId());
-                serviceEvent.setEntityId(kapuaEntity.getId());
-            }
-            if (serviceEvent.getEntityScopeId() == null) {
-                logger.info("Kapua event - update entity scope id to '{}'", kapuaEntity.getScopeId());
-                serviceEvent.setEntityScopeId(kapuaEntity.getScopeId());
-            }
-            logger.info("Updating service event entity infos (type, id and scope id) if missing... DONE");
-            logger.info("Entity '{}' with id '{}' and scope id '{}' found!", kapuaEntity.getClass().getName(), kapuaEntity.getId(), kapuaEntity.getScopeId());
+        //make sense to override the entity id and type without checking for previous empty values?
+        //override only if parameters are not evaluated
+        logger.info("Updating service event entity infos (type, id and scope id) if missing...");
+        if (serviceEvent.getEntityType() == null || serviceEvent.getEntityType().trim().length() <= 0) {
+            logger.info("Kapua event - update entity type to '{}'", kapuaEntity.getClass().getName());
+            serviceEvent.setEntityType(kapuaEntity.getClass().getName());
         }
+        if (serviceEvent.getEntityId() == null) {
+            logger.info("Kapua event - update entity id to '{}'", kapuaEntity.getId());
+            serviceEvent.setEntityId(kapuaEntity.getId());
+        }
+        if (serviceEvent.getEntityScopeId() == null) {
+            logger.info("Kapua event - update entity scope id to '{}'", kapuaEntity.getScopeId());
+            serviceEvent.setEntityScopeId(kapuaEntity.getScopeId());
+        }
+        logger.info("Updating service event entity infos (type, id and scope id) if missing... DONE");
+        logger.info("Entity '{}' with id '{}' and scope id '{}' found!", kapuaEntity.getClass().getName(), kapuaEntity.getId(), kapuaEntity.getScopeId());
 
         //insert the kapua event only if it's a new entity
         EventStoreRecord persistedKapuaEvent;
