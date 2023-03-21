@@ -26,6 +26,7 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -126,8 +127,8 @@ public class AuthorizationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    DomainRepository domainRepository() {
-        return new DomainImplJpaRepository();
+    DomainRepository domainRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new DomainImplJpaRepository(jpaRepoConfig);
     }
 
     @Provides
@@ -175,7 +176,8 @@ public class AuthorizationModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
-            RoleRepository roleRepository
+            RoleRepository roleRepository,
+            KapuaJpaRepositoryConfiguration jpaRepoConfig
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
@@ -183,7 +185,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
                         AuthorizationDomains.ROLE_DOMAIN,
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
                         new CachingServiceConfigRepository(
-                                new ServiceConfigImplJpaRepository(),
+                                new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
                         permissionFactory,
@@ -199,15 +201,15 @@ public class AuthorizationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    RoleRepository roleRepository(RoleCacheFactory roleCacheFactory) {
-        return new RoleCachingRepository(new RoleImplJpaRepository(),
+    RoleRepository roleRepository(RoleCacheFactory roleCacheFactory, KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new RoleCachingRepository(new RoleImplJpaRepository(jpaRepoConfig),
                 (NamedEntityCache) roleCacheFactory.createCache());
     }
 
     @Provides
     @Singleton
-    RolePermissionRepository rolePermissionRepository() {
-        return new RolePermissionCachingRepository(new RolePermissionImplJpaRepository(),
+    RolePermissionRepository rolePermissionRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new RolePermissionCachingRepository(new RolePermissionImplJpaRepository(jpaRepoConfig),
                 new RolePermissionCacheFactory().createCache());
     }
 
@@ -232,7 +234,8 @@ public class AuthorizationModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
-            GroupRepository groupRepository
+            GroupRepository groupRepository,
+            KapuaJpaRepositoryConfiguration jpaRepoConfig
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
@@ -240,7 +243,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
                         AuthorizationDomains.GROUP_DOMAIN,
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
                         new CachingServiceConfigRepository(
-                                new ServiceConfigImplJpaRepository(),
+                                new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
                         permissionFactory,
@@ -256,8 +259,8 @@ public class AuthorizationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    GroupRepository groupRepository() {
-        return new GroupImplJpaRepository();
+    GroupRepository groupRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new GroupImplJpaRepository(jpaRepoConfig);
     }
 
     @Provides
@@ -286,9 +289,9 @@ public class AuthorizationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    AccessInfoRepository accessInfoRepository() {
+    AccessInfoRepository accessInfoRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
         return new AccessInfoCachingRepository(
-                new AccessInfoImplJpaRepository(),
+                new AccessInfoImplJpaRepository(jpaRepoConfig),
                 (AccessInfoCache) new AccessInfoCacheFactory().createCache()
         );
     }
@@ -310,9 +313,9 @@ public class AuthorizationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    AccessPermissionRepository accessPermissionRepository() {
+    AccessPermissionRepository accessPermissionRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
         return new CachingAccessPermissionRepository(
-                new AccessPermissionImplJpaRepository(),
+                new AccessPermissionImplJpaRepository(jpaRepoConfig),
                 new AccessPermissionCacheFactory().createCache()
         );
     }
@@ -336,9 +339,9 @@ public class AuthorizationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    AccessRoleRepository accessRoleRepository() {
+    AccessRoleRepository accessRoleRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
         return new CachingAccessRoleRepository(
-                new AccessRoleImplJpaRepository()
+                new AccessRoleImplJpaRepository(jpaRepoConfig)
                 , new AccessRoleCacheFactory().createCache()
         );
     }

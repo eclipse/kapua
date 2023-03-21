@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.device.management.registry.operation.notification.internal;
 
 import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationListResult;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationRepository;
@@ -20,7 +21,7 @@ import org.eclipse.kapua.service.device.management.registry.operation.notificati
 public class ManagementOperationNotificationImplJpaRepository
         extends KapuaEntityJpaRepository<ManagementOperationNotification, ManagementOperationNotificationImpl, ManagementOperationNotificationListResult>
         implements ManagementOperationNotificationRepository {
-    public ManagementOperationNotificationImplJpaRepository() {
-        super(ManagementOperationNotificationImpl.class, () -> new ManagementOperationNotificationListResultImpl());
+    public ManagementOperationNotificationImplJpaRepository(KapuaJpaRepositoryConfiguration configuration) {
+        super(ManagementOperationNotificationImpl.class, () -> new ManagementOperationNotificationListResultImpl(), configuration);
     }
 }

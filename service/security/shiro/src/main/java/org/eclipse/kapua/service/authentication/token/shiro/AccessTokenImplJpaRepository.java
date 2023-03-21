@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.token.shiro;
 
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
@@ -25,8 +26,8 @@ import java.util.Optional;
 public class AccessTokenImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<AccessToken, AccessTokenImpl, AccessTokenListResult>
         implements AccessTokenRepository {
-    public AccessTokenImplJpaRepository() {
-        super(AccessTokenImpl.class, () -> new AccessTokenListResultImpl());
+    public AccessTokenImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        super(AccessTokenImpl.class, () -> new AccessTokenListResultImpl(), jpaRepoConfig);
     }
 
     @Override

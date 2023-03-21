@@ -25,6 +25,7 @@ import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.tag.TagDomains;
@@ -72,7 +73,7 @@ public class TagModule extends AbstractKapuaModule {
                         TagDomains.TAG_DOMAIN,
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-tag")),
                         new CachingServiceConfigRepository(
-                                new ServiceConfigImplJpaRepository(),
+                                new ServiceConfigImplJpaRepository(new KapuaJpaRepositoryConfiguration()),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
                         permissionFactory,
@@ -88,7 +89,7 @@ public class TagModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    TagRepository tagRepository() {
-        return new TagImplJpaRepository();
+    TagRepository tagRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new TagImplJpaRepository(jpaRepoConfig);
     }
 }

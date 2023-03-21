@@ -17,6 +17,7 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
@@ -47,8 +48,8 @@ public class JobStepDefinitionModule extends AbstractKapuaModule {
 
     @Provides
     @Inject
-    JobStepDefinitionRepository jobStepDefinitionRepository() {
-        return new JobStepDefinitionImplJpaRepository();
+    JobStepDefinitionRepository jobStepDefinitionRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new JobStepDefinitionImplJpaRepository(jpaRepoConfig);
     }
 
 }

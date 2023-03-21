@@ -18,6 +18,7 @@ import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.group.GroupService;
@@ -39,6 +40,8 @@ public class AuthorizationServiceModule extends ServiceEventTransactionalModule 
     private GroupService groupService;
     @Inject
     private RoleService roleService;
+    @Inject
+    private KapuaJpaRepositoryConfiguration jpaRepoConfig;
 
     @Override
     protected ServiceEventModuleTransactionalConfiguration initializeConfiguration() {
@@ -51,7 +54,8 @@ public class AuthorizationServiceModule extends ServiceEventTransactionalModule 
         return new ServiceEventModuleTransactionalConfiguration(
                 kdrs.getString(KapuaAuthorizationSettingKeys.AUTHORIZATION_EVENT_ADDRESS),
                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
-                selc.toArray(new ServiceEventClientConfiguration[0]));
+                selc.toArray(new ServiceEventClientConfiguration[0]),
+                jpaRepoConfig);
     }
 
 }

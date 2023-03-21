@@ -17,6 +17,7 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -27,7 +28,7 @@ import org.eclipse.kapua.service.job.step.JobStepRepository;
 import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionRepository;
 
-import javax.inject.Inject;
+import javax.inject.Singleton;
 
 public class JobStepModule extends AbstractKapuaModule {
     @Override
@@ -36,13 +37,13 @@ public class JobStepModule extends AbstractKapuaModule {
     }
 
     @Provides
-    @Inject
-    JobStepRepository jobStepRepository() {
-        return new JobStepImplJpaRepository();
+    @Singleton
+    JobStepRepository jobStepRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new JobStepImplJpaRepository(jpaRepoConfig);
     }
 
     @Provides
-    @Inject
+    @Singleton
     JobStepService jobStepService(AuthorizationService authorizationService,
                                   PermissionFactory permissionFactory,
                                   JobStepRepository jobStepRepository,

@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authentication.credential.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
@@ -28,8 +29,8 @@ public class CredentialImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<Credential, CredentialImpl, CredentialListResult>
         implements CredentialRepository {
 
-    public CredentialImplJpaRepository() {
-        super(CredentialImpl.class, () -> new CredentialListResultImpl());
+    public CredentialImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        super(CredentialImpl.class, () -> new CredentialListResultImpl(), jpaRepoConfig);
     }
 
     @Override

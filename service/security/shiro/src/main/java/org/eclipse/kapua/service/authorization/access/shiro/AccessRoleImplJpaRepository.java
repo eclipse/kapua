@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authorization.access.shiro;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
@@ -26,8 +27,8 @@ import org.eclipse.kapua.storage.TxContext;
 public class AccessRoleImplJpaRepository
         extends KapuaEntityJpaRepository<AccessRole, AccessRoleImpl, AccessRoleListResult>
         implements AccessRoleRepository {
-    public AccessRoleImplJpaRepository() {
-        super(AccessRoleImpl.class, () -> new AccessRoleListResultImpl());
+    public AccessRoleImplJpaRepository(KapuaJpaRepositoryConfiguration configuration) {
+        super(AccessRoleImpl.class, () -> new AccessRoleListResultImpl(), configuration);
     }
 
     @Override

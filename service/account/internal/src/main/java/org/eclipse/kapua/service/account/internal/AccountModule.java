@@ -28,6 +28,7 @@ import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.service.account.AccountDomains;
 import org.eclipse.kapua.service.account.AccountFactory;
@@ -87,7 +88,8 @@ public class AccountModule extends AbstractKapuaModule implements Module {
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
-            AccountRepository accountRepository
+            AccountRepository accountRepository,
+            KapuaJpaRepositoryConfiguration jpaRepoConfig
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
@@ -95,7 +97,7 @@ public class AccountModule extends AbstractKapuaModule implements Module {
                         AccountDomains.ACCOUNT_DOMAIN,
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-account")),
                         new CachingServiceConfigRepository(
-                                new ServiceConfigImplJpaRepository(),
+                                new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
                         permissionFactory,
@@ -111,8 +113,8 @@ public class AccountModule extends AbstractKapuaModule implements Module {
 
     @Provides
     @Singleton
-    AccountRepository accountRepository(AccountCacheFactory accountCacheFactory) {
-        final AccountImplJpaRepository wrapped = new AccountImplJpaRepository();
+    AccountRepository accountRepository(AccountCacheFactory accountCacheFactory, KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        final AccountImplJpaRepository wrapped = new AccountImplJpaRepository(jpaRepoConfig);
         final NamedEntityCache cache = (NamedEntityCache) accountCacheFactory.createCache();
         return new CachingAccountRepository(wrapped, cache);
     }

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.extras.migrator.encryption.authentication;
 
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
@@ -22,8 +23,8 @@ import org.eclipse.kapua.storage.TxContext;
 public class MfaOptionMigratorJpaRepository
         extends KapuaUpdatableEntityJpaRepository<MfaOption, MfaOptionMigrator, MfaOptionListResult>
         implements MfaOptionRepository {
-    public MfaOptionMigratorJpaRepository() {
-        super(MfaOptionMigrator.class, () -> new MfaOptionMigratorListResultImpl());
+    public MfaOptionMigratorJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        super(MfaOptionMigrator.class, () -> new MfaOptionMigratorListResultImpl(), jpaRepoConfig);
     }
 
 

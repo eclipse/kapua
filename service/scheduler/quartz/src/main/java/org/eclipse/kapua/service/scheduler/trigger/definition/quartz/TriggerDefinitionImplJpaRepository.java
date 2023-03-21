@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.definition.quartz;
 
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityJpaRepository;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionListResult;
@@ -20,7 +21,7 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionR
 public class TriggerDefinitionImplJpaRepository
         extends KapuaNamedEntityJpaRepository<TriggerDefinition, TriggerDefinitionImpl, TriggerDefinitionListResult>
         implements TriggerDefinitionRepository {
-    public TriggerDefinitionImplJpaRepository() {
-        super(TriggerDefinitionImpl.class, () -> new TriggerDefinitionListResultImpl());
+    public TriggerDefinitionImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        super(TriggerDefinitionImpl.class, () -> new TriggerDefinitionListResultImpl(), jpaRepoConfig);
     }
 }

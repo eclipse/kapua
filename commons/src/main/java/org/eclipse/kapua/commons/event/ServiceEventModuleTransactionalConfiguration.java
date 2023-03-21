@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.storage.TxManager;
 
 public class ServiceEventModuleTransactionalConfiguration {
@@ -19,13 +20,16 @@ public class ServiceEventModuleTransactionalConfiguration {
     private String internalAddress;
     private TxManager txManager;
     private ServiceEventClientConfiguration[] serviceEventClientConfigurations;
+    private final KapuaJpaRepositoryConfiguration jpaConfig;
 
     public ServiceEventModuleTransactionalConfiguration(String internalAddress,
                                                         TxManager txManager,
-                                                        ServiceEventClientConfiguration[] serviceEventListenerConfigurations) {
+                                                        ServiceEventClientConfiguration[] serviceEventListenerConfigurations,
+                                                        KapuaJpaRepositoryConfiguration jpaConfig) {
         this.internalAddress = internalAddress;
         this.txManager = txManager;
         this.serviceEventClientConfigurations = serviceEventListenerConfigurations;
+        this.jpaConfig = jpaConfig;
     }
 
     public String getInternalAddress() {
@@ -38,5 +42,9 @@ public class ServiceEventModuleTransactionalConfiguration {
 
     public ServiceEventClientConfiguration[] getServiceEventClientConfigurations() {
         return serviceEventClientConfigurations;
+    }
+
+    public KapuaJpaRepositoryConfiguration getJpaConfig() {
+        return jpaConfig;
     }
 }

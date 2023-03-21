@@ -16,6 +16,7 @@ import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobRepository;
@@ -48,7 +49,7 @@ public class JobTargetsModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    JobTargetRepository jobTargetRepository() {
-        return new JobTargetImplJpaRepository();
+    JobTargetRepository jobTargetRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new JobTargetImplJpaRepository(jpaRepoConfig);
     }
 }

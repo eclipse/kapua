@@ -28,6 +28,7 @@ import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -64,7 +65,9 @@ public class UserLocatorConfiguration {
             @Override
             protected void configure() {
                 // Inject mocked Authorization Service method checkPermission
+                bind(KapuaJpaRepositoryConfiguration.class).toInstance(new KapuaJpaRepositoryConfiguration());
                 AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
+
                 try {
                     Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(Permission.class));
                 } catch (KapuaException e) {
@@ -90,11 +93,11 @@ public class UserLocatorConfiguration {
                 final RootUserTester mockRootUserTester = Mockito.mock(RootUserTester.class);
                 bind(RootUserTester.class).toInstance(mockRootUserTester);
                 final UserRepository userRepository = Mockito.mock(UserRepository.class);
+                final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 final ResourceLimitedServiceConfigurationManagerImpl userConfigurationManager = new ResourceLimitedServiceConfigurationManagerImpl(UserService.class.getName(),
                         UserDomains.USER_DOMAIN,
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
-                        new ServiceConfigImplJpaRepository(
-                        ),
+                        new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         mockPermissionFactory,
                         mockedAuthorization,
                         Mockito.mock(RootUserTester.class),
@@ -110,10 +113,10 @@ public class UserLocatorConfiguration {
                                 mockedAuthorization,
                                 mockPermissionFactory,
                                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
-                                new UserImplJpaRepository(),
+                                new UserImplJpaRepository(jpaRepoConfig),
                                 userFactory,
-                                new DuplicateNameCheckerImpl<>(new UserImplJpaRepository(), userFactory::newQuery),
-                                new EventStorerImpl(new EventStoreRecordImplJpaRepository()))
+                                new DuplicateNameCheckerImpl<>(new UserImplJpaRepository(jpaRepoConfig), userFactory::newQuery),
+                                new EventStorerImpl(new EventStoreRecordImplJpaRepository(jpaRepoConfig)))
                 );
             }
         };

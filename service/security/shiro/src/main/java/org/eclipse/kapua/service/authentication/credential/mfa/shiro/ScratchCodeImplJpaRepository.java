@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
@@ -28,8 +29,8 @@ public class ScratchCodeImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<ScratchCode, ScratchCodeImpl, ScratchCodeListResult>
         implements ScratchCodeRepository {
 
-    public ScratchCodeImplJpaRepository() {
-        super(ScratchCodeImpl.class, () -> new ScratchCodeListResultImpl());
+    public ScratchCodeImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        super(ScratchCodeImpl.class, () -> new ScratchCodeListResultImpl(), jpaRepoConfig);
     }
 
     @Override

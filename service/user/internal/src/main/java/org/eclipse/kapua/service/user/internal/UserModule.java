@@ -28,6 +28,7 @@ import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -84,14 +85,15 @@ public class UserModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
-            UserRepository userRepository
+            UserRepository userRepository,
+            KapuaJpaRepositoryConfiguration jpaRepoConfig
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(UserService.class.getName(),
                         UserDomains.USER_DOMAIN,
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
                         new CachingServiceConfigRepository(
-                                new ServiceConfigImplJpaRepository(),
+                                new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
                         permissionFactory,
@@ -107,9 +109,9 @@ public class UserModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    UserRepository userRepository(UserCacheFactory userCacheFactory) {
+    UserRepository userRepository(UserCacheFactory userCacheFactory, KapuaJpaRepositoryConfiguration jpaRepoConfig) {
         return new UserCachedRepository(
-                new UserImplJpaRepository(),
+                new UserImplJpaRepository(jpaRepoConfig),
                 (NamedEntityCache) userCacheFactory.createCache()
         );
     }

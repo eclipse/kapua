@@ -18,6 +18,7 @@ import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
@@ -33,6 +34,8 @@ public class AuthenticationServiceModule extends ServiceEventTransactionalModule
     private CredentialService credentialService;
     @Inject
     private AccessTokenService accessTokenService;
+    @Inject
+    private KapuaJpaRepositoryConfiguration jpaRepoConfig;
 
     @Override
     protected ServiceEventModuleTransactionalConfiguration initializeConfiguration() {
@@ -43,7 +46,8 @@ public class AuthenticationServiceModule extends ServiceEventTransactionalModule
         return new ServiceEventModuleTransactionalConfiguration(
                 kas.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_EVENT_ADDRESS),
                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication")),
-                selc.toArray(new ServiceEventClientConfiguration[0]));
+                selc.toArray(new ServiceEventClientConfiguration[0]),
+                jpaRepoConfig);
     }
 
 }

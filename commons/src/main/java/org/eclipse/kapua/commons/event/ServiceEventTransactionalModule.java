@@ -95,7 +95,7 @@ public abstract class ServiceEventTransactionalModule implements ServiceModule {
                         locator.getFactory(PermissionFactory.class),
                         serviceEventModuleConfiguration.getTxManager(),
                         new EventStoreFactoryImpl(),
-                        new EventStoreRecordImplJpaRepository()
+                        new EventStoreRecordImplJpaRepository(serviceEventModuleConfiguration.getJpaConfig())
                 ),
                 serviceEventModuleConfiguration.getTxManager(),
                 eventbus,

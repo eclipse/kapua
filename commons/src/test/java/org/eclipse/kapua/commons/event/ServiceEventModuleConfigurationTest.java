@@ -13,6 +13,7 @@
 package org.eclipse.kapua.commons.event;
 
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,13 +26,13 @@ public class ServiceEventModuleConfigurationTest {
     EntityManagerFactory entityManagerFactory;
 
     ServiceEventClientConfiguration[] serviceEventClientConfiguration = new ServiceEventClientConfiguration[]
-            { new ServiceEventClientConfiguration("address", "subscriberName", null),
+            {new ServiceEventClientConfiguration("address", "subscriberName", null),
                     new ServiceEventClientConfiguration("address2", "subscriberName2", null),
-                        new ServiceEventClientConfiguration("address3", "subscriberName3", null)};
+                    new ServiceEventClientConfiguration("address3", "subscriberName3", null)};
 
     @Test
     public void serviceEventModuleConfigurationRegularTest() {
-        ServiceEventModuleConfiguration moduleConfiguration = new ServiceEventModuleConfiguration("internalAddress", entityManagerFactory, serviceEventClientConfiguration);
+        ServiceEventModuleConfiguration moduleConfiguration = new ServiceEventModuleConfiguration("internalAddress", entityManagerFactory, new KapuaJpaRepositoryConfiguration(), serviceEventClientConfiguration);
         Assert.assertEquals("Expected and actual values are not equals!", "internalAddress", moduleConfiguration.getInternalAddress());
         Assert.assertNull("Null expected!", moduleConfiguration.getEntityManagerFactory());
         Assert.assertArrayEquals("Arrays are not equals!", serviceEventClientConfiguration, moduleConfiguration.getServiceEventClientConfigurations());
@@ -39,7 +40,7 @@ public class ServiceEventModuleConfigurationTest {
 
     @Test
     public void serviceEventModuleConfigurationNullAddressTest() {
-        ServiceEventModuleConfiguration moduleConfiguration = new ServiceEventModuleConfiguration(null, entityManagerFactory, serviceEventClientConfiguration);
+        ServiceEventModuleConfiguration moduleConfiguration = new ServiceEventModuleConfiguration(null, entityManagerFactory, new KapuaJpaRepositoryConfiguration(), serviceEventClientConfiguration);
         Assert.assertNull("Null expected!", moduleConfiguration.getInternalAddress());
         Assert.assertNull("Null expected!", moduleConfiguration.getEntityManagerFactory());
         Assert.assertArrayEquals(serviceEventClientConfiguration, moduleConfiguration.getServiceEventClientConfigurations());
@@ -47,7 +48,7 @@ public class ServiceEventModuleConfigurationTest {
 
     @Test
     public void serviceEventModuleConfigurationNullEntityTest() {
-        ServiceEventModuleConfiguration moduleConfiguration = new ServiceEventModuleConfiguration("internalAddress", null, serviceEventClientConfiguration);
+        ServiceEventModuleConfiguration moduleConfiguration = new ServiceEventModuleConfiguration("internalAddress", null, new KapuaJpaRepositoryConfiguration(), serviceEventClientConfiguration);
         Assert.assertEquals("Expected and actual values are not equals!", "internalAddress", moduleConfiguration.getInternalAddress());
         Assert.assertNull("Null expected!", moduleConfiguration.getEntityManagerFactory());
         Assert.assertArrayEquals("Arrays are not equals!", serviceEventClientConfiguration, moduleConfiguration.getServiceEventClientConfigurations());
@@ -55,7 +56,7 @@ public class ServiceEventModuleConfigurationTest {
 
     @Test
     public void constructorClientConfigNullTest() {
-        ServiceEventModuleConfiguration moduleConfiguration = new ServiceEventModuleConfiguration("internalAddress", entityManagerFactory, null);
+        ServiceEventModuleConfiguration moduleConfiguration = new ServiceEventModuleConfiguration("internalAddress", entityManagerFactory, new KapuaJpaRepositoryConfiguration(), null);
         Assert.assertEquals("Expected and actual values are not equals!", "internalAddress", moduleConfiguration.getInternalAddress());
         Assert.assertNull("Null expected!", moduleConfiguration.getEntityManagerFactory());
         Assert.assertNull("Null expected!", moduleConfiguration.getServiceEventClientConfigurations());
@@ -63,7 +64,7 @@ public class ServiceEventModuleConfigurationTest {
 
     @Test
     public void serviceEventModuleConfigurationNullEntityAndAddressTest() {
-        ServiceEventModuleConfiguration moduleConfiguration = new ServiceEventModuleConfiguration(null, null, serviceEventClientConfiguration);
+        ServiceEventModuleConfiguration moduleConfiguration = new ServiceEventModuleConfiguration(null, null, new KapuaJpaRepositoryConfiguration(), serviceEventClientConfiguration);
         Assert.assertNull("Null expected!", moduleConfiguration.getInternalAddress());
         Assert.assertNull("Null expected!", moduleConfiguration.getEntityManagerFactory());
         Assert.assertArrayEquals("Arrays are not equals!", serviceEventClientConfiguration, moduleConfiguration.getServiceEventClientConfigurations());
@@ -71,7 +72,7 @@ public class ServiceEventModuleConfigurationTest {
 
     @Test
     public void constructorEntityAndClientConfigNullTest() {
-        ServiceEventModuleConfiguration moduleConfiguration = new ServiceEventModuleConfiguration("internalAddress", null, null);
+        ServiceEventModuleConfiguration moduleConfiguration = new ServiceEventModuleConfiguration("internalAddress", null, new KapuaJpaRepositoryConfiguration(), null);
         Assert.assertEquals("Expected and actual values are not equals!", "internalAddress", moduleConfiguration.getInternalAddress());
         Assert.assertNull("Null expected!", moduleConfiguration.getEntityManagerFactory());
         Assert.assertNull("Null expected!", moduleConfiguration.getServiceEventClientConfigurations());
@@ -79,7 +80,7 @@ public class ServiceEventModuleConfigurationTest {
 
     @Test
     public void serviceEventModuleConfigurationAllNullTest() {
-        ServiceEventModuleConfiguration moduleConfiguration = new ServiceEventModuleConfiguration(null, null, null);
+        ServiceEventModuleConfiguration moduleConfiguration = new ServiceEventModuleConfiguration(null, null, new KapuaJpaRepositoryConfiguration(), null);
         Assert.assertNull("Null expected!", moduleConfiguration.getInternalAddress());
         Assert.assertNull("Null expected!", moduleConfiguration.getEntityManagerFactory());
         Assert.assertNull("Null expected!", moduleConfiguration.getServiceEventClientConfigurations());
@@ -89,7 +90,7 @@ public class ServiceEventModuleConfigurationTest {
     public void constructorAddressCharCheckTest() {
         String[] permittedValues = {"", "!#$%&'()=?⁄@‹›€°·‚,.-;:_Èˇ¿<>«‘”’ÉØ∏{}|ÆæÒuF8FFÔÓÌÏÎÅ«»Ç◊Ñˆ¯Èˇ", "regularNaming", "regular Naming", "49", "regularNaming49", "NAMING", "246465494135646120009090049684646496468456468496846464968496844"};
         for (String value : permittedValues) {
-            ServiceEventModuleConfiguration moduleConfiguration = new ServiceEventModuleConfiguration(value, entityManagerFactory, serviceEventClientConfiguration);
+            ServiceEventModuleConfiguration moduleConfiguration = new ServiceEventModuleConfiguration(value, entityManagerFactory, new KapuaJpaRepositoryConfiguration(), serviceEventClientConfiguration);
             Assert.assertEquals("Expected and actual values are not equals!", value, moduleConfiguration.getInternalAddress());
             Assert.assertNull("Null expected!", moduleConfiguration.getEntityManagerFactory());
             Assert.assertArrayEquals("Arrays are not equals!", serviceEventClientConfiguration, moduleConfiguration.getServiceEventClientConfigurations());

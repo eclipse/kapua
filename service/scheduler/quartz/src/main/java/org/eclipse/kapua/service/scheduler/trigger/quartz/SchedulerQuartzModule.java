@@ -17,6 +17,7 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
@@ -55,7 +56,7 @@ public class SchedulerQuartzModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    TriggerRepository triggerRepository() {
-        return new TriggerImplJpaRepository();
+    TriggerRepository triggerRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new TriggerImplJpaRepository(jpaRepoConfig);
     }
 }

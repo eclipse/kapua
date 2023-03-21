@@ -16,6 +16,7 @@ import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
@@ -37,8 +38,8 @@ public class CommonsModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    EventStoreRecordRepository eventStoreRecordRepository() {
-        return new EventStoreRecordImplJpaRepository();
+    EventStoreRecordRepository eventStoreRecordRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new EventStoreRecordImplJpaRepository(jpaRepoConfig);
     }
 
     @Provides
