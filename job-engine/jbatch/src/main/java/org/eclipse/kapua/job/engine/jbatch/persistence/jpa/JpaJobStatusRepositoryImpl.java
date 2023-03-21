@@ -13,7 +13,7 @@
 package org.eclipse.kapua.job.engine.jbatch.persistence.jpa;
 
 import com.ibm.jbatch.container.status.JobStatus;
-import org.eclipse.kapua.commons.jpa.JpaTxContext;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.storage.TxContext;
 
 import javax.persistence.EntityManager;
@@ -22,7 +22,7 @@ public class JpaJobStatusRepositoryImpl implements JpaJobStatusRepository {
 
     @Override
     public JpaJobStatus create(TxContext tx, long jobInstanceId) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         JpaJobStatus jpaJobStatus = new JpaJobStatus();
         jpaJobStatus.setJobInstanceId(jobInstanceId);
         jpaJobStatus.setObj(new JobStatus(jobInstanceId));
@@ -36,7 +36,7 @@ public class JpaJobStatusRepositoryImpl implements JpaJobStatusRepository {
 
     @Override
     public JpaJobStatus update(TxContext tx, long jobInstanceId, JobStatus jobStatus) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         JpaJobStatus jpaJobStatus = doFind(em, jobInstanceId);
         jpaJobStatus.setObj(jobStatus);
 
@@ -49,7 +49,7 @@ public class JpaJobStatusRepositoryImpl implements JpaJobStatusRepository {
 
     @Override
     public JpaJobStatus find(TxContext tx, long jobInstanceId) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         return doFind(em, jobInstanceId);
     }
 

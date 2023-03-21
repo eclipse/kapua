@@ -12,17 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
+import org.eclipse.kapua.storage.TxContext;
+
 import javax.persistence.EntityManager;
 
-public class JpaTxContext implements JpaAwareTxContext {
-    public final EntityManager entityManager;
-
-    public JpaTxContext(EntityManager entityManager) {
-        this.entityManager = entityManager;
+public interface JpaAwareTxContext extends TxContext {
+    static EntityManager extractEntityManager(TxContext txContext) {
+        if (txContext instanceof JpaAwareTxContext) {
+            return ((JpaAwareTxContext) txContext).getEntityManager();
+        }
+        throw new RuntimeException("This repo needs to run within the context of a JPA transaction");
     }
 
-    @Override
-    public EntityManager getEntityManager() {
-        return entityManager;
-    }
+    EntityManager getEntityManager();
+
 }

@@ -14,7 +14,7 @@ package org.eclipse.kapua.job.engine.jbatch.persistence.jpa;
 
 import com.google.common.collect.Sets;
 import com.ibm.jbatch.container.exception.PersistenceException;
-import org.eclipse.kapua.commons.jpa.JpaTxContext;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.storage.TxContext;
 
 import javax.batch.runtime.BatchStatus;
@@ -29,7 +29,7 @@ public class JpaExecutionInstanceDataRepositoryImpl implements JpaExecutionInsta
 
     @Override
     public JpaExecutionInstanceData create(TxContext tx, long jobInstanceId, Properties jobParameters, BatchStatus batchStatus, Timestamp timestamp) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         try {
             JpaExecutionInstanceData jpaExecutionInstanceData = new JpaExecutionInstanceData();
             jpaExecutionInstanceData.setJobInstanceId(jobInstanceId);
@@ -50,7 +50,7 @@ public class JpaExecutionInstanceDataRepositoryImpl implements JpaExecutionInsta
 
     @Override
     public JpaExecutionInstanceData updateBatchStatus(TxContext tx, long jobExecutionId, BatchStatus batchStatus, Timestamp updatedOn) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         try {
             JpaExecutionInstanceData jpaExecutionInstanceData = JpaExecutionInstanceDataRepository.doFind(em, jobExecutionId);
 
@@ -71,7 +71,7 @@ public class JpaExecutionInstanceDataRepositoryImpl implements JpaExecutionInsta
 
     @Override
     public JpaExecutionInstanceData updateBatchStatusStarted(TxContext tx, long jobExecutionId, Timestamp startedOn) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         try {
             JpaExecutionInstanceData jpaExecutionInstanceData = JpaExecutionInstanceDataRepository.doFind(em, jobExecutionId);
 
@@ -93,7 +93,7 @@ public class JpaExecutionInstanceDataRepositoryImpl implements JpaExecutionInsta
 
     @Override
     public JpaExecutionInstanceData updateBatchStatusEnded(TxContext tx, long jobExecutionId, BatchStatus batchStatus, String exitStatus, Timestamp endedOn) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         try {
             JpaExecutionInstanceData jpaExecutionInstanceData = JpaExecutionInstanceDataRepository.doFind(em, jobExecutionId);
 
@@ -116,13 +116,13 @@ public class JpaExecutionInstanceDataRepositoryImpl implements JpaExecutionInsta
 
     @Override
     public JpaExecutionInstanceData find(TxContext tx, long jobExecutionId) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         return JpaExecutionInstanceDataRepository.doFind(em, jobExecutionId);
     }
 
     @Override
     public List<JpaExecutionInstanceData> getJobExecutions(TxContext tx, long jobInstanceId) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         TypedQuery<JpaExecutionInstanceData> selectQuery = em.createNamedQuery("ExecutionInstanceData.getByJobInstance", JpaExecutionInstanceData.class);
         selectQuery.setParameter("jobInstanceId", jobInstanceId);
 
@@ -131,7 +131,7 @@ public class JpaExecutionInstanceDataRepositoryImpl implements JpaExecutionInsta
 
     @Override
     public JpaExecutionInstanceData getMostRecentByJobInstance(TxContext tx, long jobInstanceId) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         TypedQuery<JpaExecutionInstanceData> selectQuery = em.createNamedQuery("ExecutionInstanceData.getByJobInstance", JpaExecutionInstanceData.class);
         selectQuery.setParameter("jobInstanceId", jobInstanceId);
 
@@ -140,7 +140,7 @@ public class JpaExecutionInstanceDataRepositoryImpl implements JpaExecutionInsta
 
     @Override
     public Set<Long> getJobRunningExecutions(TxContext tx, String jobName) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         TypedQuery<Long> selectQuery = em.createNamedQuery("ExecutionInstanceData.getRunningByJobName", Long.class);
         selectQuery.setParameter("status1", BatchStatus.STARTED);
         selectQuery.setParameter("status2", BatchStatus.STARTING);
@@ -152,7 +152,7 @@ public class JpaExecutionInstanceDataRepositoryImpl implements JpaExecutionInsta
 
     @Override
     public <T> T getJobExecutionField(TxContext tx, long jobExecutionId, JpaExecutionInstanceDataFields field) {
-        final EntityManager em = JpaTxContext.extractEntityManager(tx);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         JpaExecutionInstanceData jpaExecutionInstanceData = em.find(JpaExecutionInstanceData.class, jobExecutionId);
 
         switch (field) {

@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.authorization.domain.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.JpaTxContext;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
@@ -51,7 +51,7 @@ public class DomainImplJpaRepository
 
     @Override
     public Domain findByName(TxContext txContext, KapuaId scopeId, String name) throws KapuaException {
-        final EntityManager em = JpaTxContext.extractEntityManager(txContext);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         final CriteriaBuilder cb = em.getCriteriaBuilder();
         final CriteriaQuery<DomainImpl> criteriaSelectQuery = cb.createQuery(concreteClass);
         // FROM

@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.JpaTxContext;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityJpaRepository;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
@@ -42,7 +42,7 @@ public class TriggerImplJpaRepository
 
     @Override
     public void deleteAllByJobId(TxContext txContext, KapuaId scopeId, KapuaId jobId) {
-        final javax.persistence.EntityManager em = JpaTxContext.extractEntityManager(txContext);
+        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         final CriteriaBuilder cb = em.getCriteriaBuilder();
 
         final CriteriaDelete<TriggerImpl> triggerQuery = cb.createCriteriaDelete(TriggerImpl.class);
