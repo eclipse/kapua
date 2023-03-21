@@ -28,6 +28,7 @@ import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -73,6 +74,7 @@ public class AccountLocatorConfiguration {
                 }
 
                 bind(QueryFactory.class).toInstance(new QueryFactoryImpl());
+                bind(KapuaJpaRepositoryConfiguration.class).toInstance(new KapuaJpaRepositoryConfiguration());
 
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
                 // Inject mocked Permission Factory
@@ -86,17 +88,18 @@ public class AccountLocatorConfiguration {
                 final AccountFactory accountFactory = new AccountFactoryImpl();
                 bind(AccountFactory.class).toInstance(accountFactory);
                 bind(AccountChildrenFinder.class).toInstance(Mockito.mock(AccountChildrenFinder.class));
-                final AccountRepository accountRepository = new AccountImplJpaRepository();
+                final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
+                final AccountRepository accountRepository = new AccountImplJpaRepository(jpaRepoConfig);
                 bind(AccountService.class).toInstance(new AccountServiceImpl(
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-account")),
-                        new AccountImplJpaRepository(),
+                        new AccountImplJpaRepository(jpaRepoConfig),
                         mockPermissionFactory,
                         mockedAuthorization,
                         new ResourceLimitedServiceConfigurationManagerImpl(
                                 AccountService.class.getName(),
                                 AccountDomains.ACCOUNT_DOMAIN,
                                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-account")),
-                                new ServiceConfigImplJpaRepository(),
+                                new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 mockPermissionFactory,
                                 mockedAuthorization,
                                 Mockito.mock(RootUserTester.class),
@@ -107,8 +110,8 @@ public class AccountLocatorConfiguration {
                                         accountRepository)
                         ),
                         new DuplicateNameCheckerImpl<>(accountRepository, accountFactory::newQuery),
-                        new EventStorerImpl(new EventStoreRecordImplJpaRepository())));
-                bind(AccountRepository.class).toInstance(new AccountImplJpaRepository());
+                        new EventStorerImpl(new EventStoreRecordImplJpaRepository(jpaRepoConfig))));
+                bind(AccountRepository.class).toInstance(new AccountImplJpaRepository(jpaRepoConfig));
             }
         };
 

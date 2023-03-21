@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authorization.access.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
@@ -26,8 +27,8 @@ import org.eclipse.kapua.storage.TxContext;
 public class AccessInfoImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<AccessInfo, AccessInfoImpl, AccessInfoListResult>
         implements AccessInfoRepository {
-    public AccessInfoImplJpaRepository() {
-        super(AccessInfoImpl.class, () -> new AccessInfoListResultImpl());
+    public AccessInfoImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        super(AccessInfoImpl.class, () -> new AccessInfoListResultImpl(), jpaRepoConfig);
     }
 
     @Override

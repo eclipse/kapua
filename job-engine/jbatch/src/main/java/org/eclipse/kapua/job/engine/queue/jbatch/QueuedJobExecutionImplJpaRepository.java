@@ -14,6 +14,7 @@ package org.eclipse.kapua.job.engine.queue.jbatch;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecution;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionListResult;
@@ -25,8 +26,8 @@ import org.eclipse.kapua.storage.TxContext;
 public class QueuedJobExecutionImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<QueuedJobExecution, QueuedJobExecutionImpl, QueuedJobExecutionListResult>
         implements QueuedJobExecutionRepository {
-    public QueuedJobExecutionImplJpaRepository() {
-        super(QueuedJobExecutionImpl.class, () -> new QueuedJobExecutionListResultImpl());
+    public QueuedJobExecutionImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        super(QueuedJobExecutionImpl.class, () -> new QueuedJobExecutionListResultImpl(), jpaRepoConfig);
     }
 
     //overwritten just to change exception type

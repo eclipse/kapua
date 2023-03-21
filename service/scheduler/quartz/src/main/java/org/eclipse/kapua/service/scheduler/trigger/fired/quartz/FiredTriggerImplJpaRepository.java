@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.scheduler.trigger.fired.quartz;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTrigger;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerListResult;
@@ -24,8 +25,8 @@ import org.eclipse.kapua.storage.TxContext;
 public class FiredTriggerImplJpaRepository
         extends KapuaEntityJpaRepository<FiredTrigger, FiredTriggerImpl, FiredTriggerListResult>
         implements FiredTriggerRepository {
-    public FiredTriggerImplJpaRepository() {
-        super(FiredTriggerImpl.class, () -> new FiredTriggerListResultImpl());
+    public FiredTriggerImplJpaRepository(KapuaJpaRepositoryConfiguration configuration) {
+        super(FiredTriggerImpl.class, () -> new FiredTriggerListResultImpl(), configuration);
     }
 
     @Override

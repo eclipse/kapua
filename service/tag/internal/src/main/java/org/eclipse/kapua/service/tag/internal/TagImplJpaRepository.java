@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag.internal;
 
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityJpaRepository;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagListResult;
@@ -23,7 +24,7 @@ import javax.inject.Singleton;
 public class TagImplJpaRepository
         extends KapuaNamedEntityJpaRepository<Tag, TagImpl, TagListResult>
         implements TagRepository {
-    public TagImplJpaRepository() {
-        super(TagImpl.class, () -> new TagListResultImpl());
+    public TagImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        super(TagImpl.class, () -> new TagListResultImpl(), jpaRepoConfig);
     }
 }

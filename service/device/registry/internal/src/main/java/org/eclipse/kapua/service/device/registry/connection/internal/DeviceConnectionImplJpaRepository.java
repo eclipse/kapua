@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.registry.connection.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
@@ -27,8 +28,8 @@ public class DeviceConnectionImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<DeviceConnection, DeviceConnectionImpl, DeviceConnectionListResult>
         implements DeviceConnectionRepository {
 
-    public DeviceConnectionImplJpaRepository() {
-        super(DeviceConnectionImpl.class, () -> new DeviceConnectionListResultImpl());
+    public DeviceConnectionImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        super(DeviceConnectionImpl.class, () -> new DeviceConnectionListResultImpl(), jpaRepoConfig);
     }
 
     @Override

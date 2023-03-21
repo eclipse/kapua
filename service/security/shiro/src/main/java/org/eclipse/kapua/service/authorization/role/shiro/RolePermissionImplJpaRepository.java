@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authorization.role.shiro;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
@@ -27,8 +28,8 @@ public class RolePermissionImplJpaRepository
         extends KapuaEntityJpaRepository<RolePermission, RolePermissionImpl, RolePermissionListResult>
         implements RolePermissionRepository {
 
-    public RolePermissionImplJpaRepository() {
-        super(RolePermissionImpl.class, () -> new RolePermissionListResultImpl());
+    public RolePermissionImplJpaRepository(KapuaJpaRepositoryConfiguration configuration) {
+        super(RolePermissionImpl.class, () -> new RolePermissionListResultImpl(), configuration);
     }
 
 

@@ -14,6 +14,7 @@ package org.eclipse.kapua.commons.service.event.store.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
@@ -23,8 +24,8 @@ import org.eclipse.kapua.storage.TxContext;
 public class EventStoreRecordImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<EventStoreRecord, EventStoreRecordImpl, EventStoreRecordListResult>
         implements EventStoreRecordRepository {
-    public EventStoreRecordImplJpaRepository() {
-        super(EventStoreRecordImpl.class, () -> new EventStoreRecordListResultImpl());
+    public EventStoreRecordImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        super(EventStoreRecordImpl.class, () -> new EventStoreRecordListResultImpl(), jpaRepoConfig);
     }
 
     @Override

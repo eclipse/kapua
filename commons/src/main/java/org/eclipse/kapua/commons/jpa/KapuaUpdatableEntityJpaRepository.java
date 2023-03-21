@@ -28,8 +28,9 @@ public class KapuaUpdatableEntityJpaRepository<E extends KapuaUpdatableEntity, C
         implements KapuaUpdatableEntityRepository<E, L> {
     public KapuaUpdatableEntityJpaRepository(
             Class<C> concreteClass,
-            Supplier<L> listSupplier) {
-        super(concreteClass, listSupplier);
+            Supplier<L> listSupplier,
+            KapuaJpaRepositoryConfiguration configuration) {
+        super(concreteClass, listSupplier, configuration);
     }
 
     @Override

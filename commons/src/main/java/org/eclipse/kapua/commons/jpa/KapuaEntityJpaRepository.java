@@ -22,8 +22,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.OrPredicateImpl;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -72,21 +70,18 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     public final Supplier<? extends L> listSupplier;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String SQL_ERROR_CODE_CONSTRAINT_VIOLATION = "23505";
-    private static final SystemSetting SYSTEM_SETTING = SystemSetting.getInstance();
-    private static final String ESCAPE = SYSTEM_SETTING.getString(SystemSettingKey.DB_CHARACTER_ESCAPE, "\\");
-    private static final String LIKE = SYSTEM_SETTING.getString(SystemSettingKey.DB_CHARACTER_WILDCARD_ANY, "%");
-    private static final String ANY = SYSTEM_SETTING.getString(SystemSettingKey.DB_CHARACTER_WILDCARD_SINGLE, "_");
-    private static final int MAX_INSERT_ALLOWED_RETRY = SYSTEM_SETTING.getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY);
+    private final KapuaJpaRepositoryConfiguration configuration;
     private static final String ATTRIBUTE_SEPARATOR = ".";
     private static final String ATTRIBUTE_SEPARATOR_ESCAPED = "\\.";
     private static final String COMPARE_ERROR_MESSAGE = "Trying to compare a non-comparable value";
 
-
     public KapuaEntityJpaRepository(
             Class<C> concreteClass,
-            Supplier<L> listSupplier) {
+            Supplier<L> listSupplier,
+            KapuaJpaRepositoryConfiguration configuration) {
         this.concreteClass = concreteClass;
         this.listSupplier = listSupplier;
+        this.configuration = configuration;
     }
 
     @Override
@@ -98,7 +93,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
                 return doCreate(em, entity);
             } catch (KapuaEntityExistsException e) {
                 em.detach(entity);
-                if (++retry >= MAX_INSERT_ALLOWED_RETRY) {
+                if (++retry >= configuration.maxInsertAllowedRetry) {
                     throw e;
                 }
                 logger.warn("Entity already exists. Cannot insert the entity, try again!");
@@ -475,33 +470,33 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
 
             expr = cb.and(cb.or(orPredicates));
         } else {
-            String strAttrValue;
+            final String escapedAttributeValue = Optional.ofNullable(attributeValue)
+                    .map(a -> a.toString()
+                            .replace(configuration.like, configuration.escape + configuration.like)
+                            .replace(configuration.any, configuration.escape + configuration.any))
+                    .orElse(null);
             switch (attrPred.getOperator()) {
                 case LIKE:
-                    strAttrValue = attributeValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY);
                     ParameterExpression<String> pl = cb.parameter(String.class);
-                    binds.put(pl, LIKE + strAttrValue + LIKE);
+                    binds.put(pl, configuration.like + escapedAttributeValue + configuration.like);
                     expr = cb.like(extractAttribute(entityRoot, attrName), pl);
                     break;
 
                 case LIKE_IGNORE_CASE:
-                    strAttrValue = attributeValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY).toLowerCase();
                     ParameterExpression<String> plci = cb.parameter(String.class);
-                    binds.put(plci, LIKE + strAttrValue + LIKE);
+                    binds.put(plci, configuration.like + escapedAttributeValue.toLowerCase() + configuration.like);
                     expr = cb.like(cb.lower(extractAttribute(entityRoot, attrName)), plci);
                     break;
 
                 case STARTS_WITH:
-                    strAttrValue = attributeValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY);
                     ParameterExpression<String> psw = cb.parameter(String.class);
-                    binds.put(psw, strAttrValue + LIKE);
+                    binds.put(psw, escapedAttributeValue + configuration.like);
                     expr = cb.like(extractAttribute(entityRoot, attrName), psw);
                     break;
 
                 case STARTS_WITH_IGNORE_CASE:
-                    strAttrValue = attributeValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY).toLowerCase();
                     ParameterExpression<String> pswci = cb.parameter(String.class);
-                    binds.put(pswci, strAttrValue + LIKE);
+                    binds.put(pswci, escapedAttributeValue.toLowerCase() + configuration.like);
                     expr = cb.like(cb.lower(extractAttribute(entityRoot, attrName)), pswci);
                     break;
 

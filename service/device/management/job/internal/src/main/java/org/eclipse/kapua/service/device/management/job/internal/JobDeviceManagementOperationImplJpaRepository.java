@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.management.job.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperation;
@@ -24,8 +25,8 @@ import org.eclipse.kapua.storage.TxContext;
 public class JobDeviceManagementOperationImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<JobDeviceManagementOperation, JobDeviceManagementOperationImpl, JobDeviceManagementOperationListResult>
         implements JobDeviceManagementOperationRepository {
-    public JobDeviceManagementOperationImplJpaRepository() {
-        super(JobDeviceManagementOperationImpl.class, () -> new JobDeviceManagementOperationListResultImpl());
+    public JobDeviceManagementOperationImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        super(JobDeviceManagementOperationImpl.class, () -> new JobDeviceManagementOperationListResultImpl(), jpaRepoConfig);
     }
 
 

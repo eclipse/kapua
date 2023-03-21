@@ -12,67 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model.misc;
 
-import org.eclipse.kapua.KapuaEntityExistsException;
-import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
-import org.eclipse.kapua.model.KapuaEntity;
-import org.eclipse.kapua.storage.TxContext;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
+import org.eclipse.kapua.model.query.KapuaListResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
 
+public class CollisionEntityJpaRepository extends KapuaEntityJpaRepository<CollisionEntity, CollisionEntity, KapuaListResult<CollisionEntity>> {
 
-public class CollisionEntityJpaRepository {
-
-    private final int maxInsertAllowedRetry;
-
-    public CollisionEntityJpaRepository(int maxInsertAllowedRetry) {
-        this.maxInsertAllowedRetry = maxInsertAllowedRetry;
+    public CollisionEntityJpaRepository(KapuaJpaRepositoryConfiguration configuration) {
+        super(CollisionEntity.class, () -> new KapuaListResultImpl<>(), configuration);
     }
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public CollisionEntity create(TxContext txContext, CollisionEntity collisionEntity) {
-        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
-        int retry = 0;
-        boolean succeeded = false;
-        CollisionEntity res = null;
-        do {
-            try {
-                res = doCreate(em, collisionEntity);
-                succeeded = true;
-            } catch (KapuaEntityExistsException e) {
-                em.detach(collisionEntity);
-                if (++retry >= maxInsertAllowedRetry) {
-                    throw e;
-                }
-                logger.warn("Entity already exists. Cannot insert the collisionEntity, try again!");
-            }
-        } while (!succeeded);
-        return res;
-    }
-
-    protected CollisionEntity doCreate(javax.persistence.EntityManager em, CollisionEntity collisionEntity) {
-        try {
-            em.persist(collisionEntity);
-            em.flush();
-            em.refresh(collisionEntity);
-            return collisionEntity;
-        } catch (EntityExistsException e) {
-            throw new KapuaEntityExistsException(e, collisionEntity.getId());
-        } catch (PersistenceException e) {
-            if (KapuaEntityJpaRepository.isInsertConstraintViolation(e)) {
-                final KapuaEntity entityFound = em.find(collisionEntity.getClass(), collisionEntity.getId());
-                if (entityFound == null) {
-                    throw e;
-                }
-                throw new KapuaEntityExistsException(e, collisionEntity.getId());
-            } else {
-                throw e;
-            }
-        }
-    }
 }

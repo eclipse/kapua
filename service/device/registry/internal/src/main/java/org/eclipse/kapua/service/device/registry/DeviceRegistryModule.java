@@ -27,6 +27,7 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
@@ -107,8 +108,9 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     @Provides
     @Singleton
     DeviceRepository deviceRepository(DeviceFactory deviceFactory,
-                                      DeviceRegistryCache deviceRegistryCache) {
-        return new CachingDeviceRepository(new DeviceImplJpaRepository(),
+                                      DeviceRegistryCache deviceRegistryCache,
+                                      KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new CachingDeviceRepository(new DeviceImplJpaRepository(jpaRepoConfig),
                 deviceRegistryCache
         );
     }
@@ -122,7 +124,8 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
-            DeviceRepository deviceRepository
+            DeviceRepository deviceRepository,
+            KapuaJpaRepositoryConfiguration jpaRepoConfig
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
@@ -130,7 +133,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                         DeviceDomains.DEVICE_DOMAIN,
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
                         new CachingServiceConfigRepository(
-                                new ServiceConfigImplJpaRepository(),
+                                new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
                         permissionFactory,
@@ -167,13 +170,14 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     ServiceConfigurationManager deviceConnectionServiceConfigurationManager(
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
-            RootUserTester rootUserTester) {
+            RootUserTester rootUserTester,
+            KapuaJpaRepositoryConfiguration jpaRepoConfig) {
         return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerImpl(
                 DeviceConnectionService.class.getName(),
                 DeviceDomains.DEVICE_CONNECTION_DOMAIN,
                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
                 new CachingServiceConfigRepository(
-                        new ServiceConfigImplJpaRepository(),
+                        new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         new AbstractKapuaConfigurableServiceCache().createCache()
                 ),
                 permissionFactory,
@@ -189,9 +193,10 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    DeviceConnectionRepository deviceConnectionRepository(DeviceRegistryCache deviceRegistryCache) {
+    DeviceConnectionRepository deviceConnectionRepository(DeviceRegistryCache deviceRegistryCache,
+                                                          KapuaJpaRepositoryConfiguration jpaRepoConfig) {
         return new CachingDeviceConnectionRepository(
-                new DeviceConnectionImplJpaRepository(),
+                new DeviceConnectionImplJpaRepository(jpaRepoConfig),
                 deviceRegistryCache
         );
     }
@@ -215,8 +220,8 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    DeviceConnectionOptionRepository deviceConnectionOptionRepository() {
-        return new DeviceConnectionOptionImplJpaRepository();
+    DeviceConnectionOptionRepository deviceConnectionOptionRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new DeviceConnectionOptionImplJpaRepository(jpaRepoConfig);
     }
 
     @Provides
@@ -238,7 +243,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    DeviceEventRepository deviceEventRepository(DeviceEventFactory entityFactory) {
-        return new DeviceEventImplJpaRepository();
+    DeviceEventRepository deviceEventRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new DeviceEventImplJpaRepository(jpaRepoConfig);
     }
 }

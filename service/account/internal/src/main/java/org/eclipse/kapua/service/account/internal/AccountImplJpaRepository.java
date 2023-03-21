@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.account.internal;
 
 import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityJpaRepository;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountListResult;
@@ -26,8 +27,8 @@ public class AccountImplJpaRepository
         extends KapuaNamedEntityJpaRepository<Account, AccountImpl, AccountListResult>
         implements AccountRepository {
 
-    public AccountImplJpaRepository() {
-        super(AccountImpl.class, () -> new AccountListResultImpl());
+    public AccountImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        super(AccountImpl.class, () -> new AccountListResultImpl(), jpaRepoConfig);
     }
 
     @Override

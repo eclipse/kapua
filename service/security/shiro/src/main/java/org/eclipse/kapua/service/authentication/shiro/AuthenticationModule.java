@@ -22,6 +22,7 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachin
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountRepository;
@@ -155,20 +156,20 @@ public class AuthenticationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    public AccessTokenRepository accessTokenRepository() {
-        return new AccessTokenImplJpaRepository();
+    public AccessTokenRepository accessTokenRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new AccessTokenImplJpaRepository(jpaRepoConfig);
     }
 
     @Provides
     @Singleton
-    public MfaOptionRepository mfaOptionRepository() {
-        return new MfaOptionImplJpaRepository();
+    public MfaOptionRepository mfaOptionRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new MfaOptionImplJpaRepository(jpaRepoConfig);
     }
 
     @Provides
     @Singleton
-    public ScratchCodeRepository scratchCodeRepository() {
-        return new ScratchCodeImplJpaRepository();
+    public ScratchCodeRepository scratchCodeRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new ScratchCodeImplJpaRepository(jpaRepoConfig);
     }
 
     @Provides
@@ -193,8 +194,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    CredentialRepository credentialRepository() {
-        return new CredentialImplJpaRepository();
+    CredentialRepository credentialRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new CredentialImplJpaRepository(jpaRepoConfig);
     }
 
     @Provides
@@ -202,11 +203,12 @@ public class AuthenticationModule extends AbstractKapuaModule {
     public CredentialServiceConfigurationManager credentialServiceConfigurationManager(
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
-            RootUserTester rootUserTester) {
+            RootUserTester rootUserTester,
+            KapuaJpaRepositoryConfiguration jpaRepoConfig) {
         final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication")),
                 new CachingServiceConfigRepository(
-                        new ServiceConfigImplJpaRepository(),
+                        new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         new AbstractKapuaConfigurableServiceCache().createCache()
                 ),
                 permissionFactory,

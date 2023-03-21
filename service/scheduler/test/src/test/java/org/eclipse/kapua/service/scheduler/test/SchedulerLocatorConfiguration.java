@@ -25,6 +25,7 @@ import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl
 import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.job.engine.client.JobEngineServiceClient;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -76,6 +77,8 @@ public class SchedulerLocatorConfiguration {
                     // skip
                 }
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
+                bind(KapuaJpaRepositoryConfiguration.class).toInstance(new KapuaJpaRepositoryConfiguration());
+
                 // Inject mocked Permission Factory
                 final PermissionFactory permissionFactory = Mockito.mock(PermissionFactory.class);
                 bind(PermissionFactory.class).toInstance(permissionFactory);
@@ -91,8 +94,9 @@ public class SchedulerLocatorConfiguration {
                 // Inject actual Tag service related services
                 bind(JobFactory.class).toInstance(new JobFactoryImpl());
                 final JobFactory jobFactory = new JobFactoryImpl();
-                final JobImplJpaRepository jobRepository = new JobImplJpaRepository();
-                final TriggerImplJpaRepository triggerRepository = new TriggerImplJpaRepository();
+                final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
+                final JobImplJpaRepository jobRepository = new JobImplJpaRepository(jpaRepoConfig);
+                final TriggerImplJpaRepository triggerRepository = new TriggerImplJpaRepository(jpaRepoConfig);
                 bind(JobService.class).toInstance(new JobServiceImpl(
                         Mockito.mock(ServiceConfigurationManager.class),
                         new JobEngineServiceClient(),
@@ -103,7 +107,7 @@ public class SchedulerLocatorConfiguration {
                         triggerRepository,
                         new DuplicateNameCheckerImpl<>(jobRepository, jobFactory::newQuery)));
                 final TriggerDefinitionFactoryImpl triggerDefinitionFactory = new TriggerDefinitionFactoryImpl();
-                final TriggerDefinitionImplJpaRepository triggerDefinitionRepository = new TriggerDefinitionImplJpaRepository();
+                final TriggerDefinitionImplJpaRepository triggerDefinitionRepository = new TriggerDefinitionImplJpaRepository(jpaRepoConfig);
                 final TriggerFactoryImpl triggerFactory = new TriggerFactoryImpl();
                 bind(TriggerService.class).toInstance(new TriggerServiceImpl(
                         mockedAuthorization,

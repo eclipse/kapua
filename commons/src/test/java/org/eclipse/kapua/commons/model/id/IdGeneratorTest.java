@@ -17,12 +17,12 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.model.AbstractCommonServiceTest;
 import org.eclipse.kapua.commons.model.misc.CollisionEntity;
 import org.eclipse.kapua.commons.model.misc.CollisionEntityJpaRepository;
 import org.eclipse.kapua.commons.model.misc.CollisionIdGenerator;
-import org.eclipse.kapua.commons.model.misc.CollisionServiceImpl;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
@@ -60,7 +60,13 @@ public class IdGeneratorTest extends AbstractCommonServiceTest {
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL;DB_CLOSE_DELAY=-1", "kapua", "kapua").update();
         scriptSession(DEFAULT_TEST_PATH, DEFAULT_TEST_FILTER);
         txManager = new JpaTxManager(new KapuaEntityManagerFactory("kapua-commons-unit-test"));
-        repo = new CollisionEntityJpaRepository(MAX_RETRIES);
+        repo = new CollisionEntityJpaRepository(
+                new KapuaJpaRepositoryConfiguration(
+                        "\\",
+                        "%",
+                        "_",
+                        MAX_RETRIES)
+        );
     }
 
     @AfterClass
@@ -79,7 +85,6 @@ public class IdGeneratorTest extends AbstractCommonServiceTest {
         CollisionIdGenerator collisionIdGenerator = new CollisionIdGenerator("1000", new BigInteger("499"),
                 MAX_RETRIES + 2);
         CollisionEntity.initializeCollisionIdGenerator(collisionIdGenerator);
-        CollisionServiceImpl collisionServiceImpl = new CollisionServiceImpl();
         try {
             txManager.execute(tx -> {
                 repo.create(tx, new CollisionEntity("Collision - first record"));
@@ -105,7 +110,6 @@ public class IdGeneratorTest extends AbstractCommonServiceTest {
         CollisionIdGenerator collisionIdGenerator = new CollisionIdGenerator("2000", new BigInteger("1499"),
                 2);
         CollisionEntity.initializeCollisionIdGenerator(collisionIdGenerator);
-        CollisionServiceImpl collisionServiceImpl = new CollisionServiceImpl();
         try {
             txManager.execute(tx -> {
                 // this insert creates the record with the correct id
@@ -130,7 +134,6 @@ public class IdGeneratorTest extends AbstractCommonServiceTest {
     public void testKeyNoKeyCollision() {
         CollisionIdGenerator collisionIdGenerator = new CollisionIdGenerator("3000", new BigInteger("2499"), 0);
         CollisionEntity.initializeCollisionIdGenerator(collisionIdGenerator);
-        CollisionServiceImpl collisionServiceImpl = new CollisionServiceImpl();
         try {
             txManager.execute(tx -> {
                 repo.create(tx, new CollisionEntity("NoKeyCollision - first record"));

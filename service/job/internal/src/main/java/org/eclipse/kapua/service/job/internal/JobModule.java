@@ -26,6 +26,7 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -75,7 +76,8 @@ public class JobModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
-            JobRepository jobRepository
+            JobRepository jobRepository,
+            KapuaJpaRepositoryConfiguration jpaRepoConfig
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
@@ -83,7 +85,7 @@ public class JobModule extends AbstractKapuaModule {
                         JobDomains.JOB_DOMAIN,
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
                         new CachingServiceConfigRepository(
-                                new ServiceConfigImplJpaRepository(),
+                                new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
                         permissionFactory,
@@ -100,7 +102,7 @@ public class JobModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    JobRepository jobRepository() {
-        return new JobImplJpaRepository();
+    JobRepository jobRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new JobImplJpaRepository(jpaRepoConfig);
     }
 }

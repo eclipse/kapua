@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -37,8 +38,8 @@ import java.util.List;
 public class DomainImplJpaRepository
         extends KapuaEntityJpaRepository<Domain, DomainImpl, DomainListResult>
         implements DomainRepository {
-    public DomainImplJpaRepository() {
-        super(DomainImpl.class, () -> new DomainListResultImpl());
+    public DomainImplJpaRepository(KapuaJpaRepositoryConfiguration configuration) {
+        super(DomainImpl.class, () -> new DomainListResultImpl(), configuration);
     }
 
     //for the sole purpose of changing exception type

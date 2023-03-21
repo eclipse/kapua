@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.registry.internal;
 
 import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -25,8 +26,8 @@ import org.eclipse.kapua.storage.TxContext;
 public class DeviceImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<Device, DeviceImpl, DeviceListResult>
         implements DeviceRepository {
-    public DeviceImplJpaRepository() {
-        super(DeviceImpl.class, () -> new DeviceListResultImpl());
+    public DeviceImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        super(DeviceImpl.class, () -> new DeviceListResultImpl(), jpaRepoConfig);
     }
 
     @Override

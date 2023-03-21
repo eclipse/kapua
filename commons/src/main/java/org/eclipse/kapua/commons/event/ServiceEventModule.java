@@ -104,7 +104,7 @@ public abstract class ServiceEventModule implements ServiceModule {
                         //FIXME: can we inject collaborators here?
                         new JpaTxManager(serviceEventModuleConfiguration.getEntityManagerFactory().getJpaEntityManagerFactory()),
                         new EventStoreFactoryImpl(),
-                        new EventStoreRecordImplJpaRepository()
+                        new EventStoreRecordImplJpaRepository(serviceEventModuleConfiguration.getKapuaJpaRepositoryConfiguration())
                 ),
                 serviceEventModuleConfiguration.getEntityManagerFactory(),
                 eventbus,

@@ -16,6 +16,7 @@ import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionRepository;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService;
@@ -45,7 +46,7 @@ public class JobEngineQueueJbatchModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    QueuedJobExecutionRepository queuedJobExecutionRepository() {
-        return new QueuedJobExecutionImplJpaRepository();
+    QueuedJobExecutionRepository queuedJobExecutionRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new QueuedJobExecutionImplJpaRepository(jpaRepoConfig);
     }
 }

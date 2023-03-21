@@ -16,6 +16,7 @@ import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
@@ -50,7 +51,7 @@ public class DeviceManagementRegistryOperationModule extends AbstractKapuaModule
 
     @Provides
     @Singleton
-    DeviceManagementOperationRepository deviceManagementOperationRepository() {
-        return new DeviceManagementOperationRepositoryImplJpaRepository();
+    DeviceManagementOperationRepository deviceManagementOperationRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        return new DeviceManagementOperationRepositoryImplJpaRepository(jpaRepoConfig);
     }
 }

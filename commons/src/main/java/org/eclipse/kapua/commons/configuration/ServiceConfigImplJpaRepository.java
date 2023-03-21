@@ -13,6 +13,7 @@
 package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -21,8 +22,8 @@ import org.eclipse.kapua.storage.TxContext;
 public class ServiceConfigImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<ServiceConfig, ServiceConfigImpl, ServiceConfigListResult> implements ServiceConfigRepository {
 
-    public ServiceConfigImplJpaRepository() {
-        super(ServiceConfigImpl.class, () -> new ServiceConfigListResultImpl());
+    public ServiceConfigImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        super(ServiceConfigImpl.class, () -> new ServiceConfigListResultImpl(), jpaRepoConfig);
     }
 
     @Override

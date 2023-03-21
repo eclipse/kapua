@@ -18,6 +18,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.commons.core.InterceptorBind;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -56,7 +57,8 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(RaiseServiceEventInterceptor.class);
 
-    private final EventStoreRecordRepository repository = new EventStoreRecordImplJpaRepository();
+    //FIXME: inject the repo!
+    private final EventStoreRecordRepository repository = new EventStoreRecordImplJpaRepository(new KapuaJpaRepositoryConfiguration());
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {

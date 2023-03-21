@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.internal;
 
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityJpaRepository;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobListResult;
@@ -21,7 +22,7 @@ public class JobImplJpaRepository
         extends KapuaNamedEntityJpaRepository<Job, JobImpl, JobListResult>
         implements JobRepository {
 
-    public JobImplJpaRepository() {
-        super(JobImpl.class, () -> new JobListResultImpl());
+    public JobImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        super(JobImpl.class, () -> new JobListResultImpl(), jpaRepoConfig);
     }
 }

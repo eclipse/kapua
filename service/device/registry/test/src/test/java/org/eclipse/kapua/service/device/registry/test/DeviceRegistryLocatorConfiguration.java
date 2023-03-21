@@ -25,6 +25,7 @@ import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
@@ -88,6 +89,7 @@ public class DeviceRegistryLocatorConfiguration {
                     // skip
                 }
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
+                bind(KapuaJpaRepositoryConfiguration.class).toInstance(new KapuaJpaRepositoryConfiguration());
                 bind(AccountChildrenFinder.class).toInstance(Mockito.mock(AccountChildrenFinder.class));
                 bind(AccountFactory.class).toInstance(Mockito.mock(AccountFactory.class));
                 bind(AccountService.class).toInstance(Mockito.mock(AccountService.class));
@@ -101,40 +103,41 @@ public class DeviceRegistryLocatorConfiguration {
                 bind(DeviceRegistryCacheFactory.class).toInstance(deviceRegistryCacheFactory);
 
                 bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
+                final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 bind(DeviceConnectionService.class).toInstance(new DeviceConnectionServiceImpl(
                         Mockito.mock(ServiceConfigurationManager.class),
                         mockedAuthorization,
                         permissionFactory,
                         new DeviceConnectionFactoryImpl(),
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
-                        new DeviceConnectionImplJpaRepository()));
+                        new DeviceConnectionImplJpaRepository(jpaRepoConfig)));
                 bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
 
-                bind(DeviceRepository.class).toInstance(new DeviceImplJpaRepository());
-                bind(DeviceConnectionRepository.class).toInstance(new DeviceConnectionImplJpaRepository());
-                bind(DeviceEventRepository.class).toInstance(new DeviceEventImplJpaRepository());
+                bind(DeviceRepository.class).toInstance(new DeviceImplJpaRepository(jpaRepoConfig));
+                bind(DeviceConnectionRepository.class).toInstance(new DeviceConnectionImplJpaRepository(jpaRepoConfig));
+                bind(DeviceEventRepository.class).toInstance(new DeviceEventImplJpaRepository(jpaRepoConfig));
                 bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl(
                         mockedAuthorization,
                         permissionFactory,
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
-                        new DeviceImplJpaRepository(),
+                        new DeviceImplJpaRepository(jpaRepoConfig),
                         new DeviceEventFactoryImpl(),
-                        new DeviceEventImplJpaRepository()
+                        new DeviceEventImplJpaRepository(jpaRepoConfig)
                 ));
                 bind(DeviceEventFactory.class).toInstance(new DeviceEventFactoryImpl());
                 bind(KapuaMessageFactory.class).toInstance(new KapuaMessageFactoryImpl());
                 bind(DeviceRegistryService.class).toInstance(new DeviceRegistryServiceImpl(
                         Mockito.mock(ServiceConfigurationManager.class),
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
-                        new DeviceImplJpaRepository(),
+                        new DeviceImplJpaRepository(jpaRepoConfig),
                         new DeviceFactoryImpl(),
                         new AccessInfoFactoryImpl(),
-                        new AccessInfoImplJpaRepository(),
-                        new AccessPermissionImplJpaRepository(),
-                        new AccessRoleImplJpaRepository(),
-                        new RoleImplJpaRepository(),
-                        new RolePermissionImplJpaRepository(),
-                        new EventStorerImpl(new EventStoreRecordImplJpaRepository()))
+                        new AccessInfoImplJpaRepository(jpaRepoConfig),
+                        new AccessPermissionImplJpaRepository(jpaRepoConfig),
+                        new AccessRoleImplJpaRepository(jpaRepoConfig),
+                        new RoleImplJpaRepository(jpaRepoConfig),
+                        new RolePermissionImplJpaRepository(jpaRepoConfig),
+                        new EventStorerImpl(new EventStoreRecordImplJpaRepository(jpaRepoConfig)))
                 );
             }
         };

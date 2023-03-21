@@ -13,6 +13,7 @@
 package org.eclipse.kapua.commons.event;
 
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 
 /**
  * @deprecated since 2.0.0 - use {@link ServiceEventModuleTransactionalConfiguration} instead
@@ -22,12 +23,15 @@ public class ServiceEventModuleConfiguration {
 
     private String internalAddress;
     private EntityManagerFactory entityManagerFactory;
+
+    public KapuaJpaRepositoryConfiguration kapuaJpaRepositoryConfiguration;
     private ServiceEventClientConfiguration[] serviceEventClientConfigurations;
 
     public ServiceEventModuleConfiguration(String internalAddress, EntityManagerFactory entityManagerFactory,
-                                           ServiceEventClientConfiguration[] serviceEventListenerConfigurations) {
+                                           KapuaJpaRepositoryConfiguration kapuaJpaRepositoryConfiguration, ServiceEventClientConfiguration[] serviceEventListenerConfigurations) {
         this.internalAddress = internalAddress;
         this.entityManagerFactory = entityManagerFactory;
+        this.kapuaJpaRepositoryConfiguration = kapuaJpaRepositoryConfiguration;
         this.serviceEventClientConfigurations = serviceEventListenerConfigurations;
     }
 
@@ -37,6 +41,10 @@ public class ServiceEventModuleConfiguration {
 
     public EntityManagerFactory getEntityManagerFactory() {
         return entityManagerFactory;
+    }
+
+    public KapuaJpaRepositoryConfiguration getKapuaJpaRepositoryConfiguration() {
+        return kapuaJpaRepositoryConfiguration;
     }
 
     public ServiceEventClientConfiguration[] getServiceEventClientConfigurations() {

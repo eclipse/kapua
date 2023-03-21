@@ -24,6 +24,7 @@ import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl
 import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -101,8 +102,12 @@ public class JobLocatorConfiguration {
                 bind(AccountChildrenFinder.class).toInstance(Mockito.mock(AccountChildrenFinder.class));
                 bind(AccountService.class).toInstance(Mockito.mock(AccountService.class));
                 bind(AccountFactory.class).toInstance(Mockito.spy(new AccountFactoryImpl()));
+                bind(AccountFactory.class).toInstance(Mockito.mock(AccountFactory.class));
+                bind(KapuaJpaRepositoryConfiguration.class).toInstance(new KapuaJpaRepositoryConfiguration());
+
                 bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
 
+                final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 // Auth
                 // Inject mocked Authorization Service method checkPermission
                 AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
@@ -117,36 +122,36 @@ public class JobLocatorConfiguration {
 
                 // Job
                 bind(JobFactory.class).toInstance(new JobFactoryImpl());
-                final TriggerImplJpaRepository triggerImplJpaRepository = new TriggerImplJpaRepository();
+                final TriggerImplJpaRepository triggerImplJpaRepository = new TriggerImplJpaRepository(jpaRepoConfig);
                 bind(JobService.class).toInstance(new JobServiceImpl(
                         Mockito.mock(ServiceConfigurationManager.class),
                         Mockito.mock(JobEngineService.class),
                         mockedPermissionFactory,
                         mockedAuthorization,
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
-                        new JobImplJpaRepository(),
+                        new JobImplJpaRepository(jpaRepoConfig),
                         triggerImplJpaRepository,
-                        new DuplicateNameCheckerImpl<>(new JobImplJpaRepository(), scopeId -> new JobQueryImpl(scopeId))
+                        new DuplicateNameCheckerImpl<>(new JobImplJpaRepository(jpaRepoConfig), scopeId -> new JobQueryImpl(scopeId))
                 ));
                 bind(JobStepDefinitionService.class).toInstance(new JobStepDefinitionServiceImpl(
                         mockedAuthorization,
                         mockedPermissionFactory,
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
-                        new JobStepDefinitionImplJpaRepository(),
-                        new DuplicateNameCheckerImpl<>(new JobStepDefinitionImplJpaRepository(), scopeId -> new JobStepDefinitionQueryImpl(scopeId))
+                        new JobStepDefinitionImplJpaRepository(jpaRepoConfig),
+                        new DuplicateNameCheckerImpl<>(new JobStepDefinitionImplJpaRepository(jpaRepoConfig), scopeId -> new JobStepDefinitionQueryImpl(scopeId))
                 ));
                 bind(JobStepDefinitionFactory.class).toInstance(new JobStepDefinitionFactoryImpl());
-                final JobExecutionImplJpaRepository jobExecutionRepository = new JobExecutionImplJpaRepository();
+                final JobExecutionImplJpaRepository jobExecutionRepository = new JobExecutionImplJpaRepository(jpaRepoConfig);
                 bind(JobStepService.class).toInstance(new JobStepServiceImpl(
                         mockedAuthorization,
                         mockedPermissionFactory,
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
-                        new JobStepImplJpaRepository(),
+                        new JobStepImplJpaRepository(jpaRepoConfig),
                         new JobStepFactoryImpl(),
-                        new DuplicateNameCheckerImpl<>(new JobStepImplJpaRepository(), scopeId -> new JobStepQueryImpl(scopeId)),
+                        new DuplicateNameCheckerImpl<>(new JobStepImplJpaRepository(jpaRepoConfig), scopeId -> new JobStepQueryImpl(scopeId)),
                         jobExecutionRepository,
                         new JobExecutionFactoryImpl(),
-                        new JobStepDefinitionImplJpaRepository(),
+                        new JobStepDefinitionImplJpaRepository(jpaRepoConfig),
                         new QueryFactoryImpl()
                 ));
                 bind(JobStepFactory.class).toInstance(new JobStepFactoryImpl());
@@ -154,9 +159,9 @@ public class JobLocatorConfiguration {
                         mockedAuthorization,
                         mockedPermissionFactory,
                         new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
-                        new JobTargetImplJpaRepository(),
+                        new JobTargetImplJpaRepository(jpaRepoConfig),
                         new JobTargetFactoryImpl(),
-                        new JobImplJpaRepository()
+                        new JobImplJpaRepository(jpaRepoConfig)
                 ));
                 bind(JobTargetFactory.class).toInstance(new JobTargetFactoryImpl());
                 bind(JobExecutionService.class).toInstance(new JobExecutionServiceImpl(
@@ -169,7 +174,7 @@ public class JobLocatorConfiguration {
 
                 // Trigger
                 final TriggerDefinitionFactoryImpl triggerDefinitionFactory = new TriggerDefinitionFactoryImpl();
-                final TriggerDefinitionImplJpaRepository triggerDefinitionRepository = new TriggerDefinitionImplJpaRepository();
+                final TriggerDefinitionImplJpaRepository triggerDefinitionRepository = new TriggerDefinitionImplJpaRepository(jpaRepoConfig);
                 final TriggerFactoryImpl triggerFactory = new TriggerFactoryImpl();
                 bind(TriggerService.class).toInstance(new TriggerServiceImpl(
                         mockedAuthorization,

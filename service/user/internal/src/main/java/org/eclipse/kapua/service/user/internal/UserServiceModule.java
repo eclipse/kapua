@@ -18,6 +18,7 @@ import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
 import org.eclipse.kapua.commons.jpa.JpaTxManager;
 import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.setting.KapuaUserSetting;
 import org.eclipse.kapua.service.user.internal.setting.KapuaUserSettingKeys;
@@ -29,6 +30,8 @@ public class UserServiceModule extends ServiceEventTransactionalModule {
 
     @Inject
     private UserService userService;
+    @Inject
+    private KapuaJpaRepositoryConfiguration jpaRepoConfig;
 
     @Override
     protected ServiceEventModuleTransactionalConfiguration initializeConfiguration() {
@@ -37,6 +40,7 @@ public class UserServiceModule extends ServiceEventTransactionalModule {
         return new ServiceEventModuleTransactionalConfiguration(
                 kas.getString(KapuaUserSettingKeys.USER_EVENT_ADDRESS),
                 new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
-                selc.toArray(new ServiceEventClientConfiguration[0]));
+                selc.toArray(new ServiceEventClientConfiguration[0]),
+                jpaRepoConfig);
     }
 }

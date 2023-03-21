@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.job.step.definition.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
@@ -25,8 +26,8 @@ public class JobStepDefinitionImplJpaRepository
         extends KapuaNamedEntityJpaRepository<JobStepDefinition, JobStepDefinitionImpl, JobStepDefinitionListResult>
         implements JobStepDefinitionRepository {
 
-    public JobStepDefinitionImplJpaRepository() {
-        super(JobStepDefinitionImpl.class, () -> new JobStepDefinitionListResultImpl());
+    public JobStepDefinitionImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        super(JobStepDefinitionImpl.class, () -> new JobStepDefinitionListResultImpl(), jpaRepoConfig);
     }
 
     @Override
