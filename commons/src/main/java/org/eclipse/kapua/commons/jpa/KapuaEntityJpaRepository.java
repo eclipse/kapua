@@ -75,6 +75,11 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     private static final String ATTRIBUTE_SEPARATOR_ESCAPED = "\\.";
     private static final String COMPARE_ERROR_MESSAGE = "Trying to compare a non-comparable value";
 
+    /**
+     * @param concreteClass The concrete class reifying a {@link KapuaEntity} entity, to be retrieved
+     * @param listSupplier  Generator of new, empty lists
+     * @param configuration Repo configuration, see {@link KapuaJpaRepositoryConfiguration} for configurable details
+     */
     public KapuaEntityJpaRepository(
             Class<C> concreteClass,
             Supplier<L> listSupplier,
@@ -86,12 +91,17 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
 
     @Override
     public E create(TxContext txContext, E entity) throws KapuaException {
-        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         int retry = 0;
         do {
             try {
                 return doCreate(em, entity);
             } catch (KapuaEntityExistsException e) {
+                /*
+                 * Most KapuaEntities inherit from AbstractKapuaEntity, which auto-generates ids via a method marked with @PrePersist and the use of
+                 * a org.eclipse.kapua.commons.model.id.IdGenerator. Ids are pseudo-randomic. To deal with potential conflicts, a number of retries
+                 * is allowed. The entity needs to be detached in order for the @PrePersist method to be invoked once more, generating a new id
+                 * */
                 em.detach(entity);
                 if (++retry >= configuration.maxInsertAllowedRetry) {
                     throw e;
@@ -101,20 +111,25 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         } while (true);
     }
 
-    protected E doCreate(javax.persistence.EntityManager em, E entity) {
+    protected E doCreate(EntityManager em, E entity) {
         try {
             em.persist(entity);
             em.flush();
             em.refresh(entity);
             return entity;
         } catch (EntityExistsException e) {
+            // this will be intercepted by the calling method, that will decide whether to retry or not
             throw new KapuaEntityExistsException(e, entity.getId());
         } catch (PersistenceException e) {
+            //if it is a contraint violation....
             if (isInsertConstraintViolation(e)) {
+                //then check if an entity with the same id is already present
                 final KapuaEntity entityFound = em.find(entity.getClass(), entity.getId());
                 if (entityFound == null) {
+                    //if it is not, just propagate the original exception
                     throw e;
                 }
+                //if an entity with the same id is already present, treat it as a generated id conflict and bubble up for potential retry
                 throw new KapuaEntityExistsException(e, entity.getId());
             } else {
                 throw e;
@@ -128,31 +143,21 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         return doFind(em, scopeId, entityId);
     }
 
-    protected Optional<E> doFind(javax.persistence.EntityManager em, KapuaId scopeId, KapuaId entityId) {
-        KapuaEid eId = KapuaEid.parseKapuaId(entityId);
+    protected Optional<E> doFind(EntityManager em, KapuaId scopeId, KapuaId entityId) {
+        final KapuaEid eId = KapuaEid.parseKapuaId(entityId);
         // Checking existence
-        final E entityToFind = em.find(concreteClass, eId);
+        final Optional<E> entityToFind = Optional.ofNullable(em.find(concreteClass, eId));
 
-        // If 'null' ScopeId has been requested, it means that we need to look for ANY ScopeId.
-        final KapuaId scopeIdToMatch = scopeId != null ? scopeId : KapuaId.ANY;
-        // Return if not null and ScopeIds matches
 
-        if (entityToFind != null) {
-            if (KapuaId.ANY.equals(scopeIdToMatch)) { // If requested ScopeId is ANY, return whatever Entity has been found
-                return Optional.of(entityToFind);
-            } else if (scopeIdToMatch.equals(entityToFind.getScopeId())) { // If a specific ScopeId is requested, return Entity if given ScopeId matches Entity.scopeId
-                return Optional.of(entityToFind);
-            } else { // If no match, return no result
-                return Optional.empty();
-            }
-        } else {
-            return Optional.empty();
-        }
+        return entityToFind
+                .filter(e -> scopeId == null || KapuaId.ANY.equals(scopeId)
+                        ? true
+                        : scopeId.equals(e.getScopeId()));
     }
 
     @Override
     public L query(TxContext txContext, KapuaQuery listQuery) throws KapuaException {
-        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<C> criteriaSelectQuery = cb.createQuery(concreteClass);
@@ -254,7 +259,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
 
     @Override
     public long count(TxContext txContext, KapuaQuery countQuery) throws KapuaException {
-        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> criteriaSelectQuery = cb.createQuery(Long.class);
@@ -301,7 +306,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
 
     @Override
     public E delete(TxContext txContext, KapuaId scopeId, KapuaId entityId) throws KapuaException {
-        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         // Checking existence
         Optional<E> entityToDelete = doFind(em, scopeId, entityId);
         // Deleting if found
@@ -312,7 +317,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
 
     @Override
     public E delete(TxContext txContext, E entityToDelete) {
-        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         return doDelete(em, entityToDelete);
     }
 
@@ -612,7 +617,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
                                         @NonNull KapuaId scopeId,
                                         @NonNull String fieldName,
                                         @NonNull Object fieldValue) {
-        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         final CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<C> criteriaSelectQuery = cb.createQuery(concreteClass);
         // FROM
