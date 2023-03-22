@@ -92,6 +92,7 @@ services:
       - es
       - events-broker
     environment:
+      - API_CORS_ORIGINS_ALLOWED
       - CRYPTO_SECRET_KEY
       - KAPUA_DISABLE_SSL
       - KAPUA_DISABLE_DATASTORE
