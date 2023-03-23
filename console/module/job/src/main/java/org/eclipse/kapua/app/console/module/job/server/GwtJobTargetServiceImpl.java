@@ -51,7 +51,9 @@ import java.util.Map;
 
 public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implements GwtJobTargetService {
 
-    private static final String NOT_AVAILABLE = "Not available";
+    private static final long serialVersionUID = -4365251346832037608L;
+
+    private static final String NOT_AVAILABLE = "Device not found";
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -76,7 +78,6 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
             totalLength = jobTargetList.getTotalCount().intValue();
 
             List<KapuaId> deviceIds = new ArrayList<KapuaId>();
-            // Convert to GWT entity
             for (JobTarget jt : jobTargetList.getItems()) {
                 deviceIds.add(jt.getJobTargetId());
             }
@@ -85,25 +86,24 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
             query.setPredicate(query.attributePredicate(DeviceAttributes.ENTITY_ID, deviceIds.toArray(new KapuaId[0])));
             DeviceListResult deviceListResult = DEVICE_REGISTRY_SERVICE.query(query);
 
-            Map<KapuaId, Device> deviceMap = new HashMap<KapuaId, Device>();
+            Map<KapuaId, Device> devicesByIdMap = new HashMap<KapuaId, Device>();
             for (Device device : deviceListResult.getItems()) {
-                deviceMap.put(device.getId(), device);
+                devicesByIdMap.put(device.getId(), device);
             }
 
-            for (JobTarget jt : jobTargetList.getItems()) {
-                GwtJobTarget gwtJobTarget = KapuaGwtJobModelConverter.convertJobTarget(jt);
-                Device device = DEVICE_REGISTRY_SERVICE.find(KapuaEid.parseCompactId(gwtJobTarget.getScopeId()), KapuaEid.parseCompactId(gwtJobTarget.getJobTargetId()));
-                if (device != null) {
-                    insertClientId(gwtJobTarget, deviceMap.get(jt.getJobTargetId()));
-                    gwtJobTargetList.add(gwtJobTarget);
-                }
+            for (JobTarget jobTarget : jobTargetList.getItems()) {
+                GwtJobTarget gwtJobTarget = KapuaGwtJobModelConverter.convertJobTarget(jobTarget);
+
+                Device device = devicesByIdMap.get(jobTarget.getJobTargetId());
+                insertClientId(gwtJobTarget, device);
+
+                gwtJobTargetList.add(gwtJobTarget);
             }
 
+            return new BasePagingLoadResult<GwtJobTarget>(gwtJobTargetList, loadConfig != null ? loadConfig.getOffset() : 0, totalLength);
         } catch (Exception e) {
-            KapuaExceptionHandler.handle(e);
+            throw KapuaExceptionHandler.buildExceptionFromError(e);
         }
-
-        return new BasePagingLoadResult<GwtJobTarget>(gwtJobTargetList, loadConfig != null ? loadConfig.getOffset() : 0, totalLength);
     }
 
     @Override
@@ -195,17 +195,10 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
      * @param device       existing device
      * @throws KapuaException
      */
-    private void insertClientId(GwtJobTarget gwtJobTarget, Device device) throws KapuaException {
-        String clientId = null;
-        String displayName = null;
+    private void insertClientId(GwtJobTarget gwtJobTarget, Device device) {
         if (device != null) {
-            clientId = device.getClientId();
-            displayName = device.getDisplayName();
-        }
-
-        if (clientId != null) {
-            gwtJobTarget.setClientId(clientId);
-            gwtJobTarget.setDisplayName(displayName);
+            gwtJobTarget.setClientId(device.getClientId());
+            gwtJobTarget.setDisplayName(device.getDisplayName());
         } else {
             gwtJobTarget.setClientId(NOT_AVAILABLE);
         }
