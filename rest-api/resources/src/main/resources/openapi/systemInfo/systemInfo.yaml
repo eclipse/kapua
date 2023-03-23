@@ -47,8 +47,8 @@ components:
           type: string
           description: Build branch of the system
       example:
-        buildBranch: release/2.0.0,
+        buildBranch: release/2.0.0
         buildNumber: 142
         buildDate: 2023-03-02T08:50:59Z UTC
         revision: e53c7b7d4208204a0791ec296fa3d4dbe2344585
-        version": 2.0.0
+        version: 2.0.0
