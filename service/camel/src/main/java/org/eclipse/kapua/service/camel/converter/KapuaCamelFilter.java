@@ -20,14 +20,11 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.service.camel.listener.AbstractListener;
-import org.eclipse.kapua.service.camel.message.JmsUtil;
 import org.eclipse.kapua.service.client.message.MessageConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Base64;
-
-import javax.jms.JMSException;
 
 /**
  * Kapua Camel session filter used to bind/unbind Kapua session to the thread context
@@ -49,11 +46,6 @@ public class KapuaCamelFilter extends AbstractListener {
      */
     public void bindSession(Exchange exchange, Object value) throws KapuaException {
         ThreadContext.unbindSubject();
-        try {
-            logger.info("=========> {}", JmsUtil.getTopic(exchange.getIn()));
-        } catch (JMSException e) {
-            logger.error("", e);
-        }
         if (Boolean.FALSE.equals(exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_BROKER_CONTEXT, boolean.class))) {
             try {
                 // FIX #164
