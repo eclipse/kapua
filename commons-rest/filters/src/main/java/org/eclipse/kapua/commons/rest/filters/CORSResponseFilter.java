@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.rest.filters;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.net.HttpHeaders;
-import liquibase.util.StringUtils;
 import org.apache.shiro.web.util.WebUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.rest.filters.settings.KapuaRestFiltersSetting;
@@ -102,17 +102,16 @@ public class CORSResponseFilter implements Filter {
         // For preflight request or session not yet established the KapuaSession will be null.
         // For the actual request it will be available and we will check the CORS according to the scope.
         KapuaId scopeId = KapuaSecurityUtils.getSession() != null ? KapuaSecurityUtils.getSession().getScopeId() : null;
-        String origin = StringUtils.isNotEmpty(httpRequest.getHeader(HttpHeaders.ORIGIN)) ? httpRequest.getHeader(HttpHeaders.ORIGIN) : null;
+        String origin = httpRequest.getHeader(HttpHeaders.ORIGIN);
         String fetchSite = httpRequest.getHeader(HttpHeaders.SEC_FETCH_SITE);
 
-        if (StringUtils.isEmpty(fetchSite)) {
-            logger.info("<sec-fetch-site> not provided, is the browser incompatible with this header? expect false positives for same origin cors requests filtering");
+        if (Strings.isNullOrEmpty(fetchSite)) {
+            logger.warn("Sec-Fetch-Site' header not present in request: {} {}. CORSResponseFilter may produce false positives for this request. User-Agent is: {}", httpRequest.getMethod(), httpRequest.getPathInfo(), httpRequest.getHeader(HttpHeaders.USER_AGENT));
         }
-        if (StringUtils.isEmpty(fetchSite) || //browser not compatible with sec fetch site (for example, safari), proceed with origin check anyway
-                !fetchSite.equals("same-origin")) {
-            if (origin == null) {
-                logger.info("<origin> not provided, is the browser incompatible with this header?");
-            } else {
+        if (Strings.isNullOrEmpty(origin)) {
+            logger.warn("'Origin' header not present in request: {} {}. User-Agent is: {}", httpRequest.getMethod(), httpRequest.getPathInfo(), httpRequest.getHeader(HttpHeaders.USER_AGENT));
+        } else {
+            if (!"same-site".equals(fetchSite)) {
                 // Origin header present, so it's a CORS request. Apply all the required logics
                 httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, POST, DELETE, PUT");
                 httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "X-Requested-With, Content-Type, Authorization");
@@ -123,16 +122,16 @@ public class CORSResponseFilter implements Filter {
                     httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
                     httpResponse.addHeader("Vary", HttpHeaders.ORIGIN);
                 } else {
-                    //this log, for browsers not supporting set fetch site, logs false positive for same origin CORS. This thing is inevitable considering that here we cannot understand if the request comes from the same origin
+                    //this log, for clients not supporting sec-fetch-site, logs false positive for same origin CORS. This thing is inevitable considering that here we cannot understand if the request comes from the same origin
                     if (scopeId != null) {
                         logger.error("HTTP Origin not allowed: {} for scope: {} for the request path: {} {}", origin, scopeId.toCompactId(), httpRequest.getMethod(), httpRequest.getPathInfo());
                     } else {
                         logger.error("HTTP Origin not allowed: {} for the request path: {} {}", origin, httpRequest.getMethod(), httpRequest.getPathInfo());
                     }
                 }
+            } else {
+                logger.debug("HTTP same-site origin detected and allowed. Request: {} {}. User-Agent is: {}", httpRequest.getMethod(), httpRequest.getPathInfo(), httpRequest.getHeader(HttpHeaders.USER_AGENT));
             }
-        } else {
-            logger.info("HTTP same-site origin detected and allowed");
         }
         int errorCode = httpResponse.getStatus();
         if (errorCode >= 400) {
