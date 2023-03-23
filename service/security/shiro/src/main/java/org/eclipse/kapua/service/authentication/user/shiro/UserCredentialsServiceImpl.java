@@ -59,7 +59,7 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
 
 
     @Override
-    public Credential changePasswordRequest(PasswordChangeRequest passwordChangeRequest) throws KapuaException {
+    public Credential changePassword(PasswordChangeRequest passwordChangeRequest) throws KapuaException {
         ArgumentValidator.notNull(passwordChangeRequest.getNewPassword(), "passwordChangeRequest.newPassword");
         ArgumentValidator.notNull(passwordChangeRequest.getCurrentPassword(), "passwordChangeRequest.currentPassword");
 
