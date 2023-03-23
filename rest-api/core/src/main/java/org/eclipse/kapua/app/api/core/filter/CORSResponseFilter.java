@@ -97,34 +97,49 @@ public class CORSResponseFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse httpResponse = WebUtils.toHttp(response);
         HttpServletRequest httpRequest = WebUtils.toHttp(request);
-        String errorMessage = null;
 
-        String origin = httpRequest.getHeader(HttpHeaders.ORIGIN);
-        if (StringUtils.isNotEmpty(origin)) {
-            // Origin header present, so it's a CORS request. Apply all the required logics
-            httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, POST, DELETE, PUT");
-            httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "X-Requested-With, Content-Type, Authorization");
+        // Depending on the type of the request the KapuaSession might not yet be present.
+        // For preflight request or session not yet established the KapuaSession will be null.
+        // For the actual request it will be available and we will check the CORS according to the scope.
+        KapuaId scopeId = KapuaSecurityUtils.getSession() != null ? KapuaSecurityUtils.getSession().getScopeId() : null;
+        String origin = StringUtils.isNotEmpty(httpRequest.getHeader(HttpHeaders.ORIGIN)) ? httpRequest.getHeader(HttpHeaders.ORIGIN) : null;
+        String fetchSite = httpRequest.getHeader(HttpHeaders.SEC_FETCH_SITE);
 
-            // Depending on the type of the request the KapuaSession might not yet be present.
-            // For preflight request or session not yet established the KapuaSession will be null.
-            // For the actual request it will be available and we will check the CORS according to the scope.
-            KapuaId scopeId = KapuaSecurityUtils.getSession() != null ? KapuaSecurityUtils.getSession().getScopeId() : null;
-
-            if (checkOrigin(origin, scopeId)) {
-                // Origin matches at least one defined Endpoint
-                httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-                httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-                httpResponse.addHeader("Vary", HttpHeaders.ORIGIN);
+        if (StringUtils.isEmpty(fetchSite)) {
+            logger.info("<sec-fetch-site> not provided, is the browser incompatible with this header? expect false positives for same origin cors requests filtering");
+        }
+        if (StringUtils.isEmpty(fetchSite) || //browser not compatible with sec fetch site (for example, safari), proceed with origin check anyway
+                !fetchSite.equals("same-origin")) {
+            if (origin == null) {
+                logger.info("<origin> not provided, is the browser incompatible with this header?");
             } else {
-                errorMessage = scopeId != null ?
-                        String.format("HTTP Origin not allowed: %s for scope: %s", origin, scopeId.toCompactId()) :
-                        String.format("HTTP Origin not allowed: %s", origin);
-                logger.error(errorMessage);
+                // Origin header present, so it's a CORS request. Apply all the required logics
+                httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, POST, DELETE, PUT");
+                httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "X-Requested-With, Content-Type, Authorization");
+
+                if (checkOrigin(origin, scopeId)) {
+                    // Origin matches at least one defined Endpoint
+                    httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+                    httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+                    httpResponse.addHeader("Vary", HttpHeaders.ORIGIN);
+                } else {
+                    //this log, for browsers not supporting set fetch site, logs false positive for same origin CORS. This thing is inevitable considering that here we cannot understand if the request comes from the same origin
+                    if (scopeId != null) {
+                        logger.error("HTTP Origin not allowed: {} for scope: {} for the request path: {} {}", origin, scopeId.toCompactId(), httpRequest.getMethod(), httpRequest.getPathInfo());
+                    } else {
+                        logger.error("HTTP Origin not allowed: {} for the request path: {} {}", origin, httpRequest.getMethod(), httpRequest.getPathInfo());
+                    }
+                }
             }
+        } else {
+            logger.info("HTTP same-site origin detected and allowed");
         }
         int errorCode = httpResponse.getStatus();
         if (errorCode >= 400) {
             // if there's an error code at this point, return it and stop the chain
+            String errorMessage = scopeId != null ?
+                    String.format("HTTP Origin not allowed: %s for scope: %s for the request path: %s %s", origin, scopeId.toCompactId(), httpRequest.getMethod(), httpRequest.getPathInfo()) :
+                    String.format("HTTP Origin not allowed: %s for the request path: %s %s", origin, httpRequest.getMethod(), httpRequest.getPathInfo());
             httpResponse.sendError(errorCode, errorMessage);
             return;
         }
