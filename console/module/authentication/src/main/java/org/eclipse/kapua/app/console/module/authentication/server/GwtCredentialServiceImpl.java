@@ -278,7 +278,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
             PasswordChangeRequest passwordChangeRequest = USER_CREDENTIALS_FACTORY.newPasswordChangeRequest();
             passwordChangeRequest.setCurrentPassword(oldPassword);
             passwordChangeRequest.setNewPassword(newPassword);
-            USER_CREDENTIALS_SERVICE.changePasswordRequest(passwordChangeRequest);
+            USER_CREDENTIALS_SERVICE.changePassword(passwordChangeRequest);
 
         } catch (Exception e) {
             throw KapuaExceptionHandler.buildExceptionFromError(e);

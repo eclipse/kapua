@@ -48,7 +48,7 @@ public class UserCredential {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Credential newPassword(@PathParam("scopeId") ScopeId scopeId, PasswordChangeRequest passwordChangeRequest) throws KapuaException {
-        return userCredentialsService.changePasswordRequest(passwordChangeRequest);
+        return userCredentialsService.changePassword(passwordChangeRequest);
     }
 
 
