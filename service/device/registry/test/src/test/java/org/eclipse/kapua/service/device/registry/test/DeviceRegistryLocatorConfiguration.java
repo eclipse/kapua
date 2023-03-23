@@ -72,7 +72,7 @@ public class DeviceRegistryLocatorConfiguration {
     public void setupDI() {
         System.setProperty("locator.class.impl", "org.eclipse.kapua.qa.common.MockedLocator");
         MockedLocator mockedLocator = (MockedLocator) KapuaLocator.getInstance();
-
+        final int maxInsertAttempts = 3;
         AbstractModule module = new AbstractModule() {
 
             @Override
@@ -109,7 +109,7 @@ public class DeviceRegistryLocatorConfiguration {
                         mockedAuthorization,
                         permissionFactory,
                         new DeviceConnectionFactoryImpl(),
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-device"), maxInsertAttempts),
                         new DeviceConnectionImplJpaRepository(jpaRepoConfig)));
                 bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
 
@@ -119,7 +119,7 @@ public class DeviceRegistryLocatorConfiguration {
                 bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl(
                         mockedAuthorization,
                         permissionFactory,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-device"), maxInsertAttempts),
                         new DeviceImplJpaRepository(jpaRepoConfig),
                         new DeviceEventFactoryImpl(),
                         new DeviceEventImplJpaRepository(jpaRepoConfig)
@@ -128,7 +128,7 @@ public class DeviceRegistryLocatorConfiguration {
                 bind(KapuaMessageFactory.class).toInstance(new KapuaMessageFactoryImpl());
                 bind(DeviceRegistryService.class).toInstance(new DeviceRegistryServiceImpl(
                         Mockito.mock(ServiceConfigurationManager.class),
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-device"), maxInsertAttempts),
                         new DeviceImplJpaRepository(jpaRepoConfig),
                         new DeviceFactoryImpl(),
                         new AccessInfoFactoryImpl(),

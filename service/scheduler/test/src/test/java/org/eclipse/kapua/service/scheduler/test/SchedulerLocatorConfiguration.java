@@ -63,6 +63,7 @@ public class SchedulerLocatorConfiguration {
     @Before(value = "@setup", order = 1)
     public void setupDI() {
         MockedLocator mockedLocator = (MockedLocator) KapuaLocator.getInstance();
+        final int maxInsertAttempts = 3;
 
         AbstractModule module = new AbstractModule() {
 
@@ -102,7 +103,7 @@ public class SchedulerLocatorConfiguration {
                         new JobEngineServiceClient(),
                         permissionFactory,
                         mockedAuthorization,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job"), maxInsertAttempts),
                         jobRepository,
                         triggerRepository,
                         new DuplicateNameCheckerImpl<>(jobRepository, jobFactory::newQuery)));
@@ -112,7 +113,7 @@ public class SchedulerLocatorConfiguration {
                 bind(TriggerService.class).toInstance(new TriggerServiceImpl(
                         mockedAuthorization,
                         permissionFactory,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler"), maxInsertAttempts),
                         triggerRepository,
                         triggerFactory,
                         triggerDefinitionRepository,
@@ -123,7 +124,7 @@ public class SchedulerLocatorConfiguration {
                 bind(TriggerDefinitionService.class).toInstance(new TriggerDefinitionServiceImpl(
                         mockedAuthorization,
                         permissionFactory,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler"), maxInsertAttempts),
                         triggerDefinitionRepository,
                         triggerDefinitionFactory));
                 bind(TriggerDefinitionFactory.class).toInstance(triggerDefinitionFactory);

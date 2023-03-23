@@ -12,10 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
+import org.eclipse.kapua.KapuaEntityExistsException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -26,34 +29,60 @@ import java.util.function.BiConsumer;
 public class JpaTxManager implements TxManager {
 
     private final EntityManagerFactory entityManagerFactory;
+    private final int maxInsertAttempts;
 
-    public JpaTxManager(EntityManagerFactory entityManagerFactory) {
+    public JpaTxManager(EntityManagerFactory entityManagerFactory, Integer maxInsertAttempts) {
         this.entityManagerFactory = entityManagerFactory;
+        this.maxInsertAttempts = maxInsertAttempts;
     }
 
     public EntityManagerFactory getEntityManagerFactory() {
         return entityManagerFactory;
     }
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Override
     public <R> R execute(TxConsumer<R> transactionConsumer, BiConsumer<TxContext, R>... additionalTxConsumers) throws KapuaException {
         final EntityManager em = entityManagerFactory.createEntityManager();
         final EntityTransaction tx = em.getTransaction();
-        tx.begin();
+        int retry = 0;
         try {
-            final JpaTxContext txHolder = new JpaTxContext(em);
-            final R res = transactionConsumer.execute(txHolder);
-            Arrays.stream(additionalTxConsumers)
-                    .forEach(additionalTxConsumer -> additionalTxConsumer.accept(txHolder, res));
-            tx.commit();
-            return res;
-        } catch (Exception ex) {
-            if (tx.isActive()) {
-                tx.rollback();
+            while (true) {
+                tx.begin();
+                try {
+                    final JpaTxContext txHolder = new JpaTxContext(em);
+                    final R res = transactionConsumer.execute(txHolder);
+                    Arrays.stream(additionalTxConsumers)
+                            .forEach(additionalTxConsumer -> additionalTxConsumer.accept(txHolder, res));
+                    tx.commit();
+                    return res;
+                } catch (KapuaEntityExistsException e) {
+                    /*
+                     * Most KapuaEntities inherit from AbstractKapuaEntity, which auto-generates ids via a method marked with @PrePersist and the use of
+                     * a org.eclipse.kapua.commons.model.id.IdGenerator. Ids are pseudo-randomic. To deal with potential conflicts, a number of retries
+                     * is allowed. The entity needs to be detached in order for the @PrePersist method to be invoked once more, generating a new id
+                     * */
+                    logger.warn("Conflict on entity creation. Cannot insert the entity, trying again!");
+                    if (tx.isActive()) {
+                        tx.rollback();
+                    }
+                    if (++retry >= maxInsertAttempts) {
+                        logger.error("Maximum number of attempts reached, aborting operation!");
+                        throw e;
+                    }
+                } catch (Exception ex) {
+                    if (tx.isActive()) {
+                        tx.rollback();
+                    }
+                    throw ex;
+                }
             }
+        } catch (Exception ex) {
             throw KapuaExceptionUtils.convertPersistenceException(ex);
         } finally {
             em.close();
         }
+
     }
 }

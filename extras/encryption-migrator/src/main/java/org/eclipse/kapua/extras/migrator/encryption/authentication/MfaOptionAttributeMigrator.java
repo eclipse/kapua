@@ -21,15 +21,11 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 
 public class MfaOptionAttributeMigrator extends AbstractEntityAttributeMigrator<MfaOption> implements EntitySecretAttributeMigrator<MfaOption> {
-
-    //TODO: inject this
-    private static final MfaOptionMigratorServiceImpl MFA_OPTION_MIGRATOR_SERVICE = new MfaOptionMigratorServiceImpl(
-            new JpaTxManager(new KapuaEntityManagerFactory("kapua-encryption-migrator")),
-            new MfaOptionMigratorJpaRepository(new KapuaJpaRepositoryConfiguration())
-    );
-
-    public MfaOptionAttributeMigrator() {
-        super(MFA_OPTION_MIGRATOR_SERVICE);
+    public MfaOptionAttributeMigrator(String persistenceUnitName, Integer maxInsertAttempts) {
+        super(new MfaOptionMigratorServiceImpl(
+                new JpaTxManager(new KapuaEntityManagerFactory(persistenceUnitName), maxInsertAttempts),
+                new MfaOptionMigratorJpaRepository(new KapuaJpaRepositoryConfiguration())
+        ));
     }
 
     @Override

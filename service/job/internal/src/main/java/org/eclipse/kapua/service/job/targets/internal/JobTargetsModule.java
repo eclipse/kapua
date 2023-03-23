@@ -24,6 +24,7 @@ import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetRepository;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 public class JobTargetsModule extends AbstractKapuaModule {
@@ -37,11 +38,13 @@ public class JobTargetsModule extends AbstractKapuaModule {
     JobTargetService jobTargetService(AuthorizationService authorizationService,
                                       PermissionFactory permissionFactory,
                                       JobTargetRepository jobTargetRepository,
-                                      JobTargetFactory jobTargetFactory, JobRepository jobRepository) {
+                                      JobTargetFactory jobTargetFactory,
+                                      JobRepository jobRepository,
+                                      @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new JobTargetServiceImpl(
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job"), maxInsertAttempts),
                 jobTargetRepository,
                 jobTargetFactory,
                 jobRepository);

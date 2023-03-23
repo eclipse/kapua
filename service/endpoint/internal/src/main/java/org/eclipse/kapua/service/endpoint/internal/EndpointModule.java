@@ -25,6 +25,8 @@ import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoRepository;
 import org.eclipse.kapua.service.endpoint.EndpointInfoService;
 
+import javax.inject.Named;
+
 public class EndpointModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
@@ -38,12 +40,13 @@ public class EndpointModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             EndpointInfoFactory endpointInfoFactory,
             AccountRepository accountRepository,
-            EndpointInfoRepository endpointInfoRepository) {
+            EndpointInfoRepository endpointInfoRepository,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new EndpointInfoServiceImpl(
                 authorizationService,
                 permissionFactory,
                 endpointInfoFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-endpoint")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-endpoint"), maxInsertAttempts),
                 accountRepository,
                 endpointInfoRepository);
     }

@@ -25,6 +25,7 @@ import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSetting;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSettingKeys;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.List;
 
 /**
@@ -40,6 +41,9 @@ public class AccountServiceModule extends ServiceEventTransactionalModule implem
     private AccountService accountService;
     @Inject
     private KapuaJpaRepositoryConfiguration jpaRepoConfig;
+    @Inject
+    @Named("maxInsertAttempts")
+    private Integer maxInsertAttempts;
 
     @Override
     protected ServiceEventModuleTransactionalConfiguration initializeConfiguration() {
@@ -49,7 +53,7 @@ public class AccountServiceModule extends ServiceEventTransactionalModule implem
 
         return new ServiceEventModuleTransactionalConfiguration(
                 address,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-account")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-account"), maxInsertAttempts),
                 eventBusClients.toArray(new ServiceEventClientConfiguration[0]),
                 jpaRepoConfig);
     }

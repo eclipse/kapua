@@ -27,6 +27,7 @@ import org.eclipse.kapua.service.authorization.shiro.setting.KapuaAuthorizationS
 import org.eclipse.kapua.service.authorization.shiro.setting.KapuaAuthorizationSettingKeys;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +43,9 @@ public class AuthorizationServiceModule extends ServiceEventTransactionalModule 
     private RoleService roleService;
     @Inject
     private KapuaJpaRepositoryConfiguration jpaRepoConfig;
+    @Inject
+    @Named("maxInsertAttempts")
+    private Integer maxInsertAttempts;
 
     @Override
     protected ServiceEventModuleTransactionalConfiguration initializeConfiguration() {
@@ -53,7 +57,7 @@ public class AuthorizationServiceModule extends ServiceEventTransactionalModule 
         selc.addAll(ServiceInspector.getEventBusClients(groupService, GroupService.class));
         return new ServiceEventModuleTransactionalConfiguration(
                 kdrs.getString(KapuaAuthorizationSettingKeys.AUTHORIZATION_EVENT_ADDRESS),
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
                 selc.toArray(new ServiceEventClientConfiguration[0]),
                 jpaRepoConfig);
     }

@@ -19,6 +19,7 @@ import org.eclipse.kapua.extras.migrator.encryption.job.JobStepAttributeMigrator
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Named;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,8 +28,13 @@ public class EntityAttributeMigrator {
     private static final Logger LOG = LoggerFactory.getLogger(EntityAttributeMigrator.class);
 
     private static final int PAGE_SIZE = 50;
+    private final String persistenceUnitName;
+    private final Integer maxInsertAttempts;
 
-    protected EntityAttributeMigrator() {
+    protected EntityAttributeMigrator(String persistenceUnitName,
+                                      @Named("maxInsertAttempts") Integer maxInsertAttempts) {
+        this.persistenceUnitName = persistenceUnitName;
+        this.maxInsertAttempts = maxInsertAttempts;
     }
 
     public void migrate() throws KapuaException {
@@ -60,8 +66,8 @@ public class EntityAttributeMigrator {
 
     public List<EntitySecretAttributeMigrator<?>> getEntityMigrators() {
         return Arrays.asList(
-                new JobStepAttributeMigrator(),
-                new MfaOptionAttributeMigrator()
+                new JobStepAttributeMigrator(persistenceUnitName, maxInsertAttempts),
+                new MfaOptionAttributeMigrator(persistenceUnitName, maxInsertAttempts)
         );
     }
 }

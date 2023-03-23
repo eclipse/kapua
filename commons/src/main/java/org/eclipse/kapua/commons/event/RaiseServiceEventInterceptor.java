@@ -39,6 +39,8 @@ import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -59,6 +61,10 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
 
     //FIXME: inject the repo!
     private final EventStoreRecordRepository repository = new EventStoreRecordImplJpaRepository(new KapuaJpaRepositoryConfiguration());
+
+    @Named("maxInsertAttempts")
+    @Inject
+    private Integer maxInsertAttempts;
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -245,7 +251,7 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
 
     private void updateEventStatus(ServiceEvent serviceEventBus, EventStatus newServiceEventStatus) {
         try {
-            final TxManager txManager = new JpaTxManager(new KapuaEntityManagerFactory("kapua-events"));
+            final TxManager txManager = new JpaTxManager(new KapuaEntityManagerFactory("kapua-events"), maxInsertAttempts);
 
             serviceEventBus.setStatus(newServiceEventStatus);
             txManager.execute(tx -> {

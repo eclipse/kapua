@@ -23,6 +23,7 @@ import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperat
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationRepository;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationService;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 public class DeviceManagementJobModule extends AbstractKapuaModule {
@@ -37,11 +38,12 @@ public class DeviceManagementJobModule extends AbstractKapuaModule {
             JobDeviceManagementOperationFactory entityFactory,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            JobDeviceManagementOperationRepository repository) {
+            JobDeviceManagementOperationRepository repository,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new JobDeviceManagementOperationServiceImpl(entityFactory,
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job-device-management-operation")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job-device-management-operation"), maxInsertAttempts),
                 repository);
     }
 

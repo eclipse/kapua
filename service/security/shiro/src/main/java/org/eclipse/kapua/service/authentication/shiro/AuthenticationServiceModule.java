@@ -25,6 +25,7 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticatio
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,9 @@ public class AuthenticationServiceModule extends ServiceEventTransactionalModule
     private AccessTokenService accessTokenService;
     @Inject
     private KapuaJpaRepositoryConfiguration jpaRepoConfig;
+    @Inject
+    @Named("maxInsertAttempts")
+    private Integer maxInsertAttempts;
 
     @Override
     protected ServiceEventModuleTransactionalConfiguration initializeConfiguration() {
@@ -45,7 +49,7 @@ public class AuthenticationServiceModule extends ServiceEventTransactionalModule
         selc.addAll(ServiceInspector.getEventBusClients(accessTokenService, AccessTokenService.class));
         return new ServiceEventModuleTransactionalConfiguration(
                 kas.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_EVENT_ADDRESS),
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication"), maxInsertAttempts),
                 selc.toArray(new ServiceEventClientConfiguration[0]),
                 jpaRepoConfig);
     }

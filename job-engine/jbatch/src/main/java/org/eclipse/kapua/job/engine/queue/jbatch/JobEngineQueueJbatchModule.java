@@ -23,6 +23,7 @@ import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 public class JobEngineQueueJbatchModule extends AbstractKapuaModule {
@@ -36,11 +37,12 @@ public class JobEngineQueueJbatchModule extends AbstractKapuaModule {
     QueuedJobExecutionService queuedJobExecutionService(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            QueuedJobExecutionRepository repository) {
+            QueuedJobExecutionRepository repository,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new QueuedJobExecutionServiceImpl(
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job-engine")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job-engine"), maxInsertAttempts),
                 repository);
     }
 

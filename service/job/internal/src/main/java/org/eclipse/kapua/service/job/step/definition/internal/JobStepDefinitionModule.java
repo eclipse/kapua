@@ -25,6 +25,7 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionRepository
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 public class JobStepDefinitionModule extends AbstractKapuaModule {
     @Override
@@ -37,11 +38,12 @@ public class JobStepDefinitionModule extends AbstractKapuaModule {
     JobStepDefinitionService jobStepDefinitionService(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            JobStepDefinitionRepository repository) {
+            JobStepDefinitionRepository repository,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new JobStepDefinitionServiceImpl(
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job"), maxInsertAttempts),
                 repository,
                 new DuplicateNameCheckerImpl<>(repository, scopeId -> new JobStepDefinitionQueryImpl(scopeId)));
     }

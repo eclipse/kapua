@@ -66,6 +66,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.UserRepository;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Map;
 import java.util.Optional;
@@ -101,11 +102,12 @@ public class AuthenticationModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             AccessTokenRepository accessTokenRepository,
-            AccessTokenFactory accessTokenFactory) {
+            AccessTokenFactory accessTokenFactory,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new AccessTokenServiceImpl(
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication"), maxInsertAttempts),
                 accessTokenRepository,
                 accessTokenFactory);
     }
@@ -120,7 +122,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
             ScratchCodeFactory scratchCodeFactory,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
 
         final KapuaAuthenticationSetting authenticationSetting = KapuaAuthenticationSetting.getInstance();
         int trustKeyDuration = authenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TRUST_KEY_DURATION);
@@ -128,7 +131,7 @@ public class AuthenticationModule extends AbstractKapuaModule {
         return new MfaOptionServiceImpl(
                 trustKeyDuration,
                 mfaAuthenticator,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication"), maxInsertAttempts),
                 mfaOptionRepository,
                 accountRepository,
                 scratchCodeRepository,
@@ -145,11 +148,12 @@ public class AuthenticationModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             ScratchCodeRepository scratchCodeRepository,
-            ScratchCodeFactory scratchCodeFactory) {
+            ScratchCodeFactory scratchCodeFactory,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new ScratchCodeServiceImpl(
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication"), maxInsertAttempts),
                 scratchCodeRepository,
                 scratchCodeFactory);
     }
@@ -180,12 +184,13 @@ public class AuthenticationModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             CredentialRepository credentialRepository,
             CredentialFactory credentialFactory,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts,
             CredentialMapper credentialMapper,
             PasswordValidator passwordValidator) {
         return new CredentialServiceImpl(serviceConfigurationManager,
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication"), maxInsertAttempts),
                 credentialRepository,
                 credentialFactory,
                 credentialMapper,
@@ -204,9 +209,10 @@ public class AuthenticationModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+            KapuaJpaRepositoryConfiguration jpaRepoConfig,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authentication"), maxInsertAttempts),
                 new CachingServiceConfigRepository(
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         new AbstractKapuaConfigurableServiceCache().createCache()

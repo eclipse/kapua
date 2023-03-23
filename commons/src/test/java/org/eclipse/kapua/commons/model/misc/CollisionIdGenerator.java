@@ -16,16 +16,17 @@ import java.math.BigInteger;
 
 public class CollisionIdGenerator {
 
-    private String fixedValue;
-    private BigInteger startIncrementalValue;
-    private int fixedValueGenerationCount;
+    private BigInteger currentValue;
+    private final BigInteger incrementBy;
+    private final int everyNthGeneration;
 
-    private int extractedValues;
+    private int generatedValues;
 
-    public CollisionIdGenerator(String fixedValue, BigInteger startIncrementalValue, int fixedValueGenerationCount) {
-        this.fixedValue = fixedValue;
-        this.startIncrementalValue = startIncrementalValue;
-        this.fixedValueGenerationCount = fixedValueGenerationCount;
+    public CollisionIdGenerator(long initialValue, long incrementBy, int everyNthGeneration) {
+        this.currentValue = BigInteger.valueOf(initialValue);
+        this.incrementBy = BigInteger.valueOf(incrementBy);
+        this.everyNthGeneration = everyNthGeneration;
+        this.generatedValues = 0;
     }
 
     /**
@@ -34,16 +35,14 @@ public class CollisionIdGenerator {
      * @return
      */
     public BigInteger generate() {
-        if (++extractedValues < fixedValueGenerationCount) {
-            return new BigInteger(fixedValue);
-        } else {
-            startIncrementalValue = startIncrementalValue.add(new BigInteger("1"));
-            return startIncrementalValue;
+        if (++generatedValues % everyNthGeneration == 0) {
+            currentValue = currentValue.add(incrementBy);
         }
+        return currentValue;
     }
 
     public int getGeneretedValuesCount() {
-        return extractedValues;
+        return generatedValues;
     }
 
 }
