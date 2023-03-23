@@ -31,7 +31,7 @@ public interface UserCredentialsService extends KapuaService {
      * @return The updated credential
      * @throws KapuaException
      */
-    Credential changePasswordRequest(PasswordChangeRequest passwordChangeRequest) throws KapuaException;
+    Credential changePassword(PasswordChangeRequest passwordChangeRequest) throws KapuaException;
 
 
     /**

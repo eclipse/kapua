@@ -211,7 +211,7 @@ public class AuthenticationServiceSteps extends TestBase {
         passwordChangeRequest.setNewPassword(newPassword);
 
         try {
-            userCredentialsService.changePasswordRequest(passwordChangeRequest);
+            userCredentialsService.changePassword(passwordChangeRequest);
         } catch (Exception ex) {
             verifyException(ex);
         }
