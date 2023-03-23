@@ -20,7 +20,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
@@ -114,7 +113,17 @@ public class JobTabTargetsGrid extends EntityGrid<GwtJobTarget> {
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig columnConfig = new ColumnConfig("clientId", MSGS.gridJobTargetColumnHeaderJobClientId(), 200);
+        ColumnConfig columnConfig = new ColumnConfig("id", "Id", 100);
+        columnConfig.setSortable(false);
+        columnConfig.setHidden(true);
+        columnConfigs.add(columnConfig);
+
+        columnConfig = new ColumnConfig("jobTargetId", "Job Target Id", 100);
+        columnConfig.setSortable(false);
+        columnConfig.setHidden(true);
+        columnConfigs.add(columnConfig);
+
+        columnConfig = new ColumnConfig("clientId", MSGS.gridJobTargetColumnHeaderJobClientId(), 200);
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
