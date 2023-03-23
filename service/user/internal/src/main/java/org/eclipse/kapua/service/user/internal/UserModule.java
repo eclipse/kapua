@@ -49,9 +49,10 @@ public class UserModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    RootUserTester rootUserTester(UserRepository userRepository) {
+    RootUserTester rootUserTester(UserRepository userRepository,
+                                  @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new RootUserTesterImpl(
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user"), maxInsertAttempts),
                 userRepository
         );
     }
@@ -64,12 +65,13 @@ public class UserModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             UserRepository userRepository,
             UserFactory userFactory,
-            EventStorer eventStorer) {
+            EventStorer eventStorer,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new UserServiceImpl(
                 serviceConfigurationManager,
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user"), maxInsertAttempts),
                 userRepository,
                 userFactory,
                 new DuplicateNameCheckerImpl<>(userRepository, userFactory::newQuery),
@@ -86,12 +88,13 @@ public class UserModule extends AbstractKapuaModule {
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
             UserRepository userRepository,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig
+            KapuaJpaRepositoryConfiguration jpaRepoConfig,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(UserService.class.getName(),
                         UserDomains.USER_DOMAIN,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-user"), maxInsertAttempts),
                         new CachingServiceConfigRepository(
                                 new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
@@ -102,7 +105,7 @@ public class UserModule extends AbstractKapuaModule {
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 userFactory,
-                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
+                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user"), maxInsertAttempts),
                                 userRepository
                         )));
     }

@@ -16,16 +16,14 @@ public class KapuaJpaRepositoryConfiguration {
     /**
      * Customization constructor for this class. Allows to fine-tune RDBMS-specific configurations
      *
-     * @param escape                Escape sequence used by the specific SQL dialect of the used RDBMS
-     * @param like                  "like" operator, {@literal %} in most dialects
-     * @param any                   "any character" operator,  {@literal _} in most dialects
-     * @param maxInsertAllowedRetry Number of allowed retries in case of a key collision when persisting a new entity for the first time
+     * @param escape Escape sequence used by the specific SQL dialect of the used RDBMS
+     * @param like   "like" operator, {@literal %} in most dialects
+     * @param any    "any character" operator,  {@literal _} in most dialects
      */
-    public KapuaJpaRepositoryConfiguration(String escape, String like, String any, int maxInsertAllowedRetry) {
+    public KapuaJpaRepositoryConfiguration(String escape, String like, String any) {
         this.escape = escape;
         this.like = like;
         this.any = any;
-        this.maxInsertAllowedRetry = maxInsertAllowedRetry;
     }
 
     /**
@@ -42,11 +40,9 @@ public class KapuaJpaRepositoryConfiguration {
         this.escape = "\\";
         this.like = "%";
         this.any = "_";
-        this.maxInsertAllowedRetry = 3;
     }
 
     public final String escape;
     public final String like;
     public final String any;
-    public final int maxInsertAllowedRetry;
 }

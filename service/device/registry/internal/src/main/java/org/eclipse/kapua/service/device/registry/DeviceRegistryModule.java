@@ -90,10 +90,11 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
             AccessRoleRepository accessRoleRepository,
             RoleRepository roleRepository,
             RolePermissionRepository rolePermissionRepository,
-            EventStorer eventStorer) {
+            EventStorer eventStorer,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new DeviceRegistryServiceImpl(
                 serviceConfigurationManager,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device"), maxInsertAttempts),
                 deviceRepository,
                 deviceFactory,
                 accessInfoFactory,
@@ -125,13 +126,14 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
             DeviceRepository deviceRepository,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig
+            KapuaJpaRepositoryConfiguration jpaRepoConfig,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         DeviceRegistryService.class.getName(),
                         DeviceDomains.DEVICE_DOMAIN,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-device"), maxInsertAttempts),
                         new CachingServiceConfigRepository(
                                 new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
@@ -142,7 +144,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
-                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
+                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device"), maxInsertAttempts),
                                 deviceRepository)
                 ));
     }
@@ -154,13 +156,14 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             DeviceConnectionFactory entityFactory,
-            DeviceConnectionRepository repository
+            DeviceConnectionRepository repository,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts
     ) {
         return new DeviceConnectionServiceImpl(serviceConfigurationManager,
                 authorizationService,
                 permissionFactory,
                 entityFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device"), maxInsertAttempts),
                 repository);
     }
 
@@ -171,11 +174,12 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+            KapuaJpaRepositoryConfiguration jpaRepoConfig,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerImpl(
                 DeviceConnectionService.class.getName(),
                 DeviceDomains.DEVICE_CONNECTION_DOMAIN,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device"), maxInsertAttempts),
                 new CachingServiceConfigRepository(
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         new AbstractKapuaConfigurableServiceCache().createCache()
@@ -208,11 +212,12 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             DeviceConnectionRepository deviceConnectionRepository,
             DeviceConnectionFactory entityFactory,
-            DeviceConnectionOptionRepository repository) {
+            DeviceConnectionOptionRepository repository,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new DeviceConnectionOptionServiceImpl(
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device"), maxInsertAttempts),
                 deviceConnectionRepository,
                 entityFactory,
                 repository);
@@ -231,11 +236,12 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             DeviceRepository deviceRepository,
             DeviceEventFactory entityFactory,
-            DeviceEventRepository deviceEventRepository) {
+            DeviceEventRepository deviceEventRepository,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new DeviceEventServiceImpl(
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device"), maxInsertAttempts),
                 deviceRepository,
                 entityFactory,
                 deviceEventRepository);

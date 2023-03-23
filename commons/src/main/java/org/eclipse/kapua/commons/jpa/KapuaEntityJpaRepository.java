@@ -92,26 +92,6 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     @Override
     public E create(TxContext txContext, E entity) throws KapuaException {
         final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
-        int retry = 0;
-        do {
-            try {
-                return doCreate(em, entity);
-            } catch (KapuaEntityExistsException e) {
-                /*
-                 * Most KapuaEntities inherit from AbstractKapuaEntity, which auto-generates ids via a method marked with @PrePersist and the use of
-                 * a org.eclipse.kapua.commons.model.id.IdGenerator. Ids are pseudo-randomic. To deal with potential conflicts, a number of retries
-                 * is allowed. The entity needs to be detached in order for the @PrePersist method to be invoked once more, generating a new id
-                 * */
-                em.detach(entity);
-                if (++retry >= configuration.maxInsertAllowedRetry) {
-                    throw e;
-                }
-                logger.warn("Entity already exists. Cannot insert the entity, try again!");
-            }
-        } while (true);
-    }
-
-    protected E doCreate(EntityManager em, E entity) {
         try {
             em.persist(entity);
             em.flush();
@@ -126,7 +106,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
                 //then check if an entity with the same id is already present
                 final KapuaEntity entityFound = em.find(entity.getClass(), entity.getId());
                 if (entityFound == null) {
-                    //if it is not, just propagate the original exception
+                    //if it is not, just propagate the original exception (cannot be an id clash)
                     throw e;
                 }
                 //if an entity with the same id is already present, treat it as a generated id conflict and bubble up for potential retry

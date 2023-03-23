@@ -53,19 +53,15 @@ public class IdGeneratorTest extends AbstractCommonServiceTest {
     public static final String DROP_TEST_FILTER = "test_*_drop.sql";
     private static JpaTxManager txManager;
     private static CollisionEntityJpaRepository repo;
-    private static final int MAX_RETRIES = 5;
+    private static final int MAX_RETRIES = 4;
 
     @BeforeClass
     public static void setUp() {
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL;DB_CLOSE_DELAY=-1", "kapua", "kapua").update();
         scriptSession(DEFAULT_TEST_PATH, DEFAULT_TEST_FILTER);
-        txManager = new JpaTxManager(new KapuaEntityManagerFactory("kapua-commons-unit-test"));
+        txManager = new JpaTxManager(new KapuaEntityManagerFactory("kapua-commons-unit-test"), MAX_RETRIES);
         repo = new CollisionEntityJpaRepository(
-                new KapuaJpaRepositoryConfiguration(
-                        "\\",
-                        "%",
-                        "_",
-                        MAX_RETRIES)
+                new KapuaJpaRepositoryConfiguration()
         );
     }
 
@@ -80,23 +76,24 @@ public class IdGeneratorTest extends AbstractCommonServiceTest {
      * Test the key collision behavior through collision emulation.<br>
      * Test 2 login, the first succeed at the first attempt, the second will fail after third attempt (due to key violation exception)
      */
-    public void testKeyCollision() {
-
-        CollisionIdGenerator collisionIdGenerator = new CollisionIdGenerator("1000", new BigInteger("499"),
-                MAX_RETRIES + 2);
+    public void goOverMaxRetries() {
+        CollisionIdGenerator collisionIdGenerator = new CollisionIdGenerator(1000l, 1, Integer.MAX_VALUE);
         CollisionEntity.initializeCollisionIdGenerator(collisionIdGenerator);
         try {
             txManager.execute(tx -> {
+                final int initialCount = collisionIdGenerator.getGeneretedValuesCount();
                 repo.create(tx, new CollisionEntity("Collision - first record"));
-                Assert.assertEquals("The generated random identifiers count is wrong!", 1, collisionIdGenerator.getGeneretedValuesCount());
-                // this insert will fail for a SystemSettingKey.KAPUA_INSERT_MAX_RETRY count
+                Assert.assertEquals("The generated random identifiers count is wrong!", initialCount + 1, collisionIdGenerator.getGeneretedValuesCount());
+                // this insert will fail for a MAX_RETRIES count
                 repo.create(tx, new CollisionEntity("Collision - second record"));
                 Assert.fail("The insert should throws exception!");
                 return Optional.empty();
             });
             // this insert creates the record with the correct id
         } catch (KapuaException e) {
-            Assert.assertEquals("The generated random identifiers count is wrong!", MAX_RETRIES + 1,
+            //two inserts, repeated for MAX_RETRIES times
+            final int expected = MAX_RETRIES * 2;
+            Assert.assertEquals("The generated random identifiers count is wrong!", expected,
                     collisionIdGenerator.getGeneretedValuesCount());
         }
     }
@@ -107,20 +104,20 @@ public class IdGeneratorTest extends AbstractCommonServiceTest {
      * Test 2 login, the first succeed at the first attempt, the second will succeed at the third attempt (so only 2 key violation will occur)
      */
     public void testKeyPartialCollision() {
-        CollisionIdGenerator collisionIdGenerator = new CollisionIdGenerator("2000", new BigInteger("1499"),
-                2);
+        CollisionIdGenerator collisionIdGenerator = new CollisionIdGenerator(2000, 1, 4);
         CollisionEntity.initializeCollisionIdGenerator(collisionIdGenerator);
         try {
             txManager.execute(tx -> {
+                final int initialCount = collisionIdGenerator.getGeneretedValuesCount();
                 // this insert creates the record with the correct id
-                repo.create(tx, new CollisionEntity("PartialCollision - first record"));
-                Assert.assertEquals("The generated random identifiers count is wrong!", 1, collisionIdGenerator.getGeneretedValuesCount());
+                repo.create(tx, new CollisionEntity("PartialCollision - first attempt"));
+                Assert.assertEquals("The generated random identifiers count is wrong!", initialCount + 1, collisionIdGenerator.getGeneretedValuesCount());
                 // this insert will fail for a SystemSettingKey.KAPUA_INSERT_MAX_RETRY count
-                repo.create(tx, new CollisionEntity("PartialCollision - second record"));
-                Assert.assertEquals("The generated random identifiers count is wrong!", 2,
-                        collisionIdGenerator.getGeneretedValuesCount());
-                return Optional.empty();
+                repo.create(tx, new CollisionEntity("PartialCollision - second attempt"));
+                Assert.assertEquals("The generated random identifiers count is wrong!", initialCount + 2, collisionIdGenerator.getGeneretedValuesCount());
+                return null;
             });
+            Assert.assertEquals(4, collisionIdGenerator.getGeneretedValuesCount());
         } catch (KapuaException e) {
             Assert.fail("The insert shouldn't throws exception!");
         }
@@ -131,23 +128,44 @@ public class IdGeneratorTest extends AbstractCommonServiceTest {
      * Test the key collision behavior through collision emulation.<br>
      * Test 4 login, the first 3 succeed at the first attempt, the 4th will fail 3 times due to a duplicated unique field exception (not a table key)
      */
-    public void testKeyNoKeyCollision() {
-        CollisionIdGenerator collisionIdGenerator = new CollisionIdGenerator("3000", new BigInteger("2499"), 0);
+    public void noCollisionAtAll() {
+        CollisionIdGenerator collisionIdGenerator = new CollisionIdGenerator(3000, 5, 1);
         CollisionEntity.initializeCollisionIdGenerator(collisionIdGenerator);
         try {
             txManager.execute(tx -> {
-                repo.create(tx, new CollisionEntity("NoKeyCollision - first record"));
+                repo.create(tx, new CollisionEntity("noCollisionAtAll - first record"));
                 Assert.assertEquals("The generated random identifiers count is wrong!", 1, collisionIdGenerator.getGeneretedValuesCount());
-                repo.create(tx, new CollisionEntity("NoKeyCollision - second record"));
+                repo.create(tx, new CollisionEntity("noCollisionAtAll - second record"));
                 Assert.assertEquals("The generated random identifiers count is wrong!", 2, collisionIdGenerator.getGeneretedValuesCount());
-                repo.create(tx, new CollisionEntity("NoKeyCollision - third record"));
+                repo.create(tx, new CollisionEntity("noCollisionAtAll - third record"));
                 Assert.assertEquals("The generated random identifiers count is wrong!", 3, collisionIdGenerator.getGeneretedValuesCount());
-                repo.create(tx, new CollisionEntity("NoKeyCollision - third record"));
+                return null;
+            });
+            Assert.assertEquals("The generated random identifiers count is wrong!", 3, collisionIdGenerator.getGeneretedValuesCount());
+        } catch (KapuaException e) {
+            Assert.fail("The insert shouldn't throws exception!");
+        }
+    }
+
+    @Test
+    /**
+     * Test the key collision behavior through collision emulation.<br>
+     * Test 4 login, the first 3 succeed at the first attempt, the 4th will fail 3 times due to a duplicated unique field exception (not a table key)
+     */
+    public void collideOnNameNotId() {
+        CollisionIdGenerator collisionIdGenerator = new CollisionIdGenerator(4000, 5, 1);
+        CollisionEntity.initializeCollisionIdGenerator(collisionIdGenerator);
+        try {
+            txManager.execute(tx -> {
+                final int initialCount = collisionIdGenerator.getGeneretedValuesCount();
+                repo.create(tx, new CollisionEntity("collideOnNameNotId - the only record"));
+                Assert.assertEquals("The generated random identifiers count is wrong!", initialCount + 1, collisionIdGenerator.getGeneretedValuesCount());
+                repo.create(tx, new CollisionEntity("collideOnNameNotId - the only record"));
                 Assert.fail("The insert should throws exception!");
-                return Optional.empty();
+                return null;
             });
         } catch (KapuaException e) {
-            Assert.assertEquals("The generated random identifiers count is wrong!", MAX_RETRIES + 3,
+            Assert.assertEquals("The generated random identifiers count is wrong!", MAX_RETRIES * 2,
                     collisionIdGenerator.getGeneretedValuesCount());
         }
     }

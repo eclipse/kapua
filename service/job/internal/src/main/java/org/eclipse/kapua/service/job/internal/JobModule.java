@@ -53,14 +53,15 @@ public class JobModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             JobRepository jobRepository,
-            TriggerRepository triggerRepository) {
+            TriggerRepository triggerRepository,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
 
         return new JobServiceImpl(
                 serviceConfigurationManager,
                 jobEngineService,
                 permissionFactory,
                 authorizationService,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job"), maxInsertAttempts),
                 jobRepository,
                 triggerRepository,
                 new DuplicateNameCheckerImpl<>(jobRepository, scopeId -> new JobQueryImpl(scopeId))
@@ -77,13 +78,14 @@ public class JobModule extends AbstractKapuaModule {
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
             JobRepository jobRepository,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig
+            KapuaJpaRepositoryConfiguration jpaRepoConfig,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         JobService.class.getName(),
                         JobDomains.JOB_DOMAIN,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job"), maxInsertAttempts),
                         new CachingServiceConfigRepository(
                                 new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
@@ -94,7 +96,7 @@ public class JobModule extends AbstractKapuaModule {
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
-                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job"), maxInsertAttempts),
                                 jobRepository
                         )));
 

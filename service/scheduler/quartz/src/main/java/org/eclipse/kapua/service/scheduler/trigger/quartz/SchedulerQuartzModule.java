@@ -26,6 +26,7 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionRepository;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 public class SchedulerQuartzModule extends AbstractKapuaModule {
@@ -42,11 +43,12 @@ public class SchedulerQuartzModule extends AbstractKapuaModule {
             TriggerRepository triggerRepository,
             TriggerFactory triggerFactory,
             TriggerDefinitionRepository triggerDefinitionRepository,
-            TriggerDefinitionFactory triggerDefinitionFactory) {
+            TriggerDefinitionFactory triggerDefinitionFactory,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new TriggerServiceImpl(
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler"), maxInsertAttempts),
                 triggerRepository,
                 triggerFactory,
                 triggerDefinitionRepository,

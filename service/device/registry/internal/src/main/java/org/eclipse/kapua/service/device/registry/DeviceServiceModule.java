@@ -22,6 +22,7 @@ import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,9 @@ public class DeviceServiceModule extends ServiceEventTransactionalModule {
     private DeviceRegistryService deviceRegistryService;
     @Inject
     private KapuaJpaRepositoryConfiguration jpaRepoConfig;
+    @Inject
+    @Named("maxInsertAttempts")
+    private Integer maxInsertAttempts;
 
     @Override
     protected ServiceEventModuleTransactionalConfiguration initializeConfiguration() {
@@ -44,7 +48,7 @@ public class DeviceServiceModule extends ServiceEventTransactionalModule {
 
         return new ServiceEventModuleTransactionalConfiguration(
                 kapuaDeviceRegistrySettings.getString(KapuaDeviceRegistrySettingKeys.DEVICE_EVENT_ADDRESS),
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device"), maxInsertAttempts),
                 serviceEventListenerConfigurations.toArray(new ServiceEventClientConfiguration[0]),
                 jpaRepoConfig
         );

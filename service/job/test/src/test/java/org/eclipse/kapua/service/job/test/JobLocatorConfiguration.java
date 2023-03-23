@@ -88,6 +88,7 @@ public class JobLocatorConfiguration {
     @Before(value = "@setup", order = 1)
     public void setupDI() {
         MockedLocator mockedLocator = (MockedLocator) KapuaLocator.getInstance();
+        final int maxInsertAttempts = 3;
 
         AbstractModule module = new AbstractModule() {
 
@@ -128,7 +129,7 @@ public class JobLocatorConfiguration {
                         Mockito.mock(JobEngineService.class),
                         mockedPermissionFactory,
                         mockedAuthorization,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job"), maxInsertAttempts),
                         new JobImplJpaRepository(jpaRepoConfig),
                         triggerImplJpaRepository,
                         new DuplicateNameCheckerImpl<>(new JobImplJpaRepository(jpaRepoConfig), scopeId -> new JobQueryImpl(scopeId))
@@ -136,7 +137,7 @@ public class JobLocatorConfiguration {
                 bind(JobStepDefinitionService.class).toInstance(new JobStepDefinitionServiceImpl(
                         mockedAuthorization,
                         mockedPermissionFactory,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job"), maxInsertAttempts),
                         new JobStepDefinitionImplJpaRepository(jpaRepoConfig),
                         new DuplicateNameCheckerImpl<>(new JobStepDefinitionImplJpaRepository(jpaRepoConfig), scopeId -> new JobStepDefinitionQueryImpl(scopeId))
                 ));
@@ -145,7 +146,7 @@ public class JobLocatorConfiguration {
                 bind(JobStepService.class).toInstance(new JobStepServiceImpl(
                         mockedAuthorization,
                         mockedPermissionFactory,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job"), maxInsertAttempts),
                         new JobStepImplJpaRepository(jpaRepoConfig),
                         new JobStepFactoryImpl(),
                         new DuplicateNameCheckerImpl<>(new JobStepImplJpaRepository(jpaRepoConfig), scopeId -> new JobStepQueryImpl(scopeId)),
@@ -158,7 +159,7 @@ public class JobLocatorConfiguration {
                 bind(JobTargetService.class).toInstance(new JobTargetServiceImpl(
                         mockedAuthorization,
                         mockedPermissionFactory,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job"), maxInsertAttempts),
                         new JobTargetImplJpaRepository(jpaRepoConfig),
                         new JobTargetFactoryImpl(),
                         new JobImplJpaRepository(jpaRepoConfig)
@@ -167,7 +168,7 @@ public class JobLocatorConfiguration {
                 bind(JobExecutionService.class).toInstance(new JobExecutionServiceImpl(
                         mockedAuthorization,
                         mockedPermissionFactory,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job"), maxInsertAttempts),
                         jobExecutionRepository
                 ));
                 bind(JobExecutionFactory.class).toInstance(new JobExecutionFactoryImpl());
@@ -179,7 +180,7 @@ public class JobLocatorConfiguration {
                 bind(TriggerService.class).toInstance(new TriggerServiceImpl(
                         mockedAuthorization,
                         mockedPermissionFactory,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler"), maxInsertAttempts),
                         triggerImplJpaRepository,
                         triggerFactory,
                         triggerDefinitionRepository,
@@ -190,7 +191,7 @@ public class JobLocatorConfiguration {
                 bind(TriggerDefinitionService.class).toInstance(new TriggerDefinitionServiceImpl(
                         mockedAuthorization,
                         mockedPermissionFactory,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler"), maxInsertAttempts),
                         triggerDefinitionRepository,
                         triggerDefinitionFactory
                 ));

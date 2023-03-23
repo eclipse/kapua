@@ -22,14 +22,11 @@ import org.eclipse.kapua.service.job.step.JobStep;
 
 public class JobStepAttributeMigrator extends AbstractEntityAttributeMigrator<JobStep> implements EntitySecretAttributeMigrator<JobStep> {
 
-    //TODO: inject this
-    private static final JobStepMigratorServiceImpl JOB_STEP_MIGRATOR_SERVICE = new JobStepMigratorServiceImpl(
-            new JpaTxManager(new KapuaEntityManagerFactory("kapua-encryption-migrator")),
-            new JobStepMigratorJpaRepository(new KapuaJpaRepositoryConfiguration())
-    );
-
-    public JobStepAttributeMigrator() {
-        super(JOB_STEP_MIGRATOR_SERVICE);
+    public JobStepAttributeMigrator(String persistenceUnitName, Integer maxInsertAttempts) {
+        super(new JobStepMigratorServiceImpl(
+                new JpaTxManager(new KapuaEntityManagerFactory(persistenceUnitName), maxInsertAttempts),
+                new JobStepMigratorJpaRepository(new KapuaJpaRepositoryConfiguration())
+        ));
     }
 
     @Override

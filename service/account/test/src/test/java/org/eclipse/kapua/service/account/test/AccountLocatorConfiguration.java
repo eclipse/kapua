@@ -59,7 +59,7 @@ public class AccountLocatorConfiguration {
     @Before(value = "@setup", order = 1)
     public void setupDI() {
         MockedLocator mockedLocator = (MockedLocator) KapuaLocator.getInstance();
-
+        final int maxInsertAttempts = 3;
         AbstractModule module = new AbstractModule() {
 
             @Override
@@ -91,14 +91,14 @@ public class AccountLocatorConfiguration {
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 final AccountRepository accountRepository = new AccountImplJpaRepository(jpaRepoConfig);
                 bind(AccountService.class).toInstance(new AccountServiceImpl(
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-account")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-account"), maxInsertAttempts),
                         new AccountImplJpaRepository(jpaRepoConfig),
                         mockPermissionFactory,
                         mockedAuthorization,
                         new ResourceLimitedServiceConfigurationManagerImpl(
                                 AccountService.class.getName(),
                                 AccountDomains.ACCOUNT_DOMAIN,
-                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-account")),
+                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-account"), maxInsertAttempts),
                                 new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 mockPermissionFactory,
                                 mockedAuthorization,
@@ -106,7 +106,7 @@ public class AccountLocatorConfiguration {
                                 Mockito.mock(AccountChildrenFinder.class),
                                 new UsedEntitiesCounterImpl(
                                         accountFactory,
-                                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-account")),
+                                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-account"), maxInsertAttempts),
                                         accountRepository)
                         ),
                         new DuplicateNameCheckerImpl<>(accountRepository, accountFactory::newQuery),

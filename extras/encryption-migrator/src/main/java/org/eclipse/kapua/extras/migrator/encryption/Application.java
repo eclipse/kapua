@@ -47,7 +47,10 @@ public class Application {
             LOG.info("Running Liquibase... DONE!");
             LOG.info("Running Entity Attribute Migrator...");
             {
-                KapuaSecurityUtils.doPrivileged(() -> new EntityAttributeMigrator().migrate());
+                KapuaSecurityUtils.doPrivileged(() -> new EntityAttributeMigrator(
+                        "kapua-encryption-migrator",
+                        SYSTEM_SETTING.getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY)
+                ).migrate());
             }
             LOG.info("Running Entity Attribute Migrator... DONE!");
 

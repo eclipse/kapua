@@ -49,9 +49,10 @@ public class TagModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             @Named("TagServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
             TagRepository tagRepository,
-            TagFactory tagFactory) {
+            TagFactory tagFactory,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new TagServiceImpl(permissionFactory, authorizationService, serviceConfigurationManager,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-tag")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-tag"), maxInsertAttempts),
                 tagRepository,
                 tagFactory);
     }
@@ -65,13 +66,14 @@ public class TagModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
-            TagRepository tagRepository
+            TagRepository tagRepository,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         TagService.class.getName(),
                         TagDomains.TAG_DOMAIN,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-tag")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-tag"), maxInsertAttempts),
                         new CachingServiceConfigRepository(
                                 new ServiceConfigImplJpaRepository(new KapuaJpaRepositoryConfiguration()),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
@@ -82,7 +84,7 @@ public class TagModule extends AbstractKapuaModule {
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
-                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-tag")),
+                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-tag"), maxInsertAttempts),
                                 tagRepository
                         )));
     }

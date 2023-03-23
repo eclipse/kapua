@@ -74,6 +74,7 @@ public class SecurityLocatorConfiguration {
     @Before(value = "@setup", order = 1)
     public void setupDI() {
         MockedLocator mockedLocator = (MockedLocator) KapuaLocator.getInstance();
+        final int maxInsertAttempts = 3;
 
         AbstractModule module = new AbstractModule() {
 
@@ -104,7 +105,7 @@ public class SecurityLocatorConfiguration {
                         mockedAuthorization,
                         new RolePermissionFactoryImpl(),
                         Mockito.mock(ServiceConfigurationManager.class),
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
                         new RoleImplJpaRepository(jpaRepoConfig),
                         new RolePermissionImplJpaRepository(jpaRepoConfig),
                         new DuplicateNameCheckerImpl<>(new RoleImplJpaRepository(jpaRepoConfig), scopeId -> new RoleQueryImpl(scopeId)))
@@ -116,14 +117,14 @@ public class SecurityLocatorConfiguration {
                         mockPermissionFactory,
                         mockedAuthorization,
                         Mockito.mock(ServiceConfigurationManager.class),
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
                         new GroupImplJpaRepository(jpaRepoConfig),
                         new DuplicateNameCheckerImpl<>(new GroupImplJpaRepository(jpaRepoConfig), scopeId -> new GroupQueryImpl(scopeId))
                 ));
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
                 bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
                 final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         mockPermissionFactory,
                         mockedAuthorization,
@@ -132,7 +133,7 @@ public class SecurityLocatorConfiguration {
                         credentialServiceConfigurationManager,
                         mockedAuthorization,
                         mockPermissionFactory,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
                         new CredentialImplJpaRepository(jpaRepoConfig),
                         new CredentialFactoryImpl(),
                         new CredentialMapperImpl(new CredentialFactoryImpl()),
@@ -147,7 +148,7 @@ public class SecurityLocatorConfiguration {
                         Mockito.mock(ServiceConfigurationManager.class),
                         mockedAuthorization,
                         mockPermissionFactory,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-user"), maxInsertAttempts),
                         new UserImplJpaRepository(jpaRepoConfig),
                         userFactory,
                         new DuplicateNameCheckerImpl<>(new UserImplJpaRepository(jpaRepoConfig), userFactory::newQuery),

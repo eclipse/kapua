@@ -18,21 +18,28 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
+import javax.inject.Named;
+
 public class CommonJpaModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-
     }
 
     @Provides
     @Singleton
-    KapuaJpaRepositoryConfiguration kapuaJpaRepositoryConfiguration() {
-        final SystemSetting systemSetting = SystemSetting.getInstance();
+    @Named("maxInsertAttempts")
+        // Number of allowed retries in case of a key collision when persisting a new entity for the first time
+    Integer maxInsertAttempts(SystemSetting systemSetting) {
+        return systemSetting.getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY);
+    }
+
+    @Provides
+    @Singleton
+    KapuaJpaRepositoryConfiguration kapuaJpaRepositoryConfiguration(SystemSetting systemSetting) {
         return new KapuaJpaRepositoryConfiguration(
                 systemSetting.getString(SystemSettingKey.DB_CHARACTER_ESCAPE, "\\"),
                 systemSetting.getString(SystemSettingKey.DB_CHARACTER_WILDCARD_ANY, "%"),
-                systemSetting.getString(SystemSettingKey.DB_CHARACTER_WILDCARD_SINGLE, "_"),
-                systemSetting.getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY)
+                systemSetting.getString(SystemSettingKey.DB_CHARACTER_WILDCARD_SINGLE, "_")
         );
     }
 }

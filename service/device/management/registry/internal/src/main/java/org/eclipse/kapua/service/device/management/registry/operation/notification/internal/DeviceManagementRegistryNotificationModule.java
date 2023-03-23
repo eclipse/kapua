@@ -24,6 +24,7 @@ import org.eclipse.kapua.service.device.management.registry.operation.notificati
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationRepository;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationService;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 public class DeviceManagementRegistryNotificationModule extends AbstractKapuaModule {
@@ -39,12 +40,13 @@ public class DeviceManagementRegistryNotificationModule extends AbstractKapuaMod
             PermissionFactory permissionFactory,
             ManagementOperationNotificationFactory entityFactory,
             ManagementOperationNotificationRepository repository,
-            DeviceManagementOperationRepository deviceManagementOperationRepository) {
+            DeviceManagementOperationRepository deviceManagementOperationRepository,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new ManagementOperationNotificationServiceImpl(
                 authorizationService,
                 permissionFactory,
                 entityFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device_management_operation_registry")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device_management_operation_registry"), maxInsertAttempts),
                 repository,
                 deviceManagementOperationRepository
         );

@@ -59,6 +59,7 @@ public class UserLocatorConfiguration {
     @Before(value = "@setup", order = 1)
     public void setupDI() {
         MockedLocator mockedLocator = (MockedLocator) KapuaLocator.getInstance();
+        final int maxInsertAttempts = 3;
 
         AbstractModule module = new AbstractModule() {
 
@@ -96,7 +97,7 @@ public class UserLocatorConfiguration {
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 final ResourceLimitedServiceConfigurationManagerImpl userConfigurationManager = new ResourceLimitedServiceConfigurationManagerImpl(UserService.class.getName(),
                         UserDomains.USER_DOMAIN,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-user"), maxInsertAttempts),
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         mockPermissionFactory,
                         mockedAuthorization,
@@ -104,7 +105,7 @@ public class UserLocatorConfiguration {
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 userFactory,
-                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
+                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user"), maxInsertAttempts),
                                 userRepository)
                 );
                 bind(UserService.class).toInstance(
@@ -112,7 +113,7 @@ public class UserLocatorConfiguration {
                                 userConfigurationManager,
                                 mockedAuthorization,
                                 mockPermissionFactory,
-                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
+                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user"), maxInsertAttempts),
                                 new UserImplJpaRepository(jpaRepoConfig),
                                 userFactory,
                                 new DuplicateNameCheckerImpl<>(new UserImplJpaRepository(jpaRepoConfig), userFactory::newQuery),

@@ -24,6 +24,7 @@ import org.eclipse.kapua.service.user.internal.setting.KapuaUserSetting;
 import org.eclipse.kapua.service.user.internal.setting.KapuaUserSettingKeys;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.List;
 
 public class UserServiceModule extends ServiceEventTransactionalModule {
@@ -32,6 +33,9 @@ public class UserServiceModule extends ServiceEventTransactionalModule {
     private UserService userService;
     @Inject
     private KapuaJpaRepositoryConfiguration jpaRepoConfig;
+    @Inject
+    @Named("maxInsertAttempts")
+    private Integer maxInsertAttempts;
 
     @Override
     protected ServiceEventModuleTransactionalConfiguration initializeConfiguration() {
@@ -39,7 +43,7 @@ public class UserServiceModule extends ServiceEventTransactionalModule {
         final List<ServiceEventClientConfiguration> selc = ServiceInspector.getEventBusClients(userService, UserService.class);
         return new ServiceEventModuleTransactionalConfiguration(
                 kas.getString(KapuaUserSettingKeys.USER_EVENT_ADDRESS),
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user"), maxInsertAttempts),
                 selc.toArray(new ServiceEventClientConfiguration[0]),
                 jpaRepoConfig);
     }

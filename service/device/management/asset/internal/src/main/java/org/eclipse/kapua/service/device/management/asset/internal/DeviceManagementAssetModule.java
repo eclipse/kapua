@@ -28,6 +28,8 @@ import org.eclipse.kapua.service.device.registry.DeviceRepository;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
 
+import javax.inject.Named;
+
 public class DeviceManagementAssetModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
@@ -43,9 +45,10 @@ public class DeviceManagementAssetModule extends AbstractKapuaModule {
                                                               DeviceRepository deviceRepository,
                                                               DeviceManagementOperationRepository deviceManagementOperationRepository,
                                                               DeviceManagementOperationFactory deviceManagementOperationFactory,
-                                                              DeviceAssetStoreService deviceAssetStoreService) {
+                                                              DeviceAssetStoreService deviceAssetStoreService,
+                                                              @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new DeviceAssetManagementServiceImpl(
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device_management_operation_registry")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device_management_operation_registry"), maxInsertAttempts),
                 authorizationService,
                 permissionFactory,
                 deviceEventRepository,

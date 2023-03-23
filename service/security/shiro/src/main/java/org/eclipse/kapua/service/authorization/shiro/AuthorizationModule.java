@@ -116,11 +116,12 @@ public class AuthorizationModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             DomainRepository domainRepository,
-            DomainFactory domainFactory) {
+            DomainFactory domainFactory,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new DomainRegistryServiceImpl(
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
                 domainRepository,
                 domainFactory);
     }
@@ -136,11 +137,12 @@ public class AuthorizationModule extends AbstractKapuaModule {
     RolePermissionService rolePermissionService(PermissionFactory permissionFactory,
                                                 AuthorizationService authorizationService,
                                                 RoleRepository roleRepository,
-                                                RolePermissionRepository rolePermissionRepository) {
+                                                RolePermissionRepository rolePermissionRepository,
+                                                @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new RolePermissionServiceImpl(
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
                 roleRepository,
                 rolePermissionRepository
         );
@@ -153,14 +155,15 @@ public class AuthorizationModule extends AbstractKapuaModule {
                             RolePermissionFactory rolePermissionFactory,
                             @Named("RoleServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
                             RoleRepository roleRepository,
-                            RolePermissionRepository rolePermissionRepository
+                            RolePermissionRepository rolePermissionRepository,
+                            @Named("maxInsertAttempts") Integer maxInsertAttempts
     ) {
         return new RoleServiceImpl(
                 permissionFactory,
                 authorizationService,
                 rolePermissionFactory,
                 serviceConfigurationManager,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
                 roleRepository,
                 rolePermissionRepository,
                 new DuplicateNameCheckerImpl<>(roleRepository, (scopeId) -> new RoleQueryImpl(scopeId))
@@ -177,13 +180,14 @@ public class AuthorizationModule extends AbstractKapuaModule {
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
             RoleRepository roleRepository,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig
+            KapuaJpaRepositoryConfiguration jpaRepoConfig,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         RoleService.class.getName(),
                         AuthorizationDomains.ROLE_DOMAIN,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
                         new CachingServiceConfigRepository(
                                 new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
@@ -194,7 +198,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 roleFactory,
-                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
                                 roleRepository
                         )));
     }
@@ -218,9 +222,10 @@ public class AuthorizationModule extends AbstractKapuaModule {
     GroupService groupService(PermissionFactory permissionFactory,
                               AuthorizationService authorizationService,
                               @Named("GroupServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
-                              GroupRepository groupRepository) {
+                              GroupRepository groupRepository,
+                              @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new GroupServiceImpl(permissionFactory, authorizationService, serviceConfigurationManager,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
                 groupRepository,
                 new DuplicateNameCheckerImpl<>(groupRepository, scopeId -> new GroupQueryImpl(scopeId)));
     }
@@ -235,13 +240,14 @@ public class AuthorizationModule extends AbstractKapuaModule {
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
             GroupRepository groupRepository,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig
+            KapuaJpaRepositoryConfiguration jpaRepoConfig,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         GroupService.class.getName(),
                         AuthorizationDomains.GROUP_DOMAIN,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
                         new CachingServiceConfigRepository(
                                 new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
@@ -252,7 +258,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
-                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
                                 groupRepository
                         )));
     }
@@ -274,10 +280,11 @@ public class AuthorizationModule extends AbstractKapuaModule {
             AccessInfoRepository accessInfoRepository,
             AccessInfoFactory accessInfoFactory,
             AccessPermissionRepository accessPermissionRepository,
-            AccessPermissionFactory accessPermissionFactory) {
+            AccessPermissionFactory accessPermissionFactory,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new AccessInfoServiceImpl(authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
                 roleRepository,
                 accessRoleFactory,
                 accessRoleRepository,
@@ -302,10 +309,11 @@ public class AuthorizationModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             AccessPermissionRepository accessPermissionRepository,
-            AccessInfoRepository accessInfoRepository) {
+            AccessInfoRepository accessInfoRepository,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new AccessPermissionServiceImpl(authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
                 accessPermissionRepository,
                 accessInfoRepository);
     }
@@ -326,9 +334,10 @@ public class AuthorizationModule extends AbstractKapuaModule {
                                         AccessInfoRepository accessInfoRepository,
                                         AccessRoleRepository accessRoleRepository,
                                         AuthorizationService authorizationService,
-                                        PermissionFactory permissionFactory) {
+                                        PermissionFactory permissionFactory,
+                                        @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new AccessRoleServiceImpl(
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
                 roleRepository,
                 accessInfoRepository,
                 accessRoleRepository,

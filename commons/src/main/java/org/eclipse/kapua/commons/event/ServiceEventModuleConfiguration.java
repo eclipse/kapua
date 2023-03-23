@@ -26,13 +26,19 @@ public class ServiceEventModuleConfiguration {
 
     public KapuaJpaRepositoryConfiguration kapuaJpaRepositoryConfiguration;
     private ServiceEventClientConfiguration[] serviceEventClientConfigurations;
+    public int maxInsertAttempts;
 
-    public ServiceEventModuleConfiguration(String internalAddress, EntityManagerFactory entityManagerFactory,
-                                           KapuaJpaRepositoryConfiguration kapuaJpaRepositoryConfiguration, ServiceEventClientConfiguration[] serviceEventListenerConfigurations) {
+    public ServiceEventModuleConfiguration(
+            String internalAddress,
+            EntityManagerFactory entityManagerFactory,
+            KapuaJpaRepositoryConfiguration kapuaJpaRepositoryConfiguration,
+            ServiceEventClientConfiguration[] serviceEventListenerConfigurations,
+            Integer maxInsertAttempts) {
         this.internalAddress = internalAddress;
         this.entityManagerFactory = entityManagerFactory;
         this.kapuaJpaRepositoryConfiguration = kapuaJpaRepositoryConfiguration;
         this.serviceEventClientConfigurations = serviceEventListenerConfigurations;
+        this.maxInsertAttempts = maxInsertAttempts;
     }
 
     public String getInternalAddress() {

@@ -76,12 +76,13 @@ public class DatastoreModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig
+            KapuaJpaRepositoryConfiguration jpaRepoConfig,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts
     ) {
         return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerImpl(
                 MessageStoreService.class.getName(),
                 DatastoreDomains.DATASTORE_DOMAIN,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-datastore")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-datastore"), maxInsertAttempts),
                 new CachingServiceConfigRepository(
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         new AbstractKapuaConfigurableServiceCache().createCache()

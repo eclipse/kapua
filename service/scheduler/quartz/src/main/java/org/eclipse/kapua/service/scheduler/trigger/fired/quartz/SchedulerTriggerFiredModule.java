@@ -24,6 +24,7 @@ import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerRepository;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerService;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 public class SchedulerTriggerFiredModule extends AbstractKapuaModule {
@@ -39,11 +40,12 @@ public class SchedulerTriggerFiredModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             FiredTriggerRepository firedTriggerRepository,
             FiredTriggerFactory firedTriggerFactory,
-            TriggerRepository triggerRepository) {
+            TriggerRepository triggerRepository,
+            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
         return new FiredTriggerServiceImpl(
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler")),
+                new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler"), maxInsertAttempts),
                 firedTriggerRepository,
                 firedTriggerFactory,
                 triggerRepository);
