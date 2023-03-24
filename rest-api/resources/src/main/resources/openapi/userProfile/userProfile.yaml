@@ -1,0 +1,28 @@
+openapi: 3.0.2
+
+info:
+  title: Everyware Cloud REST API - User Profile
+  version: '1.0'
+  contact:
+    name: Eurotech
+    url: https://www.eurotech.com
+
+paths: {}
+
+components:
+  schemas:
+    userProfile:
+      allOf:
+        - description: The user profile
+          type: object
+          properties:
+            displayName:
+              type: string
+            phoneNumber:
+              type: string
+            email:
+              type: string
+          example:
+            displayName: "Foo42"
+            phoneNumber: "424202424"
+            email: "foo@bar.com"
