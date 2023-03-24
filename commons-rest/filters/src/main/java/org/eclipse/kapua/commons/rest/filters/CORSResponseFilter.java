@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.rest.filters;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.net.HttpHeaders;
-import liquibase.util.StringUtils;
 import org.apache.shiro.web.util.WebUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.rest.filters.settings.KapuaRestFiltersSetting;
@@ -97,34 +97,48 @@ public class CORSResponseFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse httpResponse = WebUtils.toHttp(response);
         HttpServletRequest httpRequest = WebUtils.toHttp(request);
-        String errorMessage = null;
 
+        // Depending on the type of the request the KapuaSession might not yet be present.
+        // For preflight request or session not yet established the KapuaSession will be null.
+        // For the actual request it will be available and we will check the CORS according to the scope.
+        KapuaId scopeId = KapuaSecurityUtils.getSession() != null ? KapuaSecurityUtils.getSession().getScopeId() : null;
         String origin = httpRequest.getHeader(HttpHeaders.ORIGIN);
-        if (StringUtils.isNotEmpty(origin)) {
-            // Origin header present, so it's a CORS request. Apply all the required logics
-            httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, POST, DELETE, PUT");
-            httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "X-Requested-With, Content-Type, Authorization");
+        String fetchSite = httpRequest.getHeader(HttpHeaders.SEC_FETCH_SITE);
 
-            // Depending on the type of the request the KapuaSession might not yet be present.
-            // For preflight request or session not yet established the KapuaSession will be null.
-            // For the actual request it will be available and we will check the CORS according to the scope.
-            KapuaId scopeId = KapuaSecurityUtils.getSession() != null ? KapuaSecurityUtils.getSession().getScopeId() : null;
+        if (Strings.isNullOrEmpty(fetchSite)) {
+            logger.warn("Sec-Fetch-Site' header not present in request: {} {}. CORSResponseFilter may produce false positives for this request. User-Agent is: {}", httpRequest.getMethod(), httpRequest.getPathInfo(), httpRequest.getHeader(HttpHeaders.USER_AGENT));
+        }
+        if (Strings.isNullOrEmpty(origin)) {
+            logger.warn("'Origin' header not present in request: {} {}. User-Agent is: {}", httpRequest.getMethod(), httpRequest.getPathInfo(), httpRequest.getHeader(HttpHeaders.USER_AGENT));
+        } else {
+            if (!"same-site".equals(fetchSite)) {
+                // Origin header present, so it's a CORS request. Apply all the required logics
+                httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, POST, DELETE, PUT");
+                httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "X-Requested-With, Content-Type, Authorization");
 
-            if (checkOrigin(origin, scopeId)) {
-                // Origin matches at least one defined Endpoint
-                httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-                httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-                httpResponse.addHeader("Vary", HttpHeaders.ORIGIN);
+                if (checkOrigin(origin, scopeId)) {
+                    // Origin matches at least one defined Endpoint
+                    httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+                    httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+                    httpResponse.addHeader("Vary", HttpHeaders.ORIGIN);
+                } else {
+                    //this log, for clients not supporting sec-fetch-site, logs false positive for same origin CORS. This thing is inevitable considering that here we cannot understand if the request comes from the same origin
+                    if (scopeId != null) {
+                        logger.error("HTTP Origin not allowed: {} for scope: {} for the request path: {} {}", origin, scopeId.toCompactId(), httpRequest.getMethod(), httpRequest.getPathInfo());
+                    } else {
+                        logger.error("HTTP Origin not allowed: {} for the request path: {} {}", origin, httpRequest.getMethod(), httpRequest.getPathInfo());
+                    }
+                }
             } else {
-                errorMessage = scopeId != null ?
-                        String.format("HTTP Origin not allowed: %s for scope: %s", origin, scopeId.toCompactId()) :
-                        String.format("HTTP Origin not allowed: %s", origin);
-                logger.error(errorMessage);
+                logger.debug("HTTP same-site origin detected and allowed. Request: {} {}. User-Agent is: {}", httpRequest.getMethod(), httpRequest.getPathInfo(), httpRequest.getHeader(HttpHeaders.USER_AGENT));
             }
         }
         int errorCode = httpResponse.getStatus();
         if (errorCode >= 400) {
             // if there's an error code at this point, return it and stop the chain
+            String errorMessage = scopeId != null ?
+                    String.format("HTTP Origin not allowed: %s for scope: %s for the request path: %s %s", origin, scopeId.toCompactId(), httpRequest.getMethod(), httpRequest.getPathInfo()) :
+                    String.format("HTTP Origin not allowed: %s for the request path: %s %s", origin, httpRequest.getMethod(), httpRequest.getPathInfo());
             httpResponse.sendError(errorCode, errorMessage);
             return;
         }
