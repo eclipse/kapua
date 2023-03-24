@@ -426,6 +426,9 @@ paths:
     $ref: './userCredentials/userCredentials-scopeId.yaml#/paths/~1{scopeId}~1user~1credentials~1password'
   /{scopeId}/user/credentials/{credentialId}/_reset:
     $ref: './userCredentials/userCredentials-scopeId-credentialId-_reset.yaml#/paths/~1{scopeId}~1user~1credentials~1{credentialId}~1_reset'
+  ### User Profile ###
+  /{scopeId}/user/profile/:
+    $ref: './userProfile/userProfile-scopeId.yaml#/paths/~1{scopeId}~1user~1profile~1'
 
 components:
   parameters:
@@ -939,6 +942,9 @@ components:
       $ref: './userCredentials/userCredentials.yaml#/components/schemas/passwordChangeRequest'
     passwordResetRequest:
       $ref: './userCredentials/userCredentials.yaml#/components/schemas/passwordResetRequest'
+    ### User Profile Entities ###
+    userProfile:
+      $ref: './userProfile/userProfile.yaml#/components/schemas/userProfile'
   requestBodies:
     kapuaQuery:
       description: An object to specify Query options
