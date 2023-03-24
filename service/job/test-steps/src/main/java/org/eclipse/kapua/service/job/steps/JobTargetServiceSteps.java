@@ -36,6 +36,8 @@ import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ public class JobTargetServiceSteps extends JobServiceTestBase {
 
     private JobTargetService jobTargetService;
     private JobTargetFactory jobTargetFactory;
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
     public JobTargetServiceSteps(StepData stepData) {
@@ -162,6 +165,7 @@ public class JobTargetServiceSteps extends JobServiceTestBase {
     public void checkStepIndexAndStatus(int stepIndex, String status) throws KapuaException {
         JobTarget jobTarget = (JobTarget) stepData.get(JOB_TARGET);
         JobTarget target = jobTargetService.find(jobTarget.getScopeId(), jobTarget.getId());
+        logger.error("step: {}, status: {}", target.getStepIndex(), target.getStatus().name());
         Assert.assertEquals(stepIndex, target.getStepIndex());
         Assert.assertEquals(status, target.getStatus().toString());
     }

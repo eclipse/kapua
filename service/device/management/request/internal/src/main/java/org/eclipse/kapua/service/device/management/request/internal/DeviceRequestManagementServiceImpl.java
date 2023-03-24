@@ -20,7 +20,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
-import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
+import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementTransactionalServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestBadMethodException;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
@@ -47,7 +47,7 @@ import java.util.Date;
  * @since 1.0.0
  */
 @Singleton
-public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceRequestManagementService {
+public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagementTransactionalServiceImpl implements DeviceRequestManagementService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceRequestManagementServiceImpl.class);
 

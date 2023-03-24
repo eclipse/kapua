@@ -19,7 +19,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
-import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
+import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementTransactionalServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementService;
@@ -62,7 +62,7 @@ import java.util.Date;
  * @since 1.5.0
  */
 @Singleton
-public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceInventoryManagementService {
+public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManagementTransactionalServiceImpl implements DeviceInventoryManagementService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceInventoryManagementServiceImpl.class);
 

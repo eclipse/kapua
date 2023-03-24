@@ -26,7 +26,7 @@ import org.eclipse.kapua.service.device.management.bundle.message.internal.Bundl
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestMessage;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestPayload;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponseMessage;
-import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
+import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementTransactionalServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
@@ -47,7 +47,7 @@ import java.util.Date;
  * @since 1.0.0
  */
 @Singleton
-public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceBundleManagementService {
+public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementTransactionalServiceImpl implements DeviceBundleManagementService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceBundleManagementServiceImpl.class);
 

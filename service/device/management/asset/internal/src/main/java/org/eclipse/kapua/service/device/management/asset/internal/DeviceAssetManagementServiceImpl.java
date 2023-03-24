@@ -26,7 +26,7 @@ import org.eclipse.kapua.service.device.management.asset.message.internal.AssetR
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestPayload;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponseMessage;
 import org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreService;
-import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
+import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementTransactionalServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 import org.eclipse.kapua.service.device.management.exception.DeviceNeverConnectedException;
@@ -49,7 +49,7 @@ import java.util.Date;
  * @since 1.0.0
  */
 @Singleton
-public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceAssetManagementService {
+public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementTransactionalServiceImpl implements DeviceAssetManagementService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceAssetManagementServiceImpl.class);
 

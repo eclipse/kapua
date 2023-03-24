@@ -49,12 +49,12 @@ public class JpaTxManager implements TxManager {
         int retry = 0;
         try {
             while (true) {
-                tx.begin();
                 try {
-                    final JpaTxContext txHolder = new JpaTxContext(em);
-                    final R res = transactionConsumer.execute(txHolder);
+                    tx.begin();
+                    final JpaTxContext txContext = new JpaTxContext(em);
+                    final R res = transactionConsumer.execute(txContext);
                     Arrays.stream(additionalTxConsumers)
-                            .forEach(additionalTxConsumer -> additionalTxConsumer.accept(txHolder, res));
+                            .forEach(additionalTxConsumer -> additionalTxConsumer.accept(txContext, res));
                     tx.commit();
                     return res;
                 } catch (KapuaEntityExistsException e) {
@@ -69,20 +69,17 @@ public class JpaTxManager implements TxManager {
                     }
                     if (++retry >= maxInsertAttempts) {
                         logger.error("Maximum number of attempts reached, aborting operation!");
-                        throw e;
+                        throw KapuaExceptionUtils.convertPersistenceException(e);
                     }
                 } catch (Exception ex) {
                     if (tx.isActive()) {
                         tx.rollback();
                     }
-                    throw ex;
+                    throw KapuaExceptionUtils.convertPersistenceException(ex);
                 }
             }
-        } catch (Exception ex) {
-            throw KapuaExceptionUtils.convertPersistenceException(ex);
         } finally {
             em.close();
         }
-
     }
 }

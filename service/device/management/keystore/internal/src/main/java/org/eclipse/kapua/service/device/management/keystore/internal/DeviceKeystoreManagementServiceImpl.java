@@ -25,7 +25,7 @@ import org.eclipse.kapua.service.certificate.info.CertificateInfo;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoFactory;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoService;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
-import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
+import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementTransactionalServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService;
@@ -70,7 +70,7 @@ import java.util.Date;
  * @since 1.5.0
  */
 @Singleton
-public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceKeystoreManagementService {
+public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagementTransactionalServiceImpl implements DeviceKeystoreManagementService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceKeystoreManagementServiceImpl.class);
 
