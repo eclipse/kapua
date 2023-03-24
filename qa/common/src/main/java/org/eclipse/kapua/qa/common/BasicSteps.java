@@ -49,6 +49,7 @@ import org.eclipse.kapua.qa.common.cucumber.CucRolePermission;
 import org.eclipse.kapua.qa.common.cucumber.CucTopic;
 import org.eclipse.kapua.qa.common.cucumber.CucTriggerProperty;
 import org.eclipse.kapua.qa.common.cucumber.CucUser;
+import org.eclipse.kapua.qa.common.cucumber.CucUserProfile;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettingsKey;
 import org.eclipse.kapua.transport.message.jms.JmsTopic;
@@ -316,6 +317,14 @@ public class BasicSteps extends TestBase {
                 Util.parseBigInteger(entry.get("scopeId")),
                 entry.get("password"),
                 entry.get("expirationDate"));
+    }
+
+
+    @DataTableType
+    public CucUserProfile cucUserProfile(Map<String, String> entry) {
+        return new CucUserProfile(entry.get("displayName"),
+                                  entry.get("phoneNumber"),
+                                  entry.get("email"));
     }
 
     @ParameterType(".*")
