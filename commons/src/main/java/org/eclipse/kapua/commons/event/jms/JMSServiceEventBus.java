@@ -240,6 +240,11 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
         }
 
         void stop() throws ServiceEventBusException {
+            closeSenders();
+            closeConnection();
+        }
+
+        private void closeConnection() {
             try {
                 if (jmsConnection != null) {
                     exceptionListener.stop();
@@ -248,11 +253,16 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
                     jmsConnection.close();
                 }
             } catch (JMSException e) {
-                throw new ServiceEventBusException(e);
+                //don't throw exception since this will block the new connection creation (see start)
+                //it's better to have a small leak than a container that hangs up
+//                throw new ServiceEventBusException(e);
+                LOGGER.warn("Error while closing old connection: {}", e.getMessage(), e);
             } finally {
                 jmsConnection = null;
             }
+        }
 
+        private void closeSenders() {
             // iterate over all possibles entries
             Iterator<String> senderIterator = senders.keySet().iterator();
             while (senderIterator.hasNext()) {
