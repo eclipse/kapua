@@ -14,6 +14,8 @@ package org.eclipse.kapua.commons.event;
 
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
 /**
  * @deprecated since 2.0.0 - use {@link ServiceEventModuleTransactionalConfiguration} instead
@@ -31,14 +33,12 @@ public class ServiceEventModuleConfiguration {
     public ServiceEventModuleConfiguration(
             String internalAddress,
             EntityManagerFactory entityManagerFactory,
-            KapuaJpaRepositoryConfiguration kapuaJpaRepositoryConfiguration,
-            ServiceEventClientConfiguration[] serviceEventListenerConfigurations,
-            Integer maxInsertAttempts) {
+            ServiceEventClientConfiguration[] serviceEventListenerConfigurations) {
         this.internalAddress = internalAddress;
         this.entityManagerFactory = entityManagerFactory;
-        this.kapuaJpaRepositoryConfiguration = kapuaJpaRepositoryConfiguration;
+        this.kapuaJpaRepositoryConfiguration = new KapuaJpaRepositoryConfiguration();
         this.serviceEventClientConfigurations = serviceEventListenerConfigurations;
-        this.maxInsertAttempts = maxInsertAttempts;
+        this.maxInsertAttempts = SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY);
     }
 
     public String getInternalAddress() {

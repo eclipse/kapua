@@ -22,7 +22,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
-import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
+import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementTransactionalServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
@@ -56,7 +56,7 @@ import java.util.Date;
  * @since 1.0.0
  */
 @Singleton
-public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceConfigurationManagementService {
+public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceManagementTransactionalServiceImpl implements DeviceConfigurationManagementService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceConfigurationManagementServiceImpl.class);
 

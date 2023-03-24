@@ -19,7 +19,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
-import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
+import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementTransactionalServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationAppProperties;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationManagementServiceImpl;
@@ -48,7 +48,7 @@ import java.util.Date;
  * @since 1.0.0
  */
 @Singleton
-public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceSnapshotManagementService {
+public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagementTransactionalServiceImpl implements DeviceSnapshotManagementService {
     public DeviceSnapshotManagementServiceImpl(
             TxManager txManager,
             AuthorizationService authorizationService,

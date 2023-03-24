@@ -27,7 +27,7 @@ import org.eclipse.kapua.service.device.management.command.message.internal.Comm
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandRequestPayload;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponseMessage;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponsePayload;
-import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
+import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementTransactionalServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
@@ -48,7 +48,7 @@ import java.util.Date;
  * @since 1.0.0
  */
 @Singleton
-public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceCommandManagementService {
+public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagementTransactionalServiceImpl implements DeviceCommandManagementService {
     public DeviceCommandManagementServiceImpl(
             TxManager txManager,
             AuthorizationService authorizationService,
