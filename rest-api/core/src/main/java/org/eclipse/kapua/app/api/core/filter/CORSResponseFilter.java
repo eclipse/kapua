@@ -111,7 +111,7 @@ public class CORSResponseFilter implements Filter {
         if (Strings.isNullOrEmpty(origin)) {
             logger.warn("'Origin' header not present in request: {} {}. User-Agent is: {}", httpRequest.getMethod(), httpRequest.getPathInfo(), httpRequest.getHeader(HttpHeaders.USER_AGENT));
         } else {
-            if (!"same-site".equals(fetchSite)) {
+            if (!"same-origin".equals(fetchSite)) {
                 // Origin header present, so it's a CORS request. Apply all the required logics
                 httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, POST, DELETE, PUT");
                 httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "X-Requested-With, Content-Type, Authorization");
@@ -130,7 +130,7 @@ public class CORSResponseFilter implements Filter {
                     }
                 }
             } else {
-                logger.debug("HTTP same-site origin detected and allowed. Request: {} {}. User-Agent is: {}", httpRequest.getMethod(), httpRequest.getPathInfo(), httpRequest.getHeader(HttpHeaders.USER_AGENT));
+                logger.debug("HTTP sec-fetch-site same-origin detected and allowed. Request: {} {}. User-Agent is: {}", httpRequest.getMethod(), httpRequest.getPathInfo(), httpRequest.getHeader(HttpHeaders.USER_AGENT));
             }
         }
         int errorCode = httpResponse.getStatus();
