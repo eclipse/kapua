@@ -107,6 +107,8 @@ paths:
     $ref: './credential/credential-scopeId-_query.yaml#/paths/~1{scopeId}~1credentials~1_query'
   /{scopeId}/credentials/{credentialId}/unlock:
     $ref: './credential/credential-scopeId-credentialId-unlock.yaml#/paths/~1{scopeId}~1credentials~1{credentialId}~1unlock'
+  /{scopeId}/credentials/{credentialId}/_unlock:
+    $ref: './credential/credential-scopeId-credentialId-unlock.yaml#/paths/~1{scopeId}~1credentials~1{credentialId}~1_unlock'
   ### Data Channel ###
   /{scopeId}/data/channels:
     $ref: './dataChannel/dataChannel-scopeId.yaml#/paths/~1{scopeId}~1data~1channels'
