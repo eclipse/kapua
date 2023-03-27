@@ -10,22 +10,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.user.shiro;
+package org.eclipse.kapua.service.user.internal.profile;
 
-import com.google.inject.Module;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.service.authentication.user.UserCredentialsFactory;
-import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
+import org.eclipse.kapua.service.user.profile.UserProfileFactory;
+import org.eclipse.kapua.service.user.profile.UserProfileService;
 
-/**
- * {@code kapua-security-shiro} {@link Module} implementation.
- *
- * @since 2.0.0
- */
-public class UserCredentialsModule extends AbstractKapuaModule {
+public class UserProfileModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(UserCredentialsService.class).to(UserCredentialsServiceImpl.class);
-        bind(UserCredentialsFactory.class).to(UserCredentialsFactoryImpl.class);
+        bind(UserProfileService.class).to(UserProfileServiceImpl.class);
+        bind(UserProfileFactory.class).to(UserProfileFactoryImpl.class);
     }
 }

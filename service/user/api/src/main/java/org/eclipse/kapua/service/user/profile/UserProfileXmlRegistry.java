@@ -10,24 +10,19 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.systeminfo;
+package org.eclipse.kapua.service.user.profile;
 
 import org.eclipse.kapua.locator.KapuaLocator;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
 @XmlRegistry
-public class SystemInfoXmlRegistry {
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final SystemInfoFactory SYSTEM_INFO_FACTORY = LOCATOR.getFactory(SystemInfoFactory.class);
+public class UserProfileXmlRegistry {
+    private final KapuaLocator locator = KapuaLocator.getInstance();
+    private final UserProfileFactory userProfileFactory = locator.getFactory(UserProfileFactory.class);
 
 
-    /**
-     * Creates a new SystemInfo instance.
-     *
-     * @return new SystemInfo instance.
-     */
-    public SystemInfo newSystemInfo() {
-        return SYSTEM_INFO_FACTORY.newSystemInfo();
+    public UserProfile newUserProfile() {
+        return userProfileFactory.newUserProfile();
     }
 }
