@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration.store.dummy;
 
+import org.eclipse.kapua.commons.configuration.metatype.EmptyTocd;
+import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
@@ -31,26 +33,28 @@ import java.util.Map;
 public class DeviceConfigurationStoreServiceDummy implements DeviceConfigurationStoreService {
 
     @Override
-    public DeviceComponentConfiguration getConfigurations(KapuaId scopeId, KapuaId deviceId, String configurationComponentPid) {
-        return null;
+    public DeviceComponentConfiguration getConfigurations(KapuaId scopeId, KapuaId deviceId, String configurationComponentPid) throws KapuaServiceDisabledException {
+        throw new KapuaServiceDisabledException(this.getClass().getName());
     }
 
     @Override
-    public DeviceConfiguration getConfigurations(KapuaId scopeId, KapuaId deviceId) {
-        return null;
+    public DeviceConfiguration getConfigurations(KapuaId scopeId, KapuaId deviceId) throws KapuaServiceDisabledException {
+        throw new KapuaServiceDisabledException(this.getClass().getName());
     }
 
     @Override
-    public void storeConfigurations(KapuaId scopeId, KapuaId deviceId, DeviceComponentConfiguration deviceComponentConfiguration) {
+    public void storeConfigurations(KapuaId scopeId, KapuaId deviceId, DeviceComponentConfiguration deviceComponentConfiguration) throws KapuaServiceDisabledException {
+        throw new KapuaServiceDisabledException(this.getClass().getName());
     }
 
     @Override
-    public void storeConfigurations(KapuaId scopeId, KapuaId deviceId, DeviceConfiguration deviceConfiguration) {
+    public void storeConfigurations(KapuaId scopeId, KapuaId deviceId, DeviceConfiguration deviceConfiguration) throws KapuaServiceDisabledException {
+        throw new KapuaServiceDisabledException(this.getClass().getName());
     }
 
     @Override
     public KapuaTocd getConfigMetadata(KapuaId scopeId) {
-        return null;
+        return new EmptyTocd();
     }
 
     @Override
