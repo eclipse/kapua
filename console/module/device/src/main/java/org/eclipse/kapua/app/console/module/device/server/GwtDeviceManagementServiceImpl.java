@@ -44,6 +44,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.management.packa
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
 import org.eclipse.kapua.commons.configuration.metatype.Password;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
@@ -462,6 +463,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
     // Configuration Store Settings
     // 
 
+    @Override
     public boolean isStoreServiceEnabled(String scopeIdString, String deviceIdString) throws GwtKapuaException {
         try {
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
@@ -478,13 +480,16 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
         try {
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
             KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
-
-            DeviceConfigurationStoreSettings deviceConfigurationStoreSettings = DEVICE_CONFIGURATION_STORE_SERVICE.getApplicationSettings(scopeId, deviceId);
-
-            GwtDeviceConfigurationStoreSettings gwtDeviceConfigurationStoreSettings = new GwtDeviceConfigurationStoreSettings();
-            gwtDeviceConfigurationStoreSettings.setStoreEnablementPolicy(GwtDeviceConfigurationStoreSettings.GwtDeviceConfigurationStoreEnablementPolicy.valueOf(deviceConfigurationStoreSettings.getEnablementPolicy().name()));
-
-            return gwtDeviceConfigurationStoreSettings;
+            DeviceConfigurationStoreSettings deviceConfigurationStoreSettings = null;
+            GwtDeviceConfigurationStoreSettings gwtDeviceConfigurationStoreSettings = null;
+            if (DEVICE_CONFIGURATION_STORE_SERVICE.isServiceEnabled(scopeId)) {
+                deviceConfigurationStoreSettings = DEVICE_CONFIGURATION_STORE_SERVICE.getApplicationSettings(scopeId, deviceId);
+                gwtDeviceConfigurationStoreSettings = new GwtDeviceConfigurationStoreSettings();
+                gwtDeviceConfigurationStoreSettings.setStoreEnablementPolicy(GwtDeviceConfigurationStoreSettings.GwtDeviceConfigurationStoreEnablementPolicy.valueOf(deviceConfigurationStoreSettings.getEnablementPolicy().name()));
+                return gwtDeviceConfigurationStoreSettings;
+            } else {
+                throw new KapuaServiceDisabledException(DEVICE_CONFIGURATION_STORE_SERVICE.getClass().getName());
+            }
         } catch (Throwable t) {
             throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
@@ -499,11 +504,16 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
 
             DeviceConfigurationStoreSettings deviceConfigurationStoreSettings = DEVICE_CONFIGURATION_STORE_FACTORY.newDeviceConfigurationStoreSettings();
-            deviceConfigurationStoreSettings.setScopeId(scopeId);
-            deviceConfigurationStoreSettings.setDeviceId(deviceId);
-            deviceConfigurationStoreSettings.setEnablementPolicy(DeviceConfigurationStoreEnablementPolicy.valueOf(gwtDeviceConfigurationStoreSettings.getStoreEnablementPolicy()));
-
-            DEVICE_CONFIGURATION_STORE_SERVICE.setApplicationSettings(scopeId, deviceId, deviceConfigurationStoreSettings);
+            if (deviceConfigurationStoreSettings != null) {
+                deviceConfigurationStoreSettings.setScopeId(scopeId);
+                deviceConfigurationStoreSettings.setDeviceId(deviceId);
+                deviceConfigurationStoreSettings.setEnablementPolicy(DeviceConfigurationStoreEnablementPolicy.valueOf(gwtDeviceConfigurationStoreSettings.getStoreEnablementPolicy()));
+            }
+            if (DEVICE_CONFIGURATION_STORE_SERVICE.isServiceEnabled(scopeId)) {
+                DEVICE_CONFIGURATION_STORE_SERVICE.setApplicationSettings(scopeId, deviceId, deviceConfigurationStoreSettings);
+            } else {
+                throw new KapuaServiceDisabledException(DEVICE_CONFIGURATION_STORE_SERVICE.getClass().getName());
+            }
         } catch (Throwable t) {
             throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
