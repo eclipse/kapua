@@ -189,7 +189,8 @@ public class DeviceRegistryServiceImpl
     public Device findByClientId(KapuaId scopeId, String clientId) throws KapuaException {
         DeviceValidation.validateFindByClientIdPreconditions(scopeId, clientId);
         // Check cache and/or do find
-        return txManager.execute(tx -> deviceRepository.findByClientId(tx, scopeId, clientId));
+        return txManager.execute(tx -> deviceRepository.findByClientId(tx, scopeId, clientId))
+                .orElse(null);
     }
 
     @Override

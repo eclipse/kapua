@@ -20,6 +20,8 @@ import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Optional;
+
 public class CachingDeviceRepository
         extends KapuaUpdatableEntityRepositoryCachingWrapper<Device, DeviceListResult>
         implements DeviceRepository {
@@ -33,16 +35,13 @@ public class CachingDeviceRepository
     }
 
     @Override
-    public Device findByClientId(TxContext tx, KapuaId scopeId, String clientId) throws KapuaException {
-        final Device cached = (Device) entityCache.getByClientId(scopeId, clientId);
-        if (cached != null) {
+    public Optional<Device> findByClientId(TxContext tx, KapuaId scopeId, String clientId) throws KapuaException {
+        final Optional<Device> cached = Optional.ofNullable((Device) entityCache.getByClientId(scopeId, clientId));
+        if (cached.isPresent()) {
             return cached;
         }
-        final Device found = wrapped.findByClientId(tx, scopeId, clientId);
-        if (found == null) {
-            return null;
-        }
-        entityCache.put(found);
+        final Optional<Device> found = wrapped.findByClientId(tx, scopeId, clientId);
+        found.ifPresent(entityCache::put);
         return found;
     }
 }

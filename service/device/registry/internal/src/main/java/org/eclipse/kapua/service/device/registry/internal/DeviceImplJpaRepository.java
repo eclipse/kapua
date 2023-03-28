@@ -23,6 +23,8 @@ import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Optional;
+
 public class DeviceImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<Device, DeviceImpl, DeviceListResult>
         implements DeviceRepository {
@@ -31,10 +33,10 @@ public class DeviceImplJpaRepository
     }
 
     @Override
-    public Device findByClientId(TxContext tx, KapuaId scopeId, String clientId) throws KapuaException {
+    public Optional<Device> findByClientId(TxContext tx, KapuaId scopeId, String clientId) throws KapuaException {
         DeviceQueryImpl query = new DeviceQueryImpl(scopeId);
         query.setPredicate(query.attributePredicate(DeviceAttributes.CLIENT_ID, clientId));
         query.setFetchAttributes(Lists.newArrayList(DeviceAttributes.CONNECTION, DeviceAttributes.LAST_EVENT));
-        return this.query(tx, query).getFirstItem();
+        return Optional.ofNullable(this.query(tx, query).getFirstItem());
     }
 }
