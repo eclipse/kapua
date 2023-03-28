@@ -20,7 +20,6 @@ import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import java.util.Arrays;
@@ -44,18 +43,15 @@ public class JpaTxManager implements TxManager {
 
     @Override
     public <R> R execute(TxConsumer<R> transactionConsumer, BiConsumer<TxContext, R>... additionalTxConsumers) throws KapuaException {
-        final EntityManager em = entityManagerFactory.createEntityManager();
-        final EntityTransaction tx = em.getTransaction();
         int retry = 0;
+        final JpaTxContext txContext = new JpaTxContext(entityManagerFactory);
         try {
             while (true) {
                 try {
-                    tx.begin();
-                    final JpaTxContext txContext = new JpaTxContext(em);
                     final R res = transactionConsumer.execute(txContext);
                     Arrays.stream(additionalTxConsumers)
                             .forEach(additionalTxConsumer -> additionalTxConsumer.accept(txContext, res));
-                    tx.commit();
+                    txContext.entityManager.ifPresent(e -> e.getTransaction().commit());
                     return res;
                 } catch (KapuaEntityExistsException e) {
                     /*
@@ -64,22 +60,28 @@ public class JpaTxManager implements TxManager {
                      * is allowed. The entity needs to be detached in order for the @PrePersist method to be invoked once more, generating a new id
                      * */
                     logger.warn("Conflict on entity creation. Cannot insert the entity, trying again!");
-                    if (tx.isActive()) {
-                        tx.rollback();
-                    }
+                    txContext.entityManager.ifPresent(entityManager -> {
+                        final EntityTransaction tx = entityManager.getTransaction();
+                        if (tx.isActive()) {
+                            tx.rollback();
+                        }
+                    });
                     if (++retry >= maxInsertAttempts) {
                         logger.error("Maximum number of attempts reached, aborting operation!");
                         throw KapuaExceptionUtils.convertPersistenceException(e);
                     }
                 } catch (Exception ex) {
-                    if (tx.isActive()) {
-                        tx.rollback();
-                    }
+                    txContext.entityManager.ifPresent(entityManager -> {
+                        final EntityTransaction tx = entityManager.getTransaction();
+                        if (tx.isActive()) {
+                            tx.rollback();
+                        }
+                    });
                     throw KapuaExceptionUtils.convertPersistenceException(ex);
                 }
             }
         } finally {
-            em.close();
+            txContext.entityManager.ifPresent(entityManager -> entityManager.close());
         }
     }
 }
