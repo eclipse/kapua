@@ -13,16 +13,23 @@
 package org.eclipse.kapua.commons.jpa;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import java.util.Optional;
 
 public class JpaTxContext implements JpaAwareTxContext {
-    public final EntityManager entityManager;
+    public final EntityManagerFactory entityManagerFactory;
+    Optional<EntityManager> entityManager = Optional.empty();
 
-    public JpaTxContext(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public JpaTxContext(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     @Override
     public EntityManager getEntityManager() {
-        return entityManager;
+        if (!entityManager.isPresent()) {
+            entityManager = Optional.of(entityManagerFactory.createEntityManager());
+            entityManager.get().getTransaction().begin();
+        }
+        return entityManager.get();
     }
 }
