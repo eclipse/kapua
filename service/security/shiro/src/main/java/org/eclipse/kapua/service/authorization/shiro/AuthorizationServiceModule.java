@@ -16,9 +16,8 @@ import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventModuleTransactionalConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.group.GroupService;
@@ -57,7 +56,7 @@ public class AuthorizationServiceModule extends ServiceEventTransactionalModule 
         selc.addAll(ServiceInspector.getEventBusClients(groupService, GroupService.class));
         return new ServiceEventModuleTransactionalConfiguration(
                 kdrs.getString(KapuaAuthorizationSettingKeys.AUTHORIZATION_EVENT_ADDRESS),
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
+                new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-authorization"),
                 selc.toArray(new ServiceEventClientConfiguration[0]),
                 jpaRepoConfig);
     }

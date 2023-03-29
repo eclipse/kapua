@@ -25,9 +25,8 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -105,7 +104,7 @@ public class SecurityLocatorConfiguration {
                         mockedAuthorization,
                         new RolePermissionFactoryImpl(),
                         Mockito.mock(ServiceConfigurationManager.class),
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-authorization"),
                         new RoleImplJpaRepository(jpaRepoConfig),
                         new RolePermissionImplJpaRepository(jpaRepoConfig),
                         new DuplicateNameCheckerImpl<>(new RoleImplJpaRepository(jpaRepoConfig), scopeId -> new RoleQueryImpl(scopeId)))
@@ -117,14 +116,14 @@ public class SecurityLocatorConfiguration {
                         mockPermissionFactory,
                         mockedAuthorization,
                         Mockito.mock(ServiceConfigurationManager.class),
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-authorization"),
                         new GroupImplJpaRepository(jpaRepoConfig),
                         new DuplicateNameCheckerImpl<>(new GroupImplJpaRepository(jpaRepoConfig), scopeId -> new GroupQueryImpl(scopeId))
                 ));
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
                 bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
                 final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-authorization"),
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         mockPermissionFactory,
                         mockedAuthorization,
@@ -133,7 +132,7 @@ public class SecurityLocatorConfiguration {
                         credentialServiceConfigurationManager,
                         mockedAuthorization,
                         mockPermissionFactory,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-authorization"), maxInsertAttempts),
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-authorization"),
                         new CredentialImplJpaRepository(jpaRepoConfig),
                         new CredentialFactoryImpl(),
                         new CredentialMapperImpl(new CredentialFactoryImpl()),
@@ -148,7 +147,7 @@ public class SecurityLocatorConfiguration {
                         Mockito.mock(ServiceConfigurationManager.class),
                         mockedAuthorization,
                         mockPermissionFactory,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-user"), maxInsertAttempts),
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-user"),
                         new UserImplJpaRepository(jpaRepoConfig),
                         userFactory,
                         new DuplicateNameCheckerImpl<>(new UserImplJpaRepository(jpaRepoConfig), userFactory::newQuery),

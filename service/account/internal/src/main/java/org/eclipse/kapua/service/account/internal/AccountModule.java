@@ -26,9 +26,8 @@ import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.EventStorer;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.service.account.AccountDomains;
 import org.eclipse.kapua.service.account.AccountFactory;
@@ -57,10 +56,10 @@ public class AccountModule extends AbstractKapuaModule implements Module {
     AccountChildrenFinder accountChildrenFinder(
             AccountFactory accountFactory,
             AccountRepository accountRepository,
-            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
+            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         return new AccountChildrenFinderImpl(
                 accountFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-account"), maxInsertAttempts),
+                jpaTxManagerFactory.create("kapua-account"),
                 accountRepository);
     }
 
@@ -72,9 +71,9 @@ public class AccountModule extends AbstractKapuaModule implements Module {
                                   AuthorizationService authorizationService,
                                   @Named("AccountServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
                                   EventStorer eventStorer,
-                                  @Named("maxInsertAttempts") Integer maxInsertAttempts) {
+                                  KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         return new AccountServiceImpl(
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-account"), maxInsertAttempts),
+                jpaTxManagerFactory.create("kapua-account"),
                 accountRepository,
                 permissionFactory,
                 authorizationService,
@@ -94,13 +93,13 @@ public class AccountModule extends AbstractKapuaModule implements Module {
             AccountChildrenFinder accountChildrenFinder,
             AccountRepository accountRepository,
             KapuaJpaRepositoryConfiguration jpaRepoConfig,
-            @Named("maxInsertAttempts") Integer maxInsertAttempts
+            KapuaJpaTxManagerFactory jpaTxManagerFactory
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         AccountService.class.getName(),
                         AccountDomains.ACCOUNT_DOMAIN,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-account"), maxInsertAttempts),
+                        jpaTxManagerFactory.create("kapua-account"),
                         new CachingServiceConfigRepository(
                                 new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
@@ -111,7 +110,7 @@ public class AccountModule extends AbstractKapuaModule implements Module {
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
-                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-account"), maxInsertAttempts),
+                                jpaTxManagerFactory.create("kapua-account"),
                                 accountRepository)
                 ));
     }

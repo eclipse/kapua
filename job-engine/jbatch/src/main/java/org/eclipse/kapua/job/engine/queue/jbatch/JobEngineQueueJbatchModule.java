@@ -14,16 +14,14 @@ package org.eclipse.kapua.job.engine.queue.jbatch;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionRepository;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 public class JobEngineQueueJbatchModule extends AbstractKapuaModule {
@@ -38,11 +36,11 @@ public class JobEngineQueueJbatchModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             QueuedJobExecutionRepository repository,
-            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
+            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         return new QueuedJobExecutionServiceImpl(
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job-engine"), maxInsertAttempts),
+                jpaTxManagerFactory.create("kapua-job-engine"),
                 repository);
     }
 

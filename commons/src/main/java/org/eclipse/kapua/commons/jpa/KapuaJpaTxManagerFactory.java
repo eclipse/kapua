@@ -15,10 +15,14 @@ package org.eclipse.kapua.commons.jpa;
 import org.eclipse.kapua.storage.TxManager;
 import org.eclipse.kapua.storage.TxManagerImpl;
 
-import javax.persistence.EntityManagerFactory;
+public class KapuaJpaTxManagerFactory {
+    private final int maxInsertAttempts;
 
-public class JpaTxManager extends TxManagerImpl implements TxManager {
-    public JpaTxManager(EntityManagerFactory entityManagerFactory, Integer maxInsertAttempts) {
-        super(() -> new JpaTxContext(entityManagerFactory), maxInsertAttempts);
+    public KapuaJpaTxManagerFactory(int maxInsertAttempts) {
+        this.maxInsertAttempts = maxInsertAttempts;
+    }
+
+    public TxManager create(String persistenceUnitName) {
+        return new TxManagerImpl(() -> new JpaTxContext(new KapuaEntityManagerFactory(persistenceUnitName)), maxInsertAttempts);
     }
 }

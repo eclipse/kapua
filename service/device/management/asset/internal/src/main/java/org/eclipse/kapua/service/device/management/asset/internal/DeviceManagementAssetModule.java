@@ -15,8 +15,7 @@ package org.eclipse.kapua.service.device.management.asset.internal;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
@@ -27,8 +26,6 @@ import org.eclipse.kapua.service.device.management.registry.operation.DeviceMana
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
-
-import javax.inject.Named;
 
 public class DeviceManagementAssetModule extends AbstractKapuaModule {
     @Override
@@ -46,9 +43,9 @@ public class DeviceManagementAssetModule extends AbstractKapuaModule {
                                                               DeviceManagementOperationRepository deviceManagementOperationRepository,
                                                               DeviceManagementOperationFactory deviceManagementOperationFactory,
                                                               DeviceAssetStoreService deviceAssetStoreService,
-                                                              @Named("maxInsertAttempts") Integer maxInsertAttempts) {
+                                                              KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         return new DeviceAssetManagementServiceImpl(
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device_management_operation_registry"), maxInsertAttempts),
+                jpaTxManagerFactory.create("kapua-device_management_operation_registry"),
                 authorizationService,
                 permissionFactory,
                 deviceEventRepository,

@@ -15,7 +15,7 @@ package org.eclipse.kapua.commons.event;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.ServiceModule;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.JpaTxContext;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreFactoryImpl;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
@@ -23,6 +23,7 @@ import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.storage.TxManagerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,8 +102,7 @@ public abstract class ServiceEventModule implements ServiceModule {
         houseKeeperJob = new ServiceEventHousekeeper(
                 new EventStoreServiceImpl(locator.getService(AuthorizationService.class),
                         locator.getFactory(PermissionFactory.class),
-                        //FIXME: can we inject collaborators here?
-                        new JpaTxManager(serviceEventModuleConfiguration.getEntityManagerFactory().getJpaEntityManagerFactory(), serviceEventModuleConfiguration.maxInsertAttempts),
+                        new TxManagerImpl(() -> new JpaTxContext(serviceEventModuleConfiguration.getEntityManagerFactory().getJpaEntityManagerFactory()), serviceEventModuleConfiguration.maxInsertAttempts),
                         new EventStoreFactoryImpl(),
                         new EventStoreRecordImplJpaRepository(serviceEventModuleConfiguration.getKapuaJpaRepositoryConfiguration())
                 ),

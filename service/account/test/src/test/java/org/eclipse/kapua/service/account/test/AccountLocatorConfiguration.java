@@ -26,9 +26,8 @@ import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -91,14 +90,14 @@ public class AccountLocatorConfiguration {
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 final AccountRepository accountRepository = new AccountImplJpaRepository(jpaRepoConfig);
                 bind(AccountService.class).toInstance(new AccountServiceImpl(
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-account"), maxInsertAttempts),
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-account"),
                         new AccountImplJpaRepository(jpaRepoConfig),
                         mockPermissionFactory,
                         mockedAuthorization,
                         new ResourceLimitedServiceConfigurationManagerImpl(
                                 AccountService.class.getName(),
                                 AccountDomains.ACCOUNT_DOMAIN,
-                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-account"), maxInsertAttempts),
+                                new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-account"),
                                 new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 mockPermissionFactory,
                                 mockedAuthorization,
@@ -106,7 +105,7 @@ public class AccountLocatorConfiguration {
                                 Mockito.mock(AccountChildrenFinder.class),
                                 new UsedEntitiesCounterImpl(
                                         accountFactory,
-                                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-account"), maxInsertAttempts),
+                                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-account"),
                                         accountRepository)
                         ),
                         new DuplicateNameCheckerImpl<>(accountRepository, accountFactory::newQuery),

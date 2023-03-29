@@ -14,9 +14,8 @@ package org.eclipse.kapua.service.scheduler.trigger.fired.quartz;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerRepository;
@@ -24,7 +23,6 @@ import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerRepository;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerService;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 public class SchedulerTriggerFiredModule extends AbstractKapuaModule {
@@ -41,11 +39,11 @@ public class SchedulerTriggerFiredModule extends AbstractKapuaModule {
             FiredTriggerRepository firedTriggerRepository,
             FiredTriggerFactory firedTriggerFactory,
             TriggerRepository triggerRepository,
-            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
+            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         return new FiredTriggerServiceImpl(
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler"), maxInsertAttempts),
+                jpaTxManagerFactory.create("kapua-scheduler"),
                 firedTriggerRepository,
                 firedTriggerFactory,
                 triggerRepository);

@@ -14,16 +14,14 @@ package org.eclipse.kapua.service.job.execution.internal;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
 import org.eclipse.kapua.service.job.execution.JobExecutionRepository;
 import org.eclipse.kapua.service.job.execution.JobExecutionService;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 public class JobExecutionModule extends AbstractKapuaModule {
@@ -38,11 +36,11 @@ public class JobExecutionModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             JobExecutionRepository jobExecutionRepository,
-            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
+            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         return new JobExecutionServiceImpl(
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job"), maxInsertAttempts),
+                jpaTxManagerFactory.create("kapua-job"),
                 jobExecutionRepository);
     }
 
