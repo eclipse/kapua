@@ -14,6 +14,7 @@ package org.eclipse.kapua.extras.migrator.encryption;
 
 import com.google.common.base.MoreObjects;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -49,7 +50,8 @@ public class Application {
             {
                 KapuaSecurityUtils.doPrivileged(() -> new EntityAttributeMigrator(
                         "kapua-encryption-migrator",
-                        SYSTEM_SETTING.getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY)
+                        new KapuaJpaTxManagerFactory(
+                                SYSTEM_SETTING.getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY))
                 ).migrate());
             }
             LOG.info("Running Entity Attribute Migrator... DONE!");

@@ -23,9 +23,8 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.tag.TagDomains;
@@ -50,9 +49,9 @@ public class TagModule extends AbstractKapuaModule {
             @Named("TagServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
             TagRepository tagRepository,
             TagFactory tagFactory,
-            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
+            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         return new TagServiceImpl(permissionFactory, authorizationService, serviceConfigurationManager,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-tag"), maxInsertAttempts),
+                jpaTxManagerFactory.create("kapua-tag"),
                 tagRepository,
                 tagFactory);
     }
@@ -67,13 +66,13 @@ public class TagModule extends AbstractKapuaModule {
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
             TagRepository tagRepository,
-            @Named("maxInsertAttempts") Integer maxInsertAttempts
+            KapuaJpaTxManagerFactory jpaTxManagerFactory
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         TagService.class.getName(),
                         TagDomains.TAG_DOMAIN,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-tag"), maxInsertAttempts),
+                        jpaTxManagerFactory.create("kapua-tag"),
                         new CachingServiceConfigRepository(
                                 new ServiceConfigImplJpaRepository(new KapuaJpaRepositoryConfiguration()),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
@@ -84,7 +83,7 @@ public class TagModule extends AbstractKapuaModule {
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
-                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-tag"), maxInsertAttempts),
+                                jpaTxManagerFactory.create("kapua-tag"),
                                 tagRepository
                         )));
     }

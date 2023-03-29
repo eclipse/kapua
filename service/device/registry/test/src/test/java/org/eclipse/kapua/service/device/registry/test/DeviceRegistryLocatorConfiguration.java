@@ -23,9 +23,8 @@ import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
@@ -62,6 +61,7 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceImplJpaRepository;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCacheFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
+import org.eclipse.kapua.storage.TxManager;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
@@ -104,12 +104,13 @@ public class DeviceRegistryLocatorConfiguration {
 
                 bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
+                final TxManager txManager = new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-device");
                 bind(DeviceConnectionService.class).toInstance(new DeviceConnectionServiceImpl(
                         Mockito.mock(ServiceConfigurationManager.class),
                         mockedAuthorization,
                         permissionFactory,
                         new DeviceConnectionFactoryImpl(),
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-device"), maxInsertAttempts),
+                        txManager,
                         new DeviceConnectionImplJpaRepository(jpaRepoConfig)));
                 bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
 
@@ -119,7 +120,7 @@ public class DeviceRegistryLocatorConfiguration {
                 bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl(
                         mockedAuthorization,
                         permissionFactory,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-device"), maxInsertAttempts),
+                        txManager,
                         new DeviceImplJpaRepository(jpaRepoConfig),
                         new DeviceEventFactoryImpl(),
                         new DeviceEventImplJpaRepository(jpaRepoConfig)
@@ -128,7 +129,7 @@ public class DeviceRegistryLocatorConfiguration {
                 bind(KapuaMessageFactory.class).toInstance(new KapuaMessageFactoryImpl());
                 bind(DeviceRegistryService.class).toInstance(new DeviceRegistryServiceImpl(
                         Mockito.mock(ServiceConfigurationManager.class),
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-device"), maxInsertAttempts),
+                        txManager,
                         new DeviceImplJpaRepository(jpaRepoConfig),
                         new DeviceFactoryImpl(),
                         new AccessInfoFactoryImpl(),

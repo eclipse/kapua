@@ -16,9 +16,8 @@ import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventModuleTransactionalConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 
 import javax.inject.Inject;
@@ -48,7 +47,7 @@ public class DeviceServiceModule extends ServiceEventTransactionalModule {
 
         return new ServiceEventModuleTransactionalConfiguration(
                 kapuaDeviceRegistrySettings.getString(KapuaDeviceRegistrySettingKeys.DEVICE_EVENT_ADDRESS),
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device"), maxInsertAttempts),
+                new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-device"),
                 serviceEventListenerConfigurations.toArray(new ServiceEventClientConfiguration[0]),
                 jpaRepoConfig
         );

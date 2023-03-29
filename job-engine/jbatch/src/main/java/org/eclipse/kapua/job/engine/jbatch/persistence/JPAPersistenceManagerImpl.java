@@ -28,8 +28,7 @@ import com.ibm.jbatch.container.status.JobStatus;
 import com.ibm.jbatch.container.status.StepStatus;
 import com.ibm.jbatch.spi.services.IBatchConfig;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaCheckpointData;
@@ -105,7 +104,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
 
     //TODO: can these be injected instead?
     public JPAPersistenceManagerImpl() {
-        this.txManager = new JpaTxManager(new KapuaEntityManagerFactory("jbatch"), SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY));
+        this.txManager = new KapuaJpaTxManagerFactory(SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY)).create("jbatch");
         this.checkpointDataRepository = new JpaCheckpointDataRepositoryImpl();
         this.executionInstanceDataRepository = new JpaExecutionInstanceDataRepositoryImpl();
         this.jobInstanceDataRepository = new JpaJobInstanceDataRepositoryImpl();

@@ -14,8 +14,7 @@ package org.eclipse.kapua.service.device.management.inventory.internal;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
@@ -26,7 +25,6 @@ import org.eclipse.kapua.service.device.registry.DeviceRepository;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 public class DeviceManagementInventoryModule extends AbstractKapuaModule {
@@ -45,9 +43,9 @@ public class DeviceManagementInventoryModule extends AbstractKapuaModule {
             DeviceRepository deviceRepository,
             DeviceManagementOperationRepository deviceManagementOperationRepository,
             DeviceManagementOperationFactory deviceManagementOperationFactory,
-            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
+            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         return new DeviceInventoryManagementServiceImpl(
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-device_management_operation_registry"), maxInsertAttempts),
+                jpaTxManagerFactory.create("kapua-device_management_operation_registry"),
                 authorizationService,
                 permissionFactory,
                 deviceEventRepository,

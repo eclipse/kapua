@@ -15,9 +15,8 @@ package org.eclipse.kapua.service.job.step.definition.internal;
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
@@ -25,7 +24,6 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionRepository
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 public class JobStepDefinitionModule extends AbstractKapuaModule {
     @Override
@@ -39,11 +37,11 @@ public class JobStepDefinitionModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             JobStepDefinitionRepository repository,
-            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
+            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         return new JobStepDefinitionServiceImpl(
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-job"), maxInsertAttempts),
+                jpaTxManagerFactory.create("kapua-job"),
                 repository,
                 new DuplicateNameCheckerImpl<>(repository, scopeId -> new JobStepDefinitionQueryImpl(scopeId)));
     }

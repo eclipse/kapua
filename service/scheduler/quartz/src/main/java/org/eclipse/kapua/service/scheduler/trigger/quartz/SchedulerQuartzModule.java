@@ -15,9 +15,8 @@ package org.eclipse.kapua.service.scheduler.trigger.quartz;
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
@@ -26,7 +25,6 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionRepository;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 public class SchedulerQuartzModule extends AbstractKapuaModule {
@@ -44,11 +42,11 @@ public class SchedulerQuartzModule extends AbstractKapuaModule {
             TriggerFactory triggerFactory,
             TriggerDefinitionRepository triggerDefinitionRepository,
             TriggerDefinitionFactory triggerDefinitionFactory,
-            @Named("maxInsertAttempts") Integer maxInsertAttempts) {
+            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         return new TriggerServiceImpl(
                 authorizationService,
                 permissionFactory,
-                new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler"), maxInsertAttempts),
+                jpaTxManagerFactory.create("kapua-scheduler"),
                 triggerRepository,
                 triggerFactory,
                 triggerDefinitionRepository,

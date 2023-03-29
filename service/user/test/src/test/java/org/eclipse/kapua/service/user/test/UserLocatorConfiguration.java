@@ -26,9 +26,8 @@ import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -97,7 +96,7 @@ public class UserLocatorConfiguration {
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 final ResourceLimitedServiceConfigurationManagerImpl userConfigurationManager = new ResourceLimitedServiceConfigurationManagerImpl(UserService.class.getName(),
                         UserDomains.USER_DOMAIN,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-user"), maxInsertAttempts),
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-user"),
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         mockPermissionFactory,
                         mockedAuthorization,
@@ -105,7 +104,7 @@ public class UserLocatorConfiguration {
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 userFactory,
-                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user"), maxInsertAttempts),
+                                new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-user"),
                                 userRepository)
                 );
                 bind(UserService.class).toInstance(
@@ -113,7 +112,7 @@ public class UserLocatorConfiguration {
                                 userConfigurationManager,
                                 mockedAuthorization,
                                 mockPermissionFactory,
-                                new JpaTxManager(new KapuaEntityManagerFactory("kapua-user"), maxInsertAttempts),
+                                new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-user"),
                                 new UserImplJpaRepository(jpaRepoConfig),
                                 userFactory,
                                 new DuplicateNameCheckerImpl<>(new UserImplJpaRepository(jpaRepoConfig), userFactory::newQuery),

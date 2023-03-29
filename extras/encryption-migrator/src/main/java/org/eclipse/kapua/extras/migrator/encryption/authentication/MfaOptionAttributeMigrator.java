@@ -12,18 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.extras.migrator.encryption.authentication;
 
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.extras.migrator.encryption.api.AbstractEntityAttributeMigrator;
 import org.eclipse.kapua.extras.migrator.encryption.api.EntitySecretAttributeMigrator;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 
 public class MfaOptionAttributeMigrator extends AbstractEntityAttributeMigrator<MfaOption> implements EntitySecretAttributeMigrator<MfaOption> {
-    public MfaOptionAttributeMigrator(String persistenceUnitName, Integer maxInsertAttempts) {
+    public MfaOptionAttributeMigrator(String persistenceUnitName, KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         super(new MfaOptionMigratorServiceImpl(
-                new JpaTxManager(new KapuaEntityManagerFactory(persistenceUnitName), maxInsertAttempts),
+                jpaTxManagerFactory.create(persistenceUnitName),
                 new MfaOptionMigratorJpaRepository(new KapuaJpaRepositoryConfiguration())
         ));
     }

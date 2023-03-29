@@ -13,13 +13,13 @@
 package org.eclipse.kapua.extras.migrator.encryption;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.extras.migrator.encryption.api.EntitySecretAttributeMigrator;
 import org.eclipse.kapua.extras.migrator.encryption.authentication.MfaOptionAttributeMigrator;
 import org.eclipse.kapua.extras.migrator.encryption.job.JobStepAttributeMigrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Named;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,12 +29,12 @@ public class EntityAttributeMigrator {
 
     private static final int PAGE_SIZE = 50;
     private final String persistenceUnitName;
-    private final Integer maxInsertAttempts;
+    private final KapuaJpaTxManagerFactory jpaTxManagerFactory;
 
     protected EntityAttributeMigrator(String persistenceUnitName,
-                                      @Named("maxInsertAttempts") Integer maxInsertAttempts) {
+                                      KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         this.persistenceUnitName = persistenceUnitName;
-        this.maxInsertAttempts = maxInsertAttempts;
+        this.jpaTxManagerFactory = jpaTxManagerFactory;
     }
 
     public void migrate() throws KapuaException {
@@ -66,8 +66,8 @@ public class EntityAttributeMigrator {
 
     public List<EntitySecretAttributeMigrator<?>> getEntityMigrators() {
         return Arrays.asList(
-                new JobStepAttributeMigrator(persistenceUnitName, maxInsertAttempts),
-                new MfaOptionAttributeMigrator(persistenceUnitName, maxInsertAttempts)
+                new JobStepAttributeMigrator(persistenceUnitName, jpaTxManagerFactory),
+                new MfaOptionAttributeMigrator(persistenceUnitName, jpaTxManagerFactory)
         );
     }
 }

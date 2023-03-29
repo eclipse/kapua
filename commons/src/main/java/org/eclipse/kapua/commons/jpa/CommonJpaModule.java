@@ -35,6 +35,12 @@ public class CommonJpaModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
+    KapuaJpaTxManagerFactory kapuaJpaTxManagerFactory(@Named("maxInsertAttempts") Integer maxInsertAttempts) {
+        return new KapuaJpaTxManagerFactory(maxInsertAttempts);
+    }
+
+    @Provides
+    @Singleton
     KapuaJpaRepositoryConfiguration kapuaJpaRepositoryConfiguration(SystemSetting systemSetting) {
         return new KapuaJpaRepositoryConfiguration(
                 systemSetting.getString(SystemSettingKey.DB_CHARACTER_ESCAPE, "\\"),

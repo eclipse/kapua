@@ -23,9 +23,8 @@ import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.job.engine.client.JobEngineServiceClient;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -103,7 +102,7 @@ public class SchedulerLocatorConfiguration {
                         new JobEngineServiceClient(),
                         permissionFactory,
                         mockedAuthorization,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-job"), maxInsertAttempts),
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-job"),
                         jobRepository,
                         triggerRepository,
                         new DuplicateNameCheckerImpl<>(jobRepository, jobFactory::newQuery)));
@@ -113,7 +112,7 @@ public class SchedulerLocatorConfiguration {
                 bind(TriggerService.class).toInstance(new TriggerServiceImpl(
                         mockedAuthorization,
                         permissionFactory,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler"), maxInsertAttempts),
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-scheduler"),
                         triggerRepository,
                         triggerFactory,
                         triggerDefinitionRepository,
@@ -124,7 +123,7 @@ public class SchedulerLocatorConfiguration {
                 bind(TriggerDefinitionService.class).toInstance(new TriggerDefinitionServiceImpl(
                         mockedAuthorization,
                         permissionFactory,
-                        new JpaTxManager(new KapuaEntityManagerFactory("kapua-scheduler"), maxInsertAttempts),
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-scheduler"),
                         triggerDefinitionRepository,
                         triggerDefinitionFactory));
                 bind(TriggerDefinitionFactory.class).toInstance(triggerDefinitionFactory);

@@ -15,9 +15,8 @@ package org.eclipse.kapua.commons.model.id;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
-import org.eclipse.kapua.commons.jpa.KapuaEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.model.AbstractCommonServiceTest;
 import org.eclipse.kapua.commons.model.misc.CollisionEntity;
@@ -26,6 +25,7 @@ import org.eclipse.kapua.commons.model.misc.CollisionIdGenerator;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.storage.TxManager;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -51,7 +51,7 @@ public class IdGeneratorTest extends AbstractCommonServiceTest {
     public static final String DEFAULT_TEST_FILTER = "test_*.sql";
     public static final String DEFAULT_COMMONS_PATH = "../commons";
     public static final String DROP_TEST_FILTER = "test_*_drop.sql";
-    private static JpaTxManager txManager;
+    private static TxManager txManager;
     private static CollisionEntityJpaRepository repo;
     private static final int MAX_RETRIES = 4;
 
@@ -59,7 +59,7 @@ public class IdGeneratorTest extends AbstractCommonServiceTest {
     public static void setUp() {
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL;DB_CLOSE_DELAY=-1", "kapua", "kapua").update();
         scriptSession(DEFAULT_TEST_PATH, DEFAULT_TEST_FILTER);
-        txManager = new JpaTxManager(new KapuaEntityManagerFactory("kapua-commons-unit-test"), MAX_RETRIES);
+        txManager = new KapuaJpaTxManagerFactory(MAX_RETRIES).create("kapua-commons-unit-test");
         repo = new CollisionEntityJpaRepository(
                 new KapuaJpaRepositoryConfiguration()
         );
