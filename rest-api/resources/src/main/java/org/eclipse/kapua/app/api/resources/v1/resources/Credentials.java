@@ -217,12 +217,34 @@ public class Credentials extends AbstractKapuaResource {
      * @return HTTP 200 if operation has completed successfully.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
+     * @deprecated Since 2.0.0. Please make use of {@link #unlock(ScopeId, EntityId)}
      */
     @POST
     @Path("{credentialId}/unlock")
+    @Deprecated
     public Response unlockCredential(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("credentialId") EntityId credentialId) throws KapuaException {
+        credentialService.unlock(scopeId, credentialId);
+
+        return returnNoContent();
+    }
+
+
+    /**
+     * Unlocks a {@link Credential} that has been locked due to a lockout policy.
+     *
+     * @param scopeId      The {@link ScopeId} of {@link Credential} to unlock.
+     * @param credentialId The id of the Credential to be unlocked.
+     * @return HTTP 200 if operation has completed successfully.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 2.0.0
+     */
+    @POST
+    @Path("{credentialId}/_unlock")
+    public Response unlock(
+        @PathParam("scopeId") ScopeId scopeId,
+        @PathParam("credentialId") EntityId credentialId) throws KapuaException {
         credentialService.unlock(scopeId, credentialId);
 
         return returnNoContent();
