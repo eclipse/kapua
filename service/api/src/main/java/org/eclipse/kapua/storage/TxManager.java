@@ -20,6 +20,8 @@ public interface TxManager {
 
     <R> R execute(TxConsumer<R> transactionConsumer, BiConsumer<TxContext, R>... afterCommitConsumers) throws KapuaException;
 
+    TxContext getTxContext();
+
     @FunctionalInterface
     public interface TxConsumer<R> {
         R execute(TxContext txHolder) throws KapuaException;

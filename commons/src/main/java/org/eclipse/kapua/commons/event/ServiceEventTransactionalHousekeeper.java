@@ -13,7 +13,7 @@
 package org.eclipse.kapua.commons.event;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.JpaTxManager;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordAttributes;
@@ -31,6 +31,7 @@ import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +65,7 @@ public class ServiceEventTransactionalHousekeeper implements Runnable {
 
     private EventStoreService kapuaEventService;
 
-    private EntityManager manager;
+    private TxContext txContext;
 
     private ServiceEventBus eventbus;
     private List<ServiceEntry> servicesEntryList;
@@ -80,20 +81,12 @@ public class ServiceEventTransactionalHousekeeper implements Runnable {
     public ServiceEventTransactionalHousekeeper(EventStoreService eventStoreService, TxManager txManager, ServiceEventBus eventbus, List<ServiceEntry> servicesEntryList) {
         this.eventbus = eventbus;
         this.servicesEntryList = servicesEntryList;
-        //In other words, chicken out if we are not in a jpa transaction, as this class relies too heavily on jpa and would need to be rewritten to be generic
-        if (txManager instanceof JpaTxManager) {
-            manager = ((JpaTxManager) txManager).getEntityManagerFactory().createEntityManager();
-        } else {
-            manager = null;
-        }
-        kapuaEventService = eventStoreService;
+        this.txContext = txManager.getTxContext();
+        this.kapuaEventService = eventStoreService;
     }
 
     @Override
     public void run() {
-        if (manager == null) {
-            return;
-        }
         //TODO handling events table cleanup
         running = true;
         while (running) {
@@ -107,9 +100,7 @@ public class ServiceEventTransactionalHousekeeper implements Runnable {
                     LOGGER.warn("Generic error {}", e.getMessage(), e);
                 } finally {
                     //remove the lock if present
-                    if (manager.getTransaction().isActive()) {
-                        manager.getTransaction().rollback();
-                    }
+                    txContext.rollback();
                 }
             }
         }
@@ -132,9 +123,7 @@ public class ServiceEventTransactionalHousekeeper implements Runnable {
             LOGGER.trace("The lock is handled by someone else or the last execution was to close");
         } finally {
             //remove the lock if present
-            if (manager.getTransaction().isActive()) {
-                manager.getTransaction().rollback();
-            }
+            txContext.rollback();
         }
     }
 
@@ -210,7 +199,11 @@ public class ServiceEventTransactionalHousekeeper implements Runnable {
 
     private HousekeeperRun getLock(String serviceName) throws LockException, NoExecutionNeededException {
         HousekeeperRun kapuaEventHousekeeper = null;
+        if (!(txContext instanceof JpaAwareTxContext)) {
+            return null;
+        }
         try {
+            final EntityManager manager = ((JpaAwareTxContext) txContext).getEntityManager();
             manager.getTransaction().begin();
             kapuaEventHousekeeper = manager.find(HousekeeperRun.class, serviceName, LockModeType.PESSIMISTIC_WRITE);
         } catch (Exception e) {
@@ -226,6 +219,10 @@ public class ServiceEventTransactionalHousekeeper implements Runnable {
     private void updateLock(HousekeeperRun kapuaEventHousekeeper, String serviceName, Date startRun) throws KapuaException {
         kapuaEventHousekeeper.setLastRunBy(serviceName);
         kapuaEventHousekeeper.setLastRunOn(startRun);
+        if (!(txContext instanceof JpaAwareTxContext)) {
+            return;
+        }
+        final EntityManager manager = ((JpaAwareTxContext) txContext).getEntityManager();
         manager.persist(kapuaEventHousekeeper);
         manager.getTransaction().commit();
     }
