@@ -12,5 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.storage;
 
-public interface TxContext {
+import org.eclipse.kapua.KapuaException;
+
+import java.io.Closeable;
+
+public interface TxContext extends Closeable {
+    void commit();
+
+    void rollback();
+
+    KapuaException convertPersistenceException(Exception e);
 }

@@ -68,6 +68,11 @@ public class TagServiceImplTest {
             public <R> R execute(TxConsumer<R> transactionConsumer, BiConsumer<TxContext, R>... afterCommitConsumers) throws KapuaException {
                 return null;
             }
+
+            @Override
+            public TxContext getTxContext() {
+                return null;
+            }
         };
         Mockito.when(tagFactory.newCreator(Mockito.any(), Mockito.any()))
                 .thenAnswer(invocation -> new TagCreatorImpl(invocation.getArgumentAt(0, KapuaId.class), invocation.getArgumentAt(1, String.class)));
