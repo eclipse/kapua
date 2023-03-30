@@ -18,7 +18,6 @@ import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityJpaRepository;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
@@ -52,7 +51,7 @@ public class TriggerImplJpaRepository
         triggerQuery.where(
                 // Find all the triggers that are associated with this job
                 cb.and(
-                        cb.equal(triggerRoot.get(KapuaEntityAttributes.SCOPE_ID), KapuaEid.parseKapuaId(scopeId)),
+                        cb.equal(triggerRoot.get(TriggerImpl_.scopeId), KapuaEid.parseKapuaId(scopeId)),
                         cb.and(
                                 cb.equal(join.get(TriggerPropertyImpl_.name), "jobId"),
                                 cb.equal(join.get(TriggerPropertyImpl_.propertyValue), jobId.toCompactId()),

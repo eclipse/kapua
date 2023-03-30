@@ -17,7 +17,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
-import org.eclipse.kapua.model.KapuaEntityAttributes;
+import org.eclipse.kapua.commons.model.AbstractKapuaEntity_;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.domain.Domain;
@@ -67,8 +67,8 @@ public class DomainImplJpaRepository
         ParameterExpression<KapuaId> pScopeId = null;
 
         if (!KapuaId.ANY.equals(scopeId)) {
-            pScopeId = cb.parameter(KapuaId.class, KapuaEntityAttributes.SCOPE_ID);
-            Predicate scopeIdPredicate = cb.equal(entityRoot.get(KapuaEntityAttributes.SCOPE_ID), pScopeId);
+            pScopeId = cb.parameter(KapuaId.class, AbstractKapuaEntity_.SCOPE_ID);
+            Predicate scopeIdPredicate = cb.equal(entityRoot.get(AbstractKapuaEntity_.SCOPE_ID), pScopeId);
 
             Predicate andPredicate = cb.and(namePredicate, scopeIdPredicate);
             criteriaSelectQuery.where(andPredicate);

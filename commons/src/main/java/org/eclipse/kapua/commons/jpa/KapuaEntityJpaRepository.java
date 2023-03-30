@@ -19,11 +19,11 @@ import org.eclipse.kapua.KapuaEntityExistsException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.AbstractKapuaEntity_;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.OrPredicateImpl;
 import org.eclipse.kapua.model.KapuaEntity;
-import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.FieldSortCriteria;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -161,7 +161,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
                 !listQuery.getScopeId().equals(KapuaId.ANY)) {// Support for new method of querying for all ScopeIds (e.g.: query.setScopeId(KapuaId.ANY)
 
             AndPredicate scopedAndPredicate = listQuery.andPredicate(
-                    listQuery.attributePredicate(KapuaEntityAttributes.SCOPE_ID, listQuery.getScopeId())
+                    listQuery.attributePredicate(AbstractKapuaEntity_.SCOPE_ID, listQuery.getScopeId())
             );
 
             // Add existing query predicates
@@ -195,7 +195,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
                 order = cb.asc(extractAttribute(entityRoot, sortCriteria.getAttributeName()));
             }
         } else {
-            order = cb.asc(entityRoot.get(entityType.getSingularAttribute(KapuaEntityAttributes.ENTITY_ID)));
+            order = cb.asc(entityRoot.get(entityType.getSingularAttribute(AbstractKapuaEntity_.ID)));
         }
         criteriaSelectQuery.orderBy(order);
 
@@ -254,7 +254,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
 
             AndPredicate scopedAndPredicate = countQuery.andPredicate();
 
-            AttributePredicate<KapuaId> scopeId = countQuery.attributePredicate(KapuaEntityAttributes.SCOPE_ID, countQuery.getScopeId());
+            AttributePredicate<KapuaId> scopeId = countQuery.attributePredicate(AbstractKapuaEntity_.SCOPE_ID, countQuery.getScopeId());
             scopedAndPredicate.and(scopeId);
 
             if (countQuery.getPredicate() != null) {
@@ -611,8 +611,8 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         ParameterExpression<KapuaId> pScopeId = null;
 
         if (!KapuaId.ANY.equals(scopeId)) {
-            pScopeId = cb.parameter(KapuaId.class, KapuaEntityAttributes.SCOPE_ID);
-            Predicate scopeIdPredicate = cb.equal(entityRoot.get(KapuaEntityAttributes.SCOPE_ID), pScopeId);
+            pScopeId = cb.parameter(KapuaId.class, AbstractKapuaEntity_.SCOPE_ID);
+            Predicate scopeIdPredicate = cb.equal(entityRoot.get(AbstractKapuaEntity_.SCOPE_ID), pScopeId);
 
             Predicate andPredicate = cb.and(namePredicate, scopeIdPredicate);
             criteriaSelectQuery.where(andPredicate);

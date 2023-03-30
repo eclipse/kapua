@@ -23,7 +23,6 @@
     </parent>
 
     <artifactId>kapua-commons</artifactId>
-
     <build>
         <resources>
             <resource>
@@ -115,6 +114,10 @@
         <dependency>
             <groupId>org.checkerframework</groupId>
             <artifactId>checker-qual</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
         </dependency>
 
         <!-- Caching dependencies -->

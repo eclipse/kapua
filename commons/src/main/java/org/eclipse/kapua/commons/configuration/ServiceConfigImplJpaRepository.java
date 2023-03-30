@@ -15,7 +15,6 @@ package org.eclipse.kapua.commons.configuration;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
-import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.storage.TxContext;
 
@@ -32,8 +31,8 @@ public class ServiceConfigImplJpaRepository
 
         query.setPredicate(
                 query.andPredicate(
-                        query.attributePredicate(ServiceConfigAttributes.SERVICE_ID, pid),
-                        query.attributePredicate(KapuaEntityAttributes.SCOPE_ID, scopeId)
+                        query.attributePredicate(ServiceConfigImpl_.PID, pid),
+                        query.attributePredicate(ServiceConfigImpl_.SCOPE_ID, scopeId)
                 )
         );
 
