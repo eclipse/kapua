@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.job.step.definition.internal;
 
 import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -44,19 +43,16 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
     private final PermissionFactory permissionFactory;
     private final TxManager txManager;
     private final JobStepDefinitionRepository repository;
-    private final DuplicateNameChecker<JobStepDefinition> duplicateNameChecker;
 
     public JobStepDefinitionServiceImpl(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             TxManager txManager,
-            JobStepDefinitionRepository repository,
-            DuplicateNameChecker<JobStepDefinition> duplicateNameChecker) {
+            JobStepDefinitionRepository repository) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.txManager = txManager;
         this.repository = repository;
-        this.duplicateNameChecker = duplicateNameChecker;
     }
 
     @Override
@@ -72,7 +68,7 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
 
         return txManager.execute(tx -> {
             // Check duplicate name
-            if (duplicateNameChecker.countOtherEntitiesWithName(tx, stepDefinitionCreator.getName()) > 0) {
+            if (repository.countEntitiesWithName(tx, stepDefinitionCreator.getName()) > 0) {
                 throw new KapuaDuplicateNameInAnotherAccountError(stepDefinitionCreator.getName());
             }
             // Create JobStepDefinition
@@ -104,7 +100,7 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
 
         return txManager.execute(tx -> {
             // Check duplicate name
-            if (duplicateNameChecker.countOtherEntitiesWithName(
+            if (repository.countOtherEntitiesWithNameInScope(
                     tx, jobStepDefinition.getScopeId(), jobStepDefinition.getId(), jobStepDefinition.getName()) > 0) {
                 throw new KapuaDuplicateNameInAnotherAccountError(jobStepDefinition.getName());
             }

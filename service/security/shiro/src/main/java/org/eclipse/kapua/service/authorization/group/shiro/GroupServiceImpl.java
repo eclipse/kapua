@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
-import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.model.domain.Actions;
@@ -52,7 +51,6 @@ public class GroupServiceImpl extends KapuaConfigurableServiceLinker implements 
     private final AuthorizationService authorizationService;
     private final TxManager txManager;
     private final GroupRepository groupRepository;
-    private final DuplicateNameChecker<Group> duplicateNameChecker;
 
     /**
      * Injectable constructor
@@ -62,20 +60,18 @@ public class GroupServiceImpl extends KapuaConfigurableServiceLinker implements 
      * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance.
      * @param txManager
      * @param groupRepository
-     * @param duplicateNameChecker
      * @since 2.0.0
      */
     @Inject
     public GroupServiceImpl(PermissionFactory permissionFactory,
                             AuthorizationService authorizationService,
                             ServiceConfigurationManager serviceConfigurationManager,
-                            TxManager txManager, GroupRepository groupRepository, DuplicateNameChecker<Group> duplicateNameChecker) {
+                            TxManager txManager, GroupRepository groupRepository) {
         super(serviceConfigurationManager);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         this.txManager = txManager;
         this.groupRepository = groupRepository;
-        this.duplicateNameChecker = duplicateNameChecker;
     }
 
     @Override
@@ -94,7 +90,7 @@ public class GroupServiceImpl extends KapuaConfigurableServiceLinker implements 
         group.setDescription(groupCreator.getDescription());
         return txManager.execute(tx -> {
             // Check duplicate name
-            if (duplicateNameChecker.countOtherEntitiesWithName(tx, group.getScopeId(), group.getName()) > 0) {
+            if (groupRepository.countEntitiesWithNameInScope(tx, group.getScopeId(), group.getName()) > 0) {
                 throw new KapuaDuplicateNameException(group.getName());
             }
             return groupRepository.create(tx, group);
@@ -117,7 +113,7 @@ public class GroupServiceImpl extends KapuaConfigurableServiceLinker implements 
             }
             // Do update
             // Check duplicate name
-            if (duplicateNameChecker.countOtherEntitiesWithName(tx, group.getScopeId(), group.getId(), group.getName()) > 0) {
+            if (groupRepository.countOtherEntitiesWithNameInScope(tx, group.getScopeId(), group.getId(), group.getName()) > 0) {
                 throw new KapuaDuplicateNameException(group.getName());
             }
             return groupRepository.update(tx, group);

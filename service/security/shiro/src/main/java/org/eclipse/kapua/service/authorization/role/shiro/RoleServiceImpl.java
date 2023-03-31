@@ -18,7 +18,6 @@ import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
-import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.model.domain.Actions;
@@ -62,7 +61,6 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
     private final TxManager txManager;
     private final RoleRepository roleRepository;
     private final RolePermissionRepository rolePermissionRepository;
-    private final DuplicateNameChecker<Role> duplicateNameChecker;
 
     /**
      * Injectable constructor
@@ -74,7 +72,6 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
      * @param txManager
      * @param roleRepository
      * @param rolePermissionRepository
-     * @param duplicateNameChecker
      */
     @Inject
     public RoleServiceImpl(
@@ -84,8 +81,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
             ServiceConfigurationManager serviceConfigurationManager,
             TxManager txManager,
             RoleRepository roleRepository,
-            RolePermissionRepository rolePermissionRepository,
-            DuplicateNameChecker<Role> duplicateNameChecker) {
+            RolePermissionRepository rolePermissionRepository) {
         super(serviceConfigurationManager);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
@@ -93,7 +89,6 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
         this.txManager = txManager;
         this.roleRepository = roleRepository;
         this.rolePermissionRepository = rolePermissionRepository;
-        this.duplicateNameChecker = duplicateNameChecker;
     }
 
     @Override
@@ -111,7 +106,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
             serviceConfigurationManager.checkAllowedEntities(roleCreator.getScopeId(), "Roles");
 
             // Check duplicate name
-            if (duplicateNameChecker.countOtherEntitiesWithName(tx, roleCreator.getScopeId(), roleCreator.getName()) > 0) {
+            if (roleRepository.countEntitiesWithNameInScope(tx, roleCreator.getScopeId(), roleCreator.getName()) > 0) {
                 throw new KapuaDuplicateNameException(roleCreator.getName());
             }
 
@@ -169,7 +164,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements R
             final Role current = roleRepository.find(tx, role.getScopeId(), role.getId())
                     .orElseThrow(() -> new KapuaEntityNotFoundException(Role.TYPE, role.getId()));
             // Check duplicate name
-            if (duplicateNameChecker.countOtherEntitiesWithName(tx, role.getScopeId(), role.getId(), role.getName()) > 0) {
+            if (roleRepository.countOtherEntitiesWithNameInScope(tx, role.getScopeId(), role.getId(), role.getName()) > 0) {
                 throw new KapuaDuplicateNameException(role.getName());
             }
             // Do update

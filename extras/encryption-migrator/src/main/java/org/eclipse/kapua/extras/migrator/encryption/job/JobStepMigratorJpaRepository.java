@@ -66,4 +66,14 @@ public class JobStepMigratorJpaRepository
     public Optional<JobStep> findByName(TxContext tx, KapuaId scopeId, String name) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public long countOtherEntitiesWithNameInScope(TxContext tx, KapuaId scopeId, KapuaId jobStepId, String name, KapuaId jobId) throws KapuaException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public long countEntitiesWithNameInScope(TxContext tx, KapuaId scopeId, String name, KapuaId jobId) throws KapuaException {
+        throw new UnsupportedOperationException();
+    }
 }

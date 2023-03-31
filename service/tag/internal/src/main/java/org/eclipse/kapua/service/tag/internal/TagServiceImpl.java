@@ -17,8 +17,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
-import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
-import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -52,7 +50,6 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
     private final TagFactory tagFactory;
     private final TxManager txManager;
     private final TagRepository tagRepository;
-    private final DuplicateNameChecker<Tag> duplicateNameChecker;
 
     /**
      * Injectable Constructor
@@ -79,7 +76,6 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
         this.tagRepository = tagRepository;
         this.tagFactory = tagFactory;
         this.txManager = txManager;
-        this.duplicateNameChecker = new DuplicateNameCheckerImpl<>(tagRepository, (scopeId) -> tagFactory.newQuery(scopeId));
     }
 
     @Override
@@ -94,7 +90,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
         serviceConfigurationManager.checkAllowedEntities(tagCreator.getScopeId(), "Tags");
         // Check duplicate name
         return txManager.execute(tx -> {
-            final long otherEntitiesWithSameName = duplicateNameChecker.countOtherEntitiesWithName(tx, tagCreator.getScopeId(), tagCreator.getName());
+            final long otherEntitiesWithSameName = tagRepository.countEntitiesWithNameInScope(tx, tagCreator.getScopeId(), tagCreator.getName());
             if (otherEntitiesWithSameName > 0) {
                 throw new KapuaDuplicateNameException(tagCreator.getName());
             }
@@ -126,7 +122,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceLinker implements Ta
                 throw new KapuaEntityNotFoundException(Tag.TYPE, tag.getId());
             }
             // Check duplicate name
-            final long otherEntitiesWithSameName = duplicateNameChecker.countOtherEntitiesWithName(
+            final long otherEntitiesWithSameName = tagRepository.countOtherEntitiesWithNameInScope(
                     tx, tag.getScopeId(), tag.getId(), tag.getName());
             if (otherEntitiesWithSameName > 0) {
                 throw new KapuaDuplicateNameException(tag.getName());

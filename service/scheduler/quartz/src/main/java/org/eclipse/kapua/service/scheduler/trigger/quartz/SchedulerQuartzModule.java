@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -50,8 +49,8 @@ public class SchedulerQuartzModule extends AbstractKapuaModule {
                 triggerRepository,
                 triggerFactory,
                 triggerDefinitionRepository,
-                triggerDefinitionFactory,
-                new DuplicateNameCheckerImpl<>(triggerRepository, triggerFactory::newQuery));
+                triggerDefinitionFactory
+        );
     }
 
     @Provides

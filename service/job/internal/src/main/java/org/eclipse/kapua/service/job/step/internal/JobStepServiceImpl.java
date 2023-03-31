@@ -18,7 +18,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.domain.Actions;
@@ -71,7 +70,6 @@ public class JobStepServiceImpl implements JobStepService {
     private final TxManager txManager;
     private final JobStepRepository jobStepRepository;
     private final JobStepFactory jobStepFactory;
-    private final DuplicateNameChecker<JobStep> duplicateNameChecker;
     private final JobExecutionRepository jobExecutionRepository;
     private final JobExecutionFactory jobExecutionFactory;
     private final JobStepDefinitionRepository jobStepDefinitionRepository;
@@ -83,7 +81,6 @@ public class JobStepServiceImpl implements JobStepService {
             TxManager txManager,
             JobStepRepository jobStepRepository,
             JobStepFactory jobStepFactory,
-            DuplicateNameChecker<JobStep> duplicateNameChecker,
             JobExecutionRepository jobExecutionRepository,
             JobExecutionFactory jobExecutionFactory,
             JobStepDefinitionRepository jobStepDefinitionRepository,
@@ -93,7 +90,6 @@ public class JobStepServiceImpl implements JobStepService {
         this.txManager = txManager;
         this.jobStepRepository = jobStepRepository;
         this.jobStepFactory = jobStepFactory;
-        this.duplicateNameChecker = duplicateNameChecker;
         this.jobExecutionRepository = jobExecutionRepository;
         this.jobExecutionFactory = jobExecutionFactory;
         this.jobStepDefinitionRepository = jobStepDefinitionRepository;
@@ -133,11 +129,11 @@ public class JobStepServiceImpl implements JobStepService {
             // Check job step definition
             validateJobStepProperties(tx, jobStepCreator);
             // Check duplicate name
-            if (duplicateNameChecker.countOtherEntitiesWithName(
+            if (jobStepRepository.countEntitiesWithNameInScope(
                     tx,
                     jobStepCreator.getScopeId(),
                     jobStepCreator.getName(),
-                    queryFactory.newQuery().attributePredicate(JobStepAttributes.JOB_ID, jobStepCreator.getJobId())) > 0) {
+                    jobStepCreator.getJobId()) > 0) {
                 throw new KapuaDuplicateNameException(jobStepCreator.getName());
             }
             // Check Job Executions
@@ -222,14 +218,13 @@ public class JobStepServiceImpl implements JobStepService {
             // Check job step definition
             validateJobStepProperties(tx, jobStep);
             // Check duplicate name
-            if (
-                    duplicateNameChecker.countOtherEntitiesWithName(
-                            tx,
-                            jobStep.getScopeId(),
-                            jobStep.getId(),
-                            jobStep.getName(),
-                            queryFactory.newQuery().attributePredicate(JobStepAttributes.JOB_ID, jobStep.getJobId())
-                    ) > 0
+            if (jobStepRepository.countOtherEntitiesWithNameInScope(
+                    tx,
+                    jobStep.getScopeId(),
+                    jobStep.getId(),
+                    jobStep.getName(),
+                    jobStep.getJobId()
+            ) > 0
             ) {
                 throw new KapuaDuplicateNameException(jobStep.getName());
             }

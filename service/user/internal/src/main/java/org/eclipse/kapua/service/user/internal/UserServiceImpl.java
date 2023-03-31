@@ -24,7 +24,6 @@ import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -67,7 +66,6 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
     private final TxManager txManager;
     private final UserRepository userRepository;
     private final UserFactory userFactory;
-    private final DuplicateNameChecker<User> duplicateNameChecker;
     private final EventStorer eventStorer;
 
     public UserServiceImpl(
@@ -76,7 +74,6 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
             PermissionFactory permissionFactory,
             TxManager txManager,
             UserRepository userRepository, UserFactory userFactory,
-            DuplicateNameChecker<User> duplicateNameChecker,
             EventStorer eventStorer) {
         super(serviceConfigurationManager);
         this.authorizationService = authorizationService;
@@ -84,7 +81,6 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
         this.txManager = txManager;
         this.userRepository = userRepository;
         this.userFactory = userFactory;
-        this.duplicateNameChecker = duplicateNameChecker;
         this.eventStorer = eventStorer;
     }
 
@@ -118,10 +114,10 @@ public class UserServiceImpl extends KapuaConfigurableServiceLinker implements U
 
         return txManager.execute(tx -> {
             // Check duplicate name
-            if (duplicateNameChecker.countOtherEntitiesWithName(tx, userCreator.getScopeId(), userCreator.getName()) > 0) {
+            if (userRepository.countEntitiesWithNameInScope(tx, userCreator.getScopeId(), userCreator.getName()) > 0) {
                 throw new KapuaDuplicateNameException(userCreator.getName());
             }
-            if (duplicateNameChecker.countOtherEntitiesWithName(tx, userCreator.getName()) > 0) {
+            if (userRepository.countEntitiesWithName(tx, userCreator.getName()) > 0) {
                 throw new KapuaDuplicateNameInAnotherAccountError(userCreator.getName());
             }
             // Check User.userType

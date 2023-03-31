@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.storage;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -47,5 +48,23 @@ public class KapuaNamedEntityInMemoryRepository<E extends KapuaNamedEntity, L ex
                 .filter(e -> value.equals(e.getName()))
                 .filter(e -> scopeId == null || KapuaId.ANY.equals(scopeId) ? true : scopeId.equals(e.getScopeId()))
                 .findFirst();
+    }
+
+    @Override
+    public long countOtherEntitiesWithNameInScope(TxContext tx, KapuaId scopeId, KapuaId excludedId, String name) throws KapuaException {
+        //TODO: implement
+        return 0;
+    }
+
+    @Override
+    public long countEntitiesWithNameInScope(TxContext tx, KapuaId scopeId, String name) throws KapuaException {
+        //TODO: implement
+        return 0;
+    }
+
+    @Override
+    public long countEntitiesWithName(TxContext tx, String name) throws KapuaException {
+        //TODO: implement
+        return 0;
     }
 }

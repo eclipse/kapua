@@ -23,7 +23,6 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.job.engine.JobEngineService;
@@ -62,8 +61,7 @@ public class JobModule extends AbstractKapuaModule {
                 authorizationService,
                 jpaTxManagerFactory.create("kapua-job"),
                 jobRepository,
-                triggerRepository,
-                new DuplicateNameCheckerImpl<>(jobRepository, scopeId -> new JobQueryImpl(scopeId))
+                triggerRepository
         );
     }
 

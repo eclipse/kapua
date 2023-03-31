@@ -637,4 +637,11 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
                 throw new NonUniqueResultException(String.format("Multiple %s results found for field %s with value %s", concreteClass.getName(), pName, fieldValue.toString()));
         }
     }
+
+    protected Predicate mapScopeIdToCriteria(KapuaId scopeId, CriteriaBuilder cb, Root<C> entityRoot) {
+        return Optional.ofNullable(scopeId)
+                .filter(id -> !KapuaId.ANY.equals(id))
+                .map(id -> cb.equal(entityRoot.get(AbstractKapuaEntity_.SCOPE_ID), KapuaEid.parseKapuaId(id)))
+                .orElse(cb.conjunction());
+    }
 }

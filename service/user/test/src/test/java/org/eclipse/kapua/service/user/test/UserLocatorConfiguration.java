@@ -24,7 +24,6 @@ import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
-import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
@@ -115,7 +114,6 @@ public class UserLocatorConfiguration {
                                 new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-user"),
                                 new UserImplJpaRepository(jpaRepoConfig),
                                 userFactory,
-                                new DuplicateNameCheckerImpl<>(new UserImplJpaRepository(jpaRepoConfig), userFactory::newQuery),
                                 new EventStorerImpl(new EventStoreRecordImplJpaRepository(jpaRepoConfig)))
                 );
             }

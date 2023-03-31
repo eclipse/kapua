@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.scheduler.trigger.quartz;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -83,7 +82,6 @@ public class TriggerServiceImpl implements TriggerService {
     private final TriggerFactory triggerFactory;
     private final TriggerDefinitionRepository triggerDefinitionRepository;
     private final TriggerDefinitionFactory triggerDefinitionFactory;
-    private final DuplicateNameChecker<Trigger> triggerDuplicateNameChecker;
 
     public TriggerServiceImpl(
             AuthorizationService authorizationService,
@@ -92,8 +90,7 @@ public class TriggerServiceImpl implements TriggerService {
             TriggerRepository triggerRepository,
             TriggerFactory triggerFactory,
             TriggerDefinitionRepository triggerDefinitionRepository,
-            TriggerDefinitionFactory triggerDefinitionFactory,
-            DuplicateNameChecker<Trigger> triggerDuplicateNameChecker) {
+            TriggerDefinitionFactory triggerDefinitionFactory) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.txManager = txManager;
@@ -101,7 +98,6 @@ public class TriggerServiceImpl implements TriggerService {
         this.triggerFactory = triggerFactory;
         this.triggerDefinitionRepository = triggerDefinitionRepository;
         this.triggerDefinitionFactory = triggerDefinitionFactory;
-        this.triggerDuplicateNameChecker = triggerDuplicateNameChecker;
     }
 
     @Override
@@ -137,7 +133,7 @@ public class TriggerServiceImpl implements TriggerService {
             }
 
             // Check duplicate name
-            if (triggerDuplicateNameChecker.countOtherEntitiesWithName(tx, triggerCreator.getName()) > 0) {
+            if (triggerRepository.countEntitiesWithName(tx, triggerCreator.getName()) > 0) {
                 throw new KapuaDuplicateNameException(triggerCreator.getName());
             }
 
@@ -223,7 +219,7 @@ public class TriggerServiceImpl implements TriggerService {
             }
 
             // Check duplicate name
-            if (triggerDuplicateNameChecker.countOtherEntitiesWithName(tx, adapted.getId(), adapted.getName()) > 0) {
+            if (triggerRepository.countEntitiesWithNameInScope(tx, adapted.getId(), adapted.getName()) > 0) {
                 throw new KapuaDuplicateNameException(adapted.getName());
             }
             // Check dates

@@ -18,7 +18,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
@@ -57,7 +56,6 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
     private final TxManager txManager;
     private final JobRepository jobRepository;
     private final TriggerRepository triggerRepository;
-    private final DuplicateNameChecker<Job> duplicateNameChecker;
 
     /**
      * Default constructor for injection
@@ -66,7 +64,6 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
      * @param authorizationService The {@link AuthorizationService} instance
      * @param jobRepository
      * @param triggerRepository    The {@link TriggerService} instance
-     * @param duplicateNameChecker
      * @since 2.0.0
      */
     public JobServiceImpl(
@@ -76,8 +73,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
             AuthorizationService authorizationService,
             TxManager txManager,
             JobRepository jobRepository,
-            TriggerRepository triggerRepository,
-            DuplicateNameChecker<Job> duplicateNameChecker) {
+            TriggerRepository triggerRepository) {
         super(serviceConfigurationManager);
         this.jobEngineService = jobEngineService;
         this.permissionFactory = permissionFactory;
@@ -85,7 +81,6 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
         this.txManager = txManager;
         this.jobRepository = jobRepository;
         this.triggerRepository = triggerRepository;
-        this.duplicateNameChecker = duplicateNameChecker;
     }
 
     @Override
@@ -100,7 +95,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
         serviceConfigurationManager.checkAllowedEntities(creator.getScopeId(), "Jobs");
         // Check duplicate name
         return txManager.execute(tx -> {
-            if (duplicateNameChecker.countOtherEntitiesWithName(tx, creator.getScopeId(), creator.getName()) > 0) {
+            if (jobRepository.countEntitiesWithNameInScope(tx, creator.getScopeId(), creator.getName()) > 0) {
                 throw new KapuaDuplicateNameException(creator.getName());
             }
 
@@ -127,7 +122,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceLinker implements Jo
                 throw new KapuaEntityNotFoundException(Job.TYPE, job.getId());
             }
             // Check duplicate name
-            if (duplicateNameChecker.countOtherEntitiesWithName(tx, job.getScopeId(), job.getId(), job.getName()) > 0) {
+            if (jobRepository.countOtherEntitiesWithNameInScope(tx, job.getScopeId(), job.getId(), job.getName()) > 0) {
                 throw new KapuaDuplicateNameException(job.getName());
             }
             // Do update

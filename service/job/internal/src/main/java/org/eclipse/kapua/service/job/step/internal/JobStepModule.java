@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.job.step.internal;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
@@ -57,7 +56,6 @@ public class JobStepModule extends AbstractKapuaModule {
                 jpaTxManagerFactory.create("kapua-job"),
                 jobStepRepository,
                 jobStepFactory,
-                new DuplicateNameCheckerImpl<>(jobStepRepository, jobStepFactory::newQuery),
                 jobExecutionRepository,
                 jobExecutionFactory,
                 jobStepDefinitionRepository,

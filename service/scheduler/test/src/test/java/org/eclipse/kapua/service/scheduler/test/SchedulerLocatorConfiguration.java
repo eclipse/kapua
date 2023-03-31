@@ -22,7 +22,6 @@ import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
-import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
@@ -51,7 +50,6 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerDefi
 import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerDefinitionServiceImpl;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerFactoryImpl;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerImplJpaRepository;
-import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerQueryImpl;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -104,8 +102,8 @@ public class SchedulerLocatorConfiguration {
                         mockedAuthorization,
                         new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-job"),
                         jobRepository,
-                        triggerRepository,
-                        new DuplicateNameCheckerImpl<>(jobRepository, jobFactory::newQuery)));
+                        triggerRepository
+                ));
                 final TriggerDefinitionFactoryImpl triggerDefinitionFactory = new TriggerDefinitionFactoryImpl();
                 final TriggerDefinitionImplJpaRepository triggerDefinitionRepository = new TriggerDefinitionImplJpaRepository(jpaRepoConfig);
                 final TriggerFactoryImpl triggerFactory = new TriggerFactoryImpl();
@@ -116,8 +114,7 @@ public class SchedulerLocatorConfiguration {
                         triggerRepository,
                         triggerFactory,
                         triggerDefinitionRepository,
-                        triggerDefinitionFactory,
-                        new DuplicateNameCheckerImpl<>(triggerRepository, scopeId -> new TriggerQueryImpl(scopeId))
+                        triggerDefinitionFactory
                 ));
                 bind(TriggerFactory.class).toInstance(triggerFactory);
                 bind(TriggerDefinitionService.class).toInstance(new TriggerDefinitionServiceImpl(
