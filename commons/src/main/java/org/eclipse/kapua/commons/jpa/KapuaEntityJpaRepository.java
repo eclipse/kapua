@@ -624,7 +624,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         query.setParameter(pName.getName(), fieldValue);
 
         if (pScopeId != null) {
-            query.setParameter(pScopeId.getName(), scopeId);
+            query.setParameter(pScopeId.getName(), KapuaEid.parseKapuaId(scopeId));
         }
         // QUERY!
         List<C> result = query.getResultList();
