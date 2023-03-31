@@ -476,11 +476,7 @@ public class DeviceConfigComponents extends LayoutContainer {
 
             @Override
             public void onSuccess(Boolean enabled) {
-                if (!enabled) {
-                    settings.hide();
-                } else {
-                    settings.show();
-                }
+                settings.setVisible(enabled);
             }
         });
     }
