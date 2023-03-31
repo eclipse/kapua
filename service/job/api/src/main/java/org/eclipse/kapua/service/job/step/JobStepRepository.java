@@ -12,8 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.storage.KapuaNamedEntityRepository;
+import org.eclipse.kapua.storage.TxContext;
 
 public interface JobStepRepository
         extends KapuaNamedEntityRepository<JobStep, JobStepListResult> {
+    long countOtherEntitiesWithNameInScope(TxContext tx, KapuaId scopeId, KapuaId jobStepId, String name, KapuaId jobId) throws KapuaException;
+
+    long countEntitiesWithNameInScope(TxContext tx, KapuaId scopeId, String name, KapuaId jobId) throws KapuaException;
 }

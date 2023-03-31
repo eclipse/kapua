@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.storage;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -54,5 +55,20 @@ public class KapuaNamedEntityRepositoryCachingWrapper<
         final Optional<E> found = wrapped.findByName(txContext, scopeId, name);
         found.ifPresent(entityCache::put);
         return found;
+    }
+
+    @Override
+    public long countOtherEntitiesWithNameInScope(TxContext tx, KapuaId scopeId, KapuaId excludedId, String name) throws KapuaException {
+        return wrapped.countOtherEntitiesWithNameInScope(tx, scopeId, excludedId, name);
+    }
+
+    @Override
+    public long countEntitiesWithNameInScope(TxContext tx, KapuaId scopeId, String name) throws KapuaException {
+        return wrapped.countEntitiesWithNameInScope(tx, scopeId, name);
+    }
+
+    @Override
+    public long countEntitiesWithName(TxContext tx, String name) throws KapuaException {
+        return wrapped.countEntitiesWithName(tx, name);
     }
 }

@@ -24,7 +24,6 @@ import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.service.internal.DuplicateNameChecker;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -67,7 +66,6 @@ public class AccountServiceImpl
     private final AccountRepository accountRepository;
     private final PermissionFactory permissionFactory;
     private final AuthorizationService authorizationService;
-    private final DuplicateNameChecker<Account> duplicateNameChecker;
     private final EventStorer eventStorer;
 
     /**
@@ -77,7 +75,6 @@ public class AccountServiceImpl
      * @param permissionFactory           The {@link PermissionFactory} instance
      * @param authorizationService        The {@link AuthorizationService} instance
      * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance
-     * @param duplicateNameChecker
      * @param eventStorer
      * @since 2.0.0
      */
@@ -88,14 +85,12 @@ public class AccountServiceImpl
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             ServiceConfigurationManager serviceConfigurationManager,
-            DuplicateNameChecker<Account> duplicateNameChecker,
             EventStorer eventStorer) {
         super(serviceConfigurationManager);
         this.txManager = txManager;
         this.accountRepository = accountRepository;
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
-        this.duplicateNameChecker = duplicateNameChecker;
         this.eventStorer = eventStorer;
     }
 
@@ -128,10 +123,10 @@ public class AccountServiceImpl
                 }
             }
             // Check duplicate name
-            if (duplicateNameChecker.countOtherEntitiesWithName(tx, accountCreator.getScopeId(), accountCreator.getName()) > 0) {
+            if (accountRepository.countEntitiesWithNameInScope(tx, accountCreator.getScopeId(), accountCreator.getName()) > 0) {
                 throw new KapuaDuplicateNameException(accountCreator.getName());
             }
-            if (duplicateNameChecker.countOtherEntitiesWithName(tx, accountCreator.getName()) > 0) {
+            if (accountRepository.countEntitiesWithName(tx, accountCreator.getName()) > 0) {
                 throw new KapuaDuplicateNameInAnotherAccountError(accountCreator.getName());
             }
             // Check that expiration date is no later than parent expiration date

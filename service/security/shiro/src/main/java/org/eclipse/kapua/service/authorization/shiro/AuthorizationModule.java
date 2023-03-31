@@ -23,7 +23,6 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
@@ -65,7 +64,6 @@ import org.eclipse.kapua.service.authorization.group.GroupRepository;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupImplJpaRepository;
-import org.eclipse.kapua.service.authorization.group.shiro.GroupQueryImpl;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
@@ -84,7 +82,6 @@ import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionCachingR
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImplJpaRepository;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionServiceImpl;
-import org.eclipse.kapua.service.authorization.role.shiro.RoleQueryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
 
 import javax.inject.Named;
@@ -164,8 +161,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
                 serviceConfigurationManager,
                 jpaTxManagerFactory.create("kapua-authorization"),
                 roleRepository,
-                rolePermissionRepository,
-                new DuplicateNameCheckerImpl<>(roleRepository, (scopeId) -> new RoleQueryImpl(scopeId))
+                rolePermissionRepository
         );
     }
 
@@ -225,8 +221,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
                               KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         return new GroupServiceImpl(permissionFactory, authorizationService, serviceConfigurationManager,
                 jpaTxManagerFactory.create("kapua-authorization"),
-                groupRepository,
-                new DuplicateNameCheckerImpl<>(groupRepository, scopeId -> new GroupQueryImpl(scopeId)));
+                groupRepository);
     }
 
     @Provides

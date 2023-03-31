@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.storage;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -38,4 +39,11 @@ public interface KapuaNamedEntityRepository<E extends KapuaNamedEntity, L extend
      * @since 2.0.0
      */
     Optional<E> findByName(TxContext txContext, KapuaId scopeId, String value);
+
+    long countEntitiesWithName(TxContext tx, String name) throws KapuaException;
+
+    long countEntitiesWithNameInScope(TxContext tx, KapuaId scopeId, String name) throws KapuaException;
+
+    long countOtherEntitiesWithNameInScope(TxContext tx, KapuaId scopeId, KapuaId excludedId, String name) throws KapuaException;
+
 }

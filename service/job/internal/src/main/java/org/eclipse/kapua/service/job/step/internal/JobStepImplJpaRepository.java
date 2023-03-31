@@ -14,13 +14,35 @@ package org.eclipse.kapua.service.job.step.internal;
 
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityJpaRepository;
+import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity_;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.step.JobStepAttributes;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
 import org.eclipse.kapua.service.job.step.JobStepRepository;
+import org.eclipse.kapua.storage.TxContext;
 
 public class JobStepImplJpaRepository
         extends KapuaNamedEntityJpaRepository<org.eclipse.kapua.service.job.step.JobStep, JobStepImpl, JobStepListResult>
         implements JobStepRepository {
     public JobStepImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
         super(JobStepImpl.class, () -> new JobStepListResultImpl(), jpaRepoConfig);
+    }
+
+    @Override
+    public long countOtherEntitiesWithNameInScope(TxContext tx, KapuaId scopeId, KapuaId excludedId, String name, KapuaId jobId) {
+        return doCount(tx, name,
+                (cb, r) -> mapScopeIdToCriteria(scopeId, cb, r),
+                (cb, r) -> cb.notEqual(r.get(AbstractKapuaNamedEntity_.ID), KapuaEid.parseKapuaId(excludedId)),
+                (cb, r) -> cb.equal(r.get(JobStepAttributes.JOB_ID), KapuaEid.parseKapuaId(jobId))
+        );
+    }
+
+    @Override
+    public long countEntitiesWithNameInScope(TxContext tx, KapuaId scopeId, String name, KapuaId jobId) {
+        return doCount(tx, name,
+                (cb, r) -> mapScopeIdToCriteria(scopeId, cb, r),
+                (cb, r) -> cb.equal(r.get(JobStepAttributes.JOB_ID), KapuaEid.parseKapuaId(jobId))
+        );
     }
 }

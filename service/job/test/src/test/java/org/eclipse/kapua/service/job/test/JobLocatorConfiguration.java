@@ -21,7 +21,6 @@ import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
-import org.eclipse.kapua.commons.jpa.DuplicateNameCheckerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
@@ -45,7 +44,6 @@ import org.eclipse.kapua.service.job.execution.internal.JobExecutionImplJpaRepos
 import org.eclipse.kapua.service.job.execution.internal.JobExecutionServiceImpl;
 import org.eclipse.kapua.service.job.internal.JobFactoryImpl;
 import org.eclipse.kapua.service.job.internal.JobImplJpaRepository;
-import org.eclipse.kapua.service.job.internal.JobQueryImpl;
 import org.eclipse.kapua.service.job.internal.JobServiceImpl;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepService;
@@ -53,11 +51,9 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionFactoryImpl;
 import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionImplJpaRepository;
-import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionQueryImpl;
 import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionServiceImpl;
 import org.eclipse.kapua.service.job.step.internal.JobStepFactoryImpl;
 import org.eclipse.kapua.service.job.step.internal.JobStepImplJpaRepository;
-import org.eclipse.kapua.service.job.step.internal.JobStepQueryImpl;
 import org.eclipse.kapua.service.job.step.internal.JobStepServiceImpl;
 import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
@@ -132,15 +128,13 @@ public class JobLocatorConfiguration {
                         mockedAuthorization,
                         txManager,
                         new JobImplJpaRepository(jpaRepoConfig),
-                        triggerImplJpaRepository,
-                        new DuplicateNameCheckerImpl<>(new JobImplJpaRepository(jpaRepoConfig), scopeId -> new JobQueryImpl(scopeId))
+                        triggerImplJpaRepository
                 ));
                 bind(JobStepDefinitionService.class).toInstance(new JobStepDefinitionServiceImpl(
                         mockedAuthorization,
                         mockedPermissionFactory,
                         txManager,
-                        new JobStepDefinitionImplJpaRepository(jpaRepoConfig),
-                        new DuplicateNameCheckerImpl<>(new JobStepDefinitionImplJpaRepository(jpaRepoConfig), scopeId -> new JobStepDefinitionQueryImpl(scopeId))
+                        new JobStepDefinitionImplJpaRepository(jpaRepoConfig)
                 ));
                 bind(JobStepDefinitionFactory.class).toInstance(new JobStepDefinitionFactoryImpl());
                 final JobExecutionImplJpaRepository jobExecutionRepository = new JobExecutionImplJpaRepository(jpaRepoConfig);
@@ -150,7 +144,6 @@ public class JobLocatorConfiguration {
                         txManager,
                         new JobStepImplJpaRepository(jpaRepoConfig),
                         new JobStepFactoryImpl(),
-                        new DuplicateNameCheckerImpl<>(new JobStepImplJpaRepository(jpaRepoConfig), scopeId -> new JobStepQueryImpl(scopeId)),
                         jobExecutionRepository,
                         new JobExecutionFactoryImpl(),
                         new JobStepDefinitionImplJpaRepository(jpaRepoConfig),
@@ -185,8 +178,7 @@ public class JobLocatorConfiguration {
                         triggerImplJpaRepository,
                         triggerFactory,
                         triggerDefinitionRepository,
-                        triggerDefinitionFactory,
-                        new DuplicateNameCheckerImpl<>(triggerImplJpaRepository, triggerFactory::newQuery)
+                        triggerDefinitionFactory
                 ));
                 bind(TriggerFactory.class).toInstance(triggerFactory);
                 bind(TriggerDefinitionService.class).toInstance(new TriggerDefinitionServiceImpl(
