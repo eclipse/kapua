@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
@@ -153,11 +152,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId)
             throws KapuaException {
-        if (deviceConfigurationStoreService.isServiceEnabled(scopeId)) {
-            return deviceConfigurationStoreService.getApplicationSettings(scopeId, deviceId);
-        } else {
-            throw new KapuaServiceDisabledException(deviceConfigurationStoreService.getClass().getName());
-        }
+        return deviceConfigurationStoreService.getApplicationSettings(scopeId, deviceId);
     }
 
     @POST
@@ -167,12 +162,8 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             DeviceConfigurationStoreSettings deviceConfigurationStoreSettings) throws KapuaException {
-        if (deviceConfigurationStoreService.isServiceEnabled(scopeId)) {
-            deviceConfigurationStoreService.setApplicationSettings(scopeId, deviceId, deviceConfigurationStoreSettings);
-            return returnNoContent();
-        } else {
-            throw new KapuaServiceDisabledException(deviceConfigurationStoreService.getClass().getName());
-        }
+        deviceConfigurationStoreService.setApplicationSettings(scopeId, deviceId, deviceConfigurationStoreSettings);
+        return returnNoContent();
     }
 
 }

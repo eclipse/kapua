@@ -67,12 +67,13 @@ public class DeviceConfigurationStoreServiceDummy implements DeviceConfiguration
     }
 
     @Override
-    public DeviceConfigurationStoreSettings getApplicationSettings(KapuaId scopeId, KapuaId deviceId) {
-        return null;
+    public DeviceConfigurationStoreSettings getApplicationSettings(KapuaId scopeId, KapuaId deviceId) throws KapuaServiceDisabledException {
+        throw new KapuaServiceDisabledException(this.getClass().getName());
     }
 
     @Override
-    public void setApplicationSettings(KapuaId scopeId, KapuaId deviceId, DeviceConfigurationStoreSettings deviceApplicationSettings) {
+    public void setApplicationSettings(KapuaId scopeId, KapuaId deviceId, DeviceConfigurationStoreSettings deviceApplicationSettings) throws KapuaServiceDisabledException {
+        throw new KapuaServiceDisabledException(this.getClass().getName());
     }
 
     @Override
