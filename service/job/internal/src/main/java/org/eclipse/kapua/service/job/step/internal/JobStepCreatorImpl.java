@@ -79,7 +79,7 @@ public class JobStepCreatorImpl extends AbstractKapuaNamedEntityCreator<JobStep>
     }
 
     @Override
-    public void setJobStepProperties(List<JobStepProperty> jobStepProperty) {
+    public void setStepProperties(List<JobStepProperty> jobStepProperty) {
         this.jobStepProperty = jobStepProperty;
     }
 
