@@ -68,13 +68,13 @@ public abstract class AbstractDeviceManagementTransactionalServiceImpl {
     protected final AuthorizationService authorizationService;
     protected final PermissionFactory permissionFactory;
 
-    private final DeviceEventRepository deviceEventRepository;
-    private final DeviceEventFactory deviceEventFactory;
+    protected final DeviceEventRepository deviceEventRepository;
+    protected final DeviceEventFactory deviceEventFactory;
 
-    private final DeviceRepository deviceRepository;
+    protected final DeviceRepository deviceRepository;
 
-    private final DeviceManagementOperationRepository deviceManagementOperationRepository;
-    private final DeviceManagementOperationFactory deviceManagementOperationFactory;
+    protected final DeviceManagementOperationRepository deviceManagementOperationRepository;
+    protected final DeviceManagementOperationFactory deviceManagementOperationFactory;
 
     public AbstractDeviceManagementTransactionalServiceImpl(
             TxManager txManager,

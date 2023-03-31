@@ -77,8 +77,8 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
     private static final String SCOPE_ID = "scopeId";
     private static final String DEVICE_ID = "deviceId";
 
-    private final CertificateInfoService certificateInfoService;
-    private final CertificateInfoFactory certificateInfoFactory;
+    protected final CertificateInfoService certificateInfoService;
+    protected final CertificateInfoFactory certificateInfoFactory;
 
     public DeviceKeystoreManagementServiceImpl(
             TxManager txManager,
