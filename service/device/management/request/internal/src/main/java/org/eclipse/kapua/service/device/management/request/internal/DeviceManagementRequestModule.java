@@ -17,8 +17,6 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
 import org.eclipse.kapua.service.device.management.request.DeviceRequestManagementService;
 import org.eclipse.kapua.service.device.management.request.GenericRequestFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
@@ -41,8 +39,6 @@ public class DeviceManagementRequestModule extends AbstractKapuaModule {
             DeviceEventRepository deviceEventRepository,
             DeviceEventFactory deviceEventFactory,
             DeviceRepository deviceRepository,
-            DeviceManagementOperationRepository deviceManagementOperationRepository,
-            DeviceManagementOperationFactory deviceManagementOperationFactory,
             GenericRequestFactory genericRequestFactory,
             KapuaJpaTxManagerFactory jpaTxManagerFactory
     ) {
@@ -53,8 +49,6 @@ public class DeviceManagementRequestModule extends AbstractKapuaModule {
                 deviceEventRepository,
                 deviceEventFactory,
                 deviceRepository,
-                deviceManagementOperationRepository,
-                deviceManagementOperationFactory,
                 genericRequestFactory
         );
     }
