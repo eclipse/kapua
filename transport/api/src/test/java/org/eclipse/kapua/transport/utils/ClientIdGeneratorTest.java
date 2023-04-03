@@ -14,50 +14,86 @@ package org.eclipse.kapua.transport.utils;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 
-
+/**
+ * {@link ClientIdGenerator} tests.
+ *
+ * @since 1.0.0
+ */
 @Category(JUnitTests.class)
 public class ClientIdGeneratorTest {
 
-    ClientIdGenerator clientIdGenerator;
+    private static final Logger LOG = LoggerFactory.getLogger(ClientIdGeneratorTest.class);
 
-    @Before
-    public void initialize() {
-        clientIdGenerator = ClientIdGenerator.getInstance();
+    @Test
+    public void getInstanceTest() {
+        ClientIdGenerator clientIdGenerator1 = ClientIdGenerator.getInstance();
+        Assert.assertNotNull(clientIdGenerator1);
+
+        ClientIdGenerator clientIdGenerator2 = ClientIdGenerator.getInstance();
+        Assert.assertNotNull(clientIdGenerator2);
+
+        Assert.assertEquals(clientIdGenerator1, clientIdGenerator2);
     }
 
     @Test
-    public void clientIdGeneratorTest() throws Exception {
-        Constructor<ClientIdGenerator> clientIdGenerator = ClientIdGenerator.class.getDeclaredConstructor();
-        Assert.assertTrue(Modifier.isPrivate(clientIdGenerator.getModifiers()));
-        clientIdGenerator.setAccessible(true);
-        clientIdGenerator.newInstance();
+    public void nextTest() {
+        ClientIdGenerator clientIdGenerator = ClientIdGenerator.getInstance();
+
+        String nextId = clientIdGenerator.next();
+
+        Assert.assertNotNull(nextId);
+        Assert.assertTrue("Default Id generation should start with 'Id'", nextId.startsWith("Id"));
+        Assert.assertTrue("Pattern should be 'Id-[0-9].*-[0-9].*", nextId.matches("Id-[0-9].*-[0-9].*"));
     }
 
     @Test
-    public void nextWithoutParameterTest() {
-        String newId = clientIdGenerator.next();
-        Assert.assertTrue("True expected.", newId.startsWith("Id"));
-    }
+    public void nextGenerationTest() {
+        ClientIdGenerator clientIdGenerator = ClientIdGenerator.getInstance();
 
-    @Test
-    public void nextWithParameterTest() {
-        String[] parameters = {"1", "testtest", "1232153", "!!$%&/&(())", "a1"};
-        for (String parameter : parameters) {
-            String newId = clientIdGenerator.next(parameter);
-            Assert.assertTrue("True expected.", newId.startsWith(parameter));
+        List<String> generatedIds = new ArrayList<>();
+        for (int i = 0; i < 10000; i++) {
+            String nextId = clientIdGenerator.next();
+            LOG.trace("Generated Id: {}", nextId);
+
+            Assert.assertNotNull(nextId);
+            Assert.assertTrue("Generated ids shouldn't have duplicates", generatedIds.add(nextId));
+
+            generatedIds.add(nextId);
         }
     }
 
     @Test
-    public void nextWithNullParameterTest() {
-        String newId = clientIdGenerator.next(null);
-        Assert.assertTrue("True expected.", newId.startsWith("null"));
+    public void nextWithPrefixTest() {
+        ClientIdGenerator clientIdGenerator = ClientIdGenerator.getInstance();
+
+        String nextId = clientIdGenerator.next("MyPrefix");
+
+        Assert.assertNotNull(nextId);
+        Assert.assertTrue("Default Id generation should start with 'MyPrefix'", nextId.startsWith("MyPrefix"));
+        Assert.assertTrue("Pattern should be 'MyPrefix-[0-9].*-[0-9].*", nextId.matches("MyPrefix-[0-9].*-[0-9].*"));
+    }
+
+    @Test
+    public void nextWithPrefixGenerationTest() {
+        ClientIdGenerator clientIdGenerator = ClientIdGenerator.getInstance();
+
+        List<String> generatedIds = new ArrayList<>();
+        for (int i = 0; i < 10000; i++) {
+            String nextId = clientIdGenerator.next("MyPrefix");
+            LOG.trace("Generated Id: {}", nextId);
+
+            Assert.assertNotNull(nextId);
+            Assert.assertTrue("Generated ids shouldn't have duplicates", generatedIds.add(nextId));
+
+            generatedIds.add(nextId);
+        }
     }
 }
