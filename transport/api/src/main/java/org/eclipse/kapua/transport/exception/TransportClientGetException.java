@@ -22,6 +22,7 @@ import javax.validation.constraints.NotNull;
 public class TransportClientGetException extends TransportException {
 
     private final String serverIp;
+    private final String causeMessage;
 
     /**
      * Constructor.
@@ -33,6 +34,7 @@ public class TransportClientGetException extends TransportException {
         super(TransportErrorCodes.CLIENT_GET, serverIp);
 
         this.serverIp = serverIp;
+        this.causeMessage = null;
     }
 
     /**
@@ -43,8 +45,10 @@ public class TransportClientGetException extends TransportException {
      * @since 1.2.0
      */
     public TransportClientGetException(@NotNull Throwable cause, @NotNull String serverIp) {
-        super(TransportErrorCodes.CLIENT_GET, cause, serverIp);
+        super(TransportErrorCodes.CLIENT_GET_WITH_CAUSE, cause, serverIp, cause.getMessage());
+
         this.serverIp = serverIp;
+        this.causeMessage = cause.getMessage();
     }
 
     /**
@@ -52,8 +56,20 @@ public class TransportClientGetException extends TransportException {
      *
      * @return The IP to which we wanted unsuccessfully to connect.
      * @since 1.2.0
+     * @deprecated Since 2.0.0. It was not renamed after copy-pasting from another class. Please make use of {@link #getServerIp()}.
      */
+    @Deprecated
     public String getRequestMessage() {
+        return getServerIp();
+    }
+
+    /**
+     * Gets the IP to which we wanted unsuccessfully to connect.
+     *
+     * @return The IP to which we wanted unsuccessfully to connect.
+     * @since 2.0.0
+     */
+    public String getServerIp() {
         return serverIp;
     }
 }

@@ -57,7 +57,7 @@ public class TransportClientPoolExhaustedException extends TransportException {
      * @return The IP to which we wanted unsuccessfully to connect.
      * @since 2.0.0
      */
-    public String getRequestMessage() {
+    public String getServerIp() {
         return serverIp;
     }
 
