@@ -28,6 +28,12 @@ public enum TransportErrorCodes implements KapuaErrorCode {
     SEND_ERROR,
 
     /**
+     * @see TransportSendException
+     * @since 2.0.0
+     */
+    SEND_ERROR_WITH_CAUSE,
+
+    /**
      * @see TransportTimeoutException
      * @since 1.1.0
      */
@@ -38,6 +44,12 @@ public enum TransportErrorCodes implements KapuaErrorCode {
      * @since 1.2.0
      */
     CLIENT_GET,
+
+    /**
+     * @see TransportClientGetException
+     * @since 2.0.0
+     */
+    CLIENT_GET_WITH_CAUSE,
 
     /**
      * @see TransportClientPoolExhaustedException
