@@ -21,8 +21,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreService;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
@@ -40,8 +38,6 @@ public class DeviceManagementAssetModule extends AbstractKapuaModule {
                                                               DeviceEventRepository deviceEventRepository,
                                                               DeviceEventFactory deviceEventFactory,
                                                               DeviceRepository deviceRepository,
-                                                              DeviceManagementOperationRepository deviceManagementOperationRepository,
-                                                              DeviceManagementOperationFactory deviceManagementOperationFactory,
                                                               DeviceAssetStoreService deviceAssetStoreService,
                                                               KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         return new DeviceAssetManagementServiceImpl(
@@ -51,8 +47,6 @@ public class DeviceManagementAssetModule extends AbstractKapuaModule {
                 deviceEventRepository,
                 deviceEventFactory,
                 deviceRepository,
-                deviceManagementOperationRepository,
-                deviceManagementOperationFactory,
                 deviceAssetStoreService
         );
     }

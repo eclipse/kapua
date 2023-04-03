@@ -31,8 +31,6 @@ import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilde
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 import org.eclipse.kapua.service.device.management.exception.DeviceNeverConnectedException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
@@ -66,17 +64,13 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementTr
             DeviceEventRepository deviceEventRepository,
             DeviceEventFactory deviceEventFactory,
             DeviceRepository deviceRepository,
-            DeviceManagementOperationRepository deviceManagementOperationRepository,
-            DeviceManagementOperationFactory deviceManagementOperationFactory,
             DeviceAssetStoreService deviceAssetStoreService) {
         super(txManager,
                 authorizationService,
                 permissionFactory,
                 deviceEventRepository,
                 deviceEventFactory,
-                deviceRepository,
-                deviceManagementOperationRepository,
-                deviceManagementOperationFactory);
+                deviceRepository);
         this.deviceAssetStoreService = deviceAssetStoreService;
     }
 

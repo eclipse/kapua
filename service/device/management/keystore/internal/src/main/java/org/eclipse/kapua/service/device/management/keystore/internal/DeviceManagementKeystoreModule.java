@@ -21,8 +21,6 @@ import org.eclipse.kapua.service.certificate.info.CertificateInfoFactory;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoService;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
@@ -43,8 +41,6 @@ public class DeviceManagementKeystoreModule extends AbstractKapuaModule {
             DeviceEventRepository deviceEventRepository,
             DeviceEventFactory deviceEventFactory,
             DeviceRepository deviceRepository,
-            DeviceManagementOperationRepository deviceManagementOperationRepository,
-            DeviceManagementOperationFactory deviceManagementOperationFactory,
             CertificateInfoService certificateInfoService,
             CertificateInfoFactory certificateInfoFactory,
             KapuaJpaTxManagerFactory jpaTxManagerFactory
@@ -56,8 +52,6 @@ public class DeviceManagementKeystoreModule extends AbstractKapuaModule {
                 deviceEventRepository,
                 deviceEventFactory,
                 deviceRepository,
-                deviceManagementOperationRepository,
-                deviceManagementOperationFactory,
                 certificateInfoService,
                 certificateInfoFactory
         );
