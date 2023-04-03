@@ -23,7 +23,8 @@ import javax.validation.constraints.NotNull;
  */
 public class TransportSendException extends TransportException {
 
-    private final TransportMessage requestMessage;
+    private final TransportMessage<?, ?> requestMessage;
+    private final String causeMessage;
 
     /**
      * Constructor.
@@ -31,8 +32,11 @@ public class TransportSendException extends TransportException {
      * @param requestMessage The {@link TransportMessage} that we tried to send.
      * @since 1.1.0
      */
-    public TransportSendException(@NotNull TransportMessage requestMessage) {
-        this(null, requestMessage);
+    public TransportSendException(@NotNull TransportMessage<?, ?> requestMessage) {
+        super(TransportErrorCodes.SEND_ERROR, requestMessage);
+
+        this.requestMessage = requestMessage;
+        this.causeMessage = null;
     }
 
     /**
@@ -42,10 +46,11 @@ public class TransportSendException extends TransportException {
      * @param requestMessage The {@link TransportMessage} that we tried to send.
      * @since 1.1.0
      */
-    public TransportSendException(@NotNull Throwable cause, @NotNull TransportMessage requestMessage) {
-        super(TransportErrorCodes.SEND_ERROR, cause, requestMessage);
+    public TransportSendException(@NotNull Throwable cause, @NotNull TransportMessage<?, ?> requestMessage) {
+        super(TransportErrorCodes.SEND_ERROR_WITH_CAUSE, cause, requestMessage, cause.getMessage());
 
         this.requestMessage = requestMessage;
+        this.causeMessage = cause.getMessage();
     }
 
     /**
@@ -54,7 +59,7 @@ public class TransportSendException extends TransportException {
      * @return The {@link TransportMessage} that we tried to send.
      * @since 1.1.0
      */
-    public TransportMessage getRequestMessage() {
+    public TransportMessage<?, ?> getRequestMessage() {
         return requestMessage;
     }
 }
