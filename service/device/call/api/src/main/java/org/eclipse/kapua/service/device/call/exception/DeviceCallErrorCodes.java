@@ -26,6 +26,12 @@ public enum DeviceCallErrorCodes implements KapuaErrorCode {
     SEND_ERROR,
 
     /**
+     * @see DeviceCallSendException
+     * @since 2.0.0
+     */
+    SEND_ERROR_WITH_CAUSE,
+
+    /**
      * @see DeviceCallTimeoutException
      * @since 1.1.0
      */
