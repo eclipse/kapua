@@ -123,6 +123,10 @@ public class DeviceAssetsValues extends LayoutContainer {
     public void setDevice(GwtDevice selectedDevice) {
         dirty = true;
         this.selectedDevice = selectedDevice;
+        if (selectedDevice != null && settings != null) {
+            refreshVisibilityStoreSettingButton();
+        }
+        refresh();
     }
 
     @Override
@@ -226,6 +230,7 @@ public class DeviceAssetsValues extends LayoutContainer {
         toolBar.add(reset);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(settings);
+        refreshVisibilityStoreSettingButton();
     }
 
     private void initAssetPanel() {
@@ -367,6 +372,20 @@ public class DeviceAssetsValues extends LayoutContainer {
 
             loader.load();
         }
+    }
+
+    private void refreshVisibilityStoreSettingButton() {
+        gwtDeviceAssetService.isStoreServiceEnabled(selectedDevice.getScopeId(), selectedDevice.getId(), new AsyncCallback<Boolean>() {
+            @Override
+            public void onFailure(Throwable t) {
+                FailureHandler.handle(t);
+            }
+
+            @Override
+            public void onSuccess(Boolean enabled) {
+                settings.setVisible(enabled);
+            }
+        });
     }
 
     public void refreshAssetPanel(GwtDeviceAsset asset) {

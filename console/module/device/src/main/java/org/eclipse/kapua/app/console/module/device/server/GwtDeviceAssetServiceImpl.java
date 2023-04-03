@@ -146,10 +146,11 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
             KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
 
             DeviceAssetStoreSettings deviceAssetStoreSettings = deviceAssetStoreFactory.newDeviceAssetStoreSettings();
-            deviceAssetStoreSettings.setScopeId(scopeId);
-            deviceAssetStoreSettings.setDeviceId(deviceId);
-            deviceAssetStoreSettings.setEnablementPolicy(DeviceAssetStoreEnablementPolicy.valueOf(gwtDeviceAssetStoreSettings.getStoreEnablementPolicy()));
-
+            if (deviceAssetStoreSettings != null) {
+                deviceAssetStoreSettings.setScopeId(scopeId);
+                deviceAssetStoreSettings.setDeviceId(deviceId);
+                deviceAssetStoreSettings.setEnablementPolicy(DeviceAssetStoreEnablementPolicy.valueOf(gwtDeviceAssetStoreSettings.getStoreEnablementPolicy()));
+            }
             deviceAssetStoreService.setApplicationSettings(scopeId, deviceId, deviceAssetStoreSettings);
         } catch (Throwable t) {
             throw KapuaExceptionHandler.buildExceptionFromError(t);
