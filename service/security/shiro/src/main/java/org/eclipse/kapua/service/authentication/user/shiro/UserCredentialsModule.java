@@ -13,9 +13,22 @@
 package org.eclipse.kapua.service.authentication.user.shiro;
 
 import com.google.inject.Module;
+import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.service.authentication.AuthenticationService;
+import org.eclipse.kapua.service.authentication.CredentialsFactory;
+import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
+import org.eclipse.kapua.service.authentication.credential.CredentialRepository;
+import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapper;
+import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidator;
 import org.eclipse.kapua.service.authentication.user.UserCredentialsFactory;
 import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.user.UserRepository;
+
+import javax.inject.Singleton;
 
 /**
  * {@code kapua-security-shiro} {@link Module} implementation.
@@ -25,7 +38,34 @@ import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
 public class UserCredentialsModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(UserCredentialsService.class).to(UserCredentialsServiceImpl.class);
         bind(UserCredentialsFactory.class).to(UserCredentialsFactoryImpl.class);
+    }
+
+    @Provides
+    @Singleton
+    UserCredentialsService userCredentialsService(
+            AuthenticationService authenticationService,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            UserCredentialsFactory userCredentialsFactory,
+            CredentialsFactory credentialsFactory,
+            CredentialFactory credentialFactory,
+            KapuaJpaTxManagerFactory txManagerFactory,
+            UserRepository userRepository,
+            CredentialRepository credentialRepository,
+            CredentialMapper credentialMapper,
+            PasswordValidator passwordValidator) {
+        return new UserCredentialsServiceImpl(
+                authenticationService,
+                authorizationService,
+                permissionFactory,
+                userCredentialsFactory,
+                credentialsFactory,
+                credentialFactory,
+                txManagerFactory.create("kapua-authorization"),
+                userRepository,
+                credentialRepository,
+                credentialMapper,
+                passwordValidator);
     }
 }
