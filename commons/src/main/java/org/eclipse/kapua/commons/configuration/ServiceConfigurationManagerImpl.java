@@ -331,7 +331,8 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
         // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
+        // TODO: move, if really needed, this check to the outermost layer
+//        authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
         // Get configuration values
         final ServiceConfigListResult result = txManager.execute(tx -> serviceConfigRepository.findByScopeAndPid(tx, scopeId, pid));
 
@@ -384,7 +385,8 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
             throw new KapuaServiceDisabledException(pid);
         }
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
+        // TODO: move, if really needed, this check to the outermost layer
+//        authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
 
         // Get the Tocd
         try {

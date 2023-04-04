@@ -63,6 +63,7 @@
 
         <class>org.eclipse.kapua.service.authorization.role.shiro.RoleImpl</class>
         <class>org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl</class>
+        <class>org.eclipse.kapua.service.user.internal.UserImpl</class>
 
         <!-- Base classes and External classes -->
         <class>org.eclipse.kapua.commons.jpa.SecretAttributeConverter</class>
