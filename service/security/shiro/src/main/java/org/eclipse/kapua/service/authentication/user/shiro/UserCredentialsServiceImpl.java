@@ -40,6 +40,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserRepository;
+import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Singleton;
@@ -110,7 +111,7 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
             PasswordResetRequest passwordResetRequest = userCredentialsFactory.newPasswordResetRequest();
             passwordResetRequest.setNewPassword(passwordChangeRequest.getNewPassword());
             try {
-                return resetPassword(KapuaSecurityUtils.getSession().getScopeId(), passwordCredential.getId(), passwordResetRequest);
+                return doResetPassword(tx, KapuaSecurityUtils.getSession().getScopeId(), passwordCredential.getId(), passwordResetRequest);
             } catch (KapuaIllegalArgumentException ignored) {
                 throw new KapuaIllegalArgumentException("passwordChangeRequest.newPassword", passwordChangeRequest.getNewPassword());
             }
@@ -129,24 +130,28 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, scopeId));
 
         return txManager.execute(tx -> {
-            Credential credential = credentialRepository.find(tx, scopeId, credentialId)
-                    .orElseThrow(() -> new KapuaEntityNotFoundException(Credential.TYPE, credentialId));
-
-            String plainNewPassword = passwordResetRequest.getNewPassword();
-            try {
-                passwordValidator.validatePassword(credential.getScopeId(), plainNewPassword);
-            } catch (KapuaIllegalArgumentException ignored) {
-                throw new KapuaIllegalArgumentException("passwordResetRequest.newPassword", plainNewPassword);
-            }
-
-            final Credential toPersists = credentialMapper.map(credentialFactory.newCreator(scopeId,
-                    credential.getUserId(),
-                    CredentialType.PASSWORD,
-                    plainNewPassword,
-                    CredentialStatus.ENABLED,
-                    null));
-            credentialRepository.delete(tx, scopeId, credentialId);
-            return credentialRepository.create(tx, toPersists);
+            return doResetPassword(tx, scopeId, credentialId, passwordResetRequest);
         });
+    }
+
+    private Credential doResetPassword(TxContext tx, KapuaId scopeId, KapuaId credentialId, PasswordResetRequest passwordResetRequest) throws KapuaException {
+        Credential credential = credentialRepository.find(tx, scopeId, credentialId)
+                .orElseThrow(() -> new KapuaEntityNotFoundException(Credential.TYPE, credentialId));
+
+        String plainNewPassword = passwordResetRequest.getNewPassword();
+        try {
+            passwordValidator.validatePassword(credential.getScopeId(), plainNewPassword);
+        } catch (KapuaIllegalArgumentException ignored) {
+            throw new KapuaIllegalArgumentException("passwordResetRequest.newPassword", plainNewPassword);
+        }
+
+        final Credential toPersists = credentialMapper.map(credentialFactory.newCreator(scopeId,
+                credential.getUserId(),
+                CredentialType.PASSWORD,
+                plainNewPassword,
+                CredentialStatus.ENABLED,
+                null));
+        credentialRepository.delete(tx, scopeId, credentialId);
+        return credentialRepository.create(tx, toPersists);
     }
 }
