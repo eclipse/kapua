@@ -105,7 +105,6 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
             historyPackageTab.setEntity(gwtDevice);
         }
 
-        doRefresh();
     }
 
     @Override

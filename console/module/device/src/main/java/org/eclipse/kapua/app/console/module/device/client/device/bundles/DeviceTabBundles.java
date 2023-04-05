@@ -72,7 +72,6 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
 
     private final GwtDeviceManagementServiceAsync gwtDeviceManagementService = GWT.create(GwtDeviceManagementService.class);
     private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
-
     private DeviceView devicesView;
 
     private boolean initialized;
@@ -107,7 +106,6 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
             setEnabled(false);
             getHeader().setVisible(false);
         }
-        doRefresh();
     }
 
     @Override
@@ -406,7 +404,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
         @Override
         public void loaderBeforeLoad(LoadEvent le) {
             disableButtons();
-            grid.mask(MSGS.loading());
+            //grid.mask(MSGS.loading());
         }
 
         @Override
@@ -422,7 +420,6 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
 
         @Override
         public void loaderLoadException(LoadEvent le) {
-
             if (le.exception != null && le.exception instanceof GwtKapuaException) {
                 FailureHandler.handle(le.exception);
             } else {

@@ -55,8 +55,11 @@ public class DeviceTabAssets extends KapuaTabItem<GwtDevice> {
             setEnabled(false);
             getHeader().setVisible(false);
         }
-        assetsValues.setDevice(gwtDevice);
-        doRefresh();
+
+        if (selectedEntity != null) {
+            assetsValues.setDevice(gwtDevice);
+        }
+
     }
 
     @Override
@@ -66,7 +69,7 @@ public class DeviceTabAssets extends KapuaTabItem<GwtDevice> {
             return;
         }
 
-        if (tabsPanel.getSelectedItem() == this) {
+        if (tabsPanel.getSelectedItem() == tabValues) {
             assetsValues.refresh();
         }
     }
