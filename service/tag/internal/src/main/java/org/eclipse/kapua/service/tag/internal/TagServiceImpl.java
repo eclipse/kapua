@@ -15,7 +15,7 @@ package org.eclipse.kapua.service.tag.internal;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
@@ -42,7 +42,7 @@ import java.util.Optional;
  * @since 1.0.0
  */
 @Singleton
-public class TagServiceImpl extends KapuaConfigurableServiceLinker implements TagService {
+public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagService {
 
 
     private final PermissionFactory permissionFactory;

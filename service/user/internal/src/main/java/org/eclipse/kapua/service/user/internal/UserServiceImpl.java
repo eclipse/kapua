@@ -20,7 +20,7 @@ import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -58,7 +58,7 @@ import java.util.Optional;
  * @since 1.0.0
  */
 @Singleton
-public class UserServiceImpl extends KapuaConfigurableServiceLinker implements UserService {
+public class UserServiceImpl extends KapuaConfigurableServiceBase implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
     private final AuthorizationService authorizationService;
