@@ -87,30 +87,31 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
             getHeader().setVisible(false);
         }
 
-        doRefresh();
-    }
-
-    @Override
-    public void doRefresh() {
-
-        if (tabsPanel == null) {
-            return;
-        }
-
-        if (tabsPanel.getSelectedItem() == tabComponents) {
-            configComponents.refresh();
-        } else if (tabsPanel.getSelectedItem() == tabSnapshots) {
-            configSnapshots.refresh();
-        }
-
         if (selectedEntity != null) {
             // Configurations
             configComponents.setDevice(selectedEntity);
 
             // Snapshot
             configSnapshots.setDevice(selectedEntity);
+        }
+
+    }
+
+    @Override
+    public void doRefresh() {
+        if (tabsPanel == null) {
+            return;
+        }
+
+        if (selectedEntity != null) {
             tabSnapshots.setEnabled(selectedEntity.isOnline());
         }
+        if (tabsPanel.getSelectedItem() == tabComponents) {
+            configComponents.refresh();
+        } else if (tabsPanel.getSelectedItem() == tabSnapshots) {
+            configSnapshots.refresh();
+        }
+
     }
 
     @Override
