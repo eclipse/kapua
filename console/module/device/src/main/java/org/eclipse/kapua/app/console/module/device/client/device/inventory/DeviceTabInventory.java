@@ -74,7 +74,6 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
             tabsPanel.setSelection(inventoryDeploymentPackageTab);
         }
 
-        doRefresh();
     }
 
     @Override

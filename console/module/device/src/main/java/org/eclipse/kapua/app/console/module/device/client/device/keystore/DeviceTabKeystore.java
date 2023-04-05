@@ -101,7 +101,6 @@ public class DeviceTabKeystore extends KapuaTabItem<GwtDevice> {
             getHeader().setVisible(false);
         }
 
-        refresh();
     }
 
     @Override

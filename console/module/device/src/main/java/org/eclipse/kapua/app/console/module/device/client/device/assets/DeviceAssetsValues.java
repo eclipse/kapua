@@ -126,7 +126,6 @@ public class DeviceAssetsValues extends LayoutContainer {
         if (selectedDevice != null && settings != null) {
             refreshVisibilityStoreSettingButton();
         }
-        refresh();
     }
 
     @Override

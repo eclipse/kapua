@@ -109,7 +109,6 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
             setEnabled(false);
             getHeader().setVisible(false);
         }
-        doRefresh();
     }
 
     @Override
