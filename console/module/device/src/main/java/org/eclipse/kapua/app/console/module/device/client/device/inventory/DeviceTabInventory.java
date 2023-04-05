@@ -78,11 +78,6 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
             tabsPanel.setSelection(inventoryDeploymentPackageTab);
         }
 
-        if (toolBar != null) {
-            toolBar.setEnabled(getSelectedDevice() != null);
-        }
-
-        doRefresh();
     }
 
     @Override
