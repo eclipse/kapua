@@ -70,7 +70,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
             TxManager txManager,
             TagRepository tagRepository,
             TagFactory tagFactory) {
-        super(serviceConfigurationManager);
+        super(txManager, serviceConfigurationManager, TagDomains.TAG_DOMAIN, authorizationService, permissionFactory);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         this.tagRepository = tagRepository;
@@ -86,10 +86,10 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         ArgumentValidator.validateEntityName(tagCreator.getName(), "tagCreator.name");
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.write, tagCreator.getScopeId()));
-        // Check entity limit
-        serviceConfigurationManager.checkAllowedEntities(tagCreator.getScopeId(), "Tags");
-        // Check duplicate name
         return txManager.execute(tx -> {
+            // Check entity limit
+            serviceConfigurationManager.checkAllowedEntities(tx, tagCreator.getScopeId(), "Tags");
+            // Check duplicate name
             final long otherEntitiesWithSameName = tagRepository.countEntitiesWithNameInScope(tx, tagCreator.getScopeId(), tagCreator.getName());
             if (otherEntitiesWithSameName > 0) {
                 throw new KapuaDuplicateNameException(tagCreator.getName());

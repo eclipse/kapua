@@ -67,7 +67,7 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
                             AuthorizationService authorizationService,
                             ServiceConfigurationManager serviceConfigurationManager,
                             TxManager txManager, GroupRepository groupRepository) {
-        super(serviceConfigurationManager);
+        super(txManager, serviceConfigurationManager, AuthorizationDomains.GROUP_DOMAIN, authorizationService, permissionFactory);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         this.txManager = txManager;
@@ -82,13 +82,13 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
         ArgumentValidator.validateEntityName(groupCreator.getName(), "groupCreator.name");
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.write, groupCreator.getScopeId()));
-        // Check entity limit
-        serviceConfigurationManager.checkAllowedEntities(groupCreator.getScopeId(), "Groups");
-        // Do create
-        Group group = new GroupImpl(groupCreator.getScopeId());
-        group.setName(groupCreator.getName());
-        group.setDescription(groupCreator.getDescription());
         return txManager.execute(tx -> {
+            // Check entity limit
+            serviceConfigurationManager.checkAllowedEntities(tx, groupCreator.getScopeId(), "Groups");
+            // Do create
+            Group group = new GroupImpl(groupCreator.getScopeId());
+            group.setName(groupCreator.getName());
+            group.setDescription(groupCreator.getDescription());
             // Check duplicate name
             if (groupRepository.countEntitiesWithNameInScope(tx, group.getScopeId(), group.getName()) > 0) {
                 throw new KapuaDuplicateNameException(group.getName());

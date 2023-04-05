@@ -51,9 +51,6 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
     private static final Logger LOG = LoggerFactory.getLogger(JobServiceImpl.class);
 
     private final JobEngineService jobEngineService;
-    private final PermissionFactory permissionFactory;
-    private final AuthorizationService authorizationService;
-    private final TxManager txManager;
     private final JobRepository jobRepository;
     private final TriggerRepository triggerRepository;
 
@@ -74,11 +71,8 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
             TxManager txManager,
             JobRepository jobRepository,
             TriggerRepository triggerRepository) {
-        super(serviceConfigurationManager);
+        super(txManager, serviceConfigurationManager, JobDomains.JOB_DOMAIN, authorizationService, permissionFactory);
         this.jobEngineService = jobEngineService;
-        this.permissionFactory = permissionFactory;
-        this.authorizationService = authorizationService;
-        this.txManager = txManager;
         this.jobRepository = jobRepository;
         this.triggerRepository = triggerRepository;
     }
@@ -91,10 +85,10 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
         ArgumentValidator.validateJobName(creator.getName(), "jobCreator.name");
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, creator.getScopeId()));
-        // Check entity limit
-        serviceConfigurationManager.checkAllowedEntities(creator.getScopeId(), "Jobs");
-        // Check duplicate name
         return txManager.execute(tx -> {
+            // Check entity limit
+            serviceConfigurationManager.checkAllowedEntities(tx, creator.getScopeId(), "Jobs");
+            // Check duplicate name
             if (jobRepository.countEntitiesWithNameInScope(tx, creator.getScopeId(), creator.getName()) > 0) {
                 throw new KapuaDuplicateNameException(creator.getName());
             }

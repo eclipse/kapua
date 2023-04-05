@@ -29,6 +29,7 @@ import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
@@ -39,6 +40,7 @@ import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleRepository;
 import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
@@ -76,7 +78,6 @@ public class DeviceRegistryServiceImpl
         implements DeviceRegistryService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceRegistryServiceImpl.class);
-    private final TxManager txManager;
     private final DeviceRepository deviceRepository;
     private final DeviceFactory entityFactory;
     private final AccessInfoFactory accessInfoFactory;
@@ -90,6 +91,8 @@ public class DeviceRegistryServiceImpl
     @Inject
     public DeviceRegistryServiceImpl(
             ServiceConfigurationManager serviceConfigurationManager,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
             TxManager txManager,
             DeviceRepository deviceRepository,
             DeviceFactory entityFactory,
@@ -98,9 +101,9 @@ public class DeviceRegistryServiceImpl
             AccessPermissionRepository accessPermissionRepository,
             AccessRoleRepository accessRoleRepository,
             RoleRepository roleRepository,
-            RolePermissionRepository rolePermissionRepository, EventStorer eventStorer) {
-        super(serviceConfigurationManager);
-        this.txManager = txManager;
+            RolePermissionRepository rolePermissionRepository,
+            EventStorer eventStorer) {
+        super(txManager, serviceConfigurationManager, DeviceDomains.DEVICE_DOMAIN, authorizationService, permissionFactory);
         this.deviceRepository = deviceRepository;
         this.entityFactory = entityFactory;
         this.accessInfoFactory = accessInfoFactory;
@@ -116,13 +119,13 @@ public class DeviceRegistryServiceImpl
     public Device create(DeviceCreator deviceCreator)
             throws KapuaException {
         DeviceValidation.validateCreatePreconditions(deviceCreator);
-        // Check entity limit
-        serviceConfigurationManager.checkAllowedEntities(deviceCreator.getScopeId(), "Devices");
-        // Check duplicate clientId
-        DeviceQuery query = entityFactory.newQuery(deviceCreator.getScopeId());
-        query.setPredicate(query.attributePredicate(DeviceAttributes.CLIENT_ID, deviceCreator.getClientId()));
 
         return txManager.execute(tx -> {
+                    // Check entity limit
+                    serviceConfigurationManager.checkAllowedEntities(tx, deviceCreator.getScopeId(), "Devices");
+                    // Check duplicate clientId
+                    DeviceQuery query = entityFactory.newQuery(deviceCreator.getScopeId());
+                    query.setPredicate(query.attributePredicate(DeviceAttributes.CLIENT_ID, deviceCreator.getClientId()));
                     //TODO: check whether this is anywhere efficient
                     if (deviceRepository.count(tx, query) > 0) {
                         throw new KapuaDuplicateNameException(deviceCreator.getClientId());

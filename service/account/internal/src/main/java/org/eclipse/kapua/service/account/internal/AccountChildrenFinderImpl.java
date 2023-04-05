@@ -22,7 +22,7 @@ import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountRepository;
-import org.eclipse.kapua.storage.TxManager;
+import org.eclipse.kapua.storage.TxContext;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -30,31 +30,27 @@ import java.util.Optional;
 public class AccountChildrenFinderImpl implements AccountChildrenFinder, KapuaService {
 
     private final AccountFactory accountFactory;
-    private final TxManager txManager;
     private final AccountRepository accountRepository;
 
     @Inject
-    public AccountChildrenFinderImpl(AccountFactory accountFactory, TxManager txManager, AccountRepository accountRepository) {
+    public AccountChildrenFinderImpl(AccountFactory accountFactory, AccountRepository accountRepository) {
         this.accountFactory = accountFactory;
-        this.txManager = txManager;
         this.accountRepository = accountRepository;
     }
 
     @Override
-    public AccountListResult findChildren(KapuaId scopeId, Optional<KapuaId> excludeTargetScopeId) throws KapuaException {
-        return txManager.execute(tx -> {
-            final AccountQuery childAccountsQuery = accountFactory.newQuery(scopeId);
-            // Exclude the scope that is under config update
-            if (excludeTargetScopeId.isPresent()) {
-                childAccountsQuery.setPredicate(
-                        childAccountsQuery.attributePredicate(
-                                KapuaEntityAttributes.ENTITY_ID,
-                                excludeTargetScopeId.get(),
-                                AttributePredicate.Operator.NOT_EQUAL)
-                );
-            }
+    public AccountListResult findChildren(TxContext txContext, KapuaId scopeId, Optional<KapuaId> excludeTargetScopeId) throws KapuaException {
+        final AccountQuery childAccountsQuery = accountFactory.newQuery(scopeId);
+        // Exclude the scope that is under config update
+        if (excludeTargetScopeId.isPresent()) {
+            childAccountsQuery.setPredicate(
+                    childAccountsQuery.attributePredicate(
+                            KapuaEntityAttributes.ENTITY_ID,
+                            excludeTargetScopeId.get(),
+                            AttributePredicate.Operator.NOT_EQUAL)
+            );
+        }
 
-            return accountRepository.query(tx, childAccountsQuery);
-        });
+        return accountRepository.query(txContext, childAccountsQuery);
     }
 }

@@ -19,32 +19,30 @@ import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserRepository;
-import org.eclipse.kapua.storage.TxManager;
+import org.eclipse.kapua.storage.TxContext;
 
 import javax.inject.Inject;
 import java.util.Optional;
 
 public class RootUserTesterImpl implements RootUserTester {
-    private final TxManager txManager;
     private final UserRepository userRepository;
 
     @Inject
-    public RootUserTesterImpl(TxManager txManager, UserRepository userRepository) {
-        this.txManager = txManager;
+    public RootUserTesterImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    private KapuaId fetchRootUserId() throws KapuaException {
+    private KapuaId fetchRootUserId(TxContext tx) throws KapuaException {
         //todo: remove me. This just converts root username to id - needs to be done elsewhere, preferrably in a once-at-startup way.
         final String rootUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
-        final Optional<User> rootUser = txManager.execute(tx -> userRepository.findByName(tx, rootUserName));
+        final Optional<User> rootUser = userRepository.findByName(tx, rootUserName);
         final KapuaId rootUserId = rootUser.map(KapuaEntity::getId).orElse(null);
         return rootUserId;
     }
 
     @Override
-    public boolean isRoot(KapuaId userId) throws KapuaException {
-        final KapuaId rootUserId = fetchRootUserId();
+    public boolean isRoot(TxContext txContext, KapuaId userId) throws KapuaException {
+        final KapuaId rootUserId = fetchRootUserId(txContext);
         return userId.equals(rootUserId);
     }
 }

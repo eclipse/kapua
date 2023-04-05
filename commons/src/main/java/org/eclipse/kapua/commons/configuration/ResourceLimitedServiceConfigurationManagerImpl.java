@@ -19,14 +19,11 @@ import org.eclipse.kapua.commons.configuration.exception.ServiceConfigurationLim
 import org.eclipse.kapua.commons.configuration.exception.ServiceConfigurationParentLimitExceededException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
-import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountListResult;
-import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
-import org.eclipse.kapua.storage.TxManager;
+import org.eclipse.kapua.storage.TxContext;
 
 import java.util.Map;
 import java.util.Optional;
@@ -38,23 +35,28 @@ public class ResourceLimitedServiceConfigurationManagerImpl
     private final AccountChildrenFinder accountChildrenFinder;
     private final UsedEntitiesCounter usedEntitiesCounter;
 
-    public ResourceLimitedServiceConfigurationManagerImpl(String pid, Domain domain, TxManager txManager, ServiceConfigRepository serviceConfigRepository, PermissionFactory permissionFactory, AuthorizationService authorizationService, RootUserTester rootUserTester, AccountChildrenFinder accountChildrenFinder, UsedEntitiesCounter usedEntitiesCounter) {
-        super(pid, domain, txManager, serviceConfigRepository, permissionFactory, authorizationService, rootUserTester);
+    public ResourceLimitedServiceConfigurationManagerImpl(
+            String pid,
+            ServiceConfigRepository serviceConfigRepository,
+            RootUserTester rootUserTester,
+            AccountChildrenFinder accountChildrenFinder,
+            UsedEntitiesCounter usedEntitiesCounter) {
+        super(pid, serviceConfigRepository, rootUserTester);
         this.accountChildrenFinder = accountChildrenFinder;
         this.usedEntitiesCounter = usedEntitiesCounter;
     }
 
     @Override
-    protected boolean validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, Optional<KapuaId> parentId) throws KapuaException {
+    protected boolean validateNewConfigValuesCoherence(TxContext txContext, KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, Optional<KapuaId> parentId) throws KapuaException {
         // Validate against current scope
-        long availableChildEntitiesWithNewConfig = allowedChildEntities(scopeId, Optional.empty(), Optional.ofNullable(updatedProps));
+        long availableChildEntitiesWithNewConfig = allowedChildEntities(txContext, scopeId, Optional.empty(), Optional.ofNullable(updatedProps));
         if (availableChildEntitiesWithNewConfig < 0) {
             throw new ServiceConfigurationLimitExceededException(pid, scopeId, -availableChildEntitiesWithNewConfig);
         }
 
         // Validate against parent scope
         if (parentId.isPresent()) {
-            long availableParentEntitiesWithCurrentConfig = allowedChildEntities(parentId.get(), Optional.of(scopeId));
+            long availableParentEntitiesWithCurrentConfig = allowedChildEntities(txContext, parentId.get(), Optional.of(scopeId));
             if (availableParentEntitiesWithCurrentConfig - availableChildEntitiesWithNewConfig < 0) {
                 throw new ServiceConfigurationParentLimitExceededException(pid, parentId.orElse(null), -(availableParentEntitiesWithCurrentConfig - availableChildEntitiesWithNewConfig));
             }
@@ -71,8 +73,8 @@ public class ResourceLimitedServiceConfigurationManagerImpl
      * @since 2.0.0
      */
     @Override
-    public void checkAllowedEntities(KapuaId scopeId, String entityType) throws KapuaException {
-        if (allowedChildEntities(scopeId) <= 0) {
+    public void checkAllowedEntities(TxContext txContext, KapuaId scopeId, String entityType) throws KapuaException {
+        if (allowedChildEntities(txContext, scopeId) <= 0) {
             throw new KapuaMaxNumberOfItemsReachedException(entityType);
         }
     }
@@ -85,8 +87,8 @@ public class ResourceLimitedServiceConfigurationManagerImpl
      * @throws KapuaException
      * @since 1.0.0
      */
-    private long allowedChildEntities(KapuaId scopeId) throws KapuaException {
-        return allowedChildEntities(scopeId, Optional.empty(), Optional.empty());
+    private long allowedChildEntities(TxContext txContext, KapuaId scopeId) throws KapuaException {
+        return allowedChildEntities(txContext, scopeId, Optional.empty(), Optional.empty());
     }
 
     /**
@@ -101,8 +103,8 @@ public class ResourceLimitedServiceConfigurationManagerImpl
      * @throws KapuaException
      * @since 1.0.0
      */
-    private long allowedChildEntities(KapuaId scopeId, Optional<KapuaId> targetScopeId) throws KapuaException {
-        return allowedChildEntities(scopeId, targetScopeId, Optional.empty());
+    private long allowedChildEntities(TxContext txContext, KapuaId scopeId, Optional<KapuaId> targetScopeId) throws KapuaException {
+        return allowedChildEntities(txContext, scopeId, targetScopeId, Optional.empty());
     }
 
     /**
@@ -118,12 +120,12 @@ public class ResourceLimitedServiceConfigurationManagerImpl
      * @throws KapuaException
      * @since 1.0.0
      */
-    private long allowedChildEntities(KapuaId scopeId, Optional<KapuaId> targetScopeId, Optional<Map<String, Object>> configuration) throws KapuaException {
+    private long allowedChildEntities(TxContext txContext, KapuaId scopeId, Optional<KapuaId> targetScopeId, Optional<Map<String, Object>> configuration) throws KapuaException {
         final Map<String, Object> finalConfig;
         if (configuration.isPresent()) { // Checked exceptions be damned, could have been .orElseGet(()->...)
             finalConfig = configuration.get();
         } else {
-            finalConfig = getConfigValues(scopeId, false);
+            finalConfig = getConfigValues(txContext, scopeId, false);
         }
         boolean allowInfiniteChildEntities = (boolean) finalConfig.getOrDefault("infiniteChildEntities", false);
         if (allowInfiniteChildEntities) {
@@ -131,13 +133,13 @@ public class ResourceLimitedServiceConfigurationManagerImpl
         }
         return KapuaSecurityUtils.doPrivileged(() -> {
             // Current used entities
-            long currentUsedEntities = usedEntitiesCounter.countEntitiesInScope(scopeId);
+            long currentUsedEntities = usedEntitiesCounter.countEntitiesInScope(txContext, scopeId);
 
-            final AccountListResult childAccounts = accountChildrenFinder.findChildren(scopeId, targetScopeId);
+            final AccountListResult childAccounts = accountChildrenFinder.findChildren(txContext, scopeId, targetScopeId);
             // Resources assigned to children
             long childCount = 0;
             for (Account childAccount : childAccounts.getItems()) {
-                Map<String, Object> childConfigValues = getConfigValues(childAccount.getId(), true);
+                Map<String, Object> childConfigValues = getConfigValues(txContext, childAccount.getId(), true);
                 // maxNumberChildEntities can be null if such property is disabled via the
                 // isPropertyEnabled() method in the service implementation. In such case,
                 // it makes sense to treat the service as it had 0 available entities

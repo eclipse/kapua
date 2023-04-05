@@ -28,7 +28,6 @@ import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
-import org.eclipse.kapua.service.account.AccountDomains;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountRepository;
 import org.eclipse.kapua.service.account.AccountService;
@@ -54,11 +53,9 @@ public class AccountModule extends AbstractKapuaModule implements Module {
     @Singleton
     AccountChildrenFinder accountChildrenFinder(
             AccountFactory accountFactory,
-            AccountRepository accountRepository,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+            AccountRepository accountRepository) {
         return new AccountChildrenFinderImpl(
                 accountFactory,
-                jpaTxManagerFactory.create("kapua-account"),
                 accountRepository);
     }
 
@@ -85,30 +82,22 @@ public class AccountModule extends AbstractKapuaModule implements Module {
     @Named("AccountServiceConfigurationManager")
     ServiceConfigurationManager accountServiceConfigurationManager(
             AccountFactory factory,
-            PermissionFactory permissionFactory,
-            AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
             AccountRepository accountRepository,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory
+            KapuaJpaRepositoryConfiguration jpaRepoConfig
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         AccountService.class.getName(),
-                        AccountDomains.ACCOUNT_DOMAIN,
-                        jpaTxManagerFactory.create("kapua-account"),
                         new CachingServiceConfigRepository(
                                 new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
-                        permissionFactory,
-                        authorizationService,
                         rootUserTester,
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
-                                jpaTxManagerFactory.create("kapua-account"),
                                 accountRepository)
                 ));
     }

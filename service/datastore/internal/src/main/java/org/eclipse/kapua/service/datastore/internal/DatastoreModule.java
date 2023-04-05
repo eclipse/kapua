@@ -31,13 +31,13 @@ import org.eclipse.kapua.service.datastore.ChannelInfoFactory;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.ClientInfoFactory;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
-import org.eclipse.kapua.service.datastore.DatastoreDomains;
 import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoFactory;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
+import org.eclipse.kapua.storage.TxContext;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -60,8 +60,10 @@ public class DatastoreModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             AccountService accountService,
-            @Named("MessageStoreServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
+            @Named("MessageStoreServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
+            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         return new MessageStoreServiceImpl(
+                jpaTxManagerFactory.create("kapua-datastore"),
                 permissionFactory,
                 authorizationService,
                 accountService,
@@ -72,26 +74,19 @@ public class DatastoreModule extends AbstractKapuaModule {
     @Singleton
     @Named("MessageStoreServiceConfigurationManager")
     ServiceConfigurationManager messageStoreServiceConfigurationManager(
-            PermissionFactory permissionFactory,
-            AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory
+            KapuaJpaRepositoryConfiguration jpaRepoConfig
     ) {
         return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerImpl(
                 MessageStoreService.class.getName(),
-                DatastoreDomains.DATASTORE_DOMAIN,
-                jpaTxManagerFactory.create("kapua-datastore"),
                 new CachingServiceConfigRepository(
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         new AbstractKapuaConfigurableServiceCache().createCache()
                 ),
-                permissionFactory,
-                authorizationService,
                 rootUserTester
         ) {
             @Override
-            public boolean isServiceEnabled(KapuaId scopeId) {
+            public boolean isServiceEnabled(TxContext txContext, KapuaId scopeId) {
                 return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
             }
         });

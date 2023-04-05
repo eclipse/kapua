@@ -23,6 +23,7 @@ import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.CacheFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.JpaTxContext;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
@@ -46,6 +47,8 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
+import org.eclipse.kapua.storage.TxManager;
+import org.eclipse.kapua.storage.TxManagerImpl;
 import org.xml.sax.SAXException;
 
 import javax.validation.constraints.NotNull;
@@ -81,6 +84,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     private PermissionFactory permissionFactory;
     private AuthorizationService authorizationService;
     private RootUserTester rootUserTester;
+    protected TxManager txManager;
 
     /**
      * This cache is to hold the {@link KapuaTocd}s that are read from the metatype files.
@@ -179,6 +183,9 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         this.rootUserTester = rootUserTester;
+        this.txManager = new TxManagerImpl(
+                () -> new JpaTxContext(entityManagerFactory.getJpaEntityManagerFactory()),
+                SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY));
     }
 
     /**
@@ -450,7 +457,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @return The processed {@link KapuaTocd}.
      * @since 1.3.0
      */
-    private KapuaTocd processMetadata(KapuaTmetadata metadata, KapuaId scopeId, boolean excludeDisabled) {
+    private KapuaTocd processMetadata(KapuaTmetadata metadata, KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
         if (metadata != null && metadata.getOCD() != null && !metadata.getOCD().isEmpty()) {
             for (KapuaTocd ocd : metadata.getOCD()) {
                 if (ocd.getId() != null && ocd.getId().equals(pid) && isServiceEnabled(scopeId)) {
@@ -518,7 +525,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             final KapuaId currentUserId = KapuaSecurityUtils.getSession().getUserId();
             boolean preventChange =
                     // if current user is not root user...
-                    !getRootUserTester().isRoot(currentUserId) &&
+                    !txManager.execute(tx -> getRootUserTester().isRoot(tx, currentUserId)) &&
                             // current configuration does not allow self edit...
                             !allowSelfEdit &&
                             // a configuration for the current logged account is about to be changed...

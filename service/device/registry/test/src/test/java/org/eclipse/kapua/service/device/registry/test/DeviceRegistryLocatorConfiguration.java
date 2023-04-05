@@ -129,6 +129,8 @@ public class DeviceRegistryLocatorConfiguration {
                 bind(KapuaMessageFactory.class).toInstance(new KapuaMessageFactoryImpl());
                 bind(DeviceRegistryService.class).toInstance(new DeviceRegistryServiceImpl(
                         Mockito.mock(ServiceConfigurationManager.class),
+                        mockedAuthorization,
+                        permissionFactory,
                         txManager,
                         new DeviceImplJpaRepository(jpaRepoConfig),
                         new DeviceFactoryImpl(),

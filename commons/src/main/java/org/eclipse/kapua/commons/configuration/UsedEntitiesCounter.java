@@ -15,7 +15,8 @@ package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.storage.TxContext;
 
 public interface UsedEntitiesCounter {
-    long countEntitiesInScope(KapuaId scopeId) throws KapuaException;
+    long countEntitiesInScope(TxContext txContext, KapuaId scopeId) throws KapuaException;
 }

@@ -62,10 +62,7 @@ public class AccountServiceImpl
         implements AccountService {
 
     private static final String NO_EXPIRATION_DATE_SET = "no expiration date set";
-    private final TxManager txManager;
     private final AccountRepository accountRepository;
-    private final PermissionFactory permissionFactory;
-    private final AuthorizationService authorizationService;
     private final EventStorer eventStorer;
 
     /**
@@ -86,11 +83,8 @@ public class AccountServiceImpl
             AuthorizationService authorizationService,
             ServiceConfigurationManager serviceConfigurationManager,
             EventStorer eventStorer) {
-        super(serviceConfigurationManager);
-        this.txManager = txManager;
+        super(txManager, serviceConfigurationManager, AccountDomains.ACCOUNT_DOMAIN, authorizationService, permissionFactory);
         this.accountRepository = accountRepository;
-        this.permissionFactory = permissionFactory;
-        this.authorizationService = authorizationService;
         this.eventStorer = eventStorer;
     }
 
@@ -108,10 +102,9 @@ public class AccountServiceImpl
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, accountCreator.getScopeId()));
 
-        // Check entity limit
-        serviceConfigurationManager.checkAllowedEntities(accountCreator.getScopeId(), "Accounts");
-
         return txManager.execute(tx -> {
+            // Check entity limit
+            serviceConfigurationManager.checkAllowedEntities(tx, accountCreator.getScopeId(), "Accounts");
             // Check if the parent account exists
             final Account parentAccount = accountRepository.find(tx, KapuaId.ANY, accountCreator.getScopeId())
                     .orElseThrow(() -> new KapuaIllegalArgumentException(KapuaEntityAttributes.SCOPE_ID, "parent account does not exist: " + accountCreator.getScopeId() + "::"));

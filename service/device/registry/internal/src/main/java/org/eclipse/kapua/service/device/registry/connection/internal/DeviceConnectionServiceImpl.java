@@ -50,10 +50,7 @@ import javax.inject.Singleton;
 public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase implements DeviceConnectionService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceConnectionServiceImpl.class);
-    private final AuthorizationService authorizationService;
-    private final PermissionFactory permissionFactory;
     private final DeviceConnectionFactory entityFactory;
-    private final TxManager txManager;
     private final DeviceConnectionRepository repository;
 
     /**
@@ -70,11 +67,8 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
             DeviceConnectionFactory entityFactory,
             TxManager txManager,
             DeviceConnectionRepository repository) {
-        super(serviceConfigurationManager);
-        this.authorizationService = authorizationService;
-        this.permissionFactory = permissionFactory;
+        super(txManager, serviceConfigurationManager, DeviceDomains.DEVICE_CONNECTION_DOMAIN, authorizationService, permissionFactory);
         this.entityFactory = entityFactory;
-        this.txManager = txManager;
         this.repository = repository;
     }
 

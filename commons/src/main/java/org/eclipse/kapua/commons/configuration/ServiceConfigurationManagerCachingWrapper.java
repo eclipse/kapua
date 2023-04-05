@@ -23,6 +23,7 @@ import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
+import org.eclipse.kapua.storage.TxContext;
 
 import java.util.Map;
 import java.util.Optional;
@@ -62,23 +63,23 @@ public class ServiceConfigurationManagerCachingWrapper implements ServiceConfigu
     }
 
     @Override
-    public void checkAllowedEntities(KapuaId scopeId, String entityType) throws KapuaException {
-        wrapped.checkAllowedEntities(scopeId, entityType);
+    public void checkAllowedEntities(TxContext txContext, KapuaId scopeId, String entityType) throws KapuaException {
+        wrapped.checkAllowedEntities(txContext, scopeId, entityType);
     }
 
     @Override
-    public void setConfigValues(KapuaId scopeId, Optional<KapuaId> parentId, Map<String, Object> values) throws KapuaException {
-        wrapped.setConfigValues(scopeId, parentId, values);
+    public void setConfigValues(TxContext txContext, KapuaId scopeId, Optional<KapuaId> parentId, Map<String, Object> values) throws KapuaException {
+        wrapped.setConfigValues(txContext, scopeId, parentId, values);
 
     }
 
     @Override
-    public Map<String, Object> getConfigValues(KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
-        return wrapped.getConfigValues(scopeId, excludeDisabled);
+    public Map<String, Object> getConfigValues(TxContext txContext, KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
+        return wrapped.getConfigValues(txContext, scopeId, excludeDisabled);
     }
 
     @Override
-    public KapuaTocd getConfigMetadata(KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
+    public KapuaTocd getConfigMetadata(TxContext txContext, KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
         // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
 
@@ -91,7 +92,7 @@ public class ServiceConfigurationManagerCachingWrapper implements ServiceConfigu
             tocd = KAPUA_TOCD_LOCAL_CACHE.get(cacheKey);
             if (tocd == null && !KAPUA_TOCD_EMPTY_LOCAL_CACHE.get(cacheKey)) {
                 // If not, read metadata and process it
-                tocd = wrapped.getConfigMetadata(scopeId, excludeDisabled);
+                tocd = wrapped.getConfigMetadata(txContext, scopeId, excludeDisabled);
                 // If null, put it in the "empty" ocd cache, else put it in the "standard" cache
                 if (tocd != null) {
                     // If the value is not null, put it in "standard" cache and remove the entry from the "empty" cache if present

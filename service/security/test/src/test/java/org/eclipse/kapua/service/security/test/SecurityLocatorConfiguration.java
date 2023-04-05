@@ -118,10 +118,7 @@ public class SecurityLocatorConfiguration {
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
                 bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
                 final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
-                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-authorization"),
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
-                        mockPermissionFactory,
-                        mockedAuthorization,
                         Mockito.mock(RootUserTester.class));
                 bind(CredentialService.class).toInstance(new CredentialServiceImpl(
                         credentialServiceConfigurationManager,

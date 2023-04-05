@@ -19,13 +19,10 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerImpl;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.AuthenticationDomains;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
-import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.storage.TxManager;
+import org.eclipse.kapua.storage.TxContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,23 +38,16 @@ public class CredentialServiceConfigurationManagerImpl extends ServiceConfigurat
     public static final String PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY = "password.minLength";
 
     public CredentialServiceConfigurationManagerImpl(
-            TxManager txManager,
             ServiceConfigRepository serviceConfigRepository,
-            PermissionFactory permissionFactory,
-            AuthorizationService authorizationService,
             RootUserTester rootUserTester) {
         super(CredentialService.class.getName(),
-                AuthenticationDomains.CREDENTIAL_DOMAIN,
-                txManager,
                 serviceConfigRepository,
-                permissionFactory,
-                authorizationService,
                 rootUserTester);
         systemMinimumPasswordLength = fixMinimumPasswordLength();
     }
 
     @Override
-    protected boolean validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, Optional<KapuaId> parentId) throws KapuaException {
+    protected boolean validateNewConfigValuesCoherence(TxContext txContext, KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, Optional<KapuaId> parentId) throws KapuaException {
         if (updatedProps.get(PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY) != null) {
             // If we're going to set a new limit, check that it's not less than system limit
             int newPasswordLimit = Integer.parseInt(updatedProps.get(PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY).toString());
