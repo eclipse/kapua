@@ -26,7 +26,6 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
-import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
@@ -170,30 +169,22 @@ public class AuthorizationModule extends AbstractKapuaModule {
     @Named("RoleServiceConfigurationManager")
     public ServiceConfigurationManager roleServiceConfigurationManager(
             RoleFactory roleFactory,
-            PermissionFactory permissionFactory,
-            AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
             RoleRepository roleRepository,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory
+            KapuaJpaRepositoryConfiguration jpaRepoConfig
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         RoleService.class.getName(),
-                        AuthorizationDomains.ROLE_DOMAIN,
-                        jpaTxManagerFactory.create("kapua-authorization"),
                         new CachingServiceConfigRepository(
                                 new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
-                        permissionFactory,
-                        authorizationService,
                         rootUserTester,
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 roleFactory,
-                                jpaTxManagerFactory.create("kapua-authorization"),
                                 roleRepository
                         )));
     }
@@ -229,30 +220,22 @@ public class AuthorizationModule extends AbstractKapuaModule {
     @Named("GroupServiceConfigurationManager")
     public ServiceConfigurationManager groupServiceConfigurationManager(
             GroupFactory factory,
-            PermissionFactory permissionFactory,
-            AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
             GroupRepository groupRepository,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory
+            KapuaJpaRepositoryConfiguration jpaRepoConfig
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         GroupService.class.getName(),
-                        AuthorizationDomains.GROUP_DOMAIN,
-                        jpaTxManagerFactory.create("kapua-authorization"),
                         new CachingServiceConfigRepository(
                                 new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
-                        permissionFactory,
-                        authorizationService,
                         rootUserTester,
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
-                                jpaTxManagerFactory.create("kapua-authorization"),
                                 groupRepository
                         )));
     }

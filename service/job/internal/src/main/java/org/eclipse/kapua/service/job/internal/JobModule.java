@@ -28,7 +28,6 @@ import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobRepository;
 import org.eclipse.kapua.service.job.JobService;
@@ -70,30 +69,22 @@ public class JobModule extends AbstractKapuaModule {
     @Named("JobServiceConfigurationManager")
     public ServiceConfigurationManager jobServiceConfigurationManager(
             JobFactory factory,
-            PermissionFactory permissionFactory,
-            AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
             JobRepository jobRepository,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory
+            KapuaJpaRepositoryConfiguration jpaRepoConfig
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         JobService.class.getName(),
-                        JobDomains.JOB_DOMAIN,
-                        jpaTxManagerFactory.create("kapua-job"),
                         new CachingServiceConfigRepository(
                                 new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
-                        permissionFactory,
-                        authorizationService,
                         rootUserTester,
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
-                                jpaTxManagerFactory.create("kapua-job"),
                                 jobRepository
                         )));
 

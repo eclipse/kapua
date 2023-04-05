@@ -30,7 +30,6 @@ import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.user.UserDomains;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserRepository;
 import org.eclipse.kapua.service.user.UserService;
@@ -47,10 +46,8 @@ public class UserModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    RootUserTester rootUserTester(UserRepository userRepository,
-                                  KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+    RootUserTester rootUserTester(UserRepository userRepository) {
         return new RootUserTesterImpl(
-                jpaTxManagerFactory.create("kapua-user"),
                 userRepository
         );
     }
@@ -80,29 +77,21 @@ public class UserModule extends AbstractKapuaModule {
     @Named("UserServiceConfigurationManager")
     ServiceConfigurationManager userServiceConfigurationManager(
             UserFactory userFactory,
-            PermissionFactory permissionFactory,
-            AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
             UserRepository userRepository,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory
+            KapuaJpaRepositoryConfiguration jpaRepoConfig
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(UserService.class.getName(),
-                        UserDomains.USER_DOMAIN,
-                        jpaTxManagerFactory.create("kapua-user"),
                         new CachingServiceConfigRepository(
                                 new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
-                        permissionFactory,
-                        authorizationService,
                         rootUserTester,
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 userFactory,
-                                jpaTxManagerFactory.create("kapua-user"),
                                 userRepository
                         )));
     }

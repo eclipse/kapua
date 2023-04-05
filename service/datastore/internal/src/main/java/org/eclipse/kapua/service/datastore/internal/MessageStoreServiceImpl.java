@@ -40,6 +40,7 @@ import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientCommunicationException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
+import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,12 +70,13 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
 
     @Inject
     public MessageStoreServiceImpl(
+            TxManager txManager,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             AccountService accountService,
             ServiceConfigurationManager serviceConfigurationManager
     ) {
-        super(serviceConfigurationManager);
+        super(txManager, serviceConfigurationManager, DatastoreDomains.DATASTORE_DOMAIN, authorizationService, permissionFactory);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         final ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this, accountService);

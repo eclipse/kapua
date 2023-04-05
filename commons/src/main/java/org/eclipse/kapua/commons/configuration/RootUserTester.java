@@ -15,6 +15,7 @@ package org.eclipse.kapua.commons.configuration;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.storage.TxContext;
 
 /**
  * Tests whether a provided user id belongs to the Root User
@@ -28,5 +29,5 @@ public interface RootUserTester extends KapuaService {
      * @return true if the provided id belongs to a Root User, false otherwise
      * @throws KapuaException
      */
-    boolean isRoot(KapuaId userId) throws KapuaException;
+    boolean isRoot(TxContext txContext, KapuaId userId) throws KapuaException;
 }

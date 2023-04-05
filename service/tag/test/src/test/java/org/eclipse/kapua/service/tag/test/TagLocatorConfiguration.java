@@ -125,7 +125,10 @@ public class TagLocatorConfiguration {
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 bind(TagRepository.class).toInstance(new TagImplJpaRepository(jpaRepoConfig));
                 bind(DeviceRegistryService.class).toInstance(
-                        new DeviceRegistryServiceImpl(Mockito.mock(ServiceConfigurationManager.class),
+                        new DeviceRegistryServiceImpl(
+                                Mockito.mock(ServiceConfigurationManager.class),
+                                mockedAuthorization,
+                                permissionFactory,
                                 new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-device"),
                                 new DeviceImplJpaRepository(jpaRepoConfig),
                                 new DeviceFactoryImpl(),

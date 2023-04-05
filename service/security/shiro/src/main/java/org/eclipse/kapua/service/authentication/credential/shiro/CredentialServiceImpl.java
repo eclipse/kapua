@@ -64,9 +64,6 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
     private static final Logger LOGGER = LoggerFactory.getLogger(CredentialServiceImpl.class);
 
     private SecureRandom random;
-    private final AuthorizationService authorizationService;
-    private final PermissionFactory permissionFactory;
-    private final TxManager txManager;
     private final CredentialRepository credentialRepository;
     private final CredentialFactory credentialFactory;
     private final CredentialMapper credentialMapper;
@@ -81,10 +78,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
             CredentialFactory credentialFactory,
             CredentialMapper credentialMapper,
             PasswordValidator passwordValidator) {
-        super(serviceConfigurationManager);
-        this.authorizationService = authorizationService;
-        this.permissionFactory = permissionFactory;
-        this.txManager = txManager;
+        super(txManager, serviceConfigurationManager, AuthenticationDomains.CREDENTIAL_DOMAIN, authorizationService, permissionFactory);
         this.credentialRepository = credentialRepository;
         this.credentialFactory = credentialFactory;
         try {
@@ -326,7 +320,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
 
     @Override
     public int getMinimumPasswordLength(KapuaId scopeId) throws KapuaException {
-        return passwordValidator.getMinimumPasswordLength(scopeId);
+        return txManager.execute(tx -> passwordValidator.getMinimumPasswordLength(tx, scopeId));
     }
 
     private long countExistingCredentials(CredentialType credentialType, KapuaId scopeId, KapuaId userId) throws KapuaException {
@@ -388,7 +382,10 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
 
     @Override
     public void validatePassword(KapuaId scopeId, String plainPassword) throws KapuaException {
-        passwordValidator.validatePassword(scopeId, plainPassword);
+        txManager.execute(tx -> {
+            passwordValidator.validatePassword(tx, scopeId, plainPassword);
+            return null;
+        });
     }
 
     @Override

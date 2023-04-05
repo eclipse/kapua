@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
@@ -28,7 +29,7 @@ public interface KapuaService {
      * @return {@code true} if the {@link KapuaService} is enabled, {@code false} otherwise.
      * @since 2.0.0
      */
-    default boolean isServiceEnabled(KapuaId scopeId) {
+    default boolean isServiceEnabled(KapuaId scopeId) throws KapuaException {
         return true;
     }
 }

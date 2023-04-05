@@ -81,6 +81,8 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     @Singleton
     DeviceRegistryService deviceRegistryService(
             @Named("DeviceRegistryServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
             DeviceRepository deviceRepository,
             DeviceFactory deviceFactory,
             AccessInfoFactory accessInfoFactory,
@@ -93,6 +95,8 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
             KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         return new DeviceRegistryServiceImpl(
                 serviceConfigurationManager,
+                authorizationService,
+                permissionFactory,
                 jpaTxManagerFactory.create("kapua-device"),
                 deviceRepository,
                 deviceFactory,
@@ -120,30 +124,22 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     @Named("DeviceRegistryServiceConfigurationManager")
     ServiceConfigurationManager deviceRegistryServiceConfigurationManager(
             DeviceFactory factory,
-            PermissionFactory permissionFactory,
-            AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
             DeviceRepository deviceRepository,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory
+            KapuaJpaRepositoryConfiguration jpaRepoConfig
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         DeviceRegistryService.class.getName(),
-                        DeviceDomains.DEVICE_DOMAIN,
-                        jpaTxManagerFactory.create("kapua-device"),
                         new CachingServiceConfigRepository(
                                 new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
-                        permissionFactory,
-                        authorizationService,
                         rootUserTester,
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
-                                jpaTxManagerFactory.create("kapua-device"),
                                 deviceRepository)
                 ));
     }
@@ -170,21 +166,14 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     @Singleton
     @Named("DeviceConnectionServiceConfigurationManager")
     ServiceConfigurationManager deviceConnectionServiceConfigurationManager(
-            PermissionFactory permissionFactory,
-            AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+            KapuaJpaRepositoryConfiguration jpaRepoConfig) {
         return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerImpl(
                 DeviceConnectionService.class.getName(),
-                DeviceDomains.DEVICE_CONNECTION_DOMAIN,
-                jpaTxManagerFactory.create("kapua-device"),
                 new CachingServiceConfigRepository(
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         new AbstractKapuaConfigurableServiceCache().createCache()
                 ),
-                permissionFactory,
-                authorizationService,
                 rootUserTester));
     }
 

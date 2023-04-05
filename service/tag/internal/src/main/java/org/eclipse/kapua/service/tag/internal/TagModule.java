@@ -27,7 +27,6 @@ import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.tag.TagDomains;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagRepository;
 import org.eclipse.kapua.service.tag.TagService;
@@ -61,29 +60,21 @@ public class TagModule extends AbstractKapuaModule {
     @Named("TagServiceConfigurationManager")
     ServiceConfigurationManager tagServiceConfigurationManager(
             TagFactory factory,
-            PermissionFactory permissionFactory,
-            AuthorizationService authorizationService,
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
-            TagRepository tagRepository,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory
+            TagRepository tagRepository
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         TagService.class.getName(),
-                        TagDomains.TAG_DOMAIN,
-                        jpaTxManagerFactory.create("kapua-tag"),
                         new CachingServiceConfigRepository(
                                 new ServiceConfigImplJpaRepository(new KapuaJpaRepositoryConfiguration()),
                                 new AbstractKapuaConfigurableServiceCache().createCache()
                         ),
-                        permissionFactory,
-                        authorizationService,
                         rootUserTester,
                         accountChildrenFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
-                                jpaTxManagerFactory.create("kapua-tag"),
                                 tagRepository
                         )));
     }

@@ -55,10 +55,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
 
     private static final Logger LOG = LoggerFactory.getLogger(RoleServiceImpl.class);
 
-    private final PermissionFactory permissionFactory;
-    private final AuthorizationService authorizationService;
     private final RolePermissionFactory rolePermissionFactory;
-    private final TxManager txManager;
     private final RoleRepository roleRepository;
     private final RolePermissionRepository rolePermissionRepository;
 
@@ -82,11 +79,8 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
             TxManager txManager,
             RoleRepository roleRepository,
             RolePermissionRepository rolePermissionRepository) {
-        super(serviceConfigurationManager);
-        this.permissionFactory = permissionFactory;
-        this.authorizationService = authorizationService;
+        super(txManager, serviceConfigurationManager, AuthorizationDomains.ROLE_DOMAIN, authorizationService, permissionFactory);
         this.rolePermissionFactory = rolePermissionFactory;
-        this.txManager = txManager;
         this.roleRepository = roleRepository;
         this.rolePermissionRepository = rolePermissionRepository;
     }
@@ -103,7 +97,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
 
         return txManager.execute(tx -> {
             // Check entity limit
-            serviceConfigurationManager.checkAllowedEntities(roleCreator.getScopeId(), "Roles");
+            serviceConfigurationManager.checkAllowedEntities(tx, roleCreator.getScopeId(), "Roles");
 
             // Check duplicate name
             if (roleRepository.countEntitiesWithNameInScope(tx, roleCreator.getScopeId(), roleCreator.getName()) > 0) {

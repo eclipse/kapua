@@ -42,6 +42,9 @@
         <class>org.eclipse.kapua.service.authorization.access.shiro.AccessRoleImpl</class>
         <class>org.eclipse.kapua.service.authorization.role.shiro.RoleImpl</class>
         <class>org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl</class>
+        <class>org.eclipse.kapua.service.user.internal.UserImpl</class>
+        <class>org.eclipse.kapua.service.account.internal.AccountImpl</class>
+
 
         <properties>
             <property name="javax.persistence.lock.timeout" value="1000"/>

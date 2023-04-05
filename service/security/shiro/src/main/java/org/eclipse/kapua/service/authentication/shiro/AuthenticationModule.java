@@ -64,6 +64,7 @@ import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenServiceIm
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.UserRepository;
+import org.eclipse.kapua.storage.TxContext;
 
 import javax.inject.Singleton;
 import java.util.Map;
@@ -204,19 +205,13 @@ public class AuthenticationModule extends AbstractKapuaModule {
     @Provides
     @Singleton
     public CredentialServiceConfigurationManager credentialServiceConfigurationManager(
-            PermissionFactory permissionFactory,
-            AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+            KapuaJpaRepositoryConfiguration jpaRepoConfig) {
         final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
-                jpaTxManagerFactory.create("kapua-authentication"),
                 new CachingServiceConfigRepository(
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         new AbstractKapuaConfigurableServiceCache().createCache()
                 ),
-                permissionFactory,
-                authorizationService,
                 rootUserTester);
 
         final ServiceConfigurationManagerCachingWrapper cached = new ServiceConfigurationManagerCachingWrapper(credentialServiceConfigurationManager);
@@ -226,23 +221,23 @@ public class AuthenticationModule extends AbstractKapuaModule {
             }
 
             @Override
-            public void checkAllowedEntities(KapuaId scopeId, String entityType) throws KapuaException {
-                cached.checkAllowedEntities(scopeId, entityType);
+            public void checkAllowedEntities(TxContext txContext, KapuaId scopeId, String entityType) throws KapuaException {
+                cached.checkAllowedEntities(txContext, scopeId, entityType);
             }
 
             @Override
-            public void setConfigValues(KapuaId scopeId, Optional<KapuaId> parentId, Map<String, Object> values) throws KapuaException {
-                cached.setConfigValues(scopeId, parentId, values);
+            public void setConfigValues(TxContext txContext, KapuaId scopeId, Optional<KapuaId> parentId, Map<String, Object> values) throws KapuaException {
+                cached.setConfigValues(txContext, scopeId, parentId, values);
             }
 
             @Override
-            public Map<String, Object> getConfigValues(KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
-                return cached.getConfigValues(scopeId, excludeDisabled);
+            public Map<String, Object> getConfigValues(TxContext txContext, KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
+                return cached.getConfigValues(txContext, scopeId, excludeDisabled);
             }
 
             @Override
-            public KapuaTocd getConfigMetadata(KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
-                return cached.getConfigMetadata(scopeId, excludeDisabled);
+            public KapuaTocd getConfigMetadata(TxContext txContext, KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
+                return cached.getConfigMetadata(txContext, scopeId, excludeDisabled);
             }
         };
     }

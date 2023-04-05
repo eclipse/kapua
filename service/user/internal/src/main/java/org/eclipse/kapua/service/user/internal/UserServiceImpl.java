@@ -61,9 +61,6 @@ import java.util.Optional;
 public class UserServiceImpl extends KapuaConfigurableServiceBase implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
-    private final AuthorizationService authorizationService;
-    private final PermissionFactory permissionFactory;
-    private final TxManager txManager;
     private final UserRepository userRepository;
     private final UserFactory userFactory;
     private final EventStorer eventStorer;
@@ -75,10 +72,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
             TxManager txManager,
             UserRepository userRepository, UserFactory userFactory,
             EventStorer eventStorer) {
-        super(serviceConfigurationManager);
-        this.authorizationService = authorizationService;
-        this.permissionFactory = permissionFactory;
-        this.txManager = txManager;
+        super(txManager, serviceConfigurationManager, UserDomains.USER_DOMAIN, authorizationService, permissionFactory);
         this.userRepository = userRepository;
         this.userFactory = userFactory;
         this.eventStorer = eventStorer;
@@ -109,10 +103,10 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
         }
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.write, userCreator.getScopeId()));
-        // Check entity limit
-        serviceConfigurationManager.checkAllowedEntities(userCreator.getScopeId(), "Users");
 
         return txManager.execute(tx -> {
+            // Check entity limit
+            serviceConfigurationManager.checkAllowedEntities(tx, userCreator.getScopeId(), "Users");
             // Check duplicate name
             if (userRepository.countEntitiesWithNameInScope(tx, userCreator.getScopeId(), userCreator.getName()) > 0) {
                 throw new KapuaDuplicateNameException(userCreator.getName());

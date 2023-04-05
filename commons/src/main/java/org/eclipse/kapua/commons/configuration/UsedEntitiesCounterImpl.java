@@ -14,7 +14,6 @@
 package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.KapuaEntityFactory;
@@ -22,7 +21,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.storage.KapuaEntityRepository;
-import org.eclipse.kapua.storage.TxManager;
+import org.eclipse.kapua.storage.TxContext;
 
 public class UsedEntitiesCounterImpl<
         E extends KapuaEntity,
@@ -33,25 +32,18 @@ public class UsedEntitiesCounterImpl<
         > implements UsedEntitiesCounter {
 
     private final F factory;
-    private final TxManager txManager;
     private final KapuaEntityRepository<E, L> entityRepository;
 
     public UsedEntitiesCounterImpl(F factory,
-                                   TxManager txManager,
                                    KapuaEntityRepository<E, L> entityRepository) {
         this.factory = factory;
-        this.txManager = txManager;
         this.entityRepository = entityRepository;
     }
 
     @Override
-    public long countEntitiesInScope(KapuaId scopeId) throws KapuaException {
-        return txManager.execute(tx -> {
-            final Q query = factory.newQuery(scopeId);
-            // Argument Validator
-            ArgumentValidator.notNull(query, "query");
-            // Do count
-            return entityRepository.count(tx, query);
-        });
+    public long countEntitiesInScope(TxContext tx, KapuaId scopeId) throws KapuaException {
+        final Q query = factory.newQuery(scopeId);
+        // Do count
+        return entityRepository.count(tx, query);
     }
 }

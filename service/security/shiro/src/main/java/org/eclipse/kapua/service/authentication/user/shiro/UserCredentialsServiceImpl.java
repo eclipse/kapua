@@ -140,7 +140,7 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
 
         String plainNewPassword = passwordResetRequest.getNewPassword();
         try {
-            passwordValidator.validatePassword(credential.getScopeId(), plainNewPassword);
+            passwordValidator.validatePassword(tx, credential.getScopeId(), plainNewPassword);
         } catch (KapuaIllegalArgumentException ignored) {
             throw new KapuaIllegalArgumentException("passwordResetRequest.newPassword", plainNewPassword);
         }
