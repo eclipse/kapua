@@ -13,11 +13,9 @@
 package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
-import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 import java.util.Map;
@@ -32,22 +30,14 @@ import java.util.Optional;
  * - this class is nothing more than glue and convenience, demanding all of its logic to the {@link ServiceConfigurationManager}'s instance provided, so no flexibility has been sacrificed
  *
  * @since 2.0.0
- * @deprecated since 2.0.0 - this is provided as a stepping stone during the migration to the services using the repository pattern for persistence. Use {@link KapuaConfigurableServiceLinker} instead
  */
-@Deprecated
 public class KapuaConfigurableServiceBase
-        /*
-        Being configurable should have nothing to do with being an Entity-bound service.
-        In practice, however, all instances of KapuaConfigurableService already extend AbstractKapuaService, so we can keep this hierarchy
-        until the day the service provided by AbstractKapuaService are moved from inheritance to composition.
-        */
-        extends AbstractKapuaService
-        implements KapuaConfigurableService {
+        implements KapuaConfigurableService,
+        KapuaService {
 
     protected final ServiceConfigurationManager serviceConfigurationManager;
 
-    public KapuaConfigurableServiceBase(EntityManagerFactory entityManagerFactory, AbstractEntityCacheFactory abstractCacheFactory, ServiceConfigurationManager serviceConfigurationManager) {
-        super(entityManagerFactory, abstractCacheFactory);
+    public KapuaConfigurableServiceBase(ServiceConfigurationManager serviceConfigurationManager) {
         this.serviceConfigurationManager = serviceConfigurationManager;
     }
 

@@ -17,7 +17,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -59,7 +59,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since 1.0
  */
 @Singleton
-public class CredentialServiceImpl extends KapuaConfigurableServiceLinker implements CredentialService {
+public class CredentialServiceImpl extends KapuaConfigurableServiceBase implements CredentialService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CredentialServiceImpl.class);
 

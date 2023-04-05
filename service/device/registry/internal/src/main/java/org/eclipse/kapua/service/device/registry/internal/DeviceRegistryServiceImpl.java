@@ -16,7 +16,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -72,7 +72,7 @@ import java.util.List;
  */
 @Singleton
 public class DeviceRegistryServiceImpl
-        extends KapuaConfigurableServiceLinker
+        extends KapuaConfigurableServiceBase
         implements DeviceRegistryService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceRegistryServiceImpl.class);

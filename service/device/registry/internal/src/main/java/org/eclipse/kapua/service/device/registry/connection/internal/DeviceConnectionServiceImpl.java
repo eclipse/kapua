@@ -15,7 +15,7 @@ package org.eclipse.kapua.service.device.registry.connection.internal;
 import org.apache.commons.lang.NotImplementedException;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
@@ -47,7 +47,7 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
-public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceLinker implements DeviceConnectionService {
+public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase implements DeviceConnectionService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceConnectionServiceImpl.class);
     private final AuthorizationService authorizationService;

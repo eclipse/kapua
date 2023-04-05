@@ -16,7 +16,7 @@ import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
@@ -51,7 +51,7 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
-public class RoleServiceImpl extends KapuaConfigurableServiceLinker implements RoleService {
+public class RoleServiceImpl extends KapuaConfigurableServiceBase implements RoleService {
 
     private static final Logger LOG = LoggerFactory.getLogger(RoleServiceImpl.class);
 

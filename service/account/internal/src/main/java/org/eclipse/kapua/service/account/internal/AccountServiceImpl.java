@@ -20,7 +20,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceLinker;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -58,7 +58,7 @@ import java.util.Optional;
  */
 @Singleton
 public class AccountServiceImpl
-        extends KapuaConfigurableServiceLinker
+        extends KapuaConfigurableServiceBase
         implements AccountService {
 
     private static final String NO_EXPIRATION_DATE_SET = "no expiration date set";
