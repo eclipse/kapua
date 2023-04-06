@@ -1552,32 +1552,26 @@ public class DeviceRegistrySteps extends TestBase {
         searchForEventsFromDeviceWithClientIDInternal(clientId, account, events, timeout, false);
     }
 
-    private void searchForEventsFromDeviceWithClientIDInternal(String clientId, String account, int events, int timeout, boolean greater) throws Exception {
+    private void searchForEventsFromDeviceWithClientIDInternal(String clientId, String accountName, int events, int timeout, boolean greater) throws Exception {
         int executions = 0;
+        Account account = accountService.findByName(accountName);
+        Assert.assertNotNull(account);
+        Device device = deviceRegistryService.findByClientId(account.getId(), clientId);
+        Assert.assertNotNull(device);
         while (executions++ < timeout) {
-            if (searchForEventsFromDeviceWithClientID(clientId, account, events, false, greater)) {
+            logger.info("Device(s) events countdown check: {}", executions);
+            if (searchForEventsFromDeviceWithClientID(account, device, events, false, greater)) {
                 return;
             }
             Thread.sleep(1000);
         }
-        searchForEventsFromDeviceWithClientID(clientId, account, events, true, greater);
+        logger.info("Device(s) events countdown check: {} DONE", executions);
+        searchForEventsFromDeviceWithClientID(account, device, events, true, greater);
     }
 
-    private boolean searchForEventsFromDeviceWithClientID(String clientId, String accountName, int events, boolean timeoutOccurred, boolean greater) throws Exception {
+    private boolean searchForEventsFromDeviceWithClientID(Account account, Device device, int events, boolean timeoutOccurred, boolean greater) throws Exception {
         DeviceEventListResult deviceEventList = null;
         try {
-            Account account = accountService.findByName(accountName);
-            if (timeoutOccurred) {
-                Assert.assertNotNull(account);
-            } else if (account == null) {
-                return false;
-            }
-            Device device = deviceRegistryService.findByClientId(account.getId(), clientId);
-            if (timeoutOccurred) {
-                Assert.assertNotNull(device);
-            } else if (device == null) {
-                return false;
-            }
             DeviceEventQuery eventQuery = eventFactory.newQuery(account.getId());
             eventQuery.setPredicate(eventQuery.attributePredicate(DeviceEventAttributes.DEVICE_ID, device.getId(), AttributePredicate.Operator.EQUAL));
             eventQuery.setSortCriteria(eventQuery.fieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, SortOrder.ASCENDING));
@@ -1585,13 +1579,15 @@ public class DeviceRegistrySteps extends TestBase {
         } catch (KapuaException ex) {
             verifyException(ex);
         }
+        logger.info("Device(s) events: {}", deviceEventList.getSize());
         stepData.put(DEVICE_EVENT_LIST, deviceEventList);
         if (timeoutOccurred) {
             printEvents(deviceEventList, events);
             if (greater) {
                 Assert.assertEquals("Wrong device events count", events, deviceEventList.getSize());
-            } else {
-                Assert.assertTrue("Wrong device events count", events <= deviceEventList.getSize());
+            }
+            else {
+                Assert.assertTrue("Wrong device events count. Expected greater than " + events + " but found " + deviceEventList.getSize(), events<=deviceEventList.getSize());
             }
         }
         return greater ? events <= deviceEventList.getSize() : events == deviceEventList.getSize();
@@ -1638,7 +1634,7 @@ public class DeviceRegistrySteps extends TestBase {
     }
 
     private void printEvents(DeviceEventListResult eventList, int count) throws Exception {
-        logger.info("Events sie: {}", eventList.getSize());
+        logger.info("Events size: {}", eventList.getSize());
         eventList.getItems().forEach((event) -> logger.info("\ttype: {} - id: {} - date: {} - {}", event.getType(), event.getDeviceId(), event.getCreatedOn(), event.getEventMessage()));
 //        if (count > eventList.getSize()) {
 //            logger.info("++++++++++++++++++++++++++++++++++++++++++++++++\n===========================================================\n\n");
@@ -1993,6 +1989,73 @@ public class DeviceRegistrySteps extends TestBase {
             }
             stepData.put(DEVICE_CONNECTION_LIST, tmpConnLst);
         });
+    }
+
+    @When("I search for a connection from the device {string} in account {string} I find 1 connection with status {string} within {int} second(s)")
+    public void searchForConnectionFromDeviceWithClientIDStatusAndUser(String clientId, String accountName, String status, int timeout) throws Exception {
+        int executions = 0;
+        Account account = accountService.findByName(accountName);
+        Assert.assertNotNull("Account cannot be null!", account);
+        while (executions++ < timeout) {
+            if (searchForConnectionFromDeviceWithClientIDStatusAndUser(clientId, account.getId(), status, null, false)) {
+                return;
+            }
+            Thread.sleep(1000);
+        }
+        searchForConnectionFromDeviceWithClientIDStatusAndUser(clientId, account.getId(), status, null, true);
+    }
+
+    @When("I search for a connection from the device {string} in account {string} I find 1 connection with status {string} and user {string} within {int} second(s)")
+    public void searchForConnectionFromDeviceWithClientIDStatusAndUser(String clientId, String accountName, String status, String connectionUsername, int timeout) throws Exception {
+        int executions = 0;
+        Account account = accountService.findByName(accountName);
+        Assert.assertNotNull("Account cannot be null!", account);
+        User connectionUserId = userService.findByName(connectionUsername);
+        Assert.assertNotNull("Coonection username not valid!", connectionUserId);
+        while (executions++ < timeout) {
+            if (searchForConnectionFromDeviceWithClientIDStatusAndUser(clientId, account.getId(), status, connectionUserId.getId(), false)) {
+                return;
+            }
+            Thread.sleep(1000);
+        }
+        searchForConnectionFromDeviceWithClientIDStatusAndUser(clientId, account.getId(), status, connectionUserId.getId(), true);
+    }
+
+    private boolean searchForConnectionFromDeviceWithClientIDStatusAndUser(String clientId, KapuaId accountId, String connectionStatus, KapuaId connectionUserId, boolean timeoutOccurred) throws Exception {
+        try {
+            Device device = deviceRegistryService.findByClientId(accountId, clientId);
+            if (timeoutOccurred) {
+                Assert.assertNotNull(device);
+            }
+            else if (device==null) {
+                return false;
+            }
+            DeviceConnection deviceConnection = deviceConnectionService.findByClientId(accountId, clientId);
+            if (timeoutOccurred) {
+                Assert.assertNotNull("Device connection cannot be null!", deviceConnection);
+                Assert.assertEquals("Bad connection status!", connectionStatus, deviceConnection.getStatus().name());
+                if (connectionUserId!=null) {
+                    Assert.assertEquals("Bad connection user Id!", connectionUserId, deviceConnection.getUserId());
+                }
+            }
+            else {
+                if (connectionUserId!=null) {
+                    return deviceConnection!=null && connectionStatus.equals(deviceConnection.getStatus().name()) && connectionUserId.equals(deviceConnection.getUserId());
+                }
+                else {
+                    return deviceConnection!=null && connectionStatus.equals(deviceConnection.getStatus().name());
+                }
+            }
+            stepData.put(DEVICE_CONNECTION, deviceConnection);
+            DeviceConnectionListResult tmpConnLst = deviceConnectionFactory.newListResult();
+            Vector<DeviceConnection> dcv = new Vector<>();
+            dcv.add(deviceConnection);
+            tmpConnLst.addItems(dcv);
+            stepData.put(DEVICE_CONNECTION_LIST, tmpConnLst);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+        return true;
     }
 
     @Then("The connection user is {string}")

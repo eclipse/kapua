@@ -160,7 +160,7 @@ public class LifecycleJAXBContextProvider implements JAXBContextProvider {
                     // Device Management Snapshot
                     DeviceSnapshots.class,
                     DeviceSnapshot.class,
-                    KuraSnapshotIds.class,
+                    KuraSnapshotIds.class
             };
             try {
                 Map<String, Object> properties = new HashMap<>(1);

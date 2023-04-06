@@ -36,9 +36,8 @@ Feature: JobEngineService stop job tests with online device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected
-    And I wait 1 second
-    And Device status is "CONNECTED"
+    And Device is connected within 10 seconds
+    And Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
@@ -86,9 +85,8 @@ Feature: JobEngineService stop job tests with online device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected
-    And I wait 1 second
-    And Device status is "CONNECTED"
+    And Device is connected within 10 seconds
+    And Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
@@ -136,9 +134,8 @@ Feature: JobEngineService stop job tests with online device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected
-    And I wait 1 second
-    And Device status is "CONNECTED"
+    And Device is connected within 10 seconds
+    And Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Command "pwd" is executed
@@ -183,9 +180,8 @@ Feature: JobEngineService stop job tests with online device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected
-    And I wait 1 second
-    And Device status is "CONNECTED"
+    And Device is connected within 10 seconds
+    And Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Configuration is requested
@@ -231,9 +227,8 @@ Feature: JobEngineService stop job tests with online device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected
-    And I wait 1 second
-    And Device status is "CONNECTED"
+    And Device is connected within 10 seconds
+    And Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     When Device assets are requested
@@ -285,9 +280,9 @@ Feature: JobEngineService stop job tests with online device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    And Devices are connected
+    And Devices are connected within 10 seconds
     And I wait 1 second
-    And Devices status is "CONNECTED"
+    And Devices status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock devices after 5 seconds
     And Bundles are requested
@@ -331,9 +326,9 @@ Feature: JobEngineService stop job tests with online device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    And Devices are connected
+    And Devices are connected within 10 seconds
     And I wait 1 second
-    And Devices status is "CONNECTED"
+    And Devices status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock devices after 5 seconds
     And Bundles are requested
@@ -379,9 +374,9 @@ Feature: JobEngineService stop job tests with online device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    And Devices are connected
+    And Devices are connected within 10 seconds
     And I wait 1 second
-    And Devices status is "CONNECTED"
+    And Devices status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock devices after 5 seconds
     And Command "pwd" is executed
@@ -424,9 +419,9 @@ Feature: JobEngineService stop job tests with online device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    And Devices are connected
+    And Devices are connected within 10 seconds
     And I wait 1 second
-    And Devices status is "CONNECTED"
+    And Devices status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock devices after 5 seconds
     And Configuration is requested
@@ -472,9 +467,9 @@ Feature: JobEngineService stop job tests with online device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    And Devices are connected
+    And Devices are connected within 10 seconds
     And I wait 1 second
-    And Devices status is "CONNECTED"
+    And Devices status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock devices after 5 seconds
     When Device assets are requested

@@ -271,10 +271,6 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-broker-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-stream-api</artifactId>
         </dependency>
         <dependency>
@@ -293,6 +289,11 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-consumer-telemetry</artifactId>
+        </dependency>
+        <!--  added just to seed the broker domain otherwise the test that check for the defined domains will find one less -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-service-authentication</artifactId>
         </dependency>
 
         <dependency>
@@ -343,32 +344,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- activemq -->
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-broker</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-spring</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-kahadb-store</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-mqtt</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-camel</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.eclipse.paho</groupId>
             <artifactId>org.eclipse.paho.client.mqttv3</artifactId>

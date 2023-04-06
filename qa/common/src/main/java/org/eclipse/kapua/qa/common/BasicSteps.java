@@ -74,6 +74,7 @@ public class BasicSteps extends TestBase {
     public static final String MESSAGE_BROKER_CONTAINER_NAME = "message-broker";
     public static final String TELEMETRY_CONSUMER_CONTAINER_NAME = "telemetry-consumer";
     public static final String LIFECYCLE_CONSUMER_CONTAINER_NAME = "lifecycle-consumer";
+    public static final String AUTH_SERVICE_CONTAINER_NAME = "auth-service";
     public static final int JOB_ENGINE_CONTAINER_PORT = 8080;
 
     public static final String LAST_CREDENTIAL_ID = "LastCredentialId";
@@ -102,7 +103,7 @@ public class BasicSteps extends TestBase {
     public void initParametersDocker(Scenario scenario) {
         logger.info("=====> Init parameters for docker environment...");
         setProperties(scenario, "kapuadb", "true", "localhost", "3306", "DEFAULT", "org.h2.Driver",
-                "jdbc:h2:tcp", "certificates/jwt/test.key", "certificates/jwt/test.cert", "localhost", "http://localhost:8080/v1", "trusted", "MODE=MySQL");
+            "jdbc:h2:tcp", "certificates/jwt/test.key", "certificates/jwt/test.cert", "localhost", "http://job-engine:8080/v1", "trusted", "MODE=MySQL");
         logger.info("=====> Init parameters for docker environment... DONE");
     }
 
@@ -338,8 +339,8 @@ public class BasicSteps extends TestBase {
     }
 
     private void setProperties(Scenario scenario, String schema, String updateSchema,
-                               String dbHost, String dbPort, String dbConnResolver, String dbDriver, String jdbcConnection,
-                               String jwtKey, String jwtCertificate, String brokerIp, String jobEngineUrl, String jobEngineAuthMode, String additionalOptions) {
+            String dbHost, String dbPort, String dbConnResolver, String dbDriver, String jdbcConnection,
+            String jwtKey, String jwtCertificate, String brokerHost, String jobEngineUrl, String jobEngineAuthMode, String additionalOptions) {
         SystemSetting.resetInstance();
         System.setProperty(SystemSettingKey.DB_SCHEMA.key(), schema);
         System.setProperty(SystemSettingKey.DB_SCHEMA_UPDATE.key(), updateSchema);
@@ -354,7 +355,7 @@ public class BasicSteps extends TestBase {
         System.setProperty(CryptoSettingKeys.CRYPTO_SECRET_KEY.key(), "kapuaTestsKey!!!");
         System.setProperty("certificate.jwt.private.key", jwtKey);
         System.setProperty("certificate.jwt.certificate", jwtCertificate);
-        System.setProperty("broker.ip", brokerIp);
+        System.setProperty("broker.host", brokerHost);
         System.setProperty("job.engine.base.url", jobEngineUrl);
         System.setProperty("job.engine.client.auth.mode", jobEngineAuthMode);
         setSpecificProperties(scenario);

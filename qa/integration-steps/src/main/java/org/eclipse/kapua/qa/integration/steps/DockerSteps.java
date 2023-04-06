@@ -37,7 +37,7 @@ import com.spotify.docker.client.messages.PortBinding;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import org.apache.activemq.command.BrokerInfo;
+
 import org.eclipse.kapua.qa.common.BasicSteps;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
@@ -68,6 +68,10 @@ public class DockerSteps {
     private static final String NETWORK_PREFIX = "kapua-net";
     private static final String KAPUA_VERSION = "2.0.0-SNAPSHOT";
     private static final String ES_IMAGE = "elasticsearch:7.8.1";
+    private static final String BROKER_IMAGE = "kapua-broker-artemis";
+    private static final String LIFECYCLE_CONSUMER_IMAGE = "kapua-consumer-lifecycle";
+    private static final String TELEMETRY_CONSUMER_IMAGE = "kapua-consumer-telemetry";
+    private static final String AUTH_SERVICE_IMAGE = "kapua-service-authentication";
     private static final List<String> DEFAULT_DEPLOYMENT_CONTAINERS_NAME;
     private static final List<String> DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME;
     private static final int WAIT_COUNT = 120;//total wait time = 240 secs (120 * 2000ms)
@@ -81,12 +85,15 @@ public class DockerSteps {
 
     private static final int LIFECYCLE_HEALTH_CHECK_PORT = 8090;
     private static final int TElEMETRY_HEALTH_CHECK_PORT = 8091;
+    private static final int AUTH_SERVICE_HEALTH_CHECK_PORT = 8092;
 
     private static final String LIFECYCLE_CHECK_WEB_APP = "lifecycle";
     private static final String TELEMETRY_CHECK_WEB_APP = "telemetry";
+    private static final String AUTH_SERVICE_CHECK_WEB_APP = "authentication";
 
     private static final String LIFECYCLE_HEALTH_URL = String.format("http://localhost:%d/%s/health", LIFECYCLE_HEALTH_CHECK_PORT, LIFECYCLE_CHECK_WEB_APP);
     private static final String TELEMETRY_HEALTH_URL = String.format("http://localhost:%d/%s/health", TElEMETRY_HEALTH_CHECK_PORT, TELEMETRY_CHECK_WEB_APP);
+    private static final String AUTH_SERVICE_HEALTH_URL = String.format("http://localhost:%d/%s/health", AUTH_SERVICE_HEALTH_CHECK_PORT, AUTH_SERVICE_CHECK_WEB_APP);
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -94,6 +101,7 @@ public class DockerSteps {
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME = new ArrayList<>();
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.TELEMETRY_CONSUMER_CONTAINER_NAME);
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.LIFECYCLE_CONSUMER_CONTAINER_NAME);
+        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.AUTH_SERVICE_CONTAINER_NAME);
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.MESSAGE_BROKER_CONTAINER_NAME);
         DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME = new ArrayList<>();
         DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.JOB_ENGINE_CONTAINER_NAME);
@@ -103,13 +111,13 @@ public class DockerSteps {
     }
 
     private boolean printContainerLogOnContainerExit;
+    private boolean printImages;
     private NetworkConfig networkConfig;
     private String networkId;
     private boolean debug;
     private List<String> envVar;
     private Map<String, String> containerMap;
     public Map<String, Integer> portMap;
-    public Map<String, BrokerInfo> brokerMap;
 
     private DBHelper database;
     private StepData stepData;
@@ -202,12 +210,13 @@ public class DockerSteps {
                 this.wait(WAIT_FOR_BROKER);
             }
 
+            startAuthServiceContainer(BasicSteps.AUTH_SERVICE_CONTAINER_NAME);
             startLifecycleConsumerContainer(BasicSteps.LIFECYCLE_CONSUMER_CONTAINER_NAME);
             startTelemetryConsumerContainer(BasicSteps.TELEMETRY_CONSUMER_CONTAINER_NAME);
             logger.info("Starting full docker environment... DONE (waiting for containers to be ready)");
-            //wait until consumers are ready
+            //wait until services are ready
             int loops = 0;
-            while (!areConsumersReady()) {
+            while (!areServicesReady()) {
                 if (loops++ > WAIT_COUNT) {
                     throw new DockerException("Timeout waiting for cluster startup reached!");
                 }
@@ -261,25 +270,28 @@ public class DockerSteps {
         }
     }
 
-    private boolean areConsumersReady() throws JsonParseException, JsonMappingException, IOException {
-        if (isConsumerReady(LIFECYCLE_CHECK_WEB_APP)) {
-            return isConsumerReady(TELEMETRY_CHECK_WEB_APP);
+    private boolean areServicesReady() throws JsonParseException, JsonMappingException, IOException {
+        if (isServiceReady(LIFECYCLE_CHECK_WEB_APP) && isServiceReady(TELEMETRY_CHECK_WEB_APP) && isServiceReady(AUTH_SERVICE_CHECK_WEB_APP)) {
+            return true;
         }
         return false;
     }
 
-    private boolean isConsumerReady(String type) throws JsonParseException, JsonMappingException, IOException {
-        URL consumerUrl = new URL(LIFECYCLE_HEALTH_URL);//lifecycle endpoint
+    private boolean isServiceReady(String type) throws JsonParseException, JsonMappingException, IOException {
+        URL serviceUrl = new URL(LIFECYCLE_HEALTH_URL);//lifecycle endpoint
         if (TELEMETRY_CHECK_WEB_APP.equals(type)) {
-            consumerUrl = new URL(TELEMETRY_HEALTH_URL);
+            serviceUrl = new URL(TELEMETRY_HEALTH_URL);//telemetry endpoint
         }
-        logger.debug("Querying {} consumer status for url: {}", type, consumerUrl);
+        else if (AUTH_SERVICE_CHECK_WEB_APP.equals(type)) {
+            serviceUrl = new URL(AUTH_SERVICE_HEALTH_URL);//auth service endpoint
+        }
+        logger.debug("Querying {} consumer status for url: {}", type, serviceUrl);
         HttpURLConnection conn = null;
         DataOutputStream out = null;
         BufferedReader in = null;
         InputStreamReader isr = null;
         try {
-            conn = (HttpURLConnection) consumerUrl.openConnection();
+            conn = (HttpURLConnection) serviceUrl.openConnection();
             conn.setConnectTimeout(HTTP_COMMUNICATION_TIMEOUT);
             conn.setReadTimeout(HTTP_COMMUNICATION_TIMEOUT);
             //works with spring boot actuator servlet mappings
@@ -292,7 +304,7 @@ public class DockerSteps {
                 in = new BufferedReader(isr);
                 return isRunning(MAPPER.readValue(in, Map.class));
             } else {
-                logger.info("Querying {} consumer status for url: {} - ERROR", type, consumerUrl);
+                logger.info("Querying {} consumer status for url: {} - ERROR", type, serviceUrl);
                 return false;
             }
         } catch (IOException e) {
@@ -405,22 +417,24 @@ public class DockerSteps {
     }
 
     private void listAllImages(String description) throws DockerException, InterruptedException {
-        logger.info("Print images - {}", description);
-        List<Image> images = DockerUtil.getDockerClient().listImages(DockerClient.ListImagesParam.allImages());
-        int count = 0;
-        if ((images != null) && (images.size() > 0)) {
-            count = images.size();
-            logger.info("ids:");
-            for (Image image : images) {
-                if (filterImageToPrint(image)) {
-                    StringBuilder builder = new StringBuilder();
-                    builder.append(image.id());
-                    image.repoTags().forEach(value -> builder.append("\t").append(value));
-                    logger.info("{}", builder.toString());
+        if (printImages) {
+            logger.info("Print images - {}", description);
+            List<Image> images = DockerUtil.getDockerClient().listImages(DockerClient.ListImagesParam.allImages());
+            int count = 0;
+            if ((images != null) && (images.size() > 0)) {
+                count = images.size();
+                logger.info("ids:");
+                for (Image image : images) {
+                    if (filterImageToPrint(image)) {
+                        StringBuilder builder = new StringBuilder();
+                        builder.append(image.id());
+                        image.repoTags().forEach(value -> builder.append("\t").append(value));
+                        logger.info("{}", builder.toString());
+                    }
                 }
             }
+            logger.info("Print images ({}) DONE - {}", count, description);
         }
-        logger.info("Print images ({}) DONE - {}", count, description);
     }
 
     private boolean filterImageToPrint(Image image) {
@@ -503,7 +517,7 @@ public class DockerSteps {
     @And("Start MessageBroker container with name {string}")
     public void startMessageBrokerContainer(String name) throws DockerException, InterruptedException {
         logger.info("Starting Message Broker container {}...", name);
-        ContainerConfig mbConfig = getBrokerContainerConfig("message-broker", 1883, 1883, 1893, 1893, 8883, 8883, 8161, 8161, 5005, 5005, "kapua/kapua-broker:" + KAPUA_VERSION);
+        ContainerConfig mbConfig = getBrokerContainerConfig("message-broker", 1883, 1883, 1893, 1893, 8883, 8883, 8161, 8161, 5005, 5005, "kapua/" + BROKER_IMAGE + ":" + KAPUA_VERSION);
         ContainerCreation mbContainerCreation = DockerUtil.getDockerClient().createContainer(mbConfig, name);
         String containerId = mbContainerCreation.id();
 
@@ -529,6 +543,18 @@ public class DockerSteps {
     public void startLifecycleConsumerContainer(String name) throws DockerException, InterruptedException {
         logger.info("Starting Lifecycle Consumer container {}...", name);
         ContainerCreation mbContainerCreation = DockerUtil.getDockerClient().createContainer(getLifecycleConsumerConfig(8080, 8090, 8001, 8001), name);
+        String containerId = mbContainerCreation.id();
+
+        DockerUtil.getDockerClient().startContainer(containerId);
+        DockerUtil.getDockerClient().connectToNetwork(containerId, networkId);
+        containerMap.put(name, containerId);
+        logger.info("Lifecycle Consumer {} container started: {}", name, containerId);
+    }
+
+    @And("Start Auth service container with name {string}")
+    public void startAuthServiceContainer(String name) throws DockerException, InterruptedException {
+        logger.info("Starting Auth service container {}...", name);
+        ContainerCreation mbContainerCreation = DockerUtil.getDockerClient().createContainer(getAuthServiceConfig(8080, 8092, 8001, 8003), name);
         String containerId = mbContainerCreation.id();
 
         DockerUtil.getDockerClient().startContainer(containerId);
@@ -642,7 +668,6 @@ public class DockerSteps {
      * @param brokerAddr
      * @param brokerIp
      * @param clusterName
-     * @param controlMessageForwarding
      * @param mqttPort                 mqtt port on docker
      * @param mqttHostPort             mqtt port on docker host
      * @param mqttsPort                mqtts port on docker
@@ -681,13 +706,14 @@ public class DockerSteps {
                 "certificate.jwt.private.key=file:///var/opt/activemq/key.pk8",
                 "certificate.jwt.certificate=file:///var/opt/activemq/cert.pem",
                 "CRYPTO_SECRET_KEY=kapuaTestsKey!!!",
-                String.format("broker.ip=%s", brokerIp));
+                String.format("broker.host=%s", brokerIp));
         if (envVar != null) {
             envVars.addAll(envVar);
         }
 
         if (debug) {
-            envVars.add(String.format("ACTIVEMQ_DEBUG_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=%s", debugPort));
+//            envVars.add(String.format("ACTIVEMQ_DEBUG_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=%s", debugPort));
+            envVars.add(String.format("DEBUG_ARGS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:%s", debugPort));
         }
 
         String[] ports = {
@@ -731,6 +757,8 @@ public class DockerSteps {
                         "DATABASE=kapuadb",
                         "DB_USER=kapua",
                         "DB_PASSWORD=kapua",
+                        //uncomment this line to enable the H@ web console (WARNING enable it only for test and then disable it again!)
+//                        "H2_WEB_OPTS=-web -webAllowOthers -webPort 8181",
                         "DB_PORT_3306_TCP_PORT=3306"
                 )
                 .image("kapua/kapua-sql:" + KAPUA_VERSION)
@@ -743,26 +771,7 @@ public class DockerSteps {
      * @return Container configuration for telemetry consumer.
      */
     private ContainerConfig getTelemetryConsumerConfig(int healthPort, int healthHostPort, int debugPort, int debugHostPort) {
-        final Map<String, List<PortBinding>> portBindings = new HashMap<>();
-        addHostPort("0.0.0.0", portBindings, healthPort, healthHostPort);
-        addHostPort("0.0.0.0", portBindings, debugPort, debugHostPort);
-        final HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).build();
-
-        String[] ports = {
-                String.valueOf(healthPort),
-                String.valueOf(debugPort)
-        };
-
-        return ContainerConfig.builder()
-                .hostConfig(hostConfig)
-                .exposedPorts(ports)
-                .env(
-                        "commons.db.schema.update=true",
-                        "BROKER_HOST=message-broker",
-                        "CRYPTO_SECRET_KEY=kapuaTestsKey!!!"
-                )
-                .image("kapua/kapua-consumer-telemetry:" + KAPUA_VERSION)
-                .build();
+        return getContainerConfig(TELEMETRY_CONSUMER_IMAGE, healthPort, healthHostPort, debugPort, debugHostPort);
     }
 
     /**
@@ -771,6 +780,24 @@ public class DockerSteps {
      * @return Container configuration for lifecycle consumer.
      */
     private ContainerConfig getLifecycleConsumerConfig(int healthPort, int healthHostPort, int debugPort, int debugHostPort) {
+        return getContainerConfig(LIFECYCLE_CONSUMER_IMAGE, healthPort, healthHostPort, debugPort, debugHostPort);
+    }
+
+    /**
+     * Creation of docker container configuration for auth service.
+     *
+     * @return Container configuration for auth service.
+     */
+    private ContainerConfig getAuthServiceConfig(int healthPort, int healthHostPort, int debugPort, int debugHostPort) {
+        return getContainerConfig(AUTH_SERVICE_IMAGE, healthPort, healthHostPort, debugPort, debugHostPort);
+    }
+
+    /**
+     * Creation of docker container configuration for external services/consumers.
+     *
+     * @return Container configuration external consumer with provided image name.
+     */
+    private ContainerConfig getContainerConfig(String imageName, int healthPort, int healthHostPort, int debugPort, int debugHostPort) {
         final Map<String, List<PortBinding>> portBindings = new HashMap<>();
         addHostPort("0.0.0.0", portBindings, healthPort, healthHostPort);
         addHostPort("0.0.0.0", portBindings, debugPort, debugHostPort);
@@ -781,15 +808,19 @@ public class DockerSteps {
                 String.valueOf(debugPort)
         };
 
+        List<String> envVars = new ArrayList<>();
+        envVars.add("commons.db.schema.update=true");
+        envVars.add("BROKER_HOST=message-broker");
+        envVars.add("CRYPTO_SECRET_KEY=kapuaTestsKey!!!");
+        if (debug) {
+            envVars.add(String.format("DEBUG_OPTIONS=-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=*:%s", debugPort));
+        }
+
         return ContainerConfig.builder()
                 .hostConfig(hostConfig)
                 .exposedPorts(ports)
-                .env(
-                        "commons.db.schema.update=true",
-                        "BROKER_HOST=message-broker",
-                        "CRYPTO_SECRET_KEY=kapuaTestsKey!!!"
-                )
-                .image("kapua/kapua-consumer-lifecycle:" + KAPUA_VERSION)
+                .env(envVars)
+                .image("kapua/" + imageName + ":" + KAPUA_VERSION)
                 .build();
     }
 

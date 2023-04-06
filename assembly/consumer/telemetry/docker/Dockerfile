@@ -19,6 +19,7 @@ ENV BROKER_HOST=${BROKER_HOST:-message-broker}
 ENV BROKER_PORT=${BROKER_PORT:-5672}
 ENV BROKER_INTERNAL_USERNAME=${BROKER_INTERNAL_USERNAME:-internalUsername}
 ENV BROKER_INTERNAL_PASSWORD=${BROKER_INTERNAL_PASSWORD:-internalPassword}
+ENV CONSUMER_HOST=${CONSUMER_HOST:-telemetry}
 
 ENV DATASTORE_ADDR es
 ENV DATASTORE_PORT 9200
@@ -37,8 +38,9 @@ ENV JAVA_OPTS -Dcommons.db.schema.update=true \
               -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} \
               -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} \
               -Ddatastore.client.class=\${DATASTORE_CLIENT} \
-              -Dbroker.host=\${BROKER_ADDR} \
+              -Dbroker.host=\${BROKER_HOST} \
               -Dbroker.port=\${BROKER_PORT} \
+              -Dcommons.eventbus.url="${SERVICE_BROKER_ADDR}" \
               -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
               -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \
               -Dcipher.key=\${CIPHER_KEY} \

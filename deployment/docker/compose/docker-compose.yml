@@ -24,15 +24,16 @@ services:
     ports:
       - "5672:5672"
   message-broker:
+    image: kapua/kapua-broker-artemis:${IMAGE_VERSION}
     container_name: message-broker
-    image: kapua/kapua-broker:${IMAGE_VERSION}
     expose:
       - 1893
     ports:
       - "1883:1883"
+      - "1893:1893"
       - "8883:8883"
       - "5682:5672"
-      - "61614:61614"
+      - "61616:61616"
     depends_on:
       - db
       - events-broker
@@ -46,6 +47,17 @@ services:
       - KAPUA_KEY_PASSWORD
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
+      - LOGBACK_LOG_LEVEL
+  service-authentication:
+    image: kapua/kapua-service-authentication:${IMAGE_VERSION}
+    container_name: service-auth
+    ports:
+      - 8100:8080
+      - 8011:8001
+    depends_on:
+      - db
+      - events-broker
+    environment:
       - LOGBACK_LOG_LEVEL
   consumer-telemetry:
     container_name: consumer-telemetry

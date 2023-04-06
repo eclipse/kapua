@@ -40,6 +40,10 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-job-engine-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-job-engine-commons</artifactId>
         </dependency>
         <dependency>
@@ -57,10 +61,6 @@
 
         <!-- -->
         <!-- Internal dependencies -->
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-broker-core</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-commons</artifactId>
@@ -157,27 +157,6 @@
             <artifactId>h2</artifactId>
         </dependency>
 
-        <!-- Activemq -->
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-broker</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-camel</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-kahadb-store</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-mqtt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-spring</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.eclipse.paho</groupId>
             <artifactId>org.eclipse.paho.client.mqttv3</artifactId>

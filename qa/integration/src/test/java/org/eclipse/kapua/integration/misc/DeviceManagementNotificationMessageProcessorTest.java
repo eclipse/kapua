@@ -15,12 +15,13 @@ package org.eclipse.kapua.integration.misc;
 import com.codahale.metrics.Counter;
 import org.apache.camel.Exchange;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.client.message.CamelKapuaMessage;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.consumer.lifecycle.listener.DeviceManagementNotificationMessageProcessor;
 import org.eclipse.kapua.consumer.lifecycle.listener.DeviceManagementRegistryNotificationMetrics;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,8 +46,8 @@ public class DeviceManagementNotificationMessageProcessorTest {
         camelKapuaMessage = Mockito.mock(CamelKapuaMessage.class);
         exchange = Mockito.mock(Exchange.class);
         message = Mockito.mock(KapuaMessage.class);
-        queueConfigurationErrorCount = MetricServiceFactory.getInstance().getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, DeviceManagementRegistryNotificationMetrics.METRIC_PROCESS_QUEUE, DeviceManagementRegistryNotificationMetrics.METRIC_CONFIGURATION, DeviceManagementRegistryNotificationMetrics.METRIC_ERROR, DeviceManagementRegistryNotificationMetrics.METRIC_COUNT);
-        queueGenericErrorCount = MetricServiceFactory.getInstance().getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, DeviceManagementRegistryNotificationMetrics.METRIC_PROCESS_QUEUE, DeviceManagementRegistryNotificationMetrics.METRIC_GENERIC, DeviceManagementRegistryNotificationMetrics.METRIC_ERROR, DeviceManagementRegistryNotificationMetrics.METRIC_COUNT);
+        queueConfigurationErrorCount = MetricServiceFactory.getInstance().getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, MetricsLabel.PROCESS_QUEUE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        queueGenericErrorCount = MetricServiceFactory.getInstance().getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, MetricsLabel.PROCESS_QUEUE, MetricsLabel.GENERIC, MetricsLabel.ERROR, MetricsLabel.COUNT);
 
         Mockito.when(camelKapuaMessage.getDatastoreId()).thenReturn("datastoreID");
         Mockito.when(camelKapuaMessage.getMessage()).thenReturn(message);

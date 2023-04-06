@@ -462,6 +462,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
     // Configuration Store Settings
     // 
 
+    @Override
     public boolean isStoreServiceEnabled(String scopeIdString, String deviceIdString) throws GwtKapuaException {
         try {
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
@@ -478,12 +479,12 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
         try {
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
             KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
+            DeviceConfigurationStoreSettings deviceConfigurationStoreSettings = null;
+            GwtDeviceConfigurationStoreSettings gwtDeviceConfigurationStoreSettings = null;
 
-            DeviceConfigurationStoreSettings deviceConfigurationStoreSettings = DEVICE_CONFIGURATION_STORE_SERVICE.getApplicationSettings(scopeId, deviceId);
-
-            GwtDeviceConfigurationStoreSettings gwtDeviceConfigurationStoreSettings = new GwtDeviceConfigurationStoreSettings();
+            deviceConfigurationStoreSettings = DEVICE_CONFIGURATION_STORE_SERVICE.getApplicationSettings(scopeId, deviceId);
+            gwtDeviceConfigurationStoreSettings = new GwtDeviceConfigurationStoreSettings();
             gwtDeviceConfigurationStoreSettings.setStoreEnablementPolicy(GwtDeviceConfigurationStoreSettings.GwtDeviceConfigurationStoreEnablementPolicy.valueOf(deviceConfigurationStoreSettings.getEnablementPolicy().name()));
-
             return gwtDeviceConfigurationStoreSettings;
         } catch (Throwable t) {
             throw KapuaExceptionHandler.buildExceptionFromError(t);
@@ -499,10 +500,11 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
 
             DeviceConfigurationStoreSettings deviceConfigurationStoreSettings = DEVICE_CONFIGURATION_STORE_FACTORY.newDeviceConfigurationStoreSettings();
-            deviceConfigurationStoreSettings.setScopeId(scopeId);
-            deviceConfigurationStoreSettings.setDeviceId(deviceId);
-            deviceConfigurationStoreSettings.setEnablementPolicy(DeviceConfigurationStoreEnablementPolicy.valueOf(gwtDeviceConfigurationStoreSettings.getStoreEnablementPolicy()));
-
+            if (deviceConfigurationStoreSettings != null) {
+                deviceConfigurationStoreSettings.setScopeId(scopeId);
+                deviceConfigurationStoreSettings.setDeviceId(deviceId);
+                deviceConfigurationStoreSettings.setEnablementPolicy(DeviceConfigurationStoreEnablementPolicy.valueOf(gwtDeviceConfigurationStoreSettings.getStoreEnablementPolicy()));
+            }
             DEVICE_CONFIGURATION_STORE_SERVICE.setApplicationSettings(scopeId, deviceId, deviceConfigurationStoreSettings);
         } catch (Throwable t) {
             throw KapuaExceptionHandler.buildExceptionFromError(t);

@@ -57,52 +57,48 @@ Feature: Broker ACL tests
     Given Mqtt Device is started
     When broker with clientId "client-1" and user "kapua-sys" and password "kapua-password" is listening on topic "#"
       And string "Hello world" is published to topic "/foo/bar" with client "client-1"
-      And I wait 1 second
-    Then client "client-1" receives string "Hello world" on topic "/foo/bar"
+    Then client "client-1" receives string "Hello world" on topic "/foo/bar" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 #
 # Broker / connect
 #
   Scenario: B1 Broker publish to CTRL_ACC_REPLY
-    Normal user with broker connect profile publishes to topic $EDC.{0}.*.*.REPLY.>
+    Normal user with broker connect profile publishes to topic $EDC/{0}/+/+/REPLY/#
     and this is allowed as it is part of broker connect procedure.
     Given Mqtt Device is started
       And broker account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY" with client "client-1"
-      And I wait 1 second
-    Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY"
+    Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: B2 Broker create sub-topic on CTRL_ACC_REPLY
-    Normal user with broker connect profile publishes to topic $EDC.{0}.*.*.REPLY.foo
+    Normal user with broker connect profile publishes to topic $EDC/{0}/+/+/REPLY/foo
     This means that foo topic is created and this is allowed as broker has admin rights
     on REPLY.
     Given Mqtt Device is started
       And broker account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY/foo" with client "client-1"
-      And I wait 1 second
-    Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY/foo"
+    Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY/foo" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: B3 Broker subscribe on personal CTRL_ACC_REPLY
-    Normal user with broker connect profile subscribes to $EDC.{0}.*.*.REPLY
+    Normal user with broker connect profile subscribes to $EDC/{0}/+/+/REPLY
     Subscribe is not allowed, but it is on client's own topic. Is that OK?
     Given Mqtt Device is started
       And broker account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/client-1/CONF-V1/REPLY"
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY" with client "client-1"
-      And I wait 1 second
-    Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY"
+    Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: B4 Broker subscribe on CTRL_ACC_REPLY of another account
-    Normal user with broker connect profile subscribes to $EDC.{0}.*.*.REPLY of other account
+    Normal user with broker connect profile subscribes to $EDC/{0}/+/+/REPLY of other account
     Subscribe is not allowed on other account.
     Given Mqtt Device is started
       And broker account and user are created
@@ -114,7 +110,7 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: B5 Broker publish to CTRL_ACC is not allowed
-    Normal user with broker connect profile publishes to topic $EDC.{0}.>
+    Normal user with broker connect profile publishes to topic $EDC/{0}/#
     Given Mqtt Device is started
       And broker account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
@@ -125,7 +121,7 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: B6 Broker create sub-topic on CTRL_ACC is not allowed
-    Normal user with broker connect profile publishes to topic $EDC.{0}.foo
+    Normal user with broker connect profile publishes to topic $EDC/{0}/foo
     This means that foo topic is not created as broker has no admin rights on this topic.
     Given Mqtt Device is started
       And broker account and user are created
@@ -137,7 +133,7 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: B7 Broker subscribe on CTRL_ACC is not allowed
-    Normal user with broker connect profile subscribes to $EDC.{0}.>
+    Normal user with broker connect profile subscribes to $EDC/{0}/#
     Subscribe is not allowed.
     Given Mqtt Device is started
       And broker account and user are created
@@ -148,19 +144,18 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: B8 Broker subscribe - publish - admin on CTRL_ACC_CLI
-    Normal user with broker connect profile subscribes to $EDC.{0}.{1}.> and at the same time
+    Normal user with broker connect profile subscribes to $EDC/{0}/{1}/# and at the same time
     publishes to subtopic foo. All this operations are allowed.
     Given Mqtt Device is started
       And broker account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/client-1/foo"
       And string "Hello broker" is published to topic "$EDC/acme/client-1/foo" with client "client-1"
-      And I wait 1 second
-    Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/foo"
+    Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/foo" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: B9 Broker publish to ACL_DATA_ACC is not allowed
-    Normal user with broker connect profile publishes to topic {0}.>
+    Normal user with broker connect profile publishes to topic {0}/#
     Given Mqtt Device is started
       And broker account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
@@ -171,7 +166,7 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: B10 Broker create sub-topic on ACL_DATA_ACC is not allowed
-    Normal user with broker connect profile publishes to topic {0}.foo
+    Normal user with broker connect profile publishes to topic {0}/foo
     This means that foo topic is not created as broker has no admin rights on this topic.
     Given Mqtt Device is started
       And broker account and user are created
@@ -183,7 +178,7 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: B11 Broker subscribe on ACL_DATA_ACC is not allowed
-    Normal user with broker connect profile subscribes to {0}.>
+    Normal user with broker connect profile subscribes to {0}/#
     Subscribe is not allowed.
     Given Mqtt Device is started
       And broker account and user are created
@@ -194,32 +189,30 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: B12 Broker subscribe - publish - admin on ACL_DATA_ACC_CLI
-    Normal user with broker connect profile subscribes to {0}.{1}.> and at the same time
+    Normal user with broker connect profile subscribes to {0}/{1}/# and at the same time
     publishes to subtopic foo. All this operations are allowed.
     Given Mqtt Device is started
       And broker account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "acme/client-1/foo"
       And string "Hello broker" is published to topic "acme/client-1/foo" with client "client-1"
-      And I wait 1 second
-    Then client "client-1" receives string "Hello broker" on topic "acme/client-1/foo"
+    Then client "client-1" receives string "Hello broker" on topic "acme/client-1/foo" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: B13 Broker publish to ACL_CTRL_ACC_NOTIFY is allowed
-    Normal user with broker connect profile publishes to topic $EDC.{0}.*.*.NOTIFY.{1}.>
+    Normal user with broker connect profile publishes to topic $EDC/{0}/+/+/NOTIFY/{1}/#
     Publish is allowed, but not subscribe and admin.
     Given Mqtt Device is started
       And broker account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/foo/bar/NOTIFY/client-1" with client "client-1"
-      And I wait 1 second
-    Then Broker receives string "Hello broker" on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
+    Then Broker receives string "Hello broker" on topic "$EDC/acme/foo/bar/NOTIFY/client-1" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
     #Since we cannot intercept topic creation on our broker security plugin, this test has no more sense on ActiveMQ 5.x
 #  Scenario: B14 Broker create sub-topic on ACL_CTRL_ACC_NOTIFY is not allowed
-#    Normal user with broker connect profile publishes to topic $EDC.{0}.*.*.NOTIFY.{1}.foo
+#    Normal user with broker connect profile publishes to topic $EDC.{0}/+/+/NOTIFY/{1}/foo
 #    This means that foo topic is not created as broker has no admin rights on this topic.
 #    Given Mqtt Device is started
 #      And broker account and user are created
@@ -231,7 +224,7 @@ Feature: Broker ACL tests
 #      And Mqtt Device is stoped
 
   Scenario: B15 Broker subscribe on ACL_CTRL_ACC_NOTIFY is not allowed
-    Normal user with broker connect profile subscribes to $EDC.{0}.*.*.NOTIFY.{1}.>
+    Normal user with broker connect profile subscribes to $EDC/{0}/+/+/NOTIFY/{1}/#
     Subscribe is not allowed.
     Given Mqtt Device is started
       And broker account and user are created
@@ -244,44 +237,41 @@ Feature: Broker ACL tests
 # Device / manage
 #
   Scenario: D1 Device publish to CTRL_ACC_REPLY
-    Normal user with device manage profile publishes to topic $EDC.{0}.*.*.REPLY.>
+    Normal user with device manage profile publishes to topic $EDC/{0}/+/+/REPLY/#
     and this is allowed as it is part of publishing data.
     Given Mqtt Device is started
       And device account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY" with client "client-1"
-      And I wait 1 second
-    Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY"
+    Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: D2 Device create sub-topic on CTRL_ACC_REPLY
-    Normal user with device manage profile publishes to topic $EDC.{0}.*.*.REPLY.foo
+    Normal user with device manage profile publishes to topic $EDC/{0}/+/+/REPLY/foo
     This means that foo topic is created and this is allowed as device has admin rights
     on REPLY.
     Given Mqtt Device is started
       And device account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY/foo" with client "client-1"
-      And I wait 1 second
-    Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY/foo"
+    Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY/foo" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: D3 Device subscribe on personal CTRL_ACC_REPLY
-    Normal user with device manage profile subscribes to $EDC.{0}.*.*.REPLY
+    Normal user with device manage profile subscribes to $EDC/{0}/+/+/REPLY
     Subscribe is not allowed, but it is on client's own topic. Is that OK?
     Given Mqtt Device is started
       And device account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/client-1/CONF-V1/REPLY"
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY" with client "client-1"
-      And I wait 1 second
-    Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY"
+    Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: D4 Device subscribe on CTRL_ACC_REPLY of another account
-    Normal user with device manage profile subscribes to $EDC.{0}.*.*.REPLY of other account
+    Normal user with device manage profile subscribes to $EDC/{0}/+/+/REPLY of other account
     Subscribe is not allowed on other account.
     Given Mqtt Device is started
       And device account and user are created
@@ -293,31 +283,29 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: D5 Device subscribe - publish - admin on CTRL_ACC
-    Normal user with device manage profile subscribes to $EDC.{0}.> and at the same time
+    Normal user with device manage profile subscribes to $EDC/{0}/# and at the same time
     publishes to subtopic foo. All this operations are allowed.
     Given Mqtt Device is started
       And device account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/foo"
       And string "Hello broker" is published to topic "$EDC/acme/foo" with client "client-1"
-      And I wait 1 second
-    Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/foo"
+    Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/foo" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: D6 Device subscribe - publish - admin on CTRL_ACC_CLI
-    Normal user with device manage profile subscribes to $EDC.{0}.{1}.> and at the same time
+    Normal user with device manage profile subscribes to $EDC/{0}/{1}/# and at the same time
     publishes to subtopic foo. All this operations are allowed.
     Given Mqtt Device is started
       And device account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/client-1/foo"
       And string "Hello broker" is published to topic "$EDC/acme/client-1/foo" with client "client-1"
-      And I wait 1 second
-    Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/foo"
+    Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/foo" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: D7 Device publish to ACL_DATA_ACC is not allowed
-    Normal user with device manage profile publishes to topic {0}.>
+    Normal user with device manage profile publishes to topic {0}/#
     Given Mqtt Device is started
       And device account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
@@ -328,7 +316,7 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: D8 Device create sub-topic on ACL_DATA_ACC is not allowed
-    Normal user with device manage profile publishes to topic {0}.foo
+    Normal user with device manage profile publishes to topic {0}/foo
     This means that foo topic is not created as device has no admin rights on this topic.
     Given Mqtt Device is started
       And device account and user are created
@@ -340,7 +328,7 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: D9 Device subscribe on ACL_DATA_ACC is not allowed
-    Normal user with device manage profile subscribes to {0}.>
+    Normal user with device manage profile subscribes to {0}/#
     Subscribe is not allowed.
     Given Mqtt Device is started
       And device account and user are created
@@ -351,32 +339,30 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: D10 Device subscribe - publish - admin on ACL_DATA_ACC_CLI
-    Normal user with device manage profile subscribes to {0}.{1}.> and at the same time
+    Normal user with device manage profile subscribes to {0}/{1}/# and at the same time
     publishes to subtopic foo. All this operations are allowed.
     Given Mqtt Device is started
       And device account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "acme/client-1/foo"
       And string "Hello broker" is published to topic "acme/client-1/foo" with client "client-1"
-      And I wait 1 second
-    Then client "client-1" receives string "Hello broker" on topic "acme/client-1/foo"
+    Then client "client-1" receives string "Hello broker" on topic "acme/client-1/foo" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: D11 Device publish to ACL_CTRL_ACC_NOTIFY is allowed
-    Normal user with device manage profile publishes to topic $EDC.{0}.*.*.NOTIFY.{1}.>
+    Normal user with device manage profile publishes to topic $EDC/{0}/+/+/NOTIFY/{1}/#
     Publish is allowed, but not subscribe and admin.
     Given Mqtt Device is started
       And device account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/foo/bar/NOTIFY/client-1" with client "client-1"
-      And I wait 1 second
-    Then Broker receives string "Hello broker" on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
+    Then Broker receives string "Hello broker" on topic "$EDC/acme/foo/bar/NOTIFY/client-1" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
     #Since we cannot intercept topic creation on our broker security plugin, this test has no more sense on ActiveMQ 5.x
 #  Scenario: D12 Device create sub-topic on ACL_CTRL_ACC_NOTIFY is not allowed
-#    Normal user with device manage profile publishes to topic $EDC.{0}.*.*.NOTIFY.{1}.foo
+#    Normal user with device manage profile publishes to topic $EDC/{0}/+/+/NOTIFY/{1}/foo
 #    This means that foo topic is not created as broker has no admin rights on this topic.
 #    Given Mqtt Device is started
 #      And device account and user are created
@@ -388,7 +374,7 @@ Feature: Broker ACL tests
 #      And Mqtt Device is stoped
 
   Scenario: D13 Device subscribe on ACL_CTRL_ACC_NOTIFY is not allowed
-    Normal user with device manage profile subscribes to $EDC.{0}.*.*.NOTIFY.{1}.>
+    Normal user with device manage profile subscribes to $EDC/{0}/+/+/NOTIFY/{1}/#
     Subscribe is not allowed.
     Given Mqtt Device is started
       And device account and user are created
@@ -401,43 +387,41 @@ Feature: Broker ACL tests
 # Data view
 #
   Scenario: DV1 Data view publish to CTRL_ACC_REPLY
-    Normal user with data view profile publishes to topic $EDC.{0}.*.*.REPLY.>
+    Normal user with data view profile publishes to topic $EDC/{0}/+/+/REPLY/#
     and this is allowed as it is part of broker connect procedure.
     Given Mqtt Device is started
       And data view account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY" with client "client-1"
-      And I wait 1 second
-    Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY"
+    Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: DV2 Data view create sub-topic on CTRL_ACC_REPLY
-    Normal user with data view profile publishes to topic $EDC.{0}.*.*.REPLY.foo
+    Normal user with data view profile publishes to topic $EDC/{0}/+/+/REPLY/foo
     This means that foo topic is created and this is allowed as data view has admin rights
     on REPLY.
     Given Mqtt Device is started
       And data view account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY/foo" with client "client-1"
-      And I wait 1 second
-    Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY/foo"
+    Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY/foo" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: DV3 Data view subscribe on personal CTRL_ACC_REPLY
-    Normal user with data view profile subscribes to $EDC.{0}.*.*.REPLY
+    Normal user with data view profile subscribes to $EDC/{0}/+/+/REPLY
+    Subscribe is not allowed, but it is on client's own topic. Is that OK?
     Given Mqtt Device is started
       And data view account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/client-1/CONF-V1/REPLY"
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY" with client "client-1"
-      And I wait 1 second
-    Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY"
+    Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: DV4 Data view subscribe on CTRL_ACC_REPLY of another account
-    Normal user with data view profile subscribes to $EDC.{0}.*.*.REPLY of other account
+    Normal user with data view profile subscribes to $EDC/{0}/+/+/REPLY of other account
     Subscribe is not allowed on other account.
     Given Mqtt Device is started
       And data view account and user are created
@@ -449,7 +433,7 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: DV5 Data view publish to CTRL_ACC is not allowed
-    Normal user with data view profile publishes to topic $EDC.{0}.>
+    Normal user with data view profile publishes to topic $EDC/{0}/#
     Given Mqtt Device is started
       And data view account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
@@ -460,7 +444,7 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: DV6 Data view create sub-topic on CTRL_ACC is not allowed
-    Normal user with data view profile publishes to topic $EDC.{0}.foo
+    Normal user with data view profile publishes to topic $EDC/{0}/foo
     This means that foo topic is not created as data view has no admin rights on this topic.
     Given Mqtt Device is started
       And data view account and user are created
@@ -472,7 +456,7 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: DV7 Data view subscribe on CTRL_ACC is not allowed
-    Normal user with data view profile subscribes to $EDC.{0}.>
+    Normal user with data view profile subscribes to $EDC/{0}/#
     Subscribe is not allowed.
     Given Mqtt Device is started
       And data view account and user are created
@@ -483,19 +467,18 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: DV8 Data view subscribe - publish - admin on CTRL_ACC_CLI
-    Normal user with data view profile subscribes to $EDC.{0}.{1}.> and at the same time
+    Normal user with data view profile subscribes to $EDC/{0}/{1}/# and at the same time
     publishes to subtopic foo. All this operations are allowed.
     Given Mqtt Device is started
       And data view account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/client-1/foo"
       And string "Hello broker" is published to topic "$EDC/acme/client-1/foo" with client "client-1"
-      And I wait 1 second
-    Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/foo"
+    Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/foo" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: DV9 Data view publish to ACL_DATA_ACC is not allowed
-    Normal user with data view profile publishes to topic {0}.>
+    Normal user with data view profile publishes to topic {0}/#
     Given Mqtt Device is started
       And data view account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
@@ -506,7 +489,9 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: DV10 Data view create sub-topic on ACL_DATA_ACC is allowed
-    Normal user with data view profile publishes to topic {0}.foo
+    Normal user with data view profile publishes to topic {0}/foo
+    This means that foo topic is created as broker has admin rights on this topic, but
+    message is not received as publish is not allowed. How is this scenario possible?
     Given Mqtt Device is started
       And data view account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
@@ -517,43 +502,43 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: DV11 Data view subscribe on ACL_DATA_ACC is allowed
-    Normal user with data view profile subscribes to {0}.> Admin user publishes to this topic and message
+    Normal user with data view profile subscribes to {0}/# Admin user publishes to this topic and message
     is received by listening client.
     Given Mqtt Device is started
       And data view account and user are created
-    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "acme"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "acme/#"
       And broker with clientId "admin-1" and user "kapua-sys" and password "kapua-password" is listening on topic ""
-      And string "Hello broker" is published to topic "acme" with client "admin-1"
-      And I wait 1 second
-    Then client "client-1" receives string "Hello broker" on topic "acme"
+      And string "Hello broker" is published to topic "acme/client-2" with client "admin-1"
+    Then client "client-1" receives string "Hello broker" on topic "acme/client-2" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: DV12 Data view publish to ACL_CTRL_ACC_CLI is allowed
-    Normal user with data view profile publishes to topic {0}.{1}.>
-    Publish is allowed.
+    Normal user with data view profile publishes to topic {0}/{1}/#
+    Publish is allowed, but not subscribe and admin.
     Given Mqtt Device is started
       And data view account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "acme/client-1" with client "client-1"
-      And I wait 1 second
-    Then Broker receives string "Hello broker" on topic "acme/client-1"
+    Then Broker receives string "Hello broker" on topic "acme/client-1" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: DV13 Data view create sub-topic on ACL_CTRL_ACC_CLI is not allowed
-    Normal user with data view profile publishes to topic {0}.{1}.foo
+    Normal user with data view profile publishes to topic {0}/{1}/foo
+    This means that foo topic is not created as data view has no admin rights on this topic.
+    Because user also has broker connect privilege it out-rules this ACL and can admin this topic.
+    Is this correct behaviour?
     Given Mqtt Device is started
       And data view account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "acme/client-1/foo" with client "client-1"
-      And I wait 1 second
-    Then Broker receives string "Hello broker" on topic "acme/client-1/foo"
+    Then Broker receives string "Hello broker" on topic "acme/client-1/foo" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
   Scenario: DV14 Data view subscribe on ACL_CTRL_ACC_CLI is not allowed
-    Normal user with data view profile subscribes to {0}.{1}.>
+    Normal user with data view profile subscribes to {0}/{1}/#
     Given Mqtt Device is started
       And data view account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "acme/client-1"
@@ -562,20 +547,19 @@ Feature: Broker ACL tests
       And Mqtt Device is stoped
 
   Scenario: DV15 Data view publish to ACL_CTRL_ACC_NOTIFY is allowed
-    Normal user with data view profile publishes to topic $EDC.{0}.*.*.NOTIFY.{1}.>
+    Normal user with data view profile publishes to topic $EDC/{0}/+/+/NOTIFY/{1}/#
     Publish is allowed, but not subscribe and admin.
     Given Mqtt Device is started
       And data view account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/foo/bar/NOTIFY/client-1" with client "client-1"
-      And I wait 1 second
-    Then Broker receives string "Hello broker" on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
+    Then Broker receives string "Hello broker" on topic "$EDC/acme/foo/bar/NOTIFY/client-1" within 3 seconds
       And clients are disconnected
       And Mqtt Device is stoped
 
     #Since we cannot intercept topic creation on our broker security plugin, this test has no more sense on ActiveMQ 5.x
 #  Scenario: DV16 Data view create sub-topic on ACL_CTRL_ACC_NOTIFY is not allowed
-#    Normal user with data view profile publishes to topic $EDC.{0}.*.*.NOTIFY.{1}.foo
+#    Normal user with data view profile publishes to topic $EDC/{0}/+/+/NOTIFY/{1}/foo
 #    This means that foo topic is not created as data view has no admin rights on this topic.
 #    Given Mqtt Device is started
 #      And data view account and user are created
@@ -587,7 +571,7 @@ Feature: Broker ACL tests
 #      And Mqtt Device is stoped
 
   Scenario: DV17 Data view subscribe on ACL_CTRL_ACC_NOTIFY is not allowed
-    Normal user with data view profile subscribes to $EDC.{0}.*.*.NOTIFY.{1}.>
+    Normal user with data view profile subscribes to $EDC/{0}/+/+/NOTIFY/{1}/#
     Subscribe is not allowed.
     Given Mqtt Device is started
       And data view account and user are created

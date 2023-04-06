@@ -211,6 +211,14 @@ public class KuraDevice implements MqttCallback {
         return this.clientId;
     }
 
+    public boolean isConnected() {
+        return this.mqttClient.isConnected();
+    }
+
+    public String mqttClientInstanceId() {
+        return this.mqttClient.toString();
+    }
+
     public void addMoreThanOneDeviceToKuraMock(String name) {
         clientId = name;
         mqttClientSetupForMoreDevices();
@@ -368,7 +376,7 @@ public class KuraDevice implements MqttCallback {
 
     @Override
     public void connectionLost(Throwable throwable) {
-        LOG.info("Kapua Mock Device connection to broker lost.");
+        LOG.info("Kapua Mock Device connection to broker lost. (clientId: {})", mqttClient.getClientId());
     }
 
     @Override

@@ -17,11 +17,12 @@ import com.google.common.base.MoreObjects;
 import org.apache.camel.Exchange;
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.client.message.CamelKapuaMessage;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
-import org.eclipse.kapua.consumer.commons.listener.AbstractProcessor;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.camel.listener.AbstractProcessor;
+import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.device.management.job.manager.JobDeviceManagementOperationManagerService;
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyChannel;
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyMessage;
@@ -52,9 +53,9 @@ public class DeviceManagementNotificationMessageProcessor extends AbstractProces
         super("Device Management Notify Processor");
         MetricsService metricService = MetricServiceFactory.getInstance();
 
-        metricQueueCommunicationErrorCount = metricService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, DeviceManagementRegistryNotificationMetrics.METRIC_PROCESS_QUEUE, DeviceManagementRegistryNotificationMetrics.METRIC_COMMUNICATION, DeviceManagementRegistryNotificationMetrics.METRIC_ERROR, DeviceManagementRegistryNotificationMetrics.METRIC_COUNT);
-        metricQueueConfigurationErrorCount = metricService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, DeviceManagementRegistryNotificationMetrics.METRIC_PROCESS_QUEUE, DeviceManagementRegistryNotificationMetrics.METRIC_CONFIGURATION, DeviceManagementRegistryNotificationMetrics.METRIC_ERROR, DeviceManagementRegistryNotificationMetrics.METRIC_COUNT);
-        metricQueueGenericErrorCount = metricService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, DeviceManagementRegistryNotificationMetrics.METRIC_PROCESS_QUEUE, DeviceManagementRegistryNotificationMetrics.METRIC_GENERIC, DeviceManagementRegistryNotificationMetrics.METRIC_ERROR, DeviceManagementRegistryNotificationMetrics.METRIC_COUNT);
+        metricQueueCommunicationErrorCount = metricService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, MetricsLabel.PROCESS_QUEUE, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricQueueConfigurationErrorCount = metricService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, MetricsLabel.PROCESS_QUEUE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricQueueGenericErrorCount = metricService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, MetricsLabel.PROCESS_QUEUE, MetricsLabel.GENERIC, MetricsLabel.ERROR, MetricsLabel.COUNT);
     }
 
     /**

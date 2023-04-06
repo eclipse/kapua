@@ -25,6 +25,8 @@ import java.util.Set;
  */
 public class JobStartOptionsImpl implements JobStartOptions {
 
+    private static final long serialVersionUID = 5339966879340542119L;
+
     private Set<KapuaId> targetIdSublist;
     private boolean resetStepIndex;
     private Integer fromStepIndex;
