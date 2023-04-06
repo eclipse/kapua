@@ -39,6 +39,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.broker.BrokerDomains;
+import org.eclipse.kapua.commons.configuration.metatype.EmptyTocd;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
@@ -441,7 +442,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                     } catch (KapuaServiceDisabledException ex) {
                         continue;
                     }
-                    if (tocd != null) {
+                    if (tocd != null && !(tocd instanceof EmptyTocd)) {
                         GwtConfigComponent gwtConfig = new GwtConfigComponent();
                         gwtConfig.setId(tocd.getId());
                         gwtConfig.setName(tocd.getName());

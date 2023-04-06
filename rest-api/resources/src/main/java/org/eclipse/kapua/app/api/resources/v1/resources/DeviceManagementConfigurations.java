@@ -163,7 +163,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
             @PathParam("deviceId") EntityId deviceId,
             DeviceConfigurationStoreSettings deviceConfigurationStoreSettings) throws KapuaException {
         deviceConfigurationStoreService.setApplicationSettings(scopeId, deviceId, deviceConfigurationStoreSettings);
-
         return returnNoContent();
     }
+
 }

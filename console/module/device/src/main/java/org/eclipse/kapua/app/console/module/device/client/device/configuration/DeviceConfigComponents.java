@@ -82,7 +82,6 @@ public class DeviceConfigComponents extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
-
     private final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
     private final GwtDeviceManagementServiceAsync gwtDeviceManagementService = GWT.create(GwtDeviceManagementService.class);
     private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
@@ -159,6 +158,7 @@ public class DeviceConfigComponents extends LayoutContainer {
     public void setDevice(GwtDevice selectedDevice) {
         dirty = true;
         this.selectedDevice = selectedDevice;
+        refreshVisibilityStoreSettingButton();
         refresh();
     }
 
@@ -465,6 +465,20 @@ public class DeviceConfigComponents extends LayoutContainer {
 
             loader.load();
         }
+    }
+
+    private void refreshVisibilityStoreSettingButton() {
+        gwtDeviceManagementService.isStoreServiceEnabled(selectedDevice.getScopeId(), selectedDevice.getId(), new AsyncCallback<Boolean>() {
+            @Override
+            public void onFailure(Throwable t) {
+                FailureHandler.handle(t);
+            }
+
+            @Override
+            public void onSuccess(Boolean enabled) {
+                settings.setVisible(enabled);
+            }
+        });
     }
 
     public void refreshConfigPanel(GwtConfigComponent configComponent) {
