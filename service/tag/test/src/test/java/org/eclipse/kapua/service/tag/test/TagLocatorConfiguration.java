@@ -119,8 +119,6 @@ public class TagLocatorConfiguration {
                         .annotatedWith(Names.named("DeviceConnectionServiceConfigurationManager"))
                         .toInstance(Mockito.mock(ServiceConfigurationManager.class));
 
-                bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
-
                 // Inject actual Device service related services
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 bind(TagRepository.class).toInstance(new TagImplJpaRepository(jpaRepoConfig));
