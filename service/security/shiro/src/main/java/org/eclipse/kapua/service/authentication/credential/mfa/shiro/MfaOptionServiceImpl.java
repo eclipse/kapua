@@ -70,6 +70,7 @@ import java.net.URISyntaxException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -140,8 +141,11 @@ public class MfaOptionServiceImpl implements MfaOptionService {
                 throw new InternalUserOnlyException();
             }
             // Check existing MfaOption
-            MfaOption existingMfaOption = mfaOptionRepository.findByUserId(tx, mfaOptionCreator.getScopeId(), mfaOptionCreator.getUserId())
-                    .orElseThrow(() -> new KapuaExistingMfaOptionException());
+            Optional<MfaOption> existingMfaOption = mfaOptionRepository.findByUserId(tx, mfaOptionCreator.getScopeId(), mfaOptionCreator.getUserId());
+            if (existingMfaOption.isPresent()) {
+                throw new KapuaExistingMfaOptionException();
+            }
+
             // Do create
             final MfaOptionCreatorImpl optionCreator = new MfaOptionCreatorImpl(mfaOptionCreator.getScopeId(), mfaOptionCreator.getUserId(), fullKey);
             MfaOption toCreate = new MfaOptionImpl(mfaOptionCreator.getScopeId());
