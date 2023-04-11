@@ -20,7 +20,6 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.storage.KapuaUpdatableEntityRepository;
 import org.eclipse.kapua.storage.TxContext;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public class KapuaUpdatableEntityJpaRepository<E extends KapuaUpdatableEntity, C extends E, L extends KapuaListResult<E>>
@@ -37,9 +36,8 @@ public class KapuaUpdatableEntityJpaRepository<E extends KapuaUpdatableEntity, C
     public E update(TxContext txContext, E updatedEntity) throws KapuaException {
         final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         // Checking existence
-        Optional<E> currentEntity = doFind(em, updatedEntity.getScopeId(), updatedEntity.getId());
-        // Updating if present
-        return currentEntity
+        return doFind(em, updatedEntity.getScopeId(), updatedEntity.getId())
+                // Updating if present
                 .map(ce -> doUpdate(em, ce, updatedEntity))
                 .orElseThrow(() -> new KapuaEntityNotFoundException(concreteClass.getSimpleName(), updatedEntity.getId()));
     }
@@ -50,7 +48,7 @@ public class KapuaUpdatableEntityJpaRepository<E extends KapuaUpdatableEntity, C
         return doUpdate(em, currentEntity, updatedEntity);
     }
 
-    private E doUpdate(javax.persistence.EntityManager em, E currentEntity, E updatedEntity) {
+    protected E doUpdate(javax.persistence.EntityManager em, E currentEntity, E updatedEntity) {
         AbstractKapuaUpdatableEntity updatableEntity = (AbstractKapuaUpdatableEntity) updatedEntity;
         updatableEntity.setCreatedOn(currentEntity.getCreatedOn());
         updatableEntity.setCreatedBy(currentEntity.getCreatedBy());

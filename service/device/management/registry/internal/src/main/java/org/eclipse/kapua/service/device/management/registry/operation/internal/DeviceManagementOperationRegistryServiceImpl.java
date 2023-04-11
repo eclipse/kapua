@@ -147,7 +147,8 @@ public class DeviceManagementOperationRegistryServiceImpl
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, scopeId));
         // Do find
-        return txManager.execute(tx -> repository.findByOperationId(tx, scopeId, operationId));
+        return txManager.execute(tx -> repository.findByOperationId(tx, scopeId, operationId))
+                .orElse(null);
     }
 
     @Override

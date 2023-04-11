@@ -17,8 +17,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
-import org.eclipse.kapua.commons.model.AbstractKapuaEntity_;
-import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
+import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity_;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
@@ -26,14 +25,7 @@ import org.eclipse.kapua.service.authorization.domain.DomainRepository;
 import org.eclipse.kapua.storage.TxContext;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NonUniqueResultException;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.List;
+import java.util.Optional;
 
 public class DomainImplJpaRepository
         extends KapuaEntityJpaRepository<Domain, DomainImpl, DomainListResult>
@@ -44,54 +36,16 @@ public class DomainImplJpaRepository
 
     //for the sole purpose of changing exception type
     @Override
-    public Domain delete(TxContext tx, KapuaId scopeId, KapuaId domainId) throws KapuaException {
-        final Domain toDelete = this.find(tx, scopeId, domainId)
+    public Domain delete(TxContext txContext, KapuaId scopeId, KapuaId domainId) throws KapuaException {
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
+        return this.doFind(em, scopeId, domainId)
+                .map(toDelete -> doDelete(em, toDelete))
                 .orElseThrow(() -> new KapuaEntityNotFoundException(Domain.TYPE, domainId));
-        return this.delete(tx, toDelete);
     }
 
     @Override
-    public Domain findByName(TxContext txContext, KapuaId scopeId, String name) throws KapuaException {
-        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
-        final CriteriaBuilder cb = em.getCriteriaBuilder();
-        final CriteriaQuery<DomainImpl> criteriaSelectQuery = cb.createQuery(concreteClass);
-        // FROM
-        final Root<DomainImpl> entityRoot = criteriaSelectQuery.from(concreteClass);
-        // SELECT
-        criteriaSelectQuery.select(entityRoot);
-
-        // name
-        final ParameterExpression<String> pName = cb.parameter(String.class, KapuaNamedEntityAttributes.NAME);
-        final Predicate namePredicate = cb.equal(entityRoot.get(KapuaNamedEntityAttributes.NAME), pName);
-
-        ParameterExpression<KapuaId> pScopeId = null;
-
-        if (!KapuaId.ANY.equals(scopeId)) {
-            pScopeId = cb.parameter(KapuaId.class, AbstractKapuaEntity_.SCOPE_ID);
-            Predicate scopeIdPredicate = cb.equal(entityRoot.get(AbstractKapuaEntity_.SCOPE_ID), pScopeId);
-
-            Predicate andPredicate = cb.and(namePredicate, scopeIdPredicate);
-            criteriaSelectQuery.where(andPredicate);
-        } else {
-            criteriaSelectQuery.where(namePredicate);
-        }
-
-        TypedQuery<DomainImpl> query = em.createQuery(criteriaSelectQuery);
-        query.setParameter(pName.getName(), name);
-
-        if (pScopeId != null) {
-            query.setParameter(pScopeId.getName(), scopeId);
-        }
-        // QUERY!
-        final List<DomainImpl> result = query.getResultList();
-        switch (result.size()) {
-            case 0:
-                return null;
-            case 1:
-                return result.get(0);
-            default:
-                throw new NonUniqueResultException(String.format("Multiple %s results found for field %s with value %s", concreteClass.getName(), pName, name));
-        }
+    public Optional<Domain> findByName(TxContext txContext, KapuaId scopeId, String name) throws KapuaException {
+        return doFindByField(txContext, scopeId, AbstractKapuaNamedEntity_.NAME, name);
     }
 
 }

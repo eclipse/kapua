@@ -36,7 +36,7 @@ public class AccountImplJpaRepository
         final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         TypedQuery<Account> q = em.createNamedQuery("Account.findChildAccountsRecursive", Account.class);
         q.setParameter("parentAccountPath", "\\" + parentAccountPath + "/%");
-        final AccountListResult result = new AccountListResultImpl();
+        final AccountListResult result = listSupplier.get();
         result.addItems(q.getResultList());
         return result;
     }

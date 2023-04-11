@@ -173,7 +173,8 @@ public class AccessInfoServiceImpl implements AccessInfoService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
 
-        return txManager.execute(tx -> accessInfoRepository.findByUserId(tx, scopeId, userId));
+        return txManager.execute(tx -> accessInfoRepository.findByUserId(tx, scopeId, userId))
+                .orElse(null);
     }
 
     @Override

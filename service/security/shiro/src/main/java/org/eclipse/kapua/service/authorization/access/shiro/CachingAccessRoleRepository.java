@@ -29,19 +29,15 @@ public class CachingAccessRoleRepository extends KapuaEntityRepositoryCachingWra
         this.wrapped = wrapped;
     }
 
-    public AccessRoleListResult findAll(TxContext txContext, KapuaId scopeId, KapuaId accessInfoId) throws KapuaException {
+    @Override
+    public AccessRoleListResult findByAccessInfoId(TxContext txContext, KapuaId scopeId, KapuaId accessInfoId) throws KapuaException {
         AccessRoleListResult listResult = (AccessRoleListResult) entityCache.getList(scopeId, accessInfoId);
         if (listResult == null) {
             // Do find and populate cache
-            listResult = wrapped.findAll(txContext, scopeId, accessInfoId);
+            listResult = wrapped.findByAccessInfoId(txContext, scopeId, accessInfoId);
             entityCache.putList(scopeId, accessInfoId, listResult);
         }
         return listResult;
-    }
-
-    @Override
-    public AccessRoleListResult findByAccessInfoId(TxContext txContext, KapuaId scopeId, KapuaId accessInfoId) throws KapuaException {
-        return wrapped.findByAccessInfoId(txContext, scopeId, accessInfoId);
     }
 
     @Override

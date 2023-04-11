@@ -657,11 +657,8 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
     protected void closeManagementOperation(KapuaId scopeId, KapuaId deviceId, KapuaId operationId, KapuaResponseMessage<?, ?> responseMessageMessage) throws KapuaException {
         txManager.execute(tx -> {
-            DeviceManagementOperation deviceManagementOperation = deviceManagementOperationRepository.findByOperationId(tx, scopeId, operationId);
-
-            if (deviceManagementOperation == null) {
-                throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, operationId);
-            }
+            final DeviceManagementOperation deviceManagementOperation = deviceManagementOperationRepository.findByOperationId(tx, scopeId, operationId)
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, operationId));
 
             if (responseMessageMessage != null) {
                 deviceManagementOperation.setStatus(responseMessageMessage.getResponseCode().isAccepted() ? NotifyStatus.COMPLETED : NotifyStatus.FAILED);

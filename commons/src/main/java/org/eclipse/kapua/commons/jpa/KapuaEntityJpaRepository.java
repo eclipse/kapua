@@ -287,9 +287,8 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     public E delete(TxContext txContext, KapuaId scopeId, KapuaId entityId) throws KapuaException {
         final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         // Checking existence
-        Optional<E> entityToDelete = doFind(em, scopeId, entityId);
-        // Deleting if found
-        return entityToDelete
+        return doFind(em, scopeId, entityId)
+                // Deleting if found
                 .map(e -> doDelete(em, e))
                 .orElseThrow(() -> new KapuaEntityNotFoundException(concreteClass.getSimpleName(), entityId));
     }
@@ -300,7 +299,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         return doDelete(em, entityToDelete);
     }
 
-    private E doDelete(EntityManager em, E entityToDelete) {
+    protected E doDelete(EntityManager em, E entityToDelete) {
         em.remove(entityToDelete);
         em.flush();
         // Returning deleted entity
@@ -596,6 +595,18 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
                                         @NonNull KapuaId scopeId,
                                         @NonNull String fieldName,
                                         @NonNull Object fieldValue) {
+        final List<C> result = doFindAllByField(txContext, scopeId, fieldName, fieldValue);
+        switch (result.size()) {
+            case 0:
+                return Optional.empty();
+            case 1:
+                return Optional.of(result.get(0));
+            default:
+                throw new NonUniqueResultException(String.format("Multiple %s results found for field %s with value %s", concreteClass.getName(), fieldName, fieldValue.toString()));
+        }
+    }
+
+    protected List<C> doFindAllByField(TxContext txContext, KapuaId scopeId, String fieldName, Object fieldValue) {
         final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         final CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<C> criteriaSelectQuery = cb.createQuery(concreteClass);
@@ -628,14 +639,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         }
         // QUERY!
         List<C> result = query.getResultList();
-        switch (result.size()) {
-            case 0:
-                return Optional.empty();
-            case 1:
-                return Optional.of(result.get(0));
-            default:
-                throw new NonUniqueResultException(String.format("Multiple %s results found for field %s with value %s", concreteClass.getName(), pName, fieldValue.toString()));
-        }
+        return result;
     }
 
     protected Predicate mapScopeIdToCriteria(KapuaId scopeId, CriteriaBuilder cb, Root<C> entityRoot) {

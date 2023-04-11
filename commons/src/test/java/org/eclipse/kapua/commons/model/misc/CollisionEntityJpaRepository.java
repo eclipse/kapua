@@ -16,8 +16,6 @@ import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
 import org.eclipse.kapua.model.query.KapuaListResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class CollisionEntityJpaRepository extends KapuaEntityJpaRepository<CollisionEntity, CollisionEntity, KapuaListResult<CollisionEntity>> {
@@ -25,7 +23,5 @@ public class CollisionEntityJpaRepository extends KapuaEntityJpaRepository<Colli
     public CollisionEntityJpaRepository(KapuaJpaRepositoryConfiguration configuration) {
         super(CollisionEntity.class, () -> new KapuaListResultImpl<>(), configuration);
     }
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 }

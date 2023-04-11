@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authorization.group.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaNamedEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -21,6 +22,8 @@ import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
 import org.eclipse.kapua.service.authorization.group.GroupRepository;
 import org.eclipse.kapua.storage.TxContext;
+
+import javax.persistence.EntityManager;
 
 public class GroupImplJpaRepository
         extends KapuaNamedEntityJpaRepository<Group, GroupImpl, GroupListResult>
@@ -30,11 +33,10 @@ public class GroupImplJpaRepository
     }
 
     @Override
-    public Group delete(TxContext tx, KapuaId scopeId, KapuaId groupId) throws KapuaException {
-        // Check existence
-        final Group toBeDeleted = super.find(tx, scopeId, groupId)
+    public Group delete(TxContext txContext, KapuaId scopeId, KapuaId groupId) throws KapuaException {
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
+        return doFind(em, scopeId, groupId)
+                .map(toBeDeleted -> doDelete(em, toBeDeleted))
                 .orElseThrow(() -> new KapuaEntityNotFoundException(Group.TYPE, groupId));
-        // Do delete
-        return super.delete(tx, toBeDeleted);
     }
 }

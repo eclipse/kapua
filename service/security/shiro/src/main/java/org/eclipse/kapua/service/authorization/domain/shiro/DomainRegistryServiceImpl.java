@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
+import java.util.Optional;
 
 /**
  * {@link DomainRegistryService} implementation.
@@ -109,11 +110,12 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
 
         ArgumentValidator.notNull(name, "name");
         // Do find
-        final Domain foundDomain = txManager.execute(tx -> domainRepository.findByName(tx, KapuaId.ANY, name));
-        if (foundDomain != null) {
+        final Optional<Domain> foundDomain = txManager.execute(tx -> domainRepository.findByName(tx, KapuaId.ANY, name));
+        if (foundDomain.isPresent()) {
             authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
         }
-        return foundDomain;
+        return foundDomain
+                .orElse(null);
     }
 
     @Override

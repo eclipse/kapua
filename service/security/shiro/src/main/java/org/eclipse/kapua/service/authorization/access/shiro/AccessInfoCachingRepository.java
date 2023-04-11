@@ -20,6 +20,8 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
 import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Optional;
+
 public class AccessInfoCachingRepository
         extends KapuaUpdatableEntityRepositoryCachingWrapper<AccessInfo, AccessInfoListResult>
         implements AccessInfoRepository {
@@ -33,13 +35,13 @@ public class AccessInfoCachingRepository
     }
 
     @Override
-    public AccessInfo findByUserId(TxContext txContext, KapuaId scopeId, KapuaId userId) throws KapuaException {
+    public Optional<AccessInfo> findByUserId(TxContext txContext, KapuaId scopeId, KapuaId userId) throws KapuaException {
         final AccessInfo fromCache = (AccessInfo) entityCache.getByUserId(scopeId, userId);
         if (fromCache != null) {
-            return fromCache;
+            return Optional.of(fromCache);
         }
-        final AccessInfo found = wrapped.findByUserId(txContext, scopeId, userId);
-        entityCache.put(found);
+        final Optional<AccessInfo> found = wrapped.findByUserId(txContext, scopeId, userId);
+        found.ifPresent(entityCache::put);
         return found;
     }
 }

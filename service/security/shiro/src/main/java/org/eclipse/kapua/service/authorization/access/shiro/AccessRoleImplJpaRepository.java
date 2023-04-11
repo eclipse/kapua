@@ -14,15 +14,17 @@ package org.eclipse.kapua.service.authorization.access.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
-import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleRepository;
 import org.eclipse.kapua.storage.TxContext;
+
+import javax.persistence.EntityManager;
 
 public class AccessRoleImplJpaRepository
         extends KapuaEntityJpaRepository<AccessRole, AccessRoleImpl, AccessRoleListResult>
@@ -32,28 +34,20 @@ public class AccessRoleImplJpaRepository
     }
 
     @Override
-    public AccessRoleListResult findAll(TxContext tx, KapuaId scopeId, KapuaId accessInfoId) throws KapuaException {
-        // Do find and populate cache
-        AccessRoleQuery query = new AccessRoleQueryImpl(scopeId);
-        query.setPredicate(query.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));
-
-        return this.query(tx, query);
-    }
-
-    @Override
     public AccessRoleListResult findByAccessInfoId(TxContext txContext, KapuaId scopeId, KapuaId accessInfoId) throws KapuaException {
-        AccessRoleQuery query = new AccessRoleQueryImpl(scopeId);
-        query.setPredicate(query.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));
-        return this.query(txContext, query);
+        final AccessRoleListResult res = listSupplier.get();
+        res.addItems(doFindAllByField(txContext, scopeId, AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));
+        return res;
     }
 
     @Override
     // This method is overridden for the sole purpose of throwing a different exception if the role did not exist in the first place
     public AccessRole delete(TxContext tx, KapuaId scopeId, KapuaId accessRoleId) throws KapuaException {
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
         // Checking existence
-        AccessRole entityToDelete = this.find(tx, scopeId, accessRoleId)
+        return this.doFind(em, scopeId, accessRoleId)
+                // Deleting if found
+                .map(entityToDelete -> doDelete(em, entityToDelete))
                 .orElseThrow(() -> new KapuaEntityNotFoundException(AccessRole.TYPE, accessRoleId));
-        // Deleting if found
-        return this.delete(tx, entityToDelete);
     }
 }

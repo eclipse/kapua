@@ -14,6 +14,7 @@ package org.eclipse.kapua.commons.service.event.store.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
@@ -30,9 +31,10 @@ public class EventStoreRecordImplJpaRepository
 
     @Override
     //TODO: review, this only exists to change the exception type
-    public EventStoreRecord update(TxContext tx, EventStoreRecord kapuaEvent) throws KapuaException {
-        final EventStoreRecord oldKapuaEvent = this.find(tx, kapuaEvent.getScopeId(), kapuaEvent.getEntityId())
+    public EventStoreRecord update(TxContext txContext, EventStoreRecord kapuaEvent) throws KapuaException {
+        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
+        return this.doFind(em, kapuaEvent.getScopeId(), kapuaEvent.getEntityId())
+                .map(existing -> doUpdate(em, existing, kapuaEvent))
                 .orElseThrow(() -> new KapuaEntityNotFoundException(EventStoreRecord.TYPE, kapuaEvent.getId()));
-        return this.update(tx, oldKapuaEvent, kapuaEvent);
     }
 }

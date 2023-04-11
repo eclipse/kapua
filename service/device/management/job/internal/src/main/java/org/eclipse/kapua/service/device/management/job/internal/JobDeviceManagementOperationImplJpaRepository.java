@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.management.job.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -29,12 +30,12 @@ public class JobDeviceManagementOperationImplJpaRepository
         super(JobDeviceManagementOperationImpl.class, () -> new JobDeviceManagementOperationListResultImpl(), jpaRepoConfig);
     }
 
-
     @Override
-    public JobDeviceManagementOperation delete(TxContext tx, KapuaId scopeId, KapuaId jobDeviceManagementOperationId) throws KapuaException {
+    public JobDeviceManagementOperation delete(TxContext txContext, KapuaId scopeId, KapuaId jobDeviceManagementOperationId) throws KapuaException {
+        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
         // Check existence
-        final JobDeviceManagementOperation toBeDeleted = this.find(tx, scopeId, jobDeviceManagementOperationId)
+        return this.doFind(em, scopeId, jobDeviceManagementOperationId)
+                .map(toBeDeleted -> doDelete(em, toBeDeleted))
                 .orElseThrow(() -> new KapuaEntityNotFoundException(JobDeviceManagementOperation.TYPE, jobDeviceManagementOperationId));
-        return this.delete(tx, toBeDeleted);
     }
 }

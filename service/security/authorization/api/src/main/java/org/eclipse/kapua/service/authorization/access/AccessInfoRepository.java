@@ -17,7 +17,9 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.storage.KapuaUpdatableEntityRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Optional;
+
 public interface AccessInfoRepository extends KapuaUpdatableEntityRepository<AccessInfo, AccessInfoListResult> {
 
-    AccessInfo findByUserId(TxContext txContext, KapuaId scopeId, KapuaId userId) throws KapuaException;
+    Optional<AccessInfo> findByUserId(TxContext txContext, KapuaId scopeId, KapuaId userId) throws KapuaException;
 }
