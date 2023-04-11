@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.job.execution.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -24,6 +25,8 @@ import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
 import org.eclipse.kapua.service.job.execution.JobExecutionRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import javax.persistence.EntityManager;
+
 public class JobExecutionImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<JobExecution, JobExecutionImpl, JobExecutionListResult>
         implements JobExecutionRepository {
@@ -33,15 +36,15 @@ public class JobExecutionImplJpaRepository
 
     @Override
     public JobExecution delete(TxContext txContext, KapuaId scopeId, KapuaId jobExecutionId) throws KapuaException {
-        final JobExecution toBeDeleted = this.find(txContext, scopeId, jobExecutionId)
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
+        return this.doFind(em, scopeId, jobExecutionId)
+                .map(toBeDeleted -> doDelete(em, toBeDeleted))
                 .orElseThrow(() -> new KapuaEntityNotFoundException(JobExecution.TYPE, jobExecutionId));
-        return this.delete(txContext, toBeDeleted);
     }
 
     @Override
     public long countByJobId(TxContext tx, KapuaId scopeId, KapuaId jobId) throws KapuaException {
-
-        JobExecutionQuery jobExecutionQuery = new JobExecutionQueryImpl(scopeId);
+        final JobExecutionQuery jobExecutionQuery = new JobExecutionQueryImpl(scopeId);
         jobExecutionQuery.setPredicate(
                 jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobId)
         );

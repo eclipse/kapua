@@ -178,13 +178,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
             throw new KapuaException(KapuaErrorCodes.ADMIN_ROLE_DELETED_ERROR);
         }
 
-        txManager.execute(tx -> {
-            // Check existence
-            final Role roleToDelete = roleRepository.find(tx, scopeId, roleId)
-                    .orElseThrow(() -> new KapuaEntityNotFoundException(Role.TYPE, roleId));
-            // Do delete
-            return roleRepository.delete(tx, roleToDelete);
-        });
+        txManager.execute(tx -> roleRepository.delete(tx, scopeId, roleId));
     }
 
     @Override

@@ -26,6 +26,7 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerProp
 import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerPropertyImpl_;
 import org.eclipse.kapua.storage.TxContext;
 
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.JoinType;
@@ -63,9 +64,10 @@ public class TriggerImplJpaRepository
     }
 
     @Override
-    public Trigger delete(TxContext tx, KapuaId scopeId, KapuaId triggerId) throws KapuaException {
-        final Trigger toBeDeleted = this.find(tx, scopeId, triggerId)
+    public Trigger delete(TxContext txContext, KapuaId scopeId, KapuaId triggerId) throws KapuaException {
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
+        return this.doFind(em, scopeId, triggerId)
+                .map(toBeDeleted -> doDelete(em, toBeDeleted))
                 .orElseThrow(() -> new KapuaEntityNotFoundException(Trigger.TYPE, triggerId));
-        return this.delete(tx, toBeDeleted);
     }
 }

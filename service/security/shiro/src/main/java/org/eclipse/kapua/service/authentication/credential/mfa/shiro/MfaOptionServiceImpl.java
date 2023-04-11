@@ -140,10 +140,8 @@ public class MfaOptionServiceImpl implements MfaOptionService {
                 throw new InternalUserOnlyException();
             }
             // Check existing MfaOption
-            MfaOption existingMfaOption = mfaOptionRepository.findByUserId(tx, mfaOptionCreator.getScopeId(), mfaOptionCreator.getUserId());
-            if (existingMfaOption != null) {
-                throw new KapuaExistingMfaOptionException();
-            }
+            MfaOption existingMfaOption = mfaOptionRepository.findByUserId(tx, mfaOptionCreator.getScopeId(), mfaOptionCreator.getUserId())
+                    .orElseThrow(() -> new KapuaExistingMfaOptionException());
             // Do create
             final MfaOptionCreatorImpl optionCreator = new MfaOptionCreatorImpl(mfaOptionCreator.getScopeId(), mfaOptionCreator.getUserId(), fullKey);
             MfaOption toCreate = new MfaOptionImpl(mfaOptionCreator.getScopeId());
@@ -275,7 +273,8 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
-        return txManager.execute(tx -> mfaOptionRepository.findByUserId(tx, scopeId, userId));
+        return txManager.execute(tx -> mfaOptionRepository.findByUserId(tx, scopeId, userId))
+                .orElse(null);
     }
 
     @Override

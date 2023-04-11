@@ -14,15 +14,16 @@ package org.eclipse.kapua.service.authorization.role.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
-import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
-import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionRepository;
 import org.eclipse.kapua.storage.TxContext;
+
+import javax.persistence.EntityManager;
 
 public class RolePermissionImplJpaRepository
         extends KapuaEntityJpaRepository<RolePermission, RolePermissionImpl, RolePermissionListResult>
@@ -32,22 +33,20 @@ public class RolePermissionImplJpaRepository
         super(RolePermissionImpl.class, () -> new RolePermissionListResultImpl(), configuration);
     }
 
-
     @Override
     public RolePermissionListResult findByRoleId(TxContext tx, KapuaId scopeId, KapuaId roleId) throws KapuaException {
-        // Build query
-        RolePermissionQuery query = new RolePermissionQueryImpl(scopeId);
-        query.setPredicate(query.attributePredicate(RolePermissionAttributes.ROLE_ID, roleId));
-
-        return this.query(tx, query);
+        final RolePermissionListResult res = listSupplier.get();
+        res.addItems(doFindAllByField(tx, scopeId, RolePermissionImpl_.ROLE_ID, roleId));
+        return res;
     }
 
     @Override
     // TODO: check if it is correct to remove this statement (already thrown by the delete method, but
     //  without TYPE)
     public RolePermission delete(TxContext txContext, KapuaId scopeId, KapuaId rolePermissionId) throws KapuaException {
-        RolePermission rolePermission = find(txContext, scopeId, rolePermissionId)
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
+        return doFind(em, scopeId, rolePermissionId)
+                .map(toDelete -> doDelete(em, toDelete))
                 .orElseThrow(() -> new KapuaEntityNotFoundException(RolePermission.TYPE, rolePermissionId));
-        return delete(txContext, rolePermission);
     }
 }

@@ -14,16 +14,16 @@ package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
-import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeAttributes;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
-import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeQuery;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeRepository;
 import org.eclipse.kapua.storage.TxContext;
+
+import javax.persistence.EntityManager;
 
 public class ScratchCodeImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<ScratchCode, ScratchCodeImpl, ScratchCodeListResult>
@@ -35,19 +35,16 @@ public class ScratchCodeImplJpaRepository
 
     @Override
     public ScratchCode delete(TxContext tx, KapuaId scopeId, KapuaId scratchCodeId) throws KapuaException {
-        final ScratchCode scratchCode = this.find(tx, scopeId, scratchCodeId)
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
+        return this.doFind(em, scopeId, scratchCodeId)
+                .map(toDelete -> doDelete(em, toDelete))
                 .orElseThrow(() -> new KapuaEntityNotFoundException(ScratchCode.TYPE, scratchCodeId));
-        return this.delete(tx, scratchCode);
-
     }
 
     @Override
     public ScratchCodeListResult findByMfaOptionId(TxContext tx, KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
-        // Build query
-        ScratchCodeQuery query = new ScratchCodeQueryImpl(scopeId);
-        QueryPredicate predicate = query.attributePredicate(ScratchCodeAttributes.MFA_OPTION_ID, mfaOptionId);
-        query.setPredicate(predicate);
-        // Query and return result
-        return this.query(tx, query);
+        final ScratchCodeListResult res = listSupplier.get();
+        res.addItems(doFindAllByField(tx, scopeId, ScratchCodeImpl_.MFA_OPTION_ID, mfaOptionId));
+        return res;
     }
 }

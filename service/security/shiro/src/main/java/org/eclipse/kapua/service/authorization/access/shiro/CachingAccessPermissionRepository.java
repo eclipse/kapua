@@ -33,7 +33,6 @@ public class CachingAccessPermissionRepository
         this.wrapped = wrapped;
     }
 
-
     @Override
     public AccessPermission create(TxContext tx, AccessPermission entity) throws KapuaException {
         final AccessPermission created = super.create(tx, entity);

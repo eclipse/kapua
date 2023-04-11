@@ -20,6 +20,8 @@ import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResu
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Optional;
+
 public class MfaOptionMigratorJpaRepository
         extends KapuaUpdatableEntityJpaRepository<MfaOption, MfaOptionMigrator, MfaOptionListResult>
         implements MfaOptionRepository {
@@ -27,9 +29,8 @@ public class MfaOptionMigratorJpaRepository
         super(MfaOptionMigrator.class, () -> new MfaOptionMigratorListResultImpl(), jpaRepoConfig);
     }
 
-
     @Override
-    public MfaOption findByUserId(TxContext tx, KapuaId scopeId, KapuaId userId) {
+    public Optional<MfaOption> findByUserId(TxContext tx, KapuaId scopeId, KapuaId userId) {
         throw new UnsupportedOperationException();
     }
 }

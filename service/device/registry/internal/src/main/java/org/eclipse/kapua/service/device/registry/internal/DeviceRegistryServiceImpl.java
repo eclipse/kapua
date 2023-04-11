@@ -66,6 +66,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * {@link DeviceRegistryService} implementation.
@@ -223,10 +224,11 @@ public class DeviceRegistryServiceImpl
         try {
             KapuaId userId = kapuaSession.getUserId();
 
-            final AccessInfo accessInfo = accessInfoRepository.findByUserId(txContext, kapuaSession.getScopeId(), userId);
+            final Optional<AccessInfo> maybeAccessInfo = accessInfoRepository.findByUserId(txContext, kapuaSession.getScopeId(), userId);
 
             final List<Permission> groupPermissions = new ArrayList<>();
-            if (accessInfo != null) {
+            if (maybeAccessInfo.isPresent()) {
+                final AccessInfo accessInfo = maybeAccessInfo.get();
                 AccessPermissionListResult accessPermissions = accessPermissionRepository.findByAccessInfoId(txContext, accessInfo.getScopeId(), accessInfo.getId());
                 for (AccessPermission ap : accessPermissions.getItems()) {
                     if (checkGroupPermission(domain, groupPermissions, ap.getPermission())) {

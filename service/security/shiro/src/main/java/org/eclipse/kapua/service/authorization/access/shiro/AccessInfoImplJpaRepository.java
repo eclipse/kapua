@@ -14,15 +14,18 @@ package org.eclipse.kapua.service.authorization.access.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
-import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
 import org.eclipse.kapua.storage.TxContext;
+
+import javax.persistence.EntityManager;
+import java.util.Optional;
 
 public class AccessInfoImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<AccessInfo, AccessInfoImpl, AccessInfoListResult>
@@ -32,22 +35,17 @@ public class AccessInfoImplJpaRepository
     }
 
     @Override
-    public AccessInfo findByUserId(TxContext txContext, KapuaId scopeId, KapuaId userId) throws KapuaException {
-        AccessInfoQuery query = new AccessInfoQueryImpl(scopeId);
-        query.setPredicate(query.attributePredicate(AccessInfoAttributes.USER_ID, userId));
-        AccessInfoListResult result = this.query(txContext, query);
-        if (!result.isEmpty()) {
-            return result.getFirstItem();
-        }
-        return null;
+    public Optional<AccessInfo> findByUserId(TxContext txContext, KapuaId scopeId, KapuaId userId) throws KapuaException {
+        return doFindByField(txContext, scopeId, AccessInfoAttributes.USER_ID, userId);
     }
 
     // TODO: check if it is correct to remove this statement (already thrown by the delete method, but
     //  without TYPE)
     @Override
     public AccessInfo delete(TxContext txContext, KapuaId scopeId, KapuaId accessInfoId) throws KapuaException {
-        final AccessInfo found = super.find(txContext, scopeId, accessInfoId)
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
+        return super.doFind(em, scopeId, accessInfoId)
+                .map(toBeDeleted -> doDelete(em, toBeDeleted))
                 .orElseThrow(() -> new KapuaEntityNotFoundException(AccessInfo.TYPE, accessInfoId));
-        return super.delete(txContext, found);
     }
 }

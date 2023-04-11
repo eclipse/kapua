@@ -17,8 +17,10 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.storage.KapuaEntityRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Optional;
+
 public interface DomainRepository
         extends KapuaEntityRepository<Domain, DomainListResult> {
 
-    Domain findByName(TxContext txContext, KapuaId scopeId, String name) throws KapuaException;
+    Optional<Domain> findByName(TxContext txContext, KapuaId scopeId, String name) throws KapuaException;
 }
