@@ -172,7 +172,6 @@ public class DeviceTabInventoryTabDeploymentPackages extends TabItem {
                         }
 
                         treeGrid.unmask();
-                        rootTabPanel.getRefreshButton().enable();
                     }
 
                     @Override
