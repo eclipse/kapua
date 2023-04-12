@@ -19,9 +19,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.TabPanel.TabPosition;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
@@ -42,9 +40,6 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
     private DeviceView deviceTabs;
 
     private boolean initialized;
-
-    private ToolBar toolBar;
-    private Button refreshButton;
 
     private TabPanel tabsPanel;
     private DeviceTabInventoryTabInventory inventoryTab;
@@ -79,10 +74,6 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
             tabsPanel.setSelection(inventoryDeploymentPackageTab);
         }
 
-        if (toolBar != null) {
-            toolBar.setEnabled(getSelectedDevice() != null);
-        }
-
         doRefresh();
     }
 
@@ -101,7 +92,6 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
         devicesInventoryPanel.setBodyBorder(false);
         devicesInventoryPanel.setHeaderVisible(false);
         devicesInventoryPanel.setLayout(new FitLayout());
-        devicesInventoryPanel.setTopComponent(toolBar);
         devicesInventoryPanel.add(tabsPanel);
 
         add(devicesInventoryPanel);
@@ -252,7 +242,4 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
         }
     }
 
-    public Button getRefreshButton() {
-        return refreshButton;
-    }
 }
