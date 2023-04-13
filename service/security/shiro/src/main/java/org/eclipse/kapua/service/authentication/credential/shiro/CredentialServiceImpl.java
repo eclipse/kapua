@@ -66,7 +66,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CredentialServiceImpl.class);
 
-    private static final String PASSWORD_MIN_LENGTH = "password.minLength";
+    private static final String PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY = "password.minLength";
 
     /**
      * The minimum password length specified for the whole system. If not defined, assume 12; if defined and less than 12, assume 12.
@@ -430,10 +430,22 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
 
     @Override
     public int getMinimumPasswordLength(KapuaId scopeId) throws KapuaException {
-        Object minPasswordLengthConfigValue = getConfigValues(scopeId).get(PASSWORD_MIN_LENGTH);
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
+
+        //
+        // Check access
+        // None
+
+        // Get system minimum password length
         int minPasswordLength = systemMinimumPasswordLength;
-        if (minPasswordLengthConfigValue != null) {
-            minPasswordLength = Integer.parseInt(minPasswordLengthConfigValue.toString());
+
+        if (!KapuaId.ANY.equals(scopeId)) {
+            Object minPasswordLengthAccountConfigValue = getConfigValues(scopeId).get(PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY);
+            if (minPasswordLengthAccountConfigValue != null) {
+                minPasswordLength = Integer.parseInt(minPasswordLengthAccountConfigValue.toString());
+            }
         }
         return minPasswordLength;
     }
@@ -441,11 +453,11 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
     @Override
     protected boolean validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId) throws KapuaException {
         boolean valid = super.validateNewConfigValuesCoherence(ocd, updatedProps, scopeId, parentId);
-        if (updatedProps.get(PASSWORD_MIN_LENGTH) != null) {
+        if (updatedProps.get(PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY) != null) {
             // If we're going to set a new limit, check that it's not less than system limit
-            int newPasswordLimit = Integer.parseInt(updatedProps.get(PASSWORD_MIN_LENGTH).toString());
+            int newPasswordLimit = Integer.parseInt(updatedProps.get(PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY).toString());
             if (newPasswordLimit < systemMinimumPasswordLength || newPasswordLimit > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
-                throw new KapuaIllegalArgumentException(PASSWORD_MIN_LENGTH, String.valueOf(newPasswordLimit));
+                throw new KapuaIllegalArgumentException(PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY, String.valueOf(newPasswordLimit));
             }
         }
         return valid;
