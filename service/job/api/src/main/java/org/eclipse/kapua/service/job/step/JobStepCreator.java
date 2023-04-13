@@ -50,9 +50,39 @@ public interface JobStepCreator extends KapuaNamedEntityCreator<JobStep> {
 
     void setJobStepDefinitionId(KapuaId jobStepDefinitionId);
 
-    @XmlElementWrapper(name = "jobStepProperties")
-    @XmlElement(name = "jobStepProperty")
+    @XmlElementWrapper(name = "stepProperties")
+    @XmlElement(name = "stepProperty")
     <P extends JobStepProperty> List<P> getStepProperties();
 
-    void setJobStepProperties(List<JobStepProperty> jobStepProperties);
+    void setStepProperties(List<JobStepProperty> jobStepProperties);
+
+    /**
+     * @deprecated since 2.0.0. Please make use of {@link #getStepProperties()}. This method is deprecated
+     * because of issue #3580 (i.e. the step properties' field is called different depending on what request are you using).
+     */
+    @Deprecated
+    @XmlElementWrapper(name = "jobStepProperties")
+    @XmlElement(name = "jobStepProperty")
+    default <P extends JobStepProperty> List<P> getJobStepPropertiesDeprecated() {
+        return getStepProperties();
+    }
+
+    /**
+     * @deprecated since 2.0.0. Please make use of {@link #setStepProperties(List)}. This method is deprecated
+     * because of issue #3580 (i.e. the step properties' field is called different depending on what request are you using).
+     */
+    @Deprecated
+    default void setJobStepProperties(List<JobStepProperty> jobStepProperties) {
+        setStepProperties(jobStepProperties);
+    }
+
+
+    /**
+     * @deprecated since 2.0.0. Please make use of {@link #setStepProperties(List)}. This method is deprecated
+     * because of issue #3580 (i.e. the step properties' field is called different depending on what request are you using).
+     */
+    @Deprecated
+    default void setJobStepPropertiesDeprecated(List<JobStepProperty> jobStepProperties) {
+        setStepProperties(jobStepProperties);
+    }
 }

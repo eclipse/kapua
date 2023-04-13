@@ -62,8 +62,13 @@ components:
             jobStepDefinitionId:
               allOf:
                 - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            stepProperties:
+              type: array
+              items:
+                $ref: '../jobStepDefinition/jobStepDefinition.yaml#/components/schemas/jobStepDefinitionProperty'
             jobStepProperties:
               type: array
+              deprecated: true
               items:
                 $ref: '../jobStepDefinition/jobStepDefinition.yaml#/components/schemas/jobStepDefinitionProperty'
       example:
@@ -72,6 +77,10 @@ components:
         description: A step with a description
         stepIndex: 0
         jobStepDefinitionId: Aw
+        stepProperties:
+          - name: bundleId
+            propertyType: java.lang.String
+            propertyValue: '999'
         jobStepProperties:
           - name: bundleId
             propertyType: java.lang.String
