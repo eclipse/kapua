@@ -26,7 +26,7 @@ import org.eclipse.kapua.service.device.management.bundle.message.internal.Bundl
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestPayload;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponseMessage;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
-import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
+import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 
 import java.util.Date;
@@ -71,9 +71,16 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
         bundleRequestMessage.setChannel(bundleRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<BundleRequestChannel, BundleRequestPayload, BundleRequestMessage, BundleResponseMessage> bundleDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(bundleRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, BundleResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(bundleRequestMessage, timeout);
-        BundleResponseMessage responseMessage = deviceApplicationCall.send();
+        BundleResponseMessage responseMessage = bundleDeviceCallBuilder.send();
 
         //
         // Create event
@@ -116,9 +123,16 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
         bundleRequestMessage.setChannel(bundleRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<BundleRequestChannel, BundleRequestPayload, BundleRequestMessage, BundleResponseMessage> bundleDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(bundleRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do start
-        DeviceCallExecutor<?, ?, ?, BundleResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(bundleRequestMessage, timeout);
-        BundleResponseMessage responseMessage = deviceApplicationCall.send();
+        BundleResponseMessage responseMessage = bundleDeviceCallBuilder.send();
 
         //
         // Create event
@@ -161,9 +175,16 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
         bundleRequestMessage.setChannel(bundleRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<BundleRequestChannel, BundleRequestPayload, BundleRequestMessage, BundleResponseMessage> bundleDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(bundleRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do stop
-        DeviceCallExecutor<?, ?, ?, BundleResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(bundleRequestMessage, timeout);
-        BundleResponseMessage responseMessage = deviceApplicationCall.send();
+        BundleResponseMessage responseMessage = bundleDeviceCallBuilder.send();
 
         //
         // Create event
