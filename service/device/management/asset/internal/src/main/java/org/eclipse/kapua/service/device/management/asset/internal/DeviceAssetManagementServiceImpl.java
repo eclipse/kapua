@@ -27,7 +27,7 @@ import org.eclipse.kapua.service.device.management.asset.message.internal.AssetR
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponseMessage;
 import org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreService;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
-import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
+import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 import org.eclipse.kapua.service.device.management.exception.DeviceNeverConnectedException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
@@ -83,11 +83,17 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         assetRequestMessage.setChannel(assetRequestChannel);
 
         //
-        // Do get
-        DeviceCallExecutor<?, ?, ?, AssetResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(assetRequestMessage, timeout);
+        // Build call
+        DeviceCallBuilder<AssetRequestChannel, AssetRequestPayload, AssetRequestMessage, AssetResponseMessage> assetDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(assetRequestMessage)
+                        .withTimeoutOrDefault(timeout);
 
+        //
+        // Do get
         if (isDeviceConnected(scopeId, deviceId)) {
-            AssetResponseMessage responseMessage = deviceApplicationCall.send();
+            AssetResponseMessage responseMessage = assetDeviceCallBuilder.send();
 
             //
             // Create event
@@ -149,11 +155,17 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         assetRequestMessage.setChannel(assetRequestChannel);
 
         //
-        // Do read
-        DeviceCallExecutor<?, ?, ?, AssetResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(assetRequestMessage, timeout);
+        // Build call
+        DeviceCallBuilder<AssetRequestChannel, AssetRequestPayload, AssetRequestMessage, AssetResponseMessage> assetDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(assetRequestMessage)
+                        .withTimeoutOrDefault(timeout);
 
+        //
+        // Do read
         if (isDeviceConnected(scopeId, deviceId)) {
-            AssetResponseMessage responseMessage = deviceApplicationCall.send();
+            AssetResponseMessage responseMessage = assetDeviceCallBuilder.send();
 
             //
             // Create event
@@ -216,9 +228,16 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         assetRequestMessage.setChannel(assetRequestChannel);
 
         //
+        // Build call
+        DeviceCallBuilder<AssetRequestChannel, AssetRequestPayload, AssetRequestMessage, AssetResponseMessage> assetDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(assetRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do write
-        DeviceCallExecutor<?, ?, ?, AssetResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(assetRequestMessage, timeout);
-        AssetResponseMessage responseMessage = deviceApplicationCall.send();
+        AssetResponseMessage responseMessage = assetDeviceCallBuilder.send();
 
         //
         // Create event

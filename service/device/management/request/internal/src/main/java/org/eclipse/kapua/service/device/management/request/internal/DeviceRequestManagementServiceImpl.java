@@ -21,7 +21,7 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
-import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
+import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestBadMethodException;
 import org.eclipse.kapua.service.device.management.request.DeviceRequestManagementService;
 import org.eclipse.kapua.service.device.management.request.GenericRequestFactory;
@@ -98,9 +98,16 @@ public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagement
         genericRequestMessage.setPosition(requestInput.getPosition());
 
         //
-        // Do exec
-        DeviceCallExecutor<?, ?, ?, GenericResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(genericRequestMessage, timeout);
-        GenericResponseMessage responseMessage = deviceApplicationCall.send();
+        // Build request
+        DeviceCallBuilder<GenericRequestChannel, GenericRequestPayload, GenericRequestMessage, GenericResponseMessage> genericDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(genericRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
+        // Do it
+        GenericResponseMessage responseMessage = genericDeviceCallBuilder.send();
 
         //
         // Create event

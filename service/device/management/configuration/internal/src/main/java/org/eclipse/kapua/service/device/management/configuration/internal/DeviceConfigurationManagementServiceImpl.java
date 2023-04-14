@@ -23,7 +23,7 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
-import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
+import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
@@ -91,11 +91,17 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
         configurationRequestMessage.setChannel(configurationRequestChannel);
 
         //
-        // Do get
-        DeviceCallExecutor<?, ?, ?, ConfigurationResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(configurationRequestMessage, timeout);
+        // Build request
+        DeviceCallBuilder<ConfigurationRequestChannel, ConfigurationRequestPayload, ConfigurationRequestMessage, ConfigurationResponseMessage> configurationDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(configurationRequestMessage)
+                        .withTimeoutOrDefault(timeout);
 
+        //
+        // Do get
         if (isDeviceConnected(scopeId, deviceId)) {
-            ConfigurationResponseMessage responseMessage = deviceApplicationCall.send();
+            ConfigurationResponseMessage responseMessage = configurationDeviceCallBuilder.send();
 
             //
             // Create event
@@ -170,9 +176,16 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
         configurationRequestMessage.setChannel(configurationRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<ConfigurationRequestChannel, ConfigurationRequestPayload, ConfigurationRequestMessage, ConfigurationResponseMessage> configurationDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(configurationRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do put
-        DeviceCallExecutor<?, ?, ?, ConfigurationResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(configurationRequestMessage, timeout);
-        ConfigurationResponseMessage responseMessage = deviceApplicationCall.send();
+        ConfigurationResponseMessage responseMessage = configurationDeviceCallBuilder.send();
 
         //
         // Create event
@@ -232,9 +245,16 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
         configurationRequestMessage.setChannel(configurationRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<ConfigurationRequestChannel, ConfigurationRequestPayload, ConfigurationRequestMessage, ConfigurationResponseMessage> configurationDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(configurationRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do put
-        DeviceCallExecutor<?, ?, ?, ConfigurationResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(configurationRequestMessage, timeout);
-        ConfigurationResponseMessage responseMessage = deviceApplicationCall.send();
+        ConfigurationResponseMessage responseMessage = configurationDeviceCallBuilder.send();
 
         //
         // Create event
