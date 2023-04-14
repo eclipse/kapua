@@ -39,6 +39,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.transport.exception.TransportException;
 
 import java.util.Date;
 
@@ -111,7 +112,7 @@ public class DeviceCallBuilder<C extends KapuaRequestChannel, P extends KapuaReq
      * @throws DeviceManagementSendException    If sending the {@link KapuaRequestMessage} goes on error.
      * @since 1.0.0
      */
-    public RS send() throws KapuaEntityNotFoundException, KapuaIllegalArgumentException, DeviceNotConnectedException, DeviceManagementTimeoutException, DeviceManagementSendException {
+    public RS send() throws KapuaEntityNotFoundException, KapuaIllegalArgumentException, DeviceNotConnectedException, DeviceManagementTimeoutException, DeviceManagementSendException, TransportException {
 
         deviceCallPreChecks();
 
@@ -167,6 +168,8 @@ public class DeviceCallBuilder<C extends KapuaRequestChannel, P extends KapuaReq
             return tClientToKapua.translate(responseMessage);
         } catch (DeviceCallTimeoutException dcte) {
             throw new DeviceManagementTimeoutException(dcte, timeout);
+        } catch (TransportException te) {
+            throw te;
         } catch (Exception e) {
             throw new DeviceManagementSendException(e, requestMessage);
         }
@@ -181,7 +184,7 @@ public class DeviceCallBuilder<C extends KapuaRequestChannel, P extends KapuaReq
      * @throws DeviceManagementSendException If sending the {@link KapuaRequestMessage} goes on error.
      * @since 1.4.0
      */
-    public void sendAndForget() throws KapuaEntityNotFoundException, KapuaIllegalArgumentException, DeviceNotConnectedException, DeviceManagementTimeoutException, DeviceManagementSendException {
+    public void sendAndForget() throws KapuaEntityNotFoundException, KapuaIllegalArgumentException, DeviceNotConnectedException, DeviceManagementSendException, TransportException {
 
         deviceCallPreChecks();
 
@@ -229,10 +232,17 @@ public class DeviceCallBuilder<C extends KapuaRequestChannel, P extends KapuaReq
                 default:
                     throw new DeviceManagementRequestBadMethodException(requestMessage.getChannel().getMethod());
             }
+        } catch (TransportException te) {
+            throw te;
         } catch (Exception e) {
             throw new DeviceManagementSendException(e, requestMessage);
         }
     }
+
+
+    //
+    // Private methods
+    //
 
     private void deviceCallPreChecks() throws DeviceManagementSendException, KapuaEntityNotFoundException, DeviceNotConnectedException, KapuaIllegalNullArgumentException {
         //

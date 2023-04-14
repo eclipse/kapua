@@ -36,6 +36,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.transport.exception.TransportException;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.validation.constraints.NotNull;
@@ -101,7 +102,7 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
      * @throws DeviceManagementSendException    If sending the {@link KapuaRequestMessage} goes on error.
      * @since 1.0.0
      */
-    public RS send() throws KapuaEntityNotFoundException, DeviceNotConnectedException, DeviceManagementTimeoutException, DeviceManagementSendException {
+    public RS send() throws KapuaEntityNotFoundException, DeviceNotConnectedException, DeviceManagementTimeoutException, DeviceManagementSendException, TransportException {
 
         //
         // Check Device existence
@@ -173,6 +174,8 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
             return tClientToKapua.translate(responseMessage);
         } catch (DeviceCallTimeoutException dcte) {
             throw new DeviceManagementTimeoutException(dcte, timeout);
+        } catch (TransportException te) {
+            throw te;
         } catch (Exception e) {
             throw new DeviceManagementSendException(e, requestMessage);
         }
