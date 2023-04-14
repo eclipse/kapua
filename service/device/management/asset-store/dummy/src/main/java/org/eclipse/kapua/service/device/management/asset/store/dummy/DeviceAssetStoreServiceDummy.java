@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.store.dummy;
 
+import org.eclipse.kapua.commons.configuration.metatype.EmptyTocd;
+import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -31,30 +33,33 @@ import java.util.Map;
 public class DeviceAssetStoreServiceDummy implements DeviceAssetStoreService {
 
     @Override
-    public DeviceAssets getAssets(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets) {
-        return null;
+    public DeviceAssets getAssets(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets) throws KapuaServiceDisabledException {
+        throw new KapuaServiceDisabledException(this.getClass().getName());
     }
 
     @Override
-    public DeviceAssets getAssetsValues(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets) {
-        return null;
+    public DeviceAssets getAssetsValues(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets) throws KapuaServiceDisabledException {
+        throw new KapuaServiceDisabledException(this.getClass().getName());
     }
 
     @Override
-    public void storeAssets(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets) {
+    public void storeAssets(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets) throws KapuaServiceDisabledException {
+        throw new KapuaServiceDisabledException(this.getClass().getName());
     }
 
     @Override
-    public void storeAssetsValues(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets) {
+    public void storeAssetsValues(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets) throws KapuaServiceDisabledException {
+        throw new KapuaServiceDisabledException(this.getClass().getName());
     }
 
     @Override
-    public void storeAssetValues(KapuaDataMessage message) {
+    public void storeAssetValues(KapuaDataMessage message) throws KapuaServiceDisabledException {
+        throw new KapuaServiceDisabledException(this.getClass().getName());
     }
 
     @Override
     public KapuaTocd getConfigMetadata(KapuaId scopeId) {
-        return null;
+        return new EmptyTocd();
     }
 
     @Override
@@ -67,12 +72,13 @@ public class DeviceAssetStoreServiceDummy implements DeviceAssetStoreService {
     }
 
     @Override
-    public DeviceAssetStoreSettings getApplicationSettings(KapuaId scopeId, KapuaId deviceId) {
-        return null;
+    public DeviceAssetStoreSettings getApplicationSettings(KapuaId scopeId, KapuaId deviceId) throws KapuaServiceDisabledException {
+        throw new KapuaServiceDisabledException(this.getClass().getName());
     }
 
     @Override
-    public void setApplicationSettings(KapuaId scopeId, KapuaId deviceId, DeviceAssetStoreSettings deviceApplicationSettings) {
+    public void setApplicationSettings(KapuaId scopeId, KapuaId deviceId, DeviceAssetStoreSettings deviceApplicationSettings) throws KapuaServiceDisabledException {
+        throw new KapuaServiceDisabledException(this.getClass().getName());
     }
 
     @Override

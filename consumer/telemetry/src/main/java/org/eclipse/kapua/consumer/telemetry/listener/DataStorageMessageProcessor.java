@@ -22,6 +22,7 @@ import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.camel.listener.AbstractProcessor;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
@@ -76,7 +77,11 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
 
         // Update asset values in AssetStoreService
         if (message.getMessage().getChannel().toString().startsWith("W1/A1")) {
-            deviceAssetStoreService.storeAssetValues((KapuaDataMessage) message.getMessage());
+            KapuaId scopeId = message.getMessage().getScopeId();
+            KapuaId deviceId = message.getMessage().getDeviceId();
+            if (deviceAssetStoreService.isServiceEnabled(scopeId) && deviceAssetStoreService.isApplicationEnabled(scopeId,deviceId)) {
+                deviceAssetStoreService.storeAssetValues((KapuaDataMessage) message.getMessage());
+            }
         } else {
             LOG.debug("This message did not matched W1/A1. Channel was: {}", message.getMessage().getChannel());
         }
