@@ -26,7 +26,7 @@ import org.eclipse.kapua.service.device.management.command.message.internal.Comm
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponseMessage;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponsePayload;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
-import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
+import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 
 import javax.inject.Singleton;
@@ -80,9 +80,16 @@ public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagement
         commandRequestMessage.setChannel(commandRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<CommandRequestChannel, CommandRequestPayload, CommandRequestMessage, CommandResponseMessage> commandDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(commandRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do exec
-        DeviceCallExecutor<?, ?, ?, CommandResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(commandRequestMessage, timeout);
-        CommandResponseMessage responseMessage = deviceApplicationCall.send();
+        CommandResponseMessage responseMessage = commandDeviceCallBuilder.send();
 
         //
         // Create event

@@ -18,7 +18,7 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
-import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
+import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationAppProperties;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService;
@@ -68,9 +68,16 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
         snapshotRequestMessage.setChannel(snapshotRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<SnapshotRequestChannel, SnapshotRequestPayload, SnapshotRequestMessage, SnapshotResponseMessage> snapshotDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(snapshotRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, SnapshotResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(snapshotRequestMessage, timeout);
-        SnapshotResponseMessage responseMessage = deviceApplicationCall.send();
+        SnapshotResponseMessage responseMessage = snapshotDeviceCallBuilder.send();
 
         //
         // Create event
@@ -112,9 +119,16 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
         snapshotRequestMessage.setChannel(snapshotRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<SnapshotRequestChannel, SnapshotRequestPayload, SnapshotRequestMessage, SnapshotResponseMessage> snapshotDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(snapshotRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do exec
-        DeviceCallExecutor<?, ?, ?, SnapshotResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(snapshotRequestMessage, timeout);
-        SnapshotResponseMessage responseMessage = deviceApplicationCall.send();
+        SnapshotResponseMessage responseMessage = snapshotDeviceCallBuilder.send();
 
         //
         // Create event

@@ -18,7 +18,7 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
-import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
+import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementService;
 import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryBundleExecRequestMessage;
@@ -93,9 +93,16 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         inventoryRequestMessage.setChannel(inventoryRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<InventoryRequestChannel, InventoryRequestPayload, InventoryEmptyRequestMessage, InventoryListResponseMessage> inventoryDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(inventoryRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, InventoryListResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventoryListResponseMessage responseMessage = deviceApplicationCall.send();
+        InventoryListResponseMessage responseMessage = inventoryDeviceCallBuilder.send();
 
         //
         // Create event
@@ -142,9 +149,16 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         inventoryRequestMessage.setChannel(inventoryRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<InventoryRequestChannel, InventoryRequestPayload, InventoryEmptyRequestMessage, InventoryBundlesResponseMessage> inventoryDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(inventoryRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, InventoryBundlesResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventoryBundlesResponseMessage responseMessage = deviceApplicationCall.send();
+        InventoryBundlesResponseMessage responseMessage = inventoryDeviceCallBuilder.send();
 
         //
         // Create event
@@ -199,9 +213,16 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         inventoryRequestMessage.setChannel(inventoryRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<InventoryRequestChannel, InventoryRequestPayload, InventoryBundleExecRequestMessage, InventoryNoContentResponseMessage> inventoryDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(inventoryRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do exec
-        DeviceCallExecutor<?, ?, ?, InventoryNoContentResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventoryNoContentResponseMessage responseMessage = deviceApplicationCall.send();
+        InventoryNoContentResponseMessage responseMessage = inventoryDeviceCallBuilder.send();
 
         //
         // Create event
@@ -249,8 +270,15 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Do get
-        DeviceCallExecutor<?, ?, ?, InventoryContainersResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventoryContainersResponseMessage responseMessage = deviceApplicationCall.send();
+        //
+        // Build request
+        DeviceCallBuilder<InventoryRequestChannel, InventoryRequestPayload, InventoryEmptyRequestMessage, InventoryContainersResponseMessage> inventoryDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(inventoryRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        InventoryContainersResponseMessage responseMessage = inventoryDeviceCallBuilder.send();
 
         //
         // Create event
@@ -307,9 +335,16 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         inventoryRequestMessage.setChannel(inventoryRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<InventoryRequestChannel, InventoryRequestPayload, InventoryContainerExecRequestMessage, InventoryNoContentResponseMessage> inventoryDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(inventoryRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do exec
-        DeviceCallExecutor<?, ?, ?, InventoryNoContentResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventoryNoContentResponseMessage responseMessage = deviceApplicationCall.send();
+        InventoryNoContentResponseMessage responseMessage = inventoryDeviceCallBuilder.send();
 
         //
         // Create event
@@ -357,8 +392,13 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Do get
-        DeviceCallExecutor<?, ?, ?, InventorySystemPackagesResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventorySystemPackagesResponseMessage responseMessage = deviceApplicationCall.send();
+        DeviceCallBuilder<InventoryRequestChannel, InventoryRequestPayload, InventoryEmptyRequestMessage, InventorySystemPackagesResponseMessage> inventoryDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(inventoryRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        InventorySystemPackagesResponseMessage responseMessage = inventoryDeviceCallBuilder.send();
 
         //
         // Create event
@@ -405,9 +445,16 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         inventoryRequestMessage.setChannel(inventoryRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<InventoryRequestChannel, InventoryRequestPayload, InventoryEmptyRequestMessage, InventoryPackagesResponseMessage> inventoryDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(inventoryRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, InventoryPackagesResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventoryPackagesResponseMessage responseMessage = deviceApplicationCall.send();
+        InventoryPackagesResponseMessage responseMessage = inventoryDeviceCallBuilder.send();
 
         //
         // Create event

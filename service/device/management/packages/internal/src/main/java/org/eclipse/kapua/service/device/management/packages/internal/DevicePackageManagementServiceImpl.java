@@ -22,7 +22,7 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
-import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
+import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
@@ -104,9 +104,16 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestMessage.setChannel(packageRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage, PackageResponseMessage> packageDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(packageRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, timeout);
-        PackageResponseMessage responseMessage = deviceApplicationCall.send();
+        PackageResponseMessage responseMessage = packageDeviceCallBuilder.send();
 
         //
         // Create event
@@ -202,11 +209,18 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         KapuaId deviceManagementOperationId = createManagementOperation(scopeId, deviceId, operationId, packageRequestMessage);
 
         //
+        // Build request
+        DeviceCallBuilder<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage, PackageResponseMessage> packageDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(packageRequestMessage)
+                        .withTimeoutOrDefault(packageDownloadOptions.getTimeout());
+
+        //
         // Do exec
-        DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, packageDownloadOptions.getTimeout());
         PackageResponseMessage responseMessage;
         try {
-            responseMessage = deviceApplicationCall.send();
+            responseMessage = packageDeviceCallBuilder.send();
         } catch (Exception e) {
             closeManagementOperation(scopeId, deviceId, operationId);
             throw e;
@@ -259,9 +273,16 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestMessage.setChannel(packageRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage, PackageResponseMessage> packageDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(packageRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, timeout);
-        PackageResponseMessage responseMessage = deviceApplicationCall.send();
+        PackageResponseMessage responseMessage = packageDeviceCallBuilder.send();
 
         //
         // Create event
@@ -311,9 +332,16 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestMessage.setChannel(packageRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage, PackageResponseMessage> packageDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(packageRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do del
-        DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, timeout);
-        PackageResponseMessage responseMessage = deviceApplicationCall.send();
+        PackageResponseMessage responseMessage = packageDeviceCallBuilder.send();
 
         //
         // Create event
@@ -380,11 +408,18 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         KapuaId deviceManagementOperationId = createManagementOperation(scopeId, deviceId, operationId, packageRequestMessage);
 
         //
+        // Build request
+        DeviceCallBuilder<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage, PackageResponseMessage> packageDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(packageRequestMessage)
+                        .withTimeoutOrDefault(packageInstallOptions.getTimeout());
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, packageInstallOptions.getTimeout());
         PackageResponseMessage responseMessage;
         try {
-            responseMessage = deviceApplicationCall.send();
+            responseMessage = packageDeviceCallBuilder.send();
         } catch (Exception e) {
             closeManagementOperation(scopeId, deviceId, operationId);
             throw e;
@@ -437,9 +472,16 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestMessage.setChannel(packageRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage, PackageResponseMessage> packageDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(packageRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, timeout);
-        PackageResponseMessage responseMessage = deviceApplicationCall.send();
+        PackageResponseMessage responseMessage = packageDeviceCallBuilder.send();
 
         //
         // Create event
@@ -506,11 +548,18 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         KapuaId deviceManagementOperationId = createManagementOperation(scopeId, deviceId, operationId, packageRequestMessage);
 
         //
-        // Do get
-        DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, packageUninstallOptions.getTimeout());
+        // Build request
+        DeviceCallBuilder<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage, PackageResponseMessage> packageDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(packageRequestMessage)
+                        .withTimeoutOrDefault(packageUninstallOptions.getTimeout());
+
+        //
+        // Do uninstall
         PackageResponseMessage responseMessage;
         try {
-            responseMessage = deviceApplicationCall.send();
+            responseMessage = packageDeviceCallBuilder.send();
         } catch (Exception e) {
             closeManagementOperation(scopeId, deviceId, operationId);
             throw e;
@@ -563,9 +612,16 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestMessage.setChannel(packageRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage, PackageResponseMessage> packageDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(packageRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, timeout);
-        PackageResponseMessage responseMessage = deviceApplicationCall.send();
+        PackageResponseMessage responseMessage = packageDeviceCallBuilder.send();
 
         //
         // Create event
