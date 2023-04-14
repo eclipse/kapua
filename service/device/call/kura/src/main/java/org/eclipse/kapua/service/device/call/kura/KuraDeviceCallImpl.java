@@ -41,6 +41,7 @@ import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.TransportFacade;
 import org.eclipse.kapua.transport.exception.TransportClientGetException;
 import org.eclipse.kapua.transport.exception.TransportClientPoolExhaustedException;
+import org.eclipse.kapua.transport.exception.TransportException;
 import org.eclipse.kapua.transport.exception.TransportTimeoutException;
 import org.eclipse.kapua.transport.message.TransportMessage;
 
@@ -69,49 +70,49 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
 
     @Override
     public KuraResponseMessage create(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
-            throws DeviceCallTimeoutException, DeviceCallSendException {
+            throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
         return sendInternal(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage read(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
-            throws DeviceCallTimeoutException, DeviceCallSendException {
+            throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
         return sendInternal(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage options(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
-            throws DeviceCallTimeoutException, DeviceCallSendException {
+            throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
         return sendInternal(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage delete(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
-            throws DeviceCallTimeoutException, DeviceCallSendException {
+            throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
         return sendInternal(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage execute(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
-            throws DeviceCallTimeoutException, DeviceCallSendException {
+            throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
         return sendInternal(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage write(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
-            throws DeviceCallTimeoutException, DeviceCallSendException {
+            throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
         return sendInternal(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage submit(KuraRequestMessage requestMessage, @Nullable Long timeout)
-            throws DeviceCallTimeoutException, DeviceCallSendException {
+            throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
         return sendInternal(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage cancel(KuraRequestMessage requestMessage, @Nullable Long timeout)
-            throws DeviceCallTimeoutException, DeviceCallSendException {
+            throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
         return sendInternal(requestMessage, timeout);
     }
 
@@ -134,7 +135,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
      * @throws DeviceCallSendException    if sending the request produces any error.
      * @since 1.0.0
      */
-    protected KuraResponseMessage sendInternal(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException {
+    protected KuraResponseMessage sendInternal(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
 
         KuraResponseMessage response = null;
         try {
@@ -178,6 +179,8 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
             }
         } catch (TransportTimeoutException te) {
             throw new DeviceCallTimeoutException(te, timeout);
+        } catch (TransportException te) {
+            throw te;
         } catch (KapuaException se) {
             throw new DeviceCallSendException(se, requestMessage);
         }

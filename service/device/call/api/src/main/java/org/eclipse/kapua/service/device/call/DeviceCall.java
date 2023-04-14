@@ -12,13 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.service.device.call.exception.DeviceCallSendException;
 import org.eclipse.kapua.service.device.call.exception.DeviceCallTimeoutException;
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestMessage;
 import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponseMessage;
+import org.eclipse.kapua.transport.exception.TransportException;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -42,7 +43,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
      * @throws DeviceCallSendException    if sending the request produces any error.
      * @since 1.0.0
      */
-    RS read(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
+    RS read(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException, TransportException;
 
     /**
      * Performs a 'create' request.
@@ -54,7 +55,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
      * @throws DeviceCallSendException    if sending the request produces any error.
      * @since 1.0.0
      */
-    RS create(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
+    RS create(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException, TransportException;
 
     /**
      * Performs a 'write' request.
@@ -66,7 +67,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
      * @throws DeviceCallSendException    if sending the request produces any error.
      * @since 1.0.0
      */
-    RS write(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
+    RS write(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException, TransportException;
 
     /**
      * Performs a 'delete' request.
@@ -78,7 +79,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
      * @throws DeviceCallSendException    if sending the request produces any error.
      * @since 1.0.0
      */
-    RS delete(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
+    RS delete(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException, TransportException;
 
     /**
      * Performs an 'execute' request.
@@ -90,7 +91,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
      * @throws DeviceCallSendException    if sending the request produces any error.
      * @since 1.0.0
      */
-    RS execute(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
+    RS execute(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException, TransportException;
 
     /**
      * Performs an 'options' request.
@@ -102,7 +103,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
      * @throws DeviceCallSendException    if sending the request produces any error.
      * @since 1.0.0
      */
-    RS options(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
+    RS options(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException, TransportException;
 
     /**
      * Performs a SUBMIT request.
@@ -115,7 +116,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
      * @throws DeviceCallSendException    if sending the request produces any error.
      * @since 1.3.0
      */
-    RS submit(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
+    RS submit(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException, TransportException;
 
     /**
      * Performs a CANCEL request.
@@ -128,7 +129,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
      * @throws DeviceCallSendException    if sending the request produces any error.
      * @since 1.3.0
      */
-    RS cancel(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
+    RS cancel(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException, TransportException;
 
     /**
      * Get the {@link DeviceMessage} type.
