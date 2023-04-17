@@ -21,6 +21,7 @@ import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationAppProperties;
+import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
@@ -28,6 +29,8 @@ import org.eclipse.kapua.service.device.management.snapshot.message.internal.Sna
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestMessage;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestPayload;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotResponseMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
@@ -38,6 +41,8 @@ import java.util.Date;
  */
 @KapuaProvider
 public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceSnapshotManagementService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DeviceConfigurationManagementServiceImpl.class);
 
     @Override
     public DeviceSnapshots get(KapuaId scopeId, KapuaId deviceId, Long timeout)
@@ -77,7 +82,13 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Do get
-        SnapshotResponseMessage responseMessage = snapshotDeviceCallBuilder.send();
+        SnapshotResponseMessage responseMessage;
+        try {
+            responseMessage = snapshotDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while getting DeviceSnapshots for Device {}. Error: {}", deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -128,7 +139,13 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Do exec
-        SnapshotResponseMessage responseMessage = snapshotDeviceCallBuilder.send();
+        SnapshotResponseMessage responseMessage;
+        try {
+            responseMessage = snapshotDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while rolling back to DeviceSnapshot {} for Device {}. Error: {}", snapshotId, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event

@@ -29,6 +29,8 @@ import org.eclipse.kapua.service.device.management.command.message.internal.Comm
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
@@ -39,6 +41,8 @@ import java.util.Date;
  */
 @KapuaProvider
 public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceCommandManagementService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DeviceCommandManagementServiceImpl.class);
 
     @Override
     public DeviceCommandOutput exec(KapuaId scopeId, KapuaId deviceId, DeviceCommandInput commandInput, Long timeout)
@@ -89,7 +93,14 @@ public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Do exec
-        CommandResponseMessage responseMessage = commandDeviceCallBuilder.send();
+        CommandResponseMessage responseMessage;
+
+        try {
+            responseMessage = commandDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while executing DeviceCommand {} with arguments {} for Device {}. Error: {}", commandInput.getCommand(), String.join(" ", commandInput.getArguments()), deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event

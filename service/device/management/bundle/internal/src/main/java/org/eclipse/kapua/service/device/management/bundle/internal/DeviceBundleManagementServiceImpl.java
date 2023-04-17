@@ -28,6 +28,8 @@ import org.eclipse.kapua.service.device.management.bundle.message.internal.Bundl
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
@@ -38,6 +40,8 @@ import java.util.Date;
  */
 @KapuaProvider
 public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceBundleManagementService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DeviceBundleManagementServiceImpl.class);
 
     private static final String SCOPE_ID = "scopeId";
     private static final String DEVICE_ID = "deviceId";
@@ -80,7 +84,13 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
 
         //
         // Do get
-        BundleResponseMessage responseMessage = bundleDeviceCallBuilder.send();
+        BundleResponseMessage responseMessage;
+        try {
+            responseMessage = bundleDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while reading DeviceBundles for Device {}. Error: {}", deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -132,7 +142,13 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
 
         //
         // Do start
-        BundleResponseMessage responseMessage = bundleDeviceCallBuilder.send();
+        BundleResponseMessage responseMessage;
+        try {
+            responseMessage = bundleDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while starting DeviceBundle {} for Device {}. Error: {}", bundleId, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -184,7 +200,13 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
 
         //
         // Do stop
-        BundleResponseMessage responseMessage = bundleDeviceCallBuilder.send();
+        BundleResponseMessage responseMessage;
+        try {
+            responseMessage = bundleDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while stopping DeviceBundle {} for Device {}. Error: {}", bundleId, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event

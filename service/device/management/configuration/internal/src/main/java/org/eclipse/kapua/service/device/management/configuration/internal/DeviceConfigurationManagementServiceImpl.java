@@ -22,8 +22,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
-import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
-import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory;
@@ -34,6 +32,8 @@ import org.eclipse.kapua.service.device.management.configuration.message.interna
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationResponseMessage;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
@@ -47,7 +47,7 @@ import java.util.Date;
 @KapuaProvider
 public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceConfigurationManagementService {
 
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private static final Logger LOG = LoggerFactory.getLogger(DeviceConfigurationManagementServiceImpl.class);
 
     private static final DeviceConfigurationFactory DEVICE_CONFIGURATION_FACTORY = LOCATOR.getFactory(DeviceConfigurationFactory.class);
 
@@ -94,7 +94,13 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
         //
         // Do get
-        ConfigurationResponseMessage responseMessage = configurationDeviceCallBuilder.send();
+        ConfigurationResponseMessage responseMessage;
+        try {
+            responseMessage = configurationDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while getting DeviceConfiguration with id {} and DeviceComponentConfiguration id {} for Device {}. Error: {}", configurationId, configurationComponentPid, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -155,7 +161,13 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
         //
         // Do put
-        ConfigurationResponseMessage responseMessage = configurationDeviceCallBuilder.send();
+        ConfigurationResponseMessage responseMessage;
+        try {
+            responseMessage = configurationDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while putting DeviceComponentConfiguration {} for Device {}. Error: {}", deviceComponentConfiguration, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -224,7 +236,13 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
         //
         // Do put
-        ConfigurationResponseMessage responseMessage = configurationDeviceCallBuilder.send();
+        ConfigurationResponseMessage responseMessage;
+        try {
+            responseMessage = configurationDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while putting DeviceConfiguration {} for Device {}. Error: {}", deviceConfiguration, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event

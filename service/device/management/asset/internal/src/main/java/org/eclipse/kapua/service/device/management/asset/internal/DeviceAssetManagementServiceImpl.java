@@ -28,6 +28,8 @@ import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagem
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
@@ -38,6 +40,8 @@ import java.util.Date;
  */
 @KapuaProvider
 public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceAssetManagementService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DeviceAssetManagementServiceImpl.class);
 
     private static final String SCOPE_ID = "scopeId";
     private static final String DEVICE_ID = "deviceId";
@@ -87,7 +91,13 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
         //
         // Do get
-        AssetResponseMessage responseMessage = assetDeviceCallBuilder.send();
+        AssetResponseMessage responseMessage;
+        try {
+            responseMessage = assetDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while reading DeviceAssets {} for Device {}. Error: {}", deviceAssets, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -142,7 +152,13 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
         //
         // Do read
-        AssetResponseMessage responseMessage = assetDeviceCallBuilder.send();
+        AssetResponseMessage responseMessage;
+        try {
+            responseMessage = assetDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while reading DeviceAssets values {} for Device {}. Error: {}", deviceAssets, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -197,7 +213,13 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
         //
         // Do write
-        AssetResponseMessage responseMessage = assetDeviceCallBuilder.send();
+        AssetResponseMessage responseMessage;
+        try {
+            responseMessage = assetDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while writing DeviceAssets {} for Device {}. Error: {}", deviceAssets, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
