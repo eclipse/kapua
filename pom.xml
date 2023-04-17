@@ -44,7 +44,7 @@
 
         <!-- Dependencies versions -->
         <camel.version>3.11.0</camel.version> <!-- latest 3.11.0 -->
-        <spring.version>5.3.23</spring.version> <!-- latest 5.3.8 -->
+        <spring.version>5.3.27</spring.version> <!-- latest 5.3.8 -->
         <spring-security.version>5.7.5</spring-security.version> <!-- latest 5.5.1 -->
         <spring-boot.version>2.5.14</spring-boot.version> <!-- latest 2.5.2 --> <!-- 2.3.x is not fully supported by camel (will be on camel 3.4) -->
 
