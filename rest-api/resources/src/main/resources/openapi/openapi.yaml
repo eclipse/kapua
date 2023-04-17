@@ -26,7 +26,9 @@ info:
     All Eclipse Kapua REST API, except the Authentication endpoints that performs an Authentication, need an Authentication Token to be executed. You will retrieve such token as a response of one of the Authentication calls, in the form of a [JWT](https://jwt.io) as the value of the property `tokenId`. For every subsequent call, you need to pass such token in the `Authorization` HTTP Header, with the `Bearer` type.
 
 servers:
-  - description: Kapua REST API Endpoint
+  - description: Kapua REST API Endpoint hosted where this definition file is hosted
+    url: /v1
+  - description: Kapua REST API Endpoint custom
     url: "{scheme}://{host}:{port}/{basePath}"
     variables:
       scheme:
