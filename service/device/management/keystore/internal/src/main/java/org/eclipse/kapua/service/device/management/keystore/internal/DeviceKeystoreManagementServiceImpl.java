@@ -119,7 +119,13 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Do get
-        KeystoreResponseMessage responseMessage = keystoreDeviceCallBuilder.send();
+        KeystoreResponseMessage responseMessage;
+        try {
+            responseMessage = keystoreDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while getting DeviceKeystores for Device {}. Error: {}", deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -193,7 +199,13 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Do get
-        KeystoreResponseMessage responseMessage = keystoreDeviceCallBuilder.send();
+        KeystoreResponseMessage responseMessage;
+        try {
+            responseMessage = keystoreDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while getting DeviceKeystoreItems with DeviceKeystoreQuery {} for Device {}. Error: {}", itemQuery, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -260,7 +272,13 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Do get
-        KeystoreResponseMessage responseMessage = keystoreDeviceCallBuilder.send();
+        KeystoreResponseMessage responseMessage;
+        try {
+            responseMessage = keystoreDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while getting DeviceKeystoreItem with alias {} in DeviceKeystore {} for Device {}. Error: {}", alias, keystoreId, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -353,7 +371,13 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Do get
-        KeystoreResponseMessage responseMessage = keystoreDeviceCallBuilder.send();
+        KeystoreResponseMessage responseMessage;
+        try {
+            responseMessage = keystoreDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while creating DeviceKeystoreCertificate {} for Device {}. Error: {}", keystoreCertificate, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -414,7 +438,13 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Do get
-        KeystoreResponseMessage responseMessage = keystoreDeviceCallBuilder.send();
+        KeystoreResponseMessage responseMessage;
+        try {
+            responseMessage = keystoreDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while creating DeviceKeystoreKeypair {} for Device {}. Error: {}", keystoreKeypair, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -475,7 +505,13 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Do get
-        KeystoreResponseMessage responseMessage = keystoreDeviceCallBuilder.send();
+        KeystoreResponseMessage responseMessage;
+        try {
+            responseMessage = keystoreDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while creating DeviceKeystoreCsrInfo {} for Device {}. Error: {}", keystoreCSRInfo, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -542,7 +578,13 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Do get
-        KeystoreResponseMessage responseMessage = keystoreDeviceCallBuilder.send();
+        KeystoreResponseMessage responseMessage;
+        try {
+            responseMessage = keystoreDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while deleting DeviceKeystoreItem with alias {} in DeviceKeystore {} for Device {}. Error: {}", alias, keystoreId, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
