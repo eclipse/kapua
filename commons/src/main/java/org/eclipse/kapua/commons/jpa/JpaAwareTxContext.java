@@ -24,6 +24,5 @@ public interface JpaAwareTxContext extends TxContext {
         throw new RuntimeException("This repo needs to run within the context of a JPA transaction");
     }
 
-    EntityManager getEntityManager();
-
+    javax.persistence.EntityManager getEntityManager();
 }

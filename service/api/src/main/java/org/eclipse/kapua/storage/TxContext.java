@@ -16,12 +16,26 @@ import org.eclipse.kapua.KapuaException;
 
 import java.io.Closeable;
 
+/**
+ * Represents the in-flight transaction, most likely handled by a {@link TxManager}
+ */
 public interface TxContext extends Closeable {
+    /**
+     * Commit the current transaction. In most cases, this should be invoked only by  the {@link TxManager}
+     */
     void commit();
 
+    /**
+     * Rolls back the current transaction. In most cases, this should be invoked only by  the {@link TxManager}
+     */
     void rollback();
 
+    /**
+     * Convert exceptions happening within the transaction in a more generic form
+     */
     KapuaException convertPersistenceException(Exception e);
 
     boolean isRecoverableException(Exception ex);
 }
+
+
