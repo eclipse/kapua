@@ -47,6 +47,7 @@ components:
               type: string
               enum:
                 - ACCEPTED
+                - SENT
                 - BAD_REQUEST
                 - NOT_FOUND
                 - INTERNAL_ERROR
