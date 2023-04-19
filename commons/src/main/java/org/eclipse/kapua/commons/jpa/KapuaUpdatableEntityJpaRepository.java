@@ -49,10 +49,11 @@ public class KapuaUpdatableEntityJpaRepository<E extends KapuaUpdatableEntity, C
     }
 
     protected E doUpdate(javax.persistence.EntityManager em, E currentEntity, E updatedEntity) {
-        AbstractKapuaUpdatableEntity updatableEntity = (AbstractKapuaUpdatableEntity) updatedEntity;
-        updatableEntity.setCreatedOn(currentEntity.getCreatedOn());
-        updatableEntity.setCreatedBy(currentEntity.getCreatedBy());
-
+        if (updatedEntity instanceof AbstractKapuaUpdatableEntity) {
+            AbstractKapuaUpdatableEntity updatableEntity = (AbstractKapuaUpdatableEntity) updatedEntity;
+            updatableEntity.setCreatedOn(currentEntity.getCreatedOn());
+            updatableEntity.setCreatedBy(currentEntity.getCreatedBy());
+        }
         em.merge(updatedEntity);
         em.flush();
         em.refresh(currentEntity);

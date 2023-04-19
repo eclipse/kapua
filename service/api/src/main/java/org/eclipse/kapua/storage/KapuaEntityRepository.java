@@ -23,7 +23,7 @@ import javax.validation.constraints.Null;
 import java.util.Optional;
 
 /**
- * {@link KapuaEntityRepository} utility methods.
+ * {@link KapuaEntityRepository} base methods.
  *
  * @since 2.0.0
  */
@@ -59,7 +59,7 @@ public interface KapuaEntityRepository<E extends KapuaEntity, L extends KapuaLis
     L query(TxContext txContext, KapuaQuery kapuaQuery) throws KapuaException;
 
     /**
-     * Counts the {@link KapuaEntity}es.
+     * Counts the number of {@link KapuaEntity} according to the provided query.
      *
      * @param kapuaQuery The {@link KapuaQuery} to perform.
      * @return The number of {@link KapuaEntity}es that matched the filter predicates.
@@ -68,7 +68,7 @@ public interface KapuaEntityRepository<E extends KapuaEntity, L extends KapuaLis
     long count(TxContext txContext, KapuaQuery kapuaQuery) throws KapuaException;
 
     /**
-     * Deletes a {@link KapuaEntity}.
+     * Finds and deletes, if present, a {@link KapuaEntity}.
      *
      * @param scopeId  The {@link KapuaEntity#getScopeId()} of the entity to be deleted.
      * @param entityId The {@link KapuaEntity#getId()} of the entity to be deleted.
@@ -77,5 +77,12 @@ public interface KapuaEntityRepository<E extends KapuaEntity, L extends KapuaLis
      */
     E delete(TxContext txContext, KapuaId scopeId, KapuaId entityId) throws KapuaException;
 
+    /**
+     * Deletes a {@link KapuaEntity}.
+     *
+     * @param entityToDelete The {@link KapuaEntity} to be deleted.
+     * @return The deleted {@link KapuaEntity}.
+     * @since 1.0.0
+     */
     E delete(TxContext txContext, E entityToDelete);
 }

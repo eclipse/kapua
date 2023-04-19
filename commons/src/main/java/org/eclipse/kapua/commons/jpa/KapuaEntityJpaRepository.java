@@ -264,7 +264,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
             kapuaPredicates = scopedAndPredicate;
         }
 
-        Map<ParameterExpression, Object> binds = new HashMap<>();
+        final Map<ParameterExpression, Object> binds = new HashMap<>();
         Expression<Boolean> expr = handleKapuaQueryPredicates(kapuaPredicates,
                 binds,
                 cb,
