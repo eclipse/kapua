@@ -12,19 +12,28 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
+import org.eclipse.kapua.KapuaEntityExistsException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.storage.TxContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.OptimisticLockException;
+import javax.persistence.PessimisticLockException;
+import javax.persistence.RollbackException;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class JpaTxContext implements JpaAwareTxContext, TxContext {
     public final EntityManagerFactory entityManagerFactory;
     Optional<EntityManager> entityManager = Optional.empty();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public JpaTxContext(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
@@ -66,5 +75,28 @@ public class JpaTxContext implements JpaAwareTxContext, TxContext {
     @Override
     public KapuaException convertPersistenceException(Exception ex) {
         return KapuaExceptionUtils.convertPersistenceException(ex);
+    }
+
+    private final Predicate isLockExceptionTester = t -> t instanceof OptimisticLockException || t instanceof PessimisticLockException;
+
+    @Override
+    public boolean isRecoverableException(Exception ex) {
+        if (ex instanceof KapuaEntityExistsException || ex instanceof EntityExistsException) {
+            /*
+             * Most KapuaEntities inherit from AbstractKapuaEntity, which auto-generates ids via a method marked with @PrePersist and the use of
+             * a org.eclipse.kapua.commons.model.id.IdGenerator. Ids are pseudo-randomic. To deal with potential conflicts, a number of retries
+             * is allowed. The entity needs to be detached in order for the @PrePersist method to be invoked once more, generating a new id
+             * */
+            logger.warn("Conflict on entity creation. Cannot insert the entity, trying again!");
+            return true;
+        }
+        final boolean isValidLockException =
+                isLockExceptionTester.test(ex)
+                        || (ex instanceof RollbackException && isLockExceptionTester.test(ex.getCause()));
+        if (isValidLockException) {
+            logger.warn("Recoverable Lock Exception");
+            return true;
+        }
+        return false;
     }
 }

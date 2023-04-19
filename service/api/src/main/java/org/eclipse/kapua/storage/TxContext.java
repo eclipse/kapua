@@ -22,4 +22,6 @@ public interface TxContext extends Closeable {
     void rollback();
 
     KapuaException convertPersistenceException(Exception e);
+
+    boolean isRecoverableException(Exception ex);
 }
