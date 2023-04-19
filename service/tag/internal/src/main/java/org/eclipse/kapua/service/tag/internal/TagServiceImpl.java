@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.tag.internal;
 
 import org.eclipse.kapua.KapuaDuplicateNameException;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
@@ -34,7 +33,6 @@ import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Optional;
 
 /**
  * {@link TagService} implementation.
@@ -117,10 +115,6 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
 
         // Check duplicate name
         return txManager.execute(tx -> {
-            // Check existence
-            if (!tagRepository.find(tx, tag.getScopeId(), tag.getId()).isPresent()) {
-                throw new KapuaEntityNotFoundException(Tag.TYPE, tag.getId());
-            }
             // Check duplicate name
             final long otherEntitiesWithSameName = tagRepository.countOtherEntitiesWithNameInScope(
                     tx, tag.getScopeId(), tag.getId(), tag.getName());
@@ -140,14 +134,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.delete, scopeId));
         // Check existence
-        txManager.execute(tx -> {
-            final Optional<Tag> toDelete = tagRepository.find(tx, scopeId, tagId);
-            if (!toDelete.isPresent()) {
-                throw new KapuaEntityNotFoundException(Tag.TYPE, tagId);
-            }
-            // Do delete
-            return tagRepository.delete(tx, toDelete.get());
-        });
+        txManager.execute(tx -> tagRepository.delete(tx, scopeId, tagId));
     }
 
     @Override
