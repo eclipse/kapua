@@ -19,6 +19,7 @@ import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +68,7 @@ public class RestApiListener implements ServletContextListener {
         try {
             LOG.info("Starting service modules...");
             if (moduleBundle == null) {
-                moduleBundle = new ServiceModuleBundle();
+                moduleBundle = KapuaLocator.getInstance().getService(ServiceModuleBundle.class);
             }
             moduleBundle.startup();
             LOG.info("Starting service modules... DONE!");

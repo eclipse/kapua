@@ -15,13 +15,7 @@ package org.eclipse.kapua.commons.event;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.ServiceModule;
-import org.eclipse.kapua.commons.service.event.store.internal.EventStoreFactoryImpl;
-import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
-import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
 import org.eclipse.kapua.event.ServiceEventBus;
-import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,34 +36,43 @@ public abstract class ServiceEventTransactionalModule implements ServiceModule {
     private static final int SCHEDULED_EXECUTION_TIME_WINDOW = 30;
     private static final long WAIT_TIME = 1000;
 
-    private ServiceEventModuleTransactionalConfiguration serviceEventModuleConfiguration;
     private Set<String> subscriberNames = new HashSet<>();
 
     private ScheduledExecutorService houseKeeperScheduler;
     private ScheduledFuture<?> houseKeeperHandler;
     private ServiceEventTransactionalHousekeeper houseKeeperJob;
 
-    protected abstract ServiceEventModuleTransactionalConfiguration initializeConfiguration();
-
     private String getSubscriptionName(String address, String subscriber) {
         return String.format("%s-%s", address, subscriber);
+    }
+
+    private final ServiceEventClientConfiguration[] serviceEventClientConfigurations;
+    private final String internalAddress;
+    private final ServiceEventHouseKeeperFactory houseKeeperFactory;
+
+    public ServiceEventTransactionalModule(
+            ServiceEventClientConfiguration[] serviceEventClientConfigurations,
+            String internalAddress,
+            ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory) {
+        this.serviceEventClientConfigurations = serviceEventClientConfigurations;
+        this.internalAddress = internalAddress;
+        this.houseKeeperFactory = serviceEventTransactionalHousekeeperFactory;
     }
 
     @Override
     public void start() throws KapuaException {
         LOGGER.info("Starting service event module... {}", this.getClass().getName());
         LOGGER.info("Starting service event module... initialize configurations");
-        serviceEventModuleConfiguration = initializeConfiguration();
         LOGGER.info("Starting service event module... initialize event bus");
         ServiceEventBus eventbus = ServiceEventBusManager.getInstance();
         LOGGER.info("Starting service event module... initialize event subscriptions");
         List<ServiceEntry> servicesEntryList = new ArrayList<>();
-        if (serviceEventModuleConfiguration.getServiceEventClientConfigurations() != null) {
-            for (ServiceEventClientConfiguration selc : serviceEventModuleConfiguration.getServiceEventClientConfigurations()) {
+        if (serviceEventClientConfigurations != null) {
+            for (ServiceEventClientConfiguration selc : serviceEventClientConfigurations) {
                 //get the specific service address... if empty switch to use the default configuration address
                 String address = selc.getAddress();
                 if (StringUtils.isEmpty(selc.getAddress())) {
-                    address = serviceEventModuleConfiguration.getInternalAddress();
+                    address = internalAddress;
                 }
                 // Listen to upstream service events
                 if (selc.getEventListener() != null) {
@@ -84,22 +87,12 @@ public abstract class ServiceEventTransactionalModule implements ServiceModule {
 
         // register events to the service map
         LOGGER.info("Starting service event module... register services names");
-        ServiceMap.registerServices(serviceEventModuleConfiguration.getInternalAddress(), servicesEntryList);
+        ServiceMap.registerServices(internalAddress, servicesEntryList);
 
         // Start the House keeper
         LOGGER.info("Starting service event module... start housekeeper");
         houseKeeperScheduler = Executors.newScheduledThreadPool(1);
-        final KapuaLocator locator = KapuaLocator.getInstance();
-        houseKeeperJob = new ServiceEventTransactionalHousekeeper(
-                new EventStoreServiceImpl(locator.getService(AuthorizationService.class),
-                        locator.getFactory(PermissionFactory.class),
-                        serviceEventModuleConfiguration.getTxManager(),
-                        new EventStoreFactoryImpl(),
-                        new EventStoreRecordImplJpaRepository(serviceEventModuleConfiguration.getJpaConfig())
-                ),
-                serviceEventModuleConfiguration.getTxManager(),
-                eventbus,
-                servicesEntryList);
+        houseKeeperJob = houseKeeperFactory.apply(servicesEntryList);// new ServiceEventTransactionalHousekeeper(
         // Start time can be made random from 0 to 30 seconds
         houseKeeperHandler = houseKeeperScheduler.scheduleAtFixedRate(houseKeeperJob, SCHEDULED_EXECUTION_TIME_WINDOW, SCHEDULED_EXECUTION_TIME_WINDOW, TimeUnit.SECONDS);
         LOGGER.info("Starting service event module... DONE");
@@ -138,12 +131,8 @@ public abstract class ServiceEventTransactionalModule implements ServiceModule {
             LOGGER.warn("Cannot shutdown the housekeeper scheduler [step 3/3] since it is null (initialization may not be successful)");
         }
         LOGGER.info("Stopping service event module... unregister services names");
-        if (serviceEventModuleConfiguration != null) {
-            ServiceMap.unregisterServices(new ArrayList<>(subscriberNames));
-            subscriberNames.clear();
-        } else {
-            LOGGER.warn("Cannot unregister services since configuration is null (initialization may not be successful)");
-        }
+        ServiceMap.unregisterServices(new ArrayList<>(subscriberNames));
+        subscriberNames.clear();
         LOGGER.info("Stopping service event module... DONE");
     }
 

@@ -116,7 +116,7 @@ public class GuiceLocatorImplTest {
     @Test
     public void shouldProvideAll() {
         List<KapuaService> result = locator.getServices();
-        Assert.assertEquals(2, result.size());
+        Assert.assertEquals(3, result.size());
     }
 
     @Test(expected = KapuaRuntimeException.class)

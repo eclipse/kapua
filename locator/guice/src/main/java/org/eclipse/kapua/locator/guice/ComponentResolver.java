@@ -16,6 +16,12 @@ import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.locator.KapuaLocatorException;
 
+/**
+ * @param <I> Interface class
+ * @param <P> Implementation class
+ * @deprecated since 2.0.0 - no longer needed, replaced by multibinding injection
+ */
+@Deprecated
 public class ComponentResolver<I, P extends I> {
 
     private final Class<I> providedClass;
@@ -33,7 +39,7 @@ public class ComponentResolver<I, P extends I> {
             throw new KapuaLocatorException(KapuaLocatorErrorCodes.FACTORY_PROVIDER_INVALID, implementation, factory);
         }
 
-        return new ComponentResolver<M,I>((Class<M>)factory, (Class<I>)implementation);
+        return new ComponentResolver<M, I>((Class<M>) factory, (Class<I>) implementation);
     }
 
     public Class<I> getProvidedClass() {

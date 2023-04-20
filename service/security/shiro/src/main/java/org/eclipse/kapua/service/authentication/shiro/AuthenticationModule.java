@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.authentication.shiro;
 
 import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
@@ -20,8 +21,14 @@ import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.core.ServiceModule;
+import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactoryImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
+import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
+import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountRepository;
@@ -81,6 +88,31 @@ public class AuthenticationModule extends AbstractKapuaModule {
         bind(AccessTokenFactory.class).to(AccessTokenFactoryImpl.class);
         bind(RegistrationService.class).to(RegistrationServiceImpl.class);
         bind(MfaAuthenticator.class).toInstance(new MfaAuthenticatorImpl());
+    }
+
+    @ProvidesIntoSet
+    public ServiceModule authenticationServiceModule(AccessTokenService accessTokenService,
+                                                     CredentialService credentialService,
+                                                     AuthorizationService authorizationService,
+                                                     PermissionFactory permissionFactory,
+                                                     KapuaJpaTxManagerFactory txManagerFactory,
+                                                     EventStoreFactory eventStoreFactory,
+                                                     EventStoreRecordRepository eventStoreRecordRepository
+    ) throws ServiceEventBusException {
+        return new AuthenticationServiceModule(
+                credentialService,
+                accessTokenService,
+                KapuaAuthenticationSetting.getInstance(),
+                new ServiceEventHouseKeeperFactoryImpl(
+                        new EventStoreServiceImpl(
+                                authorizationService,
+                                permissionFactory,
+                                txManagerFactory.create("kapua-authentication"),
+                                eventStoreFactory,
+                                eventStoreRecordRepository
+                        ),
+                        txManagerFactory.create("kapua-authentication")
+                ));
     }
 
     @Provides

@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.authorization.shiro;
 
 import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
@@ -23,9 +24,15 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.core.ServiceModule;
+import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactoryImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
+import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
+import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
@@ -82,6 +89,7 @@ import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryI
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImplJpaRepository;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionServiceImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
+import org.eclipse.kapua.service.authorization.shiro.setting.KapuaAuthorizationSetting;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -103,6 +111,35 @@ public class AuthorizationModule extends AbstractKapuaModule {
         bind(RolePermissionFactory.class).to(RolePermissionFactoryImpl.class);
 
         bind(GroupFactory.class).to(GroupFactoryImpl.class);
+    }
+
+    @ProvidesIntoSet
+    ServiceModule authorizationServiceModule(AccessInfoService accessInfoService,
+                                             RoleService roleService,
+                                             DomainRegistryService domainRegistryService,
+                                             GroupService groupService,
+                                             AuthorizationService authorizationService,
+                                             PermissionFactory permissionFactory,
+                                             KapuaJpaTxManagerFactory txManagerFactory,
+                                             EventStoreFactory eventStoreFactory,
+                                             EventStoreRecordRepository eventStoreRecordRepository
+    ) throws ServiceEventBusException {
+        return new AuthorizationServiceModule(
+                accessInfoService,
+                roleService,
+                domainRegistryService,
+                groupService,
+                KapuaAuthorizationSetting.getInstance(),
+                new ServiceEventHouseKeeperFactoryImpl(
+                        new EventStoreServiceImpl(
+                                authorizationService,
+                                permissionFactory,
+                                txManagerFactory.create("kapua-authorization"),
+                                eventStoreFactory,
+                                eventStoreRecordRepository
+                        ),
+                        txManagerFactory.create("kapua-authorization")
+                ));
     }
 
     @Provides

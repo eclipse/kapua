@@ -20,9 +20,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.core.ServiceModuleConfiguration;
 import org.eclipse.kapua.commons.core.ServiceModuleJaxbClassConfig;
-import org.eclipse.kapua.commons.core.ServiceModuleProvider;
 import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -166,7 +164,6 @@ public class GuiceLocatorImpl extends KapuaLocator {
         printLoadedXmlSerializableConfiguration(locatorConfigURL, locatorConfig, loadedXmlSerializables, excludedXmlSerializables);
         // Create injector
         injector = Guice.createInjector(kapuaModules);
-        ServiceModuleConfiguration.setConfigurationProvider(() -> injector.getInstance(ServiceModuleProvider.class));
     }
 
     /**

@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.device.registry;
 
 import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
@@ -24,9 +25,15 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachin
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.core.ServiceModule;
+import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactoryImpl;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
+import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
+import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
@@ -75,6 +82,31 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
         bind(DeviceConnectionOptionFactory.class).to(DeviceConnectionOptionFactoryImpl.class);
         bind(DeviceEventFactory.class).to(DeviceEventFactoryImpl.class);
         bind(DeviceLifeCycleService.class).to(DeviceLifeCycleServiceImpl.class);
+    }
+
+    @ProvidesIntoSet
+    ServiceModule deviceRegistryModule(DeviceConnectionService deviceConnectionService,
+                                       DeviceRegistryService deviceRegistryService,
+                                       AuthorizationService authorizationService,
+                                       PermissionFactory permissionFactory,
+                                       KapuaJpaTxManagerFactory txManagerFactory,
+                                       EventStoreFactory eventStoreFactory,
+                                       EventStoreRecordRepository eventStoreRecordRepository
+    ) throws ServiceEventBusException {
+        return new DeviceServiceModule(
+                deviceConnectionService,
+                deviceRegistryService,
+                KapuaDeviceRegistrySettings.getInstance(),
+                new ServiceEventHouseKeeperFactoryImpl(
+                        new EventStoreServiceImpl(
+                                authorizationService,
+                                permissionFactory,
+                                txManagerFactory.create("kapua-device"),
+                                eventStoreFactory,
+                                eventStoreRecordRepository
+                        ),
+                        txManagerFactory.create("kapua-device")
+                ));
     }
 
     @Provides

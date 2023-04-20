@@ -14,19 +14,21 @@ package org.eclipse.kapua.commons.core;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.event.ServiceEventBusManager;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.KapuaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.util.Set;
 
-public class ServiceModuleBundle {
+public class ServiceModuleBundle implements KapuaService {
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceModuleBundle.class);
+    private final Set<ServiceModule> serviceModules;
 
-    public ServiceModuleBundle() {
-        // Initialize the kapua locator
-        KapuaLocator.getInstance();
+    @Inject
+    public ServiceModuleBundle(Set<ServiceModule> serviceModules) {
+        this.serviceModules = serviceModules;
     }
 
     public final void startup() throws KapuaException {
@@ -36,7 +38,6 @@ public class ServiceModuleBundle {
         ServiceEventBusManager.start();
 
         logger.info("Startup Kapua Service Modules...");
-        Set<ServiceModule> serviceModules = ServiceModuleConfiguration.getServiceModules();
         for (ServiceModule service : serviceModules) {
             service.start();
         }
@@ -48,7 +49,6 @@ public class ServiceModuleBundle {
         logger.info("Shutting down...");
 
         logger.info("Shutdown Kapua Service Modules...");
-        Set<ServiceModule> serviceModules = ServiceModuleConfiguration.getServiceModules();
         for (ServiceModule service : serviceModules) {
             service.stop();
         }
