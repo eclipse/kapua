@@ -13,44 +13,28 @@
 package org.eclipse.kapua.service.device.registry;
 
 import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
-import org.eclipse.kapua.commons.event.ServiceEventModuleTransactionalConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactory;
 import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
-import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
-import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class DeviceServiceModule extends ServiceEventTransactionalModule {
 
-    @Inject
-    private DeviceConnectionService deviceConnectionService;
-    @Inject
-    private DeviceRegistryService deviceRegistryService;
-    @Inject
-    private KapuaJpaRepositoryConfiguration jpaRepoConfig;
-    @Inject
-    @Named("maxInsertAttempts")
-    private Integer maxInsertAttempts;
-
-    @Override
-    protected ServiceEventModuleTransactionalConfiguration initializeConfiguration() {
-        KapuaDeviceRegistrySettings kapuaDeviceRegistrySettings = KapuaDeviceRegistrySettings.getInstance();
-
-        List<ServiceEventClientConfiguration> serviceEventListenerConfigurations = new ArrayList<>();
-        serviceEventListenerConfigurations.addAll(ServiceInspector.getEventBusClients(deviceRegistryService, DeviceRegistryService.class));
-        serviceEventListenerConfigurations.addAll(ServiceInspector.getEventBusClients(deviceConnectionService, DeviceConnectionService.class));
-
-        return new ServiceEventModuleTransactionalConfiguration(
-                kapuaDeviceRegistrySettings.getString(KapuaDeviceRegistrySettingKeys.DEVICE_EVENT_ADDRESS),
-                new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-device"),
-                serviceEventListenerConfigurations.toArray(new ServiceEventClientConfiguration[0]),
-                jpaRepoConfig
-        );
+    public DeviceServiceModule(DeviceConnectionService deviceConnectionService,
+                               DeviceRegistryService deviceRegistryService,
+                               KapuaDeviceRegistrySettings deviceRegistrySettings,
+                               ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory) {
+        super(Arrays.asList(ServiceInspector.getEventBusClients(deviceRegistryService, DeviceRegistryService.class),
+                                ServiceInspector.getEventBusClients(deviceConnectionService, DeviceRegistryService.class)
+                        )
+                        .stream()
+                        .flatMap(l -> l.stream())
+                        .collect(Collectors.toList())
+                        .toArray(new ServiceEventClientConfiguration[0]),
+                deviceRegistrySettings.getString(KapuaDeviceRegistrySettingKeys.DEVICE_EVENT_ADDRESS),
+                serviceEventTransactionalHousekeeperFactory);
     }
-
 }

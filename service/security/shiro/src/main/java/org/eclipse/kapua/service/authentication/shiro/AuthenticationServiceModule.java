@@ -13,44 +13,33 @@
 package org.eclipse.kapua.service.authentication.shiro;
 
 import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
-import org.eclipse.kapua.commons.event.ServiceEventModuleTransactionalConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactory;
 import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
-import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
-import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class AuthenticationServiceModule extends ServiceEventTransactionalModule {
 
-    @Inject
-    private CredentialService credentialService;
-    @Inject
-    private AccessTokenService accessTokenService;
-    @Inject
-    private KapuaJpaRepositoryConfiguration jpaRepoConfig;
-    @Inject
-    @Named("maxInsertAttempts")
-    private Integer maxInsertAttempts;
-
-    @Override
-    protected ServiceEventModuleTransactionalConfiguration initializeConfiguration() {
-        KapuaAuthenticationSetting kas = KapuaAuthenticationSetting.getInstance();
-        List<ServiceEventClientConfiguration> selc = new ArrayList<>();
-        selc.addAll(ServiceInspector.getEventBusClients(credentialService, CredentialService.class));
-        selc.addAll(ServiceInspector.getEventBusClients(accessTokenService, AccessTokenService.class));
-        return new ServiceEventModuleTransactionalConfiguration(
-                kas.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_EVENT_ADDRESS),
-                new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-authentication"),
-                selc.toArray(new ServiceEventClientConfiguration[0]),
-                jpaRepoConfig);
+    public AuthenticationServiceModule(
+            CredentialService credentialService,
+            AccessTokenService accessTokenService,
+            KapuaAuthenticationSetting authenticationSetting,
+            ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory) {
+        super(Arrays.asList(
+                                ServiceInspector.getEventBusClients(credentialService, CredentialService.class),
+                                ServiceInspector.getEventBusClients(accessTokenService, AccessTokenService.class)
+                        )
+                        .stream()
+                        .flatMap(l -> l.stream())
+                        .collect(Collectors.toList())
+                        .toArray(new ServiceEventClientConfiguration[0]),
+                authenticationSetting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_EVENT_ADDRESS),
+                serviceEventTransactionalHousekeeperFactory);
     }
-
 }

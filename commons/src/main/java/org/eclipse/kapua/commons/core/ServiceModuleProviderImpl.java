@@ -12,10 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
+import javax.inject.Inject;
 import java.util.Set;
 
-import javax.inject.Inject;
-
+/**
+ * @deprecated since 2.0.0 - use dependency injection to fetch ServiceModules where needed, there is no need to introduce additional indirection
+ */
+@Deprecated
 public class ServiceModuleProviderImpl implements ServiceModuleProvider {
 
 

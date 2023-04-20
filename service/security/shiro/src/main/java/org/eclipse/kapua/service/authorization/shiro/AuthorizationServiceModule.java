@@ -13,11 +13,9 @@
 package org.eclipse.kapua.service.authorization.shiro;
 
 import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
-import org.eclipse.kapua.commons.event.ServiceEventModuleTransactionalConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactory;
 import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
-import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
-import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.group.GroupService;
@@ -25,40 +23,28 @@ import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.setting.KapuaAuthorizationSetting;
 import org.eclipse.kapua.service.authorization.shiro.setting.KapuaAuthorizationSettingKeys;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class AuthorizationServiceModule extends ServiceEventTransactionalModule {
 
-    @Inject
-    private AccessInfoService accessInfoService;
-    @Inject
-    private DomainRegistryService domainRegistryService;
-    @Inject
-    private GroupService groupService;
-    @Inject
-    private RoleService roleService;
-    @Inject
-    private KapuaJpaRepositoryConfiguration jpaRepoConfig;
-    @Inject
-    @Named("maxInsertAttempts")
-    private Integer maxInsertAttempts;
-
-    @Override
-    protected ServiceEventModuleTransactionalConfiguration initializeConfiguration() {
-        KapuaAuthorizationSetting kdrs = KapuaAuthorizationSetting.getInstance();
-        List<ServiceEventClientConfiguration> selc = new ArrayList<>();
-        selc.addAll(ServiceInspector.getEventBusClients(accessInfoService, AccessInfoService.class));
-        selc.addAll(ServiceInspector.getEventBusClients(roleService, RoleService.class));
-        selc.addAll(ServiceInspector.getEventBusClients(domainRegistryService, DomainRegistryService.class));
-        selc.addAll(ServiceInspector.getEventBusClients(groupService, GroupService.class));
-        return new ServiceEventModuleTransactionalConfiguration(
-                kdrs.getString(KapuaAuthorizationSettingKeys.AUTHORIZATION_EVENT_ADDRESS),
-                new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-authorization"),
-                selc.toArray(new ServiceEventClientConfiguration[0]),
-                jpaRepoConfig);
+    public AuthorizationServiceModule(AccessInfoService accessInfoService,
+                                      RoleService roleService,
+                                      DomainRegistryService domainRegistryService,
+                                      GroupService groupService,
+                                      KapuaAuthorizationSetting kapuaAuthorizationSettings,
+                                      ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory) {
+        super(Arrays.asList(
+                                ServiceInspector.getEventBusClients(accessInfoService, AccessInfoService.class),
+                                ServiceInspector.getEventBusClients(roleService, RoleService.class),
+                                ServiceInspector.getEventBusClients(domainRegistryService, DomainRegistryService.class),
+                                ServiceInspector.getEventBusClients(groupService, GroupService.class)
+                        )
+                        .stream()
+                        .flatMap(l -> l.stream())
+                        .collect(Collectors.toList())
+                        .toArray(new ServiceEventClientConfiguration[0]),
+                kapuaAuthorizationSettings.getString(KapuaAuthorizationSettingKeys.AUTHORIZATION_EVENT_ADDRESS),
+                serviceEventTransactionalHousekeeperFactory);
     }
-
 }

@@ -14,18 +14,12 @@ package org.eclipse.kapua.service.account.internal;
 
 import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
-import org.eclipse.kapua.commons.event.ServiceEventModuleTransactionalConfiguration;
+import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactory;
 import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
-import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
-import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSetting;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSettingKeys;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.List;
 
 /**
  * {@link AccountService} {@link ServiceModule} implementation.
@@ -34,27 +28,13 @@ import java.util.List;
  */
 public class AccountServiceModule extends ServiceEventTransactionalModule implements ServiceModule {
 
-    private static final KapuaAccountSetting ACCOUNT_SETTING = KapuaAccountSetting.getInstance();
-
-    @Inject
-    private AccountService accountService;
-    @Inject
-    private KapuaJpaRepositoryConfiguration jpaRepoConfig;
-    @Inject
-    @Named("maxInsertAttempts")
-    private Integer maxInsertAttempts;
-
-    @Override
-    protected ServiceEventModuleTransactionalConfiguration initializeConfiguration() {
-        String address = ACCOUNT_SETTING.getString(KapuaAccountSettingKeys.ACCOUNT_EVENT_ADDRESS);
-
-        List<ServiceEventClientConfiguration> eventBusClients = ServiceInspector.getEventBusClients(accountService, AccountService.class);
-
-        return new ServiceEventModuleTransactionalConfiguration(
-                address,
-                new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-account"),
-                eventBusClients.toArray(new ServiceEventClientConfiguration[0]),
-                jpaRepoConfig);
+    public AccountServiceModule(
+            AccountService accountService,
+            KapuaAccountSetting kapuaAccountSetting,
+            ServiceEventHouseKeeperFactory serviceEventHouseKeeperFactory) {
+        super(
+                ServiceInspector.getEventBusClients(accountService, AccountService.class).toArray(new ServiceEventClientConfiguration[0]),
+                kapuaAccountSetting.getString(KapuaAccountSettingKeys.ACCOUNT_EVENT_ADDRESS),
+                serviceEventHouseKeeperFactory);
     }
-
 }

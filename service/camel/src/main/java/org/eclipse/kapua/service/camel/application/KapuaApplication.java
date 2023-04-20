@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.camel.application;
 
 import org.eclipse.kapua.commons.core.ServiceModuleBundle;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,8 +32,7 @@ public class KapuaApplication {
         logger.info(">>> Kapua Application: calling init...");
         synchronized (KapuaApplication.class) {
             if (application == null) {
-                application = new ServiceModuleBundle() {
-                };
+                application = KapuaLocator.getInstance().getService(ServiceModuleBundle.class);
             }
             application.startup();
         }

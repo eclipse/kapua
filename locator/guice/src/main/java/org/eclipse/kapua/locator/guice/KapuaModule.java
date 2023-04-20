@@ -13,6 +13,29 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.ClassPath;
+import com.google.common.reflect.ClassPath.ClassInfo;
+import com.google.inject.Singleton;
+import com.google.inject.matcher.Matcher;
+import com.google.inject.matcher.Matchers;
+import com.google.inject.multibindings.Multibinder;
+import com.google.inject.multibindings.ProvidesIntoSet;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.eclipse.kapua.KapuaErrorCodes;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.core.InterceptorBind;
+import org.eclipse.kapua.commons.core.ServiceModule;
+import org.eclipse.kapua.commons.core.ServiceModuleBundle;
+import org.eclipse.kapua.commons.util.ResourceUtils;
+import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.KapuaObjectFactory;
+import org.eclipse.kapua.service.KapuaService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -21,29 +44,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.aopalliance.intercept.MethodInterceptor;
-import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.core.InterceptorBind;
-import org.eclipse.kapua.commons.core.ServiceModule;
-import org.eclipse.kapua.commons.core.ServiceModuleProvider;
-import org.eclipse.kapua.commons.core.ServiceModuleProviderImpl;
-import org.eclipse.kapua.commons.util.ResourceUtils;
-import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.model.KapuaObjectFactory;
-import org.eclipse.kapua.service.KapuaService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ImmutableSet;
-import com.google.common.reflect.ClassPath;
-import com.google.common.reflect.ClassPath.ClassInfo;
-import com.google.inject.Singleton;
-import com.google.inject.matcher.Matcher;
-import com.google.inject.matcher.Matchers;
-import com.google.inject.multibindings.Multibinder;
 
 public class KapuaModule extends AbstractKapuaModule {
 
@@ -93,8 +93,8 @@ public class KapuaModule extends AbstractKapuaModule {
                 ImmutableSet<ClassInfo> classInfos = classPath.getTopLevelClassesRecursive(packageName);
                 for (ClassInfo classInfo : classInfos) {
                     if (isExcluded(classInfo.getName(), excludedPkgNames)) {
-                         logger.trace("CLASS: {} ... excluded by configuration, skip", classInfo.getName());
-                         continue;
+                        logger.trace("CLASS: {} ... excluded by configuration, skip", classInfo.getName());
+                        continue;
                     }
                     logger.trace("CLASS: {}", classInfo.getName());
                     Class<?> theClass = Class.forName(classInfo.getName(), !initialize, classLoader);
@@ -172,22 +172,8 @@ public class KapuaModule extends AbstractKapuaModule {
                 }
             }
 
-            bind(ServiceModuleProvider.class).to(ServiceModuleProviderImpl.class).in(Singleton.class);
-            serviceModulesBindings = Multibinder.newSetBinder(binder(), ServiceModule.class);
-
-            logger.info("Binding service modules ...");
-            //cast is safe by design
-            for (Class<?> clazz : providers) {
-                if (ServiceModule.class.isAssignableFrom(clazz)) {
-                    ComponentResolver resolver = ComponentResolver.newInstance(ServiceModule.class, clazz);
-                    //cast is safe by design
-                    if (resolver.getProvidedClass().isAssignableFrom(clazz)) {
-                        logger.info("Assignable from {}", resolver.getProvidedClass(), clazz);
-                        serviceModulesBindings.addBinding().to(resolver.getImplementationClass());
-                    }
-                    continue;
-                }
-            }
+            //sic!
+            bind(ServiceModuleBundle.class).in(Singleton.class);
 
             logger.trace("Binding completed");
 
@@ -195,6 +181,22 @@ public class KapuaModule extends AbstractKapuaModule {
             logger.error("Exeption configuring module", e);
             throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, "Cannot load " + SERVICE_RESOURCE);
         }
+    }
+
+    //Provides an empty one, just so at least one is found and initialization of ServiceModuleBundle does not fail
+    @ProvidesIntoSet
+    ServiceModule voidServiceModule() {
+        return new ServiceModule() {
+            @Override
+            public void start() throws KapuaException {
+
+            }
+
+            @Override
+            public void stop() throws KapuaException {
+
+            }
+        };
     }
 
     @Override
@@ -209,7 +211,7 @@ public class KapuaModule extends AbstractKapuaModule {
         if (excludedPkgs == null || excludedPkgs.isEmpty()) {
             return false;
         }
-        for(String pkg:excludedPkgs) {
+        for (String pkg : excludedPkgs) {
             if (className.startsWith(pkg)) {
                 return true;
             }

@@ -26,7 +26,6 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.event.ServiceEvent.EventStatus;
-import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
@@ -67,7 +66,6 @@ public class ServiceEventTransactionalHousekeeper implements Runnable {
 
     private TxContext txContext;
 
-    private ServiceEventBus eventbus;
     private List<ServiceEntry> servicesEntryList;
     private boolean running;
 
@@ -75,11 +73,9 @@ public class ServiceEventTransactionalHousekeeper implements Runnable {
      * Default constructor
      *
      * @param txManager
-     * @param eventbus
      * @param servicesEntryList
      */
-    public ServiceEventTransactionalHousekeeper(EventStoreService eventStoreService, TxManager txManager, ServiceEventBus eventbus, List<ServiceEntry> servicesEntryList) {
-        this.eventbus = eventbus;
+    public ServiceEventTransactionalHousekeeper(EventStoreService eventStoreService, TxManager txManager, List<ServiceEntry> servicesEntryList) {
         this.servicesEntryList = servicesEntryList;
         this.txContext = txManager.getTxContext();
         this.kapuaEventService = eventStoreService;
@@ -140,7 +136,7 @@ public class ServiceEventTransactionalHousekeeper implements Runnable {
                             kapuaEvent.getOperation(),
                             kapuaEvent.getContextId());
 
-                    eventbus.publish(address, ServiceEventUtil.toServiceEventBus(kapuaEvent));
+                    ServiceEventBusManager.getInstance().publish(address, ServiceEventUtil.toServiceEventBus(kapuaEvent));
                     //if message was sent successfully then confirm the event in the event table
                     //if something goes wrong during this update the event message may be raised twice (but this condition should happens rarely and it is compliant to the contract of the service events)
                     //this is done in a different transaction

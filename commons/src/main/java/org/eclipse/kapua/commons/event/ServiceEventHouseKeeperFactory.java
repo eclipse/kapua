@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,15 +10,10 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.core;
+package org.eclipse.kapua.commons.event;
 
-import java.util.Set;
+import java.util.List;
+import java.util.function.Function;
 
-/**
- * @deprecated since 2.0.0 - use dependency injection to fetch ServiceModules where needed, there is no need to introduce additional indirection
- */
-@Deprecated
-public interface ServiceModuleProvider {
-
-    Set<ServiceModule> getModules();
+public interface ServiceEventHouseKeeperFactory extends Function<List<ServiceEntry>, ServiceEventTransactionalHousekeeper> {
 }

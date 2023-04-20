@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.user.internal;
 
 import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
@@ -24,15 +25,22 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.core.ServiceModule;
+import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactoryImpl;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
+import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
+import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserRepository;
 import org.eclipse.kapua.service.user.UserService;
+import org.eclipse.kapua.service.user.internal.setting.KapuaUserSetting;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -70,6 +78,29 @@ public class UserModule extends AbstractKapuaModule {
                 userRepository,
                 userFactory,
                 eventStorer);
+    }
+
+    @ProvidesIntoSet
+    public ServiceModule userServiceModule(UserService userService,
+                                           AuthorizationService authorizationService,
+                                           PermissionFactory permissionFactory,
+                                           KapuaJpaTxManagerFactory txManagerFactory,
+                                           EventStoreFactory eventStoreFactory,
+                                           EventStoreRecordRepository eventStoreRecordRepository
+    ) throws ServiceEventBusException {
+        return new UserServiceModule(
+                userService,
+                KapuaUserSetting.getInstance(),
+                new ServiceEventHouseKeeperFactoryImpl(
+                        new EventStoreServiceImpl(
+                                authorizationService,
+                                permissionFactory,
+                                txManagerFactory.create("kapua-user"),
+                                eventStoreFactory,
+                                eventStoreRecordRepository
+                        ),
+                        txManagerFactory.create("kapua-user")
+                ));
     }
 
     @Provides

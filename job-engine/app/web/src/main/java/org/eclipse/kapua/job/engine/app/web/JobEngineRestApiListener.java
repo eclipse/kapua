@@ -12,19 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.app.web;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-
+import com.google.common.base.MoreObjects;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.ServiceModuleBundle;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-
-import com.google.common.base.MoreObjects;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 /**
  * @since 1.0.0
@@ -68,7 +68,7 @@ public class JobEngineRestApiListener implements ServletContextListener {
         try {
             LOG.info("Starting service modules...");
             if (moduleBundle == null) {
-                moduleBundle = new ServiceModuleBundle();
+                moduleBundle = KapuaLocator.getInstance().getService(ServiceModuleBundle.class);
             }
             moduleBundle.startup();
             LOG.info("Starting service modules... DONE!");

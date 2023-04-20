@@ -23,6 +23,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.scheduler.quartz.SchedulerServiceInit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +94,7 @@ public class ConsoleListener implements ServletContextListener {
         try {
             LOG.info("Starting service modules...");
             if (moduleBundle == null) {
-                moduleBundle = new ServiceModuleBundle();
+                moduleBundle = KapuaLocator.getInstance().getService(ServiceModuleBundle.class);
             }
             moduleBundle.startup();
             LOG.info("Starting service modules... DONE!");

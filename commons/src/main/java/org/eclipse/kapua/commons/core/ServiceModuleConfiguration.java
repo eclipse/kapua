@@ -15,15 +15,24 @@ package org.eclipse.kapua.commons.core;
 
 import java.util.Set;
 
+/**
+ * @deprecated since 2.0.0 - use dependency injection to fetch ServiceModules where needed, there is no need to introduce additional indirection
+ */
+@Deprecated
 public class ServiceModuleConfiguration {
 
+    /**
+     * @deprecated since 2.0.0 - use dependency injection to fetch ServiceModules where needed, there is no need to introduce additional indirection
+     */
+    @Deprecated
     public interface ConfigurationProvider {
         ServiceModuleProvider get();
     }
 
     private static ConfigurationProvider configurationProvider;
 
-    private ServiceModuleConfiguration() {}
+    private ServiceModuleConfiguration() {
+    }
 
     public static void setConfigurationProvider(ConfigurationProvider aProvider) {
         configurationProvider = aProvider;
@@ -33,4 +42,4 @@ public class ServiceModuleConfiguration {
         return configurationProvider.get().getModules();
     }
 
- }
+}
