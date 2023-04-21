@@ -19,7 +19,6 @@ import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.execution.JobExecution;
-import org.eclipse.kapua.service.job.execution.JobExecutionAttributes;
 import org.eclipse.kapua.service.job.execution.JobExecutionListResult;
 import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
 import org.eclipse.kapua.service.job.execution.JobExecutionRepository;
@@ -46,7 +45,7 @@ public class JobExecutionImplJpaRepository
     public long countByJobId(TxContext tx, KapuaId scopeId, KapuaId jobId) throws KapuaException {
         final JobExecutionQuery jobExecutionQuery = new JobExecutionQueryImpl(scopeId);
         jobExecutionQuery.setPredicate(
-                jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobId)
+                jobExecutionQuery.attributePredicate(JobExecutionImpl_.JOB_ID, jobId)
         );
         return this.count(tx, jobExecutionQuery);
     }

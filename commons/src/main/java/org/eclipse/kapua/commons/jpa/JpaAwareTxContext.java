@@ -16,7 +16,18 @@ import org.eclipse.kapua.storage.TxContext;
 
 import javax.persistence.EntityManager;
 
+/**
+ * Utility interface mark JPA-compatible implementations of {@link TxContext},
+ * providing a method to retrieve JPA's {@link EntityManager}
+ */
 public interface JpaAwareTxContext extends TxContext {
+    /**
+     * Convenience method that performs safe casting-and-execution of the provided context,
+     * in order to obtain a {@link EntityManager} out of it.
+     *
+     * @param txContext The {@link TxContext} to extract from
+     * @return the {@link EntityManager}, according to {{@link #getEntityManager()}}
+     */
     static EntityManager extractEntityManager(TxContext txContext) {
         if (txContext instanceof JpaAwareTxContext) {
             return ((JpaAwareTxContext) txContext).getEntityManager();
@@ -24,5 +35,8 @@ public interface JpaAwareTxContext extends TxContext {
         throw new RuntimeException("This repo needs to run within the context of a JPA transaction");
     }
 
+    /**
+     * @return a ready-to-be-used {@link EntityManager}, with an open transaction.
+     */
     javax.persistence.EntityManager getEntityManager();
 }

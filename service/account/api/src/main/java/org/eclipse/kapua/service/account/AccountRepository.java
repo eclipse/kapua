@@ -18,5 +18,6 @@ import org.eclipse.kapua.storage.TxContext;
 
 public interface AccountRepository extends
         KapuaNamedEntityRepository<Account, AccountListResult> {
+
     AccountListResult findChildAccountsRecursive(TxContext tx, String parentAccountPath) throws KapuaException;
 }
