@@ -56,10 +56,9 @@ public class PasswordValidatorImpl implements PasswordValidator {
 
         // Get system minimum password length
         int minPasswordLength = credentialServiceConfigurationManager.getSystemMinimumPasswordLength();
-        Object minPasswordLengthConfigValue = getConfigValues(txContext, scopeId).get(CredentialServiceConfigurationManagerImpl.PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY);
 
         if (!KapuaId.ANY.equals(scopeId)) {
-            Object minPasswordLengthAccountConfigValue = getConfigValues(txContext, scopeId).get(minPasswordLengthConfigValue);
+            Object minPasswordLengthAccountConfigValue = getConfigValues(txContext, scopeId).get(CredentialServiceConfigurationManagerImpl.PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY);
             if (minPasswordLengthAccountConfigValue != null) {
                 minPasswordLength = Integer.parseInt(minPasswordLengthAccountConfigValue.toString());
             }
