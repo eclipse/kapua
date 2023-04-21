@@ -31,9 +31,9 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public class JpaTxContext implements JpaAwareTxContext, TxContext {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     public final EntityManagerFactory entityManagerFactory;
     Optional<EntityManager> entityManager = Optional.empty();
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public JpaTxContext(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;

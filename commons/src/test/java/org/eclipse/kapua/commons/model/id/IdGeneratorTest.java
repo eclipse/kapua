@@ -92,7 +92,8 @@ public class IdGeneratorTest extends AbstractCommonServiceTest {
             // this insert creates the record with the correct id
         } catch (KapuaException e) {
             //two inserts, repeated for MAX_RETRIES times
-            final int expected = MAX_RETRIES * 2;
+            final int expected = (MAX_RETRIES + 1) // retry n times, fail at n+1
+                    * 2; //number of id generations for each try
             Assert.assertEquals("The generated random identifiers count is wrong!", expected,
                     collisionIdGenerator.getGeneretedValuesCount());
         }
@@ -165,7 +166,9 @@ public class IdGeneratorTest extends AbstractCommonServiceTest {
                 return null;
             });
         } catch (KapuaException e) {
-            Assert.assertEquals("The generated random identifiers count is wrong!", MAX_RETRIES * 2,
+            Assert.assertEquals("The generated random identifiers count is wrong!",
+                    (MAX_RETRIES + 1) // retry n times, fail at n+1
+                            * 2, //number of id generations for each try
                     collisionIdGenerator.getGeneretedValuesCount());
         }
     }

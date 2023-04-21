@@ -42,7 +42,6 @@ import javax.inject.Singleton;
 @Singleton
 public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagService {
 
-
     private final PermissionFactory permissionFactory;
     private final AuthorizationService authorizationService;
     private final TagFactory tagFactory;

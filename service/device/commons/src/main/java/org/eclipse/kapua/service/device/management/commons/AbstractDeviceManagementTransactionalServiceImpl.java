@@ -43,6 +43,7 @@ import org.eclipse.kapua.storage.TxManager;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 /**
@@ -133,8 +134,9 @@ public abstract class AbstractDeviceManagementTransactionalServiceImpl {
         Device device = txManager.execute(tx -> deviceRepository.find(tx, scopeId, deviceId))
                 .orElseThrow(() -> new KapuaEntityNotFoundException(Device.TYPE, deviceId));
         // Check Device Connection status
-        return device.getConnection() != null &&
-                DeviceConnectionStatus.CONNECTED.equals(device.getConnection().getStatus());
+        return Optional.ofNullable(device.getConnection())
+                .map(conn -> DeviceConnectionStatus.CONNECTED.equals(conn.getStatus()))
+                .orElse(false);
     }
 
     // Response handling
