@@ -170,6 +170,7 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             totalLength = roles.getTotalCount().intValue();
 
             if (!roles.isEmpty()) {
+                //TODO: #LAYER_VIOLATION - user lookup should not be done here (horribly inefficient)
                 UserListResult usernames = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                     @Override

@@ -86,6 +86,7 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
                 Map<String, String> users = new HashMap<String, String>();
                 final UserQuery userQuery = USER_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceConnectionQuery.getScopeId()));
 
+//TODO: #LAYER_VIOLATION - user lookup logic should not be done here (fetching all users is incredibly inefficient anyway)
                 UserListResult userList = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                     @Override
@@ -141,6 +142,7 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
         List<GwtGroupedNVPair> deviceConnectionPropertiesPairs = new ArrayList<GwtGroupedNVPair>();
         try {
             final DeviceConnection deviceConnection = DEVICE_CONNECTION_SERVICE.find(scopeId, deviceConnectionId);
+//TODO: #LAYER_VIOLATION - user lookup logic should not be done here
             User connectionUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
                 @Override

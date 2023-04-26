@@ -70,6 +70,8 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
             for (JobStep js : jobStepList.getItems()) {
                 GwtJobStep gwtJobStep = KapuaGwtJobModelConverter.convertJobStep(js);
 
+                //TODO: #LAYER_VIOLATION - I should not have to worry about id conversion here, it is a persistence aspect!
+
                 JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(KapuaId.ANY, GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getJobStepDefinitionId()));
                 gwtJobStep.setJobStepDefinitionName(jobStepDefinition.getName());
 

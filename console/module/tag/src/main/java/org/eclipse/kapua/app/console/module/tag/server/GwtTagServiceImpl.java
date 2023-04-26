@@ -136,6 +136,7 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
             totalLength = tags.getTotalCount().intValue();
 
             if (!tags.isEmpty()) {
+                //TODO: #LAYER_VIOLATION - user lookup should not be done here (horribly inefficient)
                 UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                     @Override
@@ -184,8 +185,8 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
             KapuaId tagId = KapuaEid.parseCompactId(tagShortId);
 
             final Tag tag = tagService.find(scopeId, tagId);
-
             if (tag != null) {
+//TODO: #LAYER_VIOLATION - user lookup logic should not be done here (fetching all users is incredibly inefficient anyway)
                 UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                     @Override

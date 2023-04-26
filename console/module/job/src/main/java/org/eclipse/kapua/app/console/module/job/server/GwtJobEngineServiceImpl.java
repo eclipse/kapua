@@ -21,12 +21,12 @@ import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModel
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStartOptions;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobEngineService;
 import org.eclipse.kapua.app.console.module.job.shared.util.GwtKapuaJobModelConverter;
-import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.service.job.execution.JobExecutionAttributes;
 import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
 import org.eclipse.kapua.service.job.execution.JobExecutionListResult;
@@ -87,6 +87,7 @@ public class GwtJobEngineServiceImpl extends KapuaRemoteServiceServlet implement
 
         try {
             if (jobExecutionId == null) {
+                //TODO: #LAYER_VIOLATION - job execution lookup should not be done here (horribly inefficient)
                 JobExecutionQuery query = JOB_EXECUTION_FACTORY.newQuery(scopeId);
 
                 query.setPredicate(

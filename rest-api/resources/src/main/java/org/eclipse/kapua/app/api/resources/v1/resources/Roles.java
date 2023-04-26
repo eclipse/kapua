@@ -261,6 +261,8 @@ public class Roles extends AbstractKapuaResource {
             @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
+        //TODO: #LAYER_VIOLATION - this filtering would be much more efficient, were it done at a more appropriate layer
+
         AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(scopeId);
         accessRoleQuery.setPredicate(accessRoleQuery.attributePredicate(AccessRoleAttributes.ROLE_ID, roleId));
         accessRoleQuery.setLimit(limit);

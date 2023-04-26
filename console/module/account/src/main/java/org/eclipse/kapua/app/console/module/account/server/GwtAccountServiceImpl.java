@@ -208,6 +208,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         try {
             final Account account = ACCOUNT_SERVICE.find(scopeId, accountId);
 
+//TODO: #LAYER_VIOLATION - user lookup should not be done here
             UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                 @Override
@@ -243,6 +244,8 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountName", account.getName()));
 
             if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new EndpointInfoDomain(), Actions.read, scopeId))) {
+                //TODO: #LAYER_VIOLATION - related entities lookup should not be done here
+
                 EndpointInfoListResult endpointInfos = KapuaSecurityUtils.doPrivileged(new Callable<EndpointInfoListResult>() {
 
                     @Override

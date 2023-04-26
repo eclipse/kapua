@@ -247,6 +247,8 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             // If there are results
             if (!users.isEmpty()) {
+                //TODO: #LAYER_VIOLATION - missed opportunity to perform paging at the database layer
+
                 UserListResult allUsers = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                     @Override
@@ -287,6 +289,8 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             final User user = USER_SERVICE.find(scopeId, userId);
 
             if (user != null) {
+                //TODO: #LAYER_VIOLATION - user lookup should not be done here (horribly inefficient)
+
                 UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                     @Override
@@ -377,6 +381,8 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             totalLength = users.getTotalCount().intValue();
 
             if (!users.isEmpty()) {
+                //TODO: #LAYER_VIOLATION - user lookup should not be done here (horribly inefficient)
+
                 final UserQuery allUsersQuery = USER_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(accountId));
                 UserListResult allUsers = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 

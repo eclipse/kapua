@@ -81,6 +81,8 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
                 deviceIds.add(jt.getJobTargetId());
             }
 
+            //TODO: #LAYER_VIOLATION - manual device lookup
+
             DeviceQuery query = DEVICE_FACTORY.newQuery(jobTargetQuery.getScopeId());
             query.setPredicate(query.attributePredicate(DeviceAttributes.ENTITY_ID, deviceIds));
             DeviceListResult deviceListResult = DEVICE_REGISTRY_SERVICE.query(query);

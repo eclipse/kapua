@@ -78,6 +78,7 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
 
             // If there are results
             if (!jobs.isEmpty()) {
+                //TODO: #LAYER_VIOLATION - user lookup should not be done here (horribly inefficient)
                 UserListResult usernames = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                     @Override

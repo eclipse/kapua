@@ -101,6 +101,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
 
             // If there are results
             if (!credentials.isEmpty()) {
+                //TODO: #LAYER_VIOLATION - user lookup should not be done here
                 UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                     @Override

@@ -193,6 +193,8 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         GwtDatastoreDevice updatedDevice = null;
         try {
             for (GwtDatastoreDevice device : devices) {
+                //TODO: #LAYER_VIOLATION - N+1 query scenario, that could be resolved much more efficiently at a lower layer
+
                 ClientInfoQuery query = new ClientInfoQueryImpl(scopeId);
                 query.setLimit(1);
                 query.setOffset(0);
@@ -281,11 +283,13 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         DeviceFactory deviceFactory = LOCATOR.getFactory(DeviceFactory.class);
         List<GwtDatastoreDevice> devices = new ArrayList<GwtDatastoreDevice>();
         KapuaId convertedScopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeId);
+        //TODO: #LAYER_VIOLATION - entity lookup would be much more efficient at a lower layer
         ClientInfoQuery clientInfoQuery = CLIENT_INFO_FACTORY.newQuery(convertedScopeId);
         if (!Strings.isNullOrEmpty(filter)) {
             StorablePredicate predicate = new ChannelMatchPredicateImpl(ClientInfoField.CLIENT_ID, filter);
             clientInfoQuery.setPredicate(predicate);
         }
+        //why?
         clientInfoQuery.setAskTotalCount(true);
         clientInfoQuery.setLimit(config.getLimit());
         clientInfoQuery.setOffset(config.getOffset());
@@ -345,6 +349,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         List<GwtDatastoreAsset> asset = new ArrayList<GwtDatastoreAsset>();
         KapuaId convertedScopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeId);
         ChannelInfoQuery query = CHANNEL_INFO_FACTORY.newQuery(convertedScopeId);
+        //TODO: #LAYER_VIOLATION - searching should be done at a lower layer, here it is horribly inefficient (and potentially wrong)
         query.setLimit(10000);
         try {
             ChannelInfoListResult result = clientInfoService.query(query);

@@ -15,10 +15,10 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
@@ -158,6 +158,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("operationId") EntityId operationId,
             @PathParam("managementOperationNotificationId") EntityId managementOperationNotificationId) throws KapuaException {
+//TODO: #LAYER_VIOLATION - findFirst should be resolved in bottom layer
         ManagementOperationNotificationQuery query = managementOperationNotificationFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate(
