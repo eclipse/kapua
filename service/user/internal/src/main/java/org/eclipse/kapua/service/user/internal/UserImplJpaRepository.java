@@ -27,7 +27,7 @@ public class UserImplJpaRepository
         extends KapuaNamedEntityJpaRepository<User, UserImpl, UserListResult>
         implements UserRepository {
     public UserImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
-        super(UserImpl.class, () -> new UserListResultImpl(), jpaRepoConfig);
+        super(UserImpl.class, User.TYPE, () -> new UserListResultImpl(), jpaRepoConfig);
     }
 
     @Override

@@ -34,8 +34,12 @@ import java.util.function.Supplier;
 public class KapuaNamedEntityJpaRepository<E extends KapuaNamedEntity, C extends E, L extends KapuaListResult<E>>
         extends KapuaUpdatableEntityJpaRepository<E, C, L>
         implements KapuaNamedEntityRepository<E, L> {
-    public KapuaNamedEntityJpaRepository(Class<C> concreteClass, Supplier<L> listSupplier, KapuaJpaRepositoryConfiguration jpaRepoConfig) {
-        super(concreteClass, listSupplier, jpaRepoConfig);
+    public KapuaNamedEntityJpaRepository(
+            Class<C> concreteClass,
+            String entityName,
+            Supplier<L> listSupplier,
+            KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+        super(concreteClass, entityName, listSupplier, jpaRepoConfig);
     }
 
     @Override

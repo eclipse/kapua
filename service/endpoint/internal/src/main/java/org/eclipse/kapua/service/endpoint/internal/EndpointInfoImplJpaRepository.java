@@ -22,6 +22,6 @@ public class EndpointInfoImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<EndpointInfo, EndpointInfoImpl, EndpointInfoListResult>
         implements EndpointInfoRepository {
     public EndpointInfoImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
-        super(EndpointInfoImpl.class, () -> new EndpointInfoListResultImpl(), jpaRepoConfig);
+        super(EndpointInfoImpl.class, EndpointInfo.TYPE, () -> new EndpointInfoListResultImpl(), jpaRepoConfig);
     }
 }

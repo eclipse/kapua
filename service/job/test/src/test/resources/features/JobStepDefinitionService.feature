@@ -132,7 +132,7 @@ Feature: Job step definition service CRUD tests
     Given A regular step definition creator with the name "TestDefinition"
     When I create a new step definition entity from the existing creator
     When I delete the step definition
-    Given I expect the exception "KapuaEntityNotFoundException" with the text "JobStepDefinitionImpl"
+    Given I expect the exception "KapuaEntityNotFoundException" with the text "stepDefinition"
     When I change the step definition name to "SomeRandomNewName"
     Then An exception was thrown
 

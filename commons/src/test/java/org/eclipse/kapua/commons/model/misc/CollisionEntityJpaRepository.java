@@ -21,7 +21,7 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 public class CollisionEntityJpaRepository extends KapuaEntityJpaRepository<CollisionEntity, CollisionEntity, KapuaListResult<CollisionEntity>> {
 
     public CollisionEntityJpaRepository(KapuaJpaRepositoryConfiguration configuration) {
-        super(CollisionEntity.class, () -> new KapuaListResultImpl<>(), configuration);
+        super(CollisionEntity.class, CollisionEntity.TYPE, () -> new KapuaListResultImpl<>(), configuration);
     }
 
 }

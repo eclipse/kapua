@@ -12,9 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -23,22 +21,12 @@ import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListRe
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeRepository;
 import org.eclipse.kapua.storage.TxContext;
 
-import javax.persistence.EntityManager;
-
 public class ScratchCodeImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<ScratchCode, ScratchCodeImpl, ScratchCodeListResult>
         implements ScratchCodeRepository {
 
     public ScratchCodeImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
-        super(ScratchCodeImpl.class, () -> new ScratchCodeListResultImpl(), jpaRepoConfig);
-    }
-
-    @Override
-    public ScratchCode delete(TxContext tx, KapuaId scopeId, KapuaId scratchCodeId) throws KapuaException {
-        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
-        return this.doFind(em, scopeId, scratchCodeId)
-                .map(toDelete -> doDelete(em, toDelete))
-                .orElseThrow(() -> new KapuaEntityNotFoundException(ScratchCode.TYPE, scratchCodeId));
+        super(ScratchCodeImpl.class, ScratchCode.TYPE, () -> new ScratchCodeListResultImpl(), jpaRepoConfig);
     }
 
     @Override

@@ -218,7 +218,7 @@ Scenario: Initialize test environment
         If a user tries to delete a non existing device from the registry an
         exception must be raised.
 
-        Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type DeviceImpl with id/name"
+    Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type device with id/name"
         When When I delete a device with nonexisting ID
         Then An exception was thrown
 

@@ -66,8 +66,9 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L extends KapuaListResult<E>> implements KapuaEntityRepository<E, L> {
-    public final Class<C> concreteClass;
-    public final Supplier<? extends L> listSupplier;
+    protected final Class<C> concreteClass;
+    protected final String entityName;
+    protected final Supplier<? extends L> listSupplier;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String SQL_ERROR_CODE_CONSTRAINT_VIOLATION = "23505";
     private final KapuaJpaRepositoryConfiguration configuration;
@@ -77,14 +78,16 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
 
     /**
      * @param concreteClass The concrete class reifying a {@link KapuaEntity} entity, to be retrieved
+     * @param entityName
      * @param listSupplier  Generator of new, empty lists
      * @param configuration Repo configuration, see {@link KapuaJpaRepositoryConfiguration} for configurable details
      */
     public KapuaEntityJpaRepository(
             Class<C> concreteClass,
-            Supplier<L> listSupplier,
+            String entityName, Supplier<L> listSupplier,
             KapuaJpaRepositoryConfiguration configuration) {
         this.concreteClass = concreteClass;
+        this.entityName = entityName;
         this.listSupplier = listSupplier;
         this.configuration = configuration;
     }
@@ -290,7 +293,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         return doFind(em, scopeId, entityId)
                 // Deleting if found
                 .map(e -> doDelete(em, e))
-                .orElseThrow(() -> new KapuaEntityNotFoundException(concreteClass.getSimpleName(), entityId));
+                .orElseThrow(() -> new KapuaEntityNotFoundException(entityName, entityId));
     }
 
     @Override

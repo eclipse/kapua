@@ -12,9 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -29,17 +27,7 @@ public class AccessPermissionImplJpaRepository
         extends KapuaEntityJpaRepository<AccessPermission, AccessPermissionImpl, AccessPermissionListResult>
         implements AccessPermissionRepository {
     public AccessPermissionImplJpaRepository(KapuaJpaRepositoryConfiguration configuration) {
-        super(AccessPermissionImpl.class, () -> new AccessPermissionListResultImpl(), configuration);
-    }
-
-    @Override
-    // This method is overridden for the sole purpose of throwing a different exception if the role did not exist in the first place
-    public AccessPermission delete(TxContext txContext, KapuaId scopeId, KapuaId accessPermissionId) throws KapuaException {
-        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
-        return this.doFind(em, scopeId, accessPermissionId)
-                // Deleting if found
-                .map(toBeDeleted -> doDelete(em, toBeDeleted))
-                .orElseThrow(() -> new KapuaEntityNotFoundException(AccessPermission.TYPE, accessPermissionId));
+        super(AccessPermissionImpl.class, AccessPermission.TYPE, () -> new AccessPermissionListResultImpl(), configuration);
     }
 
     @Override

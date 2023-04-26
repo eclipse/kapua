@@ -12,9 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.internal;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -25,38 +23,12 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuer
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionRepository;
 import org.eclipse.kapua.storage.TxContext;
 
-import javax.persistence.EntityManager;
-
 public class DeviceConnectionImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<DeviceConnection, DeviceConnectionImpl, DeviceConnectionListResult>
         implements DeviceConnectionRepository {
 
     public DeviceConnectionImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
-        super(DeviceConnectionImpl.class, () -> new DeviceConnectionListResultImpl(), jpaRepoConfig);
-    }
-
-    @Override
-    // TODO: check if it is correct to remove this statement (already thrown by the update method, but
-    //  without TYPE)
-    public DeviceConnection update(TxContext txContext, DeviceConnection updatedEntity) throws KapuaException {
-        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
-
-        return this.doFind(em, KapuaId.ANY, updatedEntity.getId())
-                // Updating if not null
-                .map(current -> this.doUpdate(em, current, updatedEntity))
-                .orElseThrow(() -> new KapuaEntityNotFoundException(DeviceConnection.TYPE, updatedEntity.getId()));
-    }
-
-    @Override
-    // TODO: check if it is correct to remove this statement (already thrown by the delete method, but
-    //  without TYPE)
-    public DeviceConnection delete(TxContext txContext, KapuaId scopeId, KapuaId deviceConnectionId) throws KapuaException {
-        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
-        // Checking existence
-        return this.doFind(em, scopeId, deviceConnectionId)
-                // Deleting if found
-                .map(found -> this.doDelete(em, found))
-                .orElseThrow(() -> new KapuaEntityNotFoundException(DeviceConnection.TYPE, deviceConnectionId));
+        super(DeviceConnectionImpl.class, DeviceConnection.TYPE, () -> new DeviceConnectionListResultImpl(), jpaRepoConfig);
     }
 
     @Override

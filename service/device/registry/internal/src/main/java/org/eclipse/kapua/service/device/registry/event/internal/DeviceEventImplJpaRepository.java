@@ -12,31 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event.internal;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
-import org.eclipse.kapua.storage.TxContext;
-
-import javax.persistence.EntityManager;
 
 public class DeviceEventImplJpaRepository
         extends KapuaEntityJpaRepository<DeviceEvent, DeviceEventImpl, DeviceEventListResult>
         implements DeviceEventRepository {
     public DeviceEventImplJpaRepository(KapuaJpaRepositoryConfiguration configuration) {
-        super(DeviceEventImpl.class, () -> new DeviceEventListResultImpl(), configuration);
-    }
-
-    @Override
-    public DeviceEvent delete(TxContext txContext, KapuaId scopeId, KapuaId deviceEventId) throws KapuaException {
-        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
-        return this.doFind(em, scopeId, deviceEventId)
-                .map(toDelete -> doDelete(em, toDelete))
-                .orElseThrow(() -> new KapuaEntityNotFoundException(DeviceEvent.TYPE, deviceEventId));
+        super(DeviceEventImpl.class, DeviceEvent.TYPE, () -> new DeviceEventListResultImpl(), configuration);
     }
 }

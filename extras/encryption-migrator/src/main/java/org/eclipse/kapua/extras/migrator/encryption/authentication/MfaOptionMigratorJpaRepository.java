@@ -26,7 +26,7 @@ public class MfaOptionMigratorJpaRepository
         extends KapuaUpdatableEntityJpaRepository<MfaOption, MfaOptionMigrator, MfaOptionListResult>
         implements MfaOptionRepository {
     public MfaOptionMigratorJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
-        super(MfaOptionMigrator.class, () -> new MfaOptionMigratorListResultImpl(), jpaRepoConfig);
+        super(MfaOptionMigrator.class, MfaOption.TYPE, () -> new MfaOptionMigratorListResultImpl(), jpaRepoConfig);
     }
 
     @Override

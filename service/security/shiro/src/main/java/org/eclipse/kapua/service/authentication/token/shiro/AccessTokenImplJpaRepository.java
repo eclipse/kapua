@@ -27,7 +27,7 @@ public class AccessTokenImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<AccessToken, AccessTokenImpl, AccessTokenListResult>
         implements AccessTokenRepository {
     public AccessTokenImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
-        super(AccessTokenImpl.class, () -> new AccessTokenListResultImpl(), jpaRepoConfig);
+        super(AccessTokenImpl.class, AccessToken.TYPE, () -> new AccessTokenListResultImpl(), jpaRepoConfig);
     }
 
     @Override

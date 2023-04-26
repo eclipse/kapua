@@ -29,7 +29,7 @@ public class JobStepMigratorJpaRepository
         implements JobStepRepository {
 
     public JobStepMigratorJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
-        super(JobStepMigrator.class, () -> new JobStepMigratorListResultImpl(), jpaRepoConfig);
+        super(JobStepMigrator.class, JobStep.TYPE, () -> new JobStepMigratorListResultImpl(), jpaRepoConfig);
     }
 
     @Override
