@@ -172,6 +172,7 @@ public class TagServiceSteps extends TestBase {
             primeException();
             TagQuery query = tagFactory.newQuery(SYS_SCOPE_ID);
             query.setPredicate(query.attributePredicate(TagAttributes.NAME, tagName, AttributePredicate.Operator.EQUAL));
+            //TODO: #LAYER_VIOLATION - isn't this a find by name?
             TagListResult queryResult = tagService.query(query);
             Tag foundTag = queryResult.getFirstItem();
             stepData.put("tag", foundTag);
@@ -187,8 +188,10 @@ public class TagServiceSteps extends TestBase {
             primeException();
             TagQuery query = tagFactory.newQuery(getCurrentScopeId());
             query.setPredicate(query.attributePredicate(TagAttributes.NAME, tagName, AttributePredicate.Operator.EQUAL));
+            //TODO: #LAYER_VIOLATION - isn't this a find by name?
             TagListResult queryResult = tagService.query(query);
             Tag foundTag = queryResult.getFirstItem();
+            //TODO: #LAYER_VIOLATION - or better, delete by name?
             tagService.delete(getCurrentScopeId(), foundTag.getId());
         } catch (Exception e) {
             verifyException(e);
@@ -268,6 +271,7 @@ public class TagServiceSteps extends TestBase {
             TagListResult queryResult = tagService.query(query);
             Tag foundTag = queryResult.getFirstItem();
             foundTag.setName(newTagName);
+            //TODO: #LAYER_VIOLATION - this is updateByName
             Tag newTag = tagService.update(foundTag);
             stepData.put("tag", newTag);
         } catch (KapuaException ex) {
@@ -299,6 +303,7 @@ public class TagServiceSteps extends TestBase {
             foundTag.setDescription(newDescription);
             primeException();
             stepData.remove("tag");
+            //TODO: #LAYER_VIOLATION - this is just update by name
             Tag newtag = tagService.update(foundTag);
             stepData.put("tag", newtag);
         } catch (Exception ex) {

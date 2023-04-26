@@ -123,7 +123,7 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
 
     @Override
     public PagingLoadResult<GwtGroup> query(PagingLoadConfig loadConfig,
-            final GwtGroupQuery gwtGroupQuery) throws GwtKapuaException {
+                                            final GwtGroupQuery gwtGroupQuery) throws GwtKapuaException {
         int totalLength = 0;
         List<GwtGroup> gwtGroupList = new ArrayList<GwtGroup>();
         try {
@@ -174,7 +174,7 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
 
     @Override
     public ListLoadResult<GwtGroupedNVPair> getGroupDescription(String scopeShortId,
-            String groupShortId) throws GwtKapuaException {
+                                                                String groupShortId) throws GwtKapuaException {
         List<GwtGroupedNVPair> gwtGroupDescription = new ArrayList<GwtGroupedNVPair>();
         try {
             final KapuaId scopeId = KapuaEid.parseCompactId(scopeShortId);
@@ -182,6 +182,7 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
 
             final Group group = GROUP_SERVICE.find(scopeId, groupId);
 
+            //TODO: #LAYER_VIOLATION - user lookup should not be done here (horribly inefficient)
             UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                 @Override

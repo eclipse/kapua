@@ -143,6 +143,8 @@ public class JbatchDriver {
             List<ExecutionElement> jslExecutionElements = new ArrayList<>();
             Iterator<JobStep> jobStepIterator = jobSteps.getItems().iterator();
             while (jobStepIterator.hasNext()) {
+                //TODO: #LAYER_VIOLATION - N+1 query would be better handled at a lower layer
+
                 JobStep jobStep = jobStepIterator.next();
 
                 Step jslStep = new Step();

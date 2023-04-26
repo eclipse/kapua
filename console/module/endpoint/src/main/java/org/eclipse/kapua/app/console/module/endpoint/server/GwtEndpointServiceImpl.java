@@ -148,6 +148,7 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
             totalLength = endpoints.getTotalCount().intValue();
 
             if (!endpoints.isEmpty()) {
+                //TODO: #LAYER_VIOLATION - user lookup should not be done here
                 UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                     @Override
@@ -172,7 +173,7 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
             KapuaExceptionHandler.handle(e);
         }
         return new BasePagingLoadResult<GwtEndpoint>(gwtEndpointList, loadConfig.getOffset(),
-                                                     totalLength);
+                totalLength);
     }
 
     @Override
@@ -226,10 +227,10 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
 
                 gwtEndpointDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "endpointModifiedOn", endpointInfo.getModifiedOn()));
                 gwtEndpointDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "endpointModifiedBy",
-                                                                endpointInfo.getModifiedBy() != null ? usernameMap.get(endpointInfo.getModifiedBy().toCompactId()) : null));
+                        endpointInfo.getModifiedBy() != null ? usernameMap.get(endpointInfo.getModifiedBy().toCompactId()) : null));
                 gwtEndpointDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "endpointCreatedOn", endpointInfo.getCreatedOn()));
                 gwtEndpointDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "endpointCreatedBy",
-                                                                endpointInfo.getCreatedBy() != null ? usernameMap.get(endpointInfo.getCreatedBy().toCompactId()) : null));
+                        endpointInfo.getCreatedBy() != null ? usernameMap.get(endpointInfo.getCreatedBy().toCompactId()) : null));
 
             }
         } catch (Exception e) {

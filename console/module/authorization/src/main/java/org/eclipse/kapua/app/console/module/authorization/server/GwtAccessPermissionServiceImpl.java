@@ -142,6 +142,7 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
                     AccessPermissionListResult accessPermissionList = ACCESS_PERMISSION_SERVICE.query(query);
                     totalLength = accessPermissionList.getTotalCount().intValue();
 
+                    //FIXME: what is the point of checking for empty list and then just loop? The if does not add anything!
                     if (!accessPermissionList.isEmpty()) {
                         for (final AccessPermission accessPermission : accessPermissionList.getItems()) {
                             User createdByUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {

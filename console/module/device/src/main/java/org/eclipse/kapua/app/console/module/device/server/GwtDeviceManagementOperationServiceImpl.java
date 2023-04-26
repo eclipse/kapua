@@ -68,6 +68,7 @@ public class GwtDeviceManagementOperationServiceImpl extends KapuaRemoteServiceS
                 GwtDeviceManagementOperation gwtDmo = KapuaGwtDeviceModelConverter.convertManagementOperation(dmo);
 
                 if (dmo.getEndedOn() == null) {
+                    //TODO: #LAYER_VIOLATION - entity lookup should be done elsewhere
                     ManagementOperationNotificationQuery notificationQuery = MANAGEMENT_OPERATION_NOTIFICATION_FACTORY.newQuery(dmo.getScopeId());
                     notificationQuery.setPredicate(notificationQuery.attributePredicate(ManagementOperationNotificationAttributes.OPERATION_ID, dmo.getId()));
                     notificationQuery.setSortCriteria(notificationQuery.fieldSortCriteria(ManagementOperationNotificationAttributes.SENT_ON, SortOrder.ASCENDING));
