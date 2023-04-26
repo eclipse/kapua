@@ -28,7 +28,7 @@ public class AccountImplJpaRepository
         implements AccountRepository {
 
     public AccountImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
-        super(AccountImpl.class, () -> new AccountListResultImpl(), jpaRepoConfig);
+        super(AccountImpl.class, Account.TYPE, () -> new AccountListResultImpl(), jpaRepoConfig);
     }
 
     @Override

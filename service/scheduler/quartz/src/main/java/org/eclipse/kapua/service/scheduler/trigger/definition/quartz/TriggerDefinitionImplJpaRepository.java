@@ -22,6 +22,6 @@ public class TriggerDefinitionImplJpaRepository
         extends KapuaNamedEntityJpaRepository<TriggerDefinition, TriggerDefinitionImpl, TriggerDefinitionListResult>
         implements TriggerDefinitionRepository {
     public TriggerDefinitionImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
-        super(TriggerDefinitionImpl.class, () -> new TriggerDefinitionListResultImpl(), jpaRepoConfig);
+        super(TriggerDefinitionImpl.class, TriggerDefinition.TYPE, () -> new TriggerDefinitionListResultImpl(), jpaRepoConfig);
     }
 }

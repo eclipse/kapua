@@ -12,9 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.domain.shiro;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity_;
@@ -24,23 +22,13 @@ import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainRepository;
 import org.eclipse.kapua.storage.TxContext;
 
-import javax.persistence.EntityManager;
 import java.util.Optional;
 
 public class DomainImplJpaRepository
         extends KapuaEntityJpaRepository<Domain, DomainImpl, DomainListResult>
         implements DomainRepository {
     public DomainImplJpaRepository(KapuaJpaRepositoryConfiguration configuration) {
-        super(DomainImpl.class, () -> new DomainListResultImpl(), configuration);
-    }
-
-    //for the sole purpose of changing exception type
-    @Override
-    public Domain delete(TxContext txContext, KapuaId scopeId, KapuaId domainId) throws KapuaException {
-        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
-        return this.doFind(em, scopeId, domainId)
-                .map(toDelete -> doDelete(em, toDelete))
-                .orElseThrow(() -> new KapuaEntityNotFoundException(Domain.TYPE, domainId));
+        super(DomainImpl.class, Domain.TYPE, () -> new DomainListResultImpl(), configuration);
     }
 
     @Override

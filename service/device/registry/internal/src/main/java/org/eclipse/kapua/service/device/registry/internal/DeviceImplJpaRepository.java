@@ -29,7 +29,7 @@ public class DeviceImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<Device, DeviceImpl, DeviceListResult>
         implements DeviceRepository {
     public DeviceImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
-        super(DeviceImpl.class, () -> new DeviceListResultImpl(), jpaRepoConfig);
+        super(DeviceImpl.class, Device.TYPE, () -> new DeviceListResultImpl(), jpaRepoConfig);
     }
 
     @Override

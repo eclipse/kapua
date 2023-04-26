@@ -22,6 +22,6 @@ public class ManagementOperationNotificationImplJpaRepository
         extends KapuaEntityJpaRepository<ManagementOperationNotification, ManagementOperationNotificationImpl, ManagementOperationNotificationListResult>
         implements ManagementOperationNotificationRepository {
     public ManagementOperationNotificationImplJpaRepository(KapuaJpaRepositoryConfiguration configuration) {
-        super(ManagementOperationNotificationImpl.class, () -> new ManagementOperationNotificationListResultImpl(), configuration);
+        super(ManagementOperationNotificationImpl.class, ManagementOperationNotification.TYPE, () -> new ManagementOperationNotificationListResultImpl(), configuration);
     }
 }

@@ -12,30 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.job.internal;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationListResult;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationRepository;
-import org.eclipse.kapua.storage.TxContext;
 
 public class JobDeviceManagementOperationImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<JobDeviceManagementOperation, JobDeviceManagementOperationImpl, JobDeviceManagementOperationListResult>
         implements JobDeviceManagementOperationRepository {
     public JobDeviceManagementOperationImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
-        super(JobDeviceManagementOperationImpl.class, () -> new JobDeviceManagementOperationListResultImpl(), jpaRepoConfig);
-    }
-
-    @Override
-    public JobDeviceManagementOperation delete(TxContext txContext, KapuaId scopeId, KapuaId jobDeviceManagementOperationId) throws KapuaException {
-        final javax.persistence.EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
-        // Check existence
-        return this.doFind(em, scopeId, jobDeviceManagementOperationId)
-                .map(toBeDeleted -> doDelete(em, toBeDeleted))
-                .orElseThrow(() -> new KapuaEntityNotFoundException(JobDeviceManagementOperation.TYPE, jobDeviceManagementOperationId));
+        super(JobDeviceManagementOperationImpl.class, JobDeviceManagementOperation.TYPE, () -> new JobDeviceManagementOperationListResultImpl(), jpaRepoConfig);
     }
 }

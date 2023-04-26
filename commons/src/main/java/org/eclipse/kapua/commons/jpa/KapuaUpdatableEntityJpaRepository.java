@@ -27,9 +27,10 @@ public class KapuaUpdatableEntityJpaRepository<E extends KapuaUpdatableEntity, C
         implements KapuaUpdatableEntityRepository<E, L> {
     public KapuaUpdatableEntityJpaRepository(
             Class<C> concreteClass,
+            String entityName,
             Supplier<L> listSupplier,
             KapuaJpaRepositoryConfiguration configuration) {
-        super(concreteClass, listSupplier, configuration);
+        super(concreteClass, entityName, listSupplier, configuration);
     }
 
     @Override
@@ -39,7 +40,7 @@ public class KapuaUpdatableEntityJpaRepository<E extends KapuaUpdatableEntity, C
         return doFind(em, updatedEntity.getScopeId(), updatedEntity.getId())
                 // Updating if present
                 .map(ce -> doUpdate(em, ce, updatedEntity))
-                .orElseThrow(() -> new KapuaEntityNotFoundException(concreteClass.getSimpleName(), updatedEntity.getId()));
+                .orElseThrow(() -> new KapuaEntityNotFoundException(entityName, updatedEntity.getId()));
     }
 
     @Override

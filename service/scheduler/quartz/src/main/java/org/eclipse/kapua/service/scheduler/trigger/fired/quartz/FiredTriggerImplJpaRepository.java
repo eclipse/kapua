@@ -12,31 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.fired.quartz;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTrigger;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerRepository;
-import org.eclipse.kapua.storage.TxContext;
-
-import javax.persistence.EntityManager;
 
 public class FiredTriggerImplJpaRepository
         extends KapuaEntityJpaRepository<FiredTrigger, FiredTriggerImpl, FiredTriggerListResult>
         implements FiredTriggerRepository {
     public FiredTriggerImplJpaRepository(KapuaJpaRepositoryConfiguration configuration) {
-        super(FiredTriggerImpl.class, () -> new FiredTriggerListResultImpl(), configuration);
+        super(FiredTriggerImpl.class, FiredTrigger.TYPE, () -> new FiredTriggerListResultImpl(), configuration);
     }
 
-    @Override
-    public FiredTrigger delete(TxContext txContext, KapuaId scopeId, KapuaId firedTriggerId) throws KapuaException {
-        final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
-        return this.doFind(em, scopeId, firedTriggerId)
-                .map(toBeDeleted -> doDelete(em, toBeDeleted))
-                .orElseThrow(() -> new KapuaEntityNotFoundException(FiredTrigger.TYPE, firedTriggerId));
-    }
 }
