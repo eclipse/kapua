@@ -29,7 +29,7 @@ components:
         - type: object
           properties:
             action:
-              $ref: '../device/device.yaml#/components/schemas/action'
+              $ref: '../openapi.yaml#/components/schemas/action'
             appId:
               type: string
             deviceId:

@@ -618,6 +618,19 @@ components:
         count:
           type: integer
           description: The total count of the Entities available in the Scope
+    ### Schema used in different yaml definitions, placed here for problems with swagger reference resolution ###
+    action:
+      type: string
+      enum:
+        - READ
+        - CREATE
+        - WRITE
+        - DELETE
+        - OPTIONS
+        - EXECUTE
+        - SUBMIT
+        - CANCEL
+        - SENT
     ### AccessInfo Entities ###
     accessInfo:
       $ref: './accessInfo/accessInfo.yaml#/components/schemas/accessInfo'
