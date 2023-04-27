@@ -14,6 +14,7 @@ package org.eclipse.kapua.commons.storage;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
+import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -22,6 +23,13 @@ import org.eclipse.kapua.storage.TxContext;
 
 import java.util.Optional;
 
+/**
+ * This wrapper around a {@link KapuaNamedEntityRepository} provides basic caching functionality for the entities
+ *
+ * @param <E> The specific subclass of {@link KapuaEntity} handled by this repository
+ * @param <L> The specific subclass of {@link KapuaListResult}&lt;E&gt; meant to hold list results for the kapua entity handled by this repo
+ * @since 2.0.0
+ */
 public class KapuaNamedEntityRepositoryCachingWrapper<
         E extends KapuaNamedEntity,
         L extends KapuaListResult<E>>
@@ -57,6 +65,7 @@ public class KapuaNamedEntityRepositoryCachingWrapper<
         return found;
     }
 
+    // Pass-through methods from here
     @Override
     public long countOtherEntitiesWithNameInScope(TxContext tx, KapuaId scopeId, KapuaId excludedId, String name) throws KapuaException {
         return wrapped.countOtherEntitiesWithNameInScope(tx, scopeId, excludedId, name);

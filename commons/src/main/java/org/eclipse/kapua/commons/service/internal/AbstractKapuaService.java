@@ -30,7 +30,7 @@ import javax.validation.constraints.NotNull;
  * It handles the {@link EntityManagerFactory} and {@link EntityManagerSession} to avoid redefining each time in the {@link KapuaService}s.
  *
  * @since 1.0.0
- * @deprecated since 2.0.0 - use repository pattern implementations instead
+ * @deprecated since 2.0.0 - use repository pattern instead - no need for your service to extend this
  */
 @Deprecated
 public abstract class AbstractKapuaService implements KapuaService {

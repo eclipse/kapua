@@ -13,12 +13,21 @@
 package org.eclipse.kapua.storage;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 
 import java.util.Optional;
 
+/**
+ * This contract builds upon {@link KapuaUpdatableEntityRepository} (and in turn {@link KapuaEntityRepository},
+ * adding functionalities specific to Kapua Entities that are implement the contract {@link KapuaNamedEntity} (as in: have a name and description fields)
+ *
+ * @param <E> The specific subclass of {@link KapuaEntity} handled by this repository
+ * @param <L> The specific subclass of {@link KapuaListResult}&lt;E&gt; meant to hold list results for the kapua entity handled by this repo
+ * @since 2.0.0
+ */
 public interface KapuaNamedEntityRepository<E extends KapuaNamedEntity, L extends KapuaListResult<E>>
         extends KapuaUpdatableEntityRepository<E, L> {
     /**
