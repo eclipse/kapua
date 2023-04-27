@@ -23,8 +23,10 @@ import javax.validation.constraints.Null;
 import java.util.Optional;
 
 /**
- * {@link KapuaEntityRepository} base methods.
+ * Base contract to persists (Create, Read, Delete) {@link KapuaEntity}s
  *
+ * @param <E> The specific subclass of {@link KapuaEntity} handled by this repository
+ * @param <L> The specific subclass of {@link KapuaListResult}&lt;E&gt; meant to hold list results for the kapua entity handled by this repo
  * @since 2.0.0
  */
 public interface KapuaEntityRepository<E extends KapuaEntity, L extends KapuaListResult<E>> {
