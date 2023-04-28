@@ -226,8 +226,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
                     }
                     // Do update
                     return userRepository.update(tx, user);
-                },
-                eventStorer::accept);
+                });
     }
 
     @Override
@@ -262,8 +261,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
 
                     // Do  delete
                     return userRepository.delete(tx, user);
-                },
-                eventStorer::accept);
+                });
     }
 
     @Override

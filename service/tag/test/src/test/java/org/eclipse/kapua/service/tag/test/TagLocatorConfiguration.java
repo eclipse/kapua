@@ -73,6 +73,8 @@ import org.eclipse.kapua.service.tag.internal.TagServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
+import java.util.Collections;
+
 @Singleton
 public class TagLocatorConfiguration {
 
@@ -127,7 +129,7 @@ public class TagLocatorConfiguration {
                                 Mockito.mock(ServiceConfigurationManager.class),
                                 mockedAuthorization,
                                 permissionFactory,
-                                new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-device"),
+                                new KapuaJpaTxManagerFactory(maxInsertAttempts, Collections.emptySet()).create("kapua-device"),
                                 new DeviceImplJpaRepository(jpaRepoConfig),
                                 new DeviceFactoryImpl(),
                                 new AccessInfoFactoryImpl(),
@@ -145,7 +147,7 @@ public class TagLocatorConfiguration {
                         mockedAuthorization,
                         permissionFactory,
                         new DeviceConnectionFactoryImpl(),
-                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-device"),
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts, Collections.emptySet()).create("kapua-device"),
                         new DeviceConnectionImplJpaRepository(jpaRepoConfig)));
                 bind(DeviceConnectionFactory.class).to(DeviceConnectionFactoryImpl.class);
 
@@ -155,7 +157,7 @@ public class TagLocatorConfiguration {
                 bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl(
                         mockedAuthorization,
                         permissionFactory,
-                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-device"),
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts, Collections.emptySet()).create("kapua-device"),
                         new DeviceImplJpaRepository(jpaRepoConfig),
                         new DeviceEventFactoryImpl(),
                         new DeviceEventImplJpaRepository(jpaRepoConfig)
@@ -167,7 +169,7 @@ public class TagLocatorConfiguration {
                         permissionFactory,
                         mockedAuthorization,
                         Mockito.mock(ServiceConfigurationManager.class),
-                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-tag"),
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts, Collections.emptySet()).create("kapua-tag"),
                         new TagImplJpaRepository(new KapuaJpaRepositoryConfiguration()),
                         new TagFactoryImpl()
                 ));

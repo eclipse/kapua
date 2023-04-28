@@ -13,6 +13,7 @@
 package org.eclipse.kapua.commons;
 
 import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
@@ -21,6 +22,7 @@ import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.model.query.QueryFactory;
+import org.eclipse.kapua.storage.TxGlobalPostActionConsumer;
 
 import javax.inject.Singleton;
 
@@ -48,4 +50,8 @@ public class CommonsModule extends AbstractKapuaModule {
         return new EventStorerImpl(repository);
     }
 
+    @ProvidesIntoSet
+    TxGlobalPostActionConsumer eventPersisterAsGlobalConsumer(EventStorer eventStorer) {
+        return eventStorer;
+    }
 }

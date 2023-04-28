@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -33,14 +35,22 @@ public class TxManagerImpl implements TxManager {
      * @param maxRetryAttemptsAllowed number of tx execution retries allowed in case of recoverable
      *                                errors (see {@link TxContext#isRecoverableException(Exception)})
      */
-    public TxManagerImpl(Supplier<TxContext> txContextSupplier, Integer maxRetryAttemptsAllowed) {
+    public TxManagerImpl(Supplier<TxContext> txContextSupplier, Integer maxRetryAttemptsAllowed,
+                         Set<TxGlobalPostActionConsumer> globalJustBeforeCommitAdditionalTxConsumers) {
         this.txContextSupplier = txContextSupplier;
         this.maxRetryAttemptsAllowed = maxRetryAttemptsAllowed;
+        this.globalJustBeforeCommitAdditionalTxConsumers = globalJustBeforeCommitAdditionalTxConsumers;
     }
 
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Supplier<TxContext> txContextSupplier;
+    private final int maxRetryAttemptsAllowed;
+    private final Collection<TxGlobalPostActionConsumer> globalJustBeforeCommitAdditionalTxConsumers;
+
     @Override
-    public <R> R execute(TxConsumer<R> transactionConsumer,
-                         BiConsumer<TxContext, R>... justBeforeCommitAdditionalTxConsumers)
+    public <R extends Object> R execute(TxConsumer<R> transactionConsumer,
+                                        BiConsumer<TxContext, R>... justBeforeCommitAdditionalTxConsumers)
             throws KapuaException {
         int retry = 0;
         final TxContext txContext = txContextSupplier.get();
@@ -48,8 +58,10 @@ public class TxManagerImpl implements TxManager {
             while (true) {
                 try {
                     final R res = transactionConsumer.execute(txContext);
-                    Arrays.stream(justBeforeCommitAdditionalTxConsumers)
-                            .forEach(additionalTxConsumer -> additionalTxConsumer.accept(txContext, res));
+                    globalJustBeforeCommitAdditionalTxConsumers.stream()
+                            .filter(c -> c.canConsume(res))
+                            .forEach(additionalTxConsumer -> additionalTxConsumer.consume(txContext, res));
+                    Arrays.stream(justBeforeCommitAdditionalTxConsumers).forEach(additionalTxConsumer -> additionalTxConsumer.accept(txContext, res));
                     txContext.commit();
                     return res;
                 } catch (Exception ex) {
@@ -73,11 +85,6 @@ public class TxManagerImpl implements TxManager {
             }
         }
     }
-
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final Supplier<TxContext> txContextSupplier;
-    private final int maxRetryAttemptsAllowed;
 
     @Override
     public TxContext getTxContext() {

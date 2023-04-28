@@ -45,6 +45,8 @@ import org.eclipse.kapua.service.user.internal.UserServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
+import java.util.Collections;
+
 @Singleton
 public class UserLocatorConfiguration {
 
@@ -105,7 +107,7 @@ public class UserLocatorConfiguration {
                                 userConfigurationManager,
                                 mockedAuthorization,
                                 mockPermissionFactory,
-                                new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-user"),
+                                new KapuaJpaTxManagerFactory(maxInsertAttempts, Collections.emptySet()).create("kapua-user"),
                                 new UserImplJpaRepository(jpaRepoConfig),
                                 userFactory,
                                 new EventStorerImpl(new EventStoreRecordImplJpaRepository(jpaRepoConfig)))

@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
+import java.util.Collections;
 import java.util.Optional;
 
 /**
@@ -59,7 +60,7 @@ public class IdGeneratorTest extends AbstractCommonServiceTest {
     public static void setUp() {
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL;DB_CLOSE_DELAY=-1", "kapua", "kapua").update();
         scriptSession(DEFAULT_TEST_PATH, DEFAULT_TEST_FILTER);
-        txManager = new KapuaJpaTxManagerFactory(MAX_RETRIES).create("kapua-commons-unit-test");
+        txManager = new KapuaJpaTxManagerFactory(MAX_RETRIES, Collections.emptySet()).create("kapua-commons-unit-test");
         repo = new CollisionEntityJpaRepository(
                 new KapuaJpaRepositoryConfiguration()
         );
