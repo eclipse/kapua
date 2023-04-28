@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -102,7 +103,10 @@ public abstract class ServiceEventModule implements ServiceModule {
         houseKeeperJob = new ServiceEventHousekeeper(
                 new EventStoreServiceImpl(locator.getService(AuthorizationService.class),
                         locator.getFactory(PermissionFactory.class),
-                        new TxManagerImpl(() -> new JpaTxContext(serviceEventModuleConfiguration.getEntityManagerFactory().getJpaEntityManagerFactory()), serviceEventModuleConfiguration.maxInsertAttempts),
+                        new TxManagerImpl(
+                                () -> new JpaTxContext(serviceEventModuleConfiguration.getEntityManagerFactory().getJpaEntityManagerFactory()),
+                                serviceEventModuleConfiguration.maxInsertAttempts,
+                                Collections.emptySet()),
                         new EventStoreFactoryImpl(),
                         new EventStoreRecordImplJpaRepository(serviceEventModuleConfiguration.getKapuaJpaRepositoryConfiguration())
                 ),

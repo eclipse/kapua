@@ -34,7 +34,11 @@ public class EventStorerImpl implements EventStorer {
     }
 
     @Override
-    public void accept(TxContext tx, KapuaEntity kapuaEntity) {
+    public void consume(TxContext tx, Object res) {
+        if (!(res instanceof KapuaEntity)) {
+            return;
+        }
+        final KapuaEntity kapuaEntity = (KapuaEntity) res;
         if (kapuaEntity instanceof EventStoreRecord) {
             return;
         }

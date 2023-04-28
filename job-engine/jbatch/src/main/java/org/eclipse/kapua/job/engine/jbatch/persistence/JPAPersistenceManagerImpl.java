@@ -60,6 +60,7 @@ import javax.batch.runtime.BatchStatus;
 import javax.batch.runtime.JobInstance;
 import javax.batch.runtime.StepExecution;
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +105,7 @@ public class JPAPersistenceManagerImpl implements IPersistenceManagerService {
 
     //TODO: can these be injected instead?
     public JPAPersistenceManagerImpl() {
-        this.txManager = new KapuaJpaTxManagerFactory(SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY)).create("jbatch");
+        this.txManager = new KapuaJpaTxManagerFactory(SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY), Collections.emptySet()).create("jbatch");
         this.checkpointDataRepository = new JpaCheckpointDataRepositoryImpl();
         this.executionInstanceDataRepository = new JpaExecutionInstanceDataRepositoryImpl();
         this.jobInstanceDataRepository = new JpaJobInstanceDataRepositoryImpl();
