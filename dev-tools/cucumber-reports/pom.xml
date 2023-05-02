@@ -26,6 +26,7 @@
     <packaging>pom</packaging>
 
     <build>
+        <finalName>kapua-cucumber-report</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -41,7 +42,6 @@
                             <descriptors>
                                 <descriptor>src/main/descriptors/kapua-cucumber-report.xml</descriptor>
                             </descriptors>
-                            <finalName>kapua-cucumber-report</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
                             <attach>false</attach><!-- unable to attach a directory -->
                         </configuration>
@@ -50,4 +50,33 @@
             </plugin>
         </plugins>
     </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-account-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-user-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-registry-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-job-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-tag-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-qa-integration</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>
