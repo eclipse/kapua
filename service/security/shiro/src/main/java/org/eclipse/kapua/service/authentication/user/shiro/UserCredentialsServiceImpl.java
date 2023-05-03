@@ -39,11 +39,12 @@ import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserRepository;
+import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Singleton;
+import java.util.Optional;
 
 /**
  * {@link UserCredentialsService} implementation.
@@ -59,7 +60,7 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
     private final CredentialsFactory credentialsFactory;
     private final CredentialFactory credentialFactory;
     private final TxManager txManager;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final CredentialRepository credentialRepository;
     private final CredentialMapper credentialMapper;
     private final PasswordValidator passwordValidator;
@@ -70,7 +71,7 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
             UserCredentialsFactory userCredentialsFactory, CredentialsFactory credentialsFactory,
             CredentialFactory credentialFactory,
             TxManager txManager,
-            UserRepository userRepository,
+            UserService userService,
             CredentialRepository credentialRepository,
             CredentialMapper credentialMapper,
             PasswordValidator passwordValidator) {
@@ -81,7 +82,7 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
         this.credentialsFactory = credentialsFactory;
         this.credentialFactory = credentialFactory;
         this.txManager = txManager;
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.credentialRepository = credentialRepository;
         this.credentialMapper = credentialMapper;
         this.passwordValidator = passwordValidator;
@@ -92,9 +93,11 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
         ArgumentValidator.notNull(passwordChangeRequest.getNewPassword(), "passwordChangeRequest.newPassword");
         ArgumentValidator.notNull(passwordChangeRequest.getCurrentPassword(), "passwordChangeRequest.currentPassword");
 
+        final User user = Optional.ofNullable(
+                KapuaSecurityUtils.doPrivileged(() -> userService.find(KapuaSecurityUtils.getSession().getScopeId(), KapuaSecurityUtils.getSession().getUserId())
+                )
+        ).orElseThrow(() -> new KapuaEntityNotFoundException(User.TYPE, KapuaSecurityUtils.getSession().getUserId()));
         return txManager.execute(tx -> {
-            User user = userRepository.find(tx, KapuaSecurityUtils.getSession().getScopeId(), KapuaSecurityUtils.getSession().getUserId())
-                    .orElseThrow(() -> new KapuaEntityNotFoundException(User.TYPE, KapuaSecurityUtils.getSession().getUserId()));
             UsernamePasswordCredentials usernamePasswordCredentials = credentialsFactory.newUsernamePasswordCredentials(user.getName(), passwordChangeRequest.getCurrentPassword());
             try {
                 authenticationService.verifyCredentials(usernamePasswordCredentials);

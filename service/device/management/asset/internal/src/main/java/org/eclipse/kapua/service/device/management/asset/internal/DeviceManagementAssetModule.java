@@ -21,9 +21,9 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreService;
-import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
 public class DeviceManagementAssetModule extends AbstractKapuaModule {
     @Override
@@ -35,18 +35,18 @@ public class DeviceManagementAssetModule extends AbstractKapuaModule {
     @Singleton
     DeviceAssetManagementService deviceAssetManagementService(AuthorizationService authorizationService,
                                                               PermissionFactory permissionFactory,
-                                                              DeviceEventRepository deviceEventRepository,
+                                                              DeviceEventService deviceEventService,
                                                               DeviceEventFactory deviceEventFactory,
-                                                              DeviceRepository deviceRepository,
+                                                              DeviceRegistryService deviceRegistryService,
                                                               DeviceAssetStoreService deviceAssetStoreService,
                                                               KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         return new DeviceAssetManagementServiceImpl(
                 jpaTxManagerFactory.create("kapua-device_management_operation_registry"),
                 authorizationService,
                 permissionFactory,
-                deviceEventRepository,
+                deviceEventService,
                 deviceEventFactory,
-                deviceRepository,
+                deviceRegistryService,
                 deviceAssetStoreService
         );
     }

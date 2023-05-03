@@ -527,7 +527,10 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             final KapuaId currentUserId = KapuaSecurityUtils.getSession().getUserId();
             boolean preventChange =
                     // if current user is not root user...
-                    !txManager.execute(tx -> getRootUserTester().isRoot(tx, currentUserId)) &&
+                    !txManager.execute(tx -> {
+                        final boolean currentUserIsRoot = getRootUserTester().isRoot(currentUserId);
+                        return currentUserIsRoot;
+                    }) &&
                             // current configuration does not allow self edit...
                             !allowSelfEdit &&
                             // a configuration for the current logged account is about to be changed...

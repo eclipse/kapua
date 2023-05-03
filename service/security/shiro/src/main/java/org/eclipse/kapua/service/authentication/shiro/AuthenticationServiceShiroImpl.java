@@ -34,7 +34,6 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.KapuaDelayUtil;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
@@ -99,6 +98,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Date;
 import java.util.UUID;
@@ -114,25 +114,55 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticationServiceShiroImpl.class);
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
+    private final CredentialService credentialService;
+    private final MfaOptionService mfaOptionService;
 
-    private final CredentialService credentialService = locator.getService(CredentialService.class);
-    private final MfaOptionService mfaOptionService = locator.getService(MfaOptionService.class);
+    private final AccessTokenService accessTokenService;
+    private final AccessTokenFactory accessTokenFactory;
+    private final CertificateService certificateService;
+    private final CertificateFactory certificateFactory;
 
-    private final AccessTokenService accessTokenService = locator.getService(AccessTokenService.class);
-    private final AccessTokenFactory accessTokenFactory = locator.getFactory(AccessTokenFactory.class);
-    private final CertificateService certificateService = locator.getService(CertificateService.class);
-    private final CertificateFactory certificateFactory = locator.getFactory(CertificateFactory.class);
+    private final AccessInfoService accessInfoService;
+    private final AccessRoleService accessRoleService;
+    private final AccessRoleFactory accessRoleFactory;
+    private final RolePermissionService rolePermissionService;
+    private final RolePermissionFactory rolePermissionFactory;
+    private final AccessPermissionService accessPermissionService;
+    private final AccessPermissionFactory accessPermissionFactory;
 
-    private final AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
-    private final AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
-    private final AccessRoleFactory accessRoleFactory = locator.getFactory(AccessRoleFactory.class);
-    private final RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
-    private final RolePermissionFactory rolePermissionFactory = locator.getFactory(RolePermissionFactory.class);
-    private final AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
-    private final AccessPermissionFactory accessPermissionFactory = locator.getFactory(AccessPermissionFactory.class);
+    private final UserService userService;
 
-    private final UserService userService = locator.getService(UserService.class);
+    @Inject
+    public AuthenticationServiceShiroImpl(
+            CredentialService credentialService,
+            MfaOptionService mfaOptionService,
+            AccessTokenService accessTokenService,
+            AccessTokenFactory accessTokenFactory,
+            CertificateService certificateService,
+            CertificateFactory certificateFactory,
+            AccessInfoService accessInfoService,
+            AccessRoleService accessRoleService,
+            AccessRoleFactory accessRoleFactory,
+            RolePermissionService rolePermissionService,
+            RolePermissionFactory rolePermissionFactory,
+            AccessPermissionService accessPermissionService,
+            AccessPermissionFactory accessPermissionFactory,
+            UserService userService) {
+        this.credentialService = credentialService;
+        this.mfaOptionService = mfaOptionService;
+        this.accessTokenService = accessTokenService;
+        this.accessTokenFactory = accessTokenFactory;
+        this.certificateService = certificateService;
+        this.certificateFactory = certificateFactory;
+        this.accessInfoService = accessInfoService;
+        this.accessRoleService = accessRoleService;
+        this.accessRoleFactory = accessRoleFactory;
+        this.rolePermissionService = rolePermissionService;
+        this.rolePermissionFactory = rolePermissionFactory;
+        this.accessPermissionService = accessPermissionService;
+        this.accessPermissionFactory = accessPermissionFactory;
+        this.userService = userService;
+    }
 
     @Override
     public AccessToken login(LoginCredentials loginCredentials, boolean enableTrust) throws KapuaException {

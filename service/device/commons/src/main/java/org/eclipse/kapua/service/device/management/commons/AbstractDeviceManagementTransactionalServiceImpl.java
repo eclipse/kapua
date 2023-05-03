@@ -32,13 +32,12 @@ import org.eclipse.kapua.service.device.management.message.response.KapuaRespons
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
-import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.storage.TxManager;
 
 import javax.validation.constraints.NotNull;
@@ -57,24 +56,24 @@ public abstract class AbstractDeviceManagementTransactionalServiceImpl {
     protected final AuthorizationService authorizationService;
     protected final PermissionFactory permissionFactory;
 
-    protected final DeviceEventRepository deviceEventRepository;
+    protected final DeviceEventService deviceEventService;
     protected final DeviceEventFactory deviceEventFactory;
 
-    protected final DeviceRepository deviceRepository;
+    protected final DeviceRegistryService deviceRegistryService;
 
     public AbstractDeviceManagementTransactionalServiceImpl(
             TxManager txManager,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            DeviceEventRepository deviceEventRepository,
+            DeviceEventService deviceEventService,
             DeviceEventFactory deviceEventFactory,
-            DeviceRepository deviceRepository) {
+            DeviceRegistryService deviceRegistryService) {
         this.txManager = txManager;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
-        this.deviceEventRepository = deviceEventRepository;
+        this.deviceEventService = deviceEventService;
         this.deviceEventFactory = deviceEventFactory;
-        this.deviceRepository = deviceRepository;
+        this.deviceRegistryService = deviceRegistryService;
     }
     // Device Registry
 
@@ -106,16 +105,7 @@ public abstract class AbstractDeviceManagementTransactionalServiceImpl {
         deviceEventCreator.setResponseCode(responseMessage != null ? responseMessage.getResponseCode() : KapuaResponseCode.SENT);
         deviceEventCreator.setEventMessage(responseMessage != null ? responseMessage.getPayload().toDisplayString() : requestMessage.getPayload().toDisplayString());
 
-        DeviceEvent deviceEvent = deviceEventFactory.newEntity(deviceEventCreator.getScopeId());
-        deviceEvent.setDeviceId(deviceEventCreator.getDeviceId());
-        deviceEvent.setReceivedOn(deviceEventCreator.getReceivedOn());
-        deviceEvent.setSentOn(deviceEventCreator.getSentOn());
-        deviceEvent.setResource(deviceEventCreator.getResource());
-        deviceEvent.setAction(deviceEventCreator.getAction());
-        deviceEvent.setResponseCode(deviceEventCreator.getResponseCode());
-        deviceEvent.setEventMessage(deviceEventCreator.getEventMessage());
-        deviceEvent.setPosition(deviceEventCreator.getPosition());
-        txManager.execute(tx -> deviceEventRepository.create(tx, deviceEvent));
+        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
     }
 
     /**
@@ -131,7 +121,7 @@ public abstract class AbstractDeviceManagementTransactionalServiceImpl {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(deviceId, "deviceId");
         // Check Device existence
-        Device device = txManager.execute(tx -> deviceRepository.find(tx, scopeId, deviceId))
+        Device device = Optional.ofNullable(deviceRegistryService.find(scopeId, deviceId))
                 .orElseThrow(() -> new KapuaEntityNotFoundException(Device.TYPE, deviceId));
         // Check Device Connection status
         return Optional.ofNullable(device.getConnection())

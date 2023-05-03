@@ -26,7 +26,7 @@ import org.eclipse.kapua.service.authentication.user.UserCredentialsFactory;
 import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.user.UserRepository;
+import org.eclipse.kapua.service.user.UserService;
 
 import javax.inject.Singleton;
 
@@ -51,7 +51,7 @@ public class UserCredentialsModule extends AbstractKapuaModule {
             CredentialsFactory credentialsFactory,
             CredentialFactory credentialFactory,
             KapuaJpaTxManagerFactory txManagerFactory,
-            UserRepository userRepository,
+            UserService userService,
             CredentialRepository credentialRepository,
             CredentialMapper credentialMapper,
             PasswordValidator passwordValidator) {
@@ -63,7 +63,7 @@ public class UserCredentialsModule extends AbstractKapuaModule {
                 credentialsFactory,
                 credentialFactory,
                 txManagerFactory.create("kapua-authorization"),
-                userRepository,
+                userService,
                 credentialRepository,
                 credentialMapper,
                 passwordValidator);

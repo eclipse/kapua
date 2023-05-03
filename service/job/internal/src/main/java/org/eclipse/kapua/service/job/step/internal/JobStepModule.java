@@ -20,7 +20,7 @@ import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
-import org.eclipse.kapua.service.job.execution.JobExecutionRepository;
+import org.eclipse.kapua.service.job.execution.JobExecutionService;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepRepository;
 import org.eclipse.kapua.service.job.step.JobStepService;
@@ -46,7 +46,7 @@ public class JobStepModule extends AbstractKapuaModule {
                                   PermissionFactory permissionFactory,
                                   JobStepRepository jobStepRepository,
                                   JobStepFactory jobStepFactory,
-                                  JobExecutionRepository jobExecutionRepository,
+                                  JobExecutionService jobExecutionService,
                                   JobExecutionFactory jobExecutionFactory,
                                   JobStepDefinitionRepository jobStepDefinitionRepository,
                                   QueryFactory queryFactory,
@@ -56,10 +56,9 @@ public class JobStepModule extends AbstractKapuaModule {
                 jpaTxManagerFactory.create("kapua-job"),
                 jobStepRepository,
                 jobStepFactory,
-                jobExecutionRepository,
+                jobExecutionService,
                 jobExecutionFactory,
-                jobStepDefinitionRepository,
-                queryFactory
+                jobStepDefinitionRepository
         );
     }
 }

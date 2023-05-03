@@ -61,10 +61,10 @@ public class AccountModule extends AbstractKapuaModule implements Module {
     @Singleton
     AccountChildrenFinder accountChildrenFinder(
             AccountFactory accountFactory,
-            AccountRepository accountRepository) {
+            AccountService accountService) {
         return new AccountChildrenFinderImpl(
                 accountFactory,
-                accountRepository);
+                accountService);
     }
 
     @ProvidesIntoSet

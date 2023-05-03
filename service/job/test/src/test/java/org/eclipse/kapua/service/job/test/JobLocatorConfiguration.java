@@ -129,8 +129,11 @@ public class JobLocatorConfiguration {
                         mockedAuthorization,
                         txManager,
                         new JobImplJpaRepository(jpaRepoConfig),
-                        triggerImplJpaRepository
-                ));
+                        new TriggerServiceImpl(mockedAuthorization, mockedPermissionFactory,
+                                txManager, triggerImplJpaRepository, new TriggerFactoryImpl(),
+                                new TriggerDefinitionImplJpaRepository(jpaRepoConfig),
+                                new TriggerDefinitionFactoryImpl()
+                        )));
                 bind(JobStepDefinitionService.class).toInstance(new JobStepDefinitionServiceImpl(
                         mockedAuthorization,
                         mockedPermissionFactory,
@@ -139,16 +142,16 @@ public class JobLocatorConfiguration {
                 ));
                 bind(JobStepDefinitionFactory.class).toInstance(new JobStepDefinitionFactoryImpl());
                 final JobExecutionImplJpaRepository jobExecutionRepository = new JobExecutionImplJpaRepository(jpaRepoConfig);
+                final JobExecutionService jobExecutionService = new JobExecutionServiceImpl(mockedAuthorization, mockedPermissionFactory, txManager, jobExecutionRepository);
                 bind(JobStepService.class).toInstance(new JobStepServiceImpl(
                         mockedAuthorization,
                         mockedPermissionFactory,
                         txManager,
                         new JobStepImplJpaRepository(jpaRepoConfig),
                         new JobStepFactoryImpl(),
-                        jobExecutionRepository,
+                        jobExecutionService,
                         new JobExecutionFactoryImpl(),
-                        new JobStepDefinitionImplJpaRepository(jpaRepoConfig),
-                        new QueryFactoryImpl()
+                        new JobStepDefinitionImplJpaRepository(jpaRepoConfig)
                 ));
                 bind(JobStepFactory.class).toInstance(new JobStepFactoryImpl());
                 bind(JobTargetService.class).toInstance(new JobTargetServiceImpl(

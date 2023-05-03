@@ -29,9 +29,9 @@ import org.eclipse.kapua.service.device.management.bundle.message.internal.Bundl
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementTransactionalServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
-import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,15 +55,15 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementT
     public DeviceBundleManagementServiceImpl(TxManager txManager,
                                              AuthorizationService authorizationService,
                                              PermissionFactory permissionFactory,
-                                             DeviceEventRepository deviceEventRepository,
+                                             DeviceEventService deviceEventService,
                                              DeviceEventFactory deviceEventFactory,
-                                             DeviceRepository deviceRepository) {
+                                             DeviceRegistryService deviceRegistryService) {
         super(txManager,
                 authorizationService,
                 permissionFactory,
-                deviceEventRepository,
+                deviceEventService,
                 deviceEventFactory,
-                deviceRepository);
+                deviceRegistryService);
     }
 
     @Override

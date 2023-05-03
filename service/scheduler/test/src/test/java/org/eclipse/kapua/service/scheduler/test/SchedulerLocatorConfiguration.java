@@ -97,19 +97,11 @@ public class SchedulerLocatorConfiguration {
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 final JobImplJpaRepository jobRepository = new JobImplJpaRepository(jpaRepoConfig);
                 final TriggerImplJpaRepository triggerRepository = new TriggerImplJpaRepository(jpaRepoConfig);
-                bind(JobService.class).toInstance(new JobServiceImpl(
-                        Mockito.mock(ServiceConfigurationManager.class),
-                        new JobEngineServiceClient(),
-                        permissionFactory,
-                        mockedAuthorization,
-                        new KapuaJpaTxManagerFactory(maxInsertAttempts, Collections.emptySet()).create("kapua-job"),
-                        jobRepository,
-                        triggerRepository
-                ));
+
                 final TriggerDefinitionFactoryImpl triggerDefinitionFactory = new TriggerDefinitionFactoryImpl();
                 final TriggerDefinitionImplJpaRepository triggerDefinitionRepository = new TriggerDefinitionImplJpaRepository(jpaRepoConfig);
                 final TriggerFactoryImpl triggerFactory = new TriggerFactoryImpl();
-                bind(TriggerService.class).toInstance(new TriggerServiceImpl(
+                final TriggerServiceImpl triggerService = new TriggerServiceImpl(
                         mockedAuthorization,
                         permissionFactory,
                         new KapuaJpaTxManagerFactory(maxInsertAttempts, Collections.emptySet()).create("kapua-scheduler"),
@@ -117,7 +109,17 @@ public class SchedulerLocatorConfiguration {
                         triggerFactory,
                         triggerDefinitionRepository,
                         triggerDefinitionFactory
+                );
+                bind(JobService.class).toInstance(new JobServiceImpl(
+                        Mockito.mock(ServiceConfigurationManager.class),
+                        new JobEngineServiceClient(),
+                        permissionFactory,
+                        mockedAuthorization,
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts, Collections.emptySet()).create("kapua-job"),
+                        jobRepository,
+                        triggerService
                 ));
+                bind(TriggerService.class).toInstance(triggerService);
                 bind(TriggerFactory.class).toInstance(triggerFactory);
                 bind(TriggerDefinitionService.class).toInstance(new TriggerDefinitionServiceImpl(
                         mockedAuthorization,

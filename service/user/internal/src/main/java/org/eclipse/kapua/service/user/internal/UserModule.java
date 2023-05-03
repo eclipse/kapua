@@ -54,9 +54,9 @@ public class UserModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    RootUserTester rootUserTester(UserRepository userRepository) {
+    RootUserTester rootUserTester(UserService userService) {
         return new RootUserTesterImpl(
-                userRepository
+                userService
         );
     }
 

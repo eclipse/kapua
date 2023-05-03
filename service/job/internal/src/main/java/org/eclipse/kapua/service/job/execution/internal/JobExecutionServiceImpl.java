@@ -104,6 +104,17 @@ public class JobExecutionServiceImpl implements JobExecutionService {
     }
 
     @Override
+    public long countByJobId(KapuaId scopeId, KapuaId jobId) throws KapuaException {
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(jobId, "jobId");
+        // Check Access
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
+        // Do find
+        return txManager.execute(tx -> jobExecutionRepository.countByJobId(tx, scopeId, jobId));
+    }
+
+    @Override
     public long count(KapuaQuery query) throws KapuaException {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");

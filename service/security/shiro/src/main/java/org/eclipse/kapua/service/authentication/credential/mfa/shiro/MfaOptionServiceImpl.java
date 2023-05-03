@@ -29,7 +29,7 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountRepository;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.AuthenticationDomains;
 import org.eclipse.kapua.service.authentication.credential.mfa.KapuaExistingMfaOptionException;
 import org.eclipse.kapua.service.authentication.credential.mfa.KapuaExistingScratchCodesException;
@@ -52,7 +52,7 @@ import org.eclipse.kapua.service.authorization.exception.InternalUserOnlyExcepti
 import org.eclipse.kapua.service.authorization.exception.SelfManagedOnlyException;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserRepository;
+import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserType;
 import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
@@ -88,32 +88,33 @@ public class MfaOptionServiceImpl implements MfaOptionService {
     private final MfaAuthenticator mfaAuthenticator;
     private final TxManager txManager;
     private final MfaOptionRepository mfaOptionRepository;
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;
     private final ScratchCodeRepository scratchCodeRepository;
     private final ScratchCodeFactory scratchCodeFactory;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     public MfaOptionServiceImpl(
             int trustKeyDuration,
             MfaAuthenticator mfaAuthenticator, TxManager txManager,
-            MfaOptionRepository mfaOptionRepository, AccountRepository accountRepository,
+            MfaOptionRepository mfaOptionRepository,
+            AccountService accountService,
             ScratchCodeRepository scratchCodeRepository,
             ScratchCodeFactory scratchCodeFactory,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            UserRepository userRepository) {
+            UserService userService) {
         this.trustKeyDuration = trustKeyDuration;
         this.mfaAuthenticator = mfaAuthenticator;
         this.txManager = txManager;
         this.mfaOptionRepository = mfaOptionRepository;
-        this.accountRepository = accountRepository;
+        this.accountService = accountService;
         this.scratchCodeRepository = scratchCodeRepository;
         this.scratchCodeFactory = scratchCodeFactory;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -135,8 +136,11 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         final MfaOption option = txManager.execute(tx -> {
             // Check that the user is an internal user (external users cannot have the MFA enabled)
             final MfaOptionCreator finalMfaOptionCreator = mfaOptionCreator;
-            User user = userRepository.find(tx, finalMfaOptionCreator.getScopeId(), finalMfaOptionCreator.getUserId())
-                    .orElseThrow(() -> new KapuaEntityNotFoundException(User.TYPE, finalMfaOptionCreator.getUserId()));
+            User user = Optional.ofNullable(
+                    KapuaSecurityUtils.doPrivileged(() ->
+                            userService.find(finalMfaOptionCreator.getScopeId(), finalMfaOptionCreator.getUserId())
+                    )
+            ).orElseThrow(() -> new KapuaEntityNotFoundException(User.TYPE, finalMfaOptionCreator.getUserId()));
             if (!user.getUserType().equals(UserType.INTERNAL) || user.getExternalId() != null) {
                 throw new InternalUserOnlyException();
             }
@@ -154,8 +158,11 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             final MfaOption mfaOption = mfaOptionRepository.create(tx, toCreate);
 
             // generating base64 QR code image
-            Account account = accountRepository.find(tx, KapuaId.ANY, finalMfaOptionCreator.getScopeId())
-                    .orElseThrow(() -> new KapuaEntityNotFoundException(Account.TYPE, finalMfaOptionCreator.getScopeId()));
+            Account account = Optional.ofNullable(
+                    KapuaSecurityUtils.doPrivileged(() ->
+                            accountService.find(KapuaId.ANY, finalMfaOptionCreator.getScopeId())
+                    )
+            ).orElseThrow(() -> new KapuaEntityNotFoundException(Account.TYPE, finalMfaOptionCreator.getScopeId()));
             mfaOption.setQRCodeImage(generateQRCode(account.getOrganization().getName(), account.getName(), user.getName(), fullKey));
 
             return mfaOption;

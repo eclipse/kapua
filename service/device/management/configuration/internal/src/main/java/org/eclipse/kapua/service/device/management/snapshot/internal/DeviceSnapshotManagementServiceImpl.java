@@ -30,9 +30,9 @@ import org.eclipse.kapua.service.device.management.snapshot.message.internal.Sna
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestMessage;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestPayload;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotResponseMessage;
-import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,15 +51,15 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
             TxManager txManager,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            DeviceEventRepository deviceEventRepository,
+            DeviceEventService deviceEventService,
             DeviceEventFactory deviceEventFactory,
-            DeviceRepository deviceRepository) {
+            DeviceRegistryService deviceRegistryService) {
         super(txManager,
                 authorizationService,
                 permissionFactory,
-                deviceEventRepository,
+                deviceEventService,
                 deviceEventFactory,
-                deviceRepository);
+                deviceRegistryService);
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceConfigurationManagementServiceImpl.class);

@@ -29,9 +29,9 @@ import org.eclipse.kapua.service.device.management.request.message.request.Gener
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestPayload;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
-import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,16 +55,16 @@ public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagement
             TxManager txManager,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            DeviceEventRepository deviceEventRepository,
+            DeviceEventService deviceEventService,
             DeviceEventFactory deviceEventFactory,
-            DeviceRepository deviceRepository,
+            DeviceRegistryService deviceRegistryService,
             GenericRequestFactory genericRequestFactory) {
         super(txManager,
                 authorizationService,
                 permissionFactory,
-                deviceEventRepository,
+                deviceEventService,
                 deviceEventFactory,
-                deviceRepository);
+                deviceRegistryService);
         this.genericRequestFactory = genericRequestFactory;
     }
 

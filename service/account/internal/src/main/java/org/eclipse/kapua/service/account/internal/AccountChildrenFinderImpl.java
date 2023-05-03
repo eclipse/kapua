@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.account.internal;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
@@ -21,8 +22,7 @@ import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountQuery;
-import org.eclipse.kapua.service.account.AccountRepository;
-import org.eclipse.kapua.storage.TxContext;
+import org.eclipse.kapua.service.account.AccountService;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -30,16 +30,16 @@ import java.util.Optional;
 public class AccountChildrenFinderImpl implements AccountChildrenFinder, KapuaService {
 
     private final AccountFactory accountFactory;
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;
 
     @Inject
-    public AccountChildrenFinderImpl(AccountFactory accountFactory, AccountRepository accountRepository) {
+    public AccountChildrenFinderImpl(AccountFactory accountFactory, AccountService accountService) {
         this.accountFactory = accountFactory;
-        this.accountRepository = accountRepository;
+        this.accountService = accountService;
     }
 
     @Override
-    public AccountListResult findChildren(TxContext txContext, KapuaId scopeId, Optional<KapuaId> excludeTargetScopeId) throws KapuaException {
+    public AccountListResult findChildren(KapuaId scopeId, Optional<KapuaId> excludeTargetScopeId) throws KapuaException {
         final AccountQuery childAccountsQuery = accountFactory.newQuery(scopeId);
         // Exclude the scope that is under config update
         if (excludeTargetScopeId.isPresent()) {
@@ -51,6 +51,6 @@ public class AccountChildrenFinderImpl implements AccountChildrenFinder, KapuaSe
             );
         }
 
-        return accountRepository.query(txContext, childAccountsQuery);
+        return KapuaSecurityUtils.doPrivileged(() -> accountService.query(childAccountsQuery));
     }
 }

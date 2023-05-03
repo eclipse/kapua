@@ -13,11 +13,11 @@
 package org.eclipse.kapua.service.device.management.packages.internal;
 
 import com.google.common.base.MoreObjects;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -59,10 +59,10 @@ import org.eclipse.kapua.service.device.management.registry.operation.DeviceMana
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationCreator;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationProperty;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
-import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +86,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
     private final PackageManagementServiceSetting packageManagementServiceSetting = PackageManagementServiceSetting.getInstance();
 
-    private final DeviceManagementOperationRepository deviceManagementOperationRepository;
+    private final DeviceManagementOperationRegistryService deviceManagementOperationRegistryService;
     private final DeviceManagementOperationFactory deviceManagementOperationFactory;
     private final DevicePackageFactory devicePackageFactory;
 
@@ -97,19 +97,19 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
             TxManager txManager,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            DeviceEventRepository deviceEventRepository,
+            DeviceEventService deviceEventService,
             DeviceEventFactory deviceEventFactory,
-            DeviceRepository deviceRepository,
-            DeviceManagementOperationRepository deviceManagementOperationRepository,
+            DeviceRegistryService deviceRegistryService,
+            DeviceManagementOperationRegistryService deviceManagementOperationRegistryService,
             DeviceManagementOperationFactory deviceManagementOperationFactory,
             DevicePackageFactory devicePackageFactory) {
         super(txManager,
                 authorizationService,
                 permissionFactory,
-                deviceEventRepository,
+                deviceEventService,
                 deviceEventFactory,
-                deviceRepository);
-        this.deviceManagementOperationRepository = deviceManagementOperationRepository;
+                deviceRegistryService);
+        this.deviceManagementOperationRegistryService = deviceManagementOperationRegistryService;
         this.deviceManagementOperationFactory = deviceManagementOperationFactory;
         this.devicePackageFactory = devicePackageFactory;
     }
@@ -244,7 +244,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         try {
             responseMessage = packageDeviceCallBuilder.send();
         } catch (Exception e) {
-            closeManagementOperation(scopeId, deviceId, operationId);
+            closeManagementOperation(scopeId, operationId);
             LOG.error("Error while executing DevicePackageDownloadRequest {} for Device {}. Error: {}", packageDownloadRequest.getUri(), deviceId, e.getMessage(), e);
             throw e;
         }
@@ -254,7 +254,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         try {
             checkResponseAcceptedOrThrowError(responseMessage);
         } catch (Exception e) {
-            closeManagementOperation(scopeId, deviceId, operationId, responseMessage);
+            closeManagementOperation(scopeId, operationId, responseMessage);
             throw e;
         }
         // Return operation id
@@ -416,7 +416,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         try {
             responseMessage = packageDeviceCallBuilder.send();
         } catch (Exception e) {
-            closeManagementOperation(scopeId, deviceId, operationId);
+            closeManagementOperation(scopeId, operationId);
             LOG.error("Error while executing DevicePackageInstallRequest {} for Device {}. Error: {}", deployInstallRequest.getName(), deviceId, e.getMessage(), e);
             throw e;
         }
@@ -426,7 +426,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         try {
             checkResponseAcceptedOrThrowError(responseMessage);
         } catch (Exception e) {
-            closeManagementOperation(scopeId, deviceId, operationId, responseMessage);
+            closeManagementOperation(scopeId, operationId, responseMessage);
             throw e;
         }
         // Return operation id
@@ -533,7 +533,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         try {
             responseMessage = packageDeviceCallBuilder.send();
         } catch (Exception e) {
-            closeManagementOperation(scopeId, deviceId, operationId);
+            closeManagementOperation(scopeId, operationId);
             LOG.error("Error while executing DevicePackageUninstallRequest {} for Device {}. Error: {}", packageUninstallRequest.getName(), deviceId, e.getMessage(), e);
             throw e;
         }
@@ -543,7 +543,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         try {
             checkResponseAcceptedOrThrowError(responseMessage);
         } catch (Exception e) {
-            closeManagementOperation(scopeId, deviceId, operationId, responseMessage);
+            closeManagementOperation(scopeId, operationId, responseMessage);
             throw e;
         }
         // Return operation id
@@ -625,7 +625,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
     // Device Management Operations
     protected KapuaId createManagementOperation(KapuaId scopeId, KapuaId deviceId, KapuaId operationId, KapuaRequestMessage<?, ?> requestMessage) throws KapuaException {
 
-        DeviceManagementOperationCreator deviceManagementOperationCreator = deviceManagementOperationFactory.newCreator(scopeId);
+        final DeviceManagementOperationCreator deviceManagementOperationCreator = deviceManagementOperationFactory.newCreator(scopeId);
         deviceManagementOperationCreator.setDeviceId(deviceId);
         deviceManagementOperationCreator.setOperationId(operationId);
         deviceManagementOperationCreator.setStartedOn(new Date());
@@ -635,39 +635,27 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         deviceManagementOperationCreator.setStatus(NotifyStatus.RUNNING);
         deviceManagementOperationCreator.setInputProperties(extractInputProperties(requestMessage));
 
-        DeviceManagementOperation deviceManagementOperation = deviceManagementOperationFactory.newEntity(deviceManagementOperationCreator.getScopeId());
-        deviceManagementOperation.setStartedOn(deviceManagementOperationCreator.getStartedOn());
-        deviceManagementOperation.setDeviceId(deviceManagementOperationCreator.getDeviceId());
-        deviceManagementOperation.setOperationId(deviceManagementOperationCreator.getOperationId());
-        deviceManagementOperation.setAppId(deviceManagementOperationCreator.getAppId());
-        deviceManagementOperation.setAction(deviceManagementOperationCreator.getAction());
-        deviceManagementOperation.setResource(deviceManagementOperationCreator.getResource());
-        deviceManagementOperation.setStatus(deviceManagementOperationCreator.getStatus());
-        deviceManagementOperation.setStatus(deviceManagementOperationCreator.getStatus());
-        deviceManagementOperation.setInputProperties(deviceManagementOperationCreator.getInputProperties());
-        DeviceManagementOperation res = txManager.execute(tx ->
-                deviceManagementOperationRepository.create(tx, deviceManagementOperation));
+        final DeviceManagementOperation deviceManagementOperation = KapuaSecurityUtils.doPrivileged(() ->
+                deviceManagementOperationRegistryService.create(deviceManagementOperationCreator));
 
-        return res.getId();
+        return deviceManagementOperation.getId();
     }
 
-    protected void closeManagementOperation(KapuaId scopeId, KapuaId deviceId, KapuaId operationId) throws KapuaException {
-        closeManagementOperation(scopeId, deviceId, operationId, null);
+    protected void closeManagementOperation(KapuaId scopeId, KapuaId operationId) throws KapuaException {
+        closeManagementOperation(scopeId, operationId, null);
     }
 
-    protected void closeManagementOperation(KapuaId scopeId, KapuaId deviceId, KapuaId operationId, KapuaResponseMessage<?, ?> responseMessageMessage) throws KapuaException {
-        txManager.execute(tx -> {
-            final DeviceManagementOperation deviceManagementOperation = deviceManagementOperationRepository.findByOperationId(tx, scopeId, operationId)
-                    .orElseThrow(() -> new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, operationId));
-
-            if (responseMessageMessage != null) {
-                deviceManagementOperation.setStatus(responseMessageMessage.getResponseCode().isAccepted() ? NotifyStatus.COMPLETED : NotifyStatus.FAILED);
-                deviceManagementOperation.setEndedOn(responseMessageMessage.getReceivedOn());
-            } else {
-                deviceManagementOperation.setStatus(NotifyStatus.FAILED);
-                deviceManagementOperation.setEndedOn(new Date());
-            }
-            return deviceManagementOperationRepository.update(tx, deviceManagementOperation);
-        });
+    protected void closeManagementOperation(KapuaId scopeId, KapuaId operationId, KapuaResponseMessage<?, ?> responseMessageMessage) throws KapuaException {
+        if (responseMessageMessage != null) {
+            deviceManagementOperationRegistryService.updateStatus(scopeId,
+                    operationId,
+                    responseMessageMessage.getResponseCode().isAccepted() ? NotifyStatus.COMPLETED : NotifyStatus.FAILED,
+                    responseMessageMessage.getReceivedOn());
+        } else {
+            deviceManagementOperationRegistryService.updateStatus(scopeId,
+                    operationId,
+                    NotifyStatus.FAILED,
+                    new Date());
+        }
     }
 }

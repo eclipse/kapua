@@ -17,6 +17,9 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
+import org.eclipse.kapua.service.device.management.message.notification.NotifyStatus;
+
+import java.util.Date;
 
 public interface DeviceManagementOperationRegistryService extends KapuaEntityService<DeviceManagementOperation, DeviceManagementOperationCreator>, KapuaUpdatableEntityService<DeviceManagementOperation> {
 
@@ -42,4 +45,5 @@ public interface DeviceManagementOperationRegistryService extends KapuaEntitySer
     @Override
     DeviceManagementOperationListResult query(KapuaQuery query) throws KapuaException;
 
+    void updateStatus(KapuaId scopeId, KapuaId operationId, NotifyStatus notifyStatus, Date endedOnDate) throws KapuaException;
 }

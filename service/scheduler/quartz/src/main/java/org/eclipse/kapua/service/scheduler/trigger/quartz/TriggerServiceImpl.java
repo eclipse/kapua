@@ -321,6 +321,19 @@ public class TriggerServiceImpl implements TriggerService {
     }
 
     @Override
+    public void deleteAllByJobId(KapuaId scopeId, KapuaId jobId) throws KapuaException {
+        // Argument validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(jobId, "jobId");
+        // Check Access
+        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.delete, scopeId));
+        txManager.execute(tx -> {
+            triggerRepository.deleteAllByJobId(tx, scopeId, jobId);
+            return null;
+        });
+    }
+
+    @Override
     public long count(KapuaQuery query) throws KapuaException {
         // Argument validation
         ArgumentValidator.notNull(query, "query");
