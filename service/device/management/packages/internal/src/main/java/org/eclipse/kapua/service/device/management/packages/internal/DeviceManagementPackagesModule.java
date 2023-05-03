@@ -21,10 +21,10 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
-import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
 public class DeviceManagementPackagesModule extends AbstractKapuaModule {
     @Override
@@ -37,10 +37,10 @@ public class DeviceManagementPackagesModule extends AbstractKapuaModule {
     DevicePackageManagementService devicePackageManagementService(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            DeviceEventRepository deviceEventRepository,
+            DeviceEventService deviceEventService,
             DeviceEventFactory deviceEventFactory,
-            DeviceRepository deviceRepository,
-            DeviceManagementOperationRepository deviceManagementOperationRepository,
+            DeviceRegistryService deviceRegistryService,
+            DeviceManagementOperationRegistryService deviceManagementOperationRegistryService,
             DeviceManagementOperationFactory deviceManagementOperationFactory,
             DevicePackageFactory devicePackageFactory,
             KapuaJpaTxManagerFactory jpaTxManagerFactory
@@ -49,10 +49,10 @@ public class DeviceManagementPackagesModule extends AbstractKapuaModule {
                 jpaTxManagerFactory.create("kapua-device_management_operation_registry"),
                 authorizationService,
                 permissionFactory,
-                deviceEventRepository,
+                deviceEventService,
                 deviceEventFactory,
-                deviceRepository,
-                deviceManagementOperationRepository,
+                deviceRegistryService,
+                deviceManagementOperationRegistryService,
                 deviceManagementOperationFactory,
                 devicePackageFactory
         );

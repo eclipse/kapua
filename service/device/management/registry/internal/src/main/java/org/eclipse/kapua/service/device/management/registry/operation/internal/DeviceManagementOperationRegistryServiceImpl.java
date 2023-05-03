@@ -20,6 +20,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.device.management.message.notification.NotifyStatus;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationCreator;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
@@ -33,6 +34,7 @@ import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Date;
 
 @Singleton
 public class DeviceManagementOperationRegistryServiceImpl
@@ -159,6 +161,17 @@ public class DeviceManagementOperationRegistryServiceImpl
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
         // Do query
         return txManager.execute(tx -> repository.query(tx, query));
+    }
+
+    @Override
+    public void updateStatus(KapuaId scopeId, KapuaId operationId, NotifyStatus notifyStatus, Date endedOnDate) throws KapuaException {
+        txManager.execute(tx -> {
+            final DeviceManagementOperation currentRecord = repository.findByOperationId(tx, scopeId, operationId)
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, operationId));
+            currentRecord.setStatus(notifyStatus);
+            currentRecord.setEndedOn(endedOnDate);
+            return currentRecord;
+        });
     }
 
     @Override

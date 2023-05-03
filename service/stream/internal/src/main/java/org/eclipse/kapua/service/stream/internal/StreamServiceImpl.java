@@ -18,7 +18,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.Message;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.model.domain.Actions;
@@ -45,6 +44,7 @@ import org.eclipse.kapua.transport.TransportFacade;
 import org.eclipse.kapua.transport.exception.TransportClientGetException;
 import org.eclipse.kapua.transport.message.TransportMessage;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Date;
 import java.util.HashMap;
@@ -58,17 +58,28 @@ import java.util.Map;
 @Singleton
 public class StreamServiceImpl implements StreamService {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
+    private final DeviceRegistryService deviceRegistryService;
+    private final EndpointInfoService endpointInfoService;
+    private final EndpointInfoFactory endpointInfoFactory;
+    private final TransportClientFactory transportClientFactory;
 
-    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
-    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
-
-    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
-
-    private static final EndpointInfoService ENDPOINT_INFO_SERVICE = LOCATOR.getService(EndpointInfoService.class);
-    private static final EndpointInfoFactory ENDPOINT_INFO_FACTORY = LOCATOR.getFactory(EndpointInfoFactory.class);
-
-    private static final TransportClientFactory TRANSPORT_CLIENT_FACTORY = LOCATOR.getFactory(TransportClientFactory.class);
+    @Inject
+    public StreamServiceImpl(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            DeviceRegistryService deviceRegistryService,
+            EndpointInfoService endpointInfoService,
+            EndpointInfoFactory endpointInfoFactory,
+            TransportClientFactory transportClientFactory) {
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.deviceRegistryService = deviceRegistryService;
+        this.endpointInfoService = endpointInfoService;
+        this.endpointInfoFactory = endpointInfoFactory;
+        this.transportClientFactory = transportClientFactory;
+    }
 
     @Override
     public KapuaResponseMessage<?, ?> publish(KapuaDataMessage kapuaDataMessage, Long timeout)
@@ -77,7 +88,7 @@ public class StreamServiceImpl implements StreamService {
         ArgumentValidator.notNull(kapuaDataMessage.getScopeId(), "dataMessage.scopeId");
         ArgumentValidator.notNull(kapuaDataMessage.getChannel(), "dataMessage.channel");
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(StreamDomains.STREAM_DOMAIN, Actions.write, kapuaDataMessage.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(StreamDomains.STREAM_DOMAIN, Actions.write, kapuaDataMessage.getScopeId()));
         // Do publish
         try (TransportFacade transportFacade = borrowClient(kapuaDataMessage)) {
             // Get Kura to transport translator for the request and vice versa
@@ -128,7 +139,7 @@ public class StreamServiceImpl implements StreamService {
 
             Map<String, Object> configParameters = new HashMap<>(1);
             configParameters.put("serverAddress", serverURI);
-            return TRANSPORT_CLIENT_FACTORY.getFacade(configParameters);
+            return transportClientFactory.getFacade(configParameters);
         } catch (Exception e) {
             throw new KuraDeviceCallException(KuraDeviceCallErrorCodes.CALL_ERROR, e, serverURI);
         }
@@ -154,7 +165,7 @@ public class StreamServiceImpl implements StreamService {
     private Device checkDeviceInfo(KapuaDataMessage dataMessage) throws KapuaException {
         Device device = null;
         if (dataMessage.getDeviceId() != null) {
-            device = DEVICE_REGISTRY_SERVICE.find(dataMessage.getScopeId(), dataMessage.getDeviceId());
+            device = deviceRegistryService.find(dataMessage.getScopeId(), dataMessage.getDeviceId());
 
             if (device == null) {
                 throw new KapuaEntityNotFoundException(Device.TYPE, dataMessage.getDeviceId());
@@ -179,7 +190,7 @@ public class StreamServiceImpl implements StreamService {
      */
     private String getEndpointInfoDNS(KapuaDataMessage dataMessage) throws KapuaException {
         String serverURI;
-        EndpointInfoQuery query = ENDPOINT_INFO_FACTORY.newQuery(dataMessage.getScopeId());
+        EndpointInfoQuery query = endpointInfoFactory.newQuery(dataMessage.getScopeId());
         query.setPredicate(
                 query.andPredicate(
                         query.attributePredicate(EndpointInfoAttributes.SCHEMA, "mqtt"),
@@ -187,7 +198,7 @@ public class StreamServiceImpl implements StreamService {
                 )
         );
 
-        EndpointInfo endpointInfo = ENDPOINT_INFO_SERVICE.query(query).getFirstItem();
+        EndpointInfo endpointInfo = endpointInfoService.query(query).getFirstItem();
         if (endpointInfo == null) {
             throw KapuaException.internalError("No endpoint defined!");
         }

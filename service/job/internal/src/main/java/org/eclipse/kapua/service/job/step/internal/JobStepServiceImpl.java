@@ -18,12 +18,12 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -33,7 +33,7 @@ import org.eclipse.kapua.service.job.exception.CannotModifyJobStepsException;
 import org.eclipse.kapua.service.job.execution.JobExecutionAttributes;
 import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
 import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
-import org.eclipse.kapua.service.job.execution.JobExecutionRepository;
+import org.eclipse.kapua.service.job.execution.JobExecutionService;
 import org.eclipse.kapua.service.job.internal.settings.JobServiceSettingKeys;
 import org.eclipse.kapua.service.job.internal.settings.JobServiceSettings;
 import org.eclipse.kapua.service.job.step.JobStep;
@@ -70,10 +70,9 @@ public class JobStepServiceImpl implements JobStepService {
     private final TxManager txManager;
     private final JobStepRepository jobStepRepository;
     private final JobStepFactory jobStepFactory;
-    private final JobExecutionRepository jobExecutionRepository;
+    private final JobExecutionService jobExecutionService;
     private final JobExecutionFactory jobExecutionFactory;
     private final JobStepDefinitionRepository jobStepDefinitionRepository;
-    private final QueryFactory queryFactory;
 
     public JobStepServiceImpl(
             AuthorizationService authorizationService,
@@ -81,19 +80,17 @@ public class JobStepServiceImpl implements JobStepService {
             TxManager txManager,
             JobStepRepository jobStepRepository,
             JobStepFactory jobStepFactory,
-            JobExecutionRepository jobExecutionRepository,
+            JobExecutionService jobExecutionService,
             JobExecutionFactory jobExecutionFactory,
-            JobStepDefinitionRepository jobStepDefinitionRepository,
-            QueryFactory queryFactory) {
+            JobStepDefinitionRepository jobStepDefinitionRepository) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.txManager = txManager;
         this.jobStepRepository = jobStepRepository;
         this.jobStepFactory = jobStepFactory;
-        this.jobExecutionRepository = jobExecutionRepository;
+        this.jobExecutionService = jobExecutionService;
         this.jobExecutionFactory = jobExecutionFactory;
         this.jobStepDefinitionRepository = jobStepDefinitionRepository;
-        this.queryFactory = queryFactory;
     }
 
     private final JobServiceSettings jobServiceSettings = JobServiceSettings.getInstance();
@@ -137,7 +134,7 @@ public class JobStepServiceImpl implements JobStepService {
                 throw new KapuaDuplicateNameException(jobStepCreator.getName());
             }
             // Check Job Executions
-            if (jobExecutionRepository.countByJobId(tx, jobStepCreator.getScopeId(), jobStepCreator.getJobId()) > 0) {
+            if (KapuaSecurityUtils.doPrivileged(() -> jobExecutionService.countByJobId(jobStepCreator.getScopeId(), jobStepCreator.getJobId())) > 0) {
                 throw new CannotModifyJobStepsException(jobStepCreator.getJobId());
             }
             // Populate JobStepCreator.stepIndex if not specified
@@ -229,7 +226,7 @@ public class JobStepServiceImpl implements JobStepService {
                 throw new KapuaDuplicateNameException(jobStep.getName());
             }
             // Check Job Executions
-            if (jobExecutionRepository.countByJobId(tx, jobStep.getScopeId(), jobStep.getJobId()) > 0) {
+            if (KapuaSecurityUtils.doPrivileged(() -> jobExecutionService.countByJobId(jobStep.getScopeId(), jobStep.getJobId()) > 0)) {
                 throw new CannotModifyJobStepsException(jobStep.getJobId());
             }
             // Do Update
@@ -320,7 +317,7 @@ public class JobStepServiceImpl implements JobStepService {
                     jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobStep.getJobId())
             );
 
-            if (jobExecutionRepository.count(tx, jobExecutionQuery) > 0) {
+            if (KapuaSecurityUtils.doPrivileged(() -> jobExecutionService.countByJobId(scopeId, jobStep.getJobId())) > 0) {
                 throw new CannotModifyJobStepsException(jobStep.getJobId());
             }
             // Do delete

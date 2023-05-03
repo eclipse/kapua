@@ -31,7 +31,7 @@ import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceI
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.account.AccountRepository;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
@@ -70,7 +70,7 @@ import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenImplJpaRe
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenServiceImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.user.UserRepository;
+import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.storage.TxContext;
 
 import javax.inject.Singleton;
@@ -148,12 +148,12 @@ public class AuthenticationModule extends AbstractKapuaModule {
     MfaOptionService mfaOptionService(
             MfaAuthenticator mfaAuthenticator,
             MfaOptionRepository mfaOptionRepository,
-            AccountRepository accountRepository,
+            AccountService accountService,
             ScratchCodeRepository scratchCodeRepository,
             ScratchCodeFactory scratchCodeFactory,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            UserRepository userRepository,
+            UserService userService,
             KapuaJpaTxManagerFactory jpaTxManagerFactory) {
 
         final KapuaAuthenticationSetting authenticationSetting = KapuaAuthenticationSetting.getInstance();
@@ -164,12 +164,12 @@ public class AuthenticationModule extends AbstractKapuaModule {
                 mfaAuthenticator,
                 jpaTxManagerFactory.create("kapua-authentication"),
                 mfaOptionRepository,
-                accountRepository,
+                accountService,
                 scratchCodeRepository,
                 scratchCodeFactory,
                 authorizationService,
                 permissionFactory,
-                userRepository
+                userService
         );
     }
 

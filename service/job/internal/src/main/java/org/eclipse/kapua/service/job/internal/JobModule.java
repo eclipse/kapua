@@ -31,7 +31,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobRepository;
 import org.eclipse.kapua.service.job.JobService;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerRepository;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -50,7 +50,7 @@ public class JobModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             JobRepository jobRepository,
-            TriggerRepository triggerRepository,
+            TriggerService triggerService,
             KapuaJpaTxManagerFactory jpaTxManagerFactory) {
 
         return new JobServiceImpl(
@@ -60,7 +60,7 @@ public class JobModule extends AbstractKapuaModule {
                 authorizationService,
                 jpaTxManagerFactory.create("kapua-job"),
                 jobRepository,
-                triggerRepository
+                triggerService
         );
     }
 

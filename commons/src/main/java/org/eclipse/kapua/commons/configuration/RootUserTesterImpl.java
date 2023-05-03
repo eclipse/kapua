@@ -13,36 +13,38 @@
 package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserRepository;
-import org.eclipse.kapua.storage.TxContext;
+import org.eclipse.kapua.service.user.UserService;
 
 import javax.inject.Inject;
 import java.util.Optional;
 
 public class RootUserTesterImpl implements RootUserTester {
-    private final UserRepository userRepository;
+    private final UserService userService;
+    private Optional<KapuaId> rootUserId = Optional.empty();
 
     @Inject
-    public RootUserTesterImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public RootUserTesterImpl(UserService userService) {
+        this.userService = userService;
     }
 
-    private KapuaId fetchRootUserId(TxContext tx) throws KapuaException {
+    private Optional<KapuaId> fetchRootUserId() throws KapuaException {
         //todo: remove me. This just converts root username to id - needs to be done elsewhere, preferrably in a once-at-startup way.
         final String rootUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
-        final Optional<User> rootUser = userRepository.findByName(tx, rootUserName);
-        final KapuaId rootUserId = rootUser.map(KapuaEntity::getId).orElse(null);
-        return rootUserId;
+        final User rootUser = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(rootUserName));
+        return Optional.ofNullable(rootUser).map(KapuaEntity::getId);
     }
 
     @Override
-    public boolean isRoot(TxContext txContext, KapuaId userId) throws KapuaException {
-        final KapuaId rootUserId = fetchRootUserId(txContext);
-        return userId.equals(rootUserId);
+    public boolean isRoot(KapuaId userId) throws KapuaException {
+        if (!rootUserId.isPresent()) {
+            this.rootUserId = fetchRootUserId();
+        }
+        return rootUserId.map(id -> id.equals(userId)).orElse(false);
     }
 }

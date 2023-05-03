@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.job.execution;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
@@ -38,4 +39,6 @@ public interface JobExecutionService extends KapuaEntityService<JobExecution, Jo
     @Override
     JobExecutionListResult query(KapuaQuery query)
             throws KapuaException;
+
+    long countByJobId(KapuaId scopeId, KapuaId jobId) throws KapuaException;
 }

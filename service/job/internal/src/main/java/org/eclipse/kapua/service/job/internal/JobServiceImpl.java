@@ -32,7 +32,6 @@ import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.JobListResult;
 import org.eclipse.kapua.service.job.JobRepository;
 import org.eclipse.kapua.service.job.JobService;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerRepository;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
@@ -52,7 +51,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
 
     private final JobEngineService jobEngineService;
     private final JobRepository jobRepository;
-    private final TriggerRepository triggerRepository;
+    private final TriggerService triggerService;
 
     /**
      * Default constructor for injection
@@ -60,7 +59,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
      * @param permissionFactory    The {@link PermissionFactory} instance
      * @param authorizationService The {@link AuthorizationService} instance
      * @param jobRepository
-     * @param triggerRepository    The {@link TriggerService} instance
+     * @param triggerService       The {@link TriggerService} instance
      * @since 2.0.0
      */
     public JobServiceImpl(
@@ -70,11 +69,11 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
             AuthorizationService authorizationService,
             TxManager txManager,
             JobRepository jobRepository,
-            TriggerRepository triggerRepository) {
+            TriggerService triggerService) {
         super(txManager, serviceConfigurationManager, JobDomains.JOB_DOMAIN, authorizationService, permissionFactory);
         this.jobEngineService = jobEngineService;
         this.jobRepository = jobRepository;
-        this.triggerRepository = triggerRepository;
+        this.triggerService = triggerService;
     }
 
     @Override
@@ -192,10 +191,12 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
                 throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
             }
 
-            triggerRepository.deleteAllByJobId(tx, scopeId, jobId);
-            // Do delete
             try {
-                KapuaSecurityUtils.doPrivileged(() -> jobEngineService.cleanJobData(scopeId, jobId));
+                KapuaSecurityUtils.doPrivileged(() -> {
+                    // Do delete
+                    triggerService.deleteAllByJobId(scopeId, jobId);
+                    jobEngineService.cleanJobData(scopeId, jobId);
+                });
             } catch (Exception e) {
                 if (forced) {
                     LOG.warn("Error while cleaning Job data. Ignoring exception since delete is forced! Error: {}", e.getMessage());
