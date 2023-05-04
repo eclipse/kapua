@@ -428,6 +428,11 @@ paths:
     $ref: './userCredentials/userCredentials-scopeId.yaml#/paths/~1{scopeId}~1user~1credentials~1password'
   /{scopeId}/user/credentials/{credentialId}/_reset:
     $ref: './userCredentials/userCredentials-scopeId-credentialId-_reset.yaml#/paths/~1{scopeId}~1user~1credentials~1{credentialId}~1_reset'
+  ### User Credentials Filtered ###
+  /{scopeId}/user/{userId}/credentials/:
+    $ref: './userCredentialsFiltered/credential-scopeId.yaml#/paths/~1{scopeId}~1user~1{userId}~1credentials'
+  /{scopeId}/user/{userId}/credentials/_count:
+    $ref: './userCredentialsFiltered/credential-scopeId-_count.yaml#/paths/~1{scopeId}~1user~1{userId}~1credentials~1_count'
   ### User Profile ###
   /{scopeId}/user/profile/:
     $ref: './userProfile/userProfile-scopeId.yaml#/paths/~1{scopeId}~1user~1profile~1'
