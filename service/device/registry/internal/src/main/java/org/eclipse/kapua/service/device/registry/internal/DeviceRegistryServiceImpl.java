@@ -122,49 +122,50 @@ public class DeviceRegistryServiceImpl
         DeviceValidation.validateCreatePreconditions(deviceCreator);
 
         return txManager.execute(tx -> {
-            // Check entity limit
-            serviceConfigurationManager.checkAllowedEntities(tx, deviceCreator.getScopeId(), "Devices");
-            // Check duplicate clientId
-            DeviceQuery query = entityFactory.newQuery(deviceCreator.getScopeId());
-            query.setPredicate(query.attributePredicate(DeviceAttributes.CLIENT_ID, deviceCreator.getClientId()));
-            //TODO: check whether this is anywhere efficient
-            if (deviceRepository.count(tx, query) > 0) {
-                throw new KapuaDuplicateNameException(deviceCreator.getClientId());
-            }
+                    // Check entity limit
+                    serviceConfigurationManager.checkAllowedEntities(tx, deviceCreator.getScopeId(), "Devices");
+                    // Check duplicate clientId
+                    DeviceQuery query = entityFactory.newQuery(deviceCreator.getScopeId());
+                    query.setPredicate(query.attributePredicate(DeviceAttributes.CLIENT_ID, deviceCreator.getClientId()));
+                    //TODO: check whether this is anywhere efficient
+                    if (deviceRepository.count(tx, query) > 0) {
+                        throw new KapuaDuplicateNameException(deviceCreator.getClientId());
+                    }
 
-            final Device device = entityFactory.newEntity(deviceCreator.getScopeId());
-            device.setGroupId(deviceCreator.getGroupId());
-            device.setClientId(deviceCreator.getClientId());
-            device.setStatus(deviceCreator.getStatus());
-            device.setDisplayName(deviceCreator.getDisplayName());
-            device.setSerialNumber(deviceCreator.getSerialNumber());
-            device.setModelId(deviceCreator.getModelId());
-            device.setModelName(deviceCreator.getModelName());
-            device.setImei(deviceCreator.getImei());
-            device.setImsi(deviceCreator.getImsi());
-            device.setIccid(deviceCreator.getIccid());
-            device.setBiosVersion(deviceCreator.getBiosVersion());
-            device.setFirmwareVersion(deviceCreator.getFirmwareVersion());
-            device.setOsVersion(deviceCreator.getOsVersion());
-            device.setJvmVersion(deviceCreator.getJvmVersion());
-            device.setOsgiFrameworkVersion(deviceCreator.getOsgiFrameworkVersion());
-            device.setApplicationFrameworkVersion(deviceCreator.getApplicationFrameworkVersion());
-            device.setConnectionInterface(deviceCreator.getConnectionInterface());
-            device.setConnectionIp(deviceCreator.getConnectionIp());
-            device.setApplicationIdentifiers(deviceCreator.getApplicationIdentifiers());
-            device.setAcceptEncoding(deviceCreator.getAcceptEncoding());
-            device.setCustomAttribute1(deviceCreator.getCustomAttribute1());
-            device.setCustomAttribute2(deviceCreator.getCustomAttribute2());
-            device.setCustomAttribute3(deviceCreator.getCustomAttribute3());
-            device.setCustomAttribute4(deviceCreator.getCustomAttribute4());
-            device.setCustomAttribute5(deviceCreator.getCustomAttribute5());
-            device.setExtendedProperties(deviceCreator.getExtendedProperties());
+                    final Device device = entityFactory.newEntity(deviceCreator.getScopeId());
+                    device.setGroupId(deviceCreator.getGroupId());
+                    device.setClientId(deviceCreator.getClientId());
+                    device.setStatus(deviceCreator.getStatus());
+                    device.setDisplayName(deviceCreator.getDisplayName());
+                    device.setSerialNumber(deviceCreator.getSerialNumber());
+                    device.setModelId(deviceCreator.getModelId());
+                    device.setModelName(deviceCreator.getModelName());
+                    device.setImei(deviceCreator.getImei());
+                    device.setImsi(deviceCreator.getImsi());
+                    device.setIccid(deviceCreator.getIccid());
+                    device.setBiosVersion(deviceCreator.getBiosVersion());
+                    device.setFirmwareVersion(deviceCreator.getFirmwareVersion());
+                    device.setOsVersion(deviceCreator.getOsVersion());
+                    device.setJvmVersion(deviceCreator.getJvmVersion());
+                    device.setOsgiFrameworkVersion(deviceCreator.getOsgiFrameworkVersion());
+                    device.setApplicationFrameworkVersion(deviceCreator.getApplicationFrameworkVersion());
+                    device.setConnectionInterface(deviceCreator.getConnectionInterface());
+                    device.setConnectionIp(deviceCreator.getConnectionIp());
+                    device.setApplicationIdentifiers(deviceCreator.getApplicationIdentifiers());
+                    device.setAcceptEncoding(deviceCreator.getAcceptEncoding());
+                    device.setCustomAttribute1(deviceCreator.getCustomAttribute1());
+                    device.setCustomAttribute2(deviceCreator.getCustomAttribute2());
+                    device.setCustomAttribute3(deviceCreator.getCustomAttribute3());
+                    device.setCustomAttribute4(deviceCreator.getCustomAttribute4());
+                    device.setCustomAttribute5(deviceCreator.getCustomAttribute5());
+                    device.setExtendedProperties(deviceCreator.getExtendedProperties());
 
-            device.setConnectionId(deviceCreator.getConnectionId());
-            device.setLastEventId(deviceCreator.getLastEventId());
-            // Do create
-            return deviceRepository.create(tx, device);
-        });
+                    device.setConnectionId(deviceCreator.getConnectionId());
+                    device.setLastEventId(deviceCreator.getLastEventId());
+                    // Do create
+                    return deviceRepository.create(tx, device);
+                },
+                eventStorer::accept);
     }
 
     @Override
@@ -173,9 +174,10 @@ public class DeviceRegistryServiceImpl
         DeviceValidation.validateUpdatePreconditions(device);
         // Do update
         return txManager.execute(tx -> deviceRepository.find(tx, device.getScopeId(), device.getId())
-                // Update
-                .map(currentDevice -> deviceRepository.update(tx, currentDevice, device))
-                .orElseThrow(() -> new KapuaEntityNotFoundException(Device.TYPE, device.getId())));
+                        // Update
+                        .map(currentDevice -> deviceRepository.update(tx, currentDevice, device))
+                        .orElseThrow(() -> new KapuaEntityNotFoundException(Device.TYPE, device.getId())),
+                eventStorer::accept);
     }
 
     @Override
@@ -303,7 +305,8 @@ public class DeviceRegistryServiceImpl
 
         // Do delete
         txManager.execute(
-                tx -> deviceRepository.delete(tx, scopeId, deviceId));
+                tx -> deviceRepository.delete(tx, scopeId, deviceId),
+                eventStorer::accept);
     }
 
     //@ListenServiceEvent(fromAddress="account")

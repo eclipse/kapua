@@ -45,8 +45,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
-import java.util.Collections;
-
 @Singleton
 public class AccountLocatorConfiguration {
 
@@ -90,7 +88,7 @@ public class AccountLocatorConfiguration {
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 final AccountRepository accountRepository = new AccountImplJpaRepository(jpaRepoConfig);
                 bind(AccountService.class).toInstance(new AccountServiceImpl(
-                        new KapuaJpaTxManagerFactory(maxInsertAttempts, Collections.emptySet()).create("kapua-account"),
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-account"),
                         new AccountImplJpaRepository(jpaRepoConfig),
                         mockPermissionFactory,
                         mockedAuthorization,

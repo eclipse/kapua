@@ -13,12 +13,13 @@
 package org.eclipse.kapua.commons.jpa;
 
 import org.eclipse.kapua.model.KapuaEntity;
-import org.eclipse.kapua.storage.TxGlobalPostActionConsumer;
+import org.eclipse.kapua.storage.TxContext;
+
+import java.util.function.BiConsumer;
 
 public interface EventStorer
-        extends TxGlobalPostActionConsumer {
+        extends BiConsumer<TxContext, KapuaEntity> {
+
     @Override
-    default boolean canConsume(Object res) {
-        return res instanceof KapuaEntity;
-    }
+    void accept(TxContext tx, KapuaEntity kapuaEntity);
 }

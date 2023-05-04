@@ -65,8 +65,6 @@ import org.eclipse.kapua.storage.TxManager;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
-import java.util.Collections;
-
 @Singleton
 public class DeviceRegistryLocatorConfiguration {
 
@@ -106,7 +104,7 @@ public class DeviceRegistryLocatorConfiguration {
 
                 bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
-                final TxManager txManager = new KapuaJpaTxManagerFactory(maxInsertAttempts, Collections.emptySet()).create("kapua-device");
+                final TxManager txManager = new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-device");
                 bind(DeviceConnectionService.class).toInstance(new DeviceConnectionServiceImpl(
                         Mockito.mock(ServiceConfigurationManager.class),
                         mockedAuthorization,
