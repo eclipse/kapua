@@ -54,8 +54,6 @@ import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
-import java.util.Collections;
-
 @Singleton
 public class SchedulerLocatorConfiguration {
 
@@ -104,7 +102,7 @@ public class SchedulerLocatorConfiguration {
                 final TriggerServiceImpl triggerService = new TriggerServiceImpl(
                         mockedAuthorization,
                         permissionFactory,
-                        new KapuaJpaTxManagerFactory(maxInsertAttempts, Collections.emptySet()).create("kapua-scheduler"),
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-scheduler"),
                         triggerRepository,
                         triggerFactory,
                         triggerDefinitionRepository,
@@ -115,7 +113,7 @@ public class SchedulerLocatorConfiguration {
                         new JobEngineServiceClient(),
                         permissionFactory,
                         mockedAuthorization,
-                        new KapuaJpaTxManagerFactory(maxInsertAttempts, Collections.emptySet()).create("kapua-job"),
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-job"),
                         jobRepository,
                         triggerService
                 ));
@@ -124,7 +122,7 @@ public class SchedulerLocatorConfiguration {
                 bind(TriggerDefinitionService.class).toInstance(new TriggerDefinitionServiceImpl(
                         mockedAuthorization,
                         permissionFactory,
-                        new KapuaJpaTxManagerFactory(maxInsertAttempts, Collections.emptySet()).create("kapua-scheduler"),
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-scheduler"),
                         triggerDefinitionRepository,
                         triggerDefinitionFactory));
                 bind(TriggerDefinitionFactory.class).toInstance(triggerDefinitionFactory);

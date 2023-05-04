@@ -12,26 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
-import org.eclipse.kapua.storage.TxGlobalPostActionConsumer;
 import org.eclipse.kapua.storage.TxManager;
 import org.eclipse.kapua.storage.TxManagerImpl;
 
-import java.util.Set;
-
 public class KapuaJpaTxManagerFactory {
     private final int maxInsertAttempts;
-    private final Set<TxGlobalPostActionConsumer> txGlobalPostActionConsumers;
 
-    public KapuaJpaTxManagerFactory(int maxInsertAttempts,
-                                    Set<TxGlobalPostActionConsumer> txGlobalPostActionConsumers) {
+    public KapuaJpaTxManagerFactory(int maxInsertAttempts) {
         this.maxInsertAttempts = maxInsertAttempts;
-        this.txGlobalPostActionConsumers = txGlobalPostActionConsumers;
     }
 
     public TxManager create(String persistenceUnitName) {
-        return new TxManagerImpl(
-                () -> new JpaTxContext(new KapuaEntityManagerFactory(persistenceUnitName)),
-                maxInsertAttempts,
-                txGlobalPostActionConsumers);
+        return new TxManagerImpl(() -> new JpaTxContext(new KapuaEntityManagerFactory(persistenceUnitName)), maxInsertAttempts);
     }
 }

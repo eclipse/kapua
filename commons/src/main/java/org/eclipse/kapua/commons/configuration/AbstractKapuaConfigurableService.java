@@ -57,7 +57,6 @@ import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -186,8 +185,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         this.rootUserTester = rootUserTester;
         this.txManager = new TxManagerImpl(
                 () -> new JpaTxContext(entityManagerFactory.getJpaEntityManagerFactory()),
-                SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY),
-                Collections.emptySet());
+                SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY));
     }
 
     /**

@@ -17,10 +17,8 @@ import com.google.inject.Singleton;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.storage.TxGlobalPostActionConsumer;
 
 import javax.inject.Named;
-import java.util.Set;
 
 public class CommonJpaModule extends AbstractKapuaModule {
     @Override
@@ -37,9 +35,8 @@ public class CommonJpaModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    KapuaJpaTxManagerFactory kapuaJpaTxManagerFactory(@Named("maxInsertAttempts") Integer maxInsertAttempts,
-                                                      Set<TxGlobalPostActionConsumer> txGlobalPostActionConsumers) {
-        return new KapuaJpaTxManagerFactory(maxInsertAttempts, txGlobalPostActionConsumers);
+    KapuaJpaTxManagerFactory kapuaJpaTxManagerFactory(@Named("maxInsertAttempts") Integer maxInsertAttempts) {
+        return new KapuaJpaTxManagerFactory(maxInsertAttempts);
     }
 
     @Provides

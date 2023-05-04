@@ -22,8 +22,6 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-
 public class Application {
 
     private static final Logger LOG = LoggerFactory.getLogger(Application.class.getName());
@@ -53,8 +51,7 @@ public class Application {
                 KapuaSecurityUtils.doPrivileged(() -> new EntityAttributeMigrator(
                         "kapua-encryption-migrator",
                         new KapuaJpaTxManagerFactory(
-                                SYSTEM_SETTING.getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY),
-                                Collections.emptySet())
+                                SYSTEM_SETTING.getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY))
                 ).migrate());
             }
             LOG.info("Running Entity Attribute Migrator... DONE!");

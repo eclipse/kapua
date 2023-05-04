@@ -265,7 +265,8 @@ public class AccountServiceImpl
                     }
 
                     return accountRepository.delete(tx, account);
-                }
+                },
+                eventStorer::accept
         );
     }
 

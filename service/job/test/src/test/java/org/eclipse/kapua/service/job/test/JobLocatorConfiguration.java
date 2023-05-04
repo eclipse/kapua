@@ -76,8 +76,6 @@ import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-
 @Singleton
 public class JobLocatorConfiguration {
 
@@ -121,7 +119,7 @@ public class JobLocatorConfiguration {
                 // Job
                 bind(JobFactory.class).toInstance(new JobFactoryImpl());
                 final TriggerImplJpaRepository triggerImplJpaRepository = new TriggerImplJpaRepository(jpaRepoConfig);
-                final TxManager txManager = new KapuaJpaTxManagerFactory(maxInsertAttempts, Collections.emptySet()).create("kapua-job");
+                final TxManager txManager = new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-job");
                 bind(JobService.class).toInstance(new JobServiceImpl(
                         Mockito.mock(ServiceConfigurationManager.class),
                         Mockito.mock(JobEngineService.class),

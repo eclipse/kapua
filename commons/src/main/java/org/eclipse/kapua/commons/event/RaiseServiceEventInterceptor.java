@@ -44,7 +44,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -251,7 +250,7 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
 
     private void updateEventStatus(ServiceEvent serviceEventBus, EventStatus newServiceEventStatus) {
         try {
-            final TxManager txManager = new KapuaJpaTxManagerFactory(maxInsertAttempts, Collections.emptySet()).create("kapua-events");
+            final TxManager txManager = new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-events");
 
             serviceEventBus.setStatus(newServiceEventStatus);
             txManager.execute(tx -> {
