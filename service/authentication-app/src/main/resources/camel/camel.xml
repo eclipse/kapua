@@ -46,7 +46,7 @@
         </pipeline>
     </route>
     <route id="notProcessableMessage">
-        <from uri="amqp:queue://notProcessableMessage?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=1&amp;maxConcurrentConsumers=2"/>
+        <from uri="amqp:queue:notProcessableMessage?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=1&amp;maxConcurrentConsumers=2"/>
         <pipeline>
             <to uri="bean:errorMessageListener?method=processMessage"/>
         </pipeline>

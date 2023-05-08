@@ -58,7 +58,7 @@
         </pipeline>
     </route>
     <route id="notProcessableMessage">
-        <from uri="amqp:queue://notProcessableMessage?asyncConsumer=true&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
+        <from uri="amqp:queue:notProcessableMessage?asyncConsumer=true&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
         <pipeline>
             <bean ref="kapuaCamelFilter" method="bindSession"/>
             <to uri="bean:errorMessageListener?method=processMessage"/>
