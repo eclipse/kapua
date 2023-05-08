@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
+import com.google.common.base.Strings;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
@@ -249,6 +250,9 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
     }
 
     private void updateEventStatus(ServiceEvent serviceEventBus, EventStatus newServiceEventStatus) {
+        if (serviceEventBus == null || Strings.isNullOrEmpty(serviceEventBus.getId())) {
+            return;
+        }
         try {
             final TxManager txManager = new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-events");
 
