@@ -17,7 +17,7 @@ paths:
       tags:
         - Job - Trigger Fired
       summary: Count the Jobs Trigger Fired
-      operationId: jobTriggerCount
+      operationId: jobTriggerFiredCount
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: '../job/job.yaml#/components/parameters/jobId'
