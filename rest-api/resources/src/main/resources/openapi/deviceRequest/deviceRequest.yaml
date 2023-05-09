@@ -33,7 +33,7 @@ components:
             version:
               type: string
             method:
-              $ref: '../device/device.yaml#/components/schemas/action'
+              $ref: '../openapi.yaml#/components/schemas/action'
             resources:
               type: array
               items:
