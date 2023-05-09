@@ -35,13 +35,8 @@ import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordReposit
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
-import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionRepository;
-import org.eclipse.kapua.service.authorization.access.AccessRoleRepository;
+import org.eclipse.kapua.service.authorization.access.GroupQueryHelper;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.role.RolePermissionRepository;
-import org.eclipse.kapua.service.authorization.role.RoleRepository;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionRepository;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
@@ -117,12 +112,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             DeviceRepository deviceRepository,
             DeviceFactory deviceFactory,
-            AccessInfoFactory accessInfoFactory,
-            AccessInfoRepository accessInfoRepository,
-            AccessPermissionRepository accessPermissionRepository,
-            AccessRoleRepository accessRoleRepository,
-            RoleRepository roleRepository,
-            RolePermissionRepository rolePermissionRepository,
+            GroupQueryHelper groupQueryHelper,
             EventStorer eventStorer,
             KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         return new DeviceRegistryServiceImpl(
@@ -132,12 +122,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                 jpaTxManagerFactory.create("kapua-device"),
                 deviceRepository,
                 deviceFactory,
-                accessInfoFactory,
-                accessInfoRepository,
-                accessPermissionRepository,
-                accessRoleRepository,
-                roleRepository,
-                rolePermissionRepository,
+                groupQueryHelper,
                 eventStorer);
     }
 

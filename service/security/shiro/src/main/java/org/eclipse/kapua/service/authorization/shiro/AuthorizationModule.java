@@ -43,6 +43,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
 import org.eclipse.kapua.service.authorization.access.AccessRoleRepository;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
+import org.eclipse.kapua.service.authorization.access.GroupQueryHelper;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoCache;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoCacheFactory;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoCachingRepository;
@@ -59,6 +60,7 @@ import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleImplJpaRep
 import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleServiceImpl;
 import org.eclipse.kapua.service.authorization.access.shiro.CachingAccessPermissionRepository;
 import org.eclipse.kapua.service.authorization.access.shiro.CachingAccessRoleRepository;
+import org.eclipse.kapua.service.authorization.access.shiro.GroupQueryHelperImpl;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.domain.DomainRepository;
@@ -369,4 +371,23 @@ public class AuthorizationModule extends AbstractKapuaModule {
         );
     }
 
+    @Provides
+    @Singleton
+    GroupQueryHelper groupQueryHelper(
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            AccessInfoFactory accessInfoFactory,
+            AccessInfoRepository accessInfoRepository,
+            AccessPermissionRepository accessPermissionRepository,
+            AccessRoleRepository accessRoleRepository,
+            RoleRepository roleRepository,
+            RolePermissionRepository rolePermissionRepository) {
+        return new GroupQueryHelperImpl(
+                jpaTxManagerFactory.create("kapua-authorization"),
+                accessInfoFactory,
+                accessInfoRepository,
+                accessPermissionRepository,
+                accessRoleRepository,
+                roleRepository,
+                rolePermissionRepository);
+    }
 }
