@@ -39,7 +39,7 @@ public class KapuaUpdatableEntityJpaRepository<E extends KapuaUpdatableEntity, C
         // Checking existence
         return doFind(em, updatedEntity.getScopeId(), updatedEntity.getId())
                 // Updating if present
-                .map(ce -> doUpdate(em, ce, updatedEntity))
+                .map(currentEntity -> doUpdate(em, currentEntity, updatedEntity))
                 .orElseThrow(() -> new KapuaEntityNotFoundException(entityName, updatedEntity.getId()));
     }
 
