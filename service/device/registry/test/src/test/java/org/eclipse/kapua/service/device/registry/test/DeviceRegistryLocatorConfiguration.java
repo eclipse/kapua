@@ -34,14 +34,9 @@ import org.eclipse.kapua.qa.common.MockedLocator;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoFactoryImpl;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoImplJpaRepository;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionImplJpaRepository;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleImplJpaRepository;
+import org.eclipse.kapua.service.authorization.access.GroupQueryHelper;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.role.shiro.RoleImplJpaRepository;
-import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImplJpaRepository;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
@@ -134,12 +129,7 @@ public class DeviceRegistryLocatorConfiguration {
                         txManager,
                         new DeviceImplJpaRepository(jpaRepoConfig),
                         new DeviceFactoryImpl(),
-                        new AccessInfoFactoryImpl(),
-                        new AccessInfoImplJpaRepository(jpaRepoConfig),
-                        new AccessPermissionImplJpaRepository(jpaRepoConfig),
-                        new AccessRoleImplJpaRepository(jpaRepoConfig),
-                        new RoleImplJpaRepository(jpaRepoConfig),
-                        new RolePermissionImplJpaRepository(jpaRepoConfig),
+                        Mockito.mock(GroupQueryHelper.class),
                         new EventStorerImpl(new EventStoreRecordImplJpaRepository(jpaRepoConfig)))
                 );
             }
