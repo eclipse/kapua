@@ -108,7 +108,8 @@ public class EndpointInfoServiceImpl
                 null,
                 endpointInfoCreator.getSchema(),
                 endpointInfoCreator.getDns(),
-                endpointInfoCreator.getPort());
+                endpointInfoCreator.getPort(),
+                endpointInfoCreator.getEndpointType());
 
         //
         // Do create
@@ -146,7 +147,8 @@ public class EndpointInfoServiceImpl
                 endpointInfo.getId(),
                 endpointInfo.getSchema(),
                 endpointInfo.getDns(),
-                endpointInfo.getPort());
+                endpointInfo.getPort(),
+                endpointInfo.getEndpointType());
 
         //
         // Do update
@@ -280,6 +282,7 @@ public class EndpointInfoServiceImpl
         AUTHORIZATION_SERVICE.checkPermission(
                 PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, query.getScopeId())
         );
+        addSectionToPredicate(query, section);
 
         //
         // Do count
@@ -302,6 +305,11 @@ public class EndpointInfoServiceImpl
                     if (account == null) {
                         throw new KapuaEntityNotFoundException(Account.TYPE, query.getScopeId());
                     }
+                    if (account.getScopeId() == null) {
+                        // Query was originally on root account, and querying on parent scope id would mean querying in null,
+                        // i.e. querying on all accounts. Since that's not what we want, break away.
+                        break;
+                    }
 
                     query.setScopeId(account.getScopeId());
                     endpointInfoCount = EndpointInfoDAO.count(em, query);
@@ -320,17 +328,18 @@ public class EndpointInfoServiceImpl
     //
 
     /**
-     * Checks whether or not another {@link EndpointInfo} already exists with the given values.
+     * Checks whether another {@link EndpointInfo} already exists with the given values.
      *
      * @param scopeId  The ScopeId of the {@link EndpointInfo}
      * @param entityId The entity id, if exists. On update you need to exclude the same entity.
      * @param schema   The {@link EndpointInfo#getSchema()}  value.
      * @param dns      The {@link EndpointInfo#getDns()}  value.
      * @param port     The {@link EndpointInfo#getPort()} value.
+     * @param type     The {@link EndpointInfo#getEndpointType()} value.
      * @throws KapuaException if the values provided matches another {@link EndpointInfo}
      * @since 1.0.0
      */
-    private void checkDuplicateEndpointInfo(KapuaId scopeId, KapuaId entityId, String schema, String dns, int port) throws KapuaException {
+    private void checkDuplicateEndpointInfo(KapuaId scopeId, KapuaId entityId, String schema, String dns, int port, String type) throws KapuaException {
 
         EndpointInfoQuery query = new EndpointInfoQueryImpl(scopeId);
 
@@ -346,7 +355,7 @@ public class EndpointInfoServiceImpl
 
         query.setPredicate(andPredicate);
 
-        if (count(query) > 0) {
+        if (count(query,type) > 0) {
             List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(KapuaEntityAttributes.SCOPE_ID, scopeId));
             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoAttributes.SCHEMA, schema));
