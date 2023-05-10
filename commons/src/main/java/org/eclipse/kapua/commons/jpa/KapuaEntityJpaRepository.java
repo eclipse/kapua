@@ -299,7 +299,8 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     @Override
     public E delete(TxContext txContext, E entityToDelete) {
         final EntityManager em = JpaAwareTxContext.extractEntityManager(txContext);
-        return doDelete(em, entityToDelete);
+        //inflate detached entity, making it managed again
+        return doDelete(em, em.merge(entityToDelete));
     }
 
     protected E doDelete(EntityManager em, E entityToDelete) {
