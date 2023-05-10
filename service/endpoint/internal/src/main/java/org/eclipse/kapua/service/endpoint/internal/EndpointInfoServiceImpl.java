@@ -234,17 +234,16 @@ public class EndpointInfoServiceImpl
         return entityManagerSession.doAction(em -> {
             EndpointInfoListResult endpointInfoListResult = EndpointInfoDAO.query(em, query);
 
-            if (endpointInfoListResult.isEmpty() && query.getScopeId() != null) {
-
-                // First check if there are any endpoint specified at all
-                if (countAllEndpointsInScope(em, query.getScopeId(), section)) {
-                    // if there are endpoints (even not matching the query), return the empty list
-                    return endpointInfoListResult;
-                }
+            if (endpointInfoListResult.isEmpty() && query.getScopeId() != null) { //query did not find results
 
                 KapuaId originalScopeId = query.getScopeId();
 
                 do {
+                    // First check if there are any endpoint AT ALL specified in this scope
+                    if (countAllEndpointsInScope(em, query.getScopeId(), section)) {
+                        // There are endpoints (even not matching the query), exit because I found the "nearest usable" endpoints which don't have what I'm searching
+                        break;
+                    }
                     Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.find(query.getScopeId()));
 
                     if (account == null) {
@@ -291,15 +290,14 @@ public class EndpointInfoServiceImpl
 
             if (endpointInfoCount == 0 && query.getScopeId() != null) {
 
-                // First check if there are any endpoint specified at all
-                if (countAllEndpointsInScope(em, query.getScopeId(), section)) {
-                    // if there are endpoints (even not matching the query), return 0
-                    return endpointInfoCount;
-                }
-
                 KapuaId originalScopeId = query.getScopeId();
 
                 do {
+                    // First check if there are any endpoint AT ALL specified in this scope
+                    if (countAllEndpointsInScope(em, query.getScopeId(), section)) {
+                        // There are endpoints (even not matching the query), exit because I found the "nearest usable" endpoints which don't have what I'm searching
+                        break;
+                    }
                     Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.find(query.getScopeId()));
 
                     if (account == null) {
