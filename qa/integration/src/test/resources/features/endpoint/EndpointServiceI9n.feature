@@ -760,6 +760,69 @@ Feature: Endpoint Info Service Integration Tests
     And I delete endpoint with schema "Schema2", domain "abc.com" and port 2222
     And I logout
 
+  Scenario: Submission of the same CORS filter in two distinct accounts should not fail
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    Then I create a generic account with name "Account-1" in current scopeId
+    When I create the following CORS filters
+      | http | localhost | 8080 |
+    Then I have 1 CORS filter
+    Then I select account "kapua-sys"
+    Then I create a generic account with name "Account-2" in current scopeId
+    When I create the following CORS filters
+      | http | localhost | 8080 |
+    Then I have 1 CORS filter
+    And I delete all CORS filters
+    Then I select account "Account-1"
+    And I delete all CORS filters
+    Then I logout
+
+
+  Scenario: Submission of one CORS filter should not be blocked just because the same filter is defined in an "ancestor" account different from the father
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    When I create the following CORS filters
+      | http | localhost | 8080 |
+    Then I have 1 CORS filter
+    Then I create a generic account with name "Account-1" in current scopeId
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
+    When I create the following CORS filters
+      | http | localhost | 8081 |
+    Then I have 1 CORS filter
+    Then I create a generic account with name "Account-2" in current scopeId
+    When I create the following CORS filters
+      | http | localhost | 8080 |
+    Then I have 1 CORS filter
+    And I delete all CORS filters
+    Then I select account "Account-1"
+    And I delete all CORS filters
+    Then I select account "kapua-sys"
+    And I delete all CORS filters
+    Then I logout
+
+  Scenario: The search of a CORS filter which is masked by CORS endpoints defined by the father (or other "nearest" ancestors) should result in no findings
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    When I create the following CORS filters
+      | http | localhost | 8080 |
+    Then I have 1 CORS filter
+    Then I create a generic account with name "Account-1" in current scopeId
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
+    When I create the following CORS filters
+      | http | localhost | 8081 |
+    Then I have 1 CORS filter
+    Then I create a generic account with name "Account-2" in current scopeId
+    Given I expect the exception "NullPointerException" with the text "*"
+    When I try to find endpoint with schema "http", domain "localhost" and port 8080 and section "cors"
+    Then An exception was thrown
+    Then I select account "Account-1"
+    And I delete all CORS filters
+    Then I select account "kapua-sys"
+    And I delete all CORS filters
+
   Scenario: List CORS filters from kapua-sys account
   Login as kapua-sys, create a CORS filter, then get all CORS filter.
   There should be 1 CORS filter and no exceptions throw.
