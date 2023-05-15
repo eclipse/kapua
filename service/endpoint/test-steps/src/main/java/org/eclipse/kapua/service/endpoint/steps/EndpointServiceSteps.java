@@ -27,6 +27,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
@@ -233,30 +234,53 @@ public class EndpointServiceSteps extends TestBase {
 
     @And("^I try to find endpoint with schema \"([^\"]*)\", domain \"([^\"]*)\" and port (\\d+)$")
     public void foundEndpointBySchemaDomainPort(String schema, String domain, int port) throws Exception {
-        primeException();
-        try {
-            EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
-            endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
-            EndpointInfo endpointInfo = endpointInfoService.query(endpointInfoQuery).getFirstItem();
-            assertEquals(schema, endpointInfo.getSchema());
-            assertEquals(domain, endpointInfo.getDns());
-            assertEquals(port, endpointInfo.getPort());
-
-            stepData.put(ENDPOINT_INFO, endpointInfo);
-            stepData.put("EndpointInfoId", endpointInfo.getId());
-        } catch (Exception ex) {
-            verifyException(ex);
-        }
+        foundEndpointBySchemaDomainPortSection(schema, domain, port, EndpointInfo.ENDPOINT_TYPE_RESOURCE);
     }
 
     @And("^I try to find endpoint with schema \"([^\"]*)\"$")
     public void foundEndpointBySchema(String schema) throws Exception {
+        foundEndpointBySchemaDomainPortSection(schema, null, -1, EndpointInfo.ENDPOINT_TYPE_RESOURCE);
+    }
+
+    @And("^I try to find endpoint with schema \"([^\"]*)\", domain \"([^\"]*)\" and port (\\d+)$ and section \"([^\"]*)\"$")
+    public void foundEndpointBySchemaDomainPortSection(String schema, String domain, int port, String section) throws Exception {
         primeException();
         try {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
-            endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
+            AndPredicate andPredicate = endpointInfoQuery.andPredicate();
+
+            if (section.equals("cors")) {
+                section = EndpointInfo.ENDPOINT_TYPE_CORS;
+            } //to simplify argument passing
+
+            if (schema != null) {
+                andPredicate.and(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
+            }
+            if (section != null) {
+                andPredicate.and(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.ENDPOINT_TYPE, section));
+            }
+            if (domain != null) {
+                andPredicate.and(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.DNS, domain, AttributePredicate.Operator.EQUAL));
+            }
+            if (port != -1) {
+                andPredicate.and(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.PORT, port, AttributePredicate.Operator.EQUAL));
+            }
+
+            endpointInfoQuery.setPredicate(andPredicate);
             EndpointInfo endpointInfo = endpointInfoService.query(endpointInfoQuery).getFirstItem();
-            assertEquals(schema, endpointInfo.getSchema());
+
+            if (schema != null) {
+                assertEquals(schema, endpointInfo.getSchema());
+            }
+            if (section != null) {
+                assertEquals(section, endpointInfo.getEndpointType());
+            }
+            if (domain != null) {
+                assertEquals(domain, endpointInfo.getDns());
+            }
+            if (port != -1) {
+                assertEquals(port, endpointInfo.getPort());
+            }
 
             stepData.put(ENDPOINT_INFO, endpointInfo);
             stepData.put("EndpointInfoId", endpointInfo.getId());
