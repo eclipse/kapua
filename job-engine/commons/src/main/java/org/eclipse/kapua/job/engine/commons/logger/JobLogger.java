@@ -20,12 +20,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Logger for {@link org.eclipse.kapua.service.job.Job} processing.
@@ -141,7 +144,7 @@ public class JobLogger {
             formatSb.append(format);
 
             List<Object> finalArguments = new ArrayList<>();
-            finalArguments.add(new Date());
+            finalArguments.add(formatDate(new Date()));
             finalArguments.addAll(Arrays.asList(arguments));
 
             tokenizeFormat(formatSb);
@@ -221,7 +224,7 @@ public class JobLogger {
             formatSb.append(format);
 
             List<Object> finalArguments = new ArrayList<>();
-            finalArguments.add(new Date());
+            finalArguments.add(formatDate(new Date()));
             finalArguments.addAll(Arrays.asList(arguments));
 
             if (exception != null) {
@@ -306,7 +309,7 @@ public class JobLogger {
             formatSb.append(format);
 
             List<Object> finalArguments = new ArrayList<>();
-            finalArguments.add(new Date());
+            finalArguments.add(formatDate(new Date()));
             finalArguments.addAll(Arrays.asList(arguments));
 
             if (exception != null) {
@@ -411,5 +414,13 @@ public class JobLogger {
             offset = formatSb.indexOf("{}");
             formatSb.insert(offset + 1, i++);
         }
+    }
+
+
+    private String formatDate(Date date) {
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS'Z'");
+        df.setTimeZone(tz);
+        return df.format(date);
     }
 }
