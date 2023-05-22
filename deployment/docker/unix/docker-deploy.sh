@@ -95,7 +95,7 @@ done
 
 docker_common
 
-echo "Deploying Eclipse Kapua..."
+echo "Deploying Eclipse Kapua version $IMAGE_VERSION..."
 docker_compose ${DEBUG_MODE} ${DEV_MODE} ${SSO_MODE} ${SWAGGER} || {
     echo "Deploying Eclipse Kapua... ERROR!"
     exit 1
