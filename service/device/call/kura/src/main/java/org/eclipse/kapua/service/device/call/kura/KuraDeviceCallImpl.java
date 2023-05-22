@@ -198,7 +198,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
      * @throws TransportClientGetException           If getting the {@link TransportFacade} causes an {@link Exception}.
      * @since 1.0.0
      */
-    protected TransportFacade<?, ?, ?, ?> borrowClient(KuraRequestMessage kuraRequestMessage) throws TransportClientGetException, TransportClientPoolExhaustedException {
+    protected TransportFacade<?, ?, ?, ?> borrowClient(KuraRequestMessage kuraRequestMessage) throws TransportException {
         String serverIp = null;
         try {
             serverIp = KapuaSecurityUtils.doPrivileged(() -> {
@@ -224,7 +224,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
             configParameters.put("serverAddress", serverIp);
 
             return TRANSPORT_CLIENT_FACTORY.getFacade(configParameters);
-        } catch (TransportClientGetException | TransportClientPoolExhaustedException tce) {
+        } catch (TransportException tce) {
             throw tce;
         } catch (Exception e) {
             throw new TransportClientGetException(e, serverIp);

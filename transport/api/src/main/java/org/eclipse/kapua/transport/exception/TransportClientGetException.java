@@ -72,4 +72,14 @@ public class TransportClientGetException extends TransportException {
     public String getServerIp() {
         return serverIp;
     }
+
+    /**
+     * Gets the {@link Throwable#getMessage()} if provided.
+     *
+     * @return The {@link Throwable#getMessage()} if provided.
+     * @since 2.0.0
+     */
+    public String getCauseMessage() {
+        return causeMessage;
+    }
 }
