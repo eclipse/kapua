@@ -15,5 +15,5 @@
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-export IMAGE_VERSION=${IMAGE_VERSION:=latest}
+export IMAGE_VERSION=${IMAGE_VERSION:=1.7.0-SNAPSHOT}
 export CRYPTO_SECRET_KEY="${CRYPTO_SECRET_KEY:=dockerSecretKey!}"
