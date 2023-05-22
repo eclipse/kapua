@@ -46,6 +46,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * {@link EndpointInfoService} implementation.
@@ -108,7 +109,8 @@ public class EndpointInfoServiceImpl
                 null,
                 endpointInfoCreator.getSchema(),
                 endpointInfoCreator.getDns(),
-                endpointInfoCreator.getPort());
+                endpointInfoCreator.getPort(),
+                endpointInfoCreator.getEndpointType());
 
         //
         // Do create
@@ -146,7 +148,8 @@ public class EndpointInfoServiceImpl
                 endpointInfo.getId(),
                 endpointInfo.getSchema(),
                 endpointInfo.getDns(),
-                endpointInfo.getPort());
+                endpointInfo.getPort(),
+                endpointInfo.getEndpointType());
 
         //
         // Do update
@@ -210,13 +213,17 @@ public class EndpointInfoServiceImpl
         }
     }
 
-    @Override
-    public EndpointInfoListResult query(KapuaQuery query) throws KapuaException {
-        return query(query, EndpointInfo.ENDPOINT_TYPE_RESOURCE);
-    }
-
-    @Override
-    public EndpointInfoListResult query(KapuaQuery query, String section)
+    /**
+     * Traverse the account hierarchy bottom-up to search for {@link EndpointInfo} respecting the given query,
+     * performing for each layer the given operationToPerform until the given emptinessPredicate dictates to stop OR when endpoints of the same section are found in one layer
+     * In other terms, this method applies a given function to the "nearest usable endpoints", aka the ones that I see in a given scopeID
+     *
+     * @param query  The query to filter the {@link EndpointInfo}s.
+     * @param section section of {@link EndpointInfo} where we want to search the information
+     * @param operationToPerform  function to apply at each layer
+     * @param emptinessPredicate  predicate that dictates to stop the traversal when false
+     */
+    public Object traverse(KapuaQuery query, String section, myBifunction<EntityManager, KapuaQuery, Object, KapuaException> operationToPerform, Predicate<Object> emptinessPredicate)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 
@@ -230,19 +237,18 @@ public class EndpointInfoServiceImpl
         //
         // Do Query
         return entityManagerSession.doAction(em -> {
-            EndpointInfoListResult endpointInfoListResult = EndpointInfoDAO.query(em, query);
+            Object res = operationToPerform.apply(em, query);
 
-            if (endpointInfoListResult.isEmpty() && query.getScopeId() != null) {
-
-                // First check if there are any endpoint specified at all
-                if (countAllEndpointsInScope(em, query.getScopeId(), section)) {
-                    // if there are endpoints (even not matching the query), return the empty list
-                    return endpointInfoListResult;
-                }
+            if (emptinessPredicate.test(res) && query.getScopeId() != null) { //query did not find results
 
                 KapuaId originalScopeId = query.getScopeId();
 
                 do {
+                    // First check if there are any endpoint AT ALL specified in this scope/layer
+                    if (countAllEndpointsInScope(em, query.getScopeId(), section)) {
+                        // There are endpoints (even not matching the query), exit because I found the "nearest usable" endpoints which don't have what I'm searching
+                        break;
+                    }
                     Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.find(query.getScopeId()));
 
                     if (account == null) {
@@ -254,14 +260,14 @@ public class EndpointInfoServiceImpl
                         break;
                     }
                     query.setScopeId(account.getScopeId());
-                    endpointInfoListResult = EndpointInfoDAO.query(em, query);
+                    res = operationToPerform.apply(em, query);
                 }
-                while (query.getScopeId() != null && endpointInfoListResult.isEmpty());
+                while (query.getScopeId() != null && emptinessPredicate.test(res));
 
                 query.setScopeId(originalScopeId);
             }
 
-            return endpointInfoListResult;
+            return res;
         });
     }
 
@@ -271,66 +277,43 @@ public class EndpointInfoServiceImpl
     }
 
     @Override
-    public long count(KapuaQuery query, String section)
-            throws KapuaException {
-        ArgumentValidator.notNull(query, "query");
+    public long count(KapuaQuery query, String section) throws KapuaException {
+        return (long) traverse(query, section, EndpointInfoDAO::count, a -> (long)a == 0);
+    }
 
-        //
-        // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(
-                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, query.getScopeId())
-        );
+    @Override
+    public EndpointInfoListResult query(KapuaQuery query) throws KapuaException {
+        return query(query, EndpointInfo.ENDPOINT_TYPE_RESOURCE);
+    }
 
-        //
-        // Do count
-        return entityManagerSession.doAction(em -> {
-            long endpointInfoCount = EndpointInfoDAO.count(em, query);
-
-            if (endpointInfoCount == 0 && query.getScopeId() != null) {
-
-                // First check if there are any endpoint specified at all
-                if (countAllEndpointsInScope(em, query.getScopeId(), section)) {
-                    // if there are endpoints (even not matching the query), return 0
-                    return endpointInfoCount;
-                }
-
-                KapuaId originalScopeId = query.getScopeId();
-
-                do {
-                    Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.find(query.getScopeId()));
-
-                    if (account == null) {
-                        throw new KapuaEntityNotFoundException(Account.TYPE, query.getScopeId());
-                    }
-
-                    query.setScopeId(account.getScopeId());
-                    endpointInfoCount = EndpointInfoDAO.count(em, query);
-                }
-                while (query.getScopeId() != null && endpointInfoCount == 0);
-
-                query.setScopeId(originalScopeId);
-            }
-
-            return endpointInfoCount;
-        });
+    public EndpointInfoListResult query(KapuaQuery query, String section) throws KapuaException {
+        return (EndpointInfoListResult) traverse(query, section, EndpointInfoDAO::query, a -> ((EndpointInfoListResult)a).isEmpty());
     }
 
     //
-    // Private methods
+    // Private methods and interfaces
     //
 
+    //this interface is created solely because java complains if you pass lambdas throwing checked exception
+    //to overcome this, I created this interface which is a custom form of a Bifunction throwing the checked KapuaException
+    @FunctionalInterface
+    private interface myBifunction<A, B, C, E extends KapuaException> {
+        C apply(A input1, B input2) throws E;
+    }
+
     /**
-     * Checks whether or not another {@link EndpointInfo} already exists with the given values.
+     * Checks whether another {@link EndpointInfo} already exists with the given values.
      *
      * @param scopeId  The ScopeId of the {@link EndpointInfo}
      * @param entityId The entity id, if exists. On update you need to exclude the same entity.
      * @param schema   The {@link EndpointInfo#getSchema()}  value.
      * @param dns      The {@link EndpointInfo#getDns()}  value.
      * @param port     The {@link EndpointInfo#getPort()} value.
+     * @param type     The {@link EndpointInfo#getEndpointType()} value.
      * @throws KapuaException if the values provided matches another {@link EndpointInfo}
      * @since 1.0.0
      */
-    private void checkDuplicateEndpointInfo(KapuaId scopeId, KapuaId entityId, String schema, String dns, int port) throws KapuaException {
+    private void checkDuplicateEndpointInfo(KapuaId scopeId, KapuaId entityId, String schema, String dns, int port, String type) throws KapuaException {
 
         EndpointInfoQuery query = new EndpointInfoQueryImpl(scopeId);
 
@@ -346,7 +329,7 @@ public class EndpointInfoServiceImpl
 
         query.setPredicate(andPredicate);
 
-        if (count(query) > 0) {
+        if (count(query,type) > 0) {
             List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(KapuaEntityAttributes.SCOPE_ID, scopeId));
             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoAttributes.SCHEMA, schema));
