@@ -362,7 +362,8 @@ public class EndpointInfoServiceImpl
 
         query.setPredicate(andPredicate);
 
-        if (doCount(query, type) > 0) {
+        final Long count = txManager.execute(tx -> doCount(tx, query, type));
+        if (count > 0) {
             List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(KapuaEntityAttributes.SCOPE_ID, scopeId));
             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoAttributes.SCHEMA, schema));
