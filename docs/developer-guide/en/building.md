@@ -4,15 +4,9 @@ We use Apache Maven as the build tool of choice.
 
 We use `gitbook` to build the documentation.
 
-## How to build
+## Tests execution
 
-Kapua is being compiled with Maven.
-
-There are 3 build options you can use, based on the need to perform the various tests, these are now reported in ascending order of building times.
-
-#### Build without tests
-
-   `mvn clean install -DskipTests`
+This section instructs how to execute locally project's tests, if you are not interested (for example, considering that these tests are part of the GitHub CI process) you can skip to the next section
 
 #### Build executing unit tests
 
@@ -42,6 +36,26 @@ NOTE: It is important to launch the script being in the "Kapua" root folder, in 
 `qa/RunKapuaTests.sh`
 
 Launch it in order to build Kapua executing all the tests. Integration tests are divided by category to offer maximum error-check-granularity. 
+
+## Docker images building
+
+Keep in mind that Kapua Docker images are hosted under [Kapua DockerHub account](https://hub.docker.com/r/kapua/). 
+If your interest is to build Kapua Docker images by yourself, and you didn't do it in the previous step, execute Maven build with `docker` profile enabled:
+
+    mvn clean install -Pdocker -DskipTests
+
+Add the `console` profile to generate also the Web Console docker image:
+
+    mvn clean install -Pdocker,console -DskipTests
+
+If you want to speed up the build process you can ask Maven to ignore `-SNAPSHOT` updates
+force it to use only locally present artifacts with the `dev` profile.
+
+    mvn clean install -Pdocker,dev -DskipTests
+
+Again, don't forget the `console` profile if the Web Console image is needed:
+
+    mvn clean install -Pdocker,dev,console -DskipTests
 
 ## Security Scan
 
@@ -103,28 +117,7 @@ We also use CI server sponsored by [Red Hat](https://www.redhat.com/en) to autom
 [Kapua DockerHub account](https://hub.docker.com/r/kapua/). Red Hat CI server checks for code changes every 15 minutes and pushes updated version
 of images if needed.
 
-## Docker images
-
-Kapua Docker images are hosted under [Kapua DockerHub account](https://hub.docker.com/r/kapua/). The latest snapshots of images are updated every 15 minutes.
-
-In order to build Kapua Docker images yourself, execute Maven build with `docker` profile enabled:
-
-    mvn clean install -Pdocker
-
-Just like building Kapua from the source code, also add the `console` profile to generate the Web Console docker image:
-
-    mvn clean install -Pdocker,console
-
-If you want to speed up the build process you can ask Maven to ignore `-SNAPSHOT` updates
-force it to use only locally present artifacts with the `dev` profile. You can also skip unit tests to speed things even more.
-
-    mvn clean install -Pdocker,dev -DskipTests
-
-Again, don't forget the `console` profile if the Web Console image is needed:
-
-    mvn clean install -Pdocker,dev,console -DskipTests
-
-### Pushing
+### Pushing docker images
 
 Pushing with default settings:
 
