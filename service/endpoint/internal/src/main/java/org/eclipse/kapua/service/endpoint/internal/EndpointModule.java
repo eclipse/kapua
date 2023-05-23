@@ -17,7 +17,7 @@ import com.google.inject.Singleton;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
-import org.eclipse.kapua.service.account.AccountRepository;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
@@ -36,16 +36,16 @@ public class EndpointModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             EndpointInfoFactory endpointInfoFactory,
-            AccountRepository accountRepository,
+            AccountService accountService,
             EndpointInfoRepository endpointInfoRepository,
             KapuaJpaTxManagerFactory jpaTxManagerFactory) {
         return new EndpointInfoServiceImpl(
+                accountService,
                 authorizationService,
                 permissionFactory,
                 endpointInfoFactory,
-                jpaTxManagerFactory.create("kapua-endpoint"),
-                accountRepository,
-                endpointInfoRepository);
+                endpointInfoRepository,
+                jpaTxManagerFactory.create("kapua-endpoint"));
     }
 
     @Provides
