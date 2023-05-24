@@ -4,26 +4,30 @@ We use Apache Maven as the build tool of choice.
 
 We use `gitbook` to build the documentation.
 
-## How to build
+## Tests Execution
 
-Kapua is being compiled with Maven.
+This section instructs how to execute locally project's tests, if you are not interested (for example,
+considering that these tests are part of the GitHub CI process) you can skip to the next section
 
-You can run the Kapua full build issuing the command:
+## Docker images building
 
-    mvn clean install
+Keep in mind that Kapua Docker images are hosted under [Kapua DockerHub account](https://hub.docker.com/r/kapua/).
+If your interest is to build Kapua Docker images by yourself, and you didn't do it in the previous step, execute Maven build with `docker` profile enabled:
 
-Don't forget to also add the `console` Maven profile if you are interested in building the Web Console as well:
+    mvn clean install -Pdocker -DskipTests
 
-    mvn clean install -Pconsole
+Add the `console` profile to generate also the Web Console docker image:
 
-If you only want to run Kapua locally for testing you can speed up the build
-by using:
+    mvn clean install -Pdocker,console -DskipTests
 
-    mvn clean install -Pdev -DskipTests=true
+If you want to speed up the build process you can ask Maven to ignore `-SNAPSHOT` updates
+force it to use only locally present artifacts with the `dev` profile.
 
-Again, add the `console` profile as well if needed:
+    mvn clean install -Pdocker,dev -DskipTests
 
-    mvn clean install -Pdev,console -DskipTests=true
+Again, don't forget the `console` profile if the Web Console image is needed:
+
+    mvn clean install -Pdocker,dev,console -DskipTests
 
 ## Security Scan
 
@@ -106,7 +110,7 @@ Again, don't forget the `console` profile if the Web Console image is needed:
 
     mvn clean install -Pdocker,dev,console -DskipTests
 
-### Pushing
+### Pushing docker images
 
 Pushing with default settings:
 
