@@ -13,11 +13,13 @@ setup and not on a full blown production setup.
 Before running Kapua on Docker, you need to
 
 1. Install `docker` and `docker-compose`
-1. Run `mvn -f assembly -Pdocker` once to build containers. Run `mvn -f assembly -Pconsole,docker` if you also need to build the Web Console image.
+2. Make sure that you have built Kapua docker images locally, following the provided building section of this documentation. Alternatively, you can utilize images hosted under the [Kapua DockerHub account](https://hub.docker.com/r/kapua/), for this case we recommend you to follow the "Quick Start Guide" section that can be found in the readme.md file under the root folder.
 
 Now, you can start Kapua by using Docker Compose. To do so, run
 
     kapua/deployment/docker/docker-deploy.sh
+
+Note: in case of a deployment of and old version, assuming that you have built images for a release previous to 1.7.0, and consequently you have done a checkout to the proper tagged commit, keep in mind that the building procedure created a set of docker images tagged as "latest". The "docker-deploy" script pulls images tagged in this way. This implies that the newly built images will be launched.
 
 After Kapua has been started, you can navigate your browser to http://localhost:8080 and log in using the following credentials:
 `kapua-sys` : `kapua-password`
@@ -26,10 +28,6 @@ You can access the API using: http://localhost:8081
 
 **Note**: If you are using Docker on Windows the hostname will most likely not be `localhost` but
 the IP address of your docker instance.
-
-By default, the `latest` version of images will be used. If you want to run some other version of Kapua, set the `IMAGE_VERSION` environment variable, like
-
-    export IMAGE_VERSION=0.2.0
 
 To stop Kapua, run
 

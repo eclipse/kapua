@@ -57,6 +57,16 @@ Suppose the target is the current snapshot 1.7.0-SNAPSHOT.
 * Clone Eclipse Kapua&trade; into a local directory
 * Open an OS shell and move to Kapua project root directory
 * Start Docker runtime
+
+The Kapua repository mentioned above hosts only images of released versions. It is possible to test different versions of Kapua doing a checkout into
+the release branches (for example, "release-1.6.x") and to the tagged commits to select the specific version (for example, the commit tagged as "1.6.7"). Doing so, it is assured
+that the following step will pull proper images from the Docker Hub. If, on the other hand, your target is a SNAPSHOT version (for example, the 2.0.0-SNAPSHOT), a local build is required
+in order to create the docker images and proceed to the next step. Instructions for building can be found in the building.md file under the path docs/developer-guide.
+Assuming that your interest is to deploy a release before 2.0.0 and that you want to pull images from the Docker Hub, it is important to set now the
+`IMAGE_VERSION` environment variable with a value equal to the target version. For example, in the case of the 1.6.7
+
+    export IMAGE_VERSION=1.6.7
+
 * Start Kapua:
 
 On Linux/MacOS:
@@ -72,12 +82,6 @@ On Windows (PowerShell):
 ```
 
 The command starts all the Kapua containers using Docker Compose.
-
-By default, the `latest` version of images will be used. If you want to run some other version of Kapua, set the `IMAGE_VERSION` environment variable, for example:
-
-```bash
-    export IMAGE_VERSION=0.2.0
-```
 
 You can check if the containers are running by typing the following command:
 
