@@ -30,6 +30,8 @@ import org.eclipse.kapua.app.api.core.exception.model.JobStartingExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobStoppingExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
+import org.eclipse.kapua.job.engine.JobStartOptions;
+import org.eclipse.kapua.job.engine.commons.model.JobStepPropertiesOverrides;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.service.authentication.AuthenticationXmlRegistry;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
@@ -110,6 +112,11 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     IllegalArgumentExceptionInfo.class,
                     IllegalNullArgumentExceptionInfo.class,
 
+                    // Job Engine
+                    JobStartOptions.class,
+                    JobTargetSublist.class,
+                    JobStepPropertiesOverrides.class,
+
                     // Jobs Exception Info
                     CleanJobDataExceptionInfo.class,
                     JobAlreadyRunningExceptionInfo.class,
@@ -161,7 +168,10 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     JobTargetQuery.class,
                     JobExecutionXmlRegistry.class,
 
+                    // Job Engine
+                    JobStartOptions.class,
                     JobTargetSublist.class,
+                    JobStepPropertiesOverrides.class,
 
                     DeviceCommandInput.class,
                     DevicePackageDownloadRequest.class,

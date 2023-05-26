@@ -19,6 +19,7 @@ import org.eclipse.kapua.broker.core.router.SimpleEndPoint;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.job.engine.commons.model.JobStepPropertiesOverrides;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTdesignate;
@@ -178,6 +179,10 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
                         JobListResult.class,
                         JobXmlRegistry.class,
                         JobTargetSublist.class,
+
+                        // Job Engine
+                        JobTargetSublist.class,
+                        JobStepPropertiesOverrides.class,
 
                         // Broker core
                         EndPointContainer.class,

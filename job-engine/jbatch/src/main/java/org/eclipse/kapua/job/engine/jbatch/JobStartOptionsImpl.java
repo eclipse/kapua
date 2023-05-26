@@ -14,8 +14,11 @@ package org.eclipse.kapua.job.engine.jbatch;
 
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,6 +29,7 @@ import java.util.Set;
 public class JobStartOptionsImpl implements JobStartOptions {
 
     private Set<KapuaId> targetIdSublist;
+    private List<JobStepProperty> stepPropertiesOverrides;
     private boolean resetStepIndex;
     private Integer fromStepIndex;
     private boolean enqueue;
@@ -75,6 +79,25 @@ public class JobStartOptionsImpl implements JobStartOptions {
     @Override
     public void removeTargetIdToSublist(KapuaId targetId) {
         getTargetIdSublist().remove(targetId);
+    }
+
+    @Override
+    public List<JobStepProperty> getStepPropertiesOverrides() {
+        if (stepPropertiesOverrides == null) {
+            stepPropertiesOverrides = new ArrayList<>();
+        }
+
+        return stepPropertiesOverrides;
+    }
+
+    @Override
+    public void addStepPropertyOverride(JobStepProperty stepPropertyOverride) {
+        getStepPropertiesOverrides().add(stepPropertyOverride);
+    }
+
+    @Override
+    public void setStepPropertiesOverrides(List<JobStepProperty> stepPropertiesOverrides) {
+        this.stepPropertiesOverrides = stepPropertiesOverrides;
     }
 
     @Override
