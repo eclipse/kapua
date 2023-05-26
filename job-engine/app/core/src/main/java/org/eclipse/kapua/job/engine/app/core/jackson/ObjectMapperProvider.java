@@ -19,8 +19,10 @@ import org.eclipse.kapua.app.api.core.model.job.IsJobRunningResponse;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.app.core.jackson.mixin.IsJobRunningResponseMixin;
 import org.eclipse.kapua.job.engine.app.core.jackson.mixin.JobStartOptionsMixin;
+import org.eclipse.kapua.job.engine.app.core.jackson.mixin.JobStepPropertyMixin;
 import org.eclipse.kapua.job.engine.app.core.jackson.mixin.KapuaIdMixin;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -33,6 +35,7 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
         objectMapper = new ObjectMapper();
         objectMapper.addMixIn(KapuaId.class, KapuaIdMixin.class);
         objectMapper.addMixIn(JobStartOptions.class, JobStartOptionsMixin.class);
+        objectMapper.addMixIn(JobStepProperty.class, JobStepPropertyMixin.class);
         objectMapper.addMixIn(IsJobRunningResponse.class, IsJobRunningResponseMixin.class);
     }
 

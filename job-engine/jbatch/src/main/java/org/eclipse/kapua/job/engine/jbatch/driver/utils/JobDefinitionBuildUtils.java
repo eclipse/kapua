@@ -23,6 +23,7 @@ import com.ibm.jbatch.jsl.model.Listeners;
 import com.ibm.jbatch.jsl.model.Property;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.JobStartOptions;
+import org.eclipse.kapua.job.engine.commons.model.JobStepPropertiesOverrides;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.job.engine.commons.operation.DefaultTargetReader;
 import org.eclipse.kapua.job.engine.commons.operation.DefaultTargetWriter;
@@ -38,6 +39,7 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.JAXBException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +88,12 @@ public class JobDefinitionBuildUtils {
         targetSublistProperty.setValue(XmlUtil.marshal(new JobTargetSublist(jobStartOptions.getTargetIdSublist())));
         jslPropertyList.add(targetSublistProperty);
 
+        // Job Step Properties overrides
+        Property stepPropertiesOverrides = new Property();
+        stepPropertiesOverrides.setName(JobContextPropertyNames.JOB_STEP_PROPERTIES_OVERRIDES);
+        stepPropertiesOverrides.setValue(XmlUtil.marshal(new JobStepPropertiesOverrides(jobStartOptions.getStepPropertiesOverrides())));
+        jslPropertyList.add(stepPropertiesOverrides);
+
         // Resumed job execution
         Property resumedJobExecutionIdProperty = new Property();
         resumedJobExecutionIdProperty.setName(JobContextPropertyNames.RESUMED_KAPUA_EXECUTION_ID);
@@ -120,6 +128,10 @@ public class JobDefinitionBuildUtils {
     }
 
     public static JSLProperties buildStepProperties(@NotNull JobStepDefinition jobStepDefinition, @NotNull JobStep jobStep, boolean hasNext) {
+        return buildStepProperties(jobStepDefinition, jobStep, hasNext, Collections.emptyList());
+    }
+
+    public static JSLProperties buildStepProperties(@NotNull JobStepDefinition jobStepDefinition, @NotNull JobStep jobStep, boolean hasNext, @NotNull List<JobStepProperty> stepPropertiesOverrides) {
         JSLProperties jslProperties = new JSLProperties();
         List<Property> jslPropertyList = jslProperties.getPropertyList();
 
@@ -140,12 +152,16 @@ public class JobDefinitionBuildUtils {
             jslPropertyList.add(jslStepNextIndexProperty);
         }
 
-        jslPropertyList.addAll(buildCustomStepProperties(jobStepDefinition, jobStep));
+        jslPropertyList.addAll(buildCustomStepProperties(jobStepDefinition, jobStep, stepPropertiesOverrides));
 
         return jslProperties;
     }
 
     public static Collection<Property> buildCustomStepProperties(@NotNull JobStepDefinition jobStepDefinition, @NotNull JobStep jobStep) {
+        return buildCustomStepProperties(jobStepDefinition, jobStep, Collections.emptyList());
+    }
+
+    public static Collection<Property> buildCustomStepProperties(@NotNull JobStepDefinition jobStepDefinition, @NotNull JobStep jobStep, @NotNull List<JobStepProperty> stepPropertiesOverrides) {
 
         Map<String, Property> customStepProperties = new HashMap<>();
 
@@ -154,6 +170,9 @@ public class JobDefinitionBuildUtils {
 
         // Add properties from Job Step
         addPropertiesToCustomStepProperties(customStepProperties, jobStep.getStepProperties());
+
+        // Add properties overrides
+        addPropertiesToCustomStepProperties(customStepProperties, stepPropertiesOverrides);
 
         // Return only values
         return customStepProperties.values();

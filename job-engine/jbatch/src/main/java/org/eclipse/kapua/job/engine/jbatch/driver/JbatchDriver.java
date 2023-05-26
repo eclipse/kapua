@@ -164,7 +164,7 @@ public class JbatchDriver {
                     jslStep.setNextFromAttribute("step-" + (jobStep.getStepIndex() + 1));
                 }
 
-                jslStep.setProperties(JobDefinitionBuildUtils.buildStepProperties(jobStepDefinition, jobStep, jobStepIterator.hasNext()));
+                jslStep.setProperties(JobDefinitionBuildUtils.buildStepProperties(jobStepDefinition, jobStep, jobStepIterator.hasNext(), jobStartOptions.getStepPropertiesOverrides()));
 
                 jslExecutionElements.add(jslStep);
             }
