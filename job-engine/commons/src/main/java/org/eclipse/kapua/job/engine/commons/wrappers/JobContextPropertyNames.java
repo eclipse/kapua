@@ -43,6 +43,11 @@ public class JobContextPropertyNames {
     public static final String RESUMED_KAPUA_EXECUTION_ID = "job.execution.resumedId";
 
     /**
+     * @since 2.0.0
+     */
+    public static final String JOB_STEP_PROPERTIES_OVERRIDES = "job.step.properties.overrides";
+
+    /**
      * since 1.1.0
      */
     public static final String RESET_STEP_INDEX = "job.step.resetIndex";

@@ -17,6 +17,7 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.commons.exception.ReadJobPropertyException;
 import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
+import org.eclipse.kapua.job.engine.commons.model.JobStepPropertiesOverrides;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.job.engine.commons.model.JobTransientUserData;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -88,6 +89,22 @@ public class JobContextWrapper {
             return XmlUtil.unmarshal(jobTargetSublistString, JobTargetSublist.class);
         } catch (JAXBException | SAXException e) {
             throw new ReadJobPropertyException(e, JobContextPropertyNames.JOB_TARGET_SUBLIST, jobTargetSublistString);
+        }
+    }
+
+    /**
+     * Gets the {@link JobStepPropertiesOverrides} of the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
+     *
+     * @return The current {@link JobStepPropertiesOverrides} of the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
+     * @since 2.0.0
+     */
+    public JobStepPropertiesOverrides getJobStepPropertiesOverrides() {
+        String jobStepPropertiesOverrides = getProperties().getProperty(JobContextPropertyNames.JOB_STEP_PROPERTIES_OVERRIDES);
+
+        try {
+            return XmlUtil.unmarshal(jobStepPropertiesOverrides, JobStepPropertiesOverrides.class);
+        } catch (JAXBException | SAXException e) {
+            throw new ReadJobPropertyException(e, JobContextPropertyNames.JOB_STEP_PROPERTIES_OVERRIDES, jobStepPropertiesOverrides);
         }
     }
 

@@ -15,6 +15,7 @@ package org.eclipse.kapua.job.engine;
 import org.eclipse.kapua.KapuaSerializable;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -25,6 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -74,6 +76,12 @@ public interface JobStartOptions extends KapuaSerializable {
     @XmlTransient
     void addTargetIdToSublist(KapuaId targetId);
 
+    List<JobStepProperty> getStepPropertiesOverrides();
+
+    void addStepPropertyOverride(JobStepProperty jobStepPropertyOverride);
+
+    void setStepPropertiesOverrides(List<JobStepProperty> jobStepPropertiesOverrides);
+
     /**
      * Gets whether or not the {@link JobTarget#getStepIndex()} needs to be reset to the given {@link #getFromStepIndex()}.
      *
@@ -121,4 +129,5 @@ public interface JobStartOptions extends KapuaSerializable {
      * @since 1.1.0
      */
     void setEnqueue(boolean enqueue);
+
 }

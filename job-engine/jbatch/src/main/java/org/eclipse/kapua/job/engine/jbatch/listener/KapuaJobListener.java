@@ -110,11 +110,21 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
 
         jobLogger.info("Running before job...");
         jobLogger.info("Run configuration:");
-        jobLogger.info("\tTarget count:           {}", jobContextWrapper.getTargetSublist().size() != 0 ? jobContextWrapper.getTargetSublist().size() : "all");
-        jobLogger.info("\tReset step index:       {}", jobContextWrapper.getResetStepIndex());
-        jobLogger.info("\tFrom step index:        {}", jobContextWrapper.getFromStepIndex() != null ? jobContextWrapper.getFromStepIndex() : 0);
-        jobLogger.info("\tResuming job execution: {}", jobContextWrapper.getResumedJobExecutionId() != null ? jobContextWrapper.getResumedJobExecutionId() : "none");
-        jobLogger.info("\tEnqueue:                {}", jobContextWrapper.getEnqueue());
+        jobLogger.info("\tTarget count:                 {}", jobContextWrapper.getTargetSublist().size() != 0 ? jobContextWrapper.getTargetSublist().size() : "all");
+        jobLogger.info("\tReset step index:             {}", jobContextWrapper.getResetStepIndex());
+        jobLogger.info("\tFrom step index:              {}", jobContextWrapper.getFromStepIndex() != null ? jobContextWrapper.getFromStepIndex() : 0);
+        jobLogger.info("\tResuming job execution:       {}", jobContextWrapper.getResumedJobExecutionId() != null ? jobContextWrapper.getResumedJobExecutionId() : "none");
+        jobLogger.info("\tEnqueue:                      {}", jobContextWrapper.getEnqueue());
+
+        if (jobContextWrapper.getJobStepPropertiesOverrides().isEmpty()) {
+            jobLogger.info("\tStep Properties Overrides:    none");
+        } else {
+            jobLogger.info("\tStep Properties Overrides:    ");
+            jobContextWrapper
+                    .getJobStepPropertiesOverrides()
+                    .getJobStepPropertiesOverrides()
+                    .forEach(jsp -> jobLogger.info("\t - {}: {}", jsp.getName(), jsp.getPropertyValue()));
+        }
 
         JobExecution jobExecution;
         if (jobContextWrapper.getResumedJobExecutionId() != null) {
