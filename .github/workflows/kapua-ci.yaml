@@ -31,710 +31,282 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@brokerAcl" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@brokerAcl'
+          needs-docker-images: 'true'
   test-tag:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@tag" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@tag'
+          needs-docker-images: 'false'
   test-broker:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@broker" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@broker'
+          needs-docker-images: 'true'
   test-device:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@device" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@device'
+          needs-docker-images: 'true'
   test-device-management:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@deviceManagement" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@deviceManagement'
+          needs-docker-images: 'true'
   test-connection:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@connection" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@connection'
+          needs-docker-images: 'true'
   test-datastore:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@datastore" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@datastore'
+          needs-docker-images: 'true'
   test-user:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@user" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@user'
+          needs-docker-images: 'false'
   test-userIntegrationBase:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@userIntegrationBase" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@userIntegrationBase'
+          needs-docker-images: 'true'
   test-userIntegration:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@userIntegration" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@userIntegration'
+          needs-docker-images: 'true'
   test-security:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@security" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@security'
+          needs-docker-images: 'true'
   test-jobsAndScheduler:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobs or @scheduler" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@jobs or @scheduler'
+          needs-docker-images: 'true'
   test-jobsIntegrationBase:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobsIntegrationBase" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@jobsIntegrationBase'
+          needs-docker-images: 'true'
   test-jobsIntegration:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobsIntegration" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@jobsIntegration'
+          needs-docker-images: 'true'
   test-triggerService:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@triggerService" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@triggerService'
+          needs-docker-images: 'true'
   test-triggerServiceIntegrationBase:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@triggerServiceIntegrationBase" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@triggerServiceIntegrationBase'
+          needs-docker-images: 'true'
   test-triggerServiceIntegration:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@triggerServiceIntegration" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@triggerServiceIntegration'
+          needs-docker-images: 'true'
   test-accountAndTranslator:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@account or @translator" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@account or @translator'
+          needs-docker-images: 'false'
   test-jobEngineStepDefinitions:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineStepDefinitions" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@jobEngineStepDefinitions'
+          needs-docker-images: 'true'
   test-jobEngineStartOfflineDevice:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineStartOfflineDevice" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@jobEngineStartOfflineDevice'
+          needs-docker-images: 'true'
   test-jobEngineStartOnlineDevice:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineStartOnlineDevice" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@jobEngineStartOnlineDevice'
+          needs-docker-images: 'true'
   test-jobEngineRestartOfflineDevice:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineRestartOfflineDevice" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@jobEngineRestartOfflineDevice'
+          needs-docker-images: 'true'
   test-jobEngineRestartOnlineDevice:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineRestartOnlineDevice" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@jobEngineRestartOnlineDevice'
+          needs-docker-images: 'false'
   test-jobEngineRestartOnlineDeviceSecondPart:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineRestartOnlineDeviceSecondPart" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@jobEngineRestartOnlineDeviceSecondPart'
+          needs-docker-images: 'true'
   test-jobEngineServiceStop:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineServiceStop" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@jobEngineServiceStop'
+          needs-docker-images: 'true'
   test-RoleAndGroup:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@role or @group" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@role or @group'
+          needs-docker-images: 'false'
   test-deviceRegistry:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@deviceRegistry" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@deviceRegistry'
+          needs-docker-images: 'false'
   test-endpoint:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
         with:
-          distribution: 'zulu'
-          java-version: 11
-          cache: 'maven'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
-      - uses: nick-fields/retry@v2.8.1
-        with:
-          timeout_minutes: 45
-          retry_on: error
-          max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@endpoint" verify
-      - run: bash <(curl -s https://codecov.io/bash)
+          tag: '@endpoint'
+          needs-docker-images: 'false'
   junit-tests:
     needs: build
     runs-on: ubuntu-latest

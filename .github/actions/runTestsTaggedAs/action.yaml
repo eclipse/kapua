@@ -12,8 +12,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Clones Kapua repo inside the runner
-      uses: actions/checkout@v3
     - name: Setup java
       uses: actions/setup-java@v3
       with:
@@ -28,15 +26,15 @@ runs:
         restore-keys: |
           ${{ runner.os }}-maven-
     - name: Docker images creation
-      if: ${{ inputs.needs-docker-images }}
+      if: ${{ inputs.needs-docker-images == 'true' }}
       run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       shell: bash
     - name: Dns look-up containers needed for tests - message-broker
-      if: ${{ inputs.needs-docker-images }}
+      if: ${{ inputs.needs-docker-images == 'true' }}
       run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
       shell: bash
     - name: Dns look-up containers needed for tests - job-engine
-      if: ${{ inputs.needs-docker-images }}
+      if: ${{ inputs.needs-docker-images == 'true' }}
       run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       shell: bash
     - name: Test execution step
