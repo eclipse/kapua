@@ -51,7 +51,7 @@ public class DataView extends AbstractView {
 
         channelTabItem = new TopicsTabItem(currentSession);
         tabsPanel.add(channelTabItem);
-        if(currentSession.hasPermission(DeviceSessionPermission.read())) {
+        if (currentSession.hasPermission(DeviceSessionPermission.read())) {
             deviceTabItem = new DeviceTabItem(currentSession);
             tabsPanel.add(deviceTabItem);
             assetTabItem = new AssetTabItem(currentSession);
