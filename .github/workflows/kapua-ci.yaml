@@ -17,11 +17,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 11
-          cache: 'maven'
       - uses: actions/cache@v3 # Cache local Maven repository to reuse dependencies
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: mvn -v
@@ -321,7 +320,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
           restore-keys: |
             ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
@@ -344,7 +343,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: mvn -B -DskipTests install javadoc:jar
