@@ -22,8 +22,6 @@ runs:
       with:
         path: ~/.m2/repository
         key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-        restore-keys: |
-          ${{ runner.os }}-maven-
     - name: Docker images creation
       if: ${{ inputs.needs-docker-images == 'true' }}
       run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install

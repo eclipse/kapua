@@ -21,8 +21,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - run: mvn -v
       - run: docker images -a  # used as log (should show only github environment standard docker images; if kapua images are present, something is wrong)
       - run: mvn -B ${BUILD_OPTS} -DskipTests clean install
@@ -316,13 +314,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 11
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 45
@@ -339,12 +334,9 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 11
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - run: mvn -B -DskipTests install javadoc:jar
       - run: bash <(curl -s https://codecov.io/bash)
