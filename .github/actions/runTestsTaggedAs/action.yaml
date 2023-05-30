@@ -24,7 +24,7 @@ runs:
         key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
     - name: Docker images creation
       if: ${{ inputs.needs-docker-images == 'true' }}
-      run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
+      run: mvn clean install -pl ${APP_PROJECTS} && mvn clean install -Pdocker --f assembly/pom.xml
       shell: bash
     - name: Dns look-up containers needed for tests - message-broker
       if: ${{ inputs.needs-docker-images == 'true' }}
