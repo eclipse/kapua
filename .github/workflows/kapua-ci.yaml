@@ -137,7 +137,7 @@ jobs:
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@security'
-          needs-docker-images: 'true'
+          needs-docker-images: 'false'
   test-jobsAndScheduler:
     needs: build
     runs-on: ubuntu-latest
@@ -147,7 +147,7 @@ jobs:
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@jobs or @scheduler'
-          needs-docker-images: 'true'
+          needs-docker-images: 'false'
   test-jobsIntegrationBase:
     needs: build
     runs-on: ubuntu-latest
@@ -257,7 +257,7 @@ jobs:
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@jobEngineRestartOnlineDevice'
-          needs-docker-images: 'false'
+          needs-docker-images: 'true'
   test-jobEngineRestartOnlineDeviceSecondPart:
     needs: build
     runs-on: ubuntu-latest
@@ -297,7 +297,7 @@ jobs:
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@deviceRegistry'
-          needs-docker-images: 'false'
+          needs-docker-images: 'true'
   test-endpoint:
     needs: build
     runs-on: ubuntu-latest
@@ -307,7 +307,7 @@ jobs:
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@endpoint'
-          needs-docker-images: 'false'
+          needs-docker-images: 'true'
   junit-tests:
     needs: build
     runs-on: ubuntu-latest
