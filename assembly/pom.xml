@@ -81,7 +81,6 @@
                                 <build>
                                     <tags>
                                         <tag>${project.version}</tag>
-                                        <tag>${timestamp}</tag>
                                     </tags>
                                 </build>
                             </image>
