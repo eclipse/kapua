@@ -165,36 +165,37 @@ jobs:
         with:
           tag: '@jobsIntegration'
           needs-docker-images: 'true'
-  test-triggerService:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
-      - uses: ./.github/actions/runTestsTaggedAs
-        with:
-          tag: '@triggerService'
-          needs-docker-images: 'true'
-  test-triggerServiceIntegrationBase:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
-      - uses: ./.github/actions/runTestsTaggedAs
-        with:
-          tag: '@triggerServiceIntegrationBase'
-          needs-docker-images: 'true'
-  test-triggerServiceIntegration:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
-      - uses: ./.github/actions/runTestsTaggedAs
-        with:
-          tag: '@triggerServiceIntegration'
-          needs-docker-images: 'true'
+  #the next 3 tests-suites have been disabled because in the code-base I can't find feature files tagged in this way
+#  test-triggerService:
+#    needs: build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Clones Kapua repo inside the runner
+#        uses: actions/checkout@v3
+#      - uses: ./.github/actions/runTestsTaggedAs
+#        with:
+#          tag: '@triggerService'
+#          needs-docker-images: 'true'
+#  test-triggerServiceIntegrationBase:
+#    needs: build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Clones Kapua repo inside the runner
+#        uses: actions/checkout@v3
+#      - uses: ./.github/actions/runTestsTaggedAs
+#        with:
+#          tag: '@triggerServiceIntegrationBase'
+#          needs-docker-images: 'true'
+#  test-triggerServiceIntegration:
+#    needs: build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Clones Kapua repo inside the runner
+#        uses: actions/checkout@v3
+#      - uses: ./.github/actions/runTestsTaggedAs
+#        with:
+#          tag: '@triggerServiceIntegration'
+#          needs-docker-images: 'true'
   test-accountAndTranslator:
     needs: build
     runs-on: ubuntu-latest
