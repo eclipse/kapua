@@ -99,7 +99,7 @@ public class JobStartOptionsImpl implements JobStartOptions {
 
     @Override
     public void setStepPropertiesOverrides(List<JobStepProperty> stepPropertiesOverrides) {
-        this.stepPropertiesOverrides = stepPropertiesOverrides;
+        this.stepPropertiesOverrides = new ArrayList<>(stepPropertiesOverrides);
     }
 
     @Override
