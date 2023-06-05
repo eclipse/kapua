@@ -10,21 +10,27 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.storage;
+package org.eclipse.kapua.commons.storage.memory;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.query.KapuaListResult;
+import org.eclipse.kapua.storage.KapuaUpdatableEntityRepository;
+import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class KapuaUpdatableEntityInMemoryRepository<E extends KapuaUpdatableEntity, L extends KapuaListResult<E>>
         extends KapuaEntityInMemoryRepository<E, L>
         implements KapuaUpdatableEntityRepository<E, L> {
 
-    public KapuaUpdatableEntityInMemoryRepository(Class<E> clazz, Supplier<L> listSupplier) {
-        super(clazz, listSupplier);
+    public KapuaUpdatableEntityInMemoryRepository(Class<E> clazz, Supplier<L> listSupplier,
+                                                  KapuaQueryConverter kapuaQueryConverter,
+                                                  Map<String, Function<E, Object>> fieldPluckers) {
+        super(clazz, listSupplier, kapuaQueryConverter, fieldPluckers);
     }
 
     @Override
