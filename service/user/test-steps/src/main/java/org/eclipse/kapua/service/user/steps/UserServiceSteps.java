@@ -815,10 +815,10 @@ public class UserServiceSteps extends TestBase {
                     user.getId(), cucCredentials.getPassword(),
                     cucCredentials.getStatus(), cucCredentials.getExpirationDate()));
             credentialList.add(credential);
+            stepData.put(BasicSteps.LAST_CREDENTIAL_ID, credentialList.get(0).getId());
         } catch (KapuaException ke) {
             verifyException(ke);
         }
-        stepData.put(BasicSteps.LAST_CREDENTIAL_ID, credentialList.get(0).getId());
         return credentialList.size() == 1 ? credentialList.get(0) : null;
     }
 
