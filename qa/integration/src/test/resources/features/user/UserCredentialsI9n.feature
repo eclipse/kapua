@@ -81,8 +81,6 @@ Feature: Feature file for testing Password user credential
     Then I login as user with name "kapua-a" and password "ToManySecrets123#"
     And No exception was thrown
 
-####   This scenario is currently failing. It will be uncommented when issue #(2842) is resolved.
-
   Scenario: Create a user with password credential with over 255 character
   Creating new user "kapua-a" from kapua-sys parent account with password credential that contain over 255 character.
   An exception should be thrown.
@@ -200,10 +198,10 @@ Feature: Feature file for testing Password user credential
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
     And I add credentials
-      | name    | password          | expirationDate |
-      | kapua-a | ToManySecrets123# | yesterday      |
+      | name    | password          | expirationDate | enabled |
+      | kapua-a | ToManySecrets123# | yesterday      | true    |
     Then I logout
-    And I expect the exception "KapuaAuthenticationException" with the text "kapua-a"
+    And I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials are expired"
     Then I login as user with name "kapua-a" and password "ToManySecrets123#"
     And An exception was thrown
 
@@ -221,12 +219,12 @@ Feature: Feature file for testing Password user credential
       | name    | password          | enabled | expirationDate |
       | kapua-a | ToManySecrets123# | true    | today          |
     Then I logout
-    And I expect the exception "KapuaAuthenticationException" with the text "kapua-a"
+    And I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials are expired"
     Then I login as user with name "kapua-a" and password "ToManySecrets123#"
     And An exception was thrown
 
   Scenario: Creating user with an expiration date in future for the password credential
-  Create a new user "kapua-a" in kapua-sys account with valid a password (e.g "ToManySecrets123#")
+  Create a new user "kapua-a" in kapua-sys account with a valid password (e.g "ToManySecrets123#")
   with expiration date in the future.
   An exception should be thrown when user would try to login
 
@@ -255,7 +253,7 @@ Feature: Feature file for testing Password user credential
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | false   |
     Then I logout
-    And I expect the exception "KapuaAuthenticationException" with the text "kapua-a"
+    And I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials are DISABLED"
     Then I login as user with name "kapua-a" and password "ToManySecrets123#"
     And An exception was thrown
 
@@ -273,7 +271,7 @@ Feature: Feature file for testing Password user credential
       | name    | password          | enabled | expirationDate |
       | kapua-a | ToManySecrets123# | false   | yesterday      |
     Then I logout
-    And I expect the exception "KapuaAuthenticationException" with the text "kapua-a"
+    And I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials are DISABLED"
     Then I login as user with name "kapua-a" and password "ToManySecrets123#"
     And An exception was thrown
 
@@ -291,7 +289,7 @@ Feature: Feature file for testing Password user credential
       | name    | password          | enabled | expirationDate |
       | kapua-a | ToManySecrets123# | false   | today          |
     Then I logout
-    And I expect the exception "KapuaAuthenticationException" with the text "kapua-a"
+    And I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials are DISABLED"
     Then I login as user with name "kapua-a" and password "ToManySecrets123#"
     And An exception was thrown
 
@@ -309,7 +307,7 @@ Feature: Feature file for testing Password user credential
       | name    | password          | enabled | expirationDate |
       | kapua-a | ToManySecrets123# | false   | tomorrow       |
     Then I logout
-    And I expect the exception "KapuaAuthenticationException" with the text "kapua-a"
+    And I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials are DISABLED"
     Then I login as user with name "kapua-a" and password "ToManySecrets123#"
     And An exception was thrown
 

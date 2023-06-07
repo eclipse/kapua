@@ -20,7 +20,6 @@ import io.cucumber.junit.CucumberOptions;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = "classpath:features/user/UserCredentialsI9n.feature",
-
         glue = {"org.eclipse.kapua.qa.common",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
@@ -31,5 +30,5 @@ import io.cucumber.junit.CucumberOptions;
                 "json:target/UserServiceI9n_cucumber.json"
         },
         monochrome = true)
-public class RunUserCredentialsI9n {
+public class RunUserCredentialsI9nTest {
 }
