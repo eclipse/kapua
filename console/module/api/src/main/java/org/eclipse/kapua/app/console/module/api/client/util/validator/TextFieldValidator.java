@@ -16,7 +16,6 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.google.gwt.core.client.GWT;
-
 import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessages;
 
 import java.util.MissingResourceException;
@@ -70,7 +69,7 @@ public class TextFieldValidator implements Validator {
         ALPHANUMERIC("alphanumeric", "^[a-zA-Z0-9_]+$"),
         NUMERIC("numeric", "^[+0-9.]+$"),
         PACKAGE_VERSION("package_version", "^[a-zA-Z0-9.\\-\\_]*$"),
-        URL("url", "(http(s)?:\\/\\/.)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
+        URL("url", "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=//]{1,256}\\.[a-zA-Z0-9()//]{2,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)$");
 
         private String name;
         private String regex;
