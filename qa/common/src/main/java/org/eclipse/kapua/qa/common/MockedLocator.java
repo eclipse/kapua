@@ -81,6 +81,11 @@ public class MockedLocator extends KapuaLocator {
     }
 
     @Override
+    public <T> T getComponent(Class<T> componentClass) {
+        return guiceInjector.getInstance(componentClass);
+    }
+
+    @Override
     public <S extends KapuaService> S getService(Class<S> serviceClass) {
 
         logger.info("Getting mocked service {} from MockedLocator", serviceClass.getName());

@@ -53,4 +53,13 @@ public interface KapuaServiceLoader {
      * @since 1.0.0
      */
     List<KapuaService> getServices();
+
+    /**
+     * Returns an implementing instance the requested component.
+     *
+     * @param componentClass The class to retrieve.
+     * @return The requested component implementation.
+     * @since 2.0.0
+     */
+    <T> T getComponent(Class<T> componentClass);
 }

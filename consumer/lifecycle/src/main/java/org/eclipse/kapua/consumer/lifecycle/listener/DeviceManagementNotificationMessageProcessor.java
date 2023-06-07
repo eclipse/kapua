@@ -16,7 +16,6 @@ import com.google.common.base.MoreObjects;
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.consumer.lifecycle.MetricsLifecycle;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.device.management.job.manager.JobDeviceManagementOperationManagerService;
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyChannel;
@@ -25,6 +24,8 @@ import org.eclipse.kapua.service.device.management.message.notification.KapuaNot
 import org.eclipse.kapua.service.device.management.registry.manager.DeviceManagementRegistryManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
 
 /**
  * {@link DeviceManagementNotificationMessageProcessor}
@@ -36,13 +37,16 @@ public class DeviceManagementNotificationMessageProcessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceManagementNotificationMessageProcessor.class);
 
-    private static final DeviceManagementRegistryManagerService DEVICE_MANAGEMENT_REGISTRY_MANAGER_SERVICE = KapuaLocator.getInstance().getService(DeviceManagementRegistryManagerService.class);
-    private static final JobDeviceManagementOperationManagerService JOB_DEVICE_MANAGEMENT_OPERATION_MANAGER_SERVICE = KapuaLocator.getInstance().getService(JobDeviceManagementOperationManagerService.class);
+    private final DeviceManagementRegistryManagerService deviceManagementRegistryManagerService;
+    private final JobDeviceManagementOperationManagerService jobDeviceManagementOperationManagerService;
 
     //TODO inject!!!
     private MetricsLifecycle metrics;
 
-    public DeviceManagementNotificationMessageProcessor() {
+    @Inject
+    public DeviceManagementNotificationMessageProcessor(DeviceManagementRegistryManagerService deviceManagementRegistryManagerService, JobDeviceManagementOperationManagerService jobDeviceManagementOperationManagerService) {
+        this.deviceManagementRegistryManagerService = deviceManagementRegistryManagerService;
+        this.jobDeviceManagementOperationManagerService = jobDeviceManagementOperationManagerService;
         metrics = MetricsLifecycle.getInstance();
     }
 
@@ -59,7 +63,7 @@ public class DeviceManagementNotificationMessageProcessor {
         KapuaNotifyChannel notifyChannel = notifyMessage.getChannel();
 
         try {
-            DEVICE_MANAGEMENT_REGISTRY_MANAGER_SERVICE.processOperationNotification(
+            deviceManagementRegistryManagerService.processOperationNotification(
                     notifyMessage.getScopeId(),
                     notifyPayload.getOperationId(),
                     MoreObjects.firstNonNull(notifyMessage.getSentOn(), notifyMessage.getReceivedOn()),
@@ -69,7 +73,7 @@ public class DeviceManagementNotificationMessageProcessor {
                     notifyPayload.getMessage());
 
             //TODO EXT-CAMEL only for test remove when jobs will be defined in their own container
-            JOB_DEVICE_MANAGEMENT_OPERATION_MANAGER_SERVICE.processJobTargetOnNotification(
+            jobDeviceManagementOperationManagerService.processJobTargetOnNotification(
                     notifyMessage.getScopeId(),
                     notifyPayload.getOperationId(),
                     MoreObjects.firstNonNull(notifyMessage.getSentOn(), notifyMessage.getReceivedOn()),
