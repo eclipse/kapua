@@ -25,7 +25,14 @@ jobs:
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - run: mvn -v
       - run: docker images -a  # used as log (should show only github environment standard docker images; if kapua images are present, something is wrong)
-      - run: mvn -B ${BUILD_OPTS} -DskipTests clean install
+      - run: docker rmi $(docker images -aq) # delete pre-existing images to speed up images caching
+      - uses: jpribyl/action-docker-layer-caching@v0.1.1  # docker images cache
+        continue-on-error: true
+        with:
+          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}  # cache is valid only for current run on the current repository
+          restore-keys: |
+            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - run: bash <(curl -s https://codecov.io/bash)
   test-brokerAcl:
     needs: build

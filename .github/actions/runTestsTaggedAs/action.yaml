@@ -24,8 +24,11 @@ runs:
         key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
     - name: Docker images creation
       if: ${{ inputs.needs-docker-images == 'true' }}
-      run: mvn clean install -pl ${APP_PROJECTS} && mvn clean install -Pdocker --f assembly/pom.xml
-      shell: bash
+      uses: ./.github/actions/cacheDockerRetry
+      with:
+        key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}  # cache is valid only for current run on the current repository
+        restore-keys: |
+          ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
     - name: Dns look-up containers needed for tests - message-broker
       if: ${{ inputs.needs-docker-images == 'true' }}
       run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
