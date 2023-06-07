@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.management.packages.internal;
 
 import com.google.common.base.MoreObjects;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -50,6 +51,7 @@ import org.eclipse.kapua.service.device.management.packages.model.uninstall.Devi
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 
 import javax.inject.Singleton;
+import java.net.MalformedURLException;
 import java.util.Date;
 
 /**
@@ -142,6 +144,12 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         //
         // Check Access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
+
+        try {
+            packageDownloadRequest.getUri().toURL();
+        } catch (MalformedURLException | IllegalArgumentException ignored) {
+            throw new KapuaIllegalArgumentException("packageDownloadRequest.uri", packageDownloadRequest.getUri().toString());
+        }
 
         //
         // Generate requestId
