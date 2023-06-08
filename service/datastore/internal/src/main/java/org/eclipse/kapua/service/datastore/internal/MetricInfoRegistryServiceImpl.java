@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountService;
@@ -39,7 +38,6 @@ import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
@@ -51,6 +49,7 @@ import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,11 +65,7 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
 
     private static final Logger LOG = LoggerFactory.getLogger(MetricInfoRegistryServiceImpl.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
-
-
-    private final AccountService accountService;
+    private final StorablePredicateFactory storablePredicateFactory;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final MetricInfoRegistryFacade metricInfoRegistryFacade;
@@ -80,22 +75,21 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
 
-    /**
-     * Default constructor
-     *
-     * @throws ClientInitializationException
-     */
-    public MetricInfoRegistryServiceImpl() throws ClientInitializationException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        accountService = locator.getService(AccountService.class);
-        authorizationService = locator.getService(AuthorizationService.class);
-        permissionFactory = locator.getFactory(PermissionFactory.class);
-        messageStoreService = locator.getService(MessageStoreService.class);
-        datastorePredicateFactory = KapuaLocator.getInstance().getFactory(DatastorePredicateFactory.class);
-
-        MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
+    @Inject
+    public MetricInfoRegistryServiceImpl(
+            AccountService accountService,
+            StorablePredicateFactory storablePredicateFactory,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            MessageStoreService messageStoreService,
+            DatastorePredicateFactory datastorePredicateFactory) {
+        this.storablePredicateFactory = storablePredicateFactory;
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.messageStoreService = messageStoreService;
+        this.datastorePredicateFactory = datastorePredicateFactory;
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(messageStoreService, accountService);
-        metricInfoRegistryFacade = new MetricInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
+        this.metricInfoRegistryFacade = new MetricInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
         DatastoreMediator.getInstance().setMetricInfoStoreFacade(metricInfoRegistryFacade);
     }
 
@@ -227,11 +221,11 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
         messageQuery.setOffset(0);
         messageQuery.setSortFields(sort);
 
-        RangePredicate messageIdPredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(MetricInfoField.TIMESTAMP, metricInfo.getFirstMessageOn(), null);
+        RangePredicate messageIdPredicate = storablePredicateFactory.newRangePredicate(MetricInfoField.TIMESTAMP, metricInfo.getFirstMessageOn(), null);
         TermPredicate clientIdPredicate = datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, metricInfo.getClientId());
-        ExistsPredicate metricPredicate = STORABLE_PREDICATE_FACTORY.newExistsPredicate(MessageField.METRICS.field(), metricInfo.getName());
+        ExistsPredicate metricPredicate = storablePredicateFactory.newExistsPredicate(MessageField.METRICS.field(), metricInfo.getName());
 
-        AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+        AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
         andPredicate.getPredicates().add(messageIdPredicate);
         andPredicate.getPredicates().add(clientIdPredicate);
         andPredicate.getPredicates().add(metricPredicate);
