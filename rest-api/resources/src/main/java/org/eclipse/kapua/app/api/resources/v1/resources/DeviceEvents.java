@@ -20,7 +20,6 @@ import org.eclipse.kapua.app.api.core.model.DateParam;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
@@ -35,6 +34,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -50,11 +50,12 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/devices/{deviceId}/events")
 public class DeviceEvents extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
-    private final DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
-
-    private final DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
+    @Inject
+    public DeviceEventService deviceEventService;
+    @Inject
+    public DeviceEventFactory deviceEventFactory;
+    @Inject
+    public DeviceRegistryService deviceRegistryService;
 
     /**
      * Gets the {@link DeviceEvent} list in the scope.

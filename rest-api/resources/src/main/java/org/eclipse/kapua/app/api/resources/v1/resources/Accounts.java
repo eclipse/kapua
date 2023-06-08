@@ -19,7 +19,6 @@ import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
@@ -31,6 +30,7 @@ import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -47,9 +47,10 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/accounts")
 public class Accounts extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final AccountService accountService = locator.getService(AccountService.class);
-    private final AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
+    @Inject
+    public AccountService accountService;
+    @Inject
+    public AccountFactory accountFactory;
 
     /**
      * Gets the {@link Account} list in the scope.

@@ -14,11 +14,10 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
@@ -30,6 +29,7 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.user.User;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -50,9 +50,10 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/accessinfos")
 public class AccessInfos extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
-    private final AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
+    @Inject
+    public AccessInfoService accessInfoService;
+    @Inject
+    public AccessInfoFactory accessInfoFactory;
 
     /**
      * Gets the {@link AccessInfo} list in the scope.

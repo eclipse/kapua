@@ -21,8 +21,8 @@ import org.eclipse.kapua.commons.rest.model.IsJobRunningResponse;
 import org.eclipse.kapua.commons.rest.model.MultipleJobIdRequest;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
-import org.eclipse.kapua.locator.KapuaLocator;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -34,8 +34,8 @@ import javax.xml.bind.JAXBException;
 @Path("{scopeId}/jobs")
 public class JobEngine extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final JobEngineService jobEngineService = locator.getService(JobEngineService.class);
+    @Inject
+    public JobEngineService jobEngineService;
 
     @POST
     @Path("{jobId}/_start")

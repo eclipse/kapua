@@ -20,7 +20,6 @@ import org.eclipse.kapua.app.api.core.model.DateParam;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
@@ -38,6 +37,7 @@ import org.eclipse.kapua.service.job.targets.JobTargetListResult;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -51,11 +51,14 @@ import javax.ws.rs.core.MediaType;
 @Path("{scopeId}/jobs/{jobId}/executions")
 public class JobExecutions extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final JobExecutionService jobExecutionService = locator.getService(JobExecutionService.class);
-    private final JobTargetService jobTargetService = locator.getService(JobTargetService.class);
-    private final JobExecutionFactory jobExecutionFactory = locator.getFactory(JobExecutionFactory.class);
-    private final JobTargetFactory jobTargetFactory = locator.getFactory(JobTargetFactory.class);
+    @Inject
+    public JobExecutionService jobExecutionService;
+    @Inject
+    public JobTargetService jobTargetService;
+    @Inject
+    public JobExecutionFactory jobExecutionFactory;
+    @Inject
+    public JobTargetFactory jobTargetFactory;
 
     /**
      * Gets the {@link JobExecution} list for a given {@link Job}.

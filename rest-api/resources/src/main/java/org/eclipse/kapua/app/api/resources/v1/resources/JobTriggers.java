@@ -12,29 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -53,14 +37,30 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
 
-import com.google.common.base.Strings;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Path("{scopeId}/jobs/{jobId}/triggers")
 public class JobTriggers extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final TriggerService triggerService = locator.getService(TriggerService.class);
-    private final TriggerFactory triggerFactory = locator.getFactory(TriggerFactory.class);
+    @Inject
+    public TriggerService triggerService;
+    @Inject
+    public TriggerFactory triggerFactory;
 
     /**
      * Gets the {@link Trigger} list for a given {@link Job}.
@@ -163,8 +163,8 @@ public class JobTriggers extends AbstractKapuaResource {
     /**
      * Returns the Job specified by the "jobId" path parameter.
      *
-     * @param scopeId The {@link ScopeId} of the requested {@link Job}.
-     * @param jobId The id of the requested Job.
+     * @param scopeId   The {@link ScopeId} of the requested {@link Job}.
+     * @param jobId     The id of the requested Job.
      * @param triggerId The id of the requested Trigger.
      * @return The requested Job object.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
@@ -209,11 +209,11 @@ public class JobTriggers extends AbstractKapuaResource {
      * Creates a new {@link Trigger} based on the information provided in {@link TriggerCreator}
      * parameter.
      *
-     * @param scopeId           The {@link ScopeId} in which to create the {@link Trigger}
-     * @param triggerCreator    Provides the information for the new {@link Trigger} to be created.
-     * @param jobId             The ID of the {@link Job} to attach the {@link Trigger} to
-     * @return                  The newly created {@link Trigger} object.
-     * @throws                  KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @param scopeId        The {@link ScopeId} in which to create the {@link Trigger}
+     * @param triggerCreator Provides the information for the new {@link Trigger} to be created.
+     * @param jobId          The ID of the {@link Job} to attach the {@link Trigger} to
+     * @return The newly created {@link Trigger} object.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.5.0
      */
 
@@ -230,7 +230,7 @@ public class JobTriggers extends AbstractKapuaResource {
             triggerProperties = new ArrayList<>();
             triggerCreator.setTriggerProperties(triggerProperties);
         }
-        triggerProperties.removeIf(triggerProperty -> Arrays.stream(new String[]{ "scopeId", "jobId" }).anyMatch(propertyToRemove -> propertyToRemove.equals(triggerProperty.getName())));
+        triggerProperties.removeIf(triggerProperty -> Arrays.stream(new String[]{"scopeId", "jobId"}).anyMatch(propertyToRemove -> propertyToRemove.equals(triggerProperty.getName())));
         triggerProperties.add(triggerFactory.newTriggerProperty("scopeId", KapuaId.class.getCanonicalName(), scopeId.toCompactId()));
         triggerProperties.add(triggerFactory.newTriggerProperty("jobId", KapuaId.class.getCanonicalName(), jobId.toCompactId()));
         return returnCreated(triggerService.create(triggerCreator));
@@ -240,12 +240,12 @@ public class JobTriggers extends AbstractKapuaResource {
      * Updates a {@link Trigger} based on the information provided in the provided {@link Trigger}
      * parameter.
      *
-     * @param scopeId           The {@link ScopeId} in which to create the {@link Trigger}
-     * @param triggerId         The ID of the {@link Trigger} to update
-     * @param trigger           Provides the information for the new {@link Trigger} to be updated.
-     * @param jobId             The ID of the {@link Job} to attach the {@link Trigger} to
-     * @return                  The updated {@link Trigger} object.
-     * @throws                  KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @param scopeId   The {@link ScopeId} in which to create the {@link Trigger}
+     * @param triggerId The ID of the {@link Trigger} to update
+     * @param trigger   Provides the information for the new {@link Trigger} to be updated.
+     * @param jobId     The ID of the {@link Job} to attach the {@link Trigger} to
+     * @return The updated {@link Trigger} object.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.5.0
      */
 
@@ -263,7 +263,7 @@ public class JobTriggers extends AbstractKapuaResource {
             triggerProperties = new ArrayList<>();
             trigger.setTriggerProperties(triggerProperties);
         }
-        triggerProperties.removeIf(triggerProperty -> Arrays.stream(new String[]{ "scopeId", "jobId" }).anyMatch(propertyToRemove -> propertyToRemove.equals(triggerProperty.getName())));
+        triggerProperties.removeIf(triggerProperty -> Arrays.stream(new String[]{"scopeId", "jobId"}).anyMatch(propertyToRemove -> propertyToRemove.equals(triggerProperty.getName())));
         triggerProperties.add(triggerFactory.newTriggerProperty("scopeId", KapuaId.class.getCanonicalName(), scopeId.toCompactId()));
         triggerProperties.add(triggerFactory.newTriggerProperty("jobId", KapuaId.class.getCanonicalName(), jobId.toCompactId()));
         trigger.setScopeId(scopeId);
@@ -274,10 +274,10 @@ public class JobTriggers extends AbstractKapuaResource {
     /**
      * Deletes the Trigger specified by the "triggerId" path parameter.
      *
-     * @param scopeId        The ScopeId of the requested {@link Trigger}.
-     * @param triggerId      The id of the Trigger to be deleted.
-     * @return               HTTP 201 if operation has completed successfully.
-     * @throws               KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @param scopeId   The ScopeId of the requested {@link Trigger}.
+     * @param triggerId The id of the Trigger to be deleted.
+     * @return HTTP 201 if operation has completed successfully.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.5.0
      */
 

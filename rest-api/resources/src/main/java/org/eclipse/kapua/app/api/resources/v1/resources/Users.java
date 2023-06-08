@@ -15,11 +15,10 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
@@ -34,6 +33,7 @@ import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -50,10 +50,12 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/users")
 public class Users extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final UserService userService = locator.getService(UserService.class);
-    private final UserFactory userFactory = locator.getFactory(UserFactory.class);
-    private final MfaOptionService mfaOptionService = locator.getService(MfaOptionService.class);
+    @Inject
+    public UserService userService;
+    @Inject
+    public UserFactory userFactory;
+    @Inject
+    public MfaOptionService mfaOptionService;
 
     /**
      * Gets the {@link User} list in the scope.

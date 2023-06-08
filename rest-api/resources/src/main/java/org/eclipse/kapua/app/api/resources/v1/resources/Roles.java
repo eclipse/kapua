@@ -19,7 +19,6 @@ import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.query.SortOrder;
@@ -48,6 +47,7 @@ import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -65,15 +65,22 @@ import java.util.stream.Collectors;
 @Path("{scopeId}/roles")
 public class Roles extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final RoleService roleService = locator.getService(RoleService.class);
-    private final RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
-    private final AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
-    private final AccessRoleFactory accessRoleFactory = locator.getFactory(AccessRoleFactory.class);
-    private final AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
-    private final AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
-    private final UserService userService = locator.getService(UserService.class);
-    private final UserFactory userFactory = locator.getFactory(UserFactory.class);
+    @Inject
+    public RoleService roleService;
+    @Inject
+    public RoleFactory roleFactory;
+    @Inject
+    public AccessRoleService accessRoleService;
+    @Inject
+    public AccessRoleFactory accessRoleFactory;
+    @Inject
+    public AccessInfoService accessInfoService;
+    @Inject
+    public AccessInfoFactory accessInfoFactory;
+    @Inject
+    public UserService userService;
+    @Inject
+    public UserFactory userFactory;
 
     /**
      * Gets the {@link Role} list in the scope.

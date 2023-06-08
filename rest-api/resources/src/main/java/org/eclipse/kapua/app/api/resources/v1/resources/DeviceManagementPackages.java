@@ -18,7 +18,6 @@ import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSetting;
 import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSettingKeys;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
@@ -32,6 +31,7 @@ import org.eclipse.kapua.service.device.management.registry.operation.DeviceMana
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
 import org.eclipse.kapua.service.device.registry.Device;
 
+import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -47,10 +47,12 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
 
     private static final Boolean RESPONSE_LEGACY_MODE = KapuaApiCoreSetting.getInstance().getBoolean(KapuaApiCoreSettingKeys.API_DEVICE_MANAGEMENT_PACKAGE_RESPONSE_LEGACY_MODE, false);
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-
-    private final DevicePackageManagementService devicePackageManagementService = locator.getService(DevicePackageManagementService.class);
-    private final DevicePackageFactory devicePackageFactory = locator.getFactory(DevicePackageFactory.class);
+    @Inject
+    public DevicePackageManagementService devicePackageManagementService;
+    @Inject
+    public DevicePackageFactory devicePackageFactory;
+    @Inject
+    public DeviceManagementOperationRegistryService deviceManagementOperationRegistryService;
 
     /**
      * Returns the list of all the packages installed on the device.
@@ -70,8 +72,6 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
             @QueryParam("timeout") @DefaultValue("30000") Long timeout) throws KapuaException {
         return devicePackageManagementService.getInstalled(scopeId, deviceId, timeout);
     }
-
-    private final DeviceManagementOperationRegistryService deviceManagementOperationRegistryService = locator.getService(DeviceManagementOperationRegistryService.class);
 
     /**
      * Download and optionally installs a package into the device.
@@ -131,7 +131,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
 
         DeviceManagementOperation deviceManagementOperation = deviceManagementOperationRegistryService.find(scopeId, deviceManagementOperationId);
 
-        return RESPONSE_LEGACY_MODE || legacy? returnNoContent() : returnOk(deviceManagementOperation);
+        return RESPONSE_LEGACY_MODE || legacy ? returnNoContent() : returnOk(deviceManagementOperation);
     }
 
 }

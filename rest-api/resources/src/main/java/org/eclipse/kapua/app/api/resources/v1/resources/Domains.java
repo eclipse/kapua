@@ -15,11 +15,10 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
@@ -29,6 +28,7 @@ import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -42,9 +42,10 @@ import javax.ws.rs.core.MediaType;
 @Path("{scopeId}/domains")
 public class Domains extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DomainRegistryService domainRegistryService = locator.getService(DomainRegistryService.class);
-    private final DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
+    @Inject
+    public DomainRegistryService domainRegistryService;
+    @Inject
+    public DomainFactory domainFactory;
 
     /**
      * Gets the {@link Domain} list in the scope.

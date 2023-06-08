@@ -14,11 +14,10 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.model.StorableEntityId;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.service.datastore.MetricInfoFactory;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
@@ -31,6 +30,7 @@ import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredic
 import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -44,10 +44,12 @@ import javax.ws.rs.core.MediaType;
 @Path("{scopeId}/data/metrics")
 public class DataMetrics extends AbstractKapuaResource {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final MetricInfoRegistryService METRIC_INFO_REGISTRY_SERVICE = LOCATOR.getService(MetricInfoRegistryService.class);
-    private static final MetricInfoFactory METRIC_INFO_FACTORY = LOCATOR.getFactory(MetricInfoFactory.class);
-    private static final DatastorePredicateFactory DATASTORE_PREDICATE_FACTORY = LOCATOR.getFactory(DatastorePredicateFactory.class);
+    @Inject
+    public MetricInfoRegistryService metricInfoRegistryService;
+    @Inject
+    public MetricInfoFactory metricInfoFactory;
+    @Inject
+    public DatastorePredicateFactory datastorePredicateFactory;
 
     /**
      * Gets the {@link MetricInfo} list in the scope.
@@ -70,9 +72,9 @@ public class DataMetrics extends AbstractKapuaResource {
                                             @QueryParam("offset") @DefaultValue("0") int offset,
                                             @QueryParam("limit") @DefaultValue("50") int limit)
             throws KapuaException {
-        AndPredicate andPredicate = DATASTORE_PREDICATE_FACTORY.newAndPredicate();
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
         if (!Strings.isNullOrEmpty(clientId)) {
-            TermPredicate clientIdPredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
+            TermPredicate clientIdPredicate = datastorePredicateFactory.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientIdPredicate);
         }
 
@@ -82,11 +84,11 @@ public class DataMetrics extends AbstractKapuaResource {
         }
 
         if (!Strings.isNullOrEmpty(name)) {
-            TermPredicate clientIdPredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(MetricInfoField.NAME_FULL, name);
+            TermPredicate clientIdPredicate = datastorePredicateFactory.newTermPredicate(MetricInfoField.NAME_FULL, name);
             andPredicate.getPredicates().add(clientIdPredicate);
         }
 
-        MetricInfoQuery query = METRIC_INFO_FACTORY.newQuery(scopeId);
+        MetricInfoQuery query = metricInfoFactory.newQuery(scopeId);
         query.setPredicate(andPredicate);
         query.setOffset(offset);
         query.setLimit(limit);
@@ -111,7 +113,7 @@ public class DataMetrics extends AbstractKapuaResource {
             throws KapuaException {
         query.setScopeId(scopeId);
         query.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
-        return METRIC_INFO_REGISTRY_SERVICE.query(query);
+        return metricInfoRegistryService.query(query);
     }
 
     /**
@@ -131,7 +133,7 @@ public class DataMetrics extends AbstractKapuaResource {
             throws KapuaException {
         query.setScopeId(scopeId);
 
-        return new CountResult(METRIC_INFO_REGISTRY_SERVICE.count(query));
+        return new CountResult(metricInfoRegistryService.count(query));
     }
 
     /**
@@ -146,7 +148,7 @@ public class DataMetrics extends AbstractKapuaResource {
     public MetricInfo find(@PathParam("scopeId") ScopeId scopeId,
                            @PathParam("metricInfoId") StorableEntityId metricInfoId)
             throws KapuaException {
-        MetricInfo metricInfo = METRIC_INFO_REGISTRY_SERVICE.find(scopeId, metricInfoId);
+        MetricInfo metricInfo = metricInfoRegistryService.find(scopeId, metricInfoId);
 
         return returnNotNullEntity(metricInfo);
     }

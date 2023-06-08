@@ -20,7 +20,6 @@ import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.model.SetResult;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -32,6 +31,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuer
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -46,9 +46,10 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/deviceconnections")
 public class DeviceConnections extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DeviceConnectionFactory deviceConnectionFactory = locator.getFactory(DeviceConnectionFactory.class);
-    private final DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
+    @Inject
+    public DeviceConnectionFactory deviceConnectionFactory;
+    @Inject
+    public DeviceConnectionService deviceConnectionService;
 
     /**
      * Gets the {@link DeviceConnection} list in the scope.

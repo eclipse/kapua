@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
@@ -26,6 +25,7 @@ import org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreS
 import org.eclipse.kapua.service.device.management.asset.store.settings.DeviceAssetStoreSettings;
 import org.eclipse.kapua.service.device.registry.Device;
 
+import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -40,11 +40,12 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/devices/{deviceId}/assets")
 public class DeviceManagementAssets extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DeviceAssetManagementService deviceManagementAssetService = locator.getService(DeviceAssetManagementService.class);
-    private final DeviceAssetFactory deviceAssetFilter = locator.getFactory(DeviceAssetFactory.class);
-
-    private final DeviceAssetStoreService deviceAssetStoreService = locator.getService(DeviceAssetStoreService.class);
+    @Inject
+    public DeviceAssetManagementService deviceManagementAssetService;
+    @Inject
+    public DeviceAssetFactory deviceAssetFilter;
+    @Inject
+    public DeviceAssetStoreService deviceAssetStoreService;
 
     /**
      * Returns the list of all the Assets configured on the device.
