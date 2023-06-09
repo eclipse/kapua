@@ -2115,7 +2115,12 @@
                 <artifactId>hk2-locator</artifactId>
                 <version>${hk2-api.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>guice-bridge</artifactId>
+                <version>${hk2-api.version}</version>
+            </dependency>
+            
             <!-- -->
             <!-- Jackson -->
             <dependency>
