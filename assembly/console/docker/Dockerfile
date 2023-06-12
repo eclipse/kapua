@@ -43,7 +43,8 @@ ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
                -Djob.engine.client.auth.mode=access_token \
                -Dcipher.key=\${CIPHER_KEY} \
                -Dcrypto.secret.key=\${CRYPTO_SECRET_KEY} \
-               \${JETTY_DEBUG_OPTS}"
+               \${JETTY_DEBUG_OPTS} \
+               \${JETTY_JMX_OPTS}"
 
 USER 0
 

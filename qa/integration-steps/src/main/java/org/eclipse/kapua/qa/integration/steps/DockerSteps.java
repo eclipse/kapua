@@ -813,7 +813,7 @@ public class DockerSteps {
         envVars.add("BROKER_HOST=message-broker");
         envVars.add("CRYPTO_SECRET_KEY=kapuaTestsKey!!!");
         if (debug) {
-            envVars.add(String.format("DEBUG_OPTIONS=-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=*:%s", debugPort));
+            envVars.add(String.format("DEBUG_OPTS=-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=*:%s", debugPort));
         }
 
         return ContainerConfig.builder()

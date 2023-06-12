@@ -28,19 +28,19 @@ ENV SQL_DB_PORT 3306
 ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
 ENV JOB_ENGINE_BASE_ADDR http://job-engine:8080/v1
 
-ENV JAVA_OPTS -Dcommons.db.schema.update=true \
+ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
               -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
               -Dcommons.db.connection.port=\${SQL_DB_PORT} \
               -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
               -Dbroker.host=\${BROKER_HOST} \
               -Dbroker.port=\${BROKER_PORT} \
-              -Dcommons.eventbus.url=${SERVICE_BROKER_ADDR} \
+              -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
               -Dconsumer.jaxb_context_class_name=org.eclipse.kapua.consumer.lifecycle.LifecycleJAXBContextProvider \
               -Djob.engine.base.url=\${JOB_ENGINE_BASE_ADDR} \
               -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
               -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \
               -Dcipher.key=\${CIPHER_KEY} \
-              -Dcrypto.secret.key=\${CRYPTO_SECRET_KEY}
+              -Dcrypto.secret.key=\${CRYPTO_SECRET_KEY}"
 
 EXPOSE 8080
 
