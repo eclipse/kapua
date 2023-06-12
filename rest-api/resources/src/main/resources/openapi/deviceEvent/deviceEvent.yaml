@@ -25,6 +25,7 @@ components:
   schemas:
     deviceEvent:
       allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaEntity'
         - type: object
           properties:
             deviceId:
