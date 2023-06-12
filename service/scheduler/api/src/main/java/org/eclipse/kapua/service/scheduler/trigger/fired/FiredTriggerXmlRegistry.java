@@ -24,22 +24,21 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class FiredTriggerXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final FiredTriggerFactory FIRED_TRIGGER_FACTORY = LOCATOR.getFactory(FiredTriggerFactory.class);
+    private final FiredTriggerFactory firedTriggerFactory = KapuaLocator.getInstance().getFactory(FiredTriggerFactory.class);
 
     public FiredTrigger newEntity() {
-        return FIRED_TRIGGER_FACTORY.newEntity(null);
+        return firedTriggerFactory.newEntity(null);
     }
 
     public FiredTriggerCreator newCreator() {
-        return FIRED_TRIGGER_FACTORY.newCreator(null);
+        return firedTriggerFactory.newCreator(null);
     }
 
     public FiredTriggerListResult newListResult() {
-        return FIRED_TRIGGER_FACTORY.newListResult();
+        return firedTriggerFactory.newListResult();
     }
 
     public FiredTriggerQuery newQuery() {
-        return FIRED_TRIGGER_FACTORY.newQuery(null);
+        return firedTriggerFactory.newQuery(null);
     }
 }

@@ -24,8 +24,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class DeviceConfigurationXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final DeviceConfigurationFactory DEVICE_CONFIGURATION_FACTORY = LOCATOR.getFactory(DeviceConfigurationFactory.class);
+    private final DeviceConfigurationFactory deviceConfigurationFactory = KapuaLocator.getInstance().getFactory(DeviceConfigurationFactory.class);
 
     /**
      * Creates a new device configuration
@@ -33,7 +32,7 @@ public class DeviceConfigurationXmlRegistry {
      * @return
      */
     public DeviceConfiguration newConfiguration() {
-        return DEVICE_CONFIGURATION_FACTORY.newConfigurationInstance();
+        return deviceConfigurationFactory.newConfigurationInstance();
     }
 
     /**
@@ -42,6 +41,6 @@ public class DeviceConfigurationXmlRegistry {
      * @return
      */
     public DeviceComponentConfiguration newComponentConfiguration() {
-        return DEVICE_CONFIGURATION_FACTORY.newComponentConfigurationInstance(null);
+        return deviceConfigurationFactory.newComponentConfigurationInstance(null);
     }
 }

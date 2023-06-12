@@ -25,8 +25,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  */
 public class StorableIdXmlAdapter extends XmlAdapter<String, StorableId> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final StorableIdFactory STORABLE_ID_FACTORY = LOCATOR.getFactory(StorableIdFactory.class);
+    private final StorableIdFactory storableIdFactory = KapuaLocator.getInstance().getFactory(StorableIdFactory.class);
 
     @Override
     public String marshal(StorableId storableId) {
@@ -35,7 +34,7 @@ public class StorableIdXmlAdapter extends XmlAdapter<String, StorableId> {
 
     @Override
     public StorableId unmarshal(String storableIdString) {
-        return STORABLE_ID_FACTORY.newStorableId(storableIdString);
+        return storableIdFactory.newStorableId(storableIdString);
     }
 
 }

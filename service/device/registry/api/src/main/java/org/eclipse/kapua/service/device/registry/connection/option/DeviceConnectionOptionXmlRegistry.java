@@ -24,8 +24,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class DeviceConnectionOptionXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final DeviceConnectionOptionFactory DEVICE_CONNECTION_OPTION_FACTORY = LOCATOR.getFactory(DeviceConnectionOptionFactory.class);
+    private final DeviceConnectionOptionFactory deviceConnectionOptionFactory = KapuaLocator.getInstance().getFactory(DeviceConnectionOptionFactory.class);
 
     /**
      * Creates a new {@link DeviceConnectionOption}
@@ -33,7 +32,7 @@ public class DeviceConnectionOptionXmlRegistry {
      * @return
      */
     public DeviceConnectionOption newDeviceConnectionOption() {
-        return DEVICE_CONNECTION_OPTION_FACTORY.newEntity(null);
+        return deviceConnectionOptionFactory.newEntity(null);
     }
 
     /**
@@ -42,10 +41,10 @@ public class DeviceConnectionOptionXmlRegistry {
      * @return
      */
     public DeviceConnectionOptionListResult newDeviceConnectionOptionListResult() {
-        return DEVICE_CONNECTION_OPTION_FACTORY.newListResult();
+        return deviceConnectionOptionFactory.newListResult();
     }
 
     public DeviceConnectionOptionQuery newQuery() {
-        return DEVICE_CONNECTION_OPTION_FACTORY.newQuery(null);
+        return deviceConnectionOptionFactory.newQuery(null);
     }
 }

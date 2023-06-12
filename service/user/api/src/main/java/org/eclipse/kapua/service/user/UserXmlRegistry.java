@@ -24,8 +24,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class UserXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final UserFactory USER_FACTORY = LOCATOR.getFactory(UserFactory.class);
+    private final UserFactory userFactory = KapuaLocator.getInstance().getFactory(UserFactory.class);
 
     /**
      * Creates a new user instance
@@ -33,7 +32,7 @@ public class UserXmlRegistry {
      * @return
      */
     public User newUser() {
-        return USER_FACTORY.newEntity(null);
+        return userFactory.newEntity(null);
     }
 
     /**
@@ -42,7 +41,7 @@ public class UserXmlRegistry {
      * @return
      */
     public UserCreator newUserCreator() {
-        return USER_FACTORY.newCreator(null, null);
+        return userFactory.newCreator(null, null);
     }
 
     /**
@@ -51,10 +50,10 @@ public class UserXmlRegistry {
      * @return
      */
     public UserListResult newUserListResult() {
-        return USER_FACTORY.newListResult();
+        return userFactory.newListResult();
     }
 
     public UserQuery newQuery() {
-        return USER_FACTORY.newQuery(null);
+        return userFactory.newQuery(null);
     }
 }

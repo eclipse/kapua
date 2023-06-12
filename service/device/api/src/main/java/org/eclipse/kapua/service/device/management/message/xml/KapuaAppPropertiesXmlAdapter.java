@@ -25,8 +25,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  */
 public class KapuaAppPropertiesXmlAdapter extends XmlAdapter<String, KapuaAppProperties> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final KapuaRequestMessageFactory REQUEST_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaRequestMessageFactory.class);
+    private final KapuaRequestMessageFactory kapuaRequestMessageFactory = KapuaLocator.getInstance().getFactory(KapuaRequestMessageFactory.class);
 
     @Override
     public String marshal(KapuaAppProperties kapuaAppProperties) throws Exception {
@@ -35,6 +34,6 @@ public class KapuaAppPropertiesXmlAdapter extends XmlAdapter<String, KapuaAppPro
 
     @Override
     public KapuaAppProperties unmarshal(String string) throws Exception {
-        return REQUEST_MESSAGE_FACTORY.newAppProperties(string);
+        return kapuaRequestMessageFactory.newAppProperties(string);
     }
 }

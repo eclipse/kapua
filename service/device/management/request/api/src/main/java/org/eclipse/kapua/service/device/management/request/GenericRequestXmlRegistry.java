@@ -25,30 +25,29 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class GenericRequestXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final GenericRequestFactory FACTORY = LOCATOR.getFactory(GenericRequestFactory.class);
+    private final GenericRequestFactory genericRequestFactory = KapuaLocator.getInstance().getFactory(GenericRequestFactory.class);
 
     public GenericRequestChannel newRequestChannel() {
-        return FACTORY.newRequestChannel();
+        return genericRequestFactory.newRequestChannel();
     }
 
     public GenericRequestPayload newRequestPayload() {
-        return FACTORY.newRequestPayload();
+        return genericRequestFactory.newRequestPayload();
     }
 
     public GenericRequestMessage newRequestMessage() {
-        return FACTORY.newRequestMessage();
+        return genericRequestFactory.newRequestMessage();
     }
 
     public GenericResponseChannel newResponseChannel() {
-        return FACTORY.newResponseChannel();
+        return genericRequestFactory.newResponseChannel();
     }
 
     public GenericResponsePayload newResponsePayload() {
-        return FACTORY.newResponsePayload();
+        return genericRequestFactory.newResponsePayload();
     }
 
     public GenericResponseMessage newResponseMessage() {
-        return FACTORY.newResponseMessage();
+        return genericRequestFactory.newResponseMessage();
     }
 }

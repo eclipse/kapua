@@ -24,23 +24,22 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class ManagementOperationNotificationXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final ManagementOperationNotificationFactory MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_FACTORY = LOCATOR.getFactory(ManagementOperationNotificationFactory.class);
+    private final ManagementOperationNotificationFactory managementOperationNotificationFactory = KapuaLocator.getInstance().getFactory(ManagementOperationNotificationFactory.class);
 
     ManagementOperationNotification newManagementOperationNotification() {
-        return MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_FACTORY.newEntity(null);
+        return managementOperationNotificationFactory.newEntity(null);
     }
 
     ManagementOperationNotificationCreator newManagementOperationNotificationCreator() {
-        return MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_FACTORY.newCreator(null);
+        return managementOperationNotificationFactory.newCreator(null);
     }
 
 
     ManagementOperationNotificationListResult newManagementOperationNotificationListResult() {
-        return MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_FACTORY.newListResult();
+        return managementOperationNotificationFactory.newListResult();
     }
 
     ManagementOperationNotificationQuery newQuery() {
-        return MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_FACTORY.newQuery(null);
+        return managementOperationNotificationFactory.newQuery(null);
     }
 }
