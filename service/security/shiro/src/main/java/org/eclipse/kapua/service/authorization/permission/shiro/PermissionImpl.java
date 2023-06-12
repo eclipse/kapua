@@ -54,11 +54,8 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
 
     private static final long serialVersionUID = 1480557438886065675L;
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
-
-    private static final DomainRegistryService DOMAIN_SERVICE = LOCATOR.getService(DomainRegistryService.class);
+    private static final AccountService ACCOUNT_SERVICE = KapuaLocator.getInstance().getService(AccountService.class);
+    private static final DomainRegistryService DOMAIN_SERVICE = KapuaLocator.getInstance().getService(DomainRegistryService.class);
 
     @Basic
     @Column(name = "domain", nullable = true, updatable = false)

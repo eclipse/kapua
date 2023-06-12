@@ -19,8 +19,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class MfaOptionXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final MfaOptionFactory MFA_OPTION_FACTORY = LOCATOR.getFactory(MfaOptionFactory.class);
+    private final MfaOptionFactory mfaOptionFactory = KapuaLocator.getInstance().getFactory(MfaOptionFactory.class);
 
     /**
      * Creates a new {@link MfaOption} instance
@@ -28,7 +27,7 @@ public class MfaOptionXmlRegistry {
      * @return
      */
     public MfaOption newMfaOption() {
-        return MFA_OPTION_FACTORY.newEntity(null);
+        return mfaOptionFactory.newEntity(null);
     }
 
     /**
@@ -37,7 +36,7 @@ public class MfaOptionXmlRegistry {
      * @return
      */
     public MfaOptionListResult newMfaOptionListResult() {
-        return MFA_OPTION_FACTORY.newListResult();
+        return mfaOptionFactory.newListResult();
     }
 
     /**
@@ -46,10 +45,10 @@ public class MfaOptionXmlRegistry {
      * @return
      */
     public MfaOptionCreator newMfaOptionCreator() {
-        return MFA_OPTION_FACTORY.newCreator(null, null, null);
+        return mfaOptionFactory.newCreator(null, null, null);
     }
 
     public MfaOptionQuery newQuery() {
-        return MFA_OPTION_FACTORY.newQuery(null);
+        return mfaOptionFactory.newQuery(null);
     }
 }

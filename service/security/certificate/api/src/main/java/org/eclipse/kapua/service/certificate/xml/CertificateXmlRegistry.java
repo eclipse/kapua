@@ -26,30 +26,29 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class CertificateXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final CertificateFactory FACTORY = LOCATOR.getFactory(CertificateFactory.class);
+    private final CertificateFactory certificateFactory = KapuaLocator.getInstance().getFactory(CertificateFactory.class);
 
     public Certificate newCertificate() {
-        return FACTORY.newEntity(null);
+        return certificateFactory.newEntity(null);
     }
 
     public CertificateCreator newCreator() {
-        return FACTORY.newCreator(null);
+        return certificateFactory.newCreator(null);
     }
 
     public CertificateQuery newQuery() {
-        return FACTORY.newQuery(null);
+        return certificateFactory.newQuery(null);
     }
 
     public CertificateListResult newListResult() {
-        return FACTORY.newListResult();
+        return certificateFactory.newListResult();
     }
 
     public CertificateGenerator newCertificateGenerator() {
-        return FACTORY.newCertificateGenerator();
+        return certificateFactory.newCertificateGenerator();
     }
 
     public CertificateUsage newCertificateUsage() {
-        return FACTORY.newCertificateUsage(null);
+        return certificateFactory.newCertificateUsage(null);
     }
 }

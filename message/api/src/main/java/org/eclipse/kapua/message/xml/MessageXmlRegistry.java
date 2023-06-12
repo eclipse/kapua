@@ -28,22 +28,21 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class MessageXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final KapuaMessageFactory KAPUA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaMessageFactory.class);
+    private final KapuaMessageFactory kapuaMessageFactory = KapuaLocator.getInstance().getFactory(KapuaMessageFactory.class);
 
     public KapuaMessage newKapuaMessage() {
-        return KAPUA_MESSAGE_FACTORY.newMessage();
+        return kapuaMessageFactory.newMessage();
     }
 
     public KapuaChannel newKapuaChannel() {
-        return KAPUA_MESSAGE_FACTORY.newChannel();
+        return kapuaMessageFactory.newChannel();
     }
 
     public KapuaPayload newPayload() {
-        return KAPUA_MESSAGE_FACTORY.newPayload();
+        return kapuaMessageFactory.newPayload();
     }
 
     public KapuaPosition newPosition() {
-        return KAPUA_MESSAGE_FACTORY.newPosition();
+        return kapuaMessageFactory.newPosition();
     }
 }

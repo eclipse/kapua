@@ -19,8 +19,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class ScratchCodeXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final ScratchCodeFactory SCRATCH_CODE_FACTORY = LOCATOR.getFactory(ScratchCodeFactory.class);
+    private final ScratchCodeFactory scratchCodeFactory = KapuaLocator.getInstance().getFactory(ScratchCodeFactory.class);
 
     /**
      * Creates a new {@link ScratchCode} instance
@@ -28,7 +27,7 @@ public class ScratchCodeXmlRegistry {
      * @return
      */
     public ScratchCode newScratchCode() {
-        return SCRATCH_CODE_FACTORY.newEntity(null);
+        return scratchCodeFactory.newEntity(null);
     }
 
     /**
@@ -37,7 +36,7 @@ public class ScratchCodeXmlRegistry {
      * @return
      */
     public ScratchCodeListResult newScratchCodeListResult() {
-        return SCRATCH_CODE_FACTORY.newListResult();
+        return scratchCodeFactory.newListResult();
     }
 
     /**
@@ -46,10 +45,10 @@ public class ScratchCodeXmlRegistry {
      * @return
      */
     public ScratchCodeCreator newScratchCodeCreator() {
-        return SCRATCH_CODE_FACTORY.newCreator(null, null, null);
+        return scratchCodeFactory.newCreator(null, null, null);
     }
 
     public ScratchCodeQuery newQuery() {
-        return SCRATCH_CODE_FACTORY.newQuery(null);
+        return scratchCodeFactory.newQuery(null);
     }
 }

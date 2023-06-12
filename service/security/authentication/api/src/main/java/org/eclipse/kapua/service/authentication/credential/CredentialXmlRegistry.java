@@ -19,8 +19,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class CredentialXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final CredentialFactory CREDENTIAL_FACTORY = LOCATOR.getFactory(CredentialFactory.class);
+    private final CredentialFactory credentialFactory = KapuaLocator.getInstance().getFactory(CredentialFactory.class);
 
     /**
      * Creates a new credential instance
@@ -28,7 +27,7 @@ public class CredentialXmlRegistry {
      * @return
      */
     public Credential newCredential() {
-        return CREDENTIAL_FACTORY.newEntity(null);
+        return credentialFactory.newEntity(null);
     }
 
     /**
@@ -37,7 +36,7 @@ public class CredentialXmlRegistry {
      * @return
      */
     public CredentialListResult newCredentialListResult() {
-        return CREDENTIAL_FACTORY.newListResult();
+        return credentialFactory.newListResult();
     }
 
     /**
@@ -46,10 +45,10 @@ public class CredentialXmlRegistry {
      * @return
      */
     public CredentialCreator newCredentialCreator() {
-        return CREDENTIAL_FACTORY.newCreator(null, null, null, null, null, null);
+        return credentialFactory.newCreator(null, null, null, null, null, null);
     }
 
     public CredentialQuery newQuery() {
-        return CREDENTIAL_FACTORY.newQuery(null);
+        return credentialFactory.newQuery(null);
     }
 }

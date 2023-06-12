@@ -27,8 +27,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class ChannelInfoXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final ChannelInfoFactory CHANNEL_INFO_FACTORY = LOCATOR.getFactory(ChannelInfoFactory.class);
+    private final ChannelInfoFactory channelInfoFactory = KapuaLocator.getInstance().getFactory(ChannelInfoFactory.class);
 
     /**
      * Creates a {@link ChannelInfoListResult} instance
@@ -36,7 +35,7 @@ public class ChannelInfoXmlRegistry {
      * @return
      */
     public ChannelInfoListResult newListResult() {
-        return CHANNEL_INFO_FACTORY.newListResult();
+        return channelInfoFactory.newListResult();
     }
 
     /**
@@ -45,6 +44,6 @@ public class ChannelInfoXmlRegistry {
      * @return
      */
     public ChannelInfoQuery newQuery() {
-        return CHANNEL_INFO_FACTORY.newQuery(null);
+        return channelInfoFactory.newQuery(null);
     }
 }

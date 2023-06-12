@@ -20,7 +20,6 @@ import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaFileUtils;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -44,6 +43,7 @@ import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Collections;
 import java.util.List;
@@ -55,22 +55,18 @@ public class CertificateServiceImpl implements CertificateService {
 
     private static final Logger LOG = LoggerFactory.getLogger(CertificateServiceImpl.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
-    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
-
-    private static final CertificateFactory CERTIFICATE_FACTORY = LOCATOR.getFactory(CertificateFactory.class);
-
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
+    private final CertificateFactory certificateFactory;
     private String certificate;
     private String privateKey;
-
     private KapuaTocd emptyTocd;
 
-    /**
-     * Constructor
-     */
-    public CertificateServiceImpl() throws KapuaException {
+    @Inject
+    public CertificateServiceImpl(AuthorizationService authorizationService, PermissionFactory permissionFactory, CertificateFactory certificateFactory) throws KapuaException {
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.certificateFactory = certificateFactory;
         KapuaSecurityUtils.doPrivileged(() -> {
             KapuaCertificateSetting setting = KapuaCertificateSetting.getInstance();
 
@@ -105,7 +101,7 @@ public class CertificateServiceImpl implements CertificateService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(Domains.CERTIFICATE, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CERTIFICATE, Actions.read, query.getScopeId()));
         // Create the default certificate
         CertificateUsage jwtCertificateUsage = new CertificateUsageImpl("JWT");
         Set<CertificateUsage> certificateUsages = Sets.newHashSet(jwtCertificateUsage);
@@ -124,7 +120,7 @@ public class CertificateServiceImpl implements CertificateService {
         kapuaCertificate.setCertificateUsages(certificateUsages);
         kapuaCertificate.setPassword(setting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_PRIVATE_KEY_PASSWORD));
 
-        CertificateListResult result = CERTIFICATE_FACTORY.newListResult();
+        CertificateListResult result = certificateFactory.newListResult();
         result.addItem(kapuaCertificate);
 
         return result;

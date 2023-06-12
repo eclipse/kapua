@@ -27,8 +27,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class MetricInfoXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final MetricInfoFactory METRIC_INFO_FACTORY = LOCATOR.getFactory(MetricInfoFactory.class);
+    private final MetricInfoFactory metricInfoFactory = KapuaLocator.getInstance().getFactory(MetricInfoFactory.class);
 
     /**
      * Creates a {@link MetricInfoListResult} instance
@@ -36,7 +35,7 @@ public class MetricInfoXmlRegistry {
      * @return
      */
     public MetricInfoListResult newListResult() {
-        return METRIC_INFO_FACTORY.newListResult();
+        return metricInfoFactory.newListResult();
     }
 
     /**
@@ -45,6 +44,6 @@ public class MetricInfoXmlRegistry {
      * @return
      */
     public MetricInfoQuery newQuery() {
-        return METRIC_INFO_FACTORY.newQuery(null);
+        return metricInfoFactory.newQuery(null);
     }
 }

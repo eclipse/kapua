@@ -19,7 +19,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.RandomUtils;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.Message;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
@@ -44,6 +43,7 @@ import org.eclipse.kapua.transport.exception.TransportException;
 import org.eclipse.kapua.transport.exception.TransportTimeoutException;
 import org.eclipse.kapua.transport.message.TransportMessage;
 
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.HashMap;
@@ -58,14 +58,19 @@ import java.util.Random;
 public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraResponseMessage> {
 
     private static final Random RANDOM = RandomUtils.getInstance();
+    private final AccountService accountService;
+    private final DeviceRegistryService deviceRegistryService;
+    private final TransportClientFactory transportClientFactory;
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
-
-    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
-
-    private static final TransportClientFactory TRANSPORT_CLIENT_FACTORY = LOCATOR.getFactory(TransportClientFactory.class);
+    @Inject
+    public KuraDeviceCallImpl(
+            AccountService accountService,
+            DeviceRegistryService deviceRegistryService,
+            TransportClientFactory transportClientFactory) {
+        this.accountService = accountService;
+        this.deviceRegistryService = deviceRegistryService;
+        this.transportClientFactory = transportClientFactory;
+    }
 
     @Override
     public KuraResponseMessage create(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
@@ -192,13 +197,13 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
         String serverIp = null;
         try {
             serverIp = KapuaSecurityUtils.doPrivileged(() -> {
-                Account account = ACCOUNT_SERVICE.findByName(kuraRequestMessage.getChannel().getScope());
+                Account account = accountService.findByName(kuraRequestMessage.getChannel().getScope());
 
                 if (account == null) {
                     throw new KapuaEntityNotFoundException(Account.TYPE, kuraRequestMessage.getChannel().getScope());
                 }
 
-                Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), kuraRequestMessage.getChannel().getClientId());
+                Device device = deviceRegistryService.findByClientId(account.getId(), kuraRequestMessage.getChannel().getClientId());
                 if (device == null) {
                     throw new KapuaEntityNotFoundException(Device.TYPE, kuraRequestMessage.getChannel().getClientId());
                 }
@@ -212,8 +217,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
 
             Map<String, Object> configParameters = new HashMap<>(1);
             configParameters.put("serverAddress", serverIp);
-
-            return TRANSPORT_CLIENT_FACTORY.getFacade(configParameters);
+            return transportClientFactory.getFacade(configParameters);
         } catch (TransportException tce) {
             throw tce;
         } catch (Exception e) {

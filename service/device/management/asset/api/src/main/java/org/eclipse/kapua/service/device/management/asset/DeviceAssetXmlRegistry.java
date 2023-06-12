@@ -24,8 +24,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class DeviceAssetXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final DeviceAssetFactory DEVICE_ASSET_FACTORY = LOCATOR.getFactory(DeviceAssetFactory.class);
+    private final DeviceAssetFactory deviceAssetFactory = KapuaLocator.getInstance().getFactory(DeviceAssetFactory.class);
 
     /**
      * Instantiate a new {@link DeviceAssets}.
@@ -34,7 +33,7 @@ public class DeviceAssetXmlRegistry {
      * @since 1.0.0
      */
     public DeviceAssets newAssetListResult() {
-        return DEVICE_ASSET_FACTORY.newAssetListResult();
+        return deviceAssetFactory.newAssetListResult();
     }
 
     /**
@@ -44,7 +43,7 @@ public class DeviceAssetXmlRegistry {
      * @since 1.0.0
      */
     public DeviceAsset newDeviceAsset() {
-        return DEVICE_ASSET_FACTORY.newDeviceAsset();
+        return deviceAssetFactory.newDeviceAsset();
     }
 
     /**
@@ -54,6 +53,6 @@ public class DeviceAssetXmlRegistry {
      * @since 1.0.0
      */
     public DeviceAssetChannel newDeviceAssetChannel() {
-        return DEVICE_ASSET_FACTORY.newDeviceAssetChannel();
+        return deviceAssetFactory.newDeviceAssetChannel();
     }
 }

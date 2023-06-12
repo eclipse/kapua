@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractDeviceTargetProcessor;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
@@ -33,7 +34,7 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DeviceConfigurationPutTargetProcessor extends AbstractDeviceTargetProcessor implements TargetProcessor {
-    private static final DeviceConfigurationManagementService CONFIGURATION_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceConfigurationManagementService.class);
+    private final DeviceConfigurationManagementService deviceConfigurationManagementService = KapuaLocator.getInstance().getService(DeviceConfigurationManagementService.class);
 
     @Inject
     JobContext jobContext;
@@ -52,6 +53,6 @@ public class DeviceConfigurationPutTargetProcessor extends AbstractDeviceTargetP
         DeviceConfiguration configuration = stepContextWrapper.getStepProperty(DeviceConfigurationPutPropertyKeys.CONFIGURATION, DeviceConfiguration.class);
         Long timeout = stepContextWrapper.getStepProperty(DeviceConfigurationPutPropertyKeys.TIMEOUT, Long.class);
 
-        KapuaSecurityUtils.doPrivileged(() -> CONFIGURATION_MANAGEMENT_SERVICE.put(jobTarget.getScopeId(), jobTarget.getJobTargetId(), configuration, timeout));
+        KapuaSecurityUtils.doPrivileged(() -> deviceConfigurationManagementService.put(jobTarget.getScopeId(), jobTarget.getJobTargetId(), configuration, timeout));
     }
 }

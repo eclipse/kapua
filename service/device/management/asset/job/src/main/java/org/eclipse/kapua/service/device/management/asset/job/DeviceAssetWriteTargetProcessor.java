@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractDeviceTargetProcessor;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
@@ -33,7 +34,7 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DeviceAssetWriteTargetProcessor extends AbstractDeviceTargetProcessor implements TargetProcessor {
-    private static final DeviceAssetManagementService ASSET_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceAssetManagementService.class);
+    private final DeviceAssetManagementService deviceAssetManagementService = KapuaLocator.getInstance().getService(DeviceAssetManagementService.class);
 
     @Inject
     JobContext jobContext;
@@ -52,6 +53,6 @@ public class DeviceAssetWriteTargetProcessor extends AbstractDeviceTargetProcess
         DeviceAssets assets = stepContextWrapper.getStepProperty(DeviceAssetWritePropertyKeys.ASSETS, DeviceAssets.class);
         Long timeout = stepContextWrapper.getStepProperty(DeviceAssetWritePropertyKeys.TIMEOUT, Long.class);
 
-        KapuaSecurityUtils.doPrivileged(() -> ASSET_MANAGEMENT_SERVICE.write(jobTarget.getScopeId(), jobTarget.getJobTargetId(), assets, timeout));
+        KapuaSecurityUtils.doPrivileged(() -> deviceAssetManagementService.write(jobTarget.getScopeId(), jobTarget.getJobTargetId(), assets, timeout));
     }
 }

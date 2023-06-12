@@ -19,8 +19,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class RoleXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final RoleFactory ROLE_FACTORY = LOCATOR.getFactory(RoleFactory.class);
+    private final RoleFactory roleFactory = KapuaLocator.getInstance().getFactory(RoleFactory.class);
 
     /**
      * Creates a new {@link Role} instance.
@@ -29,7 +28,7 @@ public class RoleXmlRegistry {
      * @since 1.0.0
      */
     public Role newRole() {
-        return ROLE_FACTORY.newEntity(null);
+        return roleFactory.newEntity(null);
     }
 
     /**
@@ -39,7 +38,7 @@ public class RoleXmlRegistry {
      * @since 1.0.0
      */
     public RoleCreator newRoleCreator() {
-        return ROLE_FACTORY.newCreator(null);
+        return roleFactory.newCreator(null);
     }
 
     /**
@@ -49,7 +48,7 @@ public class RoleXmlRegistry {
      * @since 1.0.0
      */
     public RoleListResult newRoleListResult() {
-        return ROLE_FACTORY.newListResult();
+        return roleFactory.newListResult();
     }
 
     /**
@@ -59,6 +58,6 @@ public class RoleXmlRegistry {
      * @since 1.0.0
      */
     public RoleQuery newQuery() {
-        return ROLE_FACTORY.newQuery(null);
+        return roleFactory.newQuery(null);
     }
 }

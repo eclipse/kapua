@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractDeviceTargetProcessor;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.bundle.job.definition.DeviceBundlePropertyKeys;
@@ -32,7 +33,7 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DeviceBundleStopTargetProcessor extends AbstractDeviceTargetProcessor implements TargetProcessor {
-    private static final DeviceBundleManagementService BUNDLE_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceBundleManagementService.class);
+    private final DeviceBundleManagementService deviceBundleManagementService = KapuaLocator.getInstance().getService(DeviceBundleManagementService.class);
 
     @Inject
     JobContext jobContext;
@@ -51,6 +52,6 @@ public class DeviceBundleStopTargetProcessor extends AbstractDeviceTargetProcess
         String bundleId = stepContextWrapper.getStepProperty(DeviceBundlePropertyKeys.BUNDLE_ID, String.class);
         Long timeout = stepContextWrapper.getStepProperty(DeviceBundlePropertyKeys.TIMEOUT, Long.class);
 
-        KapuaSecurityUtils.doPrivileged(() -> BUNDLE_MANAGEMENT_SERVICE.stop(jobTarget.getScopeId(), jobTarget.getJobTargetId(), bundleId, timeout));
+        KapuaSecurityUtils.doPrivileged(() -> deviceBundleManagementService.stop(jobTarget.getScopeId(), jobTarget.getJobTargetId(), bundleId, timeout));
     }
 }

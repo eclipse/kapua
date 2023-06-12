@@ -36,9 +36,8 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DevicePackageDownloadTargetProcessor extends AbstractDevicePackageTargetProcessor implements TargetProcessor {
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final DevicePackageManagementService PACKAGES_MANAGEMENT_SERVICE = LOCATOR.getService(DevicePackageManagementService.class);
-    private static final DevicePackageFactory DEVICE_PACKAGE_FACTORY = LOCATOR.getFactory(DevicePackageFactory.class);
+    private final DevicePackageManagementService devicePackageManagementService = KapuaLocator.getInstance().getService(DevicePackageManagementService.class);
+    private final DevicePackageFactory devicePackageFactory = KapuaLocator.getInstance().getFactory(DevicePackageFactory.class);
 
     @Inject
     JobContext jobContext;
@@ -64,10 +63,10 @@ public class DevicePackageDownloadTargetProcessor extends AbstractDevicePackageT
         DevicePackageDownloadRequest packageDownloadRequest = stepContextWrapper.getStepProperty(DevicePackageDownloadPropertyKeys.PACKAGE_DOWNLOAD_REQUEST, DevicePackageDownloadRequest.class);
         Long timeout = stepContextWrapper.getStepProperty(DevicePackageDownloadPropertyKeys.TIMEOUT, Long.class);
         // Send the request
-        DevicePackageDownloadOptions packageDownloadOptions = DEVICE_PACKAGE_FACTORY.newPackageDownloadOptions();
+        DevicePackageDownloadOptions packageDownloadOptions = devicePackageFactory.newPackageDownloadOptions();
         packageDownloadOptions.setTimeout(timeout);
 
-        KapuaId operationId = KapuaSecurityUtils.doPrivileged(() -> PACKAGES_MANAGEMENT_SERVICE.downloadExec(scopeId, jobTarget.getJobTargetId(), packageDownloadRequest, packageDownloadOptions));
+        KapuaId operationId = KapuaSecurityUtils.doPrivileged(() -> devicePackageManagementService.downloadExec(scopeId, jobTarget.getJobTargetId(), packageDownloadRequest, packageDownloadOptions));
         // Save the jobId-deviceManagementOperationId pair to track resuming
         createJobDeviceManagementOperation(scopeId, jobId, jobTarget, operationId);
     }

@@ -19,8 +19,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class AccessPermissionXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final AccessPermissionFactory ACCESS_PERMISSION_FACTORY = LOCATOR.getFactory(AccessPermissionFactory.class);
+    private final AccessPermissionFactory accessPermissionFactory = KapuaLocator.getInstance().getFactory(AccessPermissionFactory.class);
 
     /**
      * Creates a new {@link AccessPermission} instance
@@ -28,7 +27,7 @@ public class AccessPermissionXmlRegistry {
      * @return
      */
     public AccessPermission newAccessPermission() {
-        return ACCESS_PERMISSION_FACTORY.newEntity(null);
+        return accessPermissionFactory.newEntity(null);
     }
 
     /**
@@ -37,7 +36,7 @@ public class AccessPermissionXmlRegistry {
      * @return
      */
     public AccessPermissionCreator newCreator() {
-        return ACCESS_PERMISSION_FACTORY.newCreator(null);
+        return accessPermissionFactory.newCreator(null);
     }
 
     /**
@@ -46,10 +45,10 @@ public class AccessPermissionXmlRegistry {
      * @return
      */
     public AccessPermissionListResult newAccessPermissionListResult() {
-        return ACCESS_PERMISSION_FACTORY.newListResult();
+        return accessPermissionFactory.newListResult();
     }
 
     public AccessPermissionQuery newQuery() {
-        return ACCESS_PERMISSION_FACTORY.newQuery(null);
+        return accessPermissionFactory.newQuery(null);
     }
 }

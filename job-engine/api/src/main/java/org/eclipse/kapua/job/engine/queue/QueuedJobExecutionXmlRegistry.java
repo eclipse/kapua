@@ -24,8 +24,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class QueuedJobExecutionXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final QueuedJobExecutionFactory JOB_TARGET_FACTORY = LOCATOR.getFactory(QueuedJobExecutionFactory.class);
+    private final QueuedJobExecutionFactory queuedJobExecutionFactory = KapuaLocator.getInstance().getFactory(QueuedJobExecutionFactory.class);
 
     /**
      * Creates a new job instance
@@ -33,7 +32,7 @@ public class QueuedJobExecutionXmlRegistry {
      * @return
      */
     public QueuedJobExecution newQueuedJobExecution() {
-        return JOB_TARGET_FACTORY.newEntity(null);
+        return queuedJobExecutionFactory.newEntity(null);
     }
 
     /**
@@ -42,7 +41,7 @@ public class QueuedJobExecutionXmlRegistry {
      * @return
      */
     public QueuedJobExecutionCreator newQueuedJobExecutionCreator() {
-        return JOB_TARGET_FACTORY.newCreator(null);
+        return queuedJobExecutionFactory.newCreator(null);
     }
 
     /**
@@ -51,10 +50,10 @@ public class QueuedJobExecutionXmlRegistry {
      * @return
      */
     public QueuedJobExecutionListResult newQueuedJobExecutionListResult() {
-        return JOB_TARGET_FACTORY.newListResult();
+        return queuedJobExecutionFactory.newListResult();
     }
 
     public QueuedJobExecutionQuery newQuery() {
-        return JOB_TARGET_FACTORY.newQuery(null);
+        return queuedJobExecutionFactory.newQuery(null);
     }
 }

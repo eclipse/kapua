@@ -46,10 +46,8 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
 
     private static final Logger LOG = LoggerFactory.getLogger(AccessTokenCredentialsMatcher.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final CertificateInfoService CERTIFICATE_INFO_SERVICE = LOCATOR.getService(CertificateInfoService.class);
-    private static final CertificateInfoFactory CERTIFICATE_INFO_FACTORY = LOCATOR.getFactory(CertificateInfoFactory.class);
+    private final CertificateInfoService certificateInfoService = KapuaLocator.getInstance().getService(CertificateInfoService.class);
+    private final CertificateInfoFactory certificateInfoFactory = KapuaLocator.getInstance().getFactory(CertificateInfoFactory.class);
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
@@ -65,7 +63,7 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
             try {
                 String issuer = settings.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_ISSUER);
 
-                CertificateInfoQuery certificateInfoQuery = CERTIFICATE_INFO_FACTORY.newQuery(null);
+                CertificateInfoQuery certificateInfoQuery = certificateInfoFactory.newQuery(null);
                 certificateInfoQuery.setPredicate(
                         certificateInfoQuery.andPredicate(
                                 certificateInfoQuery.attributePredicate(CertificateAttributes.USAGE_NAME, "JWT"),
@@ -76,7 +74,7 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
                 certificateInfoQuery.setIncludeInherited(true);
                 certificateInfoQuery.setLimit(1);
 
-                CertificateInfo certificateInfo = KapuaSecurityUtils.doPrivileged(() -> CERTIFICATE_INFO_SERVICE.query(certificateInfoQuery)).getFirstItem();
+                CertificateInfo certificateInfo = KapuaSecurityUtils.doPrivileged(() -> certificateInfoService.query(certificateInfoQuery)).getFirstItem();
 
                 if (certificateInfo == null) {
                     throw new JwtCertificateNotFoundException();

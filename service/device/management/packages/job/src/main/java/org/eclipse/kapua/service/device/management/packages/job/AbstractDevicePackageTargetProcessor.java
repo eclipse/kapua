@@ -19,6 +19,7 @@ import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractDeviceTargetProcessor;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationCreator;
@@ -38,23 +39,22 @@ import org.eclipse.kapua.service.job.targets.JobTargetStatus;
  * @since 1.1.0
  */
 public abstract class AbstractDevicePackageTargetProcessor extends AbstractDeviceTargetProcessor implements TargetProcessor {
-    private static final DeviceManagementOperationRegistryService DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE = LOCATOR.getService(DeviceManagementOperationRegistryService.class);
-    private static final JobDeviceManagementOperationService JOB_DEVICE_MANAGEMENT_OPERATION_SERVICE = LOCATOR.getService(JobDeviceManagementOperationService.class);
-    private static final JobDeviceManagementOperationFactory JOB_DEVICE_MANAGEMENT_OPERATION_FACTORY = LOCATOR.getFactory(JobDeviceManagementOperationFactory.class);
 
-    private static final JobEngineService JOB_ENGINE_SERVICE = LOCATOR.getService(JobEngineService.class);
-    private static final JobEngineFactory JOB_ENGINE_FACTORY = LOCATOR.getFactory(JobEngineFactory.class);
-
+    private final DeviceManagementOperationRegistryService deviceManagementOperationRegistryService = KapuaLocator.getInstance().getService(DeviceManagementOperationRegistryService.class);
+    private final JobDeviceManagementOperationService jobDeviceManagementOperationService = KapuaLocator.getInstance().getService(JobDeviceManagementOperationService.class);
+    private final JobDeviceManagementOperationFactory jobDeviceManagementOperationFactory = KapuaLocator.getInstance().getFactory(JobDeviceManagementOperationFactory.class);
+    private final JobEngineService jobEngineService = KapuaLocator.getInstance().getService(JobEngineService.class);
+    private final JobEngineFactory jobEngineFactory = KapuaLocator.getInstance().getFactory(JobEngineFactory.class);
 
     protected void createJobDeviceManagementOperation(KapuaId scopeId, KapuaId jobId, JobTarget jobTarget, KapuaId operationId) throws KapuaException {
         // Save the jobId-deviceManagementOperationId pair to track resuming
-        JobDeviceManagementOperationCreator jobDeviceManagementOperationCreator = JOB_DEVICE_MANAGEMENT_OPERATION_FACTORY.newCreator(scopeId);
+        JobDeviceManagementOperationCreator jobDeviceManagementOperationCreator = jobDeviceManagementOperationFactory.newCreator(scopeId);
         jobDeviceManagementOperationCreator.setJobId(jobId);
         jobDeviceManagementOperationCreator.setDeviceManagementOperationId(operationId);
 
-        JobDeviceManagementOperation jobDeviceManagementOperation = KapuaSecurityUtils.doPrivileged(() -> JOB_DEVICE_MANAGEMENT_OPERATION_SERVICE.create(jobDeviceManagementOperationCreator));
+        JobDeviceManagementOperation jobDeviceManagementOperation = KapuaSecurityUtils.doPrivileged(() -> jobDeviceManagementOperationService.create(jobDeviceManagementOperationCreator));
         // Check if the operation has already COMPLETED/FAILED
-        DeviceManagementOperation deviceManagementOperation = KapuaSecurityUtils.doPrivileged(() -> DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.find(scopeId, operationId));
+        DeviceManagementOperation deviceManagementOperation = KapuaSecurityUtils.doPrivileged(() -> deviceManagementOperationRegistryService.find(scopeId, operationId));
 
         if (deviceManagementOperation == null) {
             throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, operationId);
@@ -76,12 +76,12 @@ public abstract class AbstractDevicePackageTargetProcessor extends AbstractDevic
                 return;
             }
             // Enqueue the job
-            JobStartOptions jobStartOptions = JOB_ENGINE_FACTORY.newJobStartOptions();
+            JobStartOptions jobStartOptions = jobEngineFactory.newJobStartOptions();
             jobStartOptions.addTargetIdToSublist(jobTarget.getId());
             jobStartOptions.setFromStepIndex(jobTarget.getStepIndex());
             jobStartOptions.setEnqueue(true);
 
-            KapuaSecurityUtils.doPrivileged(() -> JOB_ENGINE_SERVICE.startJob(scopeId, jobDeviceManagementOperation.getJobId(), jobStartOptions));
+            KapuaSecurityUtils.doPrivileged(() -> jobEngineService.startJob(scopeId, jobDeviceManagementOperation.getJobId(), jobStartOptions));
         }
     }
 

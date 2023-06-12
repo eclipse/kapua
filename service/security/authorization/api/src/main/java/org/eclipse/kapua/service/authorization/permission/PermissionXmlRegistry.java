@@ -19,8 +19,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class PermissionXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+    private final PermissionFactory permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
 
     /**
      * Creates a new {@link Permission} instance
@@ -29,6 +28,6 @@ public class PermissionXmlRegistry {
      * @since 1.0.0
      */
     public Permission newPermission() {
-        return PERMISSION_FACTORY.newPermission((String) null, null, null, null);
+        return permissionFactory.newPermission(null, null, null, null);
     }
 }
