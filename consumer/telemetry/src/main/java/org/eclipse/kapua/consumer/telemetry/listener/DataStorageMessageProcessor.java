@@ -23,7 +23,6 @@ import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.camel.listener.AbstractProcessor;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreCommunicationException;
@@ -37,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.0
  */
 @UriEndpoint(title = "Data storage message processor", syntax = "bean:dataMessageProcessor", scheme = "bean")
-public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMessage<?>> {
+public class DataStorageMessageProcessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataStorageMessageProcessor.class);
 
@@ -51,9 +50,7 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
     private final Counter metricQueueGenericErrorCount;
 
     public DataStorageMessageProcessor() {
-        super("DataStorage");
         MetricsService metricService = MetricServiceFactory.getInstance();
-
         metricQueueCommunicationErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DATASTORE, MetricsLabel.STORE, MetricsLabel.QUEUE, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
         metricQueueConfigurationErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DATASTORE, MetricsLabel.STORE, MetricsLabel.QUEUE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
         metricQueueGenericErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DATASTORE, MetricsLabel.STORE, MetricsLabel.QUEUE, MetricsLabel.GENERIC, MetricsLabel.ERROR, MetricsLabel.COUNT);
@@ -64,7 +61,6 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
      *
      * @throws KapuaException
      */
-    @Override
     public void processMessage(CamelKapuaMessage<?> message) throws KapuaException {
         // data messages
         LOG.debug("Received data message from device channel: client id '{}' - {}", message.getMessage().getClientId(), message.getMessage().getChannel());

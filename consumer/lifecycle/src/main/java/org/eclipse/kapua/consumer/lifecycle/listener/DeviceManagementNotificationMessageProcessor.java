@@ -21,7 +21,6 @@ import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.camel.listener.AbstractProcessor;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.device.management.job.manager.JobDeviceManagementOperationManagerService;
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyChannel;
@@ -37,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.0.0
  */
 @UriEndpoint(title = "Device management notification storage message processor", syntax = "bean:deviceManagementNotificationMessageProcessor", scheme = "bean")
-public class DeviceManagementNotificationMessageProcessor extends AbstractProcessor<CamelKapuaMessage<?>> {
+public class DeviceManagementNotificationMessageProcessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceManagementNotificationMessageProcessor.class);
 
@@ -50,12 +49,10 @@ public class DeviceManagementNotificationMessageProcessor extends AbstractProces
     private final Counter metricQueueGenericErrorCount;
 
     public DeviceManagementNotificationMessageProcessor() {
-        super("Device Management Notify Processor");
         MetricsService metricService = MetricServiceFactory.getInstance();
-
-        metricQueueCommunicationErrorCount = metricService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, MetricsLabel.PROCESS_QUEUE, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
-        metricQueueConfigurationErrorCount = metricService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, MetricsLabel.PROCESS_QUEUE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
-        metricQueueGenericErrorCount = metricService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, MetricsLabel.PROCESS_QUEUE, MetricsLabel.GENERIC, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricQueueCommunicationErrorCount = metricService.getCounter("DeviceManagementNotifyProcessor", MetricsLabel.PROCESSOR, DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, MetricsLabel.PROCESS_QUEUE, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricQueueConfigurationErrorCount = metricService.getCounter("DeviceManagementNotifyProcessor", MetricsLabel.PROCESSOR, DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, MetricsLabel.PROCESS_QUEUE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricQueueGenericErrorCount = metricService.getCounter("DeviceManagementNotifyProcessor", MetricsLabel.PROCESSOR, DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, MetricsLabel.PROCESS_QUEUE, MetricsLabel.GENERIC, MetricsLabel.ERROR, MetricsLabel.COUNT);
     }
 
     /**
@@ -63,7 +60,6 @@ public class DeviceManagementNotificationMessageProcessor extends AbstractProces
      *
      * @throws KapuaException
      */
-    @Override
     public void processMessage(CamelKapuaMessage<?> message) throws KapuaException {
         LOG.debug("Received notification message from device channel: client id '{}' - {}", message.getMessage().getClientId(), message.getMessage().getChannel());
 

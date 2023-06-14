@@ -22,10 +22,11 @@ import org.eclipse.kapua.client.security.bean.EntityRequest;
 import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.bean.MessageConstants;
 import org.eclipse.kapua.client.security.bean.Request;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
+import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
-import org.eclipse.kapua.service.camel.listener.AbstractListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,9 +36,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 @UriEndpoint(title = "authentication service listener", syntax = "bean:authenticationServiceListener", scheme = "bean")
-public class AuthenticationServiceListener extends AbstractListener {
+public class AuthenticationServiceListener {
 
     protected static final Logger logger = LoggerFactory.getLogger(AuthenticationServiceListener.class);
+
+    private static ObjectMapper mapper = new ObjectMapper();
+    private static ObjectWriter writer = mapper.writer();
 
     public static final String METRIC_AUTHENTICATION = "authentication";
     public static final String METRIC_LOGIN = "login";
@@ -55,17 +59,14 @@ public class AuthenticationServiceListener extends AbstractListener {
     private AuthenticationServiceBackEndCall authenticationServiceBackEndCall;
 
     public AuthenticationServiceListener() {
-        super(METRIC_AUTHENTICATION);
-        metricLoginCount = registerCounter(MetricsLabel.MESSAGES, METRIC_LOGIN, MetricsLabel.COUNT);
-        metricLoginRequestCount = registerCounter(MetricsLabel.MESSAGES, METRIC_LOGIN, MetricsLabel.REQUEST, MetricsLabel.COUNT);
-        metricLogoutCount = registerCounter(MetricsLabel.MESSAGES, METRIC_LOGOUT, MetricsLabel.COUNT);
-        metricLogoutRequestCount = registerCounter(MetricsLabel.MESSAGES, METRIC_LOGOUT, MetricsLabel.REQUEST, MetricsLabel.COUNT);
-        metricGetAccountCount = registerCounter(MetricsLabel.MESSAGES, METRIC_GET_ACCOUNT, MetricsLabel.COUNT);
-        metricGetAccountRequestCount = registerCounter(MetricsLabel.MESSAGES, METRIC_GET_ACCOUNT, MetricsLabel.REQUEST, MetricsLabel.COUNT);
+        MetricsService metricService = MetricServiceFactory.getInstance();
+        metricLoginCount = metricService.getCounter(METRIC_AUTHENTICATION, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, METRIC_LOGIN, MetricsLabel.COUNT);
+        metricLoginRequestCount = metricService.getCounter(METRIC_AUTHENTICATION, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, METRIC_LOGIN, MetricsLabel.REQUEST, MetricsLabel.COUNT);
+        metricLogoutCount = metricService.getCounter(METRIC_AUTHENTICATION, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, METRIC_LOGOUT, MetricsLabel.COUNT);
+        metricLogoutRequestCount = metricService.getCounter(METRIC_AUTHENTICATION, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, METRIC_LOGOUT, MetricsLabel.REQUEST, MetricsLabel.COUNT);
+        metricGetAccountCount = metricService.getCounter(METRIC_AUTHENTICATION, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, METRIC_GET_ACCOUNT, MetricsLabel.COUNT);
+        metricGetAccountRequestCount = metricService.getCounter(METRIC_AUTHENTICATION, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, METRIC_GET_ACCOUNT, MetricsLabel.REQUEST, MetricsLabel.COUNT);
     }
-
-    private static ObjectMapper mapper = new ObjectMapper();
-    private static ObjectWriter writer = mapper.writer();
 
     public void brokerConnect(Exchange exchange, AuthRequest authRequest) throws JsonProcessingException, JMSException {
         metricLoginRequestCount.inc();
