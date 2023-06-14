@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.device.management.packages.job;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
@@ -36,12 +35,13 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DevicePackageUninstallTargetProcessor extends AbstractDevicePackageTargetProcessor implements TargetProcessor {
-    private final DevicePackageManagementService devicePackageManagementService = KapuaLocator.getInstance().getService(DevicePackageManagementService.class);
-    private final DevicePackageFactory devicePackageFactory = KapuaLocator.getInstance().getFactory(DevicePackageFactory.class);
 
     @Inject
+    DevicePackageManagementService devicePackageManagementService;
+    @Inject
+    DevicePackageFactory devicePackageFactory;
+    @Inject
     JobContext jobContext;
-
     @Inject
     StepContext stepContext;
 

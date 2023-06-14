@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractDeviceTargetProcessor;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.bundle.job.definition.DeviceBundlePropertyKeys;
@@ -33,11 +32,11 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DeviceBundleStopTargetProcessor extends AbstractDeviceTargetProcessor implements TargetProcessor {
-    private final DeviceBundleManagementService deviceBundleManagementService = KapuaLocator.getInstance().getService(DeviceBundleManagementService.class);
 
     @Inject
+    DeviceBundleManagementService deviceBundleManagementService;
+    @Inject
     JobContext jobContext;
-
     @Inject
     StepContext stepContext;
 

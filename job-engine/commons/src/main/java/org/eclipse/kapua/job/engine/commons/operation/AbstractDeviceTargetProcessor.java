@@ -14,13 +14,16 @@ package org.eclipse.kapua.job.engine.commons.operation;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 
+import javax.inject.Inject;
+
 public abstract class AbstractDeviceTargetProcessor extends AbstractTargetProcessor {
-    protected final DeviceRegistryService deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
+
+    @Inject
+    DeviceRegistryService deviceRegistryService;
 
     @Override
     protected String getTargetDisplayName(JobTarget jobTarget) throws KapuaException {

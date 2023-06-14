@@ -19,7 +19,6 @@ import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractDeviceTargetProcessor;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationCreator;
@@ -33,6 +32,8 @@ import org.eclipse.kapua.service.job.operation.TargetProcessor;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 
+import javax.inject.Inject;
+
 /**
  * {@link AbstractDevicePackageTargetProcessor} for {@link DevicePackageManagementService} operations.
  *
@@ -40,11 +41,16 @@ import org.eclipse.kapua.service.job.targets.JobTargetStatus;
  */
 public abstract class AbstractDevicePackageTargetProcessor extends AbstractDeviceTargetProcessor implements TargetProcessor {
 
-    private final DeviceManagementOperationRegistryService deviceManagementOperationRegistryService = KapuaLocator.getInstance().getService(DeviceManagementOperationRegistryService.class);
-    private final JobDeviceManagementOperationService jobDeviceManagementOperationService = KapuaLocator.getInstance().getService(JobDeviceManagementOperationService.class);
-    private final JobDeviceManagementOperationFactory jobDeviceManagementOperationFactory = KapuaLocator.getInstance().getFactory(JobDeviceManagementOperationFactory.class);
-    private final JobEngineService jobEngineService = KapuaLocator.getInstance().getService(JobEngineService.class);
-    private final JobEngineFactory jobEngineFactory = KapuaLocator.getInstance().getFactory(JobEngineFactory.class);
+    @Inject
+    DeviceManagementOperationRegistryService deviceManagementOperationRegistryService;
+    @Inject
+    JobDeviceManagementOperationService jobDeviceManagementOperationService;
+    @Inject
+    JobDeviceManagementOperationFactory jobDeviceManagementOperationFactory;
+    @Inject
+    JobEngineService jobEngineService;
+    @Inject
+    JobEngineFactory jobEngineFactory;
 
     protected void createJobDeviceManagementOperation(KapuaId scopeId, KapuaId jobId, JobTarget jobTarget, KapuaId operationId) throws KapuaException {
         // Save the jobId-deviceManagementOperationId pair to track resuming

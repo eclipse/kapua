@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractDeviceTargetProcessor;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService;
@@ -34,11 +33,10 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DeviceCommandExecTargetProcessor extends AbstractDeviceTargetProcessor implements TargetProcessor {
-    private final DeviceCommandManagementService deviceCommandManagementService = KapuaLocator.getInstance().getService(DeviceCommandManagementService.class);
-
+    @Inject
+    DeviceCommandManagementService deviceCommandManagementService;
     @Inject
     JobContext jobContext;
-
     @Inject
     StepContext stepContext;
 
