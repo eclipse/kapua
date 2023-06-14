@@ -19,7 +19,6 @@ import org.apache.shiro.util.ThreadContext;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.service.camel.listener.AbstractListener;
 import org.eclipse.kapua.service.client.message.MessageConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,13 +28,9 @@ import java.util.Base64;
 /**
  * Kapua Camel session filter used to bind/unbind Kapua session to the thread context
  */
-public class KapuaCamelFilter extends AbstractListener {
+public class KapuaCamelFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(KapuaCamelFilter.class);
-
-    public KapuaCamelFilter() {
-        super("filter");
-    }
 
     /**
      * Bind the Kapua session retrieved from the message header (with key {@link MessageConstants#HEADER_KAPUA_SESSION}) to the current thread context.

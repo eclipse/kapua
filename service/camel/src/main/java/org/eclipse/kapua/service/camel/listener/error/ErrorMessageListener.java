@@ -19,9 +19,10 @@ import java.util.Date;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.spi.UriEndpoint;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
+import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
-import org.eclipse.kapua.service.camel.listener.AbstractListener;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.client.message.MessageConstants;
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.codahale.metrics.Counter;
 
 @UriEndpoint(title = "error message processor", syntax = "bean:ecErrorMessageListener", scheme = "bean")
-public class ErrorMessageListener extends AbstractListener {
+public class ErrorMessageListener {
 
     private static final String ERROR_MESSAGE_LOGGER_NAME = "errorMessage";
     private static final Logger ERROR_MESSAGE_LOGGER = LoggerFactory.getLogger(ERROR_MESSAGE_LOGGER_NAME);
@@ -51,11 +52,11 @@ public class ErrorMessageListener extends AbstractListener {
     private Counter metricErrorUnknownBodyType;
 
     public ErrorMessageListener() {
-        super(MetricsLabel.ERROR);
-        metricError = registerCounter(MetricsLabel.MESSAGES, "generic", MetricsLabel.COUNT);
-        metricErrorStoredToFile = registerCounter(MetricsLabel.MESSAGES, "file_store", MetricsLabel.COUNT);
-        metricErrorStoredToFileError = registerCounter(MetricsLabel.MESSAGES, "file_store", MetricsLabel.ERROR, MetricsLabel.COUNT);
-        metricErrorUnknownBodyType = registerCounter(MetricsLabel.MESSAGES, "message_conversion_unknown_type", MetricsLabel.ERROR, MetricsLabel.COUNT);
+        MetricsService metricsService = MetricServiceFactory.getInstance();
+        metricError = metricsService.getCounter(MetricsLabel.ERROR, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, "generic", MetricsLabel.COUNT);
+        metricErrorStoredToFile = metricsService.getCounter(MetricsLabel.ERROR, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, "file_store", MetricsLabel.COUNT);
+        metricErrorStoredToFileError = metricsService.getCounter(MetricsLabel.ERROR, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, "file_store", MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricErrorUnknownBodyType = metricsService.getCounter(MetricsLabel.ERROR, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, "message_conversion_unknown_type", MetricsLabel.ERROR, MetricsLabel.COUNT);
     }
 
     /**

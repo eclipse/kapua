@@ -15,13 +15,14 @@ package org.eclipse.kapua.consumer.lifecycle.listener;
 import com.codahale.metrics.Counter;
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
+import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
-import org.eclipse.kapua.service.camel.listener.AbstractListener;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceManagementTriggerManagerService;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
@@ -38,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.0.0
  */
 @UriEndpoint(title = "device message processor", syntax = "bean:deviceMessageListener", scheme = "bean")
-public class DeviceMessageListener extends AbstractListener {
+public class DeviceMessageListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceMessageListener.class);
 
@@ -53,14 +54,14 @@ public class DeviceMessageListener extends AbstractListener {
     private Counter metricDeviceErrorMessage;
 
     public DeviceMessageListener() {
-        super(DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_DEVICE_LIFE_CYCLE);
+        MetricsService metricsService = MetricServiceFactory.getInstance();
         deviceLifeCycleService = KapuaLocator.getInstance().getService(DeviceLifeCycleService.class);
         jobDeviceManagementTriggerManagerService = KapuaLocator.getInstance().getService(JobDeviceManagementTriggerManagerService.class);
-        metricDeviceBirthMessage = registerCounter(MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_BIRTH, MetricsLabel.COUNT);
-        metricDeviceDisconnectMessage = registerCounter(MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_DC, MetricsLabel.COUNT);
-        metricDeviceMissingMessage = registerCounter(MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_MISSING, MetricsLabel.COUNT);
-        metricDeviceAppsMessage = registerCounter(MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_APPS, MetricsLabel.COUNT);
-        metricDeviceErrorMessage = registerCounter(MetricsLabel.MESSAGES, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricDeviceBirthMessage = metricsService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_DEVICE_LIFE_CYCLE, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_BIRTH, MetricsLabel.COUNT);
+        metricDeviceDisconnectMessage = metricsService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_DEVICE_LIFE_CYCLE, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_DC, MetricsLabel.COUNT);
+        metricDeviceMissingMessage = metricsService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_DEVICE_LIFE_CYCLE, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_MISSING, MetricsLabel.COUNT);
+        metricDeviceAppsMessage = metricsService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_DEVICE_LIFE_CYCLE, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_APPS, MetricsLabel.COUNT);
+        metricDeviceErrorMessage = metricsService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_DEVICE_LIFE_CYCLE, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, MetricsLabel.ERROR, MetricsLabel.COUNT);
     }
 
     /**

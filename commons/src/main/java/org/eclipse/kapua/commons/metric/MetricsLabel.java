@@ -14,6 +14,8 @@ package org.eclipse.kapua.commons.metric;
 
 public class MetricsLabel {
 
+    public static final String PROCESSOR = "processor";
+
     public static final String MODULE_CONVERTER = "converter";
     public static final String MODULE_CORE = "core";
     public static final String MODULE_DATASTORE = "datastore";
