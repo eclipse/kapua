@@ -1,0 +1,8 @@
+version: '3.1'
+
+services:
+  consumer-telemetry:
+    ports:
+      - ${KAPUA_CONSUMER_TELEMETRY_JMX_PORT:-9877}:${KAPUA_CONSUMER_TELEMETRY_JMX_PORT:-9877}
+    environment:
+      - JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=${KAPUA_CONSUMER_TELEMETRY_JMX_PORT:-9877} -Dcom.sun.management.jmxremote.rmi.port=${KAPUA_CONSUMER_TELEMETRY_JMX_PORT:-9877} -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=0.0.0.0

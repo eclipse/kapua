@@ -1,0 +1,8 @@
+version: '3.1'
+
+services:
+  consumer-lifecycle:
+    ports:
+      - ${KAPUA_CONSUMER_LIFECYCLE_JMX_PORT:-9876}:${KAPUA_CONSUMER_LIFECYCLE_JMX_PORT:-9876}
+    environment:
+      - JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=${KAPUA_CONSUMER_LIFECYCLE_JMX_PORT:-9876} -Dcom.sun.management.jmxremote.rmi.port=${KAPUA_CONSUMER_LIFECYCLE_JMX_PORT:-9876} -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=0.0.0.0

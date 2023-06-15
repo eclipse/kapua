@@ -1,0 +1,8 @@
+version: '3.1'
+
+services:
+  job-engine:
+    ports:
+      - ${KAPUA_JOB_ENGINE_DEBUG_PORT:-9883}:${KAPUA_JOB_ENGINE_DEBUG_PORT:-9883}
+    environment:
+      - JETTY_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=${KAPUA_JOB_ENGINE_DEBUG_PORT:-9883} -Dcom.sun.management.jmxremote.rmi.port=${KAPUA_JOB_ENGINE_DEBUG_PORT:-9883} -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=0.0.0.0

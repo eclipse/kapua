@@ -53,7 +53,6 @@ services:
     container_name: service-auth
     ports:
       - 8100:8080
-      - 8011:8001
     depends_on:
       - db
       - events-broker

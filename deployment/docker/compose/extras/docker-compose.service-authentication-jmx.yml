@@ -1,0 +1,8 @@
+version: '3.1'
+
+services:
+  service-authentication:
+    ports:
+      - ${KAPUA_SERVICE_AUTHENTICATION_JMX_PORT:-9880}:${KAPUA_SERVICE_AUTHENTICATION_JMX_PORT:-9880}
+    environment:
+      - JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=${KAPUA_SERVICE_AUTHENTICATION_JMX_PORT:-9880} -Dcom.sun.management.jmxremote.rmi.port=${KAPUA_SERVICE_AUTHENTICATION_JMX_PORT:-9880} -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=0.0.0.0
