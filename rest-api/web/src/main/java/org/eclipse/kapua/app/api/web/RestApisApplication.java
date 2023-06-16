@@ -15,6 +15,7 @@ package org.eclipse.kapua.app.api.web;
 import org.eclipse.kapua.app.api.core.KapuaSerializableBodyWriter;
 import org.eclipse.kapua.app.api.core.ListBodyWriter;
 import org.eclipse.kapua.app.api.core.MoxyJsonConfigContextResolver;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.rest.errors.ExceptionConfigurationProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -67,6 +68,8 @@ public class RestApisApplication extends ResourceConfig {
 
             @Override
             public void onStartup(Container container) {
+                //TODO to be injected!!!
+                CommonsMetric.module = "rest-api";
                 ServiceLocator serviceLocator = container.getApplicationHandler().getInjectionManager().getInstance(ServiceLocator.class);
 
                 RestApiJAXBContextProvider provider = serviceLocator.createAndInitialize(RestApiJAXBContextProvider.class);

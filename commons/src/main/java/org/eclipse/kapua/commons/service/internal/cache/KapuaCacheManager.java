@@ -12,12 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal.cache;
 
-import com.codahale.metrics.Counter;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.setting.KapuaSettingException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
@@ -56,9 +54,6 @@ public class KapuaCacheManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KapuaCacheManager.class);
 
-    private static final String MODULE_NAME = "cache";
-    private static final String COMPONENT_NAME = "manager";
-
     private static final SystemSetting SYSTEM_SETTING = SystemSetting.getInstance();
     private static final String CACHING_PROVIDER_CLASS_NAME = SYSTEM_SETTING.getString(SystemSettingKey.CACHING_PROVIDER);
     private static final String DEFAULT_CACHING_PROVIDER_CLASS_NAME = "org.eclipse.kapua.commons.service.internal.cache.dummy.CachingProvider";
@@ -68,17 +63,6 @@ public class KapuaCacheManager {
     private static final URI CACHE_CONFIG_URI = getCacheConfig();
 
     private static CacheManager cacheManager;
-    private static Integer cacheStatus = new Integer(0);
-    private static Counter registeredCache;
-
-    static {
-        try {
-            MetricServiceFactory.getInstance().registerGauge(() -> cacheStatus, MODULE_NAME, COMPONENT_NAME, "cache_status");
-            registeredCache = MetricServiceFactory.getInstance().getCounter(MODULE_NAME, COMPONENT_NAME, "available_cache_count");
-        } catch (KapuaException e) {
-            LOGGER.error("Error registering cache status metrics! Error: {}", e.getMessage(), e);
-        }
-    }
 
     private KapuaCacheManager() {
     }
@@ -131,7 +115,7 @@ public class KapuaCacheManager {
                     checkCacheManager();
                     cache = cacheManager.createCache(cacheName, initConfig());
                     CACHE_MAP.put(cacheName, cache);
-                    registeredCache.inc();
+                    CommonsMetric.getInstance().getRegisteredCache().inc();
                     LOGGER.info("Created cache: {} - Expiry Policy: {} - TTL: {}", cacheName, EXPIRY_POLICY, TTL);
                 }
             }
@@ -151,7 +135,7 @@ public class KapuaCacheManager {
                     cachingProvider = Caching.getCachingProvider();
                 }
                 //set the default cache flag
-                cacheStatus = 1;
+                CommonsMetric.getInstance().setCacheStatus(1);
             } catch (CacheException e) {
                 //set the "default cache" flag (already done by initDefualtCacheProvider)
                 LOGGER.warn("Error while loading the CachingProvider... Loading the default one ({}).", DEFAULT_CACHING_PROVIDER_CLASS_NAME);
@@ -171,7 +155,7 @@ public class KapuaCacheManager {
 
     private static CachingProvider initDefualtCacheProvider() {
         //set the default cache flag
-        cacheStatus = -1;
+        CommonsMetric.getInstance().setCacheStatus(-1);
         return Caching.getCachingProvider(DEFAULT_CACHING_PROVIDER_CLASS_NAME);
     }
 
@@ -193,7 +177,7 @@ public class KapuaCacheManager {
     public static void invalidateAll() {
         CACHE_MAP.forEach((cacheKey, cache) -> {
             cache.clear();
-            registeredCache.dec();
+            CommonsMetric.getInstance().getRegisteredCache().dec();
         });
     }
 

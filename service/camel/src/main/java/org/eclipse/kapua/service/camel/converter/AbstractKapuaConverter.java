@@ -49,39 +49,34 @@ public abstract class AbstractKapuaConverter {
 
     public static final Logger logger = LoggerFactory.getLogger(AbstractKapuaConverter.class);
 
+    private static final String CONVERTER = "converter";
+    private static final String CONVERTER_JMS = "converter_jms";
     protected static final MetricsService METRICS_SERVICE = MetricServiceFactory.getInstance();
 
-    private final Counter metricConverterJmsMessage;
+    private final Counter metricConverterJmsAttemptMessage;
     private final Counter metricConverterJmsErrorMessage;
     private final Counter metricConverterErrorMessage;
 
     /**
      * Constructor
      */
-    protected AbstractKapuaConverter() {
-        metricConverterJmsMessage = METRICS_SERVICE.getCounter(
-                MetricsLabel.MODULE_CONVERTER,
-                MetricsLabel.COMPONENT_KAPUA,
-                MetricsLabel.MESSAGE_FORMAT_JMS,
-                MetricsLabel.MESSAGES,
-                MetricsLabel.COUNT
+    protected AbstractKapuaConverter(String module) {
+        metricConverterJmsAttemptMessage = METRICS_SERVICE.getCounter(
+            module,
+            CONVERTER_JMS,
+            MetricsLabel.ATTEMPT
         );
 
         metricConverterJmsErrorMessage = METRICS_SERVICE.getCounter(
-                MetricsLabel.MODULE_CONVERTER,
-                MetricsLabel.COMPONENT_KAPUA,
-                MetricsLabel.MESSAGE_FORMAT_JMS,
-                MetricsLabel.MESSAGES,
-                MetricsLabel.ERROR,
-                MetricsLabel.COUNT
+            module,
+            CONVERTER_JMS,
+            MetricsLabel.ERROR
         );
 
         metricConverterErrorMessage = METRICS_SERVICE.getCounter(
-                MetricsLabel.MODULE_CONVERTER,
-                MetricsLabel.COMPONENT_KAPUA,
-                MetricsLabel.KAPUA_MESSAGE,
-                MetricsLabel.ERROR,
-                MetricsLabel.COUNT);
+            module,
+            CONVERTER,
+            MetricsLabel.ERROR);
     }
 
     /**
@@ -130,7 +125,7 @@ public abstract class AbstractKapuaConverter {
      */
     @Converter
     public Message convertToJmsMessage(Exchange exchange, Object value) throws KapuaException {
-        metricConverterJmsMessage.inc();
+        metricConverterJmsAttemptMessage.inc();
         // assume that the message is a Camel Jms message
         JmsMessage message = exchange.getIn(JmsMessage.class);
         if (message.getJmsMessage() instanceof BytesMessage) {

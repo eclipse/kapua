@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
@@ -83,11 +82,13 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(MessageStoreFacade.class);
 
+    public static final String DUPLICATED_STORE = "duplicated_store";
+
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final StorableIdFactory STORABLE_ID_FACTORY = LOCATOR.getFactory(StorableIdFactory.class);
     private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
 
-    private final Counter metricMessagesAlreadyInTheDatastoreCount;
+    private final Counter alreadyInTheDatastoreCount;
 
     private final MessageStoreMediator mediator;
 
@@ -108,7 +109,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
         this.mediator = mediator;
 
         MetricsService metricService = MetricServiceFactory.getInstance();
-        metricMessagesAlreadyInTheDatastoreCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.MESSAGES, MetricsLabel.ALREADY_IN_THE_STORE, MetricsLabel.COUNT);
+        alreadyInTheDatastoreCount = metricService.getCounter(MessageStoreServiceImpl.CONSUMER_TELEMETRY, MessageStoreServiceImpl.STORE, DUPLICATED_STORE);
     }
 
     /**
@@ -159,7 +160,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
             DatastoreMessage datastoreMessage = find(message.getScopeId(), STORABLE_ID_FACTORY.newStorableId(messageId), StorableFetchStyle.SOURCE_SELECT);
             if (datastoreMessage != null) {
                 LOG.debug("Message with datatstore id '{}' already found", messageId);
-                metricMessagesAlreadyInTheDatastoreCount.inc();
+                alreadyInTheDatastoreCount.inc();
                 return STORABLE_ID_FACTORY.newStorableId(messageId);
             }
         }

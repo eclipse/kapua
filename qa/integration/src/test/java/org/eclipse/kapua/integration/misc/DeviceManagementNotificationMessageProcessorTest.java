@@ -17,8 +17,8 @@ import org.apache.camel.Exchange;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
+import org.eclipse.kapua.consumer.lifecycle.MetricLabel;
 import org.eclipse.kapua.consumer.lifecycle.listener.DeviceManagementNotificationMessageProcessor;
-import org.eclipse.kapua.consumer.lifecycle.listener.DeviceManagementRegistryNotificationMetrics;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
@@ -46,9 +46,8 @@ public class DeviceManagementNotificationMessageProcessorTest {
         camelKapuaMessage = Mockito.mock(CamelKapuaMessage.class);
         exchange = Mockito.mock(Exchange.class);
         message = Mockito.mock(KapuaMessage.class);
-        queueConfigurationErrorCount = MetricServiceFactory.getInstance().getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, MetricsLabel.PROCESS_QUEUE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
-        queueGenericErrorCount = MetricServiceFactory.getInstance().getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, MetricsLabel.PROCESS_QUEUE, MetricsLabel.GENERIC, MetricsLabel.ERROR, MetricsLabel.COUNT);
-
+        queueConfigurationErrorCount = MetricServiceFactory.getInstance().getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricLabel.DEVICE_MANAGEMENT_NOTIFICATION, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR);
+        queueGenericErrorCount = MetricServiceFactory.getInstance().getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricLabel.DEVICE_MANAGEMENT_NOTIFICATION, MetricsLabel.GENERIC, MetricsLabel.ERROR);
         Mockito.when(camelKapuaMessage.getDatastoreId()).thenReturn("datastoreID");
         Mockito.when(camelKapuaMessage.getMessage()).thenReturn(message);
         Mockito.when(message.getId()).thenReturn(new UUID(1, 10));

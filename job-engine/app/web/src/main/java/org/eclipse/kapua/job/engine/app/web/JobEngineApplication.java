@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.app.web;
 
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.rest.errors.ExceptionConfigurationProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.app.web.jaxb.JobEngineJAXBContextProvider;
@@ -29,6 +30,8 @@ import javax.ws.rs.core.MediaType;
 import java.util.HashMap;
 
 public class JobEngineApplication extends ResourceConfig {
+
+    private static final String MODULE = "job-engine";
 
     public JobEngineApplication() {
         register(new AbstractBinder() {
@@ -54,6 +57,8 @@ public class JobEngineApplication extends ResourceConfig {
 
             @Override
             public void onStartup(Container container) {
+                //TODO to be injected!!!
+                CommonsMetric.module = MODULE;
                 ServiceLocator serviceLocator = container.getApplicationHandler().getInjectionManager().getInstance(ServiceLocator.class);
                 JobEngineJAXBContextProvider provider = serviceLocator.createAndInitialize(JobEngineJAXBContextProvider.class);
                 XmlUtil.setContextProvider(provider);

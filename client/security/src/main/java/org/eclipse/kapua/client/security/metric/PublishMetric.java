@@ -16,6 +16,8 @@ import com.codahale.metrics.Counter;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Timer;
 
+import org.eclipse.kapua.client.security.MetricLabel;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
@@ -37,11 +39,11 @@ public class PublishMetric {
     private PublishMetric() {
         MetricsService metricsService = MetricServiceFactory.getInstance();
         // publish/subscribe
-        allowedMessages = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_PUBLISH, MetricsLabel.ALLOWED, MetricsLabel.COUNT);
-        notAllowedMessages = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_PUBLISH, MetricsLabel.NOT_ALLOWED, MetricsLabel.COUNT);
-        time = metricsService.getTimer(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_PUBLISH, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        allowedMessages = metricsService.getCounter(CommonsMetric.module, MetricLabel.COMPONENT_PUBLISH, MetricLabel.ALLOWED);
+        notAllowedMessages = metricsService.getCounter(CommonsMetric.module, MetricLabel.COMPONENT_PUBLISH, MetricLabel.NOT_ALLOWED);
+        time = metricsService.getTimer(CommonsMetric.module, MetricLabel.COMPONENT_PUBLISH, MetricsLabel.TIME, MetricsLabel.SECONDS);
         // message size
-        messageSizeAllowed = metricsService.getHistogram(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_PUBLISH, MetricsLabel.MESSAGES, MetricsLabel.ALLOWED, MetricsLabel.SIZE, MetricsLabel.BYTES);
+        messageSizeAllowed = metricsService.getHistogram(CommonsMetric.module, MetricLabel.COMPONENT_PUBLISH, MetricLabel.ALLOWED, MetricsLabel.SIZE, MetricsLabel.BYTES);
     }
 
     public Counter getAllowedMessages() {

@@ -40,13 +40,10 @@ public class AuthenticationServiceListener {
 
     protected static final Logger logger = LoggerFactory.getLogger(AuthenticationServiceListener.class);
 
+    private static final String REQUEST = "request";
+
     private static ObjectMapper mapper = new ObjectMapper();
     private static ObjectWriter writer = mapper.writer();
-
-    public static final String METRIC_AUTHENTICATION = "authentication";
-    public static final String METRIC_LOGIN = "login";
-    public static final String METRIC_LOGOUT = "logout";
-    public static final String METRIC_GET_ACCOUNT = "getAccount";
 
     private Counter metricLoginCount;
     private Counter metricLoginRequestCount;
@@ -60,12 +57,12 @@ public class AuthenticationServiceListener {
 
     public AuthenticationServiceListener() {
         MetricsService metricService = MetricServiceFactory.getInstance();
-        metricLoginCount = metricService.getCounter(METRIC_AUTHENTICATION, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, METRIC_LOGIN, MetricsLabel.COUNT);
-        metricLoginRequestCount = metricService.getCounter(METRIC_AUTHENTICATION, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, METRIC_LOGIN, MetricsLabel.REQUEST, MetricsLabel.COUNT);
-        metricLogoutCount = metricService.getCounter(METRIC_AUTHENTICATION, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, METRIC_LOGOUT, MetricsLabel.COUNT);
-        metricLogoutRequestCount = metricService.getCounter(METRIC_AUTHENTICATION, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, METRIC_LOGOUT, MetricsLabel.REQUEST, MetricsLabel.COUNT);
-        metricGetAccountCount = metricService.getCounter(METRIC_AUTHENTICATION, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, METRIC_GET_ACCOUNT, MetricsLabel.COUNT);
-        metricGetAccountRequestCount = metricService.getCounter(METRIC_AUTHENTICATION, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, METRIC_GET_ACCOUNT, MetricsLabel.REQUEST, MetricsLabel.COUNT);
+        metricLoginCount = metricService.getCounter(MetricLabel.SERVICE_AUTHENTICATION, MetricLabel.LOGIN, MetricsLabel.SUCCESS);
+        metricLoginRequestCount = metricService.getCounter(MetricLabel.SERVICE_AUTHENTICATION, MetricLabel.LOGIN, REQUEST);
+        metricLogoutCount = metricService.getCounter(MetricLabel.SERVICE_AUTHENTICATION, MetricLabel.LOGOUT, MetricsLabel.SUCCESS);
+        metricLogoutRequestCount = metricService.getCounter(MetricLabel.SERVICE_AUTHENTICATION, MetricLabel.LOGOUT, REQUEST);
+        metricGetAccountCount = metricService.getCounter(MetricLabel.SERVICE_AUTHENTICATION, MetricLabel.GET_ACCOUNT, MetricsLabel.SUCCESS);
+        metricGetAccountRequestCount = metricService.getCounter(MetricLabel.SERVICE_AUTHENTICATION, MetricLabel.GET_ACCOUNT, REQUEST);
     }
 
     public void brokerConnect(Exchange exchange, AuthRequest authRequest) throws JsonProcessingException, JMSException {

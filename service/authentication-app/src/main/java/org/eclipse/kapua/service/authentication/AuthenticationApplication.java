@@ -16,6 +16,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.env.BasicIniEnvironment;
 import org.apache.shiro.env.Environment;
 import org.apache.shiro.mgt.SecurityManager;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.service.camel.setting.ServiceSettingKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,10 @@ public class AuthenticationApplication {
     }
 
     public static void main(String[] args) {
+        //TODO to be injected!!!
+        CommonsMetric.module = MetricLabel.SERVICE_AUTHENTICATION;
+        //TODO to be injected!!!
+        CommonsMetric.module = MetricLabel.SERVICE_AUTHENTICATION;
         //statically set parameters
         System.setProperty(ServiceSettingKey.JAXB_CONTEXT_CLASS_NAME.key(), AuthenticationJAXBContextProvider.class.getName());
         //org.springframework.context.ApplicationContext is not needed now so don't keep the SpringApplication.run return

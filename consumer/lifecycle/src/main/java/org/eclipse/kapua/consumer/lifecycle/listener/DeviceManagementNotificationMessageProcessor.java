@@ -20,6 +20,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.consumer.lifecycle.MetricLabel;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.device.management.job.manager.JobDeviceManagementOperationManagerService;
@@ -50,9 +51,9 @@ public class DeviceManagementNotificationMessageProcessor {
 
     public DeviceManagementNotificationMessageProcessor() {
         MetricsService metricService = MetricServiceFactory.getInstance();
-        metricQueueCommunicationErrorCount = metricService.getCounter("DeviceManagementNotifyProcessor", MetricsLabel.PROCESSOR, DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, MetricsLabel.PROCESS_QUEUE, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
-        metricQueueConfigurationErrorCount = metricService.getCounter("DeviceManagementNotifyProcessor", MetricsLabel.PROCESSOR, DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, MetricsLabel.PROCESS_QUEUE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
-        metricQueueGenericErrorCount = metricService.getCounter("DeviceManagementNotifyProcessor", MetricsLabel.PROCESSOR, DeviceManagementRegistryNotificationMetrics.METRIC_MODULE_NAME, DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_NOTIFICATION, MetricsLabel.PROCESS_QUEUE, MetricsLabel.GENERIC, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricQueueCommunicationErrorCount = metricService.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricLabel.DEVICE_MANAGEMENT_NOTIFICATION, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR);
+        metricQueueConfigurationErrorCount = metricService.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricLabel.DEVICE_MANAGEMENT_NOTIFICATION, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR);
+        metricQueueGenericErrorCount = metricService.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricLabel.DEVICE_MANAGEMENT_NOTIFICATION, MetricsLabel.GENERIC, MetricsLabel.ERROR);
     }
 
     /**

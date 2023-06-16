@@ -42,6 +42,7 @@ import org.eclipse.kapua.client.security.context.Utils;
 import org.eclipse.kapua.client.security.metric.LoginMetric;
 import org.eclipse.kapua.client.security.metric.PublishMetric;
 import org.eclipse.kapua.client.security.metric.SubscribeMetric;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
@@ -64,6 +65,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
 
     protected static Logger logger = LoggerFactory.getLogger(ServerPlugin.class);
 
+    private static final String BROKER_TELEMETRY = "broker-telemetry";
     private static final int DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD = 100000;
     private static final String MISSING_TOPIC_SUFFIX = "MQTT.LWT";
 
@@ -88,6 +90,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     protected ServerContext serverContext;
 
     public ServerPlugin() {
+        CommonsMetric.module = BROKER_TELEMETRY;
         publishInfoMessageSizeLimit = BrokerSetting.getInstance().getInt(BrokerSettingKey.PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD, DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD);
         //TODO find a proper way to initialize database
         DatabaseCheckUpdate databaseCheckUpdate = new DatabaseCheckUpdate();

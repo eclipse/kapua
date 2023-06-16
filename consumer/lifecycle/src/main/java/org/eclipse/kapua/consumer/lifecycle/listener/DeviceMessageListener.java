@@ -18,6 +18,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.consumer.lifecycle.MetricLabel;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
@@ -57,11 +58,11 @@ public class DeviceMessageListener {
         MetricsService metricsService = MetricServiceFactory.getInstance();
         deviceLifeCycleService = KapuaLocator.getInstance().getService(DeviceLifeCycleService.class);
         jobDeviceManagementTriggerManagerService = KapuaLocator.getInstance().getService(JobDeviceManagementTriggerManagerService.class);
-        metricDeviceBirthMessage = metricsService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_DEVICE_LIFE_CYCLE, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_BIRTH, MetricsLabel.COUNT);
-        metricDeviceDisconnectMessage = metricsService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_DEVICE_LIFE_CYCLE, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_DC, MetricsLabel.COUNT);
-        metricDeviceMissingMessage = metricsService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_DEVICE_LIFE_CYCLE, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_MISSING, MetricsLabel.COUNT);
-        metricDeviceAppsMessage = metricsService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_DEVICE_LIFE_CYCLE, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_APPS, MetricsLabel.COUNT);
-        metricDeviceErrorMessage = metricsService.getCounter(DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_DEVICE_LIFE_CYCLE, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricDeviceBirthMessage = metricsService.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricsLabel.MESSAGE_BIRTH);
+        metricDeviceDisconnectMessage = metricsService.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricsLabel.MESSAGE_DC);
+        metricDeviceMissingMessage = metricsService.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricsLabel.MESSAGE_MISSING);
+        metricDeviceAppsMessage = metricsService.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricsLabel.MESSAGE_APPS);
+        metricDeviceErrorMessage = metricsService.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricsLabel.ERROR);
     }
 
     /**

@@ -15,6 +15,8 @@ package org.eclipse.kapua.client.security.metric;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
 
+import org.eclipse.kapua.client.security.MetricLabel;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
@@ -33,9 +35,9 @@ public class SubscribeMetric {
 
     private SubscribeMetric() {
         MetricsService metricsService = MetricServiceFactory.getInstance();
-        allowedMessages = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_SUBSCRIBE, MetricsLabel.ALLOWED, MetricsLabel.COUNT);
-        notAllowedMessages = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_SUBSCRIBE, MetricsLabel.NOT_ALLOWED, MetricsLabel.COUNT);
-        time = metricsService.getTimer(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_SUBSCRIBE, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        allowedMessages = metricsService.getCounter(CommonsMetric.module, MetricLabel.COMPONENT_SUBSCRIBE, MetricLabel.ALLOWED);
+        notAllowedMessages = metricsService.getCounter(CommonsMetric.module, MetricLabel.COMPONENT_SUBSCRIBE, MetricLabel.NOT_ALLOWED);
+        time = metricsService.getTimer(CommonsMetric.module, MetricLabel.COMPONENT_SUBSCRIBE, MetricsLabel.TIME, MetricsLabel.SECONDS);
     }
 
     public Counter getAllowedMessages() {

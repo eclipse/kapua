@@ -55,7 +55,9 @@
 
     <bean id="kapuaDataConverter" class="org.eclipse.kapua.consumer.telemetry.converter.KapuaDataConverter"/>
     <bean id="dataStorageMessageProcessor" class="org.eclipse.kapua.consumer.telemetry.listener.DataStorageMessageProcessor"/>
-    <bean id="errorMessageListener" class="org.eclipse.kapua.service.camel.listener.error.ErrorMessageListener"/>
+    <bean id="errorMessageListener" class="org.eclipse.kapua.service.camel.listener.error.ErrorMessageListener">
+        <constructor-arg name="module" type="java.lang.String" value="consumer-telemetry"/>
+    </bean>
 
     <bean id="jaxbContextLoader" class="org.eclipse.kapua.service.camel.xml.ServiceJAXBContextLoader"
         init-method="init"/>

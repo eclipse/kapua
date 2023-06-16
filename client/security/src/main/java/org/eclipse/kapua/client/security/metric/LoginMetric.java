@@ -15,6 +15,8 @@ package org.eclipse.kapua.client.security.metric;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
 
+import org.eclipse.kapua.client.security.MetricLabel;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
@@ -22,6 +24,11 @@ import org.eclipse.kapua.commons.metric.MetricsService;
 public class LoginMetric {
 
     private static final LoginMetric LOGIN_METRIC = new LoginMetric();
+
+    //action
+    private static final String LOGOUT = "logout";
+    private static final String CONNECT = "connect";
+    private static final String DISCONNECT = "disconnect";
 
     private static final String CLIENTS = "clients";
     private static final String INTERNAL_CONNECTOR = "internal_connector";
@@ -37,7 +44,7 @@ public class LoginMetric {
     private static final String ACL_CACHE_HIT = "acl_cache_hit";
     private static final String ACL_CREATION = "acl_creation";
     private static final String STEALING_LINK = "stealing_link";
-    private static final String DISCONNECT_BY_EVENT = MetricsLabel.DISCONNECT + "_by_event";
+    private static final String DISCONNECT_BY_EVENT = DISCONNECT + "_by_event";
     private static final String ILLEGAL_STATE = "illegal_state";
     private static final String ADD_CONNECTION = "add_connection";
     private static final String USER = "user";
@@ -109,54 +116,62 @@ public class LoginMetric {
     private LoginMetric() {
         MetricsService metricsService = MetricServiceFactory.getInstance();
         // login by connectors
-        externalAttempt = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, MetricsLabel.ATTEMPT, MetricsLabel.COUNT);
-        externalSuccess = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, MetricsLabel.SUCCESS, MetricsLabel.COUNT);
-        externalFailure = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, MetricsLabel.FAILURE, MetricsLabel.COUNT);
-        successFromCache = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, SUCCESS_FROM_CACHE, MetricsLabel.COUNT);
-        internalConnectorAttempt = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, INTERNAL_CONNECTOR, MetricsLabel.ATTEMPT, MetricsLabel.COUNT);
-        internalConnectorSuccess = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, INTERNAL_CONNECTOR, MetricsLabel.SUCCESS, MetricsLabel.COUNT);
-        internalConnectorFailure = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, INTERNAL_CONNECTOR, MetricsLabel.FAILURE, MetricsLabel.COUNT);
-        cleanupConnectionFailure = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, CONNECTION_CLEANUP, MetricsLabel.FAILURE, MetricsLabel.COUNT);
-        cleanupConnectionNullSession = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, CONNECTION_CLEANUP, MetricsLabel.FAILURE, MetricsLabel.COUNT);
-        criticalFailure = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, CRITICAL, MetricsLabel.FAILURE, MetricsLabel.COUNT);
-        loginClosedConnectionFailure = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, LOGIN_CLOSED_CONNECTION, MetricsLabel.FAILURE, MetricsLabel.COUNT);
-        duplicateSessionMetadataFailure = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, DUPLICATE_SESSION_METADATA, MetricsLabel.FAILURE, MetricsLabel.COUNT);
-        disconnectCallbackCallFailure = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, CONNECT_CALLBACK_CALL, MetricsLabel.FAILURE, MetricsLabel.COUNT);
-        sessionContextByClientIdFailure = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, SESSION_CONTEXT_BY_CLIENT_ID, MetricsLabel.FAILURE, MetricsLabel.COUNT);
-        aclCacheHit = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, ACL_CACHE_HIT, MetricsLabel.COUNT);
-        aclCreationFailure = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, ACL_CREATION, MetricsLabel.FAILURE, MetricsLabel.COUNT);
+        externalAttempt = getCounter(metricsService, MetricsLabel.ATTEMPT);
+        externalSuccess = getCounter(metricsService, MetricsLabel.SUCCESS);
+        externalFailure = getCounter(metricsService, MetricsLabel.FAILURE);
+        successFromCache = getCounter(metricsService, SUCCESS_FROM_CACHE);
+        internalConnectorAttempt = getCounter(metricsService, INTERNAL_CONNECTOR, MetricsLabel.ATTEMPT);
+        internalConnectorSuccess = getCounter(metricsService, INTERNAL_CONNECTOR, MetricsLabel.SUCCESS);
+        internalConnectorFailure = getCounter(metricsService, INTERNAL_CONNECTOR, MetricsLabel.FAILURE);
+        cleanupConnectionFailure = getCounter(metricsService, CONNECTION_CLEANUP, MetricsLabel.FAILURE);
+        cleanupConnectionNullSession = getCounter(metricsService, CONNECTION_CLEANUP, MetricsLabel.FAILURE);
+        criticalFailure = getCounter(metricsService, CRITICAL, MetricsLabel.FAILURE);
+        loginClosedConnectionFailure = getCounter(metricsService, LOGIN_CLOSED_CONNECTION, MetricsLabel.FAILURE);
+        duplicateSessionMetadataFailure = getCounter(metricsService, DUPLICATE_SESSION_METADATA, MetricsLabel.FAILURE);
+        disconnectCallbackCallFailure = getCounter(metricsService, CONNECT_CALLBACK_CALL, MetricsLabel.FAILURE);
+        sessionContextByClientIdFailure = getCounter(metricsService, SESSION_CONTEXT_BY_CLIENT_ID, MetricsLabel.FAILURE);
+        aclCacheHit = getCounter(metricsService, ACL_CACHE_HIT);
+        aclCreationFailure = getCounter(metricsService, ACL_CREATION, MetricsLabel.FAILURE);
         //logins by user type
-        userConnected = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, CLIENTS, MetricsLabel.CONNECT, MetricsLabel.COUNT);
-        userAttempt = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, CLIENTS, MetricsLabel.ATTEMPT, MetricsLabel.COUNT);
-        userDisconnected = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, CLIENTS, MetricsLabel.DISCONNECT, MetricsLabel.COUNT);
-        userStealingLinkConnect = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, STEALING_LINK, MetricsLabel.CONNECT, MetricsLabel.COUNT);
-        userStealingLinkDisconnect = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, STEALING_LINK, MetricsLabel.DISCONNECT, MetricsLabel.COUNT);
-        userIllegalStateDisconnect = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, ILLEGAL_STATE, MetricsLabel.DISCONNECT, MetricsLabel.COUNT);
-        adminAttempt = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, ADMIN, MetricsLabel.COUNT);
-        adminConnected = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, ADMIN, MetricsLabel.CONNECT, MetricsLabel.COUNT);
-        adminDisconnected = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, ADMIN, MetricsLabel.DISCONNECT, MetricsLabel.COUNT);
-        adminStealingLinkConnect = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, ADMIN, STEALING_LINK, MetricsLabel.CONNECT, MetricsLabel.COUNT);
-        adminStealingLinkDisconnect = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, ADMIN, STEALING_LINK, MetricsLabel.DISCONNECT, MetricsLabel.COUNT);
+        userConnected = getCounter(metricsService, CLIENTS, CONNECT);
+        userAttempt = getCounter(metricsService, CLIENTS, MetricsLabel.ATTEMPT);
+        userDisconnected = getCounter(metricsService, CLIENTS, DISCONNECT);
+        userStealingLinkConnect = getCounter(metricsService, STEALING_LINK, CONNECT);
+        userStealingLinkDisconnect = getCounter(metricsService, STEALING_LINK, DISCONNECT);
+        userIllegalStateDisconnect = getCounter(metricsService, ILLEGAL_STATE, DISCONNECT);
+        adminAttempt = getCounter(metricsService, ADMIN);
+        adminConnected = getCounter(metricsService, ADMIN, CONNECT);
+        adminDisconnected = getCounter(metricsService, ADMIN, DISCONNECT);
+        adminStealingLinkConnect = getCounter(metricsService, ADMIN, STEALING_LINK, CONNECT);
+        adminStealingLinkDisconnect = getCounter(metricsService, STEALING_LINK, DISCONNECT);
 
-        invalidUserPassword = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, PASSWORD, MetricsLabel.FAILURE, MetricsLabel.COUNT);
-        invalidClientId = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, CLIENT_ID, MetricsLabel.FAILURE, MetricsLabel.COUNT);
-        disconnectByEvent = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, DISCONNECT_BY_EVENT, MetricsLabel.DISCONNECT, MetricsLabel.COUNT);
-        authServiceLogoutFailure = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, MetricsLabel.LOGOUT, MetricsLabel.FAILURE, MetricsLabel.COUNT);
-        authServiceDisconnectFailure = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, MetricsLabel.DISCONNECT, MetricsLabel.FAILURE, MetricsLabel.COUNT);
-        authServiceFindDeviceConnectionFailure = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, FIND_DEVICE, MetricsLabel.FAILURE, MetricsLabel.COUNT);
-        authServiceBrokerHostFailure = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, BROKER_HOST, MetricsLabel.FAILURE, MetricsLabel.COUNT);
+        invalidUserPassword = getCounter(metricsService, PASSWORD, MetricsLabel.FAILURE);
+        invalidClientId = getCounter(metricsService, CLIENT_ID, MetricsLabel.FAILURE);
+        disconnectByEvent = getCounter(metricsService, DISCONNECT_BY_EVENT, DISCONNECT);
+        authServiceLogoutFailure = getCounter(metricsService, LOGOUT, MetricsLabel.FAILURE);
+        authServiceDisconnectFailure = getCounter(metricsService, DISCONNECT, MetricsLabel.FAILURE);
+        authServiceFindDeviceConnectionFailure = getCounter(metricsService, FIND_DEVICE, MetricsLabel.FAILURE);
+        authServiceBrokerHostFailure = getCounter(metricsService, BROKER_HOST, MetricsLabel.FAILURE);
 
         // login time
-        externalAddConnectionTimeTotal = metricsService.getTimer(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, ADD_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        externalAddConnectionTimeShiroLogin = metricsService.getTimer(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, SHIRO, MetricsLabel.COMPONENT_LOGIN, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        externalAddConnectionTimeUserTotal = metricsService.getTimer(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, USER, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        externalAddConnectionTimeUserTotalCheckAccess = metricsService.getTimer(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, CHECK_ACCESS, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        externalAddConnectionTimeUserTotalFindDevice = metricsService.getTimer(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, FIND_DEVICE_ON_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        externalAddConnectionTimeUserTotalUpdateDevice = metricsService.getTimer(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, UPDATE_DEVICE_ON_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        externalAddConnectionTimeShiroLogout = metricsService.getTimer(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, SHIRO, MetricsLabel.LOGOUT, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        externalAddConnectionTimeAdminTotal = metricsService.getTimer(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, ADMIN, ADD_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        removeConnectionTimeTotal = metricsService.getTimer(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, REMOVE_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        raiseLifecycleEventTime = metricsService.getTimer(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_LOGIN, RAISE_LIFECYCLE_EVENT, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        externalAddConnectionTimeTotal = getTimer(metricsService, ADD_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        externalAddConnectionTimeShiroLogin = getTimer(metricsService, SHIRO, MetricLabel.COMPONENT_LOGIN, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        externalAddConnectionTimeUserTotal = getTimer(metricsService, USER, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        externalAddConnectionTimeUserTotalCheckAccess = getTimer(metricsService, CHECK_ACCESS, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        externalAddConnectionTimeUserTotalFindDevice = getTimer(metricsService, FIND_DEVICE_ON_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        externalAddConnectionTimeUserTotalUpdateDevice = getTimer(metricsService, UPDATE_DEVICE_ON_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        externalAddConnectionTimeShiroLogout = getTimer(metricsService, SHIRO, LOGOUT, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        externalAddConnectionTimeAdminTotal = getTimer(metricsService, ADMIN, ADD_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        removeConnectionTimeTotal = getTimer(metricsService, REMOVE_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        raiseLifecycleEventTime = getTimer(metricsService, RAISE_LIFECYCLE_EVENT, MetricsLabel.TIME, MetricsLabel.SECONDS);
+    }
+
+    private Counter getCounter(MetricsService metricsService, String... names) {
+        return metricsService.getCounter(CommonsMetric.module, MetricLabel.COMPONENT_LOGIN, names);
+    }
+
+    private Timer getTimer(MetricsService metricsService, String... names) {
+        return metricsService.getTimer(CommonsMetric.module, MetricLabel.COMPONENT_LOGIN, names);
     }
 
     public Counter getExternalAttempt() {

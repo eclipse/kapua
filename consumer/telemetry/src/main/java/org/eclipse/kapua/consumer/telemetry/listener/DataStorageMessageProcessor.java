@@ -20,6 +20,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.consumer.telemetry.MetricLabel;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -51,9 +52,9 @@ public class DataStorageMessageProcessor {
 
     public DataStorageMessageProcessor() {
         MetricsService metricService = MetricServiceFactory.getInstance();
-        metricQueueCommunicationErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DATASTORE, MetricsLabel.STORE, MetricsLabel.QUEUE, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
-        metricQueueConfigurationErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DATASTORE, MetricsLabel.STORE, MetricsLabel.QUEUE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
-        metricQueueGenericErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DATASTORE, MetricsLabel.STORE, MetricsLabel.QUEUE, MetricsLabel.GENERIC, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricQueueCommunicationErrorCount = metricService.getCounter(MetricLabel.CONSUMER_TELEMETRY, MetricLabel.STORE, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR);
+        metricQueueConfigurationErrorCount = metricService.getCounter(MetricLabel.CONSUMER_TELEMETRY, MetricLabel.STORE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR);
+        metricQueueGenericErrorCount = metricService.getCounter(MetricLabel.CONSUMER_TELEMETRY, MetricLabel.STORE, MetricsLabel.GENERIC, MetricsLabel.ERROR);
     }
 
     /**

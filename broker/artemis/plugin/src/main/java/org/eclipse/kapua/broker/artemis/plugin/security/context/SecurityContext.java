@@ -31,6 +31,7 @@ import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
 import org.eclipse.kapua.client.security.AuthErrorCodes;
 import org.eclipse.kapua.client.security.KapuaIllegalDeviceStateException;
+import org.eclipse.kapua.client.security.MetricLabel;
 import org.eclipse.kapua.client.security.ServiceClient.SecurityAction;
 import org.eclipse.kapua.client.security.bean.AuthAcl;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
@@ -39,6 +40,7 @@ import org.eclipse.kapua.client.security.context.Utils;
 import org.eclipse.kapua.client.security.metric.LoginMetric;
 import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.commons.localevent.ExecutorWrapper;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
@@ -62,6 +64,19 @@ public final class SecurityContext {
         Compact,
         DetailedServer
     }
+
+    public static final String CONNECTION = "connection";
+    public static final String SESSION = "session";
+    public static final String ACL = "acl";
+    public static final String BROKER_CONNECTION = "broker_connection";
+    public static final String SESSION_CONTEXT = "session_context";
+    public static final String SESSION_CONTEXT_BY_CLIENT = "session_context_by_client";
+    public static final String ACTIVE_CONNECTION = "active_connection";
+    public static final String DISK_USAGE = "disk_usage";
+    public static final String TOTAL_CONNECTION = "total_connection";
+    public static final String TOTAL_MESSAGE = "total_message";
+    public static final String TOTAL_MESSAGE_ACKNOWLEDGED = "total_message_acknowledged";
+    public static final String TOTAL_MESSAGE_ADDED = "total_message_added";
 
     //reserved String used as separator by Artemis on NOT_DURABLE_QUEUES (and DURABLE also?)
     private static final String DOUBLE_COLON = "::";
@@ -133,28 +148,28 @@ public final class SecurityContext {
 
     private void registerMetrics(ActiveMQServer server) throws KapuaException {
         sessionCount = () -> server.getSessions().size();
-        registerGauge(sessionCount, MetricsLabel.SESSION, MetricsLabel.COUNT);
+        registerGauge(sessionCount, SESSION);
         connectionCount = () -> server.getConnectionCount();
-        registerGauge(connectionCount, MetricsLabel.CONNECTION, MetricsLabel.COUNT);
+        registerGauge(connectionCount, CONNECTION);
         brokerConectionCount = () -> server.getBrokerConnections().size();
-        registerGauge(brokerConectionCount, MetricsLabel.BROKER_CONNECTION, MetricsLabel.COUNT);
+        registerGauge(brokerConectionCount, BROKER_CONNECTION);
         sessionContextMapCount = () -> sessionContextMap.size();
-        registerGauge(sessionContextMapCount, MetricsLabel.SESSION_CONTEXT, MetricsLabel.COUNT);
+        registerGauge(sessionContextMapCount, SESSION_CONTEXT);
         sessionContextMapByClientCount = () -> sessionContextMapByClient.size();
-        registerGauge(sessionContextMapByClientCount, MetricsLabel.SESSION_CONTEXT_BY_CLIENT, MetricsLabel.COUNT);
+        registerGauge(sessionContextMapByClientCount, SESSION_CONTEXT_BY_CLIENT);
         aclMapCount = () -> aclMap.size();
-        registerGauge(aclMapCount, MetricsLabel.ACL, MetricsLabel.COUNT);
+        registerGauge(aclMapCount, ACL);
         activeConnectionCount = () -> activeConnections.size();
-        registerGauge(activeConnectionCount, MetricsLabel.ACTIVE_CONNECTION, MetricsLabel.COUNT);
+        registerGauge(activeConnectionCount, ACTIVE_CONNECTION);
         //from broker
         totalConnection = () -> server.getTotalConnectionCount();
-        registerGauge(totalConnection, MetricsLabel.TOTAL_CONNECTION, MetricsLabel.SIZE);
+        registerGauge(totalConnection, TOTAL_CONNECTION, MetricsLabel.SIZE);
         totalMessage = () -> server.getTotalMessageCount();
-        registerGauge(totalMessage, MetricsLabel.TOTAL_MESSAGE, MetricsLabel.SIZE);
+        registerGauge(totalMessage, TOTAL_MESSAGE, MetricsLabel.SIZE);
         totalMessageAcknowledged = () -> server.getTotalMessagesAcknowledged();
-        registerGauge(totalMessageAcknowledged, MetricsLabel.TOTAL_MESSAGE_ACKNOWLEDGED, MetricsLabel.SIZE);
+        registerGauge(totalMessageAcknowledged, TOTAL_MESSAGE_ACKNOWLEDGED, MetricsLabel.SIZE);
         totalMessageAdded = () -> server.getTotalMessagesAdded();
-        registerGauge(totalMessageAdded, MetricsLabel.TOTAL_MESSAGE_ADDED, MetricsLabel.SIZE);
+        registerGauge(totalMessageAdded, TOTAL_MESSAGE_ADDED, MetricsLabel.SIZE);
     }
 
     public boolean setSessionContext(SessionContext sessionContext, List<AuthAcl> authAcls) throws Exception {
@@ -317,7 +332,7 @@ public final class SecurityContext {
     }
 
     private void registerGauge(Gauge<?> gauge, String... names) throws KapuaException {
-        METRIC_SERVICE.registerGauge(gauge, MetricsLabel.MODULE_BROKER, MetricsLabel.COMPONENT_CORE, names);
+        METRIC_SERVICE.registerGauge(gauge, CommonsMetric.module, MetricLabel.COMPONENT_LOGIN, names);
     }
 
     //logger features
