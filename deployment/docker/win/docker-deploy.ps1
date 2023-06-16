@@ -15,6 +15,7 @@
 Param(
     [switch]$dev = $false,
     [switch]$debug = $false,
+    [switch]$jmx = $false,
     [switch]$logs = $false
 )
 
@@ -42,6 +43,25 @@ If ($debug) {
     $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.job-engine-debug.yml)
     $compose_files+="-f"
     $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.rest-debug.yml)
+}
+
+# JMX Mode
+If ($jmx) {
+    Write-Host "JMX mode enabled!"
+    $compose_files+="-f"
+    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.broker-jmx.yml)
+    $compose_files+="-f"
+    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.console-jmx.yml)
+    $compose_files+="-f"
+    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.consumer-lifecycle-jmx.yml)
+    $compose_files+="-f"
+    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.consumer-telemetry-jmx.yml)
+    $compose_files+="-f"
+    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.service-authentication-jmx.yml)
+    $compose_files+="-f"
+    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.job-engine-jmx.yml)
+    $compose_files+="-f"
+    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.rest-jmx.yml)
 }
 
 # Dev Mode
