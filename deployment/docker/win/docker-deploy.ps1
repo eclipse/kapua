@@ -40,6 +40,8 @@ If ($debug) {
     $compose_files+="-f"
     $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.consumer-telemetry-debug.yml)
     $compose_files+="-f"
+    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.service-authentication-debug.yml)
+    $compose_files+="-f"
     $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.job-engine-debug.yml)
     $compose_files+="-f"
     $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.rest-debug.yml)
