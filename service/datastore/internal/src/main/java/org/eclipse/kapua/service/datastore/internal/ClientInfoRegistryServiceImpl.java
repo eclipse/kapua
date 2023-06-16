@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountService;
@@ -39,7 +38,6 @@ import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
@@ -50,6 +48,7 @@ import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,10 +64,7 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
 
     private static final Logger LOG = LoggerFactory.getLogger(ClientInfoRegistryServiceImpl.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
-
-
+    private final StorablePredicateFactory storablePredicateFactory;
     private final AccountService accountService;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
@@ -81,19 +77,22 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
 
     /**
      * Default constructor
-     *
-     * @throws ClientInitializationException
      */
-    public ClientInfoRegistryServiceImpl() throws ClientInitializationException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        accountService = locator.getService(AccountService.class);
-        authorizationService = locator.getService(AuthorizationService.class);
-        permissionFactory = locator.getFactory(PermissionFactory.class);
-        messageStoreService = locator.getService(MessageStoreService.class);
-        datastorePredicateFactory = KapuaLocator.getInstance().getFactory(DatastorePredicateFactory.class);
-
-        MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
-        ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(messageStoreService, accountService);
+    @Inject
+    public ClientInfoRegistryServiceImpl(
+            StorablePredicateFactory storablePredicateFactory,
+            AccountService accountService,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            MessageStoreService messageStoreService,
+            DatastorePredicateFactory datastorePredicateFactory) {
+        this.storablePredicateFactory = storablePredicateFactory;
+        this.accountService = accountService;
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.messageStoreService = messageStoreService;
+        this.datastorePredicateFactory = datastorePredicateFactory;
+        ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this.messageStoreService, this.accountService);
         clientInfoRegistryFacade = new ClientInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
         DatastoreMediator.getInstance().setClientInfoStoreFacade(clientInfoRegistryFacade);
     }
@@ -226,10 +225,10 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
         messageQuery.setOffset(0);
         messageQuery.setSortFields(sort);
 
-        RangePredicate messageIdPredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(ClientInfoField.TIMESTAMP, clientInfo.getFirstMessageOn(), null);
+        RangePredicate messageIdPredicate = storablePredicateFactory.newRangePredicate(ClientInfoField.TIMESTAMP, clientInfo.getFirstMessageOn(), null);
         TermPredicate clientIdPredicate = datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, clientInfo.getClientId());
 
-        AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+        AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
         andPredicate.getPredicates().add(messageIdPredicate);
         andPredicate.getPredicates().add(clientIdPredicate);
         messageQuery.setPredicate(andPredicate);

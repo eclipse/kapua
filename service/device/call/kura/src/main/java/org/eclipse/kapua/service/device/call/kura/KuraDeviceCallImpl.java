@@ -35,6 +35,7 @@ import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraRespo
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.translator.TranslatorHub;
 import org.eclipse.kapua.translator.exception.TranslatorNotFoundException;
 import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.TransportFacade;
@@ -61,15 +62,17 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
     private final AccountService accountService;
     private final DeviceRegistryService deviceRegistryService;
     private final TransportClientFactory transportClientFactory;
+    private final TranslatorHub translatorHub;
 
     @Inject
     public KuraDeviceCallImpl(
             AccountService accountService,
             DeviceRegistryService deviceRegistryService,
-            TransportClientFactory transportClientFactory) {
+            TransportClientFactory transportClientFactory, TranslatorHub translatorHub) {
         this.accountService = accountService;
         this.deviceRegistryService = deviceRegistryService;
         this.transportClientFactory = transportClientFactory;
+        this.translatorHub = translatorHub;
     }
 
     @Override
@@ -239,7 +242,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
     protected <F extends Message<?, ?>, T extends Message<?, ?>> Translator<F, T> getTranslator(Class<F> from, Class<T> to) throws KuraDeviceCallException {
         Translator<F, T> translator;
         try {
-            translator = Translator.getTranslatorFor(from, to);
+            translator = translatorHub.getTranslatorFor(from, to);
         } catch (TranslatorNotFoundException e) {
             throw new KuraDeviceCallException(KuraDeviceCallErrorCodes.CALL_ERROR, e, from, to);
         }

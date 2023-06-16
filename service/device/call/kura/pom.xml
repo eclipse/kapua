@@ -58,7 +58,6 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-transport-mqtt</artifactId>
         </dependency>
-
         <!-- External dependencies -->
         <dependency>
             <!-- Java MQTT client -->

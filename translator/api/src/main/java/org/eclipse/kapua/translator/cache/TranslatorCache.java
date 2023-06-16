@@ -27,7 +27,9 @@ import javax.validation.constraints.NotNull;
  * @see Cache
  * @see LocalCache
  * @since 1.2.0
+ * @deprecated since 2.0.0 - Overkill. A simple in memory map is more than enough to hold the 52 classes it must index
  */
+@Deprecated
 public class TranslatorCache extends LocalCache<TranslatorCacheKey, Translator<?, ?>> implements Cache<TranslatorCacheKey, Translator<?, ?>> {
 
     private static final TranslatorCache TRANSLATOR_CACHE = new TranslatorCache();

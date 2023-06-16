@@ -72,7 +72,8 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
     private static final Logger LOG = LoggerFactory.getLogger(KapuaJobListener.class);
     private static final String JBATCH_EXECUTION_ID = "JBATCH_EXECUTION_ID";
 
-    private final JobEngineSetting jobEngineSetting = JobEngineSetting.getInstance();
+    @Inject
+    private JobEngineSetting jobEngineSetting;
     @Inject
     private JobExecutionService jobExecutionService;
     @Inject
@@ -87,6 +88,8 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
     private QueuedJobExecutionFactory queuedJobExecutionFactory;
     @Inject
     private JobContext jobContext;
+    @Inject
+    private QueuedJobExecutionCheckTaskFactory queuedJobExecutionCheckTaskFactory;
 
     /**
      * Before starting the actual {@link org.eclipse.kapua.service.job.Job} processing, create the {@link JobExecution} to track progress and
@@ -371,6 +374,6 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
 
         Timer queuedCheckTimer = new Timer(timerName, true);
 
-        queuedCheckTimer.schedule(new QueuedJobExecutionCheckTask(scopeId, jobId, jobExecutionId), jobEngineSetting.getLong(JobEngineSettingKeys.JOB_ENGINE_QUEUE_CHECK_DELAY));
+        queuedCheckTimer.schedule(queuedJobExecutionCheckTaskFactory.create(scopeId, jobId, jobExecutionId), jobEngineSetting.getLong(JobEngineSettingKeys.JOB_ENGINE_QUEUE_CHECK_DELAY));
     }
 }

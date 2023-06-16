@@ -26,6 +26,10 @@ import org.eclipse.kapua.qa.common.MockedLocator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.translator.KapuaKuraTranslatorsModule;
+import org.eclipse.kapua.translator.KuraMqttTranslatorsModule;
+import org.eclipse.kapua.translator.TranslatorHubModule;
+import org.eclipse.kapua.translator.jms.kura.JmsKuraTranslatorsModule;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
@@ -63,7 +67,7 @@ public class TranslatorLocatorConfiguration {
             }
         };
 
-        Injector injector = Guice.createInjector(module);
+        Injector injector = Guice.createInjector(module, new TranslatorHubModule(), new KapuaKuraTranslatorsModule(), new KuraMqttTranslatorsModule(), new JmsKuraTranslatorsModule());
         mockedLocator.setInjector(injector);
     }
 }

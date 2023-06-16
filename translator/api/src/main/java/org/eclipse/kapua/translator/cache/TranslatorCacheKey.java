@@ -21,7 +21,9 @@ import com.google.common.base.Objects;
  * {@link #equals(Object)} and {@link #hashCode()} are {@link Override}n to use only {@link #fromClassName} and {@link #toClassName}
  *
  * @since 1.2.0
+ * @deprecated since 2.0.0 - Overkill. Comparing {@link Class} within any kind of Tuple is enough
  */
+@Deprecated
 class TranslatorCacheKey {
     final String fromClassName;
     final String toClassName;

@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountService;
@@ -48,6 +47,7 @@ import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Date;
@@ -63,9 +63,7 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
 
     private static final Logger LOG = LoggerFactory.getLogger(ChannelInfoRegistryServiceImpl.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final DatastorePredicateFactory DATASTORE_PREDICATE_FACTORY = LOCATOR.getFactory(DatastorePredicateFactory.class);
-
+    private final DatastorePredicateFactory datastorePredicateFactory;
     private final AccountService accountService;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
@@ -80,15 +78,19 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
      *
      * @since 1.0.0
      */
-    public ChannelInfoRegistryServiceImpl() {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        accountService = locator.getService(AccountService.class);
-        authorizationService = locator.getService(AuthorizationService.class);
-        permissionFactory = locator.getFactory(PermissionFactory.class);
-        messageStoreService = locator.getService(MessageStoreService.class);
-
-        MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
-        ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(messageStoreService, accountService);
+    @Inject
+    public ChannelInfoRegistryServiceImpl(
+            DatastorePredicateFactory datastorePredicateFactory,
+            AccountService accountService,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            MessageStoreService messageStoreService) {
+        this.datastorePredicateFactory = datastorePredicateFactory;
+        this.accountService = accountService;
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.messageStoreService = messageStoreService;
+        ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this.messageStoreService, this.accountService);
         channelInfoRegistryFacade = new ChannelInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
         DatastoreMediator.getInstance().setChannelInfoStoreFacade(channelInfoRegistryFacade);
     }
@@ -224,11 +226,11 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
         messageQuery.setOffset(0);
         messageQuery.setSortFields(sort);
 
-        RangePredicate messageIdPredicate = DATASTORE_PREDICATE_FACTORY.newRangePredicate(ChannelInfoField.TIMESTAMP, channelInfo.getFirstMessageOn(), null);
-        TermPredicate clientIdPredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, channelInfo.getClientId());
-        TermPredicate channelPredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(MessageField.CHANNEL, channelInfo.getName());
+        RangePredicate messageIdPredicate = datastorePredicateFactory.newRangePredicate(ChannelInfoField.TIMESTAMP, channelInfo.getFirstMessageOn(), null);
+        TermPredicate clientIdPredicate = datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, channelInfo.getClientId());
+        TermPredicate channelPredicate = datastorePredicateFactory.newTermPredicate(MessageField.CHANNEL, channelInfo.getName());
 
-        AndPredicate andPredicate = DATASTORE_PREDICATE_FACTORY.newAndPredicate();
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
         andPredicate.getPredicates().add(messageIdPredicate);
         andPredicate.getPredicates().add(clientIdPredicate);
         andPredicate.getPredicates().add(channelPredicate);

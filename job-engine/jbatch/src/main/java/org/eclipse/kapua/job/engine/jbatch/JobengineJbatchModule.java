@@ -15,11 +15,13 @@ package org.eclipse.kapua.job.engine.jbatch;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobEngineService;
+import org.eclipse.kapua.job.engine.jbatch.setting.JobEngineSetting;
 
 public class JobengineJbatchModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(JobEngineFactory.class).to(JobEngineFactoryJbatch.class);
         bind(JobEngineService.class).to(JobEngineServiceJbatch.class);
+        bind(JobEngineSetting.class).toInstance(JobEngineSetting.getInstance());
     }
 }

@@ -12,7 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.test.steps;
 
+import com.google.inject.Singleton;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
@@ -21,6 +29,7 @@ import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataChannel;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataPayload;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.translator.TranslatorHub;
 import org.eclipse.kapua.translator.jms.kura.data.TranslatorDataJmsKura;
 import org.eclipse.kapua.translator.kura.jms.data.TranslatorDataKuraJms;
 import org.eclipse.kapua.translator.kura.mqtt.TranslatorDataKuraMqtt;
@@ -34,15 +43,6 @@ import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
 import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
 import org.junit.Assert;
 
-import com.google.inject.Singleton;
-
-import io.cucumber.java.Before;
-import io.cucumber.java.Scenario;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-
 import javax.inject.Inject;
 import java.util.Date;
 import java.util.List;
@@ -53,16 +53,18 @@ import java.util.List;
 @Singleton
 public class TranslatorSteps extends TestBase {
 
-    private ExampleTranslator exampleTranslator;
-    private TranslatorDataMqttKura translatorDataMqttKura;
-    private TranslatorResponseMqttKura translatorResponseMqttKura;
-    private TranslatorDataKuraMqtt translatorDataKuraMqtt;
-    private TranslatorDataJmsKura translatorDataJmsKura;
-    private TranslatorDataKuraJms translatorDataKuraJms;
+    private final ExampleTranslator exampleTranslator;
+    private final TranslatorDataMqttKura translatorDataMqttKura;
+    private final TranslatorResponseMqttKura translatorResponseMqttKura;
+    private final TranslatorDataKuraMqtt translatorDataKuraMqtt;
+    private final TranslatorDataJmsKura translatorDataJmsKura;
+    private final TranslatorDataKuraJms translatorDataKuraJms;
+    private final TranslatorHub translatorHub;
 
     @Inject
     public TranslatorSteps(StepData stepData) {
         super(stepData);
+        this.translatorHub = KapuaLocator.getInstance().getComponent(TranslatorHub.class);
         exampleTranslator = new ExampleTranslator();
         translatorDataMqttKura = new TranslatorDataMqttKura();
         translatorResponseMqttKura = new TranslatorResponseMqttKura();
@@ -92,7 +94,7 @@ public class TranslatorSteps extends TestBase {
                 fromClass = null;
                 toClass = null;
             }
-            Translator translator = Translator.getTranslatorFor(exampleTranslator.getClass(fromClass), exampleTranslator.getClass(toClass));
+            Translator translator = translatorHub.getTranslatorFor(exampleTranslator.getClass(fromClass), exampleTranslator.getClass(toClass));
             stepData.put("Translator", translator);
         } catch (Exception ex) {
             verifyException(ex);
@@ -106,7 +108,7 @@ public class TranslatorSteps extends TestBase {
     }
 
     @Given("I create mqtt message with (valid/invalid/empty) payload {string} and (valid/invalid) topic {string}")
-    public void creatingMqttMessage(String payload, String topic) throws Exception{
+    public void creatingMqttMessage(String payload, String topic) throws Exception {
         try {
             Date date = new Date();
             MqttTopic mqttTopic = new MqttTopic(topic);
@@ -119,7 +121,7 @@ public class TranslatorSteps extends TestBase {
             MqttPayload mqttPayload = new MqttPayload(kuraPayload.toByteArray());
             MqttMessage mqttMessage = new MqttMessage(mqttTopic, date, mqttPayload);
             stepData.put("MqttMessage", mqttMessage);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             verifyException(ex);
         }
     }
@@ -328,7 +330,7 @@ public class TranslatorSteps extends TestBase {
             MqttMessage mqttMessage = (MqttMessage) stepData.get("MqttMessage");
             KuraDataMessage kuraDataMessage = translatorDataMqttKura.translate((MqttMessage) null);
             stepData.put("KuraDataMessage", kuraDataMessage);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             verifyException(ex);
         }
     }
@@ -363,7 +365,7 @@ public class TranslatorSteps extends TestBase {
     }
 
     @When("I try to translate invalid jms message to kura data message")
-    public void iTryToTranslateInvalidJmsMessageToKuraDataMessage() throws Exception{
+    public void iTryToTranslateInvalidJmsMessageToKuraDataMessage() throws Exception {
         try {
             KuraDataMessage kuraDataMessage = translatorDataJmsKura.translate((JmsMessage) null);
             stepData.put("KuraDataMessage", kuraDataMessage);
@@ -377,7 +379,7 @@ public class TranslatorSteps extends TestBase {
         try {
             JmsMessage jmsMessage = translatorDataKuraJms.translate((KuraDataMessage) null);
             stepData.put("JmsMessage", jmsMessage);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             verifyException(ex);
         }
     }

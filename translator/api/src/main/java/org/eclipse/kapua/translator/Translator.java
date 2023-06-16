@@ -70,7 +70,9 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
      * @return The matching {@link Translator} for the given {@link Message}s types.
      * @throws TranslatorNotFoundException if no {@link Translator} if found for the given {@link Message} types.
      * @since 1.0.0
+     * @deprecated since 2.0.0 - inject and use {@link TranslatorHub} instead - the use of static methods makes testing difficult
      */
+    @Deprecated
     public static <FROM_M extends Message<?, ?>, TO_M extends Message, T extends Translator<FROM_M, TO_M>> T getTranslatorFor(@NotNull Class<? extends FROM_M> fromMessageClass, @NotNull Class<? extends TO_M> toMessageClass) {
 
         T cachedTranslator = TranslatorCache.getCachedTranslator(fromMessageClass, toMessageClass);
@@ -80,6 +82,7 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
         }
 
         synchronized (AVAILABLE_TRANSLATORS) {
+            AVAILABLE_TRANSLATORS.forEach(t -> System.out.println(t.getClass().getName()));
             for (Translator<FROM_M, TO_M> translator : AVAILABLE_TRANSLATORS) {
                 if ((fromMessageClass.isAssignableFrom(translator.getClassFrom())) &&
                         toMessageClass.isAssignableFrom(translator.getClassTo())) {

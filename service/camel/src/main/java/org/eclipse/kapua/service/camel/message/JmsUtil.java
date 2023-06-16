@@ -15,13 +15,16 @@ package org.eclipse.kapua.service.camel.message;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.camel.converter.AbstractKapuaConverter;
 import org.eclipse.kapua.service.client.message.MessageConstants;
 import org.eclipse.kapua.service.client.message.MessageType;
 import org.eclipse.kapua.service.client.protocol.ProtocolDescriptor;
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.translator.TranslatorHub;
 import org.eclipse.kapua.transport.message.jms.JmsMessage;
 import org.eclipse.kapua.transport.message.jms.JmsPayload;
 import org.eclipse.kapua.transport.message.jms.JmsTopic;
@@ -33,7 +36,6 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.Topic;
-
 import java.util.Date;
 
 /**
@@ -139,11 +141,11 @@ public class JmsUtil {
                                                             String jmsTopic, Date queuedOn, String clientId)
             throws KapuaException {
         // first step... from jms to device dependent protocol level (unknown)
-        Translator<JmsMessage, DeviceMessage<?, ?>> translatorFromJms = Translator.getTranslatorFor(JmsMessage.class, deviceMessageType);// birth ...
+        Translator<JmsMessage, DeviceMessage<?, ?>> translatorFromJms = KapuaLocator.getInstance().getComponent(TranslatorHub.class).getTranslatorFor(JmsMessage.class, deviceMessageType);// birth ...
         DeviceMessage<?, ?> deviceMessage = translatorFromJms.translate(new JmsMessage(new JmsTopic(jmsTopic), queuedOn, new JmsPayload(messageBody)));
 
         // second step.... from device dependent protocol (unknown) to Kapua
-        Translator<DeviceMessage<?, ?>, KapuaMessage<?, ?>> translatorToKapua = Translator.getTranslatorFor(deviceMessageType, kapuaMessageType);
+        Translator<DeviceMessage<?, ?>, KapuaMessage<?, ?>> translatorToKapua = KapuaLocator.getInstance().getComponent(TranslatorHub.class).getTranslatorFor(deviceMessageType, kapuaMessageType);
         KapuaMessage<?, ?> message = translatorToKapua.translate(deviceMessage);
         if (StringUtils.isEmpty(message.getClientId())) {
             logger.debug("Updating client id since the received value is null (new value {})", clientId);
@@ -160,11 +162,9 @@ public class JmsUtil {
             Destination destination = message.getHeader(MessageConstants.HEADER_CAMEL_JMS_HEADER_DESTINATION, Destination.class);
             if (destination instanceof Queue) {
                 topicOrig = ((Queue) destination).getQueueName();
-            }
-            else if (destination instanceof Topic) {
+            } else if (destination instanceof Topic) {
                 topicOrig = ((Topic) destination).getTopicName();
-            }
-            else {
+            } else {
                 logger.warn("jmsMessage destination is null!", destination);
                 throw new JMSException(String.format("Unable to extract the destination. Wrong destination %s", destination));
             }
