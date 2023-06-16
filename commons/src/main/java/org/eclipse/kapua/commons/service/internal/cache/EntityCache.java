@@ -12,8 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal.cache;
 
-import com.codahale.metrics.Counter;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -31,32 +30,17 @@ public class EntityCache {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(EntityCache.class);
 
-    // metrics naming variables
-    private static final String MODULE = "commons";
-    private static final String COMPONENT = "cache";
-    private static final String ENTITY = "entity";
-    private static final String COUNT = "count";
-
     protected Cache<Serializable, Serializable> idCache;
     protected Cache<Serializable, Serializable> listsCache;  // listsCache does not use the same keys as idCache
-    protected Counter cacheMiss;
-    protected Counter cacheHit;
-    protected Counter cacheRemoval;
-    protected Counter cacheError;
 
     /**
      * The constructor initializes the {@link #idCache} and the {@link #listsCache}.
-     * It also initializes metrics counters for analysis ({@link #cacheMiss}, {@link #cacheHit} and {@link #cacheRemoval} counters).
      *
      * @param idCacheName
      */
     public EntityCache(String idCacheName) {
         idCache = KapuaCacheManager.getCache(idCacheName);
         listsCache = KapuaCacheManager.getCache(idCacheName + "_list");
-        cacheMiss = MetricServiceFactory.getInstance().getCounter(MODULE, COMPONENT, ENTITY, "miss", COUNT);
-        cacheHit = MetricServiceFactory.getInstance().getCounter(MODULE, COMPONENT, ENTITY, "hit", COUNT);
-        cacheRemoval = MetricServiceFactory.getInstance().getCounter(MODULE, COMPONENT, ENTITY, "removal", COUNT);
-        cacheError = MetricServiceFactory.getInstance().getCounter(MODULE, COMPONENT, ENTITY, "error", COUNT);
     }
 
     public KapuaEntity get(KapuaId scopeId, KapuaId kapuaId) {
@@ -69,9 +53,9 @@ public class EntityCache {
                 cacheErrorLogger("get", idCache.getName(), kapuaId, e);
             }
             if (entity == null) {
-                cacheMiss.inc();
+                CommonsMetric.getInstance().getCacheMiss().inc();
             } else {
-                cacheHit.inc();
+                CommonsMetric.getInstance().getCacheHit().inc();
             }
             return entity;
         }
@@ -120,7 +104,7 @@ public class EntityCache {
             if (entity != null) {
                 try {
                     idCache.remove(kapuaId);
-                    cacheRemoval.inc();
+                    CommonsMetric.getInstance().getCacheRemoval().inc();
                     return entity;
                 } catch (Exception e) {
                     cacheErrorLogger("remove", idCache.getName(), kapuaId, e);
@@ -206,7 +190,7 @@ public class EntityCache {
      * @param t         the exception
      */
     protected void cacheErrorLogger(String operation, String cacheName, Serializable keyId, Throwable t) {
-        cacheError.inc();
+        CommonsMetric.getInstance().getCacheError().inc();
         LOGGER.warn("Cache error while performing {} on {} for key {} : {}", operation, cacheName, keyId, t.getLocalizedMessage());
         LOGGER.debug("Cache exception", t);
     }

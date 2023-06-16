@@ -12,13 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
-import com.codahale.metrics.Counter;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.eclipse.kapua.commons.core.InterceptorBind;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -54,22 +52,6 @@ import java.util.List;
 public class RaiseServiceEventInterceptor implements MethodInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(RaiseServiceEventInterceptor.class);
-
-    private static final String MODULE = "commons";
-    private static final String COMPONENT = "service_event";
-    private static final String ACTION = "event_data_filler";
-    private static final String COUNT = "count";
-
-
-    private static final MetricsService METRIC_SERVICE = MetricServiceFactory.getInstance();
-
-    private Counter wrongId;
-    private Counter wrongEntity;
-
-    public RaiseServiceEventInterceptor() {
-        wrongId = METRIC_SERVICE.getCounter(MODULE, COMPONENT, ACTION, "wrong_id", COUNT);
-        wrongEntity = METRIC_SERVICE.getCounter(MODULE, COMPONENT, ACTION, "wrong_entity", COUNT);
-    }
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -173,7 +155,7 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
     private void useEntityToFillEvent(ServiceEvent serviceEvent, List<KapuaEntity> entities) {
         if (entities.size()>1) {
             LOG.warn("Found more than one KapuaEntity in the parameters! Assuming to use the first one!");
-            wrongEntity.inc();
+            CommonsMetric.getInstance().getRaiseEventWrongEntity().inc();
         }
         KapuaEntity entity = entities.get(0);
         serviceEvent.setEntityType(entity.getClass().getName());
@@ -185,7 +167,7 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
     private void useKapuaIdsToFillEvent(ServiceEvent serviceEvent, List<KapuaId> ids, Class<?>[] implementedClass) {
         if (ids.size()>2) {
             LOG.warn("Found more than two KapuaId in the parameters! Assuming to use the first two!");
-            wrongId.inc();
+            CommonsMetric.getInstance().getRaiseEventWrongId().inc();
         }
         if (ids.size() >= 2) {
             serviceEvent.setEntityScopeId(ids.get(0));

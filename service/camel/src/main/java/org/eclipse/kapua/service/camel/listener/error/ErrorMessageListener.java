@@ -33,6 +33,9 @@ import com.codahale.metrics.Counter;
 @UriEndpoint(title = "error message processor", syntax = "bean:ecErrorMessageListener", scheme = "bean")
 public class ErrorMessageListener {
 
+    private static final String STORED_TO_FILE = "stored_to_file";
+    private static final String MESSAGE_UNKNOWN = "message_conversion_unknown_type";
+
     private static final String ERROR_MESSAGE_LOGGER_NAME = "errorMessage";
     private static final Logger ERROR_MESSAGE_LOGGER = LoggerFactory.getLogger(ERROR_MESSAGE_LOGGER_NAME);
     private static final String ERROR_DATE_MESSAGE_PATTERN = "DATE_ERR:%s";
@@ -46,17 +49,17 @@ public class ErrorMessageListener {
     private static final String EMPTY_ENCODED_MESSAGE = "N/A";
     private static final String EMPTY_FIELD = "N/A";
 
-    private Counter metricError;
-    private Counter metricErrorStoredToFile;
-    private Counter metricErrorStoredToFileError;
-    private Counter metricErrorUnknownBodyType;
+    private Counter metricTotal;
+    private Counter metricStoredToFileSuccess;
+    private Counter metricStoredToFileError;
+    private Counter metricUnknownBodyType;
 
-    public ErrorMessageListener() {
+    public ErrorMessageListener(String module) {
         MetricsService metricsService = MetricServiceFactory.getInstance();
-        metricError = metricsService.getCounter(MetricsLabel.ERROR, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, "generic", MetricsLabel.COUNT);
-        metricErrorStoredToFile = metricsService.getCounter(MetricsLabel.ERROR, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, "file_store", MetricsLabel.COUNT);
-        metricErrorStoredToFileError = metricsService.getCounter(MetricsLabel.ERROR, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, "file_store", MetricsLabel.ERROR, MetricsLabel.COUNT);
-        metricErrorUnknownBodyType = metricsService.getCounter(MetricsLabel.ERROR, MetricsLabel.PROCESSOR, MetricsLabel.MESSAGES, "message_conversion_unknown_type", MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricTotal = metricsService.getCounter(module, MetricsLabel.ERROR, MetricsLabel.TOTAL);
+        metricStoredToFileSuccess = metricsService.getCounter(module, MetricsLabel.ERROR, STORED_TO_FILE, MetricsLabel.SUCCESS);
+        metricStoredToFileError = metricsService.getCounter(module, MetricsLabel.ERROR, STORED_TO_FILE, MetricsLabel.ERROR);
+        metricUnknownBodyType = metricsService.getCounter(module, MetricsLabel.ERROR, MESSAGE_UNKNOWN, MetricsLabel.ERROR);
     }
 
     /**
@@ -66,7 +69,7 @@ public class ErrorMessageListener {
      * @param message
      */
     public void processMessage(Exchange exchange, Object message) {
-        metricError.inc();
+        metricTotal.inc();
         logToFile(exchange, message);
     }
 
@@ -74,9 +77,9 @@ public class ErrorMessageListener {
         try {
             String messageLine = getMessage(exchange);
             ERROR_MESSAGE_LOGGER.info(messageLine);
-            metricErrorStoredToFile.inc();
+            metricStoredToFileSuccess.inc();
         } catch (Exception e) {
-            metricErrorStoredToFileError.inc();
+            metricStoredToFileError.inc();
             logger.error("Error while storing errored message to file!", e);
         }
     }
@@ -123,7 +126,7 @@ public class ErrorMessageListener {
         else {
             //something wrong happened! Anyway try to get the message to be stored
             logger.error("Wrong message type! Cannot convert message of type {} to byte[]", body!=null ? body.getClass() : "N/A");
-            metricErrorUnknownBodyType.inc();
+            metricUnknownBodyType.inc();
             return EMPTY_ENCODED_MESSAGE;
         }
      }

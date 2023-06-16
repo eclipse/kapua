@@ -1,0 +1,156 @@
+/*******************************************************************************
+ * Copyright (c) 2022 Eurotech and/or its affiliates and others
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.kapua.commons.metric;
+
+import org.eclipse.kapua.KapuaException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.codahale.metrics.Counter;
+
+/**
+ * Helper class to handle commons metrics.
+ * TODO inject when injection will be available
+ *
+ */
+public class CommonsMetric {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommonsMetric.class);
+
+    //TODO this value should be injected instead of set by the application entrypoint!
+    //TODO to be injected!!!
+    public static String module = "undefined";
+    //cache
+    private static final String CACHE_MANAGER = "cache_manager";
+    private Integer cacheStatus = new Integer(0);
+    private Counter registeredCache;
+
+    //raise service events
+    private static final String RAISE_EVENT = "raise_event_data_filler";
+    private Counter raiseEventWrongId;
+    private Counter raiseEventWrongEntity;
+
+    //event bus
+    private static final String EVENT_BUS_CONNECTION = "event_bus_connection";
+    private Counter eventBusConnectionRetry;
+    private Counter eventBusConnectionError;
+
+    //cache
+    private static final String CACHE_ENTITY = "cache_entity";
+    private Counter cacheMiss;
+    private Counter cacheHit;
+    private Counter cacheRemoval;
+    private Counter cacheError;
+
+    //events
+    public static final String EVENT = "event";
+    public static final String DEQUEUED_EVENT = "dequeued_event";
+    public static final String ENQUEUED_EVENT = "enqueued_event";
+    public static final String PROCESSED_EVENT = "processed_event";
+    private Counter processedEvent;
+    private Counter enqueuedEvent;
+    private Counter dequeuedEvent;
+
+    private static CommonsMetric instance;
+
+    public static CommonsMetric getInstance() {
+        if (instance == null) {
+            synchronized (CommonsMetric.class) {
+                if (instance == null) {
+                    try {
+                        instance = new CommonsMetric();
+                    } catch (KapuaException e) {
+                        //TODO throw runtime exception
+                        LOGGER.error("Error registering cache status metrics! Error: {}", e.getMessage(), e);
+                    }
+                }
+            }
+        }
+        return instance;
+    }
+
+    private CommonsMetric() throws KapuaException {
+        MetricsService metricsService = MetricServiceFactory.getInstance();
+        metricsService.registerGauge(() -> cacheStatus, module, CACHE_MANAGER, "cache_status");
+        registeredCache = metricsService.getCounter(module, CACHE_MANAGER, "available_cache");
+
+        raiseEventWrongId = metricsService.getCounter(module, RAISE_EVENT, "wrong_id");
+        raiseEventWrongEntity = metricsService.getCounter(module, RAISE_EVENT, "wrong_entity");
+
+        eventBusConnectionRetry = metricsService.getCounter(module, EVENT_BUS_CONNECTION, MetricsLabel.RETRY);
+        eventBusConnectionError = metricsService.getCounter(module, EVENT_BUS_CONNECTION, MetricsLabel.ERROR);
+
+        cacheMiss = metricsService.getCounter(module, CACHE_ENTITY, "miss");
+        cacheHit = metricsService.getCounter(module, CACHE_ENTITY, "hit");
+        cacheRemoval = metricsService.getCounter(module, CACHE_ENTITY, "removal");
+        cacheError = metricsService.getCounter(module, CACHE_ENTITY, "error");
+
+        processedEvent = metricsService.getCounter(EVENT, PROCESSED_EVENT);
+        dequeuedEvent = metricsService.getCounter(EVENT, DEQUEUED_EVENT);
+        enqueuedEvent = metricsService.getCounter(EVENT, ENQUEUED_EVENT);
+    }
+
+    //TODO should be synchronized?
+    public void setCacheStatus(int value) {
+        cacheStatus = value;
+    }
+
+    public Counter getRegisteredCache() {
+        return registeredCache;
+    }
+
+    public Counter getRaiseEventWrongId() {
+        return raiseEventWrongId;
+    }
+
+    public Counter getRaiseEventWrongEntity() {
+        return raiseEventWrongEntity;
+    }
+
+    public Counter getEventBusConnectionRetry() {
+        return eventBusConnectionRetry;
+    }
+
+    public Counter getEventBusConnectionError() {
+        return eventBusConnectionError;
+    }
+
+    public Counter getCacheMiss() {
+        return cacheMiss;
+    }
+
+    public Counter getCacheHit() {
+        return cacheHit;
+    }
+
+    public Counter getCacheRemoval() {
+        return cacheRemoval;
+    }
+
+    public Counter getCacheError() {
+        return cacheError;
+    }
+
+    public Counter getProcessedEvent() {
+        return processedEvent;
+    }
+
+    public Counter getDequeuedEvent() {
+        return dequeuedEvent;
+    }
+
+    public Counter getEnqueuedEvent() {
+        return enqueuedEvent;
+    }
+
+}

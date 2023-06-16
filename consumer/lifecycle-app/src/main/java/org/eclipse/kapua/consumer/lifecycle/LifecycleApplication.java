@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.lifecycle;
 
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.service.camel.setting.ServiceSettingKey;
 import org.eclipse.kapua.service.security.SecurityUtil;
 import org.springframework.boot.SpringApplication;
@@ -37,6 +38,8 @@ public class LifecycleApplication {
     }
 
     public static void main(String[] args) {
+        //TODO to be injected!!!
+        CommonsMetric.module = MetricLabel.CONSUMER_LIFECYCLE;
         //statically set parameters
         System.setProperty(ServiceSettingKey.JAXB_CONTEXT_CLASS_NAME.key(), LifecycleJAXBContextProvider.class.getName());
         //org.springframework.context.ApplicationContext is not needed now so don't keep the SpringApplication.run return

@@ -31,8 +31,16 @@ public class FailureProcessor implements Processor {
 
     private static final Logger logger = LoggerFactory.getLogger(FailureProcessor.class);
 
-    private Counter unauthenticatedMessagesCount = MetricServiceFactory.getInstance().getCounter(MetricsLabel.COMPONENT_PROCESSOR, MetricsLabel.FAILURE, MetricsLabel.UNAUTHENTICATED, MetricsLabel.MESSAGES, MetricsLabel.COUNT);
-    private Counter unauthenticatedCount = MetricServiceFactory.getInstance().getCounter(MetricsLabel.COMPONENT_PROCESSOR, MetricsLabel.FAILURE, MetricsLabel.MESSAGES, MetricsLabel.COUNT);
+    public static final String GENERIC = "generic";
+    public static final String UNAUTHENTICATED = "unauthenticated";
+
+    private Counter unauthenticatedError;
+    private Counter genericError;
+
+    public FailureProcessor(String module) {
+        unauthenticatedError = MetricServiceFactory.getInstance().getCounter(module, MetricsLabel.FAILURE, UNAUTHENTICATED);
+        genericError = MetricServiceFactory.getInstance().getCounter(module, MetricsLabel.FAILURE, GENERIC);
+    }
 
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -40,10 +48,10 @@ public class FailureProcessor implements Processor {
             if (logger.isDebugEnabled()) {
                 logger.debug("Detected unauthenticated error on message processing retry!");
             }
-            unauthenticatedMessagesCount.inc();
+            unauthenticatedError.inc();
         }
         else {
-            unauthenticatedCount.inc();
+            genericError.inc();
         }
     }
 

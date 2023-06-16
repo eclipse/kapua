@@ -29,6 +29,7 @@ import org.apache.http.nio.reactor.IOReactorExceptionHandler;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
@@ -82,6 +83,8 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
 
     private static final String PROVIDER_CANNOT_CLOSE_CLIENT_MSG = "Cannot close ElasticSearch REST client. Client is already closed or not initialized";
 
+    private static final String RUNTIME_ERROR = "runtime_error";
+
     // metrics
     private Counter exceptionCount;
     private Counter runtimeExceptionCount;
@@ -98,8 +101,8 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
 
     public RestElasticsearchClientProvider() {
         MetricsService metricService = MetricServiceFactory.getInstance();
-        exceptionCount = metricService.getCounter("datastore", "rest_client", "error", "count");
-        runtimeExceptionCount = metricService.getCounter("datastore", "rest_client", "runtime_error", "count");
+        exceptionCount = metricService.getCounter(CommonsMetric.module, RestElasticsearchClient.COMPONENT_REST_CLIENT, MetricsLabel.ERROR);
+        runtimeExceptionCount = metricService.getCounter(CommonsMetric.module, RestElasticsearchClient.COMPONENT_REST_CLIENT, RUNTIME_ERROR);
     }
 
     @Override
@@ -166,7 +169,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
                     .addParameter("Model Converter", modelConverter)
                     .printLog();
 
-            clientReconnectCallCounter = MetricServiceFactory.getInstance().getCounter(elasticsearchClientConfiguration.getModuleName(), "elasticsearch-client-rest", "reconnect_call", MetricsLabel.COUNT);
+            clientReconnectCallCounter = MetricServiceFactory.getInstance().getCounter(elasticsearchClientConfiguration.getModuleName(), "elasticsearch-client-rest", "reconnect_call");
 
             // Close the current client if already initialized.
             close();

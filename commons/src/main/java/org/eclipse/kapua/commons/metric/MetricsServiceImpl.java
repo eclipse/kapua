@@ -21,6 +21,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.SharedMetricRegistries;
 import com.codahale.metrics.Timer;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.metric.MetricsServiceImpl.MetricType;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.slf4j.Logger;
@@ -40,6 +41,11 @@ public class MetricsServiceImpl implements MetricsService {
     private static final Logger logger = LoggerFactory.getLogger(MetricsServiceImpl.class);
 
     public static final String METRICS_NAME_FORMAT = "{0}.{1}.{2}";
+    private static final char SEPARATOR = '.';
+
+    enum MetricType {
+        count
+    }
 
     private MetricRegistry metricRegistry;
 
@@ -82,7 +88,7 @@ public class MetricsServiceImpl implements MetricsService {
 
     @Override
     public Counter getCounter(String module, String component, String... names) {
-        String name = getMetricName(module, component, names);
+        String name = getMetricName(MetricType.count, module, component, names);
         Counter counter = metricRegistry.getCounters().get(name);
         if (counter == null) {
             logger.debug("Creating a Counter: {}", name);
@@ -123,6 +129,10 @@ public class MetricsServiceImpl implements MetricsService {
         }
     }
 
+    private String getMetricName(String module, String component, String... metricsName) {
+        return MessageFormat.format(METRICS_NAME_FORMAT, module, component, convertToDotNotation(null, metricsName));
+    }
+
     /**
      * Build the metric name based on module, component and metric names
      *
@@ -131,8 +141,8 @@ public class MetricsServiceImpl implements MetricsService {
      * @param metricsName
      * @return
      */
-    private String getMetricName(String module, String component, String... metricsName) {
-        return MessageFormat.format(METRICS_NAME_FORMAT, module, component, convertToDotNotation(metricsName));
+    private String getMetricName(MetricType metricType, String module, String component, String... metricsName) {
+        return MessageFormat.format(METRICS_NAME_FORMAT, module, component, convertToDotNotation(metricType, metricsName));
     }
 
     /**
@@ -141,15 +151,18 @@ public class MetricsServiceImpl implements MetricsService {
      * @param metricsName
      * @return
      */
-    private String convertToDotNotation(String... metricsName) {
+    private String convertToDotNotation(MetricType metricType, String... metricsName) {
         StringBuilder builder = new StringBuilder();
         boolean firstMetricName = true;
         for (String s : metricsName) {
             if (!firstMetricName) {
-                builder.append('.');
+                builder.append(SEPARATOR);
             }
             firstMetricName = false;
             builder.append(s);
+        }
+        if (metricType!=null) {
+            builder.append(SEPARATOR).append(metricType.name());
         }
         return builder.toString();
     }

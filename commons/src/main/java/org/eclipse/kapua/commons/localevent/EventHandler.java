@@ -16,13 +16,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
-import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.codahale.metrics.Counter;
 
 public abstract class EventHandler<O> {
 
@@ -36,21 +32,15 @@ public abstract class EventHandler<O> {
     private BlockingQueue<O> eventQueue = new LinkedBlockingDeque<>(MAX_ONGOING_OPERATION);
     private EventProcessor<O> eventProcessor;
 
-    private Counter processedEvent;
-    private Counter enqueuedEvent;
-    private Counter dequeuedEvent;
-
     protected EventHandler(String name, long initialDelay, long pollTimeout) {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
-        processedEvent = metricsService.getCounter(MetricsLabel.MODULE_CORE, MetricsLabel.COMPONENT_EVENT, MetricsLabel.ENQUEUED_EVENT, MetricsLabel.COUNT);
         executorWrapper = new ExecutorWrapper(name, () -> {
             while (isRunning()) {
                 try {
                     O eventBean = eventQueue.poll(POLL_TIMEOUT, TimeUnit.MILLISECONDS);
                     if (eventBean!=null) {
-                        dequeuedEvent.inc();
+                        CommonsMetric.getInstance().getDequeuedEvent().inc();
                         eventProcessor.processEvent(eventBean);
-                        processedEvent.inc();
+                        CommonsMetric.getInstance().getProcessedEvent().inc();
                     }
                 } catch (InterruptedException e) {
                     //do nothing...
@@ -67,7 +57,7 @@ public abstract class EventHandler<O> {
 
     public void enqueueEvent(O eventBean) {
         eventQueue.add(eventBean);
-        enqueuedEvent.inc();
+        CommonsMetric.getInstance().getEnqueuedEvent().inc();
     }
 
     public void registerConsumer(EventProcessor<O> eventProcessor) {

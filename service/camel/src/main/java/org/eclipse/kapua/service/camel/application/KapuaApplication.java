@@ -32,7 +32,6 @@ public class KapuaApplication {
         synchronized (KapuaApplication.class) {
             if (application == null) {
                 application = new ServiceModuleBundle() {
-
                 };
             }
             application.startup();

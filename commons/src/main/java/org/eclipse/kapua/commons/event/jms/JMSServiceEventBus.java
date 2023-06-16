@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event.jms;
 
-import com.codahale.metrics.Counter;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.ExceptionListener;
@@ -47,7 +45,7 @@ import org.eclipse.kapua.commons.event.ServiceEventBusDriver;
 import org.eclipse.kapua.commons.event.ServiceEventBusManager;
 import org.eclipse.kapua.commons.event.ServiceEventMarshaler;
 import org.eclipse.kapua.commons.event.ServiceEventScope;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -78,9 +76,6 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
     private EventBusJMSConnectionBridge eventBusJMSConnectionBridge;
     private ServiceEventMarshaler eventBusMarshaler;
 
-    private Counter reconnectionRetryCount;
-    private Counter connectionErrorCount;
-
     /**
      * Default constructor
      *
@@ -88,8 +83,6 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
      * @throws NamingException
      */
     public JMSServiceEventBus() throws JMSException, NamingException {
-        reconnectionRetryCount = MetricServiceFactory.getInstance().getCounter("event_bus", "handler", "reconnection_retry", "count");
-        connectionErrorCount = MetricServiceFactory.getInstance().getCounter("event_bus", "handler", "connection_error", "count");
         eventBusJMSConnectionBridge = new EventBusJMSConnectionBridge();
     }
 
@@ -443,12 +436,12 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
             @Override
             public void onException(JMSException e) {
                 LOGGER.error("EventBus Listener {} -  Connection thrown exception: {}", this, e.getMessage(), e);
-                connectionErrorCount.inc();
+                CommonsMetric.getInstance().getEventBusConnectionError().inc();
                 int i = 1;
                 while (active) {
                     LOGGER.info("EventBus Listener {} - restarting attempt... {}", this, i);
                     try {
-                        reconnectionRetryCount.inc();
+                        CommonsMetric.getInstance().getEventBusConnectionRetry().inc();
                         restart();
                         LOGGER.info("EventBus Listener {} - EventBus restarting attempt... {} DONE (Connection restored)", this, i);
                         break;

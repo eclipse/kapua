@@ -63,6 +63,10 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
+    public static final String CONSUMER_TELEMETRY = "consumer_telemetry";
+    public static final String STORE = "store";
+    public static final String STORE_QUEUE = "store_queue";
+
     // metrics
     private final Counter metricMessageCount;
     private final Counter metricCommunicationErrorCount;
@@ -98,19 +102,19 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
 
         // data message
         MetricsService metricService = MetricServiceFactory.getInstance();
-        metricMessageCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.MESSAGES, MetricsLabel.COUNT);
-        metricCommunicationErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.MESSAGES, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
-        metricConfigurationErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.MESSAGES, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
-        metricGenericErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.MESSAGES, MetricsLabel.GENERIC, MetricsLabel.ERROR, MetricsLabel.COUNT);
-        metricValidationErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.MESSAGES, MetricsLabel.VALIDATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricMessageCount = metricService.getCounter(CONSUMER_TELEMETRY, STORE, MetricsLabel.ATTEMPT);
+        metricCommunicationErrorCount = metricService.getCounter(CONSUMER_TELEMETRY, STORE, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR);
+        metricConfigurationErrorCount = metricService.getCounter(CONSUMER_TELEMETRY, STORE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR);
+        metricGenericErrorCount = metricService.getCounter(CONSUMER_TELEMETRY, STORE, MetricsLabel.GENERIC, MetricsLabel.ERROR);
+        metricValidationErrorCount = metricService.getCounter(CONSUMER_TELEMETRY, STORE, MetricsLabel.VALIDATION, MetricsLabel.ERROR);
 
         // error messages queues size
-        metricQueueCommunicationErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.QUEUE, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
-        metricQueueConfigurationErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.QUEUE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
-        metricQueueGenericErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.QUEUE, MetricsLabel.GENERIC, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricQueueCommunicationErrorCount = metricService.getCounter(CONSUMER_TELEMETRY, STORE_QUEUE, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR);
+        metricQueueConfigurationErrorCount = metricService.getCounter(CONSUMER_TELEMETRY, STORE_QUEUE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR);
+        metricQueueGenericErrorCount = metricService.getCounter(CONSUMER_TELEMETRY, STORE_QUEUE, MetricsLabel.GENERIC, MetricsLabel.ERROR);
 
         // store timers
-        metricDataSaveTime = metricService.getTimer(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.MESSAGES, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        metricDataSaveTime = metricService.getTimer(CONSUMER_TELEMETRY, STORE, MetricsLabel.TIME, MetricsLabel.SECONDS);
     }
 
     @Override

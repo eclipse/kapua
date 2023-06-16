@@ -40,7 +40,7 @@ public class MetricsServiceImplTest {
     @Test
     public void getCounterTest() {
         Assert.assertNotNull("Counter object should be returned!", metricServiceImpl.getCounter("module", "component", "name1", "name2", "name3"));
-        Assert.assertTrue("The keys does not exist!", metricServiceImpl.getMetricRegistry().getMetrics().containsKey("module.component.name1.name2.name3"));
+        Assert.assertTrue("The keys does not exist!", metricServiceImpl.getMetricRegistry().getMetrics().containsKey("module.component.name1.name2.name3.count"));
     }
 
     @Test

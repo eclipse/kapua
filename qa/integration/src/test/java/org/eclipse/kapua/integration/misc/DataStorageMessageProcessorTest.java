@@ -17,10 +17,12 @@ import org.apache.camel.Exchange;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
+import org.eclipse.kapua.consumer.telemetry.MetricLabel;
 import org.eclipse.kapua.consumer.telemetry.listener.DataStorageMessageProcessor;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
+import org.eclipse.kapua.service.datastore.internal.MessageStoreServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,8 +47,8 @@ public class DataStorageMessageProcessorTest {
         camelKapuaMessage = Mockito.mock(CamelKapuaMessage.class);
         kapuaMessage = Mockito.mock(KapuaMessage.class);
         exchange = Mockito.mock(Exchange.class);
-        queueConfigurationErrorCount = MetricServiceFactory.getInstance().getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DATASTORE, MetricsLabel.STORE, MetricsLabel.QUEUE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
-        queueGenericErrorCount = MetricServiceFactory.getInstance().getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DATASTORE, MetricsLabel.STORE, MetricsLabel.QUEUE, MetricsLabel.GENERIC, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        queueConfigurationErrorCount = MetricServiceFactory.getInstance().getCounter(MetricLabel.CONSUMER_TELEMETRY, MessageStoreServiceImpl.STORE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR);
+        queueGenericErrorCount = MetricServiceFactory.getInstance().getCounter(MetricLabel.CONSUMER_TELEMETRY, MessageStoreServiceImpl.STORE, MetricsLabel.GENERIC, MetricsLabel.ERROR);
 
         Mockito.when(camelKapuaMessage.getMessage()).thenReturn(kapuaMessage);
         Mockito.when(kapuaMessage.getId()).thenReturn(new UUID(10, 1));

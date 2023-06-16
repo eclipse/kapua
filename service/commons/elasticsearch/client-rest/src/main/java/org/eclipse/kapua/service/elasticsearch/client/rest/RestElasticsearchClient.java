@@ -23,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.ParseException;
 import org.apache.http.util.EntityUtils;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.RandomUtils;
 import org.eclipse.kapua.service.elasticsearch.client.AbstractElasticsearchClient;
@@ -75,6 +74,10 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
 
     private static final Logger LOG = LoggerFactory.getLogger(RestElasticsearchClient.class);
 
+    public static final String COMPONENT_REST_CLIENT = "rest_client";
+    public static final String TIMEOUT_RETRY = "timeout_retry";
+    public static final String TIMEOUT_RETRY_LIMIT_REACHED = "timeout_retry_limit_reached";
+
     private static final Random RANDOM = RandomUtils.getInstance();
     private static final String MSG_EMPTY_ERROR = "Empty error message";
 
@@ -83,7 +86,6 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     private static final String QUERY_CONVERTED_QUERY = "Query - converted query: '{}'";
     private static final String COUNT_CONVERTED_QUERY = "Count - converted query: '{}'";
 
-    private Counter restCallRuntimeExecCount;
     private Counter timeoutRetryCount;
     private Counter timeoutRetryLimitReachedCount;
 
@@ -112,9 +114,8 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         }
 
         MetricsService metricService = MetricServiceFactory.getInstance();
-        restCallRuntimeExecCount = metricService.getCounter(getClientConfiguration().getModuleName(), MetricsLabel.COMPONENT_REST_CLIENT, MetricsLabel.RUNTIME_EXEC, MetricsLabel.COUNT);
-        timeoutRetryCount = metricService.getCounter(getClientConfiguration().getModuleName(), MetricsLabel.COMPONENT_REST_CLIENT, MetricsLabel.TIMEOUT_RETRY, MetricsLabel.COUNT);
-        timeoutRetryLimitReachedCount = metricService.getCounter(getClientConfiguration().getModuleName(), MetricsLabel.COMPONENT_REST_CLIENT, MetricsLabel.TIMEOUT_RETRY_LIMIT_REACHED, MetricsLabel.COUNT);
+        timeoutRetryCount = metricService.getCounter(getClientConfiguration().getModuleName(), COMPONENT_REST_CLIENT, TIMEOUT_RETRY);
+        timeoutRetryLimitReachedCount = metricService.getCounter(getClientConfiguration().getModuleName(), COMPONENT_REST_CLIENT, TIMEOUT_RETRY_LIMIT_REACHED);
     }
 
     @Override

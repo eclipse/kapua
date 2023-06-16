@@ -29,6 +29,7 @@ import org.eclipse.kapua.client.security.bean.MessageConstants;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
 import org.eclipse.kapua.client.security.bean.ResponseContainer;
 import org.eclipse.kapua.client.security.bean.Response;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
@@ -48,13 +49,15 @@ public class MessageListener extends ClientMessageListener {
     private static ObjectMapper mapper = new ObjectMapper();
     private static ObjectReader reader = mapper.reader();//check if it's thread safe
 
+    private static final String CALLBACK = "callback";
+
     private Counter metricLoginCallbackErrorCount;
     private Counter metricLoginCallbackTimeoutCount;
 
     public MessageListener() {
         MetricsService metricService = MetricServiceFactory.getInstance();
-        metricLoginCallbackErrorCount = metricService.getCounter("service", "authentication", "callback", "generic_error", MetricsLabel.COUNT);
-        metricLoginCallbackTimeoutCount = metricService.getCounter("service", "authentication", "callback", "timeout", MetricsLabel.COUNT);
+        metricLoginCallbackErrorCount = metricService.getCounter(CommonsMetric.module, MetricLabel.COMPONENT_LOGIN, CALLBACK, MetricsLabel.ERROR);
+        metricLoginCallbackTimeoutCount = metricService.getCounter(CommonsMetric.module, MetricLabel.COMPONENT_LOGIN, CALLBACK, MetricsLabel.TIMEOUT);
     }
 
     @Override
