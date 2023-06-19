@@ -15,8 +15,8 @@ package org.eclipse.kapua.translator.kura.kapua;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.Inject;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.model.asset.AssetMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssetChannelMode;
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssets;
@@ -43,7 +43,8 @@ import java.util.Date;
  */
 public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<AssetResponseChannel, AssetResponsePayload, AssetResponseMessage> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    @Inject
+    private DeviceAssetFactory deviceAssetFactory;
 
     public TranslatorAppAssetKuraKapua() {
         super(AssetResponseMessage.class, AssetResponsePayload.class);
@@ -65,7 +66,6 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
         AssetResponsePayload assetResponsePayload = super.translatePayload(kuraResponsePayload);
 
         try {
-            DeviceAssetFactory deviceAssetFactory = LOCATOR.getFactory(DeviceAssetFactory.class);
             if (kuraResponsePayload.hasBody()) {
 
                 ObjectMapper mapper = new ObjectMapper();

@@ -1,3 +1,4 @@
+#Deprecated! Use dependency injection instead (KapuaKuraTranslatorsModule)
 # From Kapua to Kura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppAssetKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppBundleKapuaKura

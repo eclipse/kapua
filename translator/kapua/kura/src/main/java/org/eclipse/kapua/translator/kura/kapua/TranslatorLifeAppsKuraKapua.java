@@ -13,7 +13,6 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsPayload;
@@ -40,10 +39,8 @@ import org.eclipse.kapua.translator.exception.TranslateException;
  */
 public class TranslatorLifeAppsKuraKapua extends Translator<KuraAppsMessage, KapuaAppsMessage> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
-    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+    private AccountService accountService;
+    private DeviceRegistryService deviceRegistryService;
 
     @Override
     public KapuaAppsMessage translate(KuraAppsMessage kuraAppsMessage) throws TranslateException {
@@ -52,12 +49,12 @@ public class TranslatorLifeAppsKuraKapua extends Translator<KuraAppsMessage, Kap
             kapuaAppsMessage.setChannel(translate(kuraAppsMessage.getChannel()));
             kapuaAppsMessage.setPayload(translate(kuraAppsMessage.getPayload()));
 
-            Account account = ACCOUNT_SERVICE.findByName(kuraAppsMessage.getChannel().getScope());
+            Account account = accountService.findByName(kuraAppsMessage.getChannel().getScope());
             if (account == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraAppsMessage.getChannel().getScope());
             }
 
-            Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), kuraAppsMessage.getChannel().getClientId());
+            Device device = deviceRegistryService.findByClientId(account.getId(), kuraAppsMessage.getChannel().getClientId());
             if (device == null) {
                 throw new KapuaEntityNotFoundException(Device.class.toString(), kuraAppsMessage.getChannel().getClientId());
             }

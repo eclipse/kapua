@@ -21,11 +21,23 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
+import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
+import org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory;
+import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory;
+import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
+import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
+import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
+import org.eclipse.kapua.service.device.management.request.GenericRequestFactory;
+import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.translator.KapuaKuraTranslatorsModule;
 import org.eclipse.kapua.translator.KuraMqttTranslatorsModule;
 import org.eclipse.kapua.translator.TranslatorHubModule;
@@ -62,6 +74,18 @@ public class TranslatorLocatorConfiguration {
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
                 // Inject mocked Permission Factory
                 bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
+                bind(AccountService.class).toInstance(Mockito.mock(AccountService.class));
+                bind(DeviceRegistryService.class).toInstance(Mockito.mock(DeviceRegistryService.class));
+                bind(GenericRequestFactory.class).toInstance(Mockito.mock(GenericRequestFactory.class));
+                bind(DeviceAssetFactory.class).toInstance(Mockito.mock(DeviceAssetFactory.class));
+                bind(DeviceBundleFactory.class).toInstance(Mockito.mock(DeviceBundleFactory.class));
+                bind(KapuaIdFactory.class).toInstance(Mockito.mock(KapuaIdFactory.class));
+                bind(DevicePackageFactory.class).toInstance(Mockito.mock(DevicePackageFactory.class));
+                bind(DeviceSnapshotFactory.class).toInstance(Mockito.mock(DeviceSnapshotFactory.class));
+                bind(KapuaDataMessageFactory.class).toInstance(Mockito.mock(KapuaDataMessageFactory.class));
+                bind(DeviceConfigurationFactory.class).toInstance(Mockito.mock(DeviceConfigurationFactory.class));
+                bind(DeviceInventoryManagementFactory.class).toInstance(Mockito.mock(DeviceInventoryManagementFactory.class));
+                bind(DeviceKeystoreManagementFactory.class).toInstance(Mockito.mock(DeviceKeystoreManagementFactory.class));
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
             }

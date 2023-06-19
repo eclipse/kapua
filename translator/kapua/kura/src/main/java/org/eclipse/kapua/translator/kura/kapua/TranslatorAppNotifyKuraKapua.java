@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
+import com.google.inject.Inject;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
@@ -57,12 +57,12 @@ import java.util.Map;
  */
 public class TranslatorAppNotifyKuraKapua extends Translator<KuraNotifyMessage, KapuaNotifyMessage> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
-    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
-
-    private static final KapuaIdFactory KAPUA_ID_FACTORY = LOCATOR.getFactory(KapuaIdFactory.class);
+    @Inject
+    private AccountService accountService;
+    @Inject
+    private DeviceRegistryService deviceRegistryService;
+    @Inject
+    private KapuaIdFactory kapuaIdFactory;
 
     private static final Map<String, KapuaAppProperties> APP_NAME_DICTIONARY;
     private static final Map<String, KapuaAppProperties> APP_VERSION_DICTIONARY;
@@ -93,12 +93,12 @@ public class TranslatorAppNotifyKuraKapua extends Translator<KuraNotifyMessage, 
             kapuaNotifyMessage.setChannel(translate(kuraNotifyMessage.getChannel()));
             kapuaNotifyMessage.setPayload(translate(kuraNotifyMessage.getPayload()));
 
-            Account account = ACCOUNT_SERVICE.findByName(kuraNotifyMessage.getChannel().getScope());
+            Account account = accountService.findByName(kuraNotifyMessage.getChannel().getScope());
             if (account == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraNotifyMessage.getChannel().getScope());
             }
 
-            Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), kuraNotifyMessage.getChannel().getClientId());
+            Device device = deviceRegistryService.findByClientId(account.getId(), kuraNotifyMessage.getChannel().getClientId());
             if (device == null) {
                 throw new KapuaEntityNotFoundException(Device.class.toString(), kuraNotifyMessage.getChannel().getClientId());
             }
@@ -138,7 +138,7 @@ public class TranslatorAppNotifyKuraKapua extends Translator<KuraNotifyMessage, 
         try {
             KapuaNotifyPayload kapuaNotifyPayload = new KapuaNotifyPayloadImpl();
 
-            kapuaNotifyPayload.setOperationId(KAPUA_ID_FACTORY.newKapuaId(new BigInteger(kuraNotifyPayload.getOperationId().toString())));
+            kapuaNotifyPayload.setOperationId(kapuaIdFactory.newKapuaId(new BigInteger(kuraNotifyPayload.getOperationId().toString())));
             kapuaNotifyPayload.setResource(kuraNotifyPayload.getResource());
             kapuaNotifyPayload.setProgress(kuraNotifyPayload.getProgress());
 

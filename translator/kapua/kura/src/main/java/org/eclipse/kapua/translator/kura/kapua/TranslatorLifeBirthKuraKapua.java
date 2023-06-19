@@ -13,7 +13,6 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthPayload;
@@ -33,6 +32,8 @@ import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
 
+import javax.inject.Inject;
+
 /**
  * {@link Translator} implementation from {@link KuraBirthMessage} to {@link KapuaBirthMessage}
  *
@@ -40,10 +41,10 @@ import org.eclipse.kapua.translator.exception.TranslateException;
  */
 public class TranslatorLifeBirthKuraKapua extends Translator<KuraBirthMessage, KapuaBirthMessage> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
-    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+    @Inject
+    private AccountService accountService;
+    @Inject
+    private DeviceRegistryService deviceRegistryService;
 
     @Override
     public KapuaBirthMessage translate(KuraBirthMessage kuraBirthMessage) throws TranslateException {
@@ -52,13 +53,13 @@ public class TranslatorLifeBirthKuraKapua extends Translator<KuraBirthMessage, K
             kapuaBirthMessage.setChannel(translate(kuraBirthMessage.getChannel()));
             kapuaBirthMessage.setPayload(translate(kuraBirthMessage.getPayload()));
 
-            Account account = ACCOUNT_SERVICE.findByName(kuraBirthMessage.getChannel().getScope());
+            Account account = accountService.findByName(kuraBirthMessage.getChannel().getScope());
             if (account == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraBirthMessage.getChannel().getScope());
             }
             kapuaBirthMessage.setScopeId(account.getId());
 
-            Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), kuraBirthMessage.getChannel().getClientId());
+            Device device = deviceRegistryService.findByClientId(account.getId(), kuraBirthMessage.getChannel().getClientId());
             if (device != null) {
                 kapuaBirthMessage.setDeviceId(device.getId());
             } else {

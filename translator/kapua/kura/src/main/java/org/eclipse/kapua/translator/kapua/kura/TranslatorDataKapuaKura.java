@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
+import com.google.inject.Inject;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
@@ -36,14 +36,13 @@ import org.eclipse.kapua.translator.exception.TranslateException;
  */
 public class TranslatorDataKapuaKura extends Translator<KapuaDataMessage, KuraDataMessage> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
+    @Inject
+    private AccountService accountService;
 
     @Override
     public KuraDataMessage translate(KapuaDataMessage kapuaMessage) throws TranslateException {
         try {
-            Account account = ACCOUNT_SERVICE.find(kapuaMessage.getScopeId());
+            Account account = accountService.find(kapuaMessage.getScopeId());
 
             if (account == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kapuaMessage.getScopeId());

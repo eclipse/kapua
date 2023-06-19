@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua.inventory;
 
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.InventoryMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryItems;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.bundles.KuraInventoryBundles;
@@ -43,6 +42,8 @@ import org.eclipse.kapua.translator.kura.kapua.TranslatorKuraKapuaUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+
 /**
  * {@link Translator} {@code abstract} implementation from {@link KuraResponseMessage} to {@link InventoryResponseMessage}
  *
@@ -51,8 +52,8 @@ import org.slf4j.LoggerFactory;
 public class AbstractTranslatorAppInventoryKuraKapua<M extends InventoryResponseMessage> extends AbstractSimpleTranslatorResponseKuraKapua<InventoryResponseChannel, InventoryResponsePayload, M> {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTranslatorAppInventoryKuraKapua.class);
-
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    @Inject
+    private DeviceInventoryManagementFactory deviceInventoryFactory;
 
     /**
      * Constructor.
@@ -83,7 +84,6 @@ public class AbstractTranslatorAppInventoryKuraKapua<M extends InventoryResponse
      * @since 1.5.0
      */
     protected DeviceInventory translate(KuraInventoryItems kuraInventoryItems) {
-        DeviceInventoryManagementFactory deviceInventoryFactory = LOCATOR.getFactory(DeviceInventoryManagementFactory.class);
         DeviceInventory deviceInventory = deviceInventoryFactory.newDeviceInventory();
 
         kuraInventoryItems.getInventoryItems().forEach(kuraInventoryItem -> {
@@ -106,7 +106,6 @@ public class AbstractTranslatorAppInventoryKuraKapua<M extends InventoryResponse
      * @since 1.5.0
      */
     protected DeviceInventoryBundles translate(KuraInventoryBundles kuraInventoryBundles) {
-        DeviceInventoryManagementFactory deviceInventoryFactory = LOCATOR.getFactory(DeviceInventoryManagementFactory.class);
         DeviceInventoryBundles deviceInventoryBundles = deviceInventoryFactory.newDeviceInventoryBundles();
 
         kuraInventoryBundles.getInventoryBundles().forEach(kuraInventoryBundle -> {
@@ -131,7 +130,6 @@ public class AbstractTranslatorAppInventoryKuraKapua<M extends InventoryResponse
      * @since 2.0.0
      */
     protected DeviceInventoryContainers translate(KuraInventoryContainers kuraInventoryContainers) {
-        DeviceInventoryManagementFactory deviceInventoryFactory = LOCATOR.getFactory(DeviceInventoryManagementFactory.class);
         DeviceInventoryContainers deviceInventoryContainers = deviceInventoryFactory.newDeviceInventoryContainers();
 
         kuraInventoryContainers.getInventoryContainers().forEach(kuraInventoryContainer -> {
@@ -166,7 +164,6 @@ public class AbstractTranslatorAppInventoryKuraKapua<M extends InventoryResponse
      * @since 1.5.0
      */
     protected DeviceInventorySystemPackages translate(KuraInventorySystemPackages kuraInventorySystemPackages) {
-        DeviceInventoryManagementFactory deviceInventoryFactory = LOCATOR.getFactory(DeviceInventoryManagementFactory.class);
         DeviceInventorySystemPackages deviceInventorySystemPackages = deviceInventoryFactory.newDeviceInventorySystemPackages();
 
         kuraInventorySystemPackages.getSystemPackages().forEach(kuraInventorySystemPackage -> {
@@ -189,7 +186,6 @@ public class AbstractTranslatorAppInventoryKuraKapua<M extends InventoryResponse
      * @since 1.5.0
      */
     protected DeviceInventoryPackages translate(KuraInventoryPackages kuraInventoryPackages) {
-        DeviceInventoryManagementFactory deviceInventoryFactory = LOCATOR.getFactory(DeviceInventoryManagementFactory.class);
         DeviceInventoryPackages deviceInventoryPackages = deviceInventoryFactory.newDeviceInventoryPackages();
 
         kuraInventoryPackages.getPackages().forEach(kuraInventoryPackage -> {

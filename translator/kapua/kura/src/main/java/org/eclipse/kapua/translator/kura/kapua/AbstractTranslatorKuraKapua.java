@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
+import com.google.inject.Inject;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.KapuaPayload;
@@ -37,14 +37,13 @@ import org.eclipse.kapua.translator.exception.TranslateException;
  */
 public abstract class AbstractTranslatorKuraKapua<TO_C extends KapuaChannel, TO_P extends KapuaPayload, TO_M extends KapuaMessage<TO_C, TO_P>> extends Translator<KuraResponseMessage, TO_M> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
+    @Inject
+    private AccountService accountService;
 
     @Override
     public TO_M translate(KuraResponseMessage kuraMessage) throws TranslateException {
         try {
-            Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.findByName(kuraMessage.getChannel().getScope()));
+            Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.findByName(kuraMessage.getChannel().getScope()));
 
             if (account == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraMessage.getChannel().getScope());

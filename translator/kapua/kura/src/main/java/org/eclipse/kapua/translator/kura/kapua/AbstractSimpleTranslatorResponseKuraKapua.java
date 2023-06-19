@@ -13,11 +13,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.Inject;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMetrics;
@@ -50,12 +49,10 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
     private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
     private static final boolean SHOW_STACKTRACE = DeviceManagementSetting.getInstance().getBoolean(DeviceManagementSettingKey.SHOW_STACKTRACE, false);
 
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper()
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
-
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    @Inject
+    private ObjectMapper jsonMapper;
+    @Inject
+    private GenericRequestFactory genericRequestFactory;
 
     private final Class<TO_M> messageClazz;
     private final Class<TO_P> payloadClazz;
@@ -74,8 +71,6 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
 
     @Override
     protected TO_M createMessage() throws KapuaException {
-        GenericRequestFactory genericRequestFactory = LOCATOR.getFactory(GenericRequestFactory.class);
-
         try {
             if (this.messageClazz.equals(GenericResponseMessage.class)) {
                 return this.messageClazz.cast(genericRequestFactory.newResponseMessage());
@@ -103,8 +98,6 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
     @Override
     protected TO_P translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
         try {
-            GenericRequestFactory genericRequestFactory = LOCATOR.getFactory(GenericRequestFactory.class);
-
             TO_P appResponsePayload;
             if (payloadClazz.equals(GenericResponsePayload.class)) {
                 appResponsePayload = this.payloadClazz.cast(genericRequestFactory.newResponsePayload());
@@ -195,6 +188,6 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
      * @since 1.5.0
      */
     protected ObjectMapper getJsonMapper() {
-        return JSON_MAPPER;
+        return jsonMapper;
     }
 }

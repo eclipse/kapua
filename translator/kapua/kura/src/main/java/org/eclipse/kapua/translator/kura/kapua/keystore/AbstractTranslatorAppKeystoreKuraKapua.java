@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua.keystore;
 
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.model.keystore.KeystoreMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.keystore.KuraKeystore;
 import org.eclipse.kapua.service.device.call.kura.model.keystore.KuraKeystoreCSR;
@@ -50,10 +49,8 @@ public abstract class AbstractTranslatorAppKeystoreKuraKapua<M extends KeystoreR
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTranslatorAppKeystoreKuraKapua.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
     @Inject
-    private final static DeviceKeystoreManagementFactory DEVICE_KEYSTORE_MANAGEMENT_FACTORY = LOCATOR.getFactory(DeviceKeystoreManagementFactory.class);
+    private DeviceKeystoreManagementFactory deviceKeystoreManagementFactory;
 
     /**
      * Constructor.
@@ -85,11 +82,11 @@ public abstract class AbstractTranslatorAppKeystoreKuraKapua<M extends KeystoreR
      */
     protected DeviceKeystores translate(KuraKeystore[] kuraKeystoreArray) {
 
-        DeviceKeystores deviceKeystores = DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystores();
+        DeviceKeystores deviceKeystores = deviceKeystoreManagementFactory.newDeviceKeystores();
 
         deviceKeystores.setKeystores(
                 Arrays.stream(kuraKeystoreArray).map(kuraKeystore -> {
-                    DeviceKeystore deviceKeystore = DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystore();
+                    DeviceKeystore deviceKeystore = deviceKeystoreManagementFactory.newDeviceKeystore();
 
                     deviceKeystore.setId(kuraKeystore.getKeystoreServicePid());
                     deviceKeystore.setKeystoreType(kuraKeystore.getType());
@@ -111,7 +108,7 @@ public abstract class AbstractTranslatorAppKeystoreKuraKapua<M extends KeystoreR
      */
     protected DeviceKeystoreItems translate(KuraKeystoreItem[] kuraKeystoreItemArray) {
 
-        DeviceKeystoreItems deviceKeystoreItems = DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreItems();
+        DeviceKeystoreItems deviceKeystoreItems = deviceKeystoreManagementFactory.newDeviceKeystoreItems();
 
         deviceKeystoreItems.setKeystoreItems(
                 Arrays.stream(kuraKeystoreItemArray)
@@ -131,7 +128,7 @@ public abstract class AbstractTranslatorAppKeystoreKuraKapua<M extends KeystoreR
      */
     protected DeviceKeystoreItem translate(KuraKeystoreItem kuraKeystoreItem) {
 
-        DeviceKeystoreItem deviceKeystore = DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreItem();
+        DeviceKeystoreItem deviceKeystore = deviceKeystoreManagementFactory.newDeviceKeystoreItem();
 
         deviceKeystore.setKeystoreId(kuraKeystoreItem.getKeystoreServicePid());
         deviceKeystore.setItemType(kuraKeystoreItem.getType());
@@ -144,7 +141,7 @@ public abstract class AbstractTranslatorAppKeystoreKuraKapua<M extends KeystoreR
         deviceKeystore.setCertificateChain(kuraKeystoreItem.getCertificateChain());
 
         for (String[] kuraSubjectAN : kuraKeystoreItem.getSubjectAN()) {
-            DeviceKeystoreSubjectAN deviceSubjectAN = DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreSubjectAN();
+            DeviceKeystoreSubjectAN deviceSubjectAN = deviceKeystoreManagementFactory.newDeviceKeystoreSubjectAN();
 
             if (kuraSubjectAN == null || kuraSubjectAN.length != 2) {
                 LOG.warn("Invalid Subject Alternative Names provided from the device: {}", (Object) kuraSubjectAN);
@@ -176,7 +173,7 @@ public abstract class AbstractTranslatorAppKeystoreKuraKapua<M extends KeystoreR
      * @since 1.5.0
      */
     protected DeviceKeystoreCSR translate(KuraKeystoreCSR kuraKeystoreCSR) {
-        DeviceKeystoreCSR deviceKeystoreCSR = DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreCSR();
+        DeviceKeystoreCSR deviceKeystoreCSR = deviceKeystoreManagementFactory.newDeviceKeystoreCSR();
 
         deviceKeystoreCSR.setSigningRequest(kuraKeystoreCSR.getSigningRequest());
 

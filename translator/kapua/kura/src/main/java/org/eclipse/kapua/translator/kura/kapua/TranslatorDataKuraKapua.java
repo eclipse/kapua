@@ -13,7 +13,6 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
@@ -31,6 +30,8 @@ import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
 
+import javax.inject.Inject;
+
 /**
  * {@link Translator} implementation from {@link KuraDataMessage} to {@link KapuaDataMessage}
  *
@@ -38,12 +39,12 @@ import org.eclipse.kapua.translator.exception.TranslateException;
  */
 public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDataMessage> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
-    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
-
-    private static final KapuaDataMessageFactory DATA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaDataMessageFactory.class);
+    @Inject
+    private AccountService accountService;
+    @Inject
+    private DeviceRegistryService deviceRegistryService;
+    @Inject
+    private KapuaDataMessageFactory kapuaDataMessageFactory;
 
     @Override
     public KapuaDataMessage translate(KuraDataMessage kuraMessage) throws TranslateException {
@@ -53,15 +54,15 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
             // Kapua payload
             KapuaDataPayload kapuaDataPayload = translate(kuraMessage.getPayload());
             // Kapua message
-            Account account = ACCOUNT_SERVICE.findByName(kuraMessage.getChannel().getScope());
+            Account account = accountService.findByName(kuraMessage.getChannel().getScope());
 
             if (account == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraMessage.getChannel().getScope());
             }
 
-            Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), kuraMessage.getChannel().getClientId());
+            Device device = deviceRegistryService.findByClientId(account.getId(), kuraMessage.getChannel().getClientId());
 
-            KapuaDataMessage kapuaDataMessage = DATA_MESSAGE_FACTORY.newKapuaDataMessage();
+            KapuaDataMessage kapuaDataMessage = kapuaDataMessageFactory.newKapuaDataMessage();
             kapuaDataMessage.setScopeId(account.getId());
             kapuaDataMessage.setDeviceId(device != null ? device.getId() : null);
             kapuaDataMessage.setClientId(kuraMessage.getChannel().getClientId());
@@ -82,7 +83,7 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
     }
 
     private KapuaDataChannel translate(KuraDataChannel kuraChannel) {
-        KapuaDataChannel kapuaChannel = DATA_MESSAGE_FACTORY.newKapuaDataChannel();
+        KapuaDataChannel kapuaChannel = kapuaDataMessageFactory.newKapuaDataChannel();
         kapuaChannel.setSemanticParts(kuraChannel.getSemanticParts());
 
         // Return Kapua Channel
@@ -90,7 +91,7 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
     }
 
     private KapuaDataPayload translate(KuraDataPayload kuraPayload) {
-        KapuaDataPayload kapuaPayload = DATA_MESSAGE_FACTORY.newKapuaDataPayload();
+        KapuaDataPayload kapuaPayload = kapuaDataMessageFactory.newKapuaDataPayload();
 
         if (!kuraPayload.getMetrics().isEmpty()) {
             kapuaPayload.setMetrics(kuraPayload.getMetrics());

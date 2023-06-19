@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
+import com.google.inject.Inject;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraBundleInfo;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
@@ -47,7 +47,8 @@ import java.util.Map;
  */
 public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<PackageResponseChannel, PackageResponsePayload, PackageResponseMessage> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    @Inject
+    private DevicePackageFactory devicePackageFactory;
 
     public TranslatorAppPackageKuraKapua() {
         super(PackageResponseMessage.class, PackageResponsePayload.class);
@@ -126,7 +127,6 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
     }
 
     private DevicePackages translate(KuraDeploymentPackages kuraDeploymentPackages) {
-        DevicePackageFactory devicePackageFactory = LOCATOR.getFactory(DevicePackageFactory.class);
         DevicePackages deviceDeploymentPackages = devicePackageFactory.newDeviceDeploymentPackages();
 
         KuraDeploymentPackage[] deploymentPackageArray = kuraDeploymentPackages.getDeploymentPackages();

@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.multibindings.Multibinder;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.translator.kapua.kura.TranslatorAppAssetKapuaKura;
@@ -107,5 +110,11 @@ public class KapuaKuraTranslatorsModule extends AbstractKapuaModule {
         translatorMultibinder.addBinding().to(TranslatorAppKeystoreNoContentKuraKapua.class);
         translatorMultibinder.addBinding().to(TranslatorAppKeystoreCsrKuraKapua.class);
         translatorMultibinder.addBinding().to(TranslatorAppKeystoresKuraKapua.class);
+
+        bind(ObjectMapper.class).toInstance(new ObjectMapper()
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL));
+
     }
 }

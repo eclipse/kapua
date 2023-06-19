@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.SnapshotMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
@@ -29,6 +28,7 @@ import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
+import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -38,7 +38,8 @@ import java.util.List;
  */
 public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<SnapshotResponseChannel, SnapshotResponsePayload, SnapshotResponseMessage> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    @Inject
+    private DeviceSnapshotFactory deviceSnapshotFactory;
 
     public TranslatorAppSnapshotKuraKapua() {
         super(SnapshotResponseMessage.class, SnapshotResponsePayload.class);
@@ -82,7 +83,6 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
      * @since 1.0.0
      */
     private DeviceSnapshots translate(KuraSnapshotIds kuraSnapshotIdResult) {
-        DeviceSnapshotFactory deviceSnapshotFactory = LOCATOR.getFactory(DeviceSnapshotFactory.class);
         DeviceSnapshots deviceSnapshots = deviceSnapshotFactory.newDeviceSnapshots();
 
         List<Long> snapshotIds = kuraSnapshotIdResult.getSnapshotIds();

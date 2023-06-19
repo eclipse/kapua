@@ -15,7 +15,6 @@ package org.eclipse.kapua.translator.kura.kapua.event;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.call.kura.model.asset.AssetMetrics;
@@ -51,6 +50,7 @@ import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
 import org.eclipse.kapua.translator.kura.kapua.TranslatorKuraKapuaUtils;
 
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -65,12 +65,12 @@ import java.util.Map;
  */
 public class TranslatorEventConfigurationKuraKapua extends Translator<KuraConfigurationEventMessage, DeviceConfigurationEventMessage> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
-    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
-
-    private static final DeviceConfigurationFactory DEVICE_CONFIGURATION_FACTORY = LOCATOR.getFactory(DeviceConfigurationFactory.class);
+    @Inject
+    private AccountService accountService;
+    @Inject
+    private DeviceRegistryService deviceRegistryService;
+    @Inject
+    private DeviceConfigurationFactory deviceConfigurationFactory;
 
     private static final Map<String, KapuaAppProperties> APP_NAME_DICTIONARY;
     private static final Map<String, KapuaAppProperties> APP_VERSION_DICTIONARY;
@@ -101,12 +101,12 @@ public class TranslatorEventConfigurationKuraKapua extends Translator<KuraConfig
             deviceConfigurationEventMessage.setChannel(translate(kuraNotifyMessage.getChannel()));
             deviceConfigurationEventMessage.setPayload(translate(kuraNotifyMessage.getPayload()));
 
-            Account account = ACCOUNT_SERVICE.findByName(kuraNotifyMessage.getChannel().getScope());
+            Account account = accountService.findByName(kuraNotifyMessage.getChannel().getScope());
             if (account == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraNotifyMessage.getChannel().getScope());
             }
 
-            Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), kuraNotifyMessage.getChannel().getClientId());
+            Device device = deviceRegistryService.findByClientId(account.getId(), kuraNotifyMessage.getChannel().getClientId());
             if (device == null) {
                 throw new KapuaEntityNotFoundException(Device.class.toString(), kuraNotifyMessage.getChannel().getClientId());
             }
@@ -173,7 +173,7 @@ public class TranslatorEventConfigurationKuraKapua extends Translator<KuraConfig
      * @since 2.0.0
      */
     private DeviceComponentConfiguration translate(KuraDeviceComponentConfiguration kuraDeviceComponentConfiguration) {
-        return DEVICE_CONFIGURATION_FACTORY.newComponentConfigurationInstance(kuraDeviceComponentConfiguration.getComponentId());
+        return deviceConfigurationFactory.newComponentConfigurationInstance(kuraDeviceComponentConfiguration.getComponentId());
     }
 
     @Override
