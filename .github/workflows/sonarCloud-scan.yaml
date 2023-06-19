@@ -1,0 +1,36 @@
+name: SonarCloud
+on:
+  push:
+    branches:
+      - 'develop'
+      - 'release-**'
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  SONAR_ORG: ${{ secrets.SONAR_ORG }}
+  SONAR_PROJKEY: ${{ secrets.SONAR_PROJKEY }}
+
+jobs:
+  scan:
+    name: Scan code with sonarCould
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: 'zulu'
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: SonarCloud scan
+        run: mvn -B compile org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${SONAR_PROJKEY} -Dsonar.organization=${SONAR_ORG}
