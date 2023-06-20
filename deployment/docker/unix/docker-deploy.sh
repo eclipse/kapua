@@ -29,10 +29,10 @@ docker_compose() {
     if [[ "$1" == true ]]; then
       echo "Debug mode enabled!"
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.broker-debug.yml")
-      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.console-debug.yml")
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.consumer-lifecycle-debug.yml")
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.consumer-telemetry-debug.yml")
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.service-authentication-debug.yml")
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.console-debug.yml")
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.job-engine-debug.yml")
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.rest-debug.yml")
     fi
@@ -62,24 +62,28 @@ docker_compose() {
 }
 
 print_usage_deploy() {
-    echo "Usage: $(basename "$0") [--dev] [--debug] [--logs] " >&2
+    echo "Usage: $(basename "$0") [-h|--help] [--dev] [--debug] [--logs] [--sso] [--no-swagger]" >&2
 }
 
-OPEN_LOGS=false
-DEV_MODE=false
 DEBUG_MODE=false
+DEV_MODE=false
+OPEN_LOGS=false
 SSO_MODE=false
 SWAGGER=true
 for option in "$@"; do
   case $option in
-    --logs)
-      OPEN_LOGS=true
+    -h|--help)
+      print_usage_deploy
+      exit 0;
+      ;;
+    --debug)
+      DEBUG_MODE=true
       ;;
     --dev)
       DEV_MODE=true
       ;;
-    --debug)
-      DEBUG_MODE=true
+    --logs)
+      OPEN_LOGS=true
       ;;
     --sso)
       SSO_MODE=true
@@ -89,6 +93,7 @@ for option in "$@"; do
       ;;
     -*)
       echo "ERROR: Unrecognised option $option"
+      print_usage_deploy
       exit 1
       ;;
     *)
