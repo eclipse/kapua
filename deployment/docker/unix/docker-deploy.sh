@@ -59,24 +59,28 @@ docker_compose() {
 }
 
 print_usage_deploy() {
-    echo "Usage: $(basename "$0") [--dev] [--debug] [--logs] " >&2
+    echo "Usage: $(basename "$0") [-h|--help] [--dev] [--debug] [--logs] [--sso] [--no-swagger]" >&2
 }
 
-OPEN_LOGS=false
-DEV_MODE=false
 DEBUG_MODE=false
+DEV_MODE=false
+OPEN_LOGS=false
 SSO_MODE=false
 SWAGGER=true
 for option in "$@"; do
   case $option in
-    --logs)
-      OPEN_LOGS=true
+    -h|--help)
+      print_usage_deploy
+      exit 0;
+      ;;
+    --debug)
+      DEBUG_MODE=true
       ;;
     --dev)
       DEV_MODE=true
       ;;
-    --debug)
-      DEBUG_MODE=true
+    --logs)
+      OPEN_LOGS=true
       ;;
     --sso)
       SSO_MODE=true
@@ -86,6 +90,7 @@ for option in "$@"; do
       ;;
     -*)
       echo "ERROR: Unrecognised option $option"
+      print_usage_deploy
       exit 1
       ;;
     *)
