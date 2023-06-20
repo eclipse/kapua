@@ -22,8 +22,7 @@ import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryMana
  */
 public class DeviceInventoryPackagesXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DeviceInventoryManagementFactory factory = locator.getFactory(DeviceInventoryManagementFactory.class);
+    private final DeviceInventoryManagementFactory factory = KapuaLocator.getInstance().getFactory(DeviceInventoryManagementFactory.class);
 
     /**
      * Instantiates a new {@link DeviceInventoryPackages}.

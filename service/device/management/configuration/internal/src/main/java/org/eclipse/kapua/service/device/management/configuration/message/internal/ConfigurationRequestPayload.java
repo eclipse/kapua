@@ -34,6 +34,7 @@ public class ConfigurationRequestPayload extends KapuaPayloadImpl implements Kap
 
     private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
+    //TODO: Inject
     private static final DeviceConfigurationFactory DEVICE_CONFIGURATION_FACTORY = KapuaLocator.getInstance().getFactory(DeviceConfigurationFactory.class);
 
     /**

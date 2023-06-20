@@ -34,6 +34,7 @@ public class SnapshotResponsePayload extends KapuaResponsePayloadImpl implements
 
     private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
+    //TODO: Inject
     private static final DeviceSnapshotFactory DEVICE_SNAPSHOT_FACTORY = KapuaLocator.getInstance().getFactory(DeviceSnapshotFactory.class);
 
     /**

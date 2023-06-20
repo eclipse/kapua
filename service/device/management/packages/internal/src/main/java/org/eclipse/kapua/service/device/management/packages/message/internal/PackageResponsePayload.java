@@ -38,6 +38,7 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
 
     private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
+    //TODO: Inject
     private static final DevicePackageFactory DEVICE_PACKAGE_FACTORY = KapuaLocator.getInstance().getFactory(DevicePackageFactory.class);
 
     /**

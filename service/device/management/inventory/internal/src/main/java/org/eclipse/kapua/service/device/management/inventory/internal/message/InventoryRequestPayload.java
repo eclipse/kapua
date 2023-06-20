@@ -36,6 +36,7 @@ public class InventoryRequestPayload extends KapuaPayloadImpl implements KapuaRe
 
     private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
+    //TODO: Inject
     private static final DeviceInventoryManagementFactory DEVICE_INVENTORY_MANAGEMENT_FACTORY = KapuaLocator.getInstance().getFactory(DeviceInventoryManagementFactory.class);
 
     /**

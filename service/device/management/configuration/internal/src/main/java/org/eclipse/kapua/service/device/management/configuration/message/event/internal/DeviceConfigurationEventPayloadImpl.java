@@ -37,6 +37,7 @@ public class DeviceConfigurationEventPayloadImpl extends KapuaEventPayloadImpl i
 
     private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
+    //TODO: Inject
     private static final DeviceConfigurationFactory DEVICE_CONFIGURATION_FACTORY = KapuaLocator.getInstance().getFactory(DeviceConfigurationFactory.class);
 
     @Override

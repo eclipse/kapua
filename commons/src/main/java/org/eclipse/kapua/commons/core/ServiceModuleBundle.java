@@ -14,14 +14,13 @@ package org.eclipse.kapua.commons.core;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.event.ServiceEventBusManager;
-import org.eclipse.kapua.service.KapuaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.Set;
 
-public class ServiceModuleBundle implements KapuaService {
+public class ServiceModuleBundle {
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceModuleBundle.class);
     private final Set<ServiceModule> serviceModules;

@@ -42,6 +42,7 @@ public class ConfigurationResponsePayload extends KapuaResponsePayloadImpl imple
     private static final String PAYLOAD_TO_DISPLAY_STRING_MODE = DeviceConfigurationManagementSettings.getInstance().getString(DeviceConfigurationManagementSettingsKeys.PAYLOAD_TO_DISPLAY_STRING_MODE, "NONE");
     private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
+    //TODO: Inject
     private static final DeviceConfigurationFactory DEVICE_CONFIGURATION_FACTORY = KapuaLocator.getInstance().getFactory(DeviceConfigurationFactory.class);
 
     /**

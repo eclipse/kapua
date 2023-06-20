@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
-import java.util.List;
-
 import org.eclipse.kapua.locator.KapuaLocator;
+
+import java.util.List;
 
 /**
  * A class that provides JAXB serializable classes as exported by {@link KapuaLocator}
@@ -22,9 +22,15 @@ import org.eclipse.kapua.locator.KapuaLocator;
  * implementation export the required list of classes.
  *
  * @since 2.0.0
+ * @deprecated since 2.0.0.
  */
+@Deprecated
 public class ServiceModuleJaxbClassProvider implements ClassProvider {
 
+    /**
+     * @deprecated since 2.0.0 - using dependency injection makes this class redundant
+     */
+    @Deprecated
     public ServiceModuleJaxbClassProvider() {
         // Initialize the Kapua locator to force populate ServiceModuleJaxbConfiguration
         KapuaLocator.getInstance();

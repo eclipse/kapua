@@ -12,21 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.app.core.jackson.deserializer;
 
-import java.io.IOException;
-
-import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdFactory;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdFactory;
+
+import java.io.IOException;
 
 public class KapuaIdDeserializer extends JsonDeserializer<KapuaId> {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final KapuaIdFactory kapuaIdFactory = locator.getFactory(KapuaIdFactory.class);
+    private final KapuaIdFactory kapuaIdFactory = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class);
 
     @Override
     public KapuaId deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {

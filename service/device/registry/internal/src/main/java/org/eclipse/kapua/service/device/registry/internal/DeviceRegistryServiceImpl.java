@@ -23,7 +23,6 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.event.ServiceEvent;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -218,10 +217,7 @@ public class DeviceRegistryServiceImpl
     }
 
     private void deleteDeviceByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);
-
-        DeviceQuery query = deviceFactory.newQuery(accountId);
+        DeviceQuery query = entityFactory.newQuery(accountId);
 
         txManager.<Void>execute(tx -> {
             DeviceListResult devicesToDelete = deviceRepository.query(tx, query);

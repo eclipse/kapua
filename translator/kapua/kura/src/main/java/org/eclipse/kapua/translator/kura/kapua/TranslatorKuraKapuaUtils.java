@@ -32,6 +32,7 @@ import org.eclipse.kapua.translator.exception.TranslatorException;
  *
  * @since 1.0.0
  */
+//TODO: split interface and instance, inject as a collaborator, build though injection
 public final class TranslatorKuraKapuaUtils {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();

@@ -16,9 +16,9 @@ import org.eclipse.kapua.locator.KapuaLocator;
 
 public class JobEngineXmlRegistry {
 
-    private static final JobEngineFactory JOB_ENGINE_FACTORY = KapuaLocator.getInstance().getFactory(JobEngineFactory.class);
+    private JobEngineFactory jobEngineFactory = KapuaLocator.getInstance().getFactory(JobEngineFactory.class);
 
     public JobStartOptions newJobStartOptions() {
-        return JOB_ENGINE_FACTORY.newJobStartOptions();
+        return jobEngineFactory.newJobStartOptions();
     }
 }

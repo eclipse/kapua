@@ -51,6 +51,7 @@ import java.util.List;
  *
  * @since 1.0.0
  */
+//TODO: split interface and instance, inject as a collaborator, build though injection
 public final class DeviceValidation {
 
     private static final KapuaDeviceRegistrySettings DEVICE_REGISTRY_SETTINGS = KapuaDeviceRegistrySettings.getInstance();

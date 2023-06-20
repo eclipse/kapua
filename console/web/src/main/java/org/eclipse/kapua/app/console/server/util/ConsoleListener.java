@@ -96,7 +96,7 @@ public class ConsoleListener implements ServletContextListener {
         try {
             LOG.info("Starting service modules...");
             if (moduleBundle == null) {
-                moduleBundle = KapuaLocator.getInstance().getService(ServiceModuleBundle.class);
+                moduleBundle = KapuaLocator.getInstance().getComponent(ServiceModuleBundle.class);
             }
             moduleBundle.startup();
             LOG.info("Starting service modules... DONE!");
