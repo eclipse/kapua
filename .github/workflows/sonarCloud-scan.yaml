@@ -10,8 +10,8 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  SONAR_ORG: ${{ secrets.SONAR_ORG }}
-  SONAR_PROJKEY: ${{ secrets.SONAR_PROJKEY }}
+  SONAR_ORGANIZATION_KEY: ${{ vars.SONAR_ORGANIZATION_KEY }}
+  SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
 
 jobs:
   scan:
@@ -33,4 +33,4 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
       - name: SonarCloud scan
-        run: mvn -B compile org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${SONAR_PROJKEY} -Dsonar.organization=${SONAR_ORG}
+        run: mvn -B compile org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.organization=${SONAR_ORGANIZATION_KEY}
