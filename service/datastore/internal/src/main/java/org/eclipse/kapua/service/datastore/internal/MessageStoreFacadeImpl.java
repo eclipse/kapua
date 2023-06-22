@@ -57,6 +57,7 @@ import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
 import org.eclipse.kapua.service.elasticsearch.client.model.InsertRequest;
@@ -72,6 +73,7 @@ import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicat
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -98,6 +100,7 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
     private static final String QUERY_SCOPE_ID = "query.scopeId";
     private static final String SCOPE_ID = "scopeId";
 
+    @Inject
     public MessageStoreFacadeImpl(
             ConfigurationProvider configProvider,
             StorableIdFactory storableIdFactory,
@@ -105,8 +108,9 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
             ClientInfoRegistryFacade clientInfoRegistryFacade,
             ChannelInfoRegistryFacade channelInfoStoreFacade,
             MetricInfoRegistryFacade metricInfoStoreFacade,
-            MessageStoreMediator mediator, MessageRepository messageRepository) {
-        super(configProvider);
+            MessageStoreMediator mediator, MessageRepository messageRepository,
+            ElasticsearchClientProvider elasticsearchClientProvider) {
+        super(configProvider, elasticsearchClientProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
         this.clientInfoRegistryFacade = clientInfoRegistryFacade;

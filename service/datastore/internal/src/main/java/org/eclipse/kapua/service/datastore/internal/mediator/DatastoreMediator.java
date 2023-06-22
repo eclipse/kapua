@@ -19,6 +19,7 @@ import org.eclipse.kapua.service.datastore.internal.schema.Schema;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 
@@ -38,8 +39,8 @@ public class DatastoreMediator implements MessageStoreMediator,
     private final Schema esSchema;
 
     @Inject
-    public DatastoreMediator() {
-        this.esSchema = new Schema();
+    public DatastoreMediator(ElasticsearchClientProvider elasticsearchClientProvider) {
+        this.esSchema = new Schema(elasticsearchClientProvider);
     }
 
     // Message Store Mediator methods

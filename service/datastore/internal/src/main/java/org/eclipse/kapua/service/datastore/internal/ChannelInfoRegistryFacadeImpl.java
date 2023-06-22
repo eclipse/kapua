@@ -26,6 +26,7 @@ import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
@@ -63,8 +64,9 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
      * @param mediator
      * @since 1.0.0
      */
-    public ChannelInfoRegistryFacadeImpl(ConfigurationProvider configProvider, StorableIdFactory storableIdFactory, StorablePredicateFactory storablePredicateFactory, ChannelInfoRegistryMediator mediator) {
-        super(configProvider);
+    public ChannelInfoRegistryFacadeImpl(ConfigurationProvider configProvider, StorableIdFactory storableIdFactory, StorablePredicateFactory storablePredicateFactory, ChannelInfoRegistryMediator mediator,
+                                         ElasticsearchClientProvider elasticsearchClientProvider) {
+        super(configProvider, elasticsearchClientProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
         this.mediator = mediator;

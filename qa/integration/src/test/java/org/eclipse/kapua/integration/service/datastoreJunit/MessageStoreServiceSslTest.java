@@ -28,7 +28,6 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.MessageStoreFacade;
-import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
@@ -38,6 +37,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.SortField;
@@ -77,6 +77,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
     private static final MessageStoreFacade MESSAGE_STORE_FACADE = LOCATOR.getComponent(MessageStoreFacade.class);
     private static final MessageStoreFactory MESSAGE_STORE_FACTORY = LOCATOR.getFactory(MessageStoreFactory.class);
     private static final KapuaDataMessageFactory KAPUA_DATA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaDataMessageFactory.class);
+    private static final ElasticsearchClientProvider ELASTICSEARCH_CLIENT_PROVIDER = LOCATOR.getComponent(ElasticsearchClientProvider.class);
 
     /**
      * This method deletes all indices of the current ES instance
@@ -102,13 +103,13 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
         // datastore.elasticsearch.ssl.truststore.path=
         // datastore.elasticsearch.ssl.truststore.password=
         try {
-            DatastoreClientFactory.getInstance();
+            ELASTICSEARCH_CLIENT_PROVIDER.getElasticsearchClient();
             storeMessage("ssl_test/no_ssl");
             Assert.fail("ClientException should be thrown!");
         } catch (ClientException e) {
             // good
         } finally {
-            DatastoreClientFactory.close();
+            ELASTICSEARCH_CLIENT_PROVIDER.close();
         }
     }
 
@@ -123,12 +124,12 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
         // datastore.elasticsearch.ssl.truststore.path=
         // datastore.elasticsearch.ssl.truststore.password=
         try {
-            DatastoreClientFactory.getInstance();
+            ELASTICSEARCH_CLIENT_PROVIDER.getElasticsearchClient();
             storeMessage("ssl_test/ssl");
         } catch (ClientException e) {
             Assert.fail("No ClientException should be thrown!");
         } finally {
-            DatastoreClientFactory.close();
+            ELASTICSEARCH_CLIENT_PROVIDER.close();
         }
     }
 
@@ -143,12 +144,12 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
         // datastore.elasticsearch.ssl.truststore.path=
         // datastore.elasticsearch.ssl.truststore.password=
         try {
-            DatastoreClientFactory.getInstance();
+            ELASTICSEARCH_CLIENT_PROVIDER.getElasticsearchClient();
             storeMessage("ssl_test/ssl_trust_server_no_trust_store_set");
         } catch (ClientException e) {
             Assert.fail("No ClientException should be thrown!");
         } finally {
-            DatastoreClientFactory.close();
+            ELASTICSEARCH_CLIENT_PROVIDER.close();
         }
     }
 
@@ -163,12 +164,12 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
         // datastore.elasticsearch.ssl.truststore.path=some valid truststore path
         // datastore.elasticsearch.ssl.truststore.password=trust store password
         try {
-            DatastoreClientFactory.getInstance();
+            ELASTICSEARCH_CLIENT_PROVIDER.getElasticsearchClient();
             storeMessage("ssl_test/ssl_trust_server_default_trust_store_set");
         } catch (ClientException e) {
             Assert.fail("No ClientException should be thrown!");
         } finally {
-            DatastoreClientFactory.close();
+            ELASTICSEARCH_CLIENT_PROVIDER.close();
         }
     }
 
@@ -183,12 +184,12 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
         // datastore.elasticsearch.ssl.truststore.path=self signed trust store
         // datastore.elasticsearch.ssl.truststore.password=password
         try {
-            DatastoreClientFactory.getInstance();
+            ELASTICSEARCH_CLIENT_PROVIDER.getElasticsearchClient();
             storeMessage("ssl_test/ssl_trust_server_self_signed_tust");
         } catch (ClientException e) {
             Assert.fail("No ClientException should be thrown!");
         } finally {
-            DatastoreClientFactory.close();
+            ELASTICSEARCH_CLIENT_PROVIDER.close();
         }
     }
 

@@ -26,6 +26,7 @@ import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateResponse;
@@ -68,8 +69,9 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
     public MetricInfoRegistryFacadeImpl(ConfigurationProvider configProvider,
                                         StorableIdFactory storableIdFactory,
                                         StorablePredicateFactory storablePredicateFactory,
-                                        MetricInfoRegistryMediator mediator) {
-        super(configProvider);
+                                        MetricInfoRegistryMediator mediator,
+                                        ElasticsearchClientProvider elasticsearchClientProvider) {
+        super(configProvider, elasticsearchClientProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
         this.mediator = mediator;

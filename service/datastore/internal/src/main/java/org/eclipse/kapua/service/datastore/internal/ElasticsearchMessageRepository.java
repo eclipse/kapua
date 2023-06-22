@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 import org.eclipse.kapua.service.datastore.internal.model.MessageListResultImpl;
@@ -23,6 +22,7 @@ import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
@@ -34,10 +34,12 @@ import javax.inject.Inject;
 public class ElasticsearchMessageRepository implements MessageRepository {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ConfigurationProvider configProvider;
+    private final ElasticsearchClientProvider elasticsearchClientProviderInstance;
 
     @Inject
-    public ElasticsearchMessageRepository(ConfigurationProvider configProvider) {
+    public ElasticsearchMessageRepository(ConfigurationProvider configProvider, ElasticsearchClientProvider elasticsearchClientProviderInstance) {
         this.configProvider = configProvider;
+        this.elasticsearchClientProviderInstance = elasticsearchClientProviderInstance;
     }
 
     public boolean isDatastoreServiceEnabled(KapuaId scopeId) throws ConfigurationException {
@@ -48,7 +50,7 @@ public class ElasticsearchMessageRepository implements MessageRepository {
     }
 
     protected ElasticsearchClient<?> getElasticsearchClient() throws ClientUnavailableException {
-        return DatastoreClientFactory.getElasticsearchClient();
+        return elasticsearchClientProviderInstance.getElasticsearchClient();
     }
 
     @Override

@@ -40,6 +40,10 @@ import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoFactory;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
+import org.eclipse.kapua.service.datastore.exception.DatastoreInternalError;
+import org.eclipse.kapua.service.datastore.internal.client.DatastoreElasticsearchClientConfiguration;
+import org.eclipse.kapua.service.datastore.internal.converter.ModelContextImpl;
+import org.eclipse.kapua.service.datastore.internal.converter.QueryConverterImpl;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoRegistryMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoRegistryMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
@@ -47,12 +51,15 @@ import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreMediato
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoRegistryMediator;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
+import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
 import org.eclipse.kapua.storage.TxContext;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.lang.reflect.Constructor;
 
 public class DatastoreModule extends AbstractKapuaModule {
     @Override
@@ -84,8 +91,9 @@ public class DatastoreModule extends AbstractKapuaModule {
             ConfigurationProvider configProvider,
             StorableIdFactory storableIdFactory,
             StorablePredicateFactory storablePredicateFactory,
-            ClientInfoRegistryMediator mediator) {
-        return new ClientInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator);
+            ClientInfoRegistryMediator mediator,
+            ElasticsearchClientProvider elasticsearchClientProvider) {
+        return new ClientInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator, elasticsearchClientProvider);
     }
 
     @Provides
@@ -94,8 +102,9 @@ public class DatastoreModule extends AbstractKapuaModule {
             ConfigurationProvider configProvider,
             StorableIdFactory storableIdFactory,
             StorablePredicateFactory storablePredicateFactory,
-            MetricInfoRegistryMediator mediator) {
-        return new MetricInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator);
+            MetricInfoRegistryMediator mediator,
+            ElasticsearchClientProvider elasticsearchClientProvider) {
+        return new MetricInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator, elasticsearchClientProvider);
     }
 
     @Provides
@@ -104,8 +113,9 @@ public class DatastoreModule extends AbstractKapuaModule {
             ConfigurationProvider configProvider,
             StorableIdFactory storableIdFactory,
             StorablePredicateFactory storablePredicateFactory,
-            ChannelInfoRegistryMediator mediator) {
-        return new ChannelInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator);
+            ChannelInfoRegistryMediator mediator,
+            ElasticsearchClientProvider elasticsearchClientProvider) {
+        return new ChannelInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator, elasticsearchClientProvider);
     }
 
     @Provides
@@ -118,7 +128,8 @@ public class DatastoreModule extends AbstractKapuaModule {
             ChannelInfoRegistryFacade channelInfoStoreFacade,
             MetricInfoRegistryFacade metricInfoStoreFacade,
             MessageStoreMediator mediator,
-            MessageRepository messageRepository
+            MessageRepository messageRepository,
+            ElasticsearchClientProvider elasticsearchClientProvider
     ) {
 
         return new MessageStoreFacadeImpl(
@@ -128,7 +139,9 @@ public class DatastoreModule extends AbstractKapuaModule {
                 clientInfoRegistryFacade,
                 channelInfoStoreFacade,
                 metricInfoStoreFacade,
-                mediator, messageRepository);
+                mediator,
+                messageRepository,
+                elasticsearchClientProvider);
     }
 
     @Provides
@@ -140,6 +153,30 @@ public class DatastoreModule extends AbstractKapuaModule {
     ) {
         final ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(jpaTxManagerFactory.create("kapua-datastore"), serviceConfigurationManager, accountService);
         return configurationProvider;
+    }
+
+
+    @Provides
+    @Singleton
+    ElasticsearchClientProvider elasticsearchClientProvider(StorableIdFactory storableIdFactory) {
+        ElasticsearchClientProvider<?> elasticsearchClientProvider;
+        try {
+            ElasticsearchClientConfiguration esClientConfiguration = DatastoreElasticsearchClientConfiguration.getInstance();
+
+            Class<ElasticsearchClientProvider<?>> providerClass = (Class<ElasticsearchClientProvider<?>>) Class.forName(esClientConfiguration.getProviderClassName());
+            Constructor<?> constructor = providerClass.getConstructor();
+            elasticsearchClientProvider = (ElasticsearchClientProvider<?>) constructor.newInstance();
+
+            elasticsearchClientProvider
+                    .withClientConfiguration(esClientConfiguration)
+                    .withModelContext(new ModelContextImpl(storableIdFactory))
+                    .withModelConverter(new QueryConverterImpl())
+                    .init();
+        } catch (Exception e) {
+            throw new DatastoreInternalError(e, "Cannot instantiate Elasticsearch Client");
+        }
+
+        return elasticsearchClientProvider;
     }
 
     @Provides

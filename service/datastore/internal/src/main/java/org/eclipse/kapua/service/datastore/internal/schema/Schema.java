@@ -16,12 +16,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.DatastoreCacheManager;
-import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientErrorCodes;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
@@ -32,10 +32,10 @@ import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
 import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -48,6 +48,12 @@ import java.util.Map.Entry;
 public class Schema {
 
     private static final Logger LOG = LoggerFactory.getLogger(Schema.class);
+    private final ElasticsearchClientProvider elasticsearchClientProviderInstance;
+
+    @Inject
+    public Schema(ElasticsearchClientProvider elasticsearchClientProviderInstance) {
+        this.elasticsearchClientProviderInstance = elasticsearchClientProviderInstance;
+    }
 
     /**
      * Synchronize metadata
@@ -75,7 +81,7 @@ public class Schema {
         LOG.debug("Before entering updating metadata");
         synchronized (Schema.class) {
             LOG.debug("Entered updating metadata");
-            ElasticsearchClient<?> elasticsearchClient = DatastoreClientFactory.getInstance().getElasticsearchClient();
+            ElasticsearchClient<?> elasticsearchClient = elasticsearchClientProviderInstance.getElasticsearchClient();
             // Check existence of the data index
             IndexResponse dataIndexExistsResponse = elasticsearchClient.isIndexExists(new IndexRequest(dataIndexName));
             if (!dataIndexExistsResponse.isIndexExists()) {
@@ -164,7 +170,7 @@ public class Schema {
         }
 
         LOG.trace("Sending dynamic message mappings: {}", metricsMapping);
-        DatastoreClientFactory.getInstance().getElasticsearchClient().putMapping(new TypeDescriptor(currentMetadata.getDataIndexName(), MessageSchema.MESSAGE_TYPE_NAME), metricsMapping);
+        elasticsearchClientProviderInstance.getElasticsearchClient().putMapping(new TypeDescriptor(currentMetadata.getDataIndexName(), MessageSchema.MESSAGE_TYPE_NAME), metricsMapping);
     }
 
     /**

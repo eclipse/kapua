@@ -13,10 +13,10 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.eclipse.kapua.service.storable.model.Storable;
 import org.eclipse.kapua.service.storable.model.StorableListResult;
@@ -29,9 +29,11 @@ public abstract class AbstractRegistryFacade {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRegistryFacade.class);
 
     private final ConfigurationProvider configProvider;
+    private final ElasticsearchClientProvider elasticsearchClientProviderInstance;
 
-    public AbstractRegistryFacade(ConfigurationProvider configProvider) {
+    public AbstractRegistryFacade(ConfigurationProvider configProvider, ElasticsearchClientProvider elasticsearchClientProviderInstance) {
         this.configProvider = configProvider;
+        this.elasticsearchClientProviderInstance = elasticsearchClientProviderInstance;
     }
 
     public ConfigurationProvider getConfigProvider() {
@@ -46,7 +48,7 @@ public abstract class AbstractRegistryFacade {
     }
 
     protected ElasticsearchClient<?> getElasticsearchClient() throws ClientUnavailableException {
-        return DatastoreClientFactory.getElasticsearchClient();
+        return elasticsearchClientProviderInstance.getElasticsearchClient();
     }
 
     public static <T extends Storable> void setLimitExceed(StorableQuery query, boolean hitsExceedsTotalCount, StorableListResult<T> list) {
