@@ -19,13 +19,10 @@ import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
-import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
@@ -69,28 +66,25 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final MetricInfoRegistryFacade metricInfoRegistryFacade;
-    private final MessageStoreService messageStoreService;
     private final DatastorePredicateFactory datastorePredicateFactory;
+    private final MessageRepository messageRepository;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
 
     @Inject
     public MetricInfoRegistryServiceImpl(
-            AccountService accountService,
             StorablePredicateFactory storablePredicateFactory,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            MessageStoreService messageStoreService,
-            DatastorePredicateFactory datastorePredicateFactory) {
+            DatastorePredicateFactory datastorePredicateFactory,
+            MetricInfoRegistryFacade metricInfoRegistryFacade, MessageRepository messageRepository) {
         this.storablePredicateFactory = storablePredicateFactory;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
-        this.messageStoreService = messageStoreService;
         this.datastorePredicateFactory = datastorePredicateFactory;
-        ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(messageStoreService, accountService);
-        this.metricInfoRegistryFacade = new MetricInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
-        DatastoreMediator.getInstance().setMetricInfoStoreFacade(metricInfoRegistryFacade);
+        this.metricInfoRegistryFacade = metricInfoRegistryFacade;
+        this.messageRepository = messageRepository;
     }
 
     @Override
@@ -231,7 +225,7 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
         andPredicate.getPredicates().add(metricPredicate);
         messageQuery.setPredicate(andPredicate);
 
-        MessageListResult messageList = messageStoreService.query(messageQuery);
+        MessageListResult messageList = messageRepository.query(messageQuery);
 
         StorableId lastPublishedMessageId = null;
         Date lastPublishedMessageTimestamp = null;

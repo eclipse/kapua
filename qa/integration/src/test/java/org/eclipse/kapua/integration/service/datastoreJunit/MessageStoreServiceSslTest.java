@@ -27,9 +27,9 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
+import org.eclipse.kapua.service.datastore.internal.MessageStoreFacade;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
-import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
@@ -74,6 +74,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
 
     private static final DatastorePredicateFactory DATASTORE_PREDICATE_FACTORY = LOCATOR.getFactory(DatastorePredicateFactory.class);
     private static final MessageStoreService MESSAGE_STORE_SERVICE = LOCATOR.getService(MessageStoreService.class);
+    private static final MessageStoreFacade MESSAGE_STORE_FACADE = LOCATOR.getComponent(MessageStoreFacade.class);
     private static final MessageStoreFactory MESSAGE_STORE_FACTORY = LOCATOR.getFactory(MessageStoreFactory.class);
     private static final KapuaDataMessageFactory KAPUA_DATA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaDataMessageFactory.class);
 
@@ -208,7 +209,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
         insertMessage(account, clientId, device.getId(), semanticTopic, payload, date);
 
         // do a first query count
-        DatastoreMediator.getInstance().refreshAllIndexes();
+        MESSAGE_STORE_FACADE.refreshAllIndexes();
         MessageQuery messageQuery = getBaseMessageQuery(KapuaEid.ONE, 10);
         setMessageQueryBaseCriteria(messageQuery, clientId, new DateRange(Date.from(currentInstant.minusSeconds(3600)), date));
         long count = MESSAGE_STORE_SERVICE.count(messageQuery);

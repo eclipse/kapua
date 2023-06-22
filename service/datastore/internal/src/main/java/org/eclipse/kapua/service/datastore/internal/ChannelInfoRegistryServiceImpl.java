@@ -26,7 +26,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
-import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
@@ -84,15 +83,14 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
             AccountService accountService,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            MessageStoreService messageStoreService) {
+            MessageStoreService messageStoreService,
+            ChannelInfoRegistryFacade channelInfoRegistryFacade) {
         this.datastorePredicateFactory = datastorePredicateFactory;
         this.accountService = accountService;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.messageStoreService = messageStoreService;
-        ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this.messageStoreService, this.accountService);
-        channelInfoRegistryFacade = new ChannelInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
-        DatastoreMediator.getInstance().setChannelInfoStoreFacade(channelInfoRegistryFacade);
+        this.channelInfoRegistryFacade = channelInfoRegistryFacade;
     }
 
     @Override

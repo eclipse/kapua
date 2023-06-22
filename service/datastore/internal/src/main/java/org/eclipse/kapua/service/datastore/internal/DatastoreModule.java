@@ -40,8 +40,15 @@ import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoFactory;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
+import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoRegistryMediator;
+import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoRegistryMediator;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
+import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreMediator;
+import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoRegistryMediator;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
+import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
+import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
 import org.eclipse.kapua.storage.TxContext;
 
 import javax.inject.Named;
@@ -50,6 +57,13 @@ import javax.inject.Singleton;
 public class DatastoreModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
+        bind(MessageRepository.class).to(ElasticsearchMessageRepository.class).in(Singleton.class);
+        bind(DatastoreMediator.class).in(Singleton.class);
+        bind(MessageStoreMediator.class).to(DatastoreMediator.class);
+        bind(ClientInfoRegistryMediator.class).to(DatastoreMediator.class);
+        bind(ChannelInfoRegistryMediator.class).to(DatastoreMediator.class);
+        bind(MetricInfoRegistryMediator.class).to(DatastoreMediator.class);
+
         bind(ChannelInfoFactory.class).to(ChannelInfoFactoryImpl.class);
         bind(ChannelInfoRegistryService.class).to(ChannelInfoRegistryServiceImpl.class);
         bind(ClientInfoFactory.class).to(ClientInfoFactoryImpl.class);
@@ -66,18 +80,82 @@ public class DatastoreModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
+    ClientInfoRegistryFacade clientInfoRegistryFacade(
+            ConfigurationProvider configProvider,
+            StorableIdFactory storableIdFactory,
+            StorablePredicateFactory storablePredicateFactory,
+            ClientInfoRegistryMediator mediator) {
+        return new ClientInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator);
+    }
+
+    @Provides
+    @Singleton
+    MetricInfoRegistryFacade metricInfoRegistryFacade(
+            ConfigurationProvider configProvider,
+            StorableIdFactory storableIdFactory,
+            StorablePredicateFactory storablePredicateFactory,
+            MetricInfoRegistryMediator mediator) {
+        return new MetricInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator);
+    }
+
+    @Provides
+    @Singleton
+    ChannelInfoRegistryFacade channelInfoRegistryFacade(
+            ConfigurationProvider configProvider,
+            StorableIdFactory storableIdFactory,
+            StorablePredicateFactory storablePredicateFactory,
+            ChannelInfoRegistryMediator mediator) {
+        return new ChannelInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator);
+    }
+
+    @Provides
+    @Singleton
+    MessageStoreFacade messageStoreFacade(
+            ConfigurationProvider configurationProvider,
+            StorableIdFactory storableIdFactory,
+            StorablePredicateFactory storablePredicateFactory,
+            ClientInfoRegistryFacade clientInfoRegistryFacade,
+            ChannelInfoRegistryFacade channelInfoStoreFacade,
+            MetricInfoRegistryFacade metricInfoStoreFacade,
+            MessageStoreMediator mediator,
+            MessageRepository messageRepository
+    ) {
+
+        return new MessageStoreFacadeImpl(
+                configurationProvider,
+                storableIdFactory,
+                storablePredicateFactory,
+                clientInfoRegistryFacade,
+                channelInfoStoreFacade,
+                metricInfoStoreFacade,
+                mediator, messageRepository);
+    }
+
+    @Provides
+    @Singleton
+    ConfigurationProvider configurationProvider(
+            @Named("MessageStoreServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            AccountService accountService
+    ) {
+        final ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(jpaTxManagerFactory.create("kapua-datastore"), serviceConfigurationManager, accountService);
+        return configurationProvider;
+    }
+
+    @Provides
+    @Singleton
     MessageStoreService messageStoreService(
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
-            AccountService accountService,
             @Named("MessageStoreServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            MessageStoreFacade messageStoreFacade) {
         return new MessageStoreServiceImpl(
                 jpaTxManagerFactory.create("kapua-datastore"),
                 permissionFactory,
                 authorizationService,
-                accountService,
-                serviceConfigurationManager);
+                serviceConfigurationManager,
+                messageStoreFacade);
     }
 
     @Provides

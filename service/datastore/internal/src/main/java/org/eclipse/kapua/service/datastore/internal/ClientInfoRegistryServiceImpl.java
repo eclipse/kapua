@@ -24,9 +24,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
-import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
-import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
@@ -69,8 +67,8 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final ClientInfoRegistryFacade clientInfoRegistryFacade;
-    private final MessageStoreService messageStoreService;
     private final DatastorePredicateFactory datastorePredicateFactory;
+    private final MessageRepository messageRepository;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -84,17 +82,15 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
             AccountService accountService,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            MessageStoreService messageStoreService,
-            DatastorePredicateFactory datastorePredicateFactory) {
+            DatastorePredicateFactory datastorePredicateFactory,
+            ClientInfoRegistryFacade clientInfoRegistryFacade, MessageRepository messageRepository) {
         this.storablePredicateFactory = storablePredicateFactory;
         this.accountService = accountService;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
-        this.messageStoreService = messageStoreService;
         this.datastorePredicateFactory = datastorePredicateFactory;
-        ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this.messageStoreService, this.accountService);
-        clientInfoRegistryFacade = new ClientInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
-        DatastoreMediator.getInstance().setClientInfoStoreFacade(clientInfoRegistryFacade);
+        this.clientInfoRegistryFacade = clientInfoRegistryFacade;
+        this.messageRepository = messageRepository;
     }
 
     @Override
@@ -233,7 +229,7 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
         andPredicate.getPredicates().add(clientIdPredicate);
         messageQuery.setPredicate(andPredicate);
 
-        MessageListResult messageList = messageStoreService.query(messageQuery);
+        MessageListResult messageList = messageRepository.query(messageQuery);
 
         StorableId lastPublishedMessageId = null;
         Date lastPublishedMessageTimestamp = null;

@@ -55,13 +55,13 @@ import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.internal.ChannelInfoRegistryServiceProxy;
 import org.eclipse.kapua.service.datastore.internal.ClientInfoRegistryServiceProxy;
 import org.eclipse.kapua.service.datastore.internal.DatastoreCacheManager;
+import org.eclipse.kapua.service.datastore.internal.MessageStoreFacade;
 import org.eclipse.kapua.service.datastore.internal.MetricEntry;
 import org.eclipse.kapua.service.datastore.internal.MetricInfoRegistryServiceProxy;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreChannel;
-import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
@@ -280,6 +280,7 @@ public class DatastoreSteps extends TestBase {
     private MessageStoreService messageStoreService;
     private KapuaMessageFactory messageFactory;
     private KapuaDataMessageFactory dataMessageFactory;
+    private MessageStoreFacade messageStoreFacade;
 
     private SimulatedDevice currentDevice;
     private Session session;
@@ -315,7 +316,7 @@ public class DatastoreSteps extends TestBase {
         clientInfoRegistryServiceProxy = new ClientInfoRegistryServiceProxy();
         messageFactory = locator.getFactory(KapuaMessageFactory.class);
         dataMessageFactory = locator.getFactory(KapuaDataMessageFactory.class);
-
+        messageStoreFacade = locator.getComponent(MessageStoreFacade.class);
     }
 
     // *************************************
@@ -340,18 +341,19 @@ public class DatastoreSteps extends TestBase {
 
     @Given("I delete indexes {string}")
     public void deleteIndexes(String indexExp) throws Exception {
-        DatastoreMediator.getInstance().deleteIndexes(indexExp);
-        DatastoreMediator.getInstance().refreshAllIndexes();
+        messageStoreFacade.deleteIndexes(indexExp);
     }
 
     @Given("I delete all indices")
     public void deleteIndices() throws Exception {
-        DatastoreMediator.getInstance().deleteAllIndexes();
+        messageStoreFacade.refreshAllIndexes();
+        messageStoreFacade.deleteAllIndexes();
+
     }
 
     @When("I refresh all indices")
     public void refreshIndeces() throws Throwable {
-        DatastoreMediator.getInstance().refreshAllIndexes();
+        messageStoreFacade.refreshAllIndexes();
     }
 
     @When("I clear all the database caches")

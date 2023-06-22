@@ -31,7 +31,6 @@ import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreCommunicationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
-import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
@@ -73,16 +72,14 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
             TxManager txManager,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
-            AccountService accountService,
-            ServiceConfigurationManager serviceConfigurationManager
+            ServiceConfigurationManager serviceConfigurationManager,
+            MessageStoreFacade messageStoreFacade
     ) {
         super(txManager, serviceConfigurationManager, Domains.DATASTORE, authorizationService, permissionFactory);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
-        final ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this, accountService);
-        metrics = MetricsDatastore.getInstance();
-        messageStoreFacade = new MessageStoreFacade(configurationProvider, DatastoreMediator.getInstance());
-        DatastoreMediator.getInstance().setMessageStoreFacade(messageStoreFacade);
+        this.metrics = MetricsDatastore.getInstance();
+        this.messageStoreFacade = messageStoreFacade;
     }
 
     @Override
