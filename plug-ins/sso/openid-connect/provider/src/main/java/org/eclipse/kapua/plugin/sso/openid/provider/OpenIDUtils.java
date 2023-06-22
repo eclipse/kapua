@@ -129,9 +129,9 @@ public final class OpenIDUtils {
         }
         String openIdConfPath = issuer + "/" + openIDConfPathSuffix;
         try {
-            new URL(openIdConfPath);
-            return openIdConfPath;
-        } catch (MalformedURLException mue) {
+            URL normalizedURL = new URI(openIdConfPath).normalize().toURL();
+            return normalizedURL.toString();
+        } catch (MalformedURLException | URISyntaxException mue) {
             throw new OpenIDIllegalUriException("openIdConfPath", openIdConfPath);
         }
     }
