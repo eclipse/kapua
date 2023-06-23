@@ -28,14 +28,16 @@ import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
+import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
-import org.eclipse.kapua.service.datastore.model.MessageListResult;
+import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory;
+import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
@@ -51,6 +53,7 @@ import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Client information registry implementation.
@@ -229,14 +232,16 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
         andPredicate.getPredicates().add(clientIdPredicate);
         messageQuery.setPredicate(andPredicate);
 
-        MessageListResult messageList = messageRepository.query(messageQuery);
+        final String indexName = SchemaUtil.getDataIndexName(messageQuery.getScopeId());
+        ResultList<DatastoreMessage> messageList = messageRepository.query(indexName, messageQuery);
+        final List<DatastoreMessage> messages = Optional.ofNullable(messageList.getResult()).orElse(new ArrayList<>());
 
         StorableId lastPublishedMessageId = null;
         Date lastPublishedMessageTimestamp = null;
-        if (messageList.getSize() == 1) {
-            lastPublishedMessageId = messageList.getFirstItem().getDatastoreId();
-            lastPublishedMessageTimestamp = messageList.getFirstItem().getTimestamp();
-        } else if (messageList.isEmpty()) {
+        if (messages.size() == 1) {
+            lastPublishedMessageId = messages.get(0).getDatastoreId();
+            lastPublishedMessageTimestamp = messages.get(0).getTimestamp();
+        } else if (messages.isEmpty()) {
             // this condition could happens due to the ttl of the messages (so if it happens, it does not necessarily mean there has been an error!)
             LOG.warn("Cannot find last timestamp for the specified client id '{}' - account '{}'", clientInfo.getScopeId(), clientInfo.getClientId());
         } else {

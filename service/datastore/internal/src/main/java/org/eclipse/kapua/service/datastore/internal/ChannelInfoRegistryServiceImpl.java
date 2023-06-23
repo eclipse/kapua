@@ -24,19 +24,20 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
-import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
+import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
-import org.eclipse.kapua.service.datastore.model.MessageListResult;
+import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory;
+import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
@@ -51,6 +52,7 @@ import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Channel info registry implementation
@@ -67,7 +69,7 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final ChannelInfoRegistryFacade channelInfoRegistryFacade;
-    private final MessageStoreService messageStoreService;
+    private final MessageRepository messageRepository;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -83,13 +85,13 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
             AccountService accountService,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            MessageStoreService messageStoreService,
+            MessageRepository messageStoreService,
             ChannelInfoRegistryFacade channelInfoRegistryFacade) {
         this.datastorePredicateFactory = datastorePredicateFactory;
         this.accountService = accountService;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
-        this.messageStoreService = messageStoreService;
+        this.messageRepository = messageStoreService;
         this.channelInfoRegistryFacade = channelInfoRegistryFacade;
     }
 
@@ -234,14 +236,16 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
         andPredicate.getPredicates().add(channelPredicate);
         messageQuery.setPredicate(andPredicate);
 
-        MessageListResult messageList = messageStoreService.query(messageQuery);
+        final String indexName = SchemaUtil.getDataIndexName(messageQuery.getScopeId());
+        ResultList<DatastoreMessage> messageList = messageRepository.query(indexName, messageQuery);
+        final List<DatastoreMessage> messages = Optional.ofNullable(messageList.getResult()).orElse(new ArrayList<>());
 
         StorableId lastPublishedMessageId = null;
         Date lastPublishedMessageTimestamp = null;
-        if (messageList.getSize() == 1) {
-            lastPublishedMessageId = messageList.getFirstItem().getDatastoreId();
-            lastPublishedMessageTimestamp = messageList.getFirstItem().getTimestamp();
-        } else if (messageList.isEmpty()) {
+        if (messages.size() == 1) {
+            lastPublishedMessageId = messages.get(0).getDatastoreId();
+            lastPublishedMessageTimestamp = messages.get(0).getTimestamp();
+        } else if (messages.isEmpty()) {
             // this condition could happens due to the ttl of the messages (so if it happens, it does not necessarily mean there has been an error!)
             LOG.warn("Cannot find last timestamp for the specified client id '{}' - account '{}'", channelInfo.getScopeId(), channelInfo.getClientId());
         } else {

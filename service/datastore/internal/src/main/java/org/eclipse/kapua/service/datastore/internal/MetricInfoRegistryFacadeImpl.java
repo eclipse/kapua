@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -26,13 +27,9 @@ import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
-import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateResponse;
 import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
-import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
-import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
@@ -41,6 +38,9 @@ import org.eclipse.kapua.service.storable.model.query.predicate.IdsPredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Metric information registry facade
@@ -54,6 +54,7 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
     private final StorableIdFactory storableIdFactory;
     private final StorablePredicateFactory storablePredicateFactory;
     private final MetricInfoRegistryMediator mediator;
+    private final MetricInfoRepository repository;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -64,17 +65,19 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
      *
      * @param configProvider
      * @param mediator
+     * @param metricInfoRepository
      * @since 1.0.0
      */
     public MetricInfoRegistryFacadeImpl(ConfigurationProvider configProvider,
                                         StorableIdFactory storableIdFactory,
                                         StorablePredicateFactory storablePredicateFactory,
                                         MetricInfoRegistryMediator mediator,
-                                        ElasticsearchClientProvider elasticsearchClientProvider) {
-        super(configProvider, elasticsearchClientProvider);
+                                        MetricInfoRepository metricInfoRepository) {
+        super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
         this.mediator = mediator;
+        this.repository = metricInfoRepository;
     }
 
     /**
@@ -96,20 +99,15 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
         String metricInfoId = MetricInfoField.getOrDeriveId(metricInfo.getId(), metricInfo);
         StorableId storableId = storableIdFactory.newStorableId(metricInfoId);
 
-        UpdateResponse response;
         // Store channel. Look up channel in the cache, and cache it if it doesn't exist
         if (!DatastoreCacheManager.getInstance().getMetricsCache().get(metricInfoId)) {
             // fix #REPLACE_ISSUE_NUMBER
             MetricInfo storedField = find(metricInfo.getScopeId(), storableId);
             if (storedField == null) {
                 Metadata metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
-
                 String kapuaIndexName = metadata.getMetricRegistryIndexName();
-
-                UpdateRequest request = new UpdateRequest(metricInfo.getId().toString(), new TypeDescriptor(metadata.getMetricRegistryIndexName(), MetricInfoSchema.METRIC_TYPE_NAME), metricInfo);
-                response = getElasticsearchClient().upsert(request);
-
-                LOG.debug("Upsert on metric successfully executed [{}.{}, {} - {}]", kapuaIndexName, MetricInfoSchema.METRIC_TYPE_NAME, metricInfoId, response.getId());
+                final String responseId = repository.upsert(kapuaIndexName, metricInfo);
+                LOG.debug("Upsert on metric successfully executed [{}.{}, {} - {}]", kapuaIndexName, MetricInfoSchema.METRIC_TYPE_NAME, metricInfoId, responseId);
             }
             // Update cache if metric update is completed successfully
             DatastoreCacheManager.getInstance().getMetricsCache().put(metricInfoId, true);
@@ -134,9 +132,8 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             MappingException {
         ArgumentValidator.notNull(metricInfos, "metricInfos");
 
-        BulkUpdateRequest bulkRequest = new BulkUpdateRequest();
-        boolean performUpdate = false;
         // Create a bulk request
+        final List<Pair<String, MetricInfo>> toUpsert = new ArrayList<>();
         for (MetricInfo metricInfo : metricInfos) {
             String metricInfoId = MetricInfoField.getOrDeriveId(metricInfo.getId(), metricInfo);
             // fix #REPLACE_ISSUE_NUMBER
@@ -147,24 +144,16 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
                     DatastoreCacheManager.getInstance().getMetricsCache().put(metricInfoId, true);
                     continue;
                 }
-                performUpdate = true;
                 Metadata metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
-
-                bulkRequest.add(
-                        new UpdateRequest(
-                                metricInfo.getId().toString(),
-                                new TypeDescriptor(metadata.getMetricRegistryIndexName(),
-                                        MetricInfoSchema.METRIC_TYPE_NAME),
-                                metricInfo)
-                );
+                toUpsert.add(Pair.of(metadata.getMetricRegistryIndexName(), metricInfo));
             }
         }
 
         BulkUpdateResponse upsertResponse = null;
-        if (performUpdate) {
+        if (!toUpsert.isEmpty()) {
             // execute the upstore
             try {
-                upsertResponse = getElasticsearchClient().upsert(bulkRequest);
+                upsertResponse = repository.upsert(toUpsert);
             } catch (ClientException e) {
                 LOG.trace("Upsert failed {}", e.getMessage());
                 throw e;
@@ -215,8 +204,7 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
         }
 
         String indexName = SchemaUtil.getMetricIndexName(scopeId);
-        TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MetricInfoSchema.METRIC_TYPE_NAME);
-        getElasticsearchClient().delete(typeDescriptor, id.toString());
+        repository.delete(indexName, id.toString());
     }
 
     /**
@@ -264,9 +252,8 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             return new MetricInfoListResultImpl();
         }
 
-        String indexNme = SchemaUtil.getMetricIndexName(query.getScopeId());
-        TypeDescriptor typeDescriptor = new TypeDescriptor(indexNme, MetricInfoSchema.METRIC_TYPE_NAME);
-        final ResultList<MetricInfo> queried = getElasticsearchClient().query(typeDescriptor, query, MetricInfo.class);
+        String indexName = SchemaUtil.getMetricIndexName(query.getScopeId());
+        final ResultList<MetricInfo> queried = repository.query(indexName, query);
         MetricInfoListResult result = new MetricInfoListResultImpl(queried);
         setLimitExceed(query, queried.getTotalHitsExceedsCount(), result);
         return result;
@@ -292,8 +279,7 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
         }
 
         String indexName = SchemaUtil.getMetricIndexName(query.getScopeId());
-        TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MetricInfoSchema.METRIC_TYPE_NAME);
-        return getElasticsearchClient().count(typeDescriptor, query);
+        return repository.count(indexName, query);
     }
 
     /**
@@ -317,7 +303,6 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
         }
 
         String indexName = SchemaUtil.getMetricIndexName(query.getScopeId());
-        TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MetricInfoSchema.METRIC_TYPE_NAME);
-        getElasticsearchClient().deleteByQuery(typeDescriptor, query);
+        repository.delete(indexName, query);
     }
 }

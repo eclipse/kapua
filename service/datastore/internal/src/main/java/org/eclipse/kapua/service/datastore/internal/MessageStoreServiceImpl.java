@@ -145,7 +145,7 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
     public DatastoreMessage find(KapuaId scopeId, StorableId id, StorableFetchStyle fetchStyle) throws KapuaException {
         checkDataAccess(scopeId, Actions.read);
         try {
-            return messageStoreFacade.find(scopeId, id, fetchStyle);
+            return messageStoreFacade.find(scopeId, id);
         } catch (Exception e) {
             logException(e);
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());

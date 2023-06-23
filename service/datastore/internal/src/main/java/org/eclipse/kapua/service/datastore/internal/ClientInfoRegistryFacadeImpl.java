@@ -26,12 +26,8 @@ import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
-import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
-import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
-import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
-import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
@@ -54,6 +50,7 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
     private final StorableIdFactory storableIdFactory;
     private final StorablePredicateFactory storablePredicateFactory;
     private final ClientInfoRegistryMediator mediator;
+    private final ClientInfoRepository repository;
     private final Object metadataUpdateSync = new Object();
 
     private static final String QUERY = "query";
@@ -72,11 +69,12 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             StorableIdFactory storableIdFactory,
             StorablePredicateFactory storablePredicateFactory,
             ClientInfoRegistryMediator mediator,
-            ElasticsearchClientProvider elasticsearchClientProvider) {
-        super(configProvider, elasticsearchClientProvider);
+            ClientInfoRepository clientInfoRepository) {
+        super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
         this.mediator = mediator;
+        this.repository = clientInfoRepository;
     }
 
     /**
@@ -99,7 +97,6 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
         String clientInfoId = ClientInfoField.getOrDeriveId(clientInfo.getId(), clientInfo);
         StorableId storableId = storableIdFactory.newStorableId(clientInfoId);
 
-        UpdateResponse response = null;
         // Store channel. Look up channel in the cache, and cache it if it doesn't exist
         if (!DatastoreCacheManager.getInstance().getClientsCache().get(clientInfo.getClientId())) {
             // The code is safe even without the synchronized block
@@ -113,11 +110,8 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
                     if (storedField == null) {
                         Metadata metadata = mediator.getMetadata(clientInfo.getScopeId(), clientInfo.getFirstMessageOn().getTime());
                         String kapuaIndexName = metadata.getClientRegistryIndexName();
-
-                        UpdateRequest request = new UpdateRequest(clientInfo.getId().toString(), new TypeDescriptor(kapuaIndexName, ClientInfoSchema.CLIENT_TYPE_NAME), clientInfo);
-                        response = getElasticsearchClient().upsert(request);
-
-                        LOG.debug("Upsert on asset successfully executed [{}.{}, {} - {}]", kapuaIndexName, ClientInfoSchema.CLIENT_TYPE_NAME, response.getId(), response.getId());
+                        final String responseId = repository.upsert(kapuaIndexName, clientInfo);
+                        LOG.debug("Upsert on asset successfully executed [{}.{}, {} - {}]", kapuaIndexName, ClientInfoSchema.CLIENT_TYPE_NAME, responseId, responseId);
                     }
                     // Update cache if client update is completed successfully
                     DatastoreCacheManager.getInstance().getClientsCache().put(clientInfo.getClientId(), true);
@@ -149,8 +143,7 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
         }
 
         String indexName = SchemaUtil.getClientIndexName(scopeId);
-        TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-        getElasticsearchClient().delete(typeDescriptor, id.toString());
+        repository.delete(indexName, id.toString());
     }
 
     /**
@@ -199,12 +192,9 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
         }
 
         String indexName = SchemaUtil.getClientIndexName(query.getScopeId());
-        TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-
-        ResultList<ClientInfo> rl = getElasticsearchClient().query(typeDescriptor, query, ClientInfo.class);
-        ClientInfoListResult result = new ClientInfoListResultImpl(rl);
-        setLimitExceed(query, rl.getTotalHitsExceedsCount(), result);
-
+        final ResultList<ClientInfo> queried = repository.query(indexName, query);
+        ClientInfoListResultImpl result = new ClientInfoListResultImpl(queried);
+        setLimitExceed(query, queried.getTotalHitsExceedsCount(), result);
         return result;
     }
 
@@ -228,8 +218,7 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
         }
 
         String dataIndexName = SchemaUtil.getClientIndexName(query.getScopeId());
-        TypeDescriptor typeDescriptor = new TypeDescriptor(dataIndexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-        return getElasticsearchClient().count(typeDescriptor, query);
+        return repository.count(dataIndexName, query);
     }
 
     /**
@@ -253,7 +242,6 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
         }
 
         String indexName = SchemaUtil.getClientIndexName(query.getScopeId());
-        TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-        getElasticsearchClient().deleteByQuery(typeDescriptor, query);
+        repository.delete(indexName, query);
     }
 }

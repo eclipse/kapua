@@ -12,14 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common;
 
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.inject.Singleton;
 
 /**
  * Simple container for between step data that is persisted between steps and
@@ -76,7 +75,7 @@ public class StepData {
     }
 
     public int getCount() {
-        return (int)(get(COUNT)!=null ? get(COUNT) : -1);
+        return (int) (get(COUNT) != null ? get(COUNT) : -1);
     }
 
     public void updateCount(int count) {
@@ -85,7 +84,7 @@ public class StepData {
     }
 
     public int getInitialCount() {
-        return (int)(get(INITIAL_COUNT)!=null ? get(INITIAL_COUNT) : -1);
+        return (int) (get(INITIAL_COUNT) != null ? get(INITIAL_COUNT) : -1);
     }
 
     public void updateInitialCount(int count) {

@@ -56,10 +56,6 @@ public class GuiceLocatorImpl extends KapuaLocator {
 
     private Injector injector;
 
-    public Injector getInjector() {
-        return injector;
-    }
-
     /**
      * Constructor.
      *

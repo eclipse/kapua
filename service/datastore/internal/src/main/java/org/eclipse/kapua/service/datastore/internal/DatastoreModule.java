@@ -65,6 +65,9 @@ public class DatastoreModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(MessageRepository.class).to(ElasticsearchMessageRepository.class).in(Singleton.class);
+        bind(ClientInfoRepository.class).to(ClientInfoRepositoryImpl.class).in(Singleton.class);
+        bind(ChannelInfoRepository.class).to(ChannelInfoRepositoryImpl.class).in(Singleton.class);
+        bind(MetricInfoRepository.class).to(MetricInfoRepositoryImpl.class).in(Singleton.class);
         bind(DatastoreMediator.class).in(Singleton.class);
         bind(MessageStoreMediator.class).to(DatastoreMediator.class);
         bind(ClientInfoRegistryMediator.class).to(DatastoreMediator.class);
@@ -92,8 +95,8 @@ public class DatastoreModule extends AbstractKapuaModule {
             StorableIdFactory storableIdFactory,
             StorablePredicateFactory storablePredicateFactory,
             ClientInfoRegistryMediator mediator,
-            ElasticsearchClientProvider elasticsearchClientProvider) {
-        return new ClientInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator, elasticsearchClientProvider);
+            ClientInfoRepository clientInfoRepository) {
+        return new ClientInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator, clientInfoRepository);
     }
 
     @Provides
@@ -103,8 +106,8 @@ public class DatastoreModule extends AbstractKapuaModule {
             StorableIdFactory storableIdFactory,
             StorablePredicateFactory storablePredicateFactory,
             MetricInfoRegistryMediator mediator,
-            ElasticsearchClientProvider elasticsearchClientProvider) {
-        return new MetricInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator, elasticsearchClientProvider);
+            MetricInfoRepository metricInfoRepository) {
+        return new MetricInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator, metricInfoRepository);
     }
 
     @Provides
@@ -114,34 +117,34 @@ public class DatastoreModule extends AbstractKapuaModule {
             StorableIdFactory storableIdFactory,
             StorablePredicateFactory storablePredicateFactory,
             ChannelInfoRegistryMediator mediator,
-            ElasticsearchClientProvider elasticsearchClientProvider) {
-        return new ChannelInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator, elasticsearchClientProvider);
+            ChannelInfoRepository channelInfoRepository) {
+        return new ChannelInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator, channelInfoRepository);
     }
 
     @Provides
     @Singleton
-    MessageStoreFacade messageStoreFacade(
-            ConfigurationProvider configurationProvider,
-            StorableIdFactory storableIdFactory,
-            StorablePredicateFactory storablePredicateFactory,
-            ClientInfoRegistryFacade clientInfoRegistryFacade,
-            ChannelInfoRegistryFacade channelInfoStoreFacade,
-            MetricInfoRegistryFacade metricInfoStoreFacade,
-            MessageStoreMediator mediator,
-            MessageRepository messageRepository,
-            ElasticsearchClientProvider elasticsearchClientProvider
+    MessageStoreFacade messageStoreFacade(ConfigurationProvider configProvider,
+                                          StorableIdFactory storableIdFactory,
+                                          ClientInfoRegistryFacade clientInfoRegistryFacade,
+                                          ChannelInfoRegistryFacade channelInfoStoreFacade,
+                                          MetricInfoRegistryFacade metricInfoStoreFacade,
+                                          MessageStoreMediator mediator,
+                                          MessageRepository messageRepository,
+                                          MetricInfoRepository metricInfoRepository,
+                                          ChannelInfoRepository channelInfoRepository,
+                                          ClientInfoRepository clientInfoRepository
     ) {
-
         return new MessageStoreFacadeImpl(
-                configurationProvider,
+                configProvider,
                 storableIdFactory,
-                storablePredicateFactory,
                 clientInfoRegistryFacade,
                 channelInfoStoreFacade,
                 metricInfoStoreFacade,
                 mediator,
                 messageRepository,
-                elasticsearchClientProvider);
+                metricInfoRepository,
+                channelInfoRepository,
+                clientInfoRepository);
     }
 
     @Provides

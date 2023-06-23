@@ -26,12 +26,8 @@ import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
-import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
-import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
-import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
-import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
@@ -52,6 +48,7 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
     private final StorableIdFactory storableIdFactory;
     private final StorablePredicateFactory storablePredicateFactory;
     private final ChannelInfoRegistryMediator mediator;
+    private final ChannelInfoRepository repository;
     private final Object metadataUpdateSync = new Object();
 
     private static final String QUERY = "query";
@@ -64,12 +61,17 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
      * @param mediator
      * @since 1.0.0
      */
-    public ChannelInfoRegistryFacadeImpl(ConfigurationProvider configProvider, StorableIdFactory storableIdFactory, StorablePredicateFactory storablePredicateFactory, ChannelInfoRegistryMediator mediator,
-                                         ElasticsearchClientProvider elasticsearchClientProvider) {
-        super(configProvider, elasticsearchClientProvider);
+    public ChannelInfoRegistryFacadeImpl(
+            ConfigurationProvider configProvider,
+            StorableIdFactory storableIdFactory,
+            StorablePredicateFactory storablePredicateFactory,
+            ChannelInfoRegistryMediator mediator,
+            ChannelInfoRepository channelInfoRepository) {
+        super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
         this.mediator = mediator;
+        this.repository = channelInfoRepository;
     }
 
     /**
@@ -92,7 +94,6 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
         String channelInfoId = ChannelInfoField.getOrDeriveId(channelInfo.getId(), channelInfo);
         StorableId storableId = storableIdFactory.newStorableId(channelInfoId);
 
-        UpdateResponse response;
         // Store channel. Look up channel in the cache, and cache it if it doesn't exist
         if (!DatastoreCacheManager.getInstance().getChannelsCache().get(channelInfoId)) {
             // The code is safe even without the synchronized block
@@ -105,11 +106,8 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
                     if (storedField == null) {
                         Metadata metadata = mediator.getMetadata(channelInfo.getScopeId(), channelInfo.getFirstMessageOn().getTime());
                         String registryIndexName = metadata.getChannelRegistryIndexName();
-
-                        UpdateRequest request = new UpdateRequest(channelInfo.getId().toString(), new TypeDescriptor(metadata.getChannelRegistryIndexName(), ChannelInfoSchema.CHANNEL_TYPE_NAME), channelInfo);
-                        response = getElasticsearchClient().upsert(request);
-
-                        LOG.debug("Upsert on channel successfully executed [{}.{}, {} - {}]", registryIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME, channelInfoId, response.getId());
+                        final String responseId = repository.upsert(metadata.getChannelRegistryIndexName(), channelInfo);
+                        LOG.debug("Upsert on channel successfully executed [{}.{}, {} - {}]", registryIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME, channelInfoId, responseId);
                     }
                     // Update cache if channel update is completed successfully
                     DatastoreCacheManager.getInstance().getChannelsCache().put(channelInfoId, true);
@@ -145,9 +143,7 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
         ChannelInfo channelInfo = find(scopeId, id);
         if (channelInfo != null) {
             mediator.onBeforeChannelInfoDelete(channelInfo);
-
-            TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
-            getElasticsearchClient().delete(typeDescriptor, id.toString());
+            repository.delete(indexName, id.toString());
         }
     }
 
@@ -197,8 +193,8 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
         }
 
         String indexName = SchemaUtil.getChannelIndexName(query.getScopeId());
-        TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
-        final ResultList<ChannelInfo> queried = getElasticsearchClient().query(typeDescriptor, query, ChannelInfo.class);
+
+        final ResultList<ChannelInfo> queried = repository.query(indexName, query);
         ChannelInfoListResult result = new ChannelInfoListResultImpl(queried);
         setLimitExceed(query, queried.getTotalHitsExceedsCount(), result);
         return result;
@@ -224,8 +220,7 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
         }
 
         String indexName = SchemaUtil.getChannelIndexName(query.getScopeId());
-        TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
-        return getElasticsearchClient().count(typeDescriptor, query);
+        return repository.count(indexName, query);
     }
 
     /**
@@ -255,8 +250,6 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
         for (ChannelInfo channelInfo : channels.getItems()) {
             mediator.onBeforeChannelInfoDelete(channelInfo);
         }
-
-        TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
-        getElasticsearchClient().deleteByQuery(typeDescriptor, query);
+        repository.delete(indexName, query);
     }
 }

@@ -12,64 +12,87 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
+import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
-import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
-import org.eclipse.kapua.service.datastore.internal.model.MessageListResultImpl;
+import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
-import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
-import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
-import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
-import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
+import org.eclipse.kapua.service.elasticsearch.client.model.InsertRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
+import org.eclipse.kapua.service.storable.model.query.predicate.IdsPredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
 
 import javax.inject.Inject;
 
-public class ElasticsearchMessageRepository implements MessageRepository {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final ConfigurationProvider configProvider;
-    private final ElasticsearchClientProvider elasticsearchClientProviderInstance;
+public class ElasticsearchMessageRepository extends ElasticsearchRepository<DatastoreMessage, MessageQuery> implements MessageRepository {
+    private final StorablePredicateFactory storablePredicateFactory;
 
     @Inject
-    public ElasticsearchMessageRepository(ConfigurationProvider configProvider, ElasticsearchClientProvider elasticsearchClientProviderInstance) {
-        this.configProvider = configProvider;
-        this.elasticsearchClientProviderInstance = elasticsearchClientProviderInstance;
+    public ElasticsearchMessageRepository(
+            ElasticsearchClientProvider elasticsearchClientProviderInstance,
+            StorablePredicateFactory storablePredicateFactory) {
+        super(elasticsearchClientProviderInstance, MessageSchema.MESSAGE_TYPE_NAME, DatastoreMessage.class);
+        this.storablePredicateFactory = storablePredicateFactory;
     }
 
-    public boolean isDatastoreServiceEnabled(KapuaId scopeId) throws ConfigurationException {
-        MessageStoreConfiguration messageStoreConfiguration = configProvider.getConfiguration(scopeId);
-        long ttl = messageStoreConfiguration.getDataTimeToLiveMilliseconds();
-
-        return messageStoreConfiguration.getDataStorageEnabled() && ttl != MessageStoreConfiguration.DISABLED;
+    /**
+     * Store a message
+     *
+     * @throws ClientException
+     */
+    @Override
+    public String store(String indexName, DatastoreMessage messageToStore) throws ClientException {
+        TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
+        InsertRequest insertRequest = new InsertRequest(messageToStore.getDatastoreId().toString(), typeDescriptor, messageToStore);
+        return elasticsearchClientProviderInstance.getElasticsearchClient().insert(insertRequest).getId();
     }
 
-    protected ElasticsearchClient<?> getElasticsearchClient() throws ClientUnavailableException {
-        return elasticsearchClientProviderInstance.getElasticsearchClient();
+    /**
+     * Find message by identifier
+     *
+     * @param scopeId
+     * @param id
+     * @return
+     * @throws KapuaIllegalArgumentException
+     * @throws QueryMappingException
+     * @throws ClientException
+     */
+    @Override
+    public DatastoreMessage find(KapuaId scopeId, String indexName, StorableId id)
+            throws KapuaIllegalArgumentException, ClientException {
+        return doFind(scopeId, indexName, id);
     }
 
     @Override
-    public MessageListResult query(MessageQuery query) {
-        try {
+    public void refreshAllIndexes() throws ClientException {
+        elasticsearchClientProviderInstance.getElasticsearchClient().refreshAllIndexes();
+    }
 
-            if (!this.isDatastoreServiceEnabled(query.getScopeId())) {
-                logger.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
-                return new MessageListResultImpl();
-            }
+    @Override
+    public void deleteAllIndexes() throws ClientException {
+        elasticsearchClientProviderInstance.getElasticsearchClient().deleteAllIndexes();
+    }
+    
+    @Override
+    public void deleteIndexes(String indexExp) throws ClientException {
+        elasticsearchClientProviderInstance.getElasticsearchClient().deleteIndexes(indexExp);
+    }
 
-            String dataIndexName = SchemaUtil.getDataIndexName(query.getScopeId());
-            TypeDescriptor typeDescriptor = new TypeDescriptor(dataIndexName, MessageSchema.MESSAGE_TYPE_NAME);
-            final ResultList<DatastoreMessage> queried = getElasticsearchClient().query(typeDescriptor, query, DatastoreMessage.class);
-            MessageListResult result = new MessageListResultImpl(queried);
-            AbstractRegistryFacade.setLimitExceed(query, queried.getTotalHitsExceedsCount(), result);
-            return result;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public DatastoreMessage doFind(KapuaId scopeId, String indexName, StorableId id) throws ClientException {
+        MessageQueryImpl idsQuery = new MessageQueryImpl(scopeId);
+        idsQuery.setLimit(1);
+
+        IdsPredicate idsPredicate = storablePredicateFactory.newIdsPredicate(MessageSchema.MESSAGE_TYPE_NAME);
+        idsPredicate.addId(id);
+        idsQuery.setPredicate(idsPredicate);
+
+        TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
+        final DatastoreMessage res = (DatastoreMessage) elasticsearchClientProviderInstance.getElasticsearchClient().<DatastoreMessage>find(typeDescriptor, idsQuery, DatastoreMessage.class);
+        return res;
     }
 }

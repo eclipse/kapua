@@ -24,7 +24,6 @@ import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
-import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
 
 public interface MessageStoreFacade {
     StorableId store(KapuaMessage<?, ?> message, String messageId, boolean newInsert)
@@ -39,12 +38,14 @@ public interface MessageStoreFacade {
             MappingException,
             ClientException;
 
+    DatastoreMessage convertTo(KapuaMessage<?, ?> message, String messageId);
+
     void delete(KapuaId scopeId, StorableId id)
             throws KapuaIllegalArgumentException,
             ConfigurationException,
             ClientException;
 
-    DatastoreMessage find(KapuaId scopeId, StorableId id, StorableFetchStyle fetchStyle)
+    DatastoreMessage find(KapuaId scopeId, StorableId id)
             throws KapuaIllegalArgumentException, ClientException;
 
     MessageListResult query(MessageQuery query)

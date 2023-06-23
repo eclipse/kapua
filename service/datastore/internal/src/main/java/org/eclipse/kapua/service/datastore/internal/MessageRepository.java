@@ -12,9 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import org.eclipse.kapua.service.datastore.model.MessageListResult;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
 
-public interface MessageRepository {
-    MessageListResult query(MessageQuery query);
+public interface MessageRepository extends DatastoreRepository<DatastoreMessage, MessageQuery> {
+
+    String store(String indexName, DatastoreMessage messageToStore) throws ClientException;
+
+    DatastoreMessage find(KapuaId scopeId, String indexName, StorableId id)
+            throws KapuaIllegalArgumentException, ClientException;
+
+    void refreshAllIndexes() throws ClientException;
+
+    void deleteAllIndexes() throws ClientException;
+
+    void deleteIndexes(String indexExp) throws ClientException;
+
 }

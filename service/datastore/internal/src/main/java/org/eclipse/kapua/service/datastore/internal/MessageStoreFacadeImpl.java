@@ -38,18 +38,14 @@ import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.ClientInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.DataIndexBy;
 import org.eclipse.kapua.service.datastore.internal.model.DatastoreMessageImpl;
+import org.eclipse.kapua.service.datastore.internal.model.MessageListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.MessageUniquenessCheck;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.predicate.ChannelMatchPredicateImpl;
-import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
-import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
-import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
-import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
@@ -57,19 +53,12 @@ import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
-import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
-import org.eclipse.kapua.service.elasticsearch.client.model.InsertRequest;
-import org.eclipse.kapua.service.elasticsearch.client.model.InsertResponse;
 import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
-import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
-import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
-import org.eclipse.kapua.service.storable.model.query.predicate.IdsPredicate;
-import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,12 +77,14 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
     private static final Logger LOG = LoggerFactory.getLogger(MessageStoreFacadeImpl.class);
 
     private final StorableIdFactory storableIdFactory;
-    private final StorablePredicateFactory storablePredicateFactory;
     private final ClientInfoRegistryFacade clientInfoRegistryFacade;
     private final ChannelInfoRegistryFacade channelInfoStoreFacade;
     private final MetricInfoRegistryFacade metricInfoStoreFacade;
-    private final MessageStoreMediator mediator;
     private final MessageRepository messageRepository;
+    private final MetricInfoRepository metricInfoRepository;
+    private final ChannelInfoRepository channelInfoRepository;
+    private final ClientInfoRepository clientInfoRepository;
+    private final MessageStoreMediator mediator;
     private final MetricsDatastore metrics;
 
     private static final String QUERY = "query";
@@ -104,19 +95,23 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
     public MessageStoreFacadeImpl(
             ConfigurationProvider configProvider,
             StorableIdFactory storableIdFactory,
-            StorablePredicateFactory storablePredicateFactory,
             ClientInfoRegistryFacade clientInfoRegistryFacade,
             ChannelInfoRegistryFacade channelInfoStoreFacade,
             MetricInfoRegistryFacade metricInfoStoreFacade,
-            MessageStoreMediator mediator, MessageRepository messageRepository,
-            ElasticsearchClientProvider elasticsearchClientProvider) {
-        super(configProvider, elasticsearchClientProvider);
+            MessageStoreMediator mediator,
+            MessageRepository messageRepository,
+            MetricInfoRepository metricInfoRepository,
+            ChannelInfoRepository channelInfoRepository,
+            ClientInfoRepository clientInfoRepository) {
+        super(configProvider);
         this.storableIdFactory = storableIdFactory;
-        this.storablePredicateFactory = storablePredicateFactory;
         this.clientInfoRegistryFacade = clientInfoRegistryFacade;
         this.channelInfoStoreFacade = channelInfoStoreFacade;
         this.metricInfoStoreFacade = metricInfoStoreFacade;
         this.messageRepository = messageRepository;
+        this.metricInfoRepository = metricInfoRepository;
+        this.channelInfoRepository = channelInfoRepository;
+        this.clientInfoRepository = clientInfoRepository;
         this.mediator = mediator;
         this.metrics = MetricsDatastore.getInstance();
     }
@@ -131,11 +126,7 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
      * @throws ClientException
      */
     @Override
-    public StorableId store(KapuaMessage<?, ?> message, String messageId, boolean newInsert)
-            throws KapuaIllegalArgumentException,
-            DatastoreDisabledException,
-            ConfigurationException,
-            ClientException, MappingException {
+    public StorableId store(KapuaMessage<?, ?> message, String messageId, boolean newInsert) throws KapuaIllegalArgumentException, DatastoreDisabledException, ConfigurationException, ClientException, MappingException {
         ArgumentValidator.notNull(message, "message");
         ArgumentValidator.notNull(message.getScopeId(), SCOPE_ID);
         ArgumentValidator.notNull(message.getReceivedOn(), "receivedOn");
@@ -150,7 +141,7 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
         // Overwrite timestamp if necessary
         // Use the account service plan to determine whether we will give
         // precede to the device time
-        MessageStoreConfiguration accountServicePlan = getConfigProvider().getConfiguration(message.getScopeId());
+        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(message.getScopeId());
         long indexedOn = KapuaDateUtils.getKapuaSysDate().toEpochMilli();
         if (DataIndexBy.DEVICE_TIMESTAMP.equals(accountServicePlan.getDataIndexBy())) {
             if (capturedOn != null) {
@@ -163,15 +154,13 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
         Metadata schemaMetadata = mediator.getMetadata(message.getScopeId(), indexedOn);
 
         Date indexedOnDate = new Date(indexedOn);
-        String indexName = schemaMetadata.getDataIndexName();
-        TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
 
         if (!newInsert && !MessageUniquenessCheck.NONE.equals(accountServicePlan.getMessageUniquenessCheck())) {
             DatastoreMessage datastoreMessage = MessageUniquenessCheck.FULL.equals(accountServicePlan.getMessageUniquenessCheck()) ?
-                    find(message.getScopeId(), storableIdFactory.newStorableId(messageId), StorableFetchStyle.SOURCE_SELECT) :
-                    find(message.getScopeId(), indexName, storableIdFactory.newStorableId(messageId), StorableFetchStyle.SOURCE_SELECT);
+                    messageRepository.find(message.getScopeId(), SchemaUtil.getDataIndexName(message.getScopeId()), storableIdFactory.newStorableId(messageId)) :
+                    messageRepository.find(message.getScopeId(), schemaMetadata.getDataIndexName(), storableIdFactory.newStorableId(messageId));
             if (datastoreMessage != null) {
-                LOG.debug("Message with datatstore id '{}' already found", messageId);
+                LOG.debug("Message with datastore id '{}' already found", messageId);
                 metrics.getAlreadyInTheDatastore().inc();
                 return storableIdFactory.newStorableId(messageId);
             }
@@ -180,7 +169,6 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
         // Save message (the big one)
         DatastoreMessage messageToStore = convertTo(message, messageId);
         messageToStore.setTimestamp(indexedOnDate);
-        InsertRequest insertRequest = new InsertRequest(messageToStore.getDatastoreId().toString(), typeDescriptor, messageToStore);
         // Possibly update the schema with new metric mappings
         Map<String, Metric> metrics = new HashMap<>();
         if (message.getPayload() != null && message.getPayload().getMetrics() != null && !message.getPayload().getMetrics().isEmpty()) {
@@ -202,14 +190,114 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
             LOG.warn("Update mappings error", e);
         }
 
-        InsertResponse insertResponse = getElasticsearchClient().insert(insertRequest);
-        messageToStore.setDatastoreId(storableIdFactory.newStorableId(insertResponse.getId()));
+        String storedId = messageRepository.store(schemaMetadata.getDataIndexName(), messageToStore);
+        messageToStore.setDatastoreId(storableIdFactory.newStorableId(storedId));
 
-        MessageInfo messageInfo = getConfigProvider().getInfo(message.getScopeId());
+        MessageInfo messageInfo = configProvider.getInfo(message.getScopeId());
         this.onAfterMessageStore(messageInfo, messageToStore);
 
-        return storableIdFactory.newStorableId(insertResponse.getId());
+        return storableIdFactory.newStorableId(storedId);
     }
+
+    /**
+     * This constructor should be used for wrapping Kapua message into datastore message for insert purpose
+     *
+     * @param message
+     */
+    @Override
+    public DatastoreMessage convertTo(KapuaMessage<?, ?> message, String messageId) {
+        KapuaDataChannel datastoreChannel = new KapuaDataChannelImpl();
+        datastoreChannel.setSemanticParts(message.getChannel().getSemanticParts());
+
+        DatastoreMessage datastoreMessage = new DatastoreMessageImpl();
+        datastoreMessage.setCapturedOn(message.getCapturedOn());
+        datastoreMessage.setChannel(datastoreChannel);
+        datastoreMessage.setClientId(message.getClientId());
+        datastoreMessage.setDeviceId(message.getDeviceId());
+        datastoreMessage.setId(message.getId());
+        datastoreMessage.setPayload(message.getPayload());
+        datastoreMessage.setPosition(message.getPosition());
+        datastoreMessage.setReceivedOn(message.getReceivedOn());
+        datastoreMessage.setScopeId(message.getScopeId());
+        datastoreMessage.setSentOn(message.getSentOn());
+
+        // generate uuid
+        datastoreMessage.setId(message.getId());
+        datastoreMessage.setDatastoreId(storableIdFactory.newStorableId(messageId));
+        return datastoreMessage;
+    }
+
+    /**
+     * Delete message by identifier.<br>
+     * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
+     * It just deletes the message by id without checking the consistency of the registries.</b>
+     *
+     * @param id
+     * @throws KapuaIllegalArgumentException
+     * @throws ConfigurationException
+     * @throws ClientException
+     */
+    @Override
+    public void delete(KapuaId scopeId, StorableId id) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(id, "id");
+
+        if (!isDatastoreServiceEnabled(scopeId)) {
+            LOG.debug("Storage not enabled for account {}, return", scopeId);
+            return;
+        }
+
+        // get the index by finding the object by id
+        DatastoreMessage messageToBeDeleted = messageRepository.find(scopeId, SchemaUtil.getDataIndexName(scopeId), id);
+        if (messageToBeDeleted != null) {
+            Metadata schemaMetadata = null;
+            try {
+                schemaMetadata = mediator.getMetadata(scopeId, messageToBeDeleted.getTimestamp().getTime());
+            } catch (KapuaException e) {
+                LOG.warn("Retrieving metadata error", e);
+            }
+            String indexName = schemaMetadata.getDataIndexName();
+            messageRepository.delete(indexName, id.toString());
+        } else {
+            LOG.warn("Cannot find the message to be deleted. scopeId: '{}' - id: '{}'", scopeId, id);
+        }
+        // otherwise no message to be deleted found
+    }
+
+    @Override
+    public void delete(MessageQuery query) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
+        ArgumentValidator.notNull(query, QUERY);
+        ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
+
+        if (!isDatastoreServiceEnabled(query.getScopeId())) {
+            LOG.debug("Storage not enabled for account {}, skipping delete", query.getScopeId());
+            return;
+        }
+
+        String indexName = SchemaUtil.getDataIndexName(query.getScopeId());
+        messageRepository.delete(indexName, query);
+    }
+
+    @Override
+    public DatastoreMessage find(KapuaId scopeId, StorableId id) throws KapuaIllegalArgumentException, ClientException {
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(id, "id");
+        String indexName = SchemaUtil.getDataIndexName(scopeId);
+        return messageRepository.find(scopeId, indexName, id);
+    }
+
+    @Override
+    public long count(MessageQuery query) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
+        ArgumentValidator.notNull(query, QUERY);
+        ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
+        if (!isDatastoreServiceEnabled(query.getScopeId())) {
+            LOG.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
+            return 0;
+        }
+        String indexName = SchemaUtil.getDataIndexName(query.getScopeId());
+        return messageRepository.count(indexName, query);
+    }
+
 
     @Override
     public void onAfterMessageStore(MessageInfo messageInfo, DatastoreMessage message)
@@ -264,94 +352,6 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
     }
 
     /**
-     * Delete message by identifier.<br>
-     * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
-     * It just deletes the message by id without checking the consistency of the registries.</b>
-     *
-     * @param scopeId
-     * @param id
-     * @throws KapuaIllegalArgumentException
-     * @throws ConfigurationException
-     * @throws ClientException
-     */
-    @Override
-    public void delete(KapuaId scopeId, StorableId id)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            ClientException {
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
-        ArgumentValidator.notNull(id, "id");
-
-        if (!isDatastoreServiceEnabled(scopeId)) {
-            LOG.debug("Storage not enabled for account {}, return", scopeId);
-            return;
-        }
-
-        // get the index by finding the object by id
-        DatastoreMessage messageToBeDeleted = find(scopeId, id, StorableFetchStyle.FIELDS);
-        if (messageToBeDeleted != null) {
-            Metadata schemaMetadata = null;
-            try {
-                schemaMetadata = mediator.getMetadata(scopeId, messageToBeDeleted.getTimestamp().getTime());
-            } catch (KapuaException e) {
-                LOG.warn("Retrieving metadata error", e);
-            }
-            String indexName = schemaMetadata.getDataIndexName();
-            TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
-            getElasticsearchClient().delete(typeDescriptor, id.toString());
-        } else {
-            LOG.warn("Cannot find the message to be deleted. scopeId: '{}' - id: '{}'", scopeId, id);
-        }
-        // otherwise no message to be deleted found
-    }
-
-    /**
-     * Find message by identifier
-     *
-     * @param scopeId
-     * @param id
-     * @param fetchStyle
-     * @return
-     * @throws KapuaIllegalArgumentException
-     * @throws QueryMappingException
-     * @throws ClientException
-     */
-    @Override
-    public DatastoreMessage find(KapuaId scopeId, StorableId id, StorableFetchStyle fetchStyle) throws KapuaIllegalArgumentException, ClientException {
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
-        return find(scopeId, SchemaUtil.getDataIndexName(scopeId), id, fetchStyle);
-    }
-
-    /**
-     * Find message by identifier
-     *
-     * @param scopeId
-     * @param id
-     * @param fetchStyle
-     * @return
-     * @throws KapuaIllegalArgumentException
-     * @throws QueryMappingException
-     * @throws ClientException
-     */
-    public DatastoreMessage find(KapuaId scopeId, String indexName, StorableId id, StorableFetchStyle fetchStyle)
-            throws KapuaIllegalArgumentException, ClientException {
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
-        ArgumentValidator.notNull(id, "id");
-        ArgumentValidator.notNull(fetchStyle, "fetchStyle");
-
-        MessageQueryImpl idsQuery = new MessageQueryImpl(scopeId);
-        idsQuery.setLimit(1);
-
-        IdsPredicate idsPredicate = storablePredicateFactory.newIdsPredicate(MessageSchema.MESSAGE_TYPE_NAME);
-        idsPredicate.addId(id);
-        idsQuery.setPredicate(idsPredicate);
-
-        TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
-        return getElasticsearchClient().find(typeDescriptor, idsQuery, DatastoreMessage.class);
-    }
-
-
-    /**
      * Find messages matching the given query
      *
      * @param query
@@ -368,64 +368,17 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
             ClientException {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
-
-        return messageRepository.query(query);
-    }
-
-    /**
-     * Get messages count matching the given query
-     *
-     * @param query
-     * @return
-     * @throws KapuaIllegalArgumentException
-     * @throws ConfigurationException
-     * @throws ClientException
-     */
-    @Override
-    public long count(MessageQuery query)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            ClientException {
-        ArgumentValidator.notNull(query, QUERY);
-        ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
-
-        if (!isDatastoreServiceEnabled(query.getScopeId())) {
+        if (!this.isDatastoreServiceEnabled(query.getScopeId())) {
             LOG.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
-            return 0;
+            return new MessageListResultImpl();
         }
-
         String indexName = SchemaUtil.getDataIndexName(query.getScopeId());
-        TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
-        return getElasticsearchClient().count(typeDescriptor, query);
+        final ResultList<DatastoreMessage> datastoreMessages = messageRepository.query(indexName, query);
+        MessageListResult result = new MessageListResultImpl(datastoreMessages);
+        AbstractRegistryFacade.setLimitExceed(query, datastoreMessages.getTotalHitsExceedsCount(), result);
+        return result;
     }
 
-    /**
-     * Delete messages count matching the given query.<br>
-     * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
-     * It just deletes the messages that matching the query without checking the consistency of the registries.</b>
-     *
-     * @param query
-     * @throws KapuaIllegalArgumentException
-     * @throws ConfigurationException
-     * @throws ClientException
-     */
-    @Override
-    public void delete(MessageQuery query)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            ClientException {
-        ArgumentValidator.notNull(query, QUERY);
-        ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
-
-        if (!isDatastoreServiceEnabled(query.getScopeId())) {
-            LOG.debug("Storage not enabled for account {}, skipping delete", query.getScopeId());
-            return;
-        }
-
-        String indexName = SchemaUtil.getDataIndexName(query.getScopeId());
-        TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
-        getElasticsearchClient().deleteByQuery(typeDescriptor, query);
-    }
 
     // TODO cache will not be reset from the client code it should be automatically reset
     // after some time.
@@ -464,8 +417,7 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
 
         // Remove metrics
         while (totalHits > 0) {
-            TypeDescriptor typeDescriptor = new TypeDescriptor(dataIndexName, MetricInfoSchema.METRIC_TYPE_NAME);
-            ResultList<MetricInfo> metrics = getElasticsearchClient().query(typeDescriptor, metricQuery, MetricInfo.class);
+            ResultList<MetricInfo> metrics = metricInfoRepository.query(dataIndexName, metricQuery);
 
             totalHits = metrics.getTotalCount();
             LocalCache<String, Boolean> metricsCache = DatastoreCacheManager.getInstance().getMetricsCache();
@@ -483,8 +435,7 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
             }
         }
         LOG.debug("Removed cached channel metrics for: {}", channel);
-        TypeDescriptor typeMetricDescriptor = new TypeDescriptor(dataIndexName, MetricInfoSchema.METRIC_TYPE_NAME);
-        getElasticsearchClient().deleteByQuery(typeMetricDescriptor, metricQuery);
+        metricInfoRepository.delete(dataIndexName, metricQuery);
         LOG.debug("Removed channel metrics for: {}", channel);
         ChannelInfoQueryImpl channelQuery = new ChannelInfoQueryImpl(scopeId);
         channelQuery.setLimit(pageSize + 1);
@@ -497,8 +448,7 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
         offset = 0;
         totalHits = 1;
         while (totalHits > 0) {
-            TypeDescriptor typeDescriptor = new TypeDescriptor(dataIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
-            ResultList<ChannelInfo> channels = getElasticsearchClient().query(typeDescriptor, channelQuery, ChannelInfo.class);
+            final ResultList<ChannelInfo> channels = channelInfoRepository.query(dataIndexName, channelQuery);
 
             totalHits = channels.getTotalCount();
             LocalCache<String, Boolean> channelsCache = DatastoreCacheManager.getInstance().getChannelsCache();
@@ -516,8 +466,7 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
         }
 
         LOG.debug("Removed cached channels for: {}", channel);
-        TypeDescriptor typeChannelDescriptor = new TypeDescriptor(dataIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
-        getElasticsearchClient().deleteByQuery(typeChannelDescriptor, channelQuery);
+        channelInfoRepository.delete(dataIndexName, channelQuery);
 
         LOG.debug("Removed channels for: {}", channel);
         // Remove client
@@ -531,9 +480,7 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
             offset = 0;
             totalHits = 1;
             while (totalHits > 0) {
-                TypeDescriptor typeDescriptor = new TypeDescriptor(dataIndexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-                ResultList<ClientInfo> clients = getElasticsearchClient().query(typeDescriptor, clientInfoQuery, ClientInfo.class);
-
+                ResultList<ClientInfo> clients = clientInfoRepository.query(dataIndexName, clientInfoQuery);
                 totalHits = clients.getTotalCount();
                 LocalCache<String, Boolean> clientsCache = DatastoreCacheManager.getInstance().getClientsCache();
                 long toBeProcessed = totalHits > pageSize ? pageSize : totalHits;
@@ -550,8 +497,7 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
             }
 
             LOG.debug("Removed cached clients for: {}", channel);
-            TypeDescriptor typeClientDescriptor = new TypeDescriptor(dataIndexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-            getElasticsearchClient().deleteByQuery(typeClientDescriptor, clientInfoQuery);
+            clientInfoRepository.delete(dataIndexName, clientInfoQuery);
 
             LOG.debug("Removed clients for: {}", channel);
         }
@@ -571,48 +517,22 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
         return DatastoreChannel.SINGLE_LEVEL_WCARD.equals(clientId);
     }
 
-    /**
-     * This constructor should be used for wrapping Kapua message into datastore message for insert purpose
-     *
-     * @param message
-     */
-    private DatastoreMessage convertTo(KapuaMessage<?, ?> message, String messageId) {
-        KapuaDataChannel datastoreChannel = new KapuaDataChannelImpl();
-        datastoreChannel.setSemanticParts(message.getChannel().getSemanticParts());
-
-        DatastoreMessage datastoreMessage = new DatastoreMessageImpl();
-        datastoreMessage.setCapturedOn(message.getCapturedOn());
-        datastoreMessage.setChannel(datastoreChannel);
-        datastoreMessage.setClientId(message.getClientId());
-        datastoreMessage.setDeviceId(message.getDeviceId());
-        datastoreMessage.setId(message.getId());
-        datastoreMessage.setPayload(message.getPayload());
-        datastoreMessage.setPosition(message.getPosition());
-        datastoreMessage.setReceivedOn(message.getReceivedOn());
-        datastoreMessage.setScopeId(message.getScopeId());
-        datastoreMessage.setSentOn(message.getSentOn());
-
-        // generate uuid
-        datastoreMessage.setId(message.getId());
-        datastoreMessage.setDatastoreId(storableIdFactory.newStorableId(messageId));
-        return datastoreMessage;
-    }
 
     @Override
     public void refreshAllIndexes() throws ClientException {
-        getElasticsearchClient().refreshAllIndexes();
+        messageRepository.refreshAllIndexes();
     }
 
     @Override
     public void deleteAllIndexes() throws ClientException {
-        getElasticsearchClient().deleteAllIndexes();
+        messageRepository.deleteAllIndexes();
         clearCache();
     }
 
 
     @Override
     public void deleteIndexes(String indexExp) throws ClientException {
-        getElasticsearchClient().deleteIndexes(indexExp);
+        messageRepository.deleteIndexes(indexExp);
         clearCache();
     }
 
