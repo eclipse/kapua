@@ -19,22 +19,15 @@ import java.util.Date;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.spi.UriEndpoint;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
-import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
+import org.eclipse.kapua.service.camel.application.MetricsCamel;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.client.message.MessageConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Counter;
-
 @UriEndpoint(title = "error message processor", syntax = "bean:ecErrorMessageListener", scheme = "bean")
 public class ErrorMessageListener {
-
-    private static final String STORED_TO_FILE = "stored_to_file";
-    private static final String MESSAGE_UNKNOWN = "message_conversion_unknown_type";
 
     private static final String ERROR_MESSAGE_LOGGER_NAME = "errorMessage";
     private static final Logger ERROR_MESSAGE_LOGGER = LoggerFactory.getLogger(ERROR_MESSAGE_LOGGER_NAME);
@@ -49,18 +42,7 @@ public class ErrorMessageListener {
     private static final String EMPTY_ENCODED_MESSAGE = "N/A";
     private static final String EMPTY_FIELD = "N/A";
 
-    private Counter metricTotal;
-    private Counter metricStoredToFileSuccess;
-    private Counter metricStoredToFileError;
-    private Counter metricUnknownBodyType;
-
-    public ErrorMessageListener(String module) {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
-        metricTotal = metricsService.getCounter(module, MetricsLabel.ERROR, MetricsLabel.TOTAL);
-        metricStoredToFileSuccess = metricsService.getCounter(module, MetricsLabel.ERROR, STORED_TO_FILE, MetricsLabel.SUCCESS);
-        metricStoredToFileError = metricsService.getCounter(module, MetricsLabel.ERROR, STORED_TO_FILE, MetricsLabel.ERROR);
-        metricUnknownBodyType = metricsService.getCounter(module, MetricsLabel.ERROR, MESSAGE_UNKNOWN, MetricsLabel.ERROR);
-    }
+    private MetricsCamel metrics;
 
     /**
      * Process an error condition for an elaboration of a generic message
@@ -69,7 +51,7 @@ public class ErrorMessageListener {
      * @param message
      */
     public void processMessage(Exchange exchange, Object message) {
-        metricTotal.inc();
+        metrics = MetricsCamel.getInstance();
         logToFile(exchange, message);
     }
 
@@ -77,9 +59,9 @@ public class ErrorMessageListener {
         try {
             String messageLine = getMessage(exchange);
             ERROR_MESSAGE_LOGGER.info(messageLine);
-            metricStoredToFileSuccess.inc();
+            metrics.getErrorStoredToFileSuccess().inc();
         } catch (Exception e) {
-            metricStoredToFileError.inc();
+            metrics.getErrorStoredToFileError().inc();
             logger.error("Error while storing errored message to file!", e);
         }
     }
@@ -126,7 +108,7 @@ public class ErrorMessageListener {
         else {
             //something wrong happened! Anyway try to get the message to be stored
             logger.error("Wrong message type! Cannot convert message of type {} to byte[]", body!=null ? body.getClass() : "N/A");
-            metricUnknownBodyType.inc();
+            metrics.getErrorUnknownBodyType().inc();
             return EMPTY_ENCODED_MESSAGE;
         }
      }

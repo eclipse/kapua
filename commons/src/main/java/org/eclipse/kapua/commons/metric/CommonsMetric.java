@@ -25,7 +25,7 @@ import com.codahale.metrics.Counter;
  */
 public class CommonsMetric {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommonsMetric.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommonsMetric.class);
 
     //TODO this value should be injected instead of set by the application entrypoint!
     //TODO to be injected!!!
@@ -54,9 +54,6 @@ public class CommonsMetric {
 
     //events
     public static final String EVENT = "event";
-    public static final String DEQUEUED_EVENT = "dequeued_event";
-    public static final String ENQUEUED_EVENT = "enqueued_event";
-    public static final String PROCESSED_EVENT = "processed_event";
     private Counter processedEvent;
     private Counter enqueuedEvent;
     private Counter dequeuedEvent;
@@ -71,7 +68,7 @@ public class CommonsMetric {
                         instance = new CommonsMetric();
                     } catch (KapuaException e) {
                         //TODO throw runtime exception
-                        LOGGER.error("Error registering cache status metrics! Error: {}", e.getMessage(), e);
+                        logger.error("Creating metrics error: {}", e.getMessage(), e);
                     }
                 }
             }
@@ -95,9 +92,9 @@ public class CommonsMetric {
         cacheRemoval = metricsService.getCounter(module, CACHE_ENTITY, "removal");
         cacheError = metricsService.getCounter(module, CACHE_ENTITY, "error");
 
-        processedEvent = metricsService.getCounter(EVENT, PROCESSED_EVENT);
-        dequeuedEvent = metricsService.getCounter(EVENT, DEQUEUED_EVENT);
-        enqueuedEvent = metricsService.getCounter(EVENT, ENQUEUED_EVENT);
+        processedEvent = metricsService.getCounter(module, EVENT, "processed_event");
+        dequeuedEvent = metricsService.getCounter(module, EVENT, "dequeued_event");
+        enqueuedEvent = metricsService.getCounter(module, EVENT, "enqueued_event");
     }
 
     //TODO should be synchronized?

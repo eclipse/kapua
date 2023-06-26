@@ -12,13 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.lifecycle.listener;
 
-import com.codahale.metrics.Counter;
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
-import org.eclipse.kapua.commons.metric.MetricsService;
-import org.eclipse.kapua.consumer.lifecycle.MetricLabel;
+import org.eclipse.kapua.consumer.lifecycle.MetricsLifecycle;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
@@ -47,22 +43,13 @@ public class DeviceMessageListener {
     private DeviceLifeCycleService deviceLifeCycleService;
     private JobDeviceManagementTriggerManagerService jobDeviceManagementTriggerManagerService;
 
-    // metrics
-    private Counter metricDeviceBirthMessage;
-    private Counter metricDeviceDisconnectMessage;
-    private Counter metricDeviceMissingMessage;
-    private Counter metricDeviceAppsMessage;
-    private Counter metricDeviceErrorMessage;
+    //TODO inject!!!
+    private MetricsLifecycle metrics;
 
     public DeviceMessageListener() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+        metrics = MetricsLifecycle.getInstance();
         deviceLifeCycleService = KapuaLocator.getInstance().getService(DeviceLifeCycleService.class);
         jobDeviceManagementTriggerManagerService = KapuaLocator.getInstance().getService(JobDeviceManagementTriggerManagerService.class);
-        metricDeviceBirthMessage = metricsService.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricsLabel.MESSAGE_BIRTH);
-        metricDeviceDisconnectMessage = metricsService.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricsLabel.MESSAGE_DC);
-        metricDeviceMissingMessage = metricsService.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricsLabel.MESSAGE_MISSING);
-        metricDeviceAppsMessage = metricsService.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricsLabel.MESSAGE_APPS);
-        metricDeviceErrorMessage = metricsService.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricsLabel.ERROR);
     }
 
     /**
@@ -74,9 +61,9 @@ public class DeviceMessageListener {
     public void processBirthMessage(CamelKapuaMessage<KapuaBirthMessage> birthMessage) {
         try {
             deviceLifeCycleService.birth(birthMessage.getConnectionId(), birthMessage.getMessage());
-            metricDeviceBirthMessage.inc();
+            metrics.getDeviceBirthMessage().inc();
         } catch (KapuaException e) {
-            metricDeviceErrorMessage.inc();
+            metrics.getDeviceErrorMessage().inc();
             LOG.error("Error while processing device birth life-cycle event", e);
         }
 
@@ -99,9 +86,9 @@ public class DeviceMessageListener {
     public void processDisconnectMessage(CamelKapuaMessage<KapuaDisconnectMessage> disconnectMessage) {
         try {
             deviceLifeCycleService.death(disconnectMessage.getConnectionId(), disconnectMessage.getMessage());
-            metricDeviceDisconnectMessage.inc();
+            metrics.getDeviceDisconnectMessage().inc();
         } catch (KapuaException e) {
-            metricDeviceErrorMessage.inc();
+            metrics.getDeviceErrorMessage().inc();
             LOG.error("Error while processing device disconnect life-cycle event", e);
         }
     }
@@ -115,9 +102,9 @@ public class DeviceMessageListener {
     public void processAppsMessage(CamelKapuaMessage<KapuaAppsMessage> appsMessage) {
         try {
             deviceLifeCycleService.applications(appsMessage.getConnectionId(), appsMessage.getMessage());
-            metricDeviceAppsMessage.inc();
+            metrics.getDeviceAppsMessage().inc();
         } catch (KapuaException e) {
-            metricDeviceErrorMessage.inc();
+            metrics.getDeviceErrorMessage().inc();
             LOG.error("Error while processing device apps life-cycle event", e);
         }
     }
@@ -131,9 +118,9 @@ public class DeviceMessageListener {
     public void processMissingMessage(CamelKapuaMessage<KapuaMissingMessage> missingMessage) {
         try {
             deviceLifeCycleService.missing(missingMessage.getConnectionId(), missingMessage.getMessage());
-            metricDeviceMissingMessage.inc();
+            metrics.getDeviceMissingMessage().inc();
         } catch (KapuaException e) {
-            metricDeviceErrorMessage.inc();
+            metrics.getDeviceErrorMessage().inc();
             LOG.error("Error while processing device missing life-cycle event", e);
         }
     }

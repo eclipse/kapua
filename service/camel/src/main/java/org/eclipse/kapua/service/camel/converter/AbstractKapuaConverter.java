@@ -13,17 +13,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.camel.converter;
 
-import com.codahale.metrics.Counter;
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.jms.JmsMessage;
 import org.apache.camel.support.DefaultMessage;
 import org.apache.commons.lang3.SerializationUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
-import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.camel.application.MetricsCamel;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.camel.message.JmsUtil;
 import org.eclipse.kapua.service.client.message.MessageConstants;
@@ -48,36 +45,6 @@ import java.util.Date;
 public abstract class AbstractKapuaConverter {
 
     public static final Logger logger = LoggerFactory.getLogger(AbstractKapuaConverter.class);
-
-    private static final String CONVERTER = "converter";
-    private static final String CONVERTER_JMS = "converter_jms";
-    protected static final MetricsService METRICS_SERVICE = MetricServiceFactory.getInstance();
-
-    private final Counter metricConverterJmsAttemptMessage;
-    private final Counter metricConverterJmsErrorMessage;
-    private final Counter metricConverterErrorMessage;
-
-    /**
-     * Constructor
-     */
-    protected AbstractKapuaConverter(String module) {
-        metricConverterJmsAttemptMessage = METRICS_SERVICE.getCounter(
-            module,
-            CONVERTER_JMS,
-            MetricsLabel.ATTEMPT
-        );
-
-        metricConverterJmsErrorMessage = METRICS_SERVICE.getCounter(
-            module,
-            CONVERTER_JMS,
-            MetricsLabel.ERROR
-        );
-
-        metricConverterErrorMessage = METRICS_SERVICE.getCounter(
-            module,
-            CONVERTER,
-            MetricsLabel.ERROR);
-    }
 
     /**
      * Convert incoming message to a Kapua message (depending on messageType parameter)
@@ -105,13 +72,13 @@ public abstract class AbstractKapuaConverter {
                     }
                     return JmsUtil.convertToCamelKapuaMessage(connectorDescriptor, messageType, messageContent, JmsUtil.getTopic(message), queuedOn, connectionId, clientId);
                 } catch (JMSException e) {
-                    metricConverterErrorMessage.inc();
+                    MetricsCamel.getInstance().getConverterErrorMessage().inc();
                     logger.error("Exception converting message {}", e.getMessage(), e);
                     throw KapuaException.internalError(e, "Cannot convert the message type " + exchange.getIn().getClass());
                 }
             }
         }
-        metricConverterErrorMessage.inc();
+        MetricsCamel.getInstance().getConverterErrorMessage().inc();
         throw KapuaException.internalError("Cannot convert the message - Wrong instance type: " + exchange.getIn().getClass());
     }
 
@@ -125,13 +92,13 @@ public abstract class AbstractKapuaConverter {
      */
     @Converter
     public Message convertToJmsMessage(Exchange exchange, Object value) throws KapuaException {
-        metricConverterJmsAttemptMessage.inc();
+        MetricsCamel.getInstance().getConverterJmsAttemptMessage().inc();
         // assume that the message is a Camel Jms message
         JmsMessage message = exchange.getIn(JmsMessage.class);
         if (message.getJmsMessage() instanceof BytesMessage) {
             return message.getJmsMessage();
         }
-        metricConverterJmsErrorMessage.inc();
+        MetricsCamel.getInstance().getConverterJmsErrorMessage().inc();
         throw KapuaException.internalError("Cannot convert the message - Wrong instance type: " + exchange.getIn().getClass());
     }
 

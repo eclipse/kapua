@@ -57,9 +57,7 @@
     <bean id="kapuaLifeCycleConverter" class="org.eclipse.kapua.consumer.lifecycle.converter.KapuaLifeCycleConverter"/>
     <bean id="deviceMessageListener" class="org.eclipse.kapua.consumer.lifecycle.listener.DeviceMessageListener"/>
     <bean id="deviceManagementNotificationMessageProcessor" class="org.eclipse.kapua.consumer.lifecycle.listener.DeviceManagementNotificationMessageProcessor"/>
-    <bean id="errorMessageListener" class="org.eclipse.kapua.service.camel.listener.error.ErrorMessageListener">
-        <constructor-arg name="module" type="java.lang.String" value="consumer-lifecycle"/>
-    </bean>
+    <bean id="errorMessageListener" class="org.eclipse.kapua.service.camel.listener.error.ErrorMessageListener"/>
 
     <bean id="jaxbContextLoader" class="org.eclipse.kapua.service.camel.xml.ServiceJAXBContextLoader"
         init-method="init"/>

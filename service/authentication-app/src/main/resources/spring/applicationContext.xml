@@ -58,9 +58,7 @@
     <!-- session filers (to bind Kapua and Shiro thread context) -->
     <bean id="kapuaCamelFilter" class="org.eclipse.kapua.service.camel.converter.KapuaCamelFilter"/>
 
-    <bean id="errorMessageListener" class="org.eclipse.kapua.service.camel.listener.error.ErrorMessageListener">
-        <constructor-arg name="module" type="java.lang.String" value="service-authentication"/>
-    </bean>
+    <bean id="errorMessageListener" class="org.eclipse.kapua.service.camel.listener.error.ErrorMessageListener"/>
 
     <bean id="defaultAuthenticator" class="org.eclipse.kapua.service.authentication.authentication.DefaultAuthenticator"/>
     <bean id="authenticationServiceBackEndCall" class="org.eclipse.kapua.service.authentication.AuthenticationServiceBackEndCall" />

@@ -39,7 +39,7 @@ public class TelemetryApplication {
 
     public static void main(String[] args) {
         //TODO to be injected!!!
-        CommonsMetric.module = MetricLabel.CONSUMER_TELEMETRY;
+        CommonsMetric.module = MetricsTelemetry.CONSUMER_TELEMETRY;
         //statically set parameters
         System.setProperty(ServiceSettingKey.JAXB_CONTEXT_CLASS_NAME.key(), TelemetryJAXBContextProvider.class.getName());
         //org.springframework.context.ApplicationContext is not needed now so don't keep the SpringApplication.run return

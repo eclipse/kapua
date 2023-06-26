@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.artemis.plugin.security.context;
 
-import com.codahale.metrics.Gauge;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,12 +24,12 @@ import javax.security.auth.Subject;
 
 import org.apache.activemq.artemis.core.server.ActiveMQServer;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.broker.artemis.plugin.security.MetricsSecurityPlugin;
 import org.eclipse.kapua.broker.artemis.plugin.security.RunWithLock;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
 import org.eclipse.kapua.client.security.AuthErrorCodes;
 import org.eclipse.kapua.client.security.KapuaIllegalDeviceStateException;
-import org.eclipse.kapua.client.security.MetricLabel;
 import org.eclipse.kapua.client.security.ServiceClient.SecurityAction;
 import org.eclipse.kapua.client.security.bean.AuthAcl;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
@@ -40,10 +38,6 @@ import org.eclipse.kapua.client.security.context.Utils;
 import org.eclipse.kapua.client.security.metric.LoginMetric;
 import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.commons.localevent.ExecutorWrapper;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
-import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.service.authentication.KapuaPrincipal;
 import org.slf4j.Logger;
@@ -65,35 +59,11 @@ public final class SecurityContext {
         DetailedServer
     }
 
-    public static final String CONNECTION = "connection";
-    public static final String SESSION = "session";
-    public static final String ACL = "acl";
-    public static final String BROKER_CONNECTION = "broker_connection";
-    public static final String SESSION_CONTEXT = "session_context";
-    public static final String SESSION_CONTEXT_BY_CLIENT = "session_context_by_client";
-    public static final String ACTIVE_CONNECTION = "active_connection";
-    public static final String DISK_USAGE = "disk_usage";
-    public static final String TOTAL_CONNECTION = "total_connection";
-    public static final String TOTAL_MESSAGE = "total_message";
-    public static final String TOTAL_MESSAGE_ACKNOWLEDGED = "total_message_acknowledged";
-    public static final String TOTAL_MESSAGE_ADDED = "total_message_added";
+    private MetricsSecurityPlugin metrics;
+    private LoginMetric loginMetric;
 
     //reserved String used as separator by Artemis on NOT_DURABLE_QUEUES (and DURABLE also?)
     private static final String DOUBLE_COLON = "::";
-
-    private static final MetricsService METRIC_SERVICE = MetricServiceFactory.getInstance();
-    private LoginMetric loginMetric = LoginMetric.getInstance();
-    private Gauge<Integer> sessionCount;
-    private Gauge<Integer> connectionCount;
-    private Gauge<Integer> brokerConectionCount;
-    private Gauge<Integer> sessionContextMapCount;
-    private Gauge<Integer> sessionContextMapByClientCount;
-    private Gauge<Integer> aclMapCount;
-    private Gauge<Integer> activeConnectionCount;
-    private Gauge<Long> totalConnection;
-    private Gauge<Long> totalMessage;
-    private Gauge<Long> totalMessageAcknowledged;
-    private Gauge<Long> totalMessageAdded;
 
     //concurrency shouldn't be an issue since this set will contain the list of active connections
     private final Set<String> activeConnections = new HashSet<>();
@@ -132,7 +102,12 @@ public final class SecurityContext {
             }
         }
         try {
-            registerMetrics(server);
+            MetricsSecurityPlugin.getInstance(server,
+                () -> sessionContextMap.size(),
+                () -> sessionContextMapByClient.size(),
+                () -> aclMap.size(),
+                () -> activeConnections.size());
+            loginMetric = LoginMetric.getInstance();
         } catch (KapuaException e) {
             //do nothing
             //in this case one or more metrics are not registered but it's not a blocking issue
@@ -144,32 +119,6 @@ public final class SecurityContext {
         if (executorWrapper!=null) {
             executorWrapper.stop();
         }
-    }
-
-    private void registerMetrics(ActiveMQServer server) throws KapuaException {
-        sessionCount = () -> server.getSessions().size();
-        registerGauge(sessionCount, SESSION);
-        connectionCount = () -> server.getConnectionCount();
-        registerGauge(connectionCount, CONNECTION);
-        brokerConectionCount = () -> server.getBrokerConnections().size();
-        registerGauge(brokerConectionCount, BROKER_CONNECTION);
-        sessionContextMapCount = () -> sessionContextMap.size();
-        registerGauge(sessionContextMapCount, SESSION_CONTEXT);
-        sessionContextMapByClientCount = () -> sessionContextMapByClient.size();
-        registerGauge(sessionContextMapByClientCount, SESSION_CONTEXT_BY_CLIENT);
-        aclMapCount = () -> aclMap.size();
-        registerGauge(aclMapCount, ACL);
-        activeConnectionCount = () -> activeConnections.size();
-        registerGauge(activeConnectionCount, ACTIVE_CONNECTION);
-        //from broker
-        totalConnection = () -> server.getTotalConnectionCount();
-        registerGauge(totalConnection, TOTAL_CONNECTION, MetricsLabel.SIZE);
-        totalMessage = () -> server.getTotalMessageCount();
-        registerGauge(totalMessage, TOTAL_MESSAGE, MetricsLabel.SIZE);
-        totalMessageAcknowledged = () -> server.getTotalMessagesAcknowledged();
-        registerGauge(totalMessageAcknowledged, TOTAL_MESSAGE_ACKNOWLEDGED, MetricsLabel.SIZE);
-        totalMessageAdded = () -> server.getTotalMessagesAdded();
-        registerGauge(totalMessageAdded, TOTAL_MESSAGE_ADDED, MetricsLabel.SIZE);
     }
 
     public boolean setSessionContext(SessionContext sessionContext, List<AuthAcl> authAcls) throws Exception {
@@ -329,10 +278,6 @@ public final class SecurityContext {
         //TODO make this check based on instanceof
         //something like Class.forName(exceptionClass).. just are we sure we have the exceptionClass implementation available at runtime?
         return KapuaIllegalDeviceStateException.class.getName().equals(authRequest.getExceptionClass()) && AuthErrorCodes.DUPLICATE_CLIENT_ID.name().equals(authRequest.getErrorCode());
-    }
-
-    private void registerGauge(Gauge<?> gauge, String... names) throws KapuaException {
-        METRIC_SERVICE.registerGauge(gauge, CommonsMetric.module, MetricLabel.COMPONENT_LOGIN, names);
     }
 
     //logger features

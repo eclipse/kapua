@@ -12,15 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.lifecycle.listener;
 
-import com.codahale.metrics.Counter;
 import com.google.common.base.MoreObjects;
 import org.apache.camel.Exchange;
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
-import org.eclipse.kapua.commons.metric.MetricsService;
-import org.eclipse.kapua.consumer.lifecycle.MetricLabel;
+import org.eclipse.kapua.consumer.lifecycle.MetricsLifecycle;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.device.management.job.manager.JobDeviceManagementOperationManagerService;
@@ -44,16 +40,11 @@ public class DeviceManagementNotificationMessageProcessor {
     private static final DeviceManagementRegistryManagerService DEVICE_MANAGEMENT_REGISTRY_MANAGER_SERVICE = KapuaLocator.getInstance().getService(DeviceManagementRegistryManagerService.class);
     private static final JobDeviceManagementOperationManagerService JOB_DEVICE_MANAGEMENT_OPERATION_MANAGER_SERVICE = KapuaLocator.getInstance().getService(JobDeviceManagementOperationManagerService.class);
 
-    // queues counters
-    private final Counter metricQueueCommunicationErrorCount;
-    private final Counter metricQueueConfigurationErrorCount;
-    private final Counter metricQueueGenericErrorCount;
+    //TODO inject!!!
+    private MetricsLifecycle metrics;
 
     public DeviceManagementNotificationMessageProcessor() {
-        MetricsService metricService = MetricServiceFactory.getInstance();
-        metricQueueCommunicationErrorCount = metricService.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricLabel.DEVICE_MANAGEMENT_NOTIFICATION, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR);
-        metricQueueConfigurationErrorCount = metricService.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricLabel.DEVICE_MANAGEMENT_NOTIFICATION, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR);
-        metricQueueGenericErrorCount = metricService.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricLabel.DEVICE_MANAGEMENT_NOTIFICATION, MetricsLabel.GENERIC, MetricsLabel.ERROR);
+        metrics = MetricsLifecycle.getInstance();
     }
 
     /**
@@ -94,17 +85,17 @@ public class DeviceManagementNotificationMessageProcessor {
     public void processCommunicationErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
         LOG.info("Message datastoreId: '{}' - Message Id: '{}'", message.getDatastoreId(), message.getMessage().getId());
         processMessage(message);
-        metricQueueCommunicationErrorCount.dec();
+        metrics.getQueueCommunicationError().dec();
     }
 
     public void processConfigurationErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
         LOG.info("Message datastoreId: '{}' - Message Id '{}'", message.getDatastoreId(), message.getMessage().getId());
-        metricQueueConfigurationErrorCount.dec();
+        metrics.getQueueConfigurationError().dec();
     }
 
     public void processGenericErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
         LOG.info("Message datastoreId: '{}' - Message Id '{}'", message.getDatastoreId(), message.getMessage().getId());
-        metricQueueGenericErrorCount.dec();
+        metrics.getQueueGenericError().dec();
     }
 
 }

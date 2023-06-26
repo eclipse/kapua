@@ -29,14 +29,9 @@ import org.eclipse.kapua.client.security.bean.MessageConstants;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
 import org.eclipse.kapua.client.security.bean.ResponseContainer;
 import org.eclipse.kapua.client.security.bean.Response;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
-import org.eclipse.kapua.commons.metric.MetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Counter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 
@@ -49,15 +44,11 @@ public class MessageListener extends ClientMessageListener {
     private static ObjectMapper mapper = new ObjectMapper();
     private static ObjectReader reader = mapper.reader();//check if it's thread safe
 
-    private static final String CALLBACK = "callback";
-
-    private Counter metricLoginCallbackErrorCount;
-    private Counter metricLoginCallbackTimeoutCount;
+    //TODO inject!!!!
+    private MetricsClientSecurity metrics;
 
     public MessageListener() {
-        MetricsService metricService = MetricServiceFactory.getInstance();
-        metricLoginCallbackErrorCount = metricService.getCounter(CommonsMetric.module, MetricLabel.COMPONENT_LOGIN, CALLBACK, MetricsLabel.ERROR);
-        metricLoginCallbackTimeoutCount = metricService.getCounter(CommonsMetric.module, MetricLabel.COMPONENT_LOGIN, CALLBACK, MetricsLabel.TIMEOUT);
+        metrics = MetricsClientSecurity.getInstance();
     }
 
     @Override
@@ -78,7 +69,7 @@ public class MessageListener extends ClientMessageListener {
                 throw new KapuaRuntimeException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "action");
             }
         } catch (JMSException | IOException e) {
-            metricLoginCallbackErrorCount.inc();
+            metrics.getLoginCallbackError().inc();
             logger.error("Error while processing Authentication/Authorization message: {}", e.getMessage(), e);
         }
     }
@@ -88,7 +79,7 @@ public class MessageListener extends ClientMessageListener {
         if (responseContainer==null) {
             //internal error
             logger.error("Cannot find request container for requestId {}", response.getRequestId());
-            metricLoginCallbackTimeoutCount.inc();
+            metrics.getLoginCallbackTimeout().inc();
         }
         else {
             synchronized(responseContainer) {

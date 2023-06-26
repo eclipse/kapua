@@ -39,7 +39,7 @@ public class LifecycleApplication {
 
     public static void main(String[] args) {
         //TODO to be injected!!!
-        CommonsMetric.module = MetricLabel.CONSUMER_LIFECYCLE;
+        CommonsMetric.module = MetricsLifecycle.CONSUMER_LIFECYCLE;
         //statically set parameters
         System.setProperty(ServiceSettingKey.JAXB_CONTEXT_CLASS_NAME.key(), LifecycleJAXBContextProvider.class.getName());
         //org.springframework.context.ApplicationContext is not needed now so don't keep the SpringApplication.run return
