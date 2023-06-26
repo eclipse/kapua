@@ -53,9 +53,7 @@ public class AuthenticationApplication {
 
     public static void main(String[] args) {
         //TODO to be injected!!!
-        CommonsMetric.module = MetricLabel.SERVICE_AUTHENTICATION;
-        //TODO to be injected!!!
-        CommonsMetric.module = MetricLabel.SERVICE_AUTHENTICATION;
+        CommonsMetric.module = MetricsAuthentication.SERVICE_AUTHENTICATION;
         //statically set parameters
         System.setProperty(ServiceSettingKey.JAXB_CONTEXT_CLASS_NAME.key(), AuthenticationJAXBContextProvider.class.getName());
         //org.springframework.context.ApplicationContext is not needed now so don't keep the SpringApplication.run return

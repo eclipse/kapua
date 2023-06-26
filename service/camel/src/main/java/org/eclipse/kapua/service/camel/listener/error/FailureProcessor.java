@@ -15,12 +15,9 @@ package org.eclipse.kapua.service.camel.listener.error;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
+import org.eclipse.kapua.service.camel.application.MetricsCamel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.codahale.metrics.Counter;
 
 /**
  * Processor called before sending the message to the dlq processor chain.
@@ -31,15 +28,11 @@ public class FailureProcessor implements Processor {
 
     private static final Logger logger = LoggerFactory.getLogger(FailureProcessor.class);
 
-    public static final String GENERIC = "generic";
-    public static final String UNAUTHENTICATED = "unauthenticated";
+    //TODO inject!!!
+    private MetricsCamel metrics;
 
-    private Counter unauthenticatedError;
-    private Counter genericError;
-
-    public FailureProcessor(String module) {
-        unauthenticatedError = MetricServiceFactory.getInstance().getCounter(module, MetricsLabel.FAILURE, UNAUTHENTICATED);
-        genericError = MetricServiceFactory.getInstance().getCounter(module, MetricsLabel.FAILURE, GENERIC);
+    public FailureProcessor() {
+        metrics = MetricsCamel.getInstance();
     }
 
     @Override
@@ -48,10 +41,10 @@ public class FailureProcessor implements Processor {
             if (logger.isDebugEnabled()) {
                 logger.debug("Detected unauthenticated error on message processing retry!");
             }
-            unauthenticatedError.inc();
+            metrics.getUnauthenticatedError().inc();
         }
         else {
-            genericError.inc();
+            metrics.getGenericError().inc();
         }
     }
 

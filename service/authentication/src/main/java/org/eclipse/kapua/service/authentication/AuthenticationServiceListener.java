@@ -22,15 +22,11 @@ import org.eclipse.kapua.client.security.bean.EntityRequest;
 import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.bean.MessageConstants;
 import org.eclipse.kapua.client.security.bean.Request;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
-import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Counter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -40,53 +36,41 @@ public class AuthenticationServiceListener {
 
     protected static final Logger logger = LoggerFactory.getLogger(AuthenticationServiceListener.class);
 
-    private static final String REQUEST = "request";
-
     private static ObjectMapper mapper = new ObjectMapper();
     private static ObjectWriter writer = mapper.writer();
-
-    private Counter metricLoginCount;
-    private Counter metricLoginRequestCount;
-    private Counter metricLogoutCount;
-    private Counter metricLogoutRequestCount;
-    private Counter metricGetAccountCount;
-    private Counter metricGetAccountRequestCount;
 
     @Inject
     private AuthenticationServiceBackEndCall authenticationServiceBackEndCall;
 
+    //TODO inject!!!
+    private MetricsAuthentication metrics;
+
     public AuthenticationServiceListener() {
-        MetricsService metricService = MetricServiceFactory.getInstance();
-        metricLoginCount = metricService.getCounter(MetricLabel.SERVICE_AUTHENTICATION, MetricLabel.LOGIN, MetricsLabel.SUCCESS);
-        metricLoginRequestCount = metricService.getCounter(MetricLabel.SERVICE_AUTHENTICATION, MetricLabel.LOGIN, REQUEST);
-        metricLogoutCount = metricService.getCounter(MetricLabel.SERVICE_AUTHENTICATION, MetricLabel.LOGOUT, MetricsLabel.SUCCESS);
-        metricLogoutRequestCount = metricService.getCounter(MetricLabel.SERVICE_AUTHENTICATION, MetricLabel.LOGOUT, REQUEST);
-        metricGetAccountCount = metricService.getCounter(MetricLabel.SERVICE_AUTHENTICATION, MetricLabel.GET_ACCOUNT, MetricsLabel.SUCCESS);
-        metricGetAccountRequestCount = metricService.getCounter(MetricLabel.SERVICE_AUTHENTICATION, MetricLabel.GET_ACCOUNT, REQUEST);
+        metrics = MetricsAuthentication.getInstance();
     }
 
     public void brokerConnect(Exchange exchange, AuthRequest authRequest) throws JsonProcessingException, JMSException {
-        metricLoginRequestCount.inc();
+        metrics.getLoginRequest().inc();
         logRequest(exchange, authRequest);
         AuthResponse authResponse = authenticationServiceBackEndCall.brokerConnect(authRequest);
         updateMessage(exchange, authRequest, authResponse);
-        metricLoginCount.inc();
+        metrics.getLogin().inc();
     }
 
     public void brokerDisconnect(Exchange exchange, AuthRequest authRequest) throws JsonProcessingException, JMSException {
-        metricLogoutRequestCount.inc();
+        metrics.getLogoutRequest().inc();
         logRequest(exchange, authRequest);
         AuthResponse authResponse = authenticationServiceBackEndCall.brokerDisconnect(authRequest);
         updateMessage(exchange, authRequest, authResponse);
-        metricLogoutCount.inc();
+        metrics.getLogout().inc();
     }
 
     public void getEntity(Exchange exchange, EntityRequest accountRequest) throws JsonProcessingException, JMSException {
-        metricGetAccountRequestCount.inc();
+        metrics.getGetAccountRequest().inc();
         logRequest(exchange, accountRequest);
         EntityResponse accountResponse = authenticationServiceBackEndCall.getEntity(accountRequest);
         updateMessage(exchange, accountRequest, accountResponse);
-        metricGetAccountCount.inc();
+        metrics.getGetAccount().inc();
     }
 
     public void updateMessage(Exchange exchange, AuthRequest authRequest, AuthResponse authResponse) throws JMSException, JsonProcessingException {

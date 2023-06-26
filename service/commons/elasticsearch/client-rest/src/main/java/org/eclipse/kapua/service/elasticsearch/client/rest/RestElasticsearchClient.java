@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.rest;
 
-import com.codahale.metrics.Counter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,8 +21,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.ParseException;
 import org.apache.http.util.EntityUtils;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.RandomUtils;
 import org.eclipse.kapua.service.elasticsearch.client.AbstractElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.ModelContext;
@@ -74,10 +71,6 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
 
     private static final Logger LOG = LoggerFactory.getLogger(RestElasticsearchClient.class);
 
-    public static final String COMPONENT_REST_CLIENT = "rest_client";
-    public static final String TIMEOUT_RETRY = "timeout_retry";
-    public static final String TIMEOUT_RETRY_LIMIT_REACHED = "timeout_retry_limit_reached";
-
     private static final Random RANDOM = RandomUtils.getInstance();
     private static final String MSG_EMPTY_ERROR = "Empty error message";
 
@@ -85,9 +78,6 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     private static final String CLIENT_HITS_MAX_VALUE_EXCEEDED = "Total hits exceeds integer max value";
     private static final String QUERY_CONVERTED_QUERY = "Query - converted query: '{}'";
     private static final String COUNT_CONVERTED_QUERY = "Count - converted query: '{}'";
-
-    private Counter timeoutRetryCount;
-    private Counter timeoutRetryLimitReachedCount;
 
     /**
      * Constructor.
@@ -112,10 +102,6 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         if (getModelConverter() == null) {
             throw new ClientInitializationException("Missing model converter");
         }
-
-        MetricsService metricService = MetricServiceFactory.getInstance();
-        timeoutRetryCount = metricService.getCounter(getClientConfiguration().getModuleName(), COMPONENT_REST_CLIENT, TIMEOUT_RETRY);
-        timeoutRetryLimitReachedCount = metricService.getCounter(getClientConfiguration().getModuleName(), COMPONENT_REST_CLIENT, TIMEOUT_RETRY_LIMIT_REACHED);
     }
 
     @Override
@@ -483,7 +469,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                     return restAction.call();
                 } catch (RuntimeException e) {
                     if (e.getCause() instanceof TimeoutException) {
-                        timeoutRetryCount.inc();
+                        MetricsEsClient.getInstance().getTimeoutRetry().inc();
                         if (retryCount < getClientConfiguration().getRequestConfiguration().getRequestRetryAttemptMax() - 1) {
                             try {
                                 Thread.sleep((long) (getClientConfiguration().getRequestConfiguration().getRequestRetryAttemptWait() * (0.5 + RANDOM.nextFloat() / 2)));
@@ -503,7 +489,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         } catch (Exception e) {
             throw new ClientInternalError(e, "Error in handling REST timeout handler");
         }
-        timeoutRetryLimitReachedCount.inc();
+        MetricsEsClient.getInstance().getTimeoutRetryLimitReached().inc();
 
         throw new ClientCommunicationException();
     }

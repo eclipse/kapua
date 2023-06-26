@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.rest;
 
-import com.codahale.metrics.Counter;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
@@ -29,10 +28,6 @@ import org.apache.http.nio.reactor.IOReactorExceptionHandler;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
-import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.ModelContext;
@@ -83,12 +78,6 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
 
     private static final String PROVIDER_CANNOT_CLOSE_CLIENT_MSG = "Cannot close ElasticSearch REST client. Client is already closed or not initialized";
 
-    private static final String RUNTIME_ERROR = "runtime_error";
-
-    // metrics
-    private Counter exceptionCount;
-    private Counter runtimeExceptionCount;
-
     private RestElasticsearchClient restElasticsearchClient;
     private RestClient internalElasticsearchRestClient;
 
@@ -96,13 +85,12 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     private ModelContext modelContext;
     private QueryConverter modelConverter;
 
-    private static Counter clientReconnectCallCounter;
     private ScheduledExecutorService reconnectExecutorTask;
 
+    private MetricsEsClient metrics;
+
     public RestElasticsearchClientProvider() {
-        MetricsService metricService = MetricServiceFactory.getInstance();
-        exceptionCount = metricService.getCounter(CommonsMetric.module, RestElasticsearchClient.COMPONENT_REST_CLIENT, MetricsLabel.ERROR);
-        runtimeExceptionCount = metricService.getCounter(CommonsMetric.module, RestElasticsearchClient.COMPONENT_REST_CLIENT, RUNTIME_ERROR);
+        metrics = MetricsEsClient.getInstance();
     }
 
     @Override
@@ -168,8 +156,6 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
                     .addParameter("Model Context", modelContext)
                     .addParameter("Model Converter", modelConverter)
                     .printLog();
-
-            clientReconnectCallCounter = MetricServiceFactory.getInstance().getCounter(elasticsearchClientConfiguration.getModuleName(), "elasticsearch-client-rest", "reconnect_call");
 
             // Close the current client if already initialized.
             close();
@@ -256,7 +242,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
         if (internalElasticsearchRestClient == null) {
             synchronized (RestElasticsearchClientProvider.class) {
                 if (internalElasticsearchRestClient == null) {
-                    clientReconnectCallCounter.inc();
+                    metrics.getClientReconnectCall().inc();
 
                     LOG.info(">>> Initializing Elasticsearch REST client... Connecting...");
                     internalElasticsearchRestClient = initClientMethod.call();
@@ -359,7 +345,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
 
                 @Override
                 public boolean handle(IOException e) {
-                    exceptionCount.inc();
+                    metrics.getException().inc();
                     LOG.warn("IOReactor encountered a checked exception: {}", e.getMessage(), e);
                     //return true to note this exception as handled, it will not be re-thrown
                     return true;
@@ -367,7 +353,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
 
                 @Override
                 public boolean handle(RuntimeException e) {
-                    runtimeExceptionCount.inc();
+                    metrics.getRuntimeException().inc();
                     LOG.warn("IOReactor encountered a runtime exception: {}", e.getMessage(), e);
                     //return true to note this exception as handled, it will not be re-thrown
                     return true;

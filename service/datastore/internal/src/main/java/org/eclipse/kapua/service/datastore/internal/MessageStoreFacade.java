@@ -12,12 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import com.codahale.metrics.Counter;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.cache.LocalCache;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -82,19 +79,17 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(MessageStoreFacade.class);
 
-    public static final String DUPLICATED_STORE = "duplicated_store";
-
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final StorableIdFactory STORABLE_ID_FACTORY = LOCATOR.getFactory(StorableIdFactory.class);
     private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
-
-    private final Counter alreadyInTheDatastoreCount;
 
     private final MessageStoreMediator mediator;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
     private static final String SCOPE_ID = "scopeId";
+
+    private MetricsDatastore metrics;
 
     /**
      * Constructs the message store facade
@@ -105,11 +100,8 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
      */
     public MessageStoreFacade(ConfigurationProvider confProvider, MessageStoreMediator mediator) {
         super(confProvider);
-
         this.mediator = mediator;
-
-        MetricsService metricService = MetricServiceFactory.getInstance();
-        alreadyInTheDatastoreCount = metricService.getCounter(MessageStoreServiceImpl.CONSUMER_TELEMETRY, MessageStoreServiceImpl.STORE, DUPLICATED_STORE);
+        metrics = MetricsDatastore.getInstance();
     }
 
     /**
@@ -160,7 +152,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
             DatastoreMessage datastoreMessage = find(message.getScopeId(), STORABLE_ID_FACTORY.newStorableId(messageId), StorableFetchStyle.SOURCE_SELECT);
             if (datastoreMessage != null) {
                 LOG.debug("Message with datatstore id '{}' already found", messageId);
-                alreadyInTheDatastoreCount.inc();
+                metrics.getAlreadyInTheDatastore().inc();
                 return STORABLE_ID_FACTORY.newStorableId(messageId);
             }
         }

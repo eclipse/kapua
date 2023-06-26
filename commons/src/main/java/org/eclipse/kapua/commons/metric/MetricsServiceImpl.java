@@ -21,7 +21,6 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.SharedMetricRegistries;
 import com.codahale.metrics.Timer;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.metric.MetricsServiceImpl.MetricType;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.slf4j.Logger;
@@ -41,6 +40,7 @@ public class MetricsServiceImpl implements MetricsService {
     private static final Logger logger = LoggerFactory.getLogger(MetricsServiceImpl.class);
 
     public static final String METRICS_NAME_FORMAT = "{0}.{1}.{2}";
+    public static final String METRICS_SHORT_NAME_FORMAT = "{0}.{1}";
     private static final char SEPARATOR = '.';
 
     enum MetricType {
@@ -142,7 +142,12 @@ public class MetricsServiceImpl implements MetricsService {
      * @return
      */
     private String getMetricName(MetricType metricType, String module, String component, String... metricsName) {
-        return MessageFormat.format(METRICS_NAME_FORMAT, module, component, convertToDotNotation(metricType, metricsName));
+        if (metricsName==null || metricsName.length<=0) {
+            return MessageFormat.format(METRICS_SHORT_NAME_FORMAT, module, component, metricType!=null ? SEPARATOR + metricType.name() : "");
+        }
+        else {
+            return MessageFormat.format(METRICS_NAME_FORMAT, module, component, convertToDotNotation(metricType, metricsName));
+        }
     }
 
     /**

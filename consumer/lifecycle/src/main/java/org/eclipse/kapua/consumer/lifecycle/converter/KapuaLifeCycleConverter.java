@@ -15,15 +15,12 @@ package org.eclipse.kapua.consumer.lifecycle.converter;
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
-import org.eclipse.kapua.consumer.lifecycle.MetricLabel;
+import org.eclipse.kapua.consumer.lifecycle.MetricsLifecycle;
 import org.eclipse.kapua.service.camel.converter.AbstractKapuaConverter;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.client.message.MessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.codahale.metrics.Counter;
 
 /**
  * Kapua message converter used to convert life cycle messages.
@@ -34,19 +31,11 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter {
 
     public static final Logger logger = LoggerFactory.getLogger(KapuaLifeCycleConverter.class);
 
-    private Counter metricConverterAppMessage;
-    private Counter metricConverterBirthMessage;
-    private Counter metricConverterDcMessage;
-    private Counter metricConverterMissingMessage;
-    private Counter metricConverterNotifyMessage;
+    //TODO inject!!!
+    private MetricsLifecycle metrics;
 
     public KapuaLifeCycleConverter() {
-        super(MetricLabel.CONSUMER_LIFECYCLE);
-        metricConverterAppMessage = METRICS_SERVICE.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricLabel.CONVERSION, MetricsLabel.MESSAGE_APPS);
-        metricConverterBirthMessage = METRICS_SERVICE.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricLabel.CONVERSION, MetricsLabel.MESSAGE_BIRTH);
-        metricConverterDcMessage = METRICS_SERVICE.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricLabel.CONVERSION, MetricsLabel.MESSAGE_DC);
-        metricConverterMissingMessage = METRICS_SERVICE.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricLabel.CONVERSION, MetricsLabel.MESSAGE_MISSING);
-        metricConverterNotifyMessage = METRICS_SERVICE.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricLabel.CONVERSION, MetricsLabel.MESSAGE_NOTIFY);
+        metrics = MetricsLifecycle.getInstance();
     }
 
     /**
@@ -60,7 +49,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter {
      */
     @Converter
     public CamelKapuaMessage<?> convertToApps(Exchange exchange, Object value) throws KapuaException {
-        metricConverterAppMessage.inc();
+        metrics.getConverterAppMessage().inc();
         return convertTo(exchange, value, MessageType.APP);
     }
 
@@ -75,7 +64,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter {
      */
     @Converter
     public CamelKapuaMessage<?> convertToBirth(Exchange exchange, Object value) throws KapuaException {
-        metricConverterBirthMessage.inc();
+        metrics.getConverterBirthMessage().inc();
         return convertTo(exchange, value, MessageType.BIRTH);
     }
 
@@ -90,7 +79,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter {
      */
     @Converter
     public CamelKapuaMessage<?> convertToDisconnect(Exchange exchange, Object value) throws KapuaException {
-        metricConverterDcMessage.inc();
+        metrics.getConverterDcMessage().inc();
         return convertTo(exchange, value, MessageType.DISCONNECT);
     }
 
@@ -105,7 +94,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter {
      */
     @Converter
     public CamelKapuaMessage<?> convertToMissing(Exchange exchange, Object value) throws KapuaException {
-        metricConverterMissingMessage.inc();
+        metrics.getConverterMissingMessage().inc();
         return convertTo(exchange, value, MessageType.MISSING);
     }
 
@@ -119,7 +108,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter {
      */
     @Converter
     public CamelKapuaMessage<?> convertToNotify(Exchange exchange, Object value) throws KapuaException {
-        metricConverterNotifyMessage.inc();
+        metrics.getConverterNotifyMessage().inc();
         return convertTo(exchange, value, MessageType.NOTIFY);
     }
 

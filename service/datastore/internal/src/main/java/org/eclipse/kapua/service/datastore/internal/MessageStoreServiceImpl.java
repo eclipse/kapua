@@ -12,15 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.Timer;
 import com.codahale.metrics.Timer.Context;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -63,29 +59,15 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
-    public static final String CONSUMER_TELEMETRY = "consumer_telemetry";
-    public static final String STORE = "store";
-    public static final String STORE_QUEUE = "store_queue";
-
-    // metrics
-    private final Counter metricMessageCount;
-    private final Counter metricCommunicationErrorCount;
-    private final Counter metricConfigurationErrorCount;
-    private final Counter metricGenericErrorCount;
-    private final Counter metricValidationErrorCount;
-    // store timers
-    private final Timer metricDataSaveTime;
-    // queues counters
-    private final Counter metricQueueCommunicationErrorCount;
-    private final Counter metricQueueConfigurationErrorCount;
-    private final Counter metricQueueGenericErrorCount;
-
     protected final AccountService accountService = LOCATOR.getService(AccountService.class);
     protected final AuthorizationService authorizationService = LOCATOR.getService(AuthorizationService.class);
     protected final PermissionFactory permissionFactory = LOCATOR.getFactory(PermissionFactory.class);
     protected static final Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.CONFIG_MAX_ENTRIES_ON_DELETE);
 
     protected final MessageStoreFacade messageStoreFacade;
+
+    //TODO inject!!!
+    private MetricsDatastore metrics;
 
     /**
      * Constructor.
@@ -96,51 +78,36 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
      */
     public MessageStoreServiceImpl() {
         super(MessageStoreService.class.getName(), DatastoreDomains.DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
+        metrics = MetricsDatastore.getInstance();
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this, accountService);
         messageStoreFacade = new MessageStoreFacade(configurationProvider, DatastoreMediator.getInstance());
         DatastoreMediator.getInstance().setMessageStoreFacade(messageStoreFacade);
-
-        // data message
-        MetricsService metricService = MetricServiceFactory.getInstance();
-        metricMessageCount = metricService.getCounter(CONSUMER_TELEMETRY, STORE, MetricsLabel.ATTEMPT);
-        metricCommunicationErrorCount = metricService.getCounter(CONSUMER_TELEMETRY, STORE, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR);
-        metricConfigurationErrorCount = metricService.getCounter(CONSUMER_TELEMETRY, STORE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR);
-        metricGenericErrorCount = metricService.getCounter(CONSUMER_TELEMETRY, STORE, MetricsLabel.GENERIC, MetricsLabel.ERROR);
-        metricValidationErrorCount = metricService.getCounter(CONSUMER_TELEMETRY, STORE, MetricsLabel.VALIDATION, MetricsLabel.ERROR);
-
-        // error messages queues size
-        metricQueueCommunicationErrorCount = metricService.getCounter(CONSUMER_TELEMETRY, STORE_QUEUE, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR);
-        metricQueueConfigurationErrorCount = metricService.getCounter(CONSUMER_TELEMETRY, STORE_QUEUE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR);
-        metricQueueGenericErrorCount = metricService.getCounter(CONSUMER_TELEMETRY, STORE_QUEUE, MetricsLabel.GENERIC, MetricsLabel.ERROR);
-
-        // store timers
-        metricDataSaveTime = metricService.getTimer(CONSUMER_TELEMETRY, STORE, MetricsLabel.TIME, MetricsLabel.SECONDS);
     }
 
     @Override
     public StorableId store(KapuaMessage<?, ?> message)
             throws KapuaException {
         String datastoreId = UUID.randomUUID().toString();
-        Context metricDataSaveTimeContext = metricDataSaveTime.time();
+        Context metricDataSaveTimeContext = metrics.getDataSaveTime().time();
         try {
             checkDataAccess(message.getScopeId(), Actions.write);
-            metricMessageCount.inc();
+            metrics.getMessage().inc();
             return messageStoreFacade.store(message, datastoreId, true);
         } catch (ConfigurationException e) {
-            metricConfigurationErrorCount.inc();
-            metricQueueConfigurationErrorCount.inc();
+            metrics.getConfigurationError().inc();
+            metrics.getQueueConfigurationError().inc();
             throw e;
         } catch (KapuaIllegalArgumentException e) {
-            metricValidationErrorCount.inc();
-            metricQueueGenericErrorCount.inc();
+            metrics.getValidationError().inc();
+            metrics.getQueueGenericError().inc();
             throw e;
         } catch (ClientCommunicationException e) {
-            metricCommunicationErrorCount.inc();
-            metricQueueCommunicationErrorCount.inc();
+            metrics.getCommunicationError().inc();
+            metrics.getQueueCommunicationError().inc();
             throw new DatastoreCommunicationException(datastoreId, e);
         } catch (Exception e) {
-            metricGenericErrorCount.inc();
-            metricQueueGenericErrorCount.inc();
+            metrics.getGenericError().inc();
+            metrics.getQueueGenericError().inc();
             logException(e);
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
         } finally {
@@ -152,26 +119,26 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     public StorableId store(KapuaMessage<?, ?> message, String datastoreId)
             throws KapuaException {
         ArgumentValidator.notEmptyOrNull(datastoreId, "datastoreId");
-        Context metricDataSaveTimeContext = metricDataSaveTime.time();
+        Context metricDataSaveTimeContext = metrics.getDataSaveTime().time();
         try {
             checkDataAccess(message.getScopeId(), Actions.write);
-            metricMessageCount.inc();
+            metrics.getMessage().inc();
             return messageStoreFacade.store(message, datastoreId, false);
         } catch (ConfigurationException e) {
-            metricConfigurationErrorCount.inc();
-            metricQueueConfigurationErrorCount.inc();
+            metrics.getConfigurationError().inc();
+            metrics.getQueueConfigurationError().inc();
             throw e;
         } catch (KapuaIllegalArgumentException e) {
-            metricValidationErrorCount.inc();
-            metricQueueGenericErrorCount.inc();
+            metrics.getValidationError().inc();
+            metrics.getQueueGenericError().inc();
             throw e;
         } catch (ClientCommunicationException e) {
-            metricCommunicationErrorCount.inc();
-            metricQueueCommunicationErrorCount.inc();
+            metrics.getCommunicationError().inc();
+            metrics.getQueueCommunicationError().inc();
             throw new DatastoreCommunicationException(datastoreId, e);
         } catch (Exception e) {
-            metricGenericErrorCount.inc();
-            metricQueueGenericErrorCount.inc();
+            metrics.getGenericError().inc();
+            metrics.getQueueGenericError().inc();
             logException(e);
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
         } finally {

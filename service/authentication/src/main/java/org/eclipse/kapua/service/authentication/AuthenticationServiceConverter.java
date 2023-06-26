@@ -19,13 +19,11 @@ import org.apache.camel.Exchange;
 import org.apache.camel.component.jms.JmsMessage;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.client.security.bean.EntityRequest;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.service.camel.converter.AbstractKapuaConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Counter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 
@@ -40,13 +38,11 @@ public class AuthenticationServiceConverter extends AbstractKapuaConverter {
     private static ObjectMapper mapper = new ObjectMapper();
     private static ObjectReader reader = mapper.reader();//check if it's thread safe
 
-    private Counter metricAuth;
-    private Counter metricAuthError;
+    //TODO inject!!!
+    private MetricsAuthentication metrics;
 
     public AuthenticationServiceConverter() {
-        super(MetricLabel.SERVICE_AUTHENTICATION);
-        metricAuth = METRICS_SERVICE.getCounter(MetricLabel.SERVICE_AUTHENTICATION, MetricLabel.CONVERSION, MetricsLabel.SUCCESS);
-        metricAuthError = METRICS_SERVICE.getCounter(MetricLabel.SERVICE_AUTHENTICATION, MetricLabel.CONVERSION, MetricsLabel.ERROR);
+        metrics = MetricsAuthentication.getInstance();
     }
 
     /**
@@ -63,10 +59,10 @@ public class AuthenticationServiceConverter extends AbstractKapuaConverter {
         try {
             String body = ((JmsMessage)exchange.getIn()).getBody(String.class);
             AuthRequest authRequest = reader.readValue(body, AuthRequest.class);
-            metricAuth.inc();
+            metrics.getAuthentication().inc();
             return authRequest;
         } catch (IOException e) {
-            metricAuthError.inc();
+            metrics.getAuthenticationError().inc();
             throw KapuaException.internalError(e, "Error while converting authentication message");
         }
     }
@@ -76,10 +72,10 @@ public class AuthenticationServiceConverter extends AbstractKapuaConverter {
         try {
             String body = ((JmsMessage)exchange.getIn()).getBody(String.class);
             EntityRequest entityRequest = reader.readValue(body, EntityRequest.class);
-            metricAuth.inc();
+            metrics.getAuthentication().inc();
             return entityRequest;
         } catch (IOException e) {
-            metricAuthError.inc();
+            metrics.getAuthenticationError().inc();
             throw KapuaException.internalError(e, "Error while converting getEntity message");
         }
     }

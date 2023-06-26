@@ -12,12 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.lifecycle.converter;
 
-import com.codahale.metrics.Counter;
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
-import org.eclipse.kapua.consumer.lifecycle.MetricLabel;
+import org.eclipse.kapua.consumer.lifecycle.MetricsLifecycle;
 import org.eclipse.kapua.service.camel.converter.AbstractKapuaConverter;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.client.message.MessageType;
@@ -33,11 +31,11 @@ public class DeviceManagementNotificationConverter extends AbstractKapuaConverte
 
     public static final Logger logger = LoggerFactory.getLogger(DeviceManagementNotificationConverter.class);
 
-    private Counter metricConverterDeviceManagementNotificationMessage;
+    //TODO inject!!!
+    private MetricsLifecycle metrics;
 
     public DeviceManagementNotificationConverter() {
-        super(MetricLabel.CONSUMER_LIFECYCLE);
-        metricConverterDeviceManagementNotificationMessage = METRICS_SERVICE.getCounter(MetricLabel.CONSUMER_LIFECYCLE, MetricLabel.CONVERSION, MetricsLabel.MESSAGE_NOTIFY);
+        metrics = MetricsLifecycle.getInstance();
     }
 
     /**
@@ -50,13 +48,13 @@ public class DeviceManagementNotificationConverter extends AbstractKapuaConverte
      */
     @Converter
     public CamelKapuaMessage<?> convertToManagementNotification(Exchange exchange, Object value) throws KapuaException {
-        metricConverterDeviceManagementNotificationMessage.inc();
+        metrics.getConverterDeviceManagementNotificationMessage().inc();
         return convertTo(exchange, value, MessageType.NOTIFY);
     }
 
     @Converter
     public CamelKapuaMessage<?> convertToManagementNotificationOnException(Exchange exchange, Object value) throws KapuaException {
-        metricConverterDeviceManagementNotificationMessage.inc();
+        metrics.getConverterDeviceManagementNotificationMessage().inc();
 
         // this converter may be used in different camel route step so may we already have a CamelKapuaMessage (depending on which step in the Camel route failed)
         CamelKapuaMessage<?> message;

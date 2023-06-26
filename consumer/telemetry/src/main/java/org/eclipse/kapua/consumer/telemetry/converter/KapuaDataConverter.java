@@ -18,15 +18,12 @@ import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
-import org.eclipse.kapua.consumer.telemetry.MetricLabel;
+import org.eclipse.kapua.consumer.telemetry.MetricsTelemetry;
 import org.eclipse.kapua.service.camel.converter.AbstractKapuaConverter;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.client.message.MessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.codahale.metrics.Counter;
 
 /**
  * Kapua message converter used to convert data messages.
@@ -37,11 +34,11 @@ public class KapuaDataConverter extends AbstractKapuaConverter {
 
     public static final Logger logger = LoggerFactory.getLogger(KapuaDataConverter.class);
 
-    private Counter metricConverterDataMessage;
+    //TODO inject!!!
+    private MetricsTelemetry metrics;
 
     public KapuaDataConverter() {
-        super(MetricLabel.CONSUMER_TELEMETRY);
-        metricConverterDataMessage = METRICS_SERVICE.getCounter(MetricLabel.CONSUMER_TELEMETRY, MetricLabel.CONVERSION, MetricsLabel.MESSAGE_DATA);
+        metrics = MetricsTelemetry.getInstance();
     }
 
     /**
@@ -55,7 +52,7 @@ public class KapuaDataConverter extends AbstractKapuaConverter {
      */
     @Converter
     public CamelKapuaMessage<?> convertToData(Exchange exchange, Object value) throws KapuaException {
-        metricConverterDataMessage.inc();
+        metrics.getConverterDataMessage().inc();
         CamelKapuaMessage<?> message = convertTo(exchange, value, MessageType.DATA);
         if (StringUtils.isEmpty(message.getDatastoreId())) {
             message.setDatastoreId(UUID.randomUUID().toString());
@@ -65,7 +62,7 @@ public class KapuaDataConverter extends AbstractKapuaConverter {
 
     @Converter
     public CamelKapuaMessage<?> convertToDataOnException(Exchange exchange, Object value) throws KapuaException {
-        metricConverterDataMessage.inc();
+        metrics.getConverterDataMessage().inc();
         // this converter may be used in different camel route step so may we already have a CamelKapuaMessage (depending on which step in the Camel route failed)
         CamelKapuaMessage<?> message;
         if (value instanceof CamelKapuaMessage<?>) {
