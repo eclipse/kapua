@@ -19,13 +19,20 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 11
-      - uses: actions/cache@v3 # Cache local Maven repository to reuse dependencies
-        with:
-          path: ~/.m2/repository
-          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - run: mvn -v
       - run: docker images -a  # used as log (should show only github environment standard docker images; if kapua images are present, something is wrong)
       - run: mvn -B ${BUILD_OPTS} -DskipTests clean install
+      - uses: actions/cache/save@v3 # Cache local Maven repository to reuse dependencies
+        with:
+          path: ~/.m2/repository
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
+      - name: Verify maven artifacts cache saving
+        uses: actions/cache/restore@v3 #use restore action just to verify if cache saving did not fail
+        with:
+          fail-on-cache-miss: true
+          lookup-only: true
+          path: ~/.m2/repository
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - run: bash <(curl -s https://codecov.io/bash)
   test-brokerAcl:
     needs: build
