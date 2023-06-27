@@ -44,17 +44,12 @@ import org.eclipse.kapua.service.datastore.exception.DatastoreInternalError;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreElasticsearchClientConfiguration;
 import org.eclipse.kapua.service.datastore.internal.converter.ModelContextImpl;
 import org.eclipse.kapua.service.datastore.internal.converter.QueryConverterImpl;
-import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoRegistryMediator;
-import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoRegistryMediator;
-import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
-import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreMediator;
-import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoRegistryMediator;
+import org.eclipse.kapua.service.datastore.internal.schema.Schema;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
-import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
 import org.eclipse.kapua.storage.TxContext;
 
 import javax.inject.Named;
@@ -68,12 +63,16 @@ public class DatastoreModule extends AbstractKapuaModule {
         bind(ClientInfoRepository.class).to(ClientInfoRepositoryImpl.class).in(Singleton.class);
         bind(ChannelInfoRepository.class).to(ChannelInfoRepositoryImpl.class).in(Singleton.class);
         bind(MetricInfoRepository.class).to(MetricInfoRepositoryImpl.class).in(Singleton.class);
-        bind(DatastoreMediator.class).in(Singleton.class);
-        bind(MessageStoreMediator.class).to(DatastoreMediator.class);
-        bind(ClientInfoRegistryMediator.class).to(DatastoreMediator.class);
-        bind(ChannelInfoRegistryMediator.class).to(DatastoreMediator.class);
-        bind(MetricInfoRegistryMediator.class).to(DatastoreMediator.class);
+        bind(Schema.class).in(Singleton.class);
 
+        bind(ClientInfoRegistryFacade.class).to(ClientInfoRegistryFacadeImpl.class).in(Singleton.class);
+        ;
+        bind(MetricInfoRegistryFacade.class).to(MetricInfoRegistryFacadeImpl.class).in(Singleton.class);
+        ;
+        bind(ChannelInfoRegistryFacade.class).to(ChannelInfoRegistryFacadeImpl.class).in(Singleton.class);
+        ;
+        bind(MessageStoreFacade.class).to(MessageStoreFacadeImpl.class).in(Singleton.class);
+        ;
         bind(ChannelInfoFactory.class).to(ChannelInfoFactoryImpl.class);
         bind(ChannelInfoRegistryService.class).to(ChannelInfoRegistryServiceImpl.class);
         bind(ClientInfoFactory.class).to(ClientInfoFactoryImpl.class);
@@ -86,65 +85,6 @@ public class DatastoreModule extends AbstractKapuaModule {
     @ProvidesIntoSet
     public Domain dataStoreDomain() {
         return new DomainEntry(Domains.DATASTORE, "org.eclipse.kapua.service.datastore.DatastoreService", false, Actions.read, Actions.delete, Actions.write);
-    }
-
-    @Provides
-    @Singleton
-    ClientInfoRegistryFacade clientInfoRegistryFacade(
-            ConfigurationProvider configProvider,
-            StorableIdFactory storableIdFactory,
-            StorablePredicateFactory storablePredicateFactory,
-            ClientInfoRegistryMediator mediator,
-            ClientInfoRepository clientInfoRepository) {
-        return new ClientInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator, clientInfoRepository);
-    }
-
-    @Provides
-    @Singleton
-    MetricInfoRegistryFacade metricInfoRegistryFacade(
-            ConfigurationProvider configProvider,
-            StorableIdFactory storableIdFactory,
-            StorablePredicateFactory storablePredicateFactory,
-            MetricInfoRegistryMediator mediator,
-            MetricInfoRepository metricInfoRepository) {
-        return new MetricInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator, metricInfoRepository);
-    }
-
-    @Provides
-    @Singleton
-    ChannelInfoRegistryFacade channelInfoRegistryFacade(
-            ConfigurationProvider configProvider,
-            StorableIdFactory storableIdFactory,
-            StorablePredicateFactory storablePredicateFactory,
-            ChannelInfoRegistryMediator mediator,
-            ChannelInfoRepository channelInfoRepository) {
-        return new ChannelInfoRegistryFacadeImpl(configProvider, storableIdFactory, storablePredicateFactory, mediator, channelInfoRepository);
-    }
-
-    @Provides
-    @Singleton
-    MessageStoreFacade messageStoreFacade(ConfigurationProvider configProvider,
-                                          StorableIdFactory storableIdFactory,
-                                          ClientInfoRegistryFacade clientInfoRegistryFacade,
-                                          ChannelInfoRegistryFacade channelInfoStoreFacade,
-                                          MetricInfoRegistryFacade metricInfoStoreFacade,
-                                          MessageStoreMediator mediator,
-                                          MessageRepository messageRepository,
-                                          MetricInfoRepository metricInfoRepository,
-                                          ChannelInfoRepository channelInfoRepository,
-                                          ClientInfoRepository clientInfoRepository
-    ) {
-        return new MessageStoreFacadeImpl(
-                configProvider,
-                storableIdFactory,
-                clientInfoRegistryFacade,
-                channelInfoStoreFacade,
-                metricInfoStoreFacade,
-                mediator,
-                messageRepository,
-                metricInfoRepository,
-                channelInfoRepository,
-                clientInfoRepository);
     }
 
     @Provides

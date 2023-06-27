@@ -16,13 +16,11 @@ import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
-import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoRegistryMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
-import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
-import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
+import org.eclipse.kapua.service.datastore.internal.schema.Schema;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
@@ -36,6 +34,8 @@ import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicat
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+
 /**
  * Channel information registry facade
  *
@@ -47,7 +47,7 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
 
     private final StorableIdFactory storableIdFactory;
     private final StorablePredicateFactory storablePredicateFactory;
-    private final ChannelInfoRegistryMediator mediator;
+    private final Schema esSchema;
     private final ChannelInfoRepository repository;
     private final Object metadataUpdateSync = new Object();
 
@@ -58,19 +58,19 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
      * Constructs the channel info registry facade
      *
      * @param configProvider
-     * @param mediator
+     * @param esSchema
      * @since 1.0.0
      */
+    @Inject
     public ChannelInfoRegistryFacadeImpl(
             ConfigurationProvider configProvider,
             StorableIdFactory storableIdFactory,
             StorablePredicateFactory storablePredicateFactory,
-            ChannelInfoRegistryMediator mediator,
-            ChannelInfoRepository channelInfoRepository) {
+            Schema esSchema, ChannelInfoRepository channelInfoRepository) {
         super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
-        this.mediator = mediator;
+        this.esSchema = esSchema;
         this.repository = channelInfoRepository;
     }
 
@@ -104,10 +104,8 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
                 if (!DatastoreCacheManager.getInstance().getChannelsCache().get(channelInfoId)) {
                     ChannelInfo storedField = find(channelInfo.getScopeId(), storableId);
                     if (storedField == null) {
-                        Metadata metadata = mediator.getMetadata(channelInfo.getScopeId(), channelInfo.getFirstMessageOn().getTime());
-                        String registryIndexName = metadata.getChannelRegistryIndexName();
-                        final String responseId = repository.upsert(metadata.getChannelRegistryIndexName(), channelInfo);
-                        LOG.debug("Upsert on channel successfully executed [{}.{}, {} - {}]", registryIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME, channelInfoId, responseId);
+                        esSchema.synch(channelInfo.getScopeId(), channelInfo.getFirstMessageOn().getTime());
+                        repository.upsert(channelInfoId, channelInfo);
                     }
                     // Update cache if channel update is completed successfully
                     DatastoreCacheManager.getInstance().getChannelsCache().put(channelInfoId, true);
@@ -139,11 +137,9 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
             return;
         }
 
-        String indexName = SchemaUtil.getChannelIndexName(scopeId);
         ChannelInfo channelInfo = find(scopeId, id);
         if (channelInfo != null) {
-            mediator.onBeforeChannelInfoDelete(channelInfo);
-            repository.delete(indexName, id.toString());
+            repository.delete(scopeId, id.toString());
         }
     }
 
@@ -192,9 +188,7 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
             return new ChannelInfoListResultImpl();
         }
 
-        String indexName = SchemaUtil.getChannelIndexName(query.getScopeId());
-
-        final ResultList<ChannelInfo> queried = repository.query(indexName, query);
+        final ResultList<ChannelInfo> queried = repository.query(query);
         ChannelInfoListResult result = new ChannelInfoListResultImpl(queried);
         setLimitExceed(query, queried.getTotalHitsExceedsCount(), result);
         return result;
@@ -219,8 +213,7 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
             return 0;
         }
 
-        String indexName = SchemaUtil.getChannelIndexName(query.getScopeId());
-        return repository.count(indexName, query);
+        return repository.count(query);
     }
 
     /**
@@ -243,13 +236,6 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
             LOG.debug("Storage not enabled for account {}, skipping delete", query.getScopeId());
             return;
         }
-
-        String indexName = SchemaUtil.getChannelIndexName(query.getScopeId());
-        ChannelInfoListResult channels = query(query);
-
-        for (ChannelInfo channelInfo : channels.getItems()) {
-            mediator.onBeforeChannelInfoDelete(channelInfo);
-        }
-        repository.delete(indexName, query);
+        repository.delete(query);
     }
 }

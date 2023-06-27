@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
@@ -21,7 +20,7 @@ import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateResponse;
 import java.util.List;
 
 public interface MetricInfoRepository extends DatastoreRepository<MetricInfo, MetricInfoQuery> {
-    String upsert(String indexName, MetricInfo metricInfo) throws ClientException;
+    String upsert(String metricInfoId, MetricInfo metricInfo) throws ClientException;
 
-    BulkUpdateResponse upsert(List<Pair<String, MetricInfo>> metricInfos) throws ClientException;
+    BulkUpdateResponse upsert(List<MetricInfo> metricInfos) throws ClientException;
 }

@@ -27,7 +27,6 @@ import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
-import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
@@ -227,9 +226,8 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
         andPredicate.getPredicates().add(clientIdPredicate);
         andPredicate.getPredicates().add(metricPredicate);
         messageQuery.setPredicate(andPredicate);
-        String indexName = SchemaUtil.getDataIndexName(messageQuery.getScopeId());
 
-        ResultList<DatastoreMessage> messageList = messageRepository.query(indexName, messageQuery);
+        ResultList<DatastoreMessage> messageList = messageRepository.query(messageQuery);
 
         StorableId lastPublishedMessageId = null;
         Date lastPublishedMessageTimestamp = null;

@@ -12,12 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
+import org.eclipse.kapua.service.storable.exception.MappingException;
 
 import javax.inject.Inject;
 
@@ -26,12 +30,27 @@ public class ClientInfoRepositoryImpl extends ElasticsearchRepository<ClientInfo
     @Inject
     protected ClientInfoRepositoryImpl(
             ElasticsearchClientProvider elasticsearchClientProviderInstance) {
-        super(elasticsearchClientProviderInstance, ClientInfoSchema.CLIENT_TYPE_NAME, ClientInfo.class);
+        super(elasticsearchClientProviderInstance,
+                ClientInfoSchema.CLIENT_TYPE_NAME,
+                ClientInfo.class);
     }
 
     @Override
-    public String upsert(String indexName, ClientInfo clientInfo) throws ClientException {
-        UpdateRequest request = new UpdateRequest(clientInfo.getId().toString(), getDescriptor(indexName), clientInfo);
-        return elasticsearchClientProviderInstance.getElasticsearchClient().upsert(request).getId();
+    protected String indexResolver(KapuaId scopeId) {
+        return DatastoreUtils.getClientIndexName(scopeId);
+    }
+
+    @Override
+    public String upsert(ClientInfo clientInfo) throws ClientException {
+        final String clientIndexName = DatastoreUtils.getClientIndexName(clientInfo.getScopeId());
+        UpdateRequest request = new UpdateRequest(clientInfo.getId().toString(), getDescriptor(clientIndexName), clientInfo);
+        final String responseId = elasticsearchClientProviderInstance.getElasticsearchClient().upsert(request).getId();
+        logger.debug("Upsert on asset successfully executed [{}.{}, {} - {}]", clientIndexName, ClientInfoSchema.CLIENT_TYPE_NAME, responseId, responseId);
+        return responseId;
+    }
+
+    @Override
+    JsonNode getIndexSchema() throws MappingException {
+        return ClientInfoSchema.getClientTypeSchema();
     }
 }

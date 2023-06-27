@@ -16,7 +16,6 @@ package org.eclipse.kapua.service.datastore.internal.mediator;
 import com.google.common.hash.Hashing;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
@@ -52,7 +51,7 @@ public class DatastoreUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(DatastoreUtils.class);
 
-    private enum IndexType { CHANNEL, CLIENT, METRIC }
+    private enum IndexType {CHANNEL, CLIENT, METRIC}
 
     private DatastoreUtils() {
     }
@@ -267,7 +266,7 @@ public class DatastoreUtils {
      * @param timestamp
      * @return
      */
-    public static String getDataIndexName(KapuaId scopeId, long timestamp, String indexingWindowOption) throws KapuaException {
+    public static String getDataIndexName(KapuaId scopeId, long timestamp, String indexingWindowOption) {
         final StringBuilder sb = new StringBuilder();
         final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEX_PREFIX);
         if (StringUtils.isNotEmpty(prefix)) {

@@ -17,5 +17,5 @@ import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 
 public interface ClientInfoRepository extends DatastoreRepository<ClientInfo, ClientInfoQuery> {
-    String upsert(String indexName, ClientInfo clientInfo) throws ClientException;
+    String upsert(ClientInfo clientInfo) throws ClientException;
 }

@@ -12,7 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import org.apache.commons.lang3.tuple.Pair;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
@@ -22,6 +24,7 @@ import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateResponse;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
+import org.eclipse.kapua.service.storable.exception.MappingException;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -31,26 +34,41 @@ public class MetricInfoRepositoryImpl extends ElasticsearchRepository<MetricInfo
     @Inject
     protected MetricInfoRepositoryImpl(
             ElasticsearchClientProvider elasticsearchClientProviderInstance) {
-        super(elasticsearchClientProviderInstance, MetricInfoSchema.METRIC_TYPE_NAME, MetricInfo.class);
+        super(elasticsearchClientProviderInstance,
+                MetricInfoSchema.METRIC_TYPE_NAME,
+                MetricInfo.class);
     }
 
     @Override
-    public String upsert(String indexName, MetricInfo metricInfo) throws ClientException {
-        UpdateRequest request = new UpdateRequest(metricInfo.getId().toString(), getDescriptor(indexName), metricInfo);
-        return elasticsearchClientProviderInstance.getElasticsearchClient().upsert(request).getId();
+    protected String indexResolver(KapuaId scopeId) {
+        return DatastoreUtils.getMetricIndexName(scopeId);
     }
 
     @Override
-    public BulkUpdateResponse upsert(List<Pair<String, MetricInfo>> metricInfos) throws ClientException {
+    public String upsert(String metricInfoId, MetricInfo metricInfo) throws ClientException {
+        UpdateRequest request = new UpdateRequest(metricInfo.getId().toString(), getDescriptor(indexResolver(metricInfo.getScopeId())), metricInfo);
+        final String responseId = elasticsearchClientProviderInstance.getElasticsearchClient().upsert(request).getId();
+        logger.debug("Upsert on metric successfully executed [{}.{}, {} - {}]", DatastoreUtils.getMetricIndexName(metricInfo.getScopeId()), MetricInfoSchema.METRIC_TYPE_NAME, metricInfoId, responseId);
+        return responseId;
+    }
+
+    @Override
+    public BulkUpdateResponse upsert(List<MetricInfo> metricInfos) throws ClientException {
         final BulkUpdateRequest bulkUpdateRequest = new BulkUpdateRequest();
-        metricInfos.stream().map(p -> {
+        metricInfos.stream()
+                .map(metricInfo -> {
                     return new UpdateRequest(
-                            p.getRight().getId().toString(),
-                            new TypeDescriptor(p.getLeft(),
+                            metricInfo.getId().toString(),
+                            new TypeDescriptor(indexResolver(metricInfo.getScopeId()),
                                     MetricInfoSchema.METRIC_TYPE_NAME),
-                            p.getRight());
+                            metricInfo);
                 })
                 .forEach(bulkUpdateRequest::add);
         return elasticsearchClientProviderInstance.getElasticsearchClient().upsert(bulkUpdateRequest);
+    }
+
+    @Override
+    JsonNode getIndexSchema() throws MappingException {
+        return MetricInfoSchema.getMetricTypeSchema();
     }
 }

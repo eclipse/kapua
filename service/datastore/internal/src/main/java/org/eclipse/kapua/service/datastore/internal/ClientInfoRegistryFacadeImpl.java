@@ -16,13 +16,11 @@ import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
-import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoRegistryMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.model.ClientInfoListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
-import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
-import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
+import org.eclipse.kapua.service.datastore.internal.schema.Schema;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
@@ -49,7 +47,7 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
 
     private final StorableIdFactory storableIdFactory;
     private final StorablePredicateFactory storablePredicateFactory;
-    private final ClientInfoRegistryMediator mediator;
+    private final Schema esSchema;
     private final ClientInfoRepository repository;
     private final Object metadataUpdateSync = new Object();
 
@@ -60,7 +58,6 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
      * Constructs the client info registry facade
      *
      * @param configProvider
-     * @param mediator
      * @since 1.0.0
      */
     @Inject
@@ -68,12 +65,12 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             ConfigurationProvider configProvider,
             StorableIdFactory storableIdFactory,
             StorablePredicateFactory storablePredicateFactory,
-            ClientInfoRegistryMediator mediator,
+            Schema esSchema,
             ClientInfoRepository clientInfoRepository) {
         super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
-        this.mediator = mediator;
+        this.esSchema = esSchema;
         this.repository = clientInfoRepository;
     }
 
@@ -108,10 +105,8 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
                     // fix #REPLACE_ISSUE_NUMBER
                     ClientInfo storedField = find(clientInfo.getScopeId(), storableId);
                     if (storedField == null) {
-                        Metadata metadata = mediator.getMetadata(clientInfo.getScopeId(), clientInfo.getFirstMessageOn().getTime());
-                        String kapuaIndexName = metadata.getClientRegistryIndexName();
-                        final String responseId = repository.upsert(kapuaIndexName, clientInfo);
-                        LOG.debug("Upsert on asset successfully executed [{}.{}, {} - {}]", kapuaIndexName, ClientInfoSchema.CLIENT_TYPE_NAME, responseId, responseId);
+                        esSchema.synch(clientInfo.getScopeId(), clientInfo.getFirstMessageOn().getTime());
+                        repository.upsert(clientInfo);
                     }
                     // Update cache if client update is completed successfully
                     DatastoreCacheManager.getInstance().getClientsCache().put(clientInfo.getClientId(), true);
@@ -142,8 +137,7 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             return;
         }
 
-        String indexName = SchemaUtil.getClientIndexName(scopeId);
-        repository.delete(indexName, id.toString());
+        repository.delete(scopeId, id.toString());
     }
 
     /**
@@ -191,8 +185,7 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             return new ClientInfoListResultImpl();
         }
 
-        String indexName = SchemaUtil.getClientIndexName(query.getScopeId());
-        final ResultList<ClientInfo> queried = repository.query(indexName, query);
+        final ResultList<ClientInfo> queried = repository.query(query);
         ClientInfoListResultImpl result = new ClientInfoListResultImpl(queried);
         setLimitExceed(query, queried.getTotalHitsExceedsCount(), result);
         return result;
@@ -217,8 +210,7 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             return 0;
         }
 
-        String dataIndexName = SchemaUtil.getClientIndexName(query.getScopeId());
-        return repository.count(dataIndexName, query);
+        return repository.count(query);
     }
 
     /**
@@ -241,7 +233,6 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             return;
         }
 
-        String indexName = SchemaUtil.getClientIndexName(query.getScopeId());
-        repository.delete(indexName, query);
+        repository.delete(query);
     }
 }

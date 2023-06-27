@@ -12,18 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
-import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoRegistryMediator;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
-import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
 import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
-import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
+import org.eclipse.kapua.service.datastore.internal.schema.Schema;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
@@ -39,6 +36,7 @@ import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicat
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +51,7 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
 
     private final StorableIdFactory storableIdFactory;
     private final StorablePredicateFactory storablePredicateFactory;
-    private final MetricInfoRegistryMediator mediator;
+    private final Schema esSchema;
     private final MetricInfoRepository repository;
 
     private static final String QUERY = "query";
@@ -64,19 +62,19 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
      * Constructs the metric info registry facade
      *
      * @param configProvider
-     * @param mediator
      * @param metricInfoRepository
      * @since 1.0.0
      */
+    @Inject
     public MetricInfoRegistryFacadeImpl(ConfigurationProvider configProvider,
                                         StorableIdFactory storableIdFactory,
                                         StorablePredicateFactory storablePredicateFactory,
-                                        MetricInfoRegistryMediator mediator,
+                                        Schema esSchema,
                                         MetricInfoRepository metricInfoRepository) {
         super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
-        this.mediator = mediator;
+        this.esSchema = esSchema;
         this.repository = metricInfoRepository;
     }
 
@@ -104,10 +102,8 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             // fix #REPLACE_ISSUE_NUMBER
             MetricInfo storedField = find(metricInfo.getScopeId(), storableId);
             if (storedField == null) {
-                Metadata metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
-                String kapuaIndexName = metadata.getMetricRegistryIndexName();
-                final String responseId = repository.upsert(kapuaIndexName, metricInfo);
-                LOG.debug("Upsert on metric successfully executed [{}.{}, {} - {}]", kapuaIndexName, MetricInfoSchema.METRIC_TYPE_NAME, metricInfoId, responseId);
+                esSchema.synch(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
+                repository.upsert(metricInfoId, metricInfo);
             }
             // Update cache if metric update is completed successfully
             DatastoreCacheManager.getInstance().getMetricsCache().put(metricInfoId, true);
@@ -133,7 +129,7 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
         ArgumentValidator.notNull(metricInfos, "metricInfos");
 
         // Create a bulk request
-        final List<Pair<String, MetricInfo>> toUpsert = new ArrayList<>();
+        final List<MetricInfo> toUpsert = new ArrayList<>();
         for (MetricInfo metricInfo : metricInfos) {
             String metricInfoId = MetricInfoField.getOrDeriveId(metricInfo.getId(), metricInfo);
             // fix #REPLACE_ISSUE_NUMBER
@@ -144,8 +140,8 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
                     DatastoreCacheManager.getInstance().getMetricsCache().put(metricInfoId, true);
                     continue;
                 }
-                Metadata metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
-                toUpsert.add(Pair.of(metadata.getMetricRegistryIndexName(), metricInfo));
+                esSchema.synch(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
+                toUpsert.add(metricInfo);
             }
         }
 
@@ -203,8 +199,7 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             return;
         }
 
-        String indexName = SchemaUtil.getMetricIndexName(scopeId);
-        repository.delete(indexName, id.toString());
+        repository.delete(scopeId, id.toString());
     }
 
     /**
@@ -252,8 +247,7 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             return new MetricInfoListResultImpl();
         }
 
-        String indexName = SchemaUtil.getMetricIndexName(query.getScopeId());
-        final ResultList<MetricInfo> queried = repository.query(indexName, query);
+        final ResultList<MetricInfo> queried = repository.query(query);
         MetricInfoListResult result = new MetricInfoListResultImpl(queried);
         setLimitExceed(query, queried.getTotalHitsExceedsCount(), result);
         return result;
@@ -278,8 +272,7 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             return 0;
         }
 
-        String indexName = SchemaUtil.getMetricIndexName(query.getScopeId());
-        return repository.count(indexName, query);
+        return repository.count(query);
     }
 
     /**
@@ -302,7 +295,6 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             return;
         }
 
-        String indexName = SchemaUtil.getMetricIndexName(query.getScopeId());
-        repository.delete(indexName, query);
+        repository.delete(query);
     }
 }

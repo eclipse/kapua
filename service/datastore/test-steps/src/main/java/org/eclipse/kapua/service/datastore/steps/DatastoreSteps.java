@@ -445,11 +445,7 @@ public class DatastoreSteps extends TestBase {
         String indexName = "";
 
         primeException();
-        try {
-            indexName = DatastoreUtils.getDataIndexName(SYS_SCOPE_ID, instant.toEpochMilli(), window);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        indexName = DatastoreUtils.getDataIndexName(SYS_SCOPE_ID, instant.toEpochMilli(), window);
 
         Assert.assertEquals(name, indexName);
     }

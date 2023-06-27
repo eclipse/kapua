@@ -28,7 +28,6 @@ import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
-import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
@@ -232,8 +231,7 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
         andPredicate.getPredicates().add(clientIdPredicate);
         messageQuery.setPredicate(andPredicate);
 
-        final String indexName = SchemaUtil.getDataIndexName(messageQuery.getScopeId());
-        ResultList<DatastoreMessage> messageList = messageRepository.query(indexName, messageQuery);
+        ResultList<DatastoreMessage> messageList = messageRepository.query(messageQuery);
         final List<DatastoreMessage> messages = Optional.ofNullable(messageList.getResult()).orElse(new ArrayList<>());
 
         StorableId lastPublishedMessageId = null;

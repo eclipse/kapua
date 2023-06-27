@@ -12,17 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
+import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.Storable;
 import org.eclipse.kapua.service.storable.model.query.StorableQuery;
 
 public interface DatastoreRepository<T extends Storable, Q extends StorableQuery> {
-    ResultList<T> query(String dataIndexName, Q query) throws ClientException;
+    ResultList<T> query(Q query) throws ClientException;
 
-    long count(String dataIndexName, Q query) throws ClientException;
+    long count(Q query) throws ClientException;
 
-    void delete(String indexName, String id) throws ClientException;
+    void delete(KapuaId scopeId, String id) throws ClientException;
 
-    void delete(String indexName, Q query) throws ClientException;
+    void delete(Q query) throws ClientException;
+
+    void upsertIndex(KapuaId scopeId) throws ClientException, MappingException;
 }
