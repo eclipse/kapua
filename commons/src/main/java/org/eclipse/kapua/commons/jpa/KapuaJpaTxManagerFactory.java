@@ -23,6 +23,7 @@ public class KapuaJpaTxManagerFactory {
     }
 
     public TxManager create(String persistenceUnitName) {
-        return new TxManagerImpl(() -> new JpaTxContext(new KapuaEntityManagerFactory(persistenceUnitName)), maxInsertAttempts);
+        final KapuaEntityManagerFactory entityManagerFactory = new KapuaEntityManagerFactory(persistenceUnitName);
+        return new TxManagerImpl(() -> new JpaTxContext(entityManagerFactory), maxInsertAttempts);
     }
 }
