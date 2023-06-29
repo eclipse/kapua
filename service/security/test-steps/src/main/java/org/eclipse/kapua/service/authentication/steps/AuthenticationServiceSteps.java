@@ -26,12 +26,16 @@ import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.authentication.AuthenticationService;
+import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.shiro.AuthenticationServiceShiroImpl;
+import org.eclipse.kapua.service.authentication.shiro.UsernamePasswordCredentialsImpl;
 import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
 import org.eclipse.kapua.service.authentication.user.PasswordResetRequest;
 import org.eclipse.kapua.service.authentication.user.UserCredentialsFactory;
@@ -44,6 +48,8 @@ import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -55,6 +61,8 @@ import java.util.Map;
 
 @Singleton
 public class AuthenticationServiceSteps extends TestBase {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationServiceSteps.class);
 
     protected KapuaLocator locator;
 
@@ -72,6 +80,8 @@ public class AuthenticationServiceSteps extends TestBase {
     private AccessInfoFactory accessInfoFactory;
 
     private PermissionFactory permissionFactory;
+
+    private AuthenticationService authenticationService;
 
     @Inject
     public AuthenticationServiceSteps(StepData stepData) {
@@ -95,6 +105,24 @@ public class AuthenticationServiceSteps extends TestBase {
         accessInfoService = locator.getService(AccessInfoService.class);
         accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
         permissionFactory = locator.getFactory(PermissionFactory.class);
+        authenticationService = new AuthenticationServiceShiroImpl();
+    }
+
+    @When("I do a login loop of {int} iterations with user {string} and password {string}")
+    public void loopLogin(int loop, String username, String password) {
+        LoginCredentials credentials = new UsernamePasswordCredentialsImpl(username, password);
+        long startTime = System.currentTimeMillis();
+        for (int i=0; i<loop; i++) {
+            long startTimeLoop = System.currentTimeMillis();
+            try {
+                authenticationService.login(credentials);
+                authenticationService.logout();
+            } catch (KapuaException e) {
+                logger.warn("Login error: {}", e.getMessage());
+            }
+            logger.info("Login step executed in: {} [ms]", (System.currentTimeMillis()-startTimeLoop));
+        }
+        logger.info("All login executed in: {} [ms]", (System.currentTimeMillis()-startTime));
     }
 
     @When("I create default test-user")

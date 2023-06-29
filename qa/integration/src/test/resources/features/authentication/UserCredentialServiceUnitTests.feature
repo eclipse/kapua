@@ -21,6 +21,14 @@ Feature: User Credential
     Given Init Jaxb Context
     And Init Security Context
 
+  Scenario: test password caching performances
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I create default test-user
+    And I create a new PASSWORD credential for the default user with password "Welcome12345!"
+    And I logout
+    When I do a login loop of 100 iterations with user "test-user" and password "Welcome12345!"
+    Then No exception was thrown
+
   Scenario: Change the PASSWORD credential, providing a correct current password, with a new password meeting the standard requirements.
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create default test-user
