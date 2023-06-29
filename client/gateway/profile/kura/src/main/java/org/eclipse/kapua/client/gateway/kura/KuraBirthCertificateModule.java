@@ -12,6 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.kura;
 
+import org.eclipse.kapua.client.gateway.kura.internal.Metrics;
+import org.eclipse.kapua.client.gateway.kura.proto.KuraPayloadProto.KuraPayload;
+import org.eclipse.kapua.client.gateway.mqtt.MqttModuleContext;
+import org.eclipse.kapua.client.gateway.spi.Module;
+import org.eclipse.kapua.client.gateway.spi.ModuleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,14 +30,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
-
-import org.eclipse.kapua.client.gateway.kura.internal.Metrics;
-import org.eclipse.kapua.client.gateway.mqtt.MqttModuleContext;
-import org.eclipse.kapua.client.gateway.spi.Module;
-import org.eclipse.kapua.client.gateway.spi.ModuleContext;
-import org.eclipse.kapua.gateway.client.kura.payload.KuraPayloadProto.KuraPayload;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class KuraBirthCertificateModule implements Module {
 
