@@ -43,8 +43,19 @@ import java.security.SecureRandom;
 public class AuthenticationUtils {
 
     private static final String CIPHER_ALGORITHM = "AES";
+    //thread safe
+    //consider using ThreadLocalRandom for performance reason. But it's not immediate to understand which option is the best one.
+    private static SecureRandom random;
 
     private AuthenticationUtils() {
+    }
+
+    static {
+        try {
+            random = SecureRandom.getInstance("SHA1PRNG");
+        } catch (NoSuchAlgorithmException e) {
+            throw new KapuaRuntimeException(KapuaAuthenticationErrorCodes.CREDENTIAL_CRYPT_ERROR, e);
+        }
     }
 
     /**
@@ -77,60 +88,31 @@ public class AuthenticationUtils {
         return cryptedValue;
     }
 
-    private static String doSha(String plainValue) {
-        try {
-            //
-            // Retrieve Crypt Settings
-            KapuaCryptoSetting settings = KapuaCryptoSetting.getInstance();
-            int saltLength = settings.getInt(KapuaCryptoSettingKeys.CRYPTO_SHA_SALT_LENGTH);
-            String shaAlgorithm = settings.getString(KapuaCryptoSettingKeys.CRYPTO_SHA_ALGORITHM);
-
-            //
-            // Generate salt
-            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-            byte[] bSalt = new byte[saltLength];
-            random.nextBytes(bSalt);
-            String salt = Base64.encodeToString(bSalt);
-
-            //
-            // Hash value
-            String hashedValue;
-            switch (shaAlgorithm) {
-                case "SHA256":
-                    hashedValue = (new Sha256Hash(plainValue, salt)).toHex();
-                    break;
-                case "SHA512":
-                default:
-                    hashedValue = (new Sha512Hash(plainValue, salt)).toHex();
-                    break;
-            }
-
-            //
-            // Return value
-            return salt + ":" + hashedValue;
-        } catch (NoSuchAlgorithmException e) {
-            throw new KapuaRuntimeException(KapuaAuthenticationErrorCodes.CREDENTIAL_CRYPT_ERROR, e);
+    public static String doSha(String plainValue) {
+        KapuaCryptoSetting settings = KapuaCryptoSetting.getInstance();
+        int saltLength = settings.getInt(KapuaCryptoSettingKeys.CRYPTO_SHA_SALT_LENGTH);
+        String shaAlgorithm = settings.getString(KapuaCryptoSettingKeys.CRYPTO_SHA_ALGORITHM);
+        byte[] bSalt = new byte[saltLength];
+        random.nextBytes(bSalt);
+        String salt = Base64.encodeToString(bSalt);
+        String hashedValue;
+        switch (shaAlgorithm) {
+            case "SHA256":
+                hashedValue = (new Sha256Hash(plainValue, salt)).toHex();
+                break;
+            case "SHA512":
+            default:
+                hashedValue = (new Sha512Hash(plainValue, salt)).toHex();
+                break;
         }
+        return salt + ":" + hashedValue;
     }
 
     private static String doBCrypt(String plainValue) {
-        try {
-            //
-            // Retrieve Crypt Settings
-            KapuaCryptoSetting settings = KapuaCryptoSetting.getInstance();
-            int logRound = settings.getInt(KapuaCryptoSettingKeys.CRYPTO_BCRYPT_LOG_ROUNDS);
-
-            //
-            // Generate salt
-            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-            String salt = BCrypt.gensalt(logRound, random);
-
-            //
-            // Hash and return value
-            return BCrypt.hashpw(plainValue, salt);
-        } catch (NoSuchAlgorithmException e) {
-            throw new KapuaRuntimeException(KapuaAuthenticationErrorCodes.CREDENTIAL_CRYPT_ERROR, e, (Object[]) null);
-        }
+        KapuaCryptoSetting settings = KapuaCryptoSetting.getInstance();
+        int logRound = settings.getInt(KapuaCryptoSettingKeys.CRYPTO_BCRYPT_LOG_ROUNDS);
+        String salt = BCrypt.gensalt(logRound, random);
+        return BCrypt.hashpw(plainValue, salt);
     }
 
     /**

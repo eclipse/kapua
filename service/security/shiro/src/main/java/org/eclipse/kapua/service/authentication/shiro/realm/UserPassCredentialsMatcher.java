@@ -12,12 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.cache.Cache;
+import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
@@ -30,11 +33,17 @@ import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeService;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
+import org.eclipse.kapua.service.authentication.shiro.AuthenticationServiceShiroImpl;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.MfaRequiredException;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorServiceLocator;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.user.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import java.util.Base64;
 import java.util.Date;
 
 /**
@@ -44,11 +53,14 @@ import java.util.Date;
  */
 public class UserPassCredentialsMatcher implements CredentialsMatcher {
 
+    private final Logger logger = LoggerFactory.getLogger(AuthenticationServiceShiroImpl.class);
+
     private final KapuaLocator locator;
     private final MfaOptionService mfaOptionService;
     private final ScratchCodeService scratchCodeService;
     private final MfaAuthenticatorServiceLocator mfaAuthServiceLocator;
     private final MfaAuthenticator mfaAuthenticator;
+    private PasswordChecker passwordChecker;
 
     public UserPassCredentialsMatcher() {
         locator = KapuaLocator.getInstance();
@@ -56,6 +68,14 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
         scratchCodeService = locator.getService(ScratchCodeService.class);
         mfaAuthServiceLocator = MfaAuthenticatorServiceLocator.getInstance();
         mfaAuthenticator = mfaAuthServiceLocator.getMfaAuthenticator();
+        if (KapuaAuthenticationSetting.getInstance().getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_USERPASS_CACHE_ENABLE, true)) {
+            logger.info("Cache enabled. Initializing CachePasswordChecker...");
+            passwordChecker = new CachePasswordChecker();
+        }
+        else {
+            logger.info("Cache disabled. Initializing NoCachePasswordChecker...");
+            passwordChecker = new NoCachePasswordChecker();
+        }
     }
 
     @Override
@@ -80,7 +100,7 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
         boolean credentialMatch = false;
         if (tokenUsername.equals(infoUser.getName()) &&
                 CredentialType.PASSWORD.equals(infoCredential.getCredentialType()) &&
-                BCrypt.checkpw(tokenPassword, infoCredential.getCredentialKey())) {
+                passwordChecker.checkPassword(tokenPassword, infoCredential)) {
 
             if (!mfaAuthenticator.isEnabled()) {
                 credentialMatch = true;
@@ -176,6 +196,45 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
         }
 
         return credentialMatch;
+    }
+
+}
+
+interface PasswordChecker {
+
+    boolean checkPassword(String tokenPassword, Credential infoCredential);
+
+}
+
+class CachePasswordChecker implements PasswordChecker {
+
+    private static final Cache<String, String> CACHED_CREDENTIALS = new LocalCache<String, String>(
+            KapuaAuthenticationSetting.getInstance().getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_USERPASS_CACHE_CACHE_SIZE, 1000),
+            KapuaAuthenticationSetting.getInstance().getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_USERPASS_CACHE_CACHE_TTL, 60),
+            null);
+
+    public boolean checkPassword(String tokenPassword, Credential infoCredential) {
+        String hashedTokenPassword = Base64.getEncoder().encodeToString(DigestUtils.sha3_512(tokenPassword));
+        String cachedCredential = CACHED_CREDENTIALS.get(hashedTokenPassword);
+        if (cachedCredential!=null && cachedCredential.equals(infoCredential.getCredentialKey())) {
+            return true;
+        }
+        else if (BCrypt.checkpw(tokenPassword, infoCredential.getCredentialKey())) {
+            CACHED_CREDENTIALS.put(hashedTokenPassword, infoCredential.getCredentialKey());
+            return true;
+        }
+        else {
+            CACHED_CREDENTIALS.remove(tokenPassword);
+            return false;
+        }
+    }
+
+}
+
+class NoCachePasswordChecker implements PasswordChecker {
+
+    public boolean checkPassword(String tokenPassword, Credential infoCredential) {
+        return BCrypt.checkpw(tokenPassword, infoCredential.getCredentialKey());
     }
 
 }
