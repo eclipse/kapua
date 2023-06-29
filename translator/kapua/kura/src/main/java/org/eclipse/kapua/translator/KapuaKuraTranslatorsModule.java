@@ -16,8 +16,12 @@ package org.eclipse.kapua.translator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.translator.kapua.kura.TranslatorAppAssetKapuaKura;
 import org.eclipse.kapua.translator.kapua.kura.TranslatorAppBundleKapuaKura;
 import org.eclipse.kapua.translator.kapua.kura.TranslatorAppCommandKapuaKura;
@@ -42,6 +46,8 @@ import org.eclipse.kapua.translator.kura.kapua.TranslatorAppPackageKuraKapua;
 import org.eclipse.kapua.translator.kura.kapua.TranslatorAppResponseKuraKapua;
 import org.eclipse.kapua.translator.kura.kapua.TranslatorAppSnapshotKuraKapua;
 import org.eclipse.kapua.translator.kura.kapua.TranslatorDataKuraKapua;
+import org.eclipse.kapua.translator.kura.kapua.TranslatorKuraKapuaUtils;
+import org.eclipse.kapua.translator.kura.kapua.TranslatorKuraKapuaUtilsImpl;
 import org.eclipse.kapua.translator.kura.kapua.TranslatorLifeAppsKuraKapua;
 import org.eclipse.kapua.translator.kura.kapua.TranslatorLifeBirthKuraKapua;
 import org.eclipse.kapua.translator.kura.kapua.TranslatorLifeDisconnectKuraKapua;
@@ -116,5 +122,11 @@ public class KapuaKuraTranslatorsModule extends AbstractKapuaModule {
                 .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL));
 
+    }
+
+    @Provides
+    @Singleton
+    public TranslatorKuraKapuaUtils translatorKuraKapuaUtils(KapuaMessageFactory kapuaMessageFactory) {
+        return new TranslatorKuraKapuaUtilsImpl(kapuaMessageFactory, SystemSetting.getInstance().getMessageClassifier());
     }
 }

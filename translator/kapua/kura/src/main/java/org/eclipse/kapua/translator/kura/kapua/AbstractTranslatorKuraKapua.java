@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import com.google.inject.Inject;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.message.KapuaChannel;
@@ -29,6 +28,8 @@ import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
+
+import javax.inject.Inject;
 
 /**
  * {@link Translator} {@code abstract} implementation from {@link KuraResponseMessage} to {@link KapuaMessage}

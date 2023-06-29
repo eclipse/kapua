@@ -45,6 +45,8 @@ public class TranslatorLifeDisconnectKuraKapua extends Translator<KuraDisconnect
     private AccountService accountService;
     @Inject
     private DeviceRegistryService deviceRegistryService;
+    @Inject
+    private TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
 
     @Override
     public KapuaDisconnectMessage translate(KuraDisconnectMessage kuraDisconnectMessage) throws TranslateException {
@@ -68,7 +70,7 @@ public class TranslatorLifeDisconnectKuraKapua extends Translator<KuraDisconnect
             kapuaDisconnectMessage.setCapturedOn(kuraDisconnectMessage.getPayload().getTimestamp());
             kapuaDisconnectMessage.setSentOn(kuraDisconnectMessage.getPayload().getTimestamp());
             kapuaDisconnectMessage.setReceivedOn(kuraDisconnectMessage.getTimestamp());
-            kapuaDisconnectMessage.setPosition(TranslatorKuraKapuaUtils.translate(kuraDisconnectMessage.getPayload().getPosition()));
+            kapuaDisconnectMessage.setPosition(translatorKuraKapuaUtils.translate(kuraDisconnectMessage.getPayload().getPosition()));
 
             return kapuaDisconnectMessage;
         } catch (InvalidChannelException | InvalidPayloadException te) {

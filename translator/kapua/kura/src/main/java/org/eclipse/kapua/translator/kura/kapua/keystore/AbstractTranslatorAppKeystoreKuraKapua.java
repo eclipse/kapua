@@ -31,7 +31,6 @@ import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.kura.kapua.AbstractSimpleTranslatorResponseKuraKapua;
-import org.eclipse.kapua.translator.kura.kapua.TranslatorKuraKapuaUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +64,7 @@ public abstract class AbstractTranslatorAppKeystoreKuraKapua<M extends KeystoreR
     @Override
     protected KeystoreResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
         try {
-            TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, KeystoreMetrics.APP_ID, KeystoreMetrics.APP_VERSION);
+            translatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, KeystoreMetrics.APP_ID, KeystoreMetrics.APP_VERSION);
 
             return new KeystoreResponseChannel();
         } catch (Exception e) {

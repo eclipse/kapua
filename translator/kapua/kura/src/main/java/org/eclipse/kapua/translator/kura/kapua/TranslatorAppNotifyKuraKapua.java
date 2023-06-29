@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import com.google.inject.Inject;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.service.account.Account;
@@ -46,6 +45,7 @@ import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
 
+import javax.inject.Inject;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,6 +63,8 @@ public class TranslatorAppNotifyKuraKapua extends Translator<KuraNotifyMessage, 
     private DeviceRegistryService deviceRegistryService;
     @Inject
     private KapuaIdFactory kapuaIdFactory;
+    @Inject
+    private TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
 
     private static final Map<String, KapuaAppProperties> APP_NAME_DICTIONARY;
     private static final Map<String, KapuaAppProperties> APP_VERSION_DICTIONARY;
@@ -108,7 +110,7 @@ public class TranslatorAppNotifyKuraKapua extends Translator<KuraNotifyMessage, 
             kapuaNotifyMessage.setCapturedOn(kuraNotifyMessage.getPayload().getTimestamp());
             kapuaNotifyMessage.setSentOn(kuraNotifyMessage.getPayload().getTimestamp());
             kapuaNotifyMessage.setReceivedOn(kuraNotifyMessage.getTimestamp());
-            kapuaNotifyMessage.setPosition(TranslatorKuraKapuaUtils.translate(kuraNotifyMessage.getPayload().getPosition()));
+            kapuaNotifyMessage.setPosition(translatorKuraKapuaUtils.translate(kuraNotifyMessage.getPayload().getPosition()));
 
             return kapuaNotifyMessage;
         } catch (InvalidChannelException | InvalidPayloadException te) {

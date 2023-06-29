@@ -14,7 +14,6 @@
 package org.eclipse.kapua.translator.kapua.kura;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.message.KapuaChannel;
@@ -32,6 +31,8 @@ import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
+
+import javax.inject.Inject;
 
 /**
  * {@link Translator} abstract implementation from {@link KapuaMessage} to {@link KuraRequestMessage}

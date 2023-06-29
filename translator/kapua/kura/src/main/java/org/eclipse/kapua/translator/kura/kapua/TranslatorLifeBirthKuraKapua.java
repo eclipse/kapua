@@ -45,6 +45,8 @@ public class TranslatorLifeBirthKuraKapua extends Translator<KuraBirthMessage, K
     private AccountService accountService;
     @Inject
     private DeviceRegistryService deviceRegistryService;
+    @Inject
+    private TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
 
     @Override
     public KapuaBirthMessage translate(KuraBirthMessage kuraBirthMessage) throws TranslateException {
@@ -69,7 +71,7 @@ public class TranslatorLifeBirthKuraKapua extends Translator<KuraBirthMessage, K
             kapuaBirthMessage.setCapturedOn(kuraBirthMessage.getPayload().getTimestamp());
             kapuaBirthMessage.setSentOn(kuraBirthMessage.getPayload().getTimestamp());
             kapuaBirthMessage.setReceivedOn(kuraBirthMessage.getTimestamp());
-            kapuaBirthMessage.setPosition(TranslatorKuraKapuaUtils.translate(kuraBirthMessage.getPayload().getPosition()));
+            kapuaBirthMessage.setPosition(translatorKuraKapuaUtils.translate(kuraBirthMessage.getPayload().getPosition()));
 
             return kapuaBirthMessage;
         } catch (InvalidChannelException | InvalidPayloadException te) {

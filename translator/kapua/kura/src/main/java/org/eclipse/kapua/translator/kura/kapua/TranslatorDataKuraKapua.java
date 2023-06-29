@@ -45,6 +45,8 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
     private DeviceRegistryService deviceRegistryService;
     @Inject
     private KapuaDataMessageFactory kapuaDataMessageFactory;
+    @Inject
+    private TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
 
     @Override
     public KapuaDataMessage translate(KuraDataMessage kuraMessage) throws TranslateException {
@@ -71,7 +73,7 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
             kapuaDataMessage.setCapturedOn(kuraMessage.getPayload().getTimestamp());
             kapuaDataMessage.setSentOn(kuraMessage.getPayload().getTimestamp());
             kapuaDataMessage.setReceivedOn(kuraMessage.getTimestamp());
-            kapuaDataMessage.setPosition(TranslatorKuraKapuaUtils.translate(kuraMessage.getPayload().getPosition()));
+            kapuaDataMessage.setPosition(translatorKuraKapuaUtils.translate(kuraMessage.getPayload().getPosition()));
 
             // Return Kapua Message
             return kapuaDataMessage;

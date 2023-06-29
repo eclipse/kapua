@@ -39,7 +39,7 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
     @Override
     protected CommandResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
         try {
-            TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, CommandMetrics.APP_ID, CommandMetrics.APP_VERSION);
+            translatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, CommandMetrics.APP_ID, CommandMetrics.APP_VERSION);
 
             return new CommandResponseChannel();
         } catch (Exception e) {

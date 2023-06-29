@@ -72,31 +72,31 @@ public class TranslatorEventConfigurationKuraKapua extends Translator<KuraConfig
     private DeviceRegistryService deviceRegistryService;
     @Inject
     private DeviceConfigurationFactory deviceConfigurationFactory;
+    @Inject
+    private TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
 
-    private static final Map<String, KapuaAppProperties> APP_NAME_DICTIONARY;
-    private static final Map<String, KapuaAppProperties> APP_VERSION_DICTIONARY;
+    private final Map<String, KapuaAppProperties> appNameDictionary;
+    private final Map<String, KapuaAppProperties> appVersionDictionary;
 
-    static {
-        APP_NAME_DICTIONARY = new HashMap<>();
+    public TranslatorEventConfigurationKuraKapua() {
+        appNameDictionary = new HashMap<>();
+        appNameDictionary.put(AssetMetrics.APP_ID.getName(), DeviceAssetAppProperties.APP_NAME);
+        appNameDictionary.put(BundleMetrics.APP_ID.getName(), DeviceBundleAppProperties.APP_NAME);
+        appNameDictionary.put(CommandMetrics.APP_ID.getName(), CommandAppProperties.APP_NAME);
+        appNameDictionary.put(ConfigurationMetrics.APP_ID.getName(), DeviceConfigurationAppProperties.APP_NAME);
+        appNameDictionary.put(PackageMetrics.APP_ID.getName(), PackageAppProperties.APP_NAME);
 
-        APP_NAME_DICTIONARY.put(AssetMetrics.APP_ID.getName(), DeviceAssetAppProperties.APP_NAME);
-        APP_NAME_DICTIONARY.put(BundleMetrics.APP_ID.getName(), DeviceBundleAppProperties.APP_NAME);
-        APP_NAME_DICTIONARY.put(CommandMetrics.APP_ID.getName(), CommandAppProperties.APP_NAME);
-        APP_NAME_DICTIONARY.put(ConfigurationMetrics.APP_ID.getName(), DeviceConfigurationAppProperties.APP_NAME);
-        APP_NAME_DICTIONARY.put(PackageMetrics.APP_ID.getName(), PackageAppProperties.APP_NAME);
+        appVersionDictionary = new HashMap<>();
+        appVersionDictionary.put(AssetMetrics.APP_ID.getName(), DeviceAssetAppProperties.APP_VERSION);
+        appVersionDictionary.put(BundleMetrics.APP_ID.getName(), DeviceBundleAppProperties.APP_VERSION);
+        appVersionDictionary.put(CommandMetrics.APP_ID.getName(), CommandAppProperties.APP_VERSION);
+        appVersionDictionary.put(ConfigurationMetrics.APP_ID.getName(), DeviceConfigurationAppProperties.APP_VERSION);
+        appVersionDictionary.put(PackageMetrics.APP_ID.getName(), PackageAppProperties.APP_VERSION);
 
-        APP_VERSION_DICTIONARY = new HashMap<>();
-
-        APP_VERSION_DICTIONARY.put(AssetMetrics.APP_ID.getName(), DeviceAssetAppProperties.APP_VERSION);
-        APP_VERSION_DICTIONARY.put(BundleMetrics.APP_ID.getName(), DeviceBundleAppProperties.APP_VERSION);
-        APP_VERSION_DICTIONARY.put(CommandMetrics.APP_ID.getName(), CommandAppProperties.APP_VERSION);
-        APP_VERSION_DICTIONARY.put(ConfigurationMetrics.APP_ID.getName(), DeviceConfigurationAppProperties.APP_VERSION);
-        APP_VERSION_DICTIONARY.put(PackageMetrics.APP_ID.getName(), PackageAppProperties.APP_VERSION);
     }
 
     @Override
     public DeviceConfigurationEventMessage translate(KuraConfigurationEventMessage kuraNotifyMessage) throws TranslateException {
-
         try {
             DeviceConfigurationEventMessage deviceConfigurationEventMessage = new DeviceConfigurationEventMessageImpl();
             deviceConfigurationEventMessage.setChannel(translate(kuraNotifyMessage.getChannel()));
@@ -117,7 +117,7 @@ public class TranslatorEventConfigurationKuraKapua extends Translator<KuraConfig
             deviceConfigurationEventMessage.setCapturedOn(kuraNotifyMessage.getPayload().getTimestamp());
             deviceConfigurationEventMessage.setSentOn(kuraNotifyMessage.getPayload().getTimestamp());
             deviceConfigurationEventMessage.setReceivedOn(kuraNotifyMessage.getTimestamp());
-            deviceConfigurationEventMessage.setPosition(TranslatorKuraKapuaUtils.translate(kuraNotifyMessage.getPayload().getPosition()));
+            deviceConfigurationEventMessage.setPosition(translatorKuraKapuaUtils.translate(kuraNotifyMessage.getPayload().getPosition()));
 
             return deviceConfigurationEventMessage;
         } catch (InvalidChannelException | InvalidPayloadException te) {

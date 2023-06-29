@@ -38,6 +38,7 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.GroupQueryHelper;
+import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.authentication.UserPassDeviceConnectionCredentialAdapter;
@@ -45,6 +46,10 @@ import org.eclipse.kapua.service.device.authentication.api.DeviceConnectionCrede
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
+import org.eclipse.kapua.service.device.registry.KapuaDeviceRegistrySettingKeys;
+import org.eclipse.kapua.service.device.registry.KapuaDeviceRegistrySettings;
+import org.eclipse.kapua.service.device.registry.common.DeviceValidation;
+import org.eclipse.kapua.service.device.registry.common.DeviceValidationImpl;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionRepository;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
@@ -61,6 +66,9 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceImplJpaRepository;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCacheFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
+import org.eclipse.kapua.service.tag.internal.TagFactoryImpl;
+import org.eclipse.kapua.service.tag.internal.TagImplJpaRepository;
+import org.eclipse.kapua.service.tag.internal.TagServiceImpl;
 import org.eclipse.kapua.storage.TxManager;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -116,7 +124,7 @@ public class DeviceRegistryLocatorConfiguration {
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 final TxManager txManager = new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-device");
                 final EventStorer eventStorer = new EventStorerImpl(new EventStoreRecordImplJpaRepository(jpaRepoConfig));
-                bind(DeviceConnectionService.class).toInstance(new DeviceConnectionServiceImpl(
+                final DeviceConnectionService deviceConnectionService = new DeviceConnectionServiceImpl(
                         Mockito.mock(ServiceConfigurationManager.class),
                         mockedAuthorization,
                         permissionFactory,
@@ -124,22 +132,44 @@ public class DeviceRegistryLocatorConfiguration {
                         txManager,
                         new DeviceConnectionImplJpaRepository(jpaRepoConfig),
                         availableDeviceConnectionAdapters,
-                        eventStorer));
+                        eventStorer);
+                bind(DeviceConnectionService.class).toInstance(deviceConnectionService);
                 bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
 
                 bind(DeviceRepository.class).toInstance(new DeviceImplJpaRepository(jpaRepoConfig));
                 bind(DeviceConnectionRepository.class).toInstance(new DeviceConnectionImplJpaRepository(jpaRepoConfig));
                 bind(DeviceEventRepository.class).toInstance(new DeviceEventImplJpaRepository(jpaRepoConfig));
-                bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl(
+                final DeviceEventService deviceEventService = new DeviceEventServiceImpl(
                         mockedAuthorization,
                         permissionFactory,
                         txManager,
                         new DeviceImplJpaRepository(jpaRepoConfig),
                         new DeviceEventFactoryImpl(),
                         new DeviceEventImplJpaRepository(jpaRepoConfig)
-                ));
+                );
+                bind(DeviceEventService.class).toInstance(deviceEventService);
                 bind(DeviceEventFactory.class).toInstance(new DeviceEventFactoryImpl());
                 bind(KapuaMessageFactory.class).toInstance(new KapuaMessageFactoryImpl());
+
+                final DeviceValidation deviceValidation = new DeviceValidationImpl(KapuaDeviceRegistrySettings.getInstance().getInt(KapuaDeviceRegistrySettingKeys.DEVICE_LIFECYCLE_BIRTH_VAR_FIELDS_LENGTH_MAX),
+                        KapuaDeviceRegistrySettings.getInstance().getInt(KapuaDeviceRegistrySettingKeys.DEVICE_LIFECYCLE_BIRTH_EXTENDED_PROPERTIES_LENGTH_MAX),
+                        mockedAuthorization,
+                        permissionFactory,
+                        Mockito.mock(GroupService.class),
+                        deviceConnectionService,
+                        deviceEventService,
+                        new DeviceImplJpaRepository(jpaRepoConfig),
+                        new DeviceFactoryImpl(),
+                        new TagServiceImpl(
+                                permissionFactory,
+                                mockedAuthorization,
+                                Mockito.mock(ServiceConfigurationManager.class),
+                                new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-tag"),
+                                new TagImplJpaRepository(jpaRepoConfig),
+                                new TagFactoryImpl())
+                );
+
+                bind(DeviceValidation.class).toInstance(deviceValidation);
                 bind(DeviceRegistryService.class).toInstance(new DeviceRegistryServiceImpl(
                         Mockito.mock(ServiceConfigurationManager.class),
                         mockedAuthorization,
@@ -148,7 +178,8 @@ public class DeviceRegistryLocatorConfiguration {
                         new DeviceImplJpaRepository(jpaRepoConfig),
                         new DeviceFactoryImpl(),
                         Mockito.mock(GroupQueryHelper.class),
-                        eventStorer)
+                        eventStorer,
+                        deviceValidation)
                 );
             }
         };

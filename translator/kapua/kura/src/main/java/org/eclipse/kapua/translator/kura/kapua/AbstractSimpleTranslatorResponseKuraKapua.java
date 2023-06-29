@@ -14,7 +14,6 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
@@ -35,6 +34,7 @@ import org.eclipse.kapua.translator.exception.InvalidBodyException;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.io.UnsupportedEncodingException;
 

@@ -32,6 +32,8 @@ import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
 
+import javax.inject.Inject;
+
 /**
  * {@link Translator} implementation from {@link KuraAppsMessage} to {@link KapuaAppsMessage}
  *
@@ -39,8 +41,12 @@ import org.eclipse.kapua.translator.exception.TranslateException;
  */
 public class TranslatorLifeAppsKuraKapua extends Translator<KuraAppsMessage, KapuaAppsMessage> {
 
+    @Inject
     private AccountService accountService;
+    @Inject
     private DeviceRegistryService deviceRegistryService;
+    @Inject
+    private TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
 
     @Override
     public KapuaAppsMessage translate(KuraAppsMessage kuraAppsMessage) throws TranslateException {
@@ -64,7 +70,7 @@ public class TranslatorLifeAppsKuraKapua extends Translator<KuraAppsMessage, Kap
             kapuaAppsMessage.setCapturedOn(kuraAppsMessage.getPayload().getTimestamp());
             kapuaAppsMessage.setSentOn(kuraAppsMessage.getPayload().getTimestamp());
             kapuaAppsMessage.setReceivedOn(kuraAppsMessage.getTimestamp());
-            kapuaAppsMessage.setPosition(TranslatorKuraKapuaUtils.translate(kuraAppsMessage.getPayload().getPosition()));
+            kapuaAppsMessage.setPosition(translatorKuraKapuaUtils.translate(kuraAppsMessage.getPayload().getPosition()));
 
             return kapuaAppsMessage;
         } catch (InvalidChannelException | InvalidPayloadException te) {

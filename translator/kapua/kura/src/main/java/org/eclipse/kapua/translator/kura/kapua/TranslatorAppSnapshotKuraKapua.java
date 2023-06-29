@@ -48,7 +48,7 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
     @Override
     protected SnapshotResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
         try {
-            TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, SnapshotMetrics.APP_ID, SnapshotMetrics.APP_VERSION);
+            translatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, SnapshotMetrics.APP_ID, SnapshotMetrics.APP_VERSION);
 
             return new SnapshotResponseChannel();
         } catch (Exception e) {

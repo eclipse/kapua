@@ -27,6 +27,8 @@ import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
 
+import javax.inject.Inject;
+
 /**
  * {@link org.eclipse.kapua.translator.Translator} {@code abstract} implementation from {@link KuraResponseMessage} to {@link KapuaResponseMessage}
  *
@@ -35,10 +37,11 @@ import org.eclipse.kapua.translator.exception.TranslateException;
 public abstract class AbstractTranslatorResponseKuraKapua<TO_C extends KapuaResponseChannel, TO_P extends KapuaResponsePayload, TO_M extends KapuaResponseMessage<TO_C, TO_P>> extends AbstractTranslatorKuraKapua<TO_C, TO_P, TO_M> {
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
+    @Inject
+    protected TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
 
     @Override
     protected TO_M translateMessage(KuraResponseMessage kuraMessage, Account account) throws TranslateException {
-
         try {
             // Translate channel
             TO_C bundleResponseChannel = translateChannel(kuraMessage.getChannel());
@@ -54,7 +57,7 @@ public abstract class AbstractTranslatorResponseKuraKapua<TO_C extends KapuaResp
             kapuaMessage.setCapturedOn(kuraMessage.getPayload().getTimestamp());
             kapuaMessage.setSentOn(kuraMessage.getPayload().getTimestamp());
             kapuaMessage.setReceivedOn(kuraMessage.getTimestamp());
-            kapuaMessage.setResponseCode(TranslatorKuraKapuaUtils.translate(kuraMessage.getPayload().getResponseCode()));
+            kapuaMessage.setResponseCode(translatorKuraKapuaUtils.translate(kuraMessage.getPayload().getResponseCode()));
 
             // Return Kapua Message
             return kapuaMessage;

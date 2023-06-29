@@ -12,10 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
@@ -41,6 +37,10 @@ import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 /**
  * {@link DeviceRegistryService} implementation.
  *
@@ -56,6 +56,7 @@ public class DeviceRegistryServiceImpl
     private final DeviceFactory entityFactory;
     private final GroupQueryHelper groupQueryHelper;
     private final EventStorer eventStorer;
+    private final DeviceValidation deviceValidation;
 
     @Inject
     public DeviceRegistryServiceImpl(
@@ -66,18 +67,19 @@ public class DeviceRegistryServiceImpl
             DeviceRepository deviceRepository,
             DeviceFactory entityFactory,
             GroupQueryHelper groupQueryHelper,
-            EventStorer eventStorer) {
+            EventStorer eventStorer, DeviceValidation deviceValidation) {
         super(txManager, serviceConfigurationManager, Domains.DEVICE, authorizationService, permissionFactory);
         this.deviceRepository = deviceRepository;
         this.entityFactory = entityFactory;
         this.groupQueryHelper = groupQueryHelper;
         this.eventStorer = eventStorer;
+        this.deviceValidation = deviceValidation;
     }
 
     @Override
     public Device create(DeviceCreator deviceCreator)
             throws KapuaException {
-        DeviceValidation.validateCreatePreconditions(deviceCreator);
+        deviceValidation.validateCreatePreconditions(deviceCreator);
 
         return txManager.execute(tx -> {
                     // Check entity limit
@@ -130,24 +132,28 @@ public class DeviceRegistryServiceImpl
     @Override
     public Device update(Device device)
             throws KapuaException {
-        DeviceValidation.validateUpdatePreconditions(device);
         // Do update
-        return txManager.execute(tx -> deviceRepository.update(tx, device),
+        return txManager.execute(tx -> {
+                    deviceValidation.validateUpdatePreconditions(tx, device);
+                    return deviceRepository.update(tx, device);
+                },
                 eventStorer::accept);
     }
 
     @Override
     public Device find(KapuaId scopeId, KapuaId entityId)
             throws KapuaException {
-        DeviceValidation.validateFindPreconditions(scopeId, entityId);
         // Do find
-        return txManager.execute(tx -> deviceRepository.find(tx, scopeId, entityId))
+        return txManager.execute(tx -> {
+                    deviceValidation.validateFindPreconditions(tx, scopeId, entityId);
+                    return deviceRepository.find(tx, scopeId, entityId);
+                })
                 .orElse(null);
     }
 
     @Override
     public Device findByClientId(KapuaId scopeId, String clientId) throws KapuaException {
-        DeviceValidation.validateFindByClientIdPreconditions(scopeId, clientId);
+        deviceValidation.validateFindByClientIdPreconditions(scopeId, clientId);
         // Check cache and/or do find
         return txManager.execute(tx -> deviceRepository.findByClientId(tx, scopeId, clientId))
                 .orElse(null);
@@ -156,7 +162,7 @@ public class DeviceRegistryServiceImpl
     @Override
     public DeviceListResult query(KapuaQuery query)
             throws KapuaException {
-        DeviceValidation.validateQueryPreconditions(query);
+        deviceValidation.validateQueryPreconditions(query);
 
         // Do query
         return txManager.execute(tx -> {
@@ -167,7 +173,7 @@ public class DeviceRegistryServiceImpl
 
     @Override
     public long count(KapuaQuery query) throws KapuaException {
-        DeviceValidation.validateCountPreconditions(query);
+        deviceValidation.validateCountPreconditions(query);
 
         // Do count
         return txManager.execute(tx -> {
@@ -178,11 +184,13 @@ public class DeviceRegistryServiceImpl
 
     @Override
     public void delete(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
-        DeviceValidation.validateDeletePreconditions(scopeId, deviceId);
 
         // Do delete
         txManager.execute(
-                tx -> deviceRepository.delete(tx, scopeId, deviceId),
+                tx -> {
+                    deviceValidation.validateDeletePreconditions(tx, scopeId, deviceId);
+                    return deviceRepository.delete(tx, scopeId, deviceId);
+                },
                 eventStorer::accept);
     }
 

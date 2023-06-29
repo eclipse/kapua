@@ -64,7 +64,7 @@ public class TranslatorSteps extends TestBase {
     @Inject
     public TranslatorSteps(StepData stepData) {
         super(stepData);
-        this.translatorHub = KapuaLocator.getInstance().getComponent(TranslatorHub.class);
+        translatorHub = KapuaLocator.getInstance().getComponent(TranslatorHub.class);
         exampleTranslator = new ExampleTranslator();
         translatorDataMqttKura = new TranslatorDataMqttKura();
         translatorResponseMqttKura = new TranslatorResponseMqttKura();

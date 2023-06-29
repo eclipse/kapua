@@ -110,7 +110,7 @@ public class ElasticsearchMessageRepository extends ElasticsearchRepository<Data
     public void deleteAllIndexes() throws ClientException {
         elasticsearchClientProviderInstance.getElasticsearchClient().deleteAllIndexes();
     }
-    
+
     @Override
     public void deleteIndexes(String indexExp) throws ClientException {
         elasticsearchClientProviderInstance.getElasticsearchClient().deleteIndexes(indexExp);
