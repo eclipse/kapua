@@ -30,6 +30,7 @@ import org.eclipse.kapua.service.device.management.asset.internal.DeviceAssetApp
 import org.eclipse.kapua.service.device.management.bundle.internal.DeviceBundleAppProperties;
 import org.eclipse.kapua.service.device.management.command.internal.CommandAppProperties;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
+import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationAppProperties;
 import org.eclipse.kapua.service.device.management.configuration.message.event.DeviceConfigurationEventMessage;
@@ -154,7 +155,9 @@ public class TranslatorEventConfigurationKuraKapua extends Translator<KuraConfig
 
                     deviceComponentConfigurations.add(translate(kuraDeviceComponentConfiguration));
                 }
-                configurationEventPayload.setDeviceComponentConfigurations(deviceComponentConfigurations);
+                final DeviceConfiguration deviceConfiguration = deviceConfigurationFactory.newConfigurationInstance();
+                deviceConfiguration.setComponentConfigurations(deviceComponentConfigurations);
+                configurationEventPayload.setDeviceComponentConfigurations(deviceConfiguration);
             }
 
             return configurationEventPayload;

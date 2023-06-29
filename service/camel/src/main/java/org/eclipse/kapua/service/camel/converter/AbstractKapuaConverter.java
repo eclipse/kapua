@@ -17,7 +17,10 @@ import org.apache.camel.Exchange;
 import org.apache.camel.component.jms.JmsMessage;
 import org.apache.camel.support.DefaultMessage;
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.camel.application.MetricsCamel;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
@@ -26,11 +29,15 @@ import org.eclipse.kapua.service.client.message.MessageConstants;
 import org.eclipse.kapua.service.client.message.MessageType;
 import org.eclipse.kapua.service.client.protocol.ProtocolDescriptor;
 import org.eclipse.kapua.service.client.protocol.ProtocolDescriptorProviders;
+import org.eclipse.kapua.service.device.call.message.DeviceMessage;
+import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.translator.TranslatorHub;
+import org.eclipse.kapua.transport.message.jms.JmsPayload;
+import org.eclipse.kapua.transport.message.jms.JmsTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jms.JMSException;
-
 import java.util.Base64;
 import java.util.Date;
 
@@ -42,6 +49,8 @@ import java.util.Date;
 public abstract class AbstractKapuaConverter {
 
     public static final Logger logger = LoggerFactory.getLogger(AbstractKapuaConverter.class);
+
+    private final TranslatorHub translatorHub = KapuaLocator.getInstance().getComponent(TranslatorHub.class);
 
     /**
      * Convert incoming message to a Kapua message (depending on messageType parameter)
@@ -67,7 +76,7 @@ public abstract class AbstractKapuaConverter {
                     if (connectorDescriptor == null) {
                         throw new IllegalStateException(String.format("Unable to find connector descriptor for connector '%s'", connectorName));
                     }
-                    return JmsUtil.convertToCamelKapuaMessage(connectorDescriptor, messageType, messageContent, JmsUtil.getTopic(message), queuedOn, connectionId, clientId);
+                    return convertToCamelKapuaMessage(connectorDescriptor, messageType, messageContent, JmsUtil.getTopic(message), queuedOn, connectionId, clientId);
                 } catch (JMSException e) {
                     MetricsCamel.getInstance().getConverterErrorMessage().inc();
                     logger.error("Exception converting message {}", e.getMessage(), e);
@@ -79,4 +88,35 @@ public abstract class AbstractKapuaConverter {
         throw KapuaException.internalError("Cannot convert the message - Wrong instance type: " + exchange.getIn().getClass());
     }
 
+    /**
+     * Convert raw byte[] message to {@link CamelKapuaMessage}
+     *
+     * @param connectorDescriptor
+     * @param messageType
+     * @param messageBody
+     * @param jmsTopic
+     * @param queuedOn
+     * @param connectionId
+     * @return
+     * @throws KapuaException
+     */
+    private CamelKapuaMessage<?> convertToCamelKapuaMessage(ProtocolDescriptor connectorDescriptor, MessageType messageType, byte[] messageBody, String jmsTopic, Date queuedOn,
+                                                            KapuaId connectionId, String clientId)
+            throws KapuaException {
+        final Class<? extends DeviceMessage<?, ?>> deviceMessageType = connectorDescriptor.getDeviceClass(messageType);
+        final Class<? extends KapuaMessage<?, ?>> kapuaMessageType = connectorDescriptor.getKapuaClass(messageType);
+
+        // first step... from jms to device dependent protocol level (unknown)
+        Translator<org.eclipse.kapua.transport.message.jms.JmsMessage, DeviceMessage<?, ?>> translatorFromJms = translatorHub.getTranslatorFor(org.eclipse.kapua.transport.message.jms.JmsMessage.class, deviceMessageType);// birth ...
+        DeviceMessage<?, ?> deviceMessage = translatorFromJms.translate(new org.eclipse.kapua.transport.message.jms.JmsMessage(new JmsTopic(jmsTopic), queuedOn, new JmsPayload(messageBody)));
+
+        // second step.... from device dependent protocol (unknown) to Kapua
+        Translator<DeviceMessage<?, ?>, KapuaMessage<?, ?>> translatorToKapua = translatorHub.getTranslatorFor(deviceMessageType, kapuaMessageType);
+        KapuaMessage<?, ?> kapuaMessage = translatorToKapua.translate(deviceMessage);
+        if (StringUtils.isEmpty(kapuaMessage.getClientId())) {
+            logger.debug("Updating client id since the received value is null (new value {})", clientId);
+            kapuaMessage.setClientId(clientId);
+        }
+        return new CamelKapuaMessage<>(kapuaMessage, connectionId, connectorDescriptor);
+    }
 }

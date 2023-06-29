@@ -50,14 +50,15 @@ public class DeviceManagementBundleModule extends AbstractKapuaModule {
             DeviceEventService deviceEventService,
             DeviceEventFactory deviceEventFactory,
             DeviceRegistryService deviceRegistryService,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            DeviceBundleFactory deviceBundleFactory) {
         return new DeviceBundleManagementServiceImpl(
                 jpaTxManagerFactory.create("kapua-device_management_operation_registry"),
                 authorizationService,
                 permissionFactory,
                 deviceEventService,
                 deviceEventFactory,
-                deviceRegistryService
-        );
+                deviceRegistryService,
+                deviceBundleFactory);
     }
 }

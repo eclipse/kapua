@@ -46,8 +46,8 @@ import java.io.UnsupportedEncodingException;
 public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends KapuaResponseChannel, TO_P extends KapuaResponsePayload, TO_M extends KapuaResponseMessage<TO_C, TO_P>>
         extends AbstractTranslatorResponseKuraKapua<TO_C, TO_P, TO_M> {
 
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
-    private static final boolean SHOW_STACKTRACE = DeviceManagementSetting.getInstance().getBoolean(DeviceManagementSettingKey.SHOW_STACKTRACE, false);
+    private final String charEncoding = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private final boolean showStacktrace = DeviceManagementSetting.getInstance().getBoolean(DeviceManagementSettingKey.SHOW_STACKTRACE, false);
 
     @Inject
     private ObjectMapper jsonMapper;
@@ -107,7 +107,7 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
 
             appResponsePayload.setExceptionMessage(kuraResponsePayload.getExceptionMessage());
 
-            if (SHOW_STACKTRACE) {
+            if (showStacktrace) {
                 appResponsePayload.setExceptionStack(kuraResponsePayload.getExceptionStack());
                 kuraResponsePayload.getMetrics().remove(KuraResponseMetrics.EXCEPTION_STACK.getName());
             }
@@ -132,7 +132,7 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
      * @since 1.5.0
      */
     protected <T> T readXmlBodyAs(@NotNull byte[] bytesToRead, @NotNull Class<T> returnAs) throws InvalidBodyException {
-        String bodyString = readBodyAsString(bytesToRead, CHAR_ENCODING);
+        String bodyString = readBodyAsString(bytesToRead, charEncoding);
 
         try {
             return XmlUtil.unmarshal(bodyString, returnAs);
@@ -153,7 +153,7 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
      * @since 1.5.0
      */
     protected <T> T readJsonBodyAs(@NotNull byte[] bytesToRead, @NotNull Class<T> returnAs) throws InvalidBodyException {
-        String bodyString = readBodyAsString(bytesToRead, CHAR_ENCODING);
+        String bodyString = readBodyAsString(bytesToRead, charEncoding);
 
         try {
             return getJsonMapper().readValue(bodyString, returnAs);

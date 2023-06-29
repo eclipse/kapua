@@ -20,6 +20,7 @@ import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraReques
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
+import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
 import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryBundleExecRequestMessage;
 import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryRequestChannel;
 import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryRequestPayload;
@@ -30,6 +31,8 @@ import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.kapua.kura.AbstractTranslatorKapuaKura;
 import org.eclipse.kapua.translator.kapua.kura.TranslatorKapuaKuraUtils;
 
+import javax.inject.Inject;
+
 /**
  * {@link Translator} implementation from {@link InventoryBundleExecRequestMessage} to {@link KuraRequestMessage}
  *
@@ -37,7 +40,13 @@ import org.eclipse.kapua.translator.kapua.kura.TranslatorKapuaKuraUtils;
  */
 public class TranslatorAppInventoryBundleExecKapuaKura extends AbstractTranslatorKapuaKura<InventoryRequestChannel, InventoryRequestPayload, InventoryBundleExecRequestMessage> {
 
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private final String charEncoding = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private final DeviceInventoryManagementFactory deviceInventoryManagementFactory;
+
+    @Inject
+    public TranslatorAppInventoryBundleExecKapuaKura(DeviceInventoryManagementFactory deviceInventoryManagementFactory) {
+        this.deviceInventoryManagementFactory = deviceInventoryManagementFactory;
+    }
 
     @Override
     protected KuraRequestChannel translateChannel(InventoryRequestChannel inventoryRequestChannel) throws InvalidChannelException {
@@ -68,7 +77,7 @@ public class TranslatorAppInventoryBundleExecKapuaKura extends AbstractTranslato
             KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
             if (inventoryRequestPayload.hasBody()) {
-                DeviceInventoryBundle deviceInventoryBundle = inventoryRequestPayload.getDeviceInventoryBundle();
+                DeviceInventoryBundle deviceInventoryBundle = inventoryRequestPayload.getDeviceInventoryBundle().orElse(deviceInventoryManagementFactory.newDeviceInventoryBundle());
 
                 KuraInventoryBundle kuraInventoryBundle = new KuraInventoryBundle();
                 kuraInventoryBundle.setId(Integer.valueOf(deviceInventoryBundle.getId()));
@@ -77,7 +86,7 @@ public class TranslatorAppInventoryBundleExecKapuaKura extends AbstractTranslato
                 kuraInventoryBundle.setState(deviceInventoryBundle.getStatus());
                 kuraInventoryBundle.setSigned(deviceInventoryBundle.getSigned());
 
-                kuraRequestPayload.setBody(getJsonMapper().writeValueAsString(kuraInventoryBundle).getBytes(CHAR_ENCODING));
+                kuraRequestPayload.setBody(getJsonMapper().writeValueAsString(kuraInventoryBundle).getBytes(charEncoding));
             }
 
             return kuraRequestPayload;

@@ -21,8 +21,6 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.type.ObjectTypeConverter;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
-import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.DeviceManagementService;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseBadRequestException;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseCodeException;
@@ -41,7 +39,6 @@ import org.eclipse.kapua.service.device.management.registry.operation.DeviceMana
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationProperty;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
 import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
@@ -66,19 +63,15 @@ import java.util.concurrent.Callable;
 @Deprecated
 public abstract class AbstractDeviceManagementServiceImpl {
 
-    protected static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    protected final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
 
-    protected static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
-    protected static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+    private final DeviceEventService kapuaLocatorService = kapuaLocator.getService(DeviceEventService.class);
+    private final DeviceEventFactory deviceEventFactory = kapuaLocator.getFactory(DeviceEventFactory.class);
 
-    private static final DeviceEventService DEVICE_EVENT_SERVICE = LOCATOR.getService(DeviceEventService.class);
-    private static final DeviceEventFactory DEVICE_EVENT_FACTORY = LOCATOR.getFactory(DeviceEventFactory.class);
+    private final DeviceRegistryService deviceRegistryService = kapuaLocator.getService(DeviceRegistryService.class);
 
-    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
-    private static final DeviceFactory DEVICE_FACTORY = LOCATOR.getFactory(DeviceFactory.class);
-
-    private static final DeviceManagementOperationRegistryService DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE = LOCATOR.getService(DeviceManagementOperationRegistryService.class);
-    private static final DeviceManagementOperationFactory DEVICE_MANAGEMENT_OPERATION_FACTORY = LOCATOR.getFactory(DeviceManagementOperationFactory.class);
+    private final DeviceManagementOperationRegistryService deviceManagementOperationRegistryService = kapuaLocator.getService(DeviceManagementOperationRegistryService.class);
+    private final DeviceManagementOperationFactory deviceManagementOperationFactory = kapuaLocator.getFactory(DeviceManagementOperationFactory.class);
 
     //
     // Device Registry
@@ -100,7 +93,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
     protected void createDeviceEvent(KapuaId scopeId, KapuaId deviceId, KapuaRequestMessage<?, ?> requestMessage, KapuaResponseMessage<?, ?> responseMessage) throws KapuaException {
 
         DeviceEventCreator deviceEventCreator =
-                DEVICE_EVENT_FACTORY.newCreator(
+                deviceEventFactory.newCreator(
                         scopeId,
                         deviceId,
                         responseMessage != null ? responseMessage.getReceivedOn() : requestMessage.getSentOn(),
@@ -112,7 +105,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
         deviceEventCreator.setResponseCode(responseMessage != null ? responseMessage.getResponseCode() : KapuaResponseCode.SENT);
         deviceEventCreator.setEventMessage(responseMessage != null ? responseMessage.getPayload().toDisplayString() : requestMessage.getPayload().toDisplayString());
 
-        KapuaSecurityUtils.doPrivileged(() -> DEVICE_EVENT_SERVICE.create(deviceEventCreator));
+        KapuaSecurityUtils.doPrivileged(() -> kapuaLocatorService.create(deviceEventCreator));
     }
 
     /**
@@ -131,7 +124,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
 
         //
         // Check Device existence
-        Device device = DEVICE_REGISTRY_SERVICE.find(scopeId, deviceId);
+        Device device = deviceRegistryService.find(scopeId, deviceId);
 
         if (device == null) {
             throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
@@ -149,7 +142,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
 
     protected KapuaId createManagementOperation(KapuaId scopeId, KapuaId deviceId, KapuaId operationId, KapuaRequestMessage<?, ?> requestMessage) throws KapuaException {
 
-        DeviceManagementOperationCreator deviceManagementOperationCreator = DEVICE_MANAGEMENT_OPERATION_FACTORY.newCreator(scopeId);
+        DeviceManagementOperationCreator deviceManagementOperationCreator = deviceManagementOperationFactory.newCreator(scopeId);
         deviceManagementOperationCreator.setDeviceId(deviceId);
         deviceManagementOperationCreator.setOperationId(operationId);
         deviceManagementOperationCreator.setStartedOn(new Date());
@@ -159,7 +152,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
         deviceManagementOperationCreator.setStatus(NotifyStatus.RUNNING);
         deviceManagementOperationCreator.setInputProperties(extractInputProperties(requestMessage));
 
-        DeviceManagementOperation deviceManagementOperation = KapuaSecurityUtils.doPrivileged(() -> DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.create(deviceManagementOperationCreator));
+        DeviceManagementOperation deviceManagementOperation = KapuaSecurityUtils.doPrivileged(() -> deviceManagementOperationRegistryService.create(deviceManagementOperationCreator));
 
         return deviceManagementOperation.getId();
     }
@@ -169,7 +162,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
     }
 
     protected void closeManagementOperation(KapuaId scopeId, KapuaId deviceId, KapuaId operationId, KapuaResponseMessage<?, ?> responseMessageMessage) throws KapuaException {
-        DeviceManagementOperation deviceManagementOperation = DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.findByOperationId(scopeId, operationId);
+        DeviceManagementOperation deviceManagementOperation = deviceManagementOperationRegistryService.findByOperationId(scopeId, operationId);
 
         if (deviceManagementOperation == null) {
             throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, operationId);
@@ -183,7 +176,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
             deviceManagementOperation.setEndedOn(new Date());
         }
 
-        KapuaSecurityUtils.doPrivileged(() -> DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.update(deviceManagementOperation));
+        KapuaSecurityUtils.doPrivileged(() -> deviceManagementOperationRegistryService.update(deviceManagementOperation));
     }
 
 
@@ -271,7 +264,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
         properties.forEach((k, v) -> {
             if (v != null) {
                 inputProperties.add(
-                        DEVICE_MANAGEMENT_OPERATION_FACTORY.newStepProperty(
+                        deviceManagementOperationFactory.newStepProperty(
                                 k,
                                 ObjectTypeConverter.toString(v.getClass()),
                                 ObjectValueConverter.toString(v))

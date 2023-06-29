@@ -57,7 +57,6 @@ import java.util.Date;
 public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceManagementTransactionalServiceImpl implements DeviceConfigurationManagementService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceConfigurationManagementServiceImpl.class);
-
     private final DeviceConfigurationFactory deviceConfigurationFactory;
 
     private static final String SCOPE_ID = "scopeId";
@@ -129,7 +128,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
             // Create event
             createDeviceEvent(scopeId, deviceId, configurationRequestMessage, responseMessage);
             // Check response
-            DeviceConfiguration onlineDeviceConfiguration = checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceConfigurations());
+            DeviceConfiguration onlineDeviceConfiguration = checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceConfigurations().orElse(deviceConfigurationFactory.newConfigurationInstance()));
             // Store config and return
             if (deviceConfigurationStoreService.isServiceEnabled(scopeId) &&
                     deviceConfigurationStoreService.isApplicationEnabled(scopeId, deviceId)) {

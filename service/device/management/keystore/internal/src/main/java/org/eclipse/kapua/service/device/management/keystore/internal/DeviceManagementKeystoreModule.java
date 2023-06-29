@@ -43,7 +43,8 @@ public class DeviceManagementKeystoreModule extends AbstractKapuaModule {
             DeviceRegistryService deviceRegistryService,
             CertificateInfoService certificateInfoService,
             CertificateInfoFactory certificateInfoFactory,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            DeviceKeystoreManagementFactory deviceKeystoreManagementFactory
     ) {
         return new DeviceKeystoreManagementServiceImpl(
                 jpaTxManagerFactory.create("kapua-device_management_operation_registry"),
@@ -53,7 +54,7 @@ public class DeviceManagementKeystoreModule extends AbstractKapuaModule {
                 deviceEventFactory,
                 deviceRegistryService,
                 certificateInfoService,
-                certificateInfoFactory
-        );
+                certificateInfoFactory,
+                deviceKeystoreManagementFactory);
     }
 }

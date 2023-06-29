@@ -36,8 +36,8 @@ public interface DeviceConfigurationEventPayload extends KapuaManagementEventPay
     /**
      * Sets the {@link List} of changed {@link DeviceComponentConfiguration}s
      *
-     * @param deviceComponentConfigurations The {@link List} of changed {@link DeviceComponentConfiguration}s
+     * @param deviceConfiguration The device Configuration containing the {@link List} of changed {@link DeviceComponentConfiguration}s
      * @since 2.0.0
      */
-    void setDeviceComponentConfigurations(List<DeviceComponentConfiguration> deviceComponentConfigurations) throws Exception;
+    void setDeviceComponentConfigurations(DeviceConfiguration deviceConfiguration) throws Exception;
 }

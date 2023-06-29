@@ -15,6 +15,7 @@ package org.eclipse.kapua.translator.kapua.kura.keystore;
 import org.eclipse.kapua.service.device.call.kura.model.keystore.KeystoreMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
+import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
 import org.eclipse.kapua.service.device.management.keystore.internal.message.request.KeystoreRequestChannel;
 import org.eclipse.kapua.service.device.management.keystore.internal.message.request.KeystoreRequestMessage;
 import org.eclipse.kapua.service.device.management.keystore.internal.message.request.KeystoreRequestPayload;
@@ -29,6 +30,11 @@ import org.eclipse.kapua.translator.kapua.kura.TranslatorKapuaKuraUtils;
  * @since 1.5.0
  */
 public abstract class AbstractTranslatorAppKeystoreKapuaKura<M extends KeystoreRequestMessage<M>> extends AbstractTranslatorKapuaKura<KeystoreRequestChannel, KeystoreRequestPayload, M> {
+    protected final DeviceKeystoreManagementFactory deviceKeystoreManagementFactory;
+
+    public AbstractTranslatorAppKeystoreKapuaKura(DeviceKeystoreManagementFactory deviceKeystoreManagementFactory) {
+        this.deviceKeystoreManagementFactory = deviceKeystoreManagementFactory;
+    }
 
     @Override
     protected KuraRequestChannel translateChannel(KeystoreRequestChannel kapuaChannel) throws InvalidChannelException {

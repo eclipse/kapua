@@ -13,11 +13,9 @@
 package org.eclipse.kapua.service.device.management.inventory.internal.message;
 
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
-import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainers;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
@@ -26,6 +24,7 @@ import org.eclipse.kapua.service.device.management.inventory.model.system.Device
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 /**
  * {@link DeviceInventory} {@link KapuaResponsePayload} implementation.
@@ -36,10 +35,7 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
 
     private static final long serialVersionUID = 4380715272822080425L;
 
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
-    //TODO: Inject
-    private static final DeviceInventoryManagementFactory DEVICE_INVENTORY_MANAGEMENT_FACTORY = KapuaLocator.getInstance().getFactory(DeviceInventoryManagementFactory.class);
+    private final String charEncoding = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     /**
      * Gets the {@link DeviceInventory} from the {@link #getBody()}.
@@ -48,13 +44,13 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
      * @throws Exception if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
-    public DeviceInventory getDeviceInventory() throws Exception {
+    public Optional<DeviceInventory> getDeviceInventory() throws Exception {
         if (!hasBody()) {
-            return DEVICE_INVENTORY_MANAGEMENT_FACTORY.newDeviceInventory();
+            return Optional.empty();
         }
 
-        String bodyString = new String(getBody(), CHAR_ENCODING);
-        return XmlUtil.unmarshal(bodyString, DeviceInventory.class);
+        String bodyString = new String(getBody(), charEncoding);
+        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceInventory.class));
     }
 
     /**
@@ -66,7 +62,7 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
      */
     public void setDeviceInventory(@NotNull DeviceInventory deviceInventory) throws Exception {
         String bodyString = XmlUtil.marshal(deviceInventory);
-        setBody(bodyString.getBytes(CHAR_ENCODING));
+        setBody(bodyString.getBytes(charEncoding));
     }
 
     /**
@@ -76,13 +72,13 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
      * @throws Exception if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
-    public DeviceInventoryBundles getDeviceInventoryBundles() throws Exception {
+    public Optional<DeviceInventoryBundles> getDeviceInventoryBundles() throws Exception {
         if (!hasBody()) {
-            return DEVICE_INVENTORY_MANAGEMENT_FACTORY.newDeviceInventoryBundles();
+            return Optional.empty();
         }
 
-        String bodyString = new String(getBody(), CHAR_ENCODING);
-        return XmlUtil.unmarshal(bodyString, DeviceInventoryBundles.class);
+        String bodyString = new String(getBody(), charEncoding);
+        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceInventoryBundles.class));
     }
 
     /**
@@ -94,7 +90,7 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
      */
     public void setDeviceInventoryBundles(@NotNull DeviceInventoryBundles inventoryBundles) throws Exception {
         String bodyString = XmlUtil.marshal(inventoryBundles);
-        setBody(bodyString.getBytes(CHAR_ENCODING));
+        setBody(bodyString.getBytes(charEncoding));
     }
 
     /**
@@ -104,13 +100,13 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
      * @throws Exception if reading {@link #getBody()} errors.
      * @since 2.0.0
      */
-    public DeviceInventoryContainers getDeviceInventoryContainers() throws Exception {
+    public Optional<DeviceInventoryContainers> getDeviceInventoryContainers() throws Exception {
         if (!hasBody()) {
-            return DEVICE_INVENTORY_MANAGEMENT_FACTORY.newDeviceInventoryContainers();
+            return Optional.empty();
         }
 
-        String bodyString = new String(getBody(), CHAR_ENCODING);
-        return XmlUtil.unmarshal(bodyString, DeviceInventoryContainers.class);
+        String bodyString = new String(getBody(), charEncoding);
+        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceInventoryContainers.class));
     }
 
     /**
@@ -122,7 +118,7 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
      */
     public void setDeviceInventoryContainers(@NotNull DeviceInventoryContainers inventoryContainers) throws Exception {
         String bodyString = XmlUtil.marshal(inventoryContainers);
-        setBody(bodyString.getBytes(CHAR_ENCODING));
+        setBody(bodyString.getBytes(charEncoding));
     }
 
     /**
@@ -132,13 +128,13 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
      * @throws Exception if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
-    public DeviceInventorySystemPackages getDeviceInventorySystemPackages() throws Exception {
+    public Optional<DeviceInventorySystemPackages> getDeviceInventorySystemPackages() throws Exception {
         if (!hasBody()) {
-            return DEVICE_INVENTORY_MANAGEMENT_FACTORY.newDeviceInventorySystemPackages();
+            return Optional.empty();
         }
 
-        String bodyString = new String(getBody(), CHAR_ENCODING);
-        return XmlUtil.unmarshal(bodyString, DeviceInventorySystemPackages.class);
+        String bodyString = new String(getBody(), charEncoding);
+        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceInventorySystemPackages.class));
     }
 
     /**
@@ -150,7 +146,7 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
      */
     public void setDeviceInventorySystemPackages(@NotNull DeviceInventorySystemPackages systemPackages) throws Exception {
         String bodyString = XmlUtil.marshal(systemPackages);
-        setBody(bodyString.getBytes(CHAR_ENCODING));
+        setBody(bodyString.getBytes(charEncoding));
     }
 
     /**
@@ -160,13 +156,13 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
      * @throws Exception if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
-    public DeviceInventoryPackages getDeviceInventoryPackages() throws Exception {
+    public Optional<DeviceInventoryPackages> getDeviceInventoryPackages() throws Exception {
         if (!hasBody()) {
-            return DEVICE_INVENTORY_MANAGEMENT_FACTORY.newDeviceInventoryPackages();
+            return Optional.empty();
         }
 
-        String bodyString = new String(getBody(), CHAR_ENCODING);
-        return XmlUtil.unmarshal(bodyString, DeviceInventoryPackages.class);
+        String bodyString = new String(getBody(), charEncoding);
+        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceInventoryPackages.class));
     }
 
     /**
@@ -178,6 +174,6 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
      */
     public void setDeviceInventoryPackages(@NotNull DeviceInventoryPackages packages) throws Exception {
         String bodyString = XmlUtil.marshal(packages);
-        setBody(bodyString.getBytes(CHAR_ENCODING));
+        setBody(bodyString.getBytes(charEncoding));
     }
 }

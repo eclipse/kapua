@@ -165,7 +165,8 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
         }
     }
 
-    void delete(ClientInfoQuery query)
+    @Override
+    public void delete(ClientInfoQuery query)
             throws KapuaException {
         if (!isServiceEnabled(query.getScopeId())) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
@@ -182,7 +183,8 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
         }
     }
 
-    void delete(KapuaId scopeId, StorableId id)
+    @Override
+    public void delete(KapuaId scopeId, StorableId id)
             throws KapuaException {
         if (!isServiceEnabled(scopeId)) {
             throw new KapuaServiceDisabledException(this.getClass().getName());

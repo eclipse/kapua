@@ -21,6 +21,7 @@ import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssets;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestChannel;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestMessage;
@@ -29,6 +30,7 @@ import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.xml.sax.SAXException;
 
+import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -41,6 +43,13 @@ import java.util.Date;
  * @since 1.0.0
  */
 public class TranslatorAppAssetKapuaKura extends AbstractTranslatorKapuaKura<AssetRequestChannel, AssetRequestPayload, AssetRequestMessage> {
+
+    private final DeviceAssetFactory deviceAssetFactory;
+
+    @Inject
+    public TranslatorAppAssetKapuaKura(DeviceAssetFactory deviceAssetFactory) {
+        this.deviceAssetFactory = deviceAssetFactory;
+    }
 
     @Override
     protected KuraRequestChannel translateChannel(AssetRequestChannel kapuaChannel) throws InvalidChannelException {
@@ -70,7 +79,7 @@ public class TranslatorAppAssetKapuaKura extends AbstractTranslatorKapuaKura<Ass
         try {
             DeviceAssets deviceAssets;
             try {
-                deviceAssets = kapuaPayload.getDeviceAssets();
+                deviceAssets = kapuaPayload.getDeviceAssets().orElse(deviceAssetFactory.newAssetListResult());
             } catch (UnsupportedEncodingException | JAXBException | SAXException e) {
                 throw new InvalidPayloadException(e, kapuaPayload);
             }

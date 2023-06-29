@@ -64,7 +64,6 @@ import java.util.Date;
  */
 public class DeviceCallBuilder<C extends KapuaRequestChannel, P extends KapuaRequestPayload, RQ extends KapuaRequestMessage<C, P>, RS extends KapuaResponseMessage> {
 
-
     private final DeviceCallFactory deviceCallFactory = KapuaLocator.getInstance().getFactory(DeviceCallFactory.class);
 
     private final DeviceRegistryService deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
