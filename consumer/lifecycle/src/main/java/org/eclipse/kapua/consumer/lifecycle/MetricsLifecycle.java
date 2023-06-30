@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.lifecycle;
 
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
@@ -49,13 +48,9 @@ public class MetricsLifecycle {
 
     private static MetricsLifecycle instance;
 
-    public static MetricsLifecycle getInstance() {
+    public synchronized static MetricsLifecycle getInstance() {
         if (instance == null) {
-            synchronized (CommonsMetric.class) {
-                if (instance == null) {
-                    instance = new MetricsLifecycle();
-                }
-            }
+            instance = new MetricsLifecycle();
         }
         return instance;
     }

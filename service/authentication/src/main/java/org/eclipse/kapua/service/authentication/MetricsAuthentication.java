@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
@@ -39,13 +38,9 @@ public class MetricsAuthentication {
 
     private static MetricsAuthentication instance;
 
-    public static MetricsAuthentication getInstance() {
+    public synchronized static MetricsAuthentication getInstance() {
         if (instance == null) {
-            synchronized (CommonsMetric.class) {
-                if (instance == null) {
-                    instance = new MetricsAuthentication();
-                }
-            }
+            instance = new MetricsAuthentication();
         }
         return instance;
     }

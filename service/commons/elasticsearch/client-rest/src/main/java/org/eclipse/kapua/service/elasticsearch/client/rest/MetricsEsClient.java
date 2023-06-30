@@ -36,13 +36,9 @@ public class MetricsEsClient {
 
     private static MetricsEsClient instance;
 
-    public static MetricsEsClient getInstance() {
+    public synchronized static MetricsEsClient getInstance() {
         if (instance == null) {
-            synchronized (CommonsMetric.class) {
-                if (instance == null) {
-                    instance = new MetricsEsClient();
-                }
-            }
+            instance = new MetricsEsClient();
         }
         return instance;
     }

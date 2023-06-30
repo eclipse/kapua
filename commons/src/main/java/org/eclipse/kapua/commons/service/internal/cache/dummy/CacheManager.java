@@ -26,13 +26,9 @@ public class CacheManager implements javax.cache.CacheManager {
     private CacheManager() {
     }
 
-    public static CacheManager getInstance() {
+    public synchronized static CacheManager getInstance() {
         if (instance == null) {
-            synchronized (CacheManager.class) {
-                if (instance == null) {
-                    instance = new CacheManager();
-                }
-            }
+            instance = new CacheManager();
         }
         return instance;
     }

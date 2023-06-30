@@ -22,13 +22,9 @@ public class MapCachingProvider implements CachingProvider {
 
     private static MapCachingProvider instance;
 
-    public static MapCachingProvider getInstance() {
+    public synchronized static MapCachingProvider getInstance() {
         if (instance == null) {
-            synchronized (MapCachingProvider.class) {
-                if (instance == null) {
-                    instance = new MapCachingProvider();
-                }
-            }
+            instance = new MapCachingProvider();
         }
         return instance;
     }

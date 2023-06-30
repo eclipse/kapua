@@ -27,13 +27,9 @@ public class MetricsClientSecurity {
 
     private static MetricsClientSecurity instance;
 
-    public static MetricsClientSecurity getInstance() {
+    public synchronized static MetricsClientSecurity getInstance() {
         if (instance == null) {
-            synchronized (CommonsMetric.class) {
-                if (instance == null) {
-                    instance = new MetricsClientSecurity();
-                }
-            }
+            instance = new MetricsClientSecurity();
         }
         return instance;
     }

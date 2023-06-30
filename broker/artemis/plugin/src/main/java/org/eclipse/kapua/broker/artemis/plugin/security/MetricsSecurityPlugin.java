@@ -39,14 +39,10 @@ public class MetricsSecurityPlugin {
 
     private static MetricsSecurityPlugin instance;
 
-    public static MetricsSecurityPlugin getInstance(ActiveMQServer server,
+    public synchronized static MetricsSecurityPlugin getInstance(ActiveMQServer server,
             Gauge<Integer> mapSize, Gauge<Integer> mapByClientSize, Gauge<Integer> aclSize, Gauge<Integer> activeConnection) throws KapuaException {
         if (instance == null) {
-            synchronized (CommonsMetric.class) {
-                if (instance == null) {
-                    instance = new MetricsSecurityPlugin(server, mapSize, mapByClientSize, aclSize, activeConnection);
-                }
-            }
+            instance = new MetricsSecurityPlugin(server, mapSize, mapByClientSize, aclSize, activeConnection);
         }
         return instance;
     }
