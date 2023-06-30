@@ -60,17 +60,13 @@ public class CommonsMetric {
 
     private static CommonsMetric instance;
 
-    public static CommonsMetric getInstance() {
+    public synchronized static CommonsMetric getInstance() {
         if (instance == null) {
-            synchronized (CommonsMetric.class) {
-                if (instance == null) {
-                    try {
-                        instance = new CommonsMetric();
-                    } catch (KapuaException e) {
-                        //TODO throw runtime exception
-                        logger.error("Creating metrics error: {}", e.getMessage(), e);
-                    }
-                }
+            try {
+                instance = new CommonsMetric();
+            } catch (KapuaException e) {
+                //TODO throw runtime exception
+                logger.error("Creating metrics error: {}", e.getMessage(), e);
             }
         }
         return instance;

@@ -24,16 +24,11 @@ public class MapCacheManager implements CacheManager {
     private static MapCacheManager instance;
 
     private MapCacheManager() {
-
     }
 
-    public static MapCacheManager getInstance() {
+    public synchronized static MapCacheManager getInstance() {
         if (instance == null) {
-            synchronized (MapCacheManager.class) {
-                if (instance == null) {
-                    instance = new MapCacheManager();
-                }
-            }
+            instance = new MapCacheManager();
         }
         return instance;
     }

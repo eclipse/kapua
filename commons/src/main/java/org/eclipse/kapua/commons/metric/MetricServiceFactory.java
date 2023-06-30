@@ -30,13 +30,9 @@ public class MetricServiceFactory {
      *
      * @return
      */
-    public static MetricsService getInstance() {
+    public synchronized static MetricsService getInstance() {
         if (instance == null) {
-            synchronized (MetricServiceFactory.class) {
-                if (instance == null) {
-                    instance = new MetricsServiceImpl();
-                }
-            }
+            instance = new MetricsServiceImpl();
         }
         return instance;
     }

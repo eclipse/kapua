@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.telemetry;
 
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
@@ -33,13 +32,9 @@ public class MetricsTelemetry {
 
     private static MetricsTelemetry instance;
 
-    public static MetricsTelemetry getInstance() {
+    public synchronized static MetricsTelemetry getInstance() {
         if (instance == null) {
-            synchronized (CommonsMetric.class) {
-                if (instance == null) {
-                    instance = new MetricsTelemetry();
-                }
-            }
+            instance = new MetricsTelemetry();
         }
         return instance;
     }

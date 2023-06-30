@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
@@ -43,13 +42,9 @@ public class MetricsDatastore {
 
     private static MetricsDatastore instance;
 
-    public static MetricsDatastore getInstance() {
+    public synchronized static MetricsDatastore getInstance() {
         if (instance == null) {
-            synchronized (CommonsMetric.class) {
-                if (instance == null) {
-                    instance = new MetricsDatastore();
-                }
-            }
+            instance = new MetricsDatastore();
         }
         return instance;
     }
