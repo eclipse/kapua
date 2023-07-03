@@ -32,3 +32,5 @@ export KAPUA_CONSOLE_URL="${KAPUA_CONSOLE_URL:=http://${EXTERNAL_IP}:8080}"
 
 export KEYCLOAK_IMAGE="${KEYCLOAK_IMAGE:=kapua/kapua-keycloak:${IMAGE_VERSION}}"
 export KEYCLOAK_URL="${KEYCLOAK_URL:=http://${EXTERNAL_IP}:9090}" # Use https://${EXTERNAL_IP}:9443} in order to enable TLS
+export KEYCLOAK_PORT_HTTP=9090
+export KEYCLOAK_PORT_HTTPS=9443

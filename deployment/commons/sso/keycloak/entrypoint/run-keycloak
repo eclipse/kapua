@@ -30,7 +30,7 @@ if [ ! -f /opt/keycloak/first-run ]; then
   #
   # Start and wait Keycloak
   echo "Starting Keycloak..."
-  KEYCLOAK_ADMIN=$KEYCLOAK_USER KEYCLOAK_ADMIN_PASSWORD=$KEYCLOAK_PASSWORD /opt/keycloak/bin/kc.sh start-dev --http-port=$KC_PORT &
+  KEYCLOAK_ADMIN=$KEYCLOAK_USER KEYCLOAK_ADMIN_PASSWORD=$KEYCLOAK_PASSWORD /opt/keycloak/bin/kc.sh start --http-port=$KC_PORT &
 
   while ! curl -sf $KC_URL > /dev/null; do
     echo "Waiting for keycloak to come up..."
@@ -160,5 +160,5 @@ EOF
 fi
 
 echo "Starting Keycloak!"
-exec /opt/keycloak/bin/kc.sh start-dev --http-port=$KC_PORT $@
+exec /opt/keycloak/bin/kc.sh start --http-port=$KC_PORT $@
 exit $?
