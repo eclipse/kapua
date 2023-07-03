@@ -15,9 +15,11 @@
 
 set -e
 
-if [ ! -f /opt/jboss/keycloak/standalone/data/first-run ]; then
+if [ ! -f /opt/keycloak/first-run ]; then
   REALM_NAME="kapua"
-  KC=/opt/jboss/keycloak/bin/kcadm.sh
+  KC_PORT="9090"
+  KC_URL="http://localhost:$KC_PORT"
+  KC=/opt/keycloak/bin/kcadm.sh
 
   echo "Kapua Keycloak Configuration:"
   echo "    Kapua Console URL: $KAPUA_CONSOLE_URL"
@@ -28,9 +30,9 @@ if [ ! -f /opt/jboss/keycloak/standalone/data/first-run ]; then
   #
   # Start and wait Keycloak
   echo "Starting Keycloak..."
-  /opt/jboss/tools/docker-entrypoint.sh -b localhost &
+  KEYCLOAK_ADMIN=$KEYCLOAK_USER KEYCLOAK_ADMIN_PASSWORD=$KEYCLOAK_PASSWORD /opt/keycloak/bin/kc.sh start --http-port=$KC_PORT &
 
-  while ! curl -sf http://localhost:8080/auth; do
+  while ! curl -sf $KC_URL > /dev/null; do
     echo "Waiting for keycloak to come up..."
     sleep 5
   done
@@ -40,15 +42,11 @@ if [ ! -f /opt/jboss/keycloak/standalone/data/first-run ]; then
   #
   # Keycloak Admin credential configuration
   echo "Configuring Keycloak admin credentials..."
-  $KC config credentials \
-        --server http://localhost:8080/auth \
-        --realm master \
-        --user "$KEYCLOAK_USER" \
-        --password "$KEYCLOAK_PASSWORD" ||
-  {
-    echo "Configuring Keycloak admin credentials... ERROR!";
-    exit 1
-  }
+  /opt/keycloak/bin/kcadm.sh config credentials \
+      --server $KC_URL \
+      --user "$KEYCLOAK_USER" \
+      --password "$KEYCLOAK_PASSWORD" \
+      --realm master
   echo "Configuring Keycloak admin credentials... DONE!"
   echo ""
 
@@ -68,7 +66,8 @@ if [ ! -f /opt/jboss/keycloak/standalone/data/first-run ]; then
     echo ""
 
     $KC create realms \
-      -s realm=${REALM_NAME} \
+      --server $KC_URL \
+      -s realm="${REALM_NAME}" \
       -s enabled=true \
       -s "smtpServer.host=${SMTP_HOST}" \
       ${SMTP_PORT:+-s "smtpServer.port=${SMTP_PORT}"} \
@@ -91,19 +90,17 @@ if [ ! -f /opt/jboss/keycloak/standalone/data/first-run ]; then
        }
 EOF
   else
-
     echo "    SMTP: default"
-    $KC create realms \
-      -s realm=${REALM_NAME} \
-      -s enabled=true \
-      -f - << EOF
-      {
+    $KC create realms -f - << EOF
+        {
+          "realm": "${REALM_NAME}",
+          "enabled": true,
           "displayName": "Eclipse Kapua",
           "smtpServer": {
-             "auth": true,
-             "starttls": true
+            "auth": true,
+            "starttls": true
           }
-       }
+        }
 EOF
   fi
   echo "Creating ${REALM_NAME} Keycloak realm... DONE!"
@@ -115,20 +112,21 @@ EOF
 
   $KC create clients \
     -r ${REALM_NAME} \
+    -s clientId=console \
     -s "redirectUris=[\"${KAPUA_CONSOLE_URL}/*\"]" \
+    -i \
     -f - << EOF
     {
-        "clientId": "console",
         "name": "Kapua Web Admin Console",
         "publicClient": true,
         "protocolMappers": [ {
-           "name": "console",
-           "protocol": "openid-connect",
-           "protocolMapper": "oidc-audience-mapper",
-           "config": {
-              "access.token.claim": "true",
-              "included.custom.audience": "console"
-           }
+          "name": "console",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+             "access.token.claim": "true",
+             "included.custom.audience": "console"
+          }
         } ]
     }
 EOF
@@ -150,17 +148,17 @@ EOF
   #
   # Keycloak Shutdown
   echo "Shutting down Keycloak after first init..."
-  touch /opt/jboss/keycloak/standalone/data/first-run
+  touch /opt/keycloak/first-run
 
   sleep 1
 
   kill %1
-  wait %1
+  wait %1 || echo $?
 
   echo "Shutting down Keycloak after first init... DONE!"
   echo ""
 fi
 
 echo "Starting Keycloak!"
-exec /opt/jboss/tools/docker-entrypoint.sh $@
+exec /opt/keycloak/bin/kc.sh start --http-port=$KC_PORT $@
 exit $?

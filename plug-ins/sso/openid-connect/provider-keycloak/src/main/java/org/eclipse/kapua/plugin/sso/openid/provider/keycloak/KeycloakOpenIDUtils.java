@@ -24,7 +24,7 @@ import org.eclipse.kapua.plugin.sso.openid.provider.keycloak.setting.KeycloakOpe
 public class KeycloakOpenIDUtils {
 
     private static final KeycloakOpenIDSetting KEYCLOAK_OPENID_SETTING = KeycloakOpenIDSetting.getInstance();
-    public static final String KEYCLOAK_URI_COMMON_PART = "/auth/realms/";
+    public static final String KEYCLOAK_URI_COMMON_PART = "/realms/";
 
     private KeycloakOpenIDUtils() {
     }

@@ -297,11 +297,11 @@ will create the "_admin_" user without the need of the SimpleRegistrationProcess
 
 Logging out from the Keycloak provider is possible through the Keycloak OpenID Connect logout endpoint:
 
-`{sso.openid.keycloak.uri}/auth/realms/{realm_name}/protocol/openid-connect/logout`
+`{sso.openid.keycloak.uri}/realms/{realm_name}/protocol/openid-connect/logout`
 
 In our example the endpoint is the following:
 
-`http://<Keycloak-IP-address>:9090/auth/realms/kapua/protocol/openid-connect/logout`
+`http://<Keycloak-IP-address>:9090/realms/kapua/protocol/openid-connect/logout`
 
 ## Keycloak Example (OpenShift based)
 

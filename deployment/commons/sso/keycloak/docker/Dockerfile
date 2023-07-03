@@ -12,17 +12,20 @@
 #     Eurotech
 ###############################################################################
 
-FROM jboss/keycloak:7.0.0
+FROM registry.access.redhat.com/ubi9 AS ubi-micro-build
+RUN mkdir -p /mnt/rootfs && \
+    dnf install --installroot /mnt/rootfs curl coreutils --releasever 9 --setopt install_weak_deps=false --nodocs -y && \
+    dnf --installroot /mnt/rootfs clean all
 
-COPY ../entrypoint/run-keycloak /opt/jboss/run-keycloak
+
+FROM keycloak/keycloak:21.1
+
+COPY --from=ubi-micro-build /mnt/rootfs /
+
+COPY ../entrypoint/run-keycloak /opt/run-keycloak
 
 USER 0
 
-RUN chown -R jboss:0 /opt/jboss && \
-    chmod -R g=u /opt/jboss
+VOLUME /opt/keycloak/keycloak/standalone/data
 
-USER jboss
-
-VOLUME /opt/jboss/keycloak/standalone/data
-
-ENTRYPOINT ["/opt/jboss/run-keycloak"]
+ENTRYPOINT ["/opt/run-keycloak"]
