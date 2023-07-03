@@ -26,7 +26,7 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public class KapuaDuplicatePasswordCredentialExceptionMapper implements ExceptionMapper<DuplicatedPasswordCredentialException> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KapuaEntityNotFoundExceptionMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KapuaDuplicatePasswordCredentialExceptionMapper.class);
 
     private final boolean showStackTrace;
 
