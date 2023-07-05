@@ -26,6 +26,7 @@ import java.util.Map;
  * @see KuraMethod
  * @since 1.0.0
  */
+//TODO: FIXME: promote from static utility to injectable collaborator
 public class MethodDictionaryKuraKapua {
 
     /**
@@ -51,19 +52,6 @@ public class MethodDictionaryKuraKapua {
      * @since 1.0.0
      */
     private MethodDictionaryKuraKapua() {
-    }
-
-    /**
-     * Returns the method translation from Kura domain to Kapua domain
-     *
-     * @param kuraMethod The {@link KuraMethod} to translate.
-     * @return The method translation from Kura domain to Kapua domain
-     * @since 1.0.0
-     * @deprecated Since 1.2.0. Renamed to
-     */
-    @Deprecated
-    public static KapuaMethod get(KuraMethod kuraMethod) {
-        return translate(kuraMethod);
     }
 
     /**

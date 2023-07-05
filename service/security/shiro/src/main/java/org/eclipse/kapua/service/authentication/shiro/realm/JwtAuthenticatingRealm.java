@@ -57,10 +57,9 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
 
     private static final Logger LOG = LoggerFactory.getLogger(JwtAuthenticatingRealm.class);
 
-    private static final KapuaAuthenticationSetting AUTHENTICATION_SETTING = KapuaAuthenticationSetting.getInstance();
-
-    private static final Boolean SSO_USER_EXTERNAL_ID_AUTOFILL = AUTHENTICATION_SETTING.getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_SSO_USER_EXTERNAL_ID_AUTOFILL);
-    private static final Boolean SSO_USER_EXTERNAL_USERNAME_AUTOFILL = AUTHENTICATION_SETTING.getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_SSO_USER_EXTERNAL_USERNAME_AUTOFILL);
+    private final KapuaAuthenticationSetting authenticationSetting = KapuaAuthenticationSetting.getInstance();
+    private final Boolean ssoUserExternalIdAutofill = authenticationSetting.getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_SSO_USER_EXTERNAL_ID_AUTOFILL);
+    private final Boolean ssoUserExternalUsernameAutofill = authenticationSetting.getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_SSO_USER_EXTERNAL_USERNAME_AUTOFILL);
 
     /**
      * Realm name.
@@ -123,7 +122,7 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
             user = KapuaSecurityUtils.doPrivileged(() -> userService.findByExternalId(userExternalId));
 
             // Update User.externalUsername if not populated and if autofill is enabled
-            if (SSO_USER_EXTERNAL_USERNAME_AUTOFILL &&
+            if (ssoUserExternalUsernameAutofill &&
                     user != null &&
                     Strings.isNullOrEmpty(user.getExternalUsername())) {
 
@@ -151,7 +150,7 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
                     user = KapuaSecurityUtils.doPrivileged(() -> userService.findByExternalUsername(externalUsername));
 
                     // Update User.externalId if autofill is enabled
-                    if (SSO_USER_EXTERNAL_ID_AUTOFILL && user != null) {
+                    if (ssoUserExternalIdAutofill && user != null) {
                         String userExternalId = extractExternalId(jwtIdToken);
                         user.setExternalId(userExternalId);
                         user = updateUser(user);
@@ -281,7 +280,7 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
             user = KapuaSecurityUtils.doPrivileged(() -> userService.findByExternalUsername(externalUsername));
 
             // Update User.externalId if autofill is configured
-            if (SSO_USER_EXTERNAL_ID_AUTOFILL && user != null) {
+            if (ssoUserExternalIdAutofill && user != null) {
                 String userExternalId = extractExternalId(jwtCredentials.getIdToken());
 
                 if (!Strings.isNullOrEmpty(userExternalId)) {

@@ -44,10 +44,8 @@ public class KapuaWebFilter extends ShiroFilter {
 
     private static final Logger LOG = LoggerFactory.getLogger(KapuaWebFilter.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final AuthenticationService AUTHENTICATION_SERVICE = LOCATOR.getService(AuthenticationService.class);
-    private static final CredentialsFactory CREDENTIALS_FACTORY = LOCATOR.getFactory(CredentialsFactory.class);
+    private final AuthenticationService authenticationService = KapuaLocator.getInstance().getService(AuthenticationService.class);
+    private final CredentialsFactory credentialsFactory = KapuaLocator.getInstance().getFactory(CredentialsFactory.class);
 
     @Override
     protected void executeChain(ServletRequest request, ServletResponse response, FilterChain origChain)
@@ -105,10 +103,10 @@ public class KapuaWebFilter extends ShiroFilter {
             SecurityUtils.getSubject().logout();
 
             // Get a new AccessToken from the current AccessToken.refreshToken
-            AccessToken refreshAccessToken = AUTHENTICATION_SERVICE.refreshAccessToken(accessToken.getTokenId(), accessToken.getRefreshToken());
+            AccessToken refreshAccessToken = authenticationService.refreshAccessToken(accessToken.getTokenId(), accessToken.getRefreshToken());
 
             // Authenticate with the refreshed AccessToken
-            AUTHENTICATION_SERVICE.authenticate(CREDENTIALS_FACTORY.newAccessTokenCredentials(refreshAccessToken.getTokenId()));
+            authenticationService.authenticate(credentialsFactory.newAccessTokenCredentials(refreshAccessToken.getTokenId()));
         } else if (now.after(accessToken.getRefreshExpiresOn())) {
             throw new AuthenticationException("AccessToken.refreshToken is expired!");
         }

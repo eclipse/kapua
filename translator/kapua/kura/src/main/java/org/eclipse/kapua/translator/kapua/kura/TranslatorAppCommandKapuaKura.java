@@ -32,6 +32,7 @@ import java.util.Map;
  *
  * @since 1.0
  */
+//TODO: FIXME: promote from static utility to injectable collaborator
 public class TranslatorAppCommandKapuaKura extends AbstractTranslatorKapuaKura<CommandRequestChannel, CommandRequestPayload, CommandRequestMessage> {
 
     private static final Map<CommandAppProperties, CommandMetrics> PROPERTIES_DICTIONARY = new EnumMap<>(CommandAppProperties.class);

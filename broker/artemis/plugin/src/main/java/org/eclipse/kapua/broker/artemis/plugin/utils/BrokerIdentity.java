@@ -19,6 +19,7 @@ import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey
 import org.eclipse.kapua.commons.util.ReflectionUtil;
 
 //TODO find a better way to share this singleton between SecurityPlugin and ServerPlugin
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class BrokerIdentity {
 
     private static final BrokerIdentity INSTANCE = new BrokerIdentity();
@@ -36,10 +37,10 @@ public class BrokerIdentity {
     //TODO find a way to inject these classes
     public synchronized void init(ActiveMQServer server) throws KapuaException {
         BrokerIdResolver brokerIdResolver =
-            ReflectionUtil.newInstance(BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_ID_RESOLVER_CLASS_NAME), DefaultBrokerIdResolver.class);
+                ReflectionUtil.newInstance(BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_ID_RESOLVER_CLASS_NAME), DefaultBrokerIdResolver.class);
         brokerId = brokerIdResolver.getBrokerId(server);
         BrokerHostResolver brokerIpResolver =
-            ReflectionUtil.newInstance(BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_HOST_RESOLVER_CLASS_NAME), DefaultBrokerHostResolver.class);
+                ReflectionUtil.newInstance(BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_HOST_RESOLVER_CLASS_NAME), DefaultBrokerHostResolver.class);
         brokerHost = brokerIpResolver.getBrokerHost();
     }
 

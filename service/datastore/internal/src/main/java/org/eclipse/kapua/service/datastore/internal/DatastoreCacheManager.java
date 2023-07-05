@@ -23,6 +23,7 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey
  *
  * @since 1.0.0
  */
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class DatastoreCacheManager {
 
     private static final DatastoreCacheManager INSTANCE = new DatastoreCacheManager();

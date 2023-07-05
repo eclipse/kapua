@@ -40,9 +40,9 @@ import java.util.Map;
  */
 public class KapuaEntityManagerFactory implements EntityManagerFactory {
     private static final Logger LOG = LoggerFactory.getLogger(KapuaEntityManagerFactory.class);
-    private static final SystemSetting SYSTEM_SETTING = SystemSetting.getInstance();
     private static final String DEFAULT_DATASOURCE_NAME = "kapua-dbpool";
     private final EntityManagerFactory entityManagerFactory;
+    private final SystemSetting systemSetting = SystemSetting.getInstance();
 
     /**
      * Constructor.
@@ -70,7 +70,7 @@ public class KapuaEntityManagerFactory implements EntityManagerFactory {
             configOverrides.put(PersistenceUnitProperties.CACHE_SHARED_DEFAULT, "false");
             configOverrides.put(PersistenceUnitProperties.NON_JTA_DATASOURCE, DataSource.getDataSource());
 
-            final String targetDatabase = SYSTEM_SETTING.getString(SystemSettingKey.DB_JDBC_DATABASE_TARGET);
+            final String targetDatabase = systemSetting.getString(SystemSettingKey.DB_JDBC_DATABASE_TARGET);
             if (!Strings.isNullOrEmpty(targetDatabase)) {
                 configOverrides.put(PersistenceUnitProperties.TARGET_DATABASE, targetDatabase);
             }

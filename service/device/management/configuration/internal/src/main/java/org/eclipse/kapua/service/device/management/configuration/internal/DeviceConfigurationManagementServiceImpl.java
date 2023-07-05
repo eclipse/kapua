@@ -22,6 +22,12 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+<<<<<<< HEAD
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
+=======
+import org.eclipse.kapua.service.device.management.DeviceManagementDomain;
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementTransactionalServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
@@ -90,7 +96,13 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
         ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.read, scopeId));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new DeviceManagementDomain(), Actions.read, scopeId));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Prepare the request
         ConfigurationRequestChannel configurationRequestChannel = new ConfigurationRequestChannel();
         configurationRequestChannel.setAppName(DeviceConfigurationAppProperties.APP_NAME);
@@ -161,7 +173,13 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
         ArgumentValidator.notNull(deviceComponentConfiguration, "componentConfiguration");
         ArgumentValidator.notEmptyOrNull(deviceComponentConfiguration.getId(), "componentConfiguration.componentId");
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.write, scopeId));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new DeviceManagementDomain(), Actions.write, scopeId));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Prepare the request
         ConfigurationRequestChannel configurationRequestChannel = new ConfigurationRequestChannel();
         configurationRequestChannel.setAppName(DeviceConfigurationAppProperties.APP_NAME);
@@ -230,7 +248,13 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
         ArgumentValidator.notNull(deviceConfiguration, "componentConfiguration");
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.write, scopeId));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new DeviceManagementDomain(), Actions.write, scopeId));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Prepare the request
         ConfigurationRequestChannel configurationRequestChannel = new ConfigurationRequestChannel();
         configurationRequestChannel.setAppName(DeviceConfigurationAppProperties.APP_NAME);

@@ -22,6 +22,12 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+<<<<<<< HEAD
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+import org.eclipse.kapua.service.job.JobDomains;
+=======
+import org.eclipse.kapua.service.job.JobDomain;
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionCreator;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
@@ -70,7 +76,13 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
         ArgumentValidator.notEmptyOrNull(triggerDefinitionCreator.getProcessorName(), "triggerDefinitionCreator.processorName");
 
         // Check access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, null));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.write, null));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         // Do create
         TriggerDefinition toBeCreated = triggerDefinitionFactory.newEntity(triggerDefinitionCreator.getScopeId());
@@ -90,7 +102,13 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
         ArgumentValidator.validateEntityName(triggerDefinition.getName(), "triggerDefinition.name");
         ArgumentValidator.notEmptyOrNull(triggerDefinition.getProcessorName(), "triggerDefinition.processorName");
         // Check access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, null));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.write, null));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         return txManager.execute(tx -> triggerDefinitionRepository.update(tx, triggerDefinition));
     }
@@ -100,7 +118,13 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
         // Argument Validation
         ArgumentValidator.notNull(stepDefinitionId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, KapuaId.ANY));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, KapuaId.ANY));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do find
         return txManager.execute(tx -> triggerDefinitionRepository.find(tx, KapuaId.ANY, stepDefinitionId))
                 .orElse(null);
@@ -111,7 +135,13 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
         // Argument Validation
         ArgumentValidator.notNull(stepDefinitionId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, KapuaId.ANY));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, KapuaId.ANY));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do find
         return txManager.execute(tx -> triggerDefinitionRepository.find(tx, scopeId, stepDefinitionId))
                 .orElse(null);
@@ -126,7 +156,13 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
                     final Optional<TriggerDefinition> triggerDefinition = triggerDefinitionRepository.findByName(tx, name);
                     if (triggerDefinition.isPresent()) {
                         // Check Access
+<<<<<<< HEAD
                         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, KapuaId.ANY));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+                        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+=======
+                        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, KapuaId.ANY));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
                     }
                     return triggerDefinition;
                 })
@@ -138,7 +174,13 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, KapuaId.ANY));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, KapuaId.ANY));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do query
         return txManager.execute(tx -> triggerDefinitionRepository.query(tx, query));
     }
@@ -148,7 +190,13 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, KapuaId.ANY));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, KapuaId.ANY));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do query
         return txManager.execute(tx -> triggerDefinitionRepository.count(tx, query));
     }
@@ -159,7 +207,13 @@ public class TriggerDefinitionServiceImpl implements TriggerDefinitionService {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(stepDefinitionId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.delete, null));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, null));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.delete, null));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do delete
         txManager.execute(tx -> {
             final Optional<TriggerDefinition> toBeDeleted = triggerDefinitionRepository.find(tx, scopeId, stepDefinitionId);

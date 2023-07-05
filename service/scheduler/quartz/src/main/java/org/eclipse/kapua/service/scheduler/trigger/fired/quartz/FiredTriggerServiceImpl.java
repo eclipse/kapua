@@ -22,6 +22,12 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+<<<<<<< HEAD
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+import org.eclipse.kapua.service.job.JobDomains;
+=======
+import org.eclipse.kapua.service.job.JobDomain;
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerRepository;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTrigger;
@@ -74,7 +80,13 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
         ArgumentValidator.notNull(firedTriggerCreator.getStatus(), "firedTriggerCreator.status");
 
         // Check access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, null));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.write, null));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         return txManager.execute(tx -> {
             // Check existence of Trigger
@@ -97,7 +109,13 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
         // Argument Validation
         ArgumentValidator.notNull(firedTriggerId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, scopeId));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, scopeId));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do find
         return txManager.execute(tx -> firedTriggerRepository.find(tx, scopeId, firedTriggerId))
                 .orElse(null);
@@ -108,7 +126,13 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, query.getScopeId()));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do query
         return txManager.execute(tx -> firedTriggerRepository.query(tx, query));
     }
@@ -118,7 +142,13 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, query.getScopeId()));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do query
         return txManager.execute(tx -> firedTriggerRepository.count(tx, query));
     }
@@ -129,7 +159,13 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(firedTriggerId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.delete, null));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, null));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.delete, null));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do delete
         txManager.execute(tx -> firedTriggerRepository.delete(tx, scopeId, firedTriggerId));
 

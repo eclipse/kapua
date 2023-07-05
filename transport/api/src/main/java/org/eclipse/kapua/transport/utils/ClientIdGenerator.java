@@ -23,6 +23,7 @@ import java.util.Random;
  * @author alberto.codutti
  * @since 1.0.0
  */
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class ClientIdGenerator {
 
     /**

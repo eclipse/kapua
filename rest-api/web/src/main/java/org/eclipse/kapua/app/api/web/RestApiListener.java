@@ -33,28 +33,28 @@ public class RestApiListener implements ServletContextListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(RestApiListener.class);
 
-    private static final SystemSetting SYSTEM_SETTING = SystemSetting.getInstance();
+    private final SystemSetting systemSetting = SystemSetting.getInstance();
 
     private ServiceModuleBundle moduleBundle;
 
     @Override
     public void contextInitialized(final ServletContextEvent event) {
 
-        if (SYSTEM_SETTING.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
+        if (systemSetting.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
             try {
-                String dbUsername = SYSTEM_SETTING.getString(SystemSettingKey.DB_USERNAME);
-                String dbPassword = SYSTEM_SETTING.getString(SystemSettingKey.DB_PASSWORD);
+                String dbUsername = systemSetting.getString(SystemSettingKey.DB_USERNAME);
+                String dbPassword = systemSetting.getString(SystemSettingKey.DB_PASSWORD);
                 String schema = MoreObjects.firstNonNull(
-                        SYSTEM_SETTING.getString(SystemSettingKey.DB_SCHEMA_ENV),
-                        SYSTEM_SETTING.getString(SystemSettingKey.DB_SCHEMA)
+                        systemSetting.getString(SystemSettingKey.DB_SCHEMA_ENV),
+                        systemSetting.getString(SystemSettingKey.DB_SCHEMA)
                 );
 
                 // Loading JDBC Driver
-                String jdbcDriver = SYSTEM_SETTING.getString(SystemSettingKey.DB_JDBC_DRIVER);
+                String jdbcDriver = systemSetting.getString(SystemSettingKey.DB_JDBC_DRIVER);
                 try {
                     Class.forName(jdbcDriver);
                 } catch (ClassNotFoundException e) {
-                    LOG.warn("Could not find jdbc driver: {}. Subsequent DB operation failures may occur...", SYSTEM_SETTING.getString(SystemSettingKey.DB_JDBC_DRIVER));
+                    LOG.warn("Could not find jdbc driver: {}. Subsequent DB operation failures may occur...", systemSetting.getString(SystemSettingKey.DB_JDBC_DRIVER));
                 }
 
                 // Starting Liquibase Client

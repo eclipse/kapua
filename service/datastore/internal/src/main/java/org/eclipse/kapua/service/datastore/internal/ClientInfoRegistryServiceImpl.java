@@ -24,6 +24,12 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
+<<<<<<< HEAD
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+import org.eclipse.kapua.service.datastore.DatastoreDomains;
+=======
+import org.eclipse.kapua.service.datastore.DatastoreDomain;
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
@@ -203,7 +209,13 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
 
     private void checkAccess(KapuaId scopeId, Actions action)
             throws KapuaException {
+<<<<<<< HEAD
         Permission permission = permissionFactory.newPermission(Domains.DATASTORE, action, scopeId);
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        Permission permission = permissionFactory.newPermission(DatastoreDomains.DATASTORE_DOMAIN, action, scopeId);
+=======
+        Permission permission = permissionFactory.newPermission(new DatastoreDomain(), action, scopeId);
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         authorizationService.checkPermission(permission);
     }
 

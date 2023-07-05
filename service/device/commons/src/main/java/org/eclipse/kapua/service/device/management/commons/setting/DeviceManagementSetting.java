@@ -18,13 +18,12 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  * Class that offers access to device management settings
  *
  * @since 1.0
- *
  */
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class DeviceManagementSetting extends AbstractKapuaSetting<DeviceManagementSettingKey> {
 
     /**
      * Resource file from which source properties.
-     *
      */
     private static final String DEVICE_MANAGEMENT_SETTING_RESOURCE = "device-management-setting.properties";
 

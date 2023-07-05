@@ -165,6 +165,7 @@ public class KapuaModule extends AbstractKapuaModule {
                     // Need to request injection explicitely otherwise the interceptor would not
                     // be injected.
                     MethodInterceptor interceptor = (MethodInterceptor) clazz.newInstance();
+                    logger.info("Requesting injection for {}", interceptor.getClass().getName());
                     requestInjection(interceptor);
 
                     bindInterceptor(Matchers.subclassesOf(parentClazz), Matchers.annotatedWith(methodAnnotation), interceptor);

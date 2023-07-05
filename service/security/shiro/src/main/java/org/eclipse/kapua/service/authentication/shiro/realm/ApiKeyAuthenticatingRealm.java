@@ -20,7 +20,6 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
@@ -43,8 +42,9 @@ import java.util.Map;
 public class ApiKeyAuthenticatingRealm extends KapuaAuthenticatingRealm {
 
     private static final Logger LOG = LoggerFactory.getLogger(ApiKeyAuthenticatingRealm.class);
-
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    // Get Services
+    private final UserService userService = KapuaLocator.getInstance().getService(UserService.class);
+    private final CredentialService credentialService = KapuaLocator.getInstance().getService(CredentialService.class);
 
     /**
      * Realm name.
@@ -69,16 +69,7 @@ public class ApiKeyAuthenticatingRealm extends KapuaAuthenticatingRealm {
         // Extract credentials
         ApiKeyCredentialsImpl token = (ApiKeyCredentialsImpl) authenticationToken;
         String tokenApiKey = token.getApiKey();
-        // Get Services
-        UserService userService;
-        CredentialService credentialService;
 
-        try {
-            userService = LOCATOR.getService(UserService.class);
-            credentialService = LOCATOR.getService(CredentialService.class);
-        } catch (KapuaRuntimeException kre) {
-            throw new ShiroException("Unexpected error while loading KapuaServices!", kre);
-        }
         // Find credential
         Credential credential = null;
         try {

@@ -18,6 +18,7 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 /**
  * Authorization setting implementation.
  */
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class SimpleSetting extends AbstractKapuaSetting<SimpleSettingKeys> {
 
     private static final String SETTING_RESOURCE = "kapua-security-registration-simple-setting.properties";

@@ -31,6 +31,7 @@ import java.util.Base64;
  *
  * @since 1.0.0
  */
+//TODO: FIXME: REMOVE: A service in a dto class? Behaviour should not be part of a data class!
 public class ScopeId implements KapuaId {
 
     private static final long serialVersionUID = 6893262093856905182L;

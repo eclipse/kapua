@@ -20,6 +20,7 @@ import org.eclipse.kapua.job.engine.client.JobEngineServiceClient;
  *
  * @since 1.5.0
  */
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class JobEngineClientSetting extends AbstractKapuaSetting<JobEngineClientSettingKeys> {
 
     /**

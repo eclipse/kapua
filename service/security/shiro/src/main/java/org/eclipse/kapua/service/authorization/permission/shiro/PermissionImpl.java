@@ -42,6 +42,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Transient;
 import java.io.Serializable;
 
 /**
@@ -54,8 +55,12 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
 
     private static final long serialVersionUID = 1480557438886065675L;
 
-    private static final AccountService ACCOUNT_SERVICE = KapuaLocator.getInstance().getService(AccountService.class);
-    private static final DomainRegistryService DOMAIN_SERVICE = KapuaLocator.getInstance().getService(DomainRegistryService.class);
+    //TODO: FIXME: REMOVE: A service in a jpa class? Behaviour should not be part of a data class!
+    @Transient
+    private final AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
+    //TODO: FIXME: REMOVE: A service in a jpa class? Behaviour should not be part of a data class!
+    @Transient
+    private final DomainRegistryService domainService = KapuaLocator.getInstance().getService(DomainRegistryService.class);
 
     @Basic
     @Column(name = "domain", nullable = true, updatable = false)
@@ -254,7 +259,7 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
     private void checkTargetPermissionIsGroupable(Permission targetPermission) {
         if (targetPermission.getDomain() != null) {
             try {
-                Domain domainDefinition = KapuaSecurityUtils.doPrivileged(() -> DOMAIN_SERVICE.findByName(targetPermission.getDomain()));
+                Domain domainDefinition = KapuaSecurityUtils.doPrivileged(() -> domainService.findByName(targetPermission.getDomain()));
 
                 if (!domainDefinition.getGroupable()) {
                     this.setGroupId(null);
@@ -290,7 +295,7 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
         Permission targetPermission = (Permission) shiroPermission;
 
         try {
-            Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.find(targetPermission.getTargetScopeId()));
+            Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(targetPermission.getTargetScopeId()));
 
             if (account != null && account.getScopeId() != null) {
                 String parentAccountPath = account.getParentAccountPath();

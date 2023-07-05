@@ -17,6 +17,7 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 /**
  * @since 1.2.0
  */
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class LiquibaseClientSettings extends AbstractKapuaSetting<LiquibaseClientSettingKeys> {
 
     private static final String CONFIG_RESOURCE_NAME = "liquibase-client-settings.properties";

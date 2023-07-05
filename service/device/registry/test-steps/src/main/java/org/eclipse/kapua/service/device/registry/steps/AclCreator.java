@@ -34,6 +34,16 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+<<<<<<< HEAD
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+import org.eclipse.kapua.service.datastore.DatastoreDomains;
+import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
+import org.eclipse.kapua.service.device.registry.DeviceDomains;
+=======
+import org.eclipse.kapua.service.datastore.DatastoreDomain;
+import org.eclipse.kapua.service.device.management.DeviceManagementDomain;
+import org.eclipse.kapua.service.device.registry.DeviceDomains;
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -262,22 +272,46 @@ public class AclCreator {
 
     void attachDevicePermissions(Account account, User user) throws Exception {
         List<AclPermission> permissionList = new ArrayList<>();
+<<<<<<< HEAD
         permissionList.add(new AclPermission(Domains.DEVICE_MANAGEMENT, Actions.write, (KapuaEid) user.getScopeId()));
         permissionList.add(new AclPermission(Domains.BROKER, Actions.connect, (KapuaEid) user.getScopeId()));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        permissionList.add(new AclPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, (KapuaEid) user.getScopeId()));
+        permissionList.add(new AclPermission(BrokerDomains.BROKER_DOMAIN, Actions.connect, (KapuaEid) user.getScopeId()));
+=======
+        permissionList.add(new AclPermission(new DeviceManagementDomain(), Actions.write, (KapuaEid) user.getScopeId()));
+        permissionList.add(new AclPermission(BrokerDomains.BROKER_DOMAIN, Actions.connect, (KapuaEid) user.getScopeId()));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         createPermissions(permissionList, user, account);
     }
 
     void attachDataViewPermissions(Account account, User user) throws Exception {
         List<AclPermission> permissionList = new ArrayList<>();
+<<<<<<< HEAD
         permissionList.add(new AclPermission(Domains.DATASTORE, Actions.read, (KapuaEid) user.getScopeId()));
         permissionList.add(new AclPermission(Domains.BROKER, Actions.connect, (KapuaEid) user.getScopeId()));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        permissionList.add(new AclPermission(DatastoreDomains.DATASTORE_DOMAIN, Actions.read, (KapuaEid) user.getScopeId()));
+        permissionList.add(new AclPermission(BrokerDomains.BROKER_DOMAIN, Actions.connect, (KapuaEid) user.getScopeId()));
+=======
+        permissionList.add(new AclPermission(new DatastoreDomain(), Actions.read, (KapuaEid) user.getScopeId()));
+        permissionList.add(new AclPermission(BrokerDomains.BROKER_DOMAIN, Actions.connect, (KapuaEid) user.getScopeId()));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         createPermissions(permissionList, user, account);
     }
 
     void attachDataManagePermissions(Account account, User user) throws Exception {
         List<AclPermission> permissionList = new ArrayList<>();
+<<<<<<< HEAD
         permissionList.add(new AclPermission(Domains.DATASTORE, Actions.write, (KapuaEid) user.getScopeId()));
         permissionList.add(new AclPermission(Domains.BROKER, Actions.connect, (KapuaEid) user.getScopeId()));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        permissionList.add(new AclPermission(DatastoreDomains.DATASTORE_DOMAIN, Actions.write, (KapuaEid) user.getScopeId()));
+        permissionList.add(new AclPermission(BrokerDomains.BROKER_DOMAIN, Actions.connect, (KapuaEid) user.getScopeId()));
+=======
+        permissionList.add(new AclPermission(new DatastoreDomain(), Actions.write, (KapuaEid) user.getScopeId()));
+        permissionList.add(new AclPermission(BrokerDomains.BROKER_DOMAIN, Actions.connect, (KapuaEid) user.getScopeId()));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         createPermissions(permissionList, user, account);
     }
 

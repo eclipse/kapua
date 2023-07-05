@@ -43,6 +43,7 @@ import java.util.Map;
  *
  * @since 1.0.0
  */
+//TODO: FIXME: promote from static utility to injectable collaborator
 public class CryptoUtil {
 
     private static final CryptoSettings CRYPTO_SETTINGS = CryptoSettings.getInstance();

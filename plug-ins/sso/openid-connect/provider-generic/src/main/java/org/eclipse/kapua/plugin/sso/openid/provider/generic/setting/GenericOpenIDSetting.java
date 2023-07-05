@@ -15,6 +15,7 @@ package org.eclipse.kapua.plugin.sso.openid.provider.generic.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class GenericOpenIDSetting extends AbstractKapuaSetting<GenericOpenIDSettingKeys> {
 
     private static final String GENERIC_OPENID_SETTING_RESOURCE = "openid-generic-setting.properties";
@@ -23,10 +24,6 @@ public class GenericOpenIDSetting extends AbstractKapuaSetting<GenericOpenIDSett
 
     private GenericOpenIDSetting() {
         super(GENERIC_OPENID_SETTING_RESOURCE);
-    }
-
-    GenericOpenIDSetting(final String resourceName) {
-        super(resourceName);
     }
 
     public static GenericOpenIDSetting getInstance() {

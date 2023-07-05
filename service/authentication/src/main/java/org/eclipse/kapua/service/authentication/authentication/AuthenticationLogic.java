@@ -26,7 +26,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
@@ -64,14 +63,29 @@ public abstract class AuthenticationLogic {
     //TODO inject!!!
     protected AuthMetric authenticationMetric = AuthMetric.getInstance();
 
+<<<<<<< HEAD
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+    protected static final Domain BROKER_DOMAIN = BrokerDomains.BROKER_DOMAIN;
+=======
+    protected final Domain brokerDomain = BrokerDomains.BROKER_DOMAIN;
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
     //TODO remove domain object. I cannot import one module just to get a constant
+<<<<<<< HEAD
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+    protected static final Domain DATASTORE_DOMAIN = new DatastoreDomain();
+    protected static final Domain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
+
+=======
+    protected final Domain datastoreDomain = new DatastoreDomain();
+    protected final Domain deviceManagementDomain = new DeviceManagementDomain();
+    //TODO: FIXME: find a better way to bridge spring and guice, in order to avoid duplicating all wiring logic
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
     protected DeviceConnectionOptionFactory deviceConnectionOptionFactory = KapuaLocator.getInstance().getFactory(DeviceConnectionOptionFactory.class);
     protected DeviceConnectionOptionService deviceConnectionOptionService = KapuaLocator.getInstance().getService(DeviceConnectionOptionService.class);
     protected AuthorizationService authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
     protected DeviceConnectionFactory deviceConnectionFactory = KapuaLocator.getInstance().getFactory(DeviceConnectionFactory.class);
     protected PermissionFactory permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
     protected DeviceConnectionService deviceConnectionService = KapuaLocator.getInstance().getService(DeviceConnectionService.class);
-    protected DeviceRegistryService deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
 
     private static final String USER_NOT_AUTHORIZED = "User not authorized!";
 

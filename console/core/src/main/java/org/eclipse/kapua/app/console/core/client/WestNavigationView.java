@@ -65,7 +65,7 @@ import java.util.List;
 
 public class WestNavigationView extends LayoutContainer {
 
-    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private final ConsoleMessages messages = GWT.create(ConsoleMessages.class);
 
     private final LayoutContainer centerPanel;
     private final KapuaCloudConsole kapuaCloudConsole;
@@ -147,7 +147,7 @@ public class WestNavigationView extends LayoutContainer {
                 accountManagementPanel = new ContentPanel();
                 accountManagementPanel.setBorders(false);
                 accountManagementPanel.setBodyBorder(false);
-                accountManagementPanel.setHeading(MSGS.manageHeading());
+                accountManagementPanel.setHeading(messages.manageHeading());
 
                 cloudResourcesTreeStore = new TreeStore<ModelData>();
                 accountManagementTreeStore = new TreeStore<ModelData>();
@@ -175,8 +175,8 @@ public class WestNavigationView extends LayoutContainer {
 
                         if ((currentSession.isFormDirty()) && (!skipNextSelChange)) {
                             // ask for confirmation before switching
-                            MessageBox.confirm(MSGS.confirm(),
-                                    MSGS.unsavedChanges(),
+                            MessageBox.confirm(messages.confirm(),
+                                    messages.unsavedChanges(),
                                     new Listener<MessageBoxEvent>() {
 
                                         @Override
@@ -301,7 +301,7 @@ public class WestNavigationView extends LayoutContainer {
                     settingView.setAccount(result);
 
                     panel.setIcon(new KapuaIcon(IconSet.COG));
-                    panel.setHeading(MSGS.settings());
+                    panel.setHeading(messages.settings());
                     panel.add(settingView);
 
                     centerPanel.add(panel);

@@ -38,16 +38,16 @@ public class MfaAuthenticatorImpl implements MfaAuthenticator {
 
     private static final Logger LOG = LoggerFactory.getLogger(MfaAuthenticatorImpl.class);
 
-    private static final KapuaAuthenticationSetting AUTHENTICATION_SETTING = KapuaAuthenticationSetting.getInstance();
-    private static final GoogleAuthenticatorConfig GOOGLE_AUTHENTICATOR_CONFIG;
+    private final KapuaAuthenticationSetting authenticationSetting = KapuaAuthenticationSetting.getInstance();
+    private final GoogleAuthenticatorConfig googleAuthenticatorConfig;
 
-    static {
+    public MfaAuthenticatorImpl() {
         // Setup of Google Authenticator Configs
-        int timeStepSize = AUTHENTICATION_SETTING.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TIME_STEP_SIZE);
+        int timeStepSize = authenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TIME_STEP_SIZE);
         long timeStepSizeInMillis = TimeUnit.SECONDS.toMillis(timeStepSize);
-        int windowSize = AUTHENTICATION_SETTING.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_WINDOW_SIZE);
-        int scratchCodeNumber = AUTHENTICATION_SETTING.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_SCRATCH_CODES_NUMBER);
-        int codeDigitsNumber = AUTHENTICATION_SETTING.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_CODE_DIGITS_NUMBER);
+        int windowSize = authenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_WINDOW_SIZE);
+        int scratchCodeNumber = authenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_SCRATCH_CODES_NUMBER);
+        int codeDigitsNumber = authenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_CODE_DIGITS_NUMBER);
 
         try {
             ArgumentValidator.notNegative(timeStepSizeInMillis, "timeStepSizeInMillis");
@@ -55,7 +55,7 @@ public class MfaAuthenticatorImpl implements MfaAuthenticator {
             ArgumentValidator.numRange(scratchCodeNumber, 0, 1000, "scratchCodeNumber");
             ArgumentValidator.numRange(codeDigitsNumber, 6, 8, "codeDigitsNumber");
 
-            GOOGLE_AUTHENTICATOR_CONFIG = new GoogleAuthenticatorConfig.GoogleAuthenticatorConfigBuilder()
+            googleAuthenticatorConfig = new GoogleAuthenticatorConfig.GoogleAuthenticatorConfigBuilder()
                     .setTimeStepSizeInMillis(timeStepSizeInMillis) // The time step size, in milliseconds
                     .setWindowSize(windowSize)  // The number of windows of size timeStepSizeInMillis checked during the validation
                     .setNumberOfScratchCodes(scratchCodeNumber)  // Number of scratch codes
@@ -93,7 +93,7 @@ public class MfaAuthenticatorImpl implements MfaAuthenticator {
         ArgumentValidator.notNull(mfaSecretKey, "mfaSecretKey");
         ArgumentValidator.notNegative(verificationCode, "verificationCode");
         // Do check
-        GoogleAuthenticator ga = new GoogleAuthenticator(GOOGLE_AUTHENTICATOR_CONFIG);
+        GoogleAuthenticator ga = new GoogleAuthenticator(googleAuthenticatorConfig);
 
         return ga.authorize(mfaSecretKey, verificationCode);
     }
@@ -123,7 +123,7 @@ public class MfaAuthenticatorImpl implements MfaAuthenticator {
      */
     @Override
     public List<String> generateCodes() {
-        GoogleAuthenticator gAuth = new GoogleAuthenticator(GOOGLE_AUTHENTICATOR_CONFIG);
+        GoogleAuthenticator gAuth = new GoogleAuthenticator(googleAuthenticatorConfig);
         GoogleAuthenticatorKey key = gAuth.createCredentials();
 
         List<String> scratchCodes = new ArrayList<>();

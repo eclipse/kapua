@@ -20,6 +20,12 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+<<<<<<< HEAD
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
+=======
+import org.eclipse.kapua.service.device.management.DeviceManagementDomain;
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
@@ -77,7 +83,13 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementT
         ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.read, scopeId));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new DeviceManagementDomain(), Actions.read, scopeId));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Prepare the request
         BundleRequestChannel bundleRequestChannel = new BundleRequestChannel();
         bundleRequestChannel.setAppName(DeviceBundleAppProperties.APP_NAME);
@@ -124,7 +136,13 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementT
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
         ArgumentValidator.notEmptyOrNull(bundleId, "bundleId");
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.execute, scopeId));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.execute, scopeId));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new DeviceManagementDomain(), Actions.execute, scopeId));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Prepare the request
         BundleRequestChannel bundleRequestChannel = new BundleRequestChannel();
         bundleRequestChannel.setAppName(DeviceBundleAppProperties.APP_NAME);
@@ -172,7 +190,13 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementT
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
         ArgumentValidator.notEmptyOrNull(bundleId, "bundleId");
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.execute, scopeId));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.execute, scopeId));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new DeviceManagementDomain(), Actions.execute, scopeId));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Prepare the request
         BundleRequestChannel bundleRequestChannel = new BundleRequestChannel();
         bundleRequestChannel.setAppName(DeviceBundleAppProperties.APP_NAME);

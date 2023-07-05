@@ -15,6 +15,7 @@ package org.eclipse.kapua.plugin.sso.openid.provider.keycloak.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class KeycloakOpenIDSetting extends AbstractKapuaSetting<KeycloakOpenIDSettingKeys> {
 
     private static final String KEYCLOAK_OPENID_SETTING_RESOURCE = "openid-keycloak-setting.properties";

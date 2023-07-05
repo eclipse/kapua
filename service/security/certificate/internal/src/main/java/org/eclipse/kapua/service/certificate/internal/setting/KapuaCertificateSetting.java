@@ -18,8 +18,8 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  * Authentication setting implementation.
  *
  * @since 1.0
- *
  */
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class KapuaCertificateSetting extends AbstractKapuaSetting<KapuaCertificateSettingKeys> {
 
     private static final String CERTIFICATE_SETTING_PROPERTIES = "kapua-certificate-setting.properties";

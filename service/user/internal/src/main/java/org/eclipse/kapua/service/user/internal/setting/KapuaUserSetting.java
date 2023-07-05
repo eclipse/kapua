@@ -17,27 +17,23 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 /**
  * Class that offers access to user settings
  *
- *
  * @since 1.0
- *
  */
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class KapuaUserSetting extends AbstractKapuaSetting<KapuaUserSettingKeys> {
 
     /**
      * Resource file from which source properties.
-     *
      */
     private static final String USER_SETTING_RESOURCE = "kapua-user-setting.properties";
 
     /**
      * Singleton instance of this {@link Class}.
-     *
      */
     private static final KapuaUserSetting INSTANCE = new KapuaUserSetting();
 
     /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link KapuaUserSettingKeys#USER_KEY} value.
-     *
      */
     private KapuaUserSetting() {
         super(USER_SETTING_RESOURCE);

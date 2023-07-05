@@ -21,6 +21,7 @@ import org.eclipse.kapua.service.device.management.configuration.DeviceConfigura
  *
  * @since 2.0.0
  */
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class DeviceConfigurationManagementSettings extends AbstractKapuaSetting<DeviceConfigurationManagementSettingsKeys> {
 
     private static final String DEVICE_CONFIGURATION_MANAGEMENT_SETTING_RESOURCE = "device-configuration-management-setting.properties";
@@ -29,6 +30,7 @@ public class DeviceConfigurationManagementSettings extends AbstractKapuaSetting<
 
     /**
      * Constructor.
+     *
      * @since 2.0.0
      */
     private DeviceConfigurationManagementSettings() {

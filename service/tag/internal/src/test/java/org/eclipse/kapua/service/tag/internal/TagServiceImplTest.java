@@ -110,8 +110,8 @@ public class TagServiceImplTest {
 //        Assertions.assertEquals("tag", got.getType());
 //        Assertions.assertEquals("testTag", got.getName());
 //
-//        Mockito.verify(permissionFactory).newPermission(Mockito.eq(TagDomains.TAG_DOMAIN), Mockito.eq(Actions.write), Mockito.eq(scopeId));
-//        Mockito.verify(permissionFactory).newPermission(Mockito.eq(TagDomains.TAG_DOMAIN), Mockito.eq(Actions.read), Mockito.eq(scopeId));
+//        Mockito.verify(permissionFactory).newPermission(Mockito.eq(new TagDomain()), Mockito.eq(Actions.write), Mockito.eq(scopeId));
+//        Mockito.verify(permissionFactory).newPermission(Mockito.eq(new TagDomain()), Mockito.eq(Actions.read), Mockito.eq(scopeId));
 //        Mockito.verify(authorizationService, Mockito.times(2)).checkPermission(Mockito.eq(FAKE_PERMISSION));
 //        Mockito.verify(serviceConfigurationManager).checkAllowedEntities(Mockito.eq(scopeId), Mockito.any());
 //        Mockito.verify(tagRepository).create(Mockito.any(), Mockito.<Tag>any());

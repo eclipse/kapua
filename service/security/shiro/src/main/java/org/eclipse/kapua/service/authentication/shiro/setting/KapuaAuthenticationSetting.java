@@ -22,6 +22,7 @@ import javax.inject.Singleton;
  * @since 1.0
  */
 @Singleton
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class KapuaAuthenticationSetting extends AbstractKapuaSetting<KapuaAuthenticationSettingKeys> {
 
     private static final String AUTHENTICATION_CONFIG_RESOURCE = "kapua-authentication-setting.properties";

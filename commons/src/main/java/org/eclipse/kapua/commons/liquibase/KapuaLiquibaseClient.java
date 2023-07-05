@@ -60,7 +60,7 @@ public class KapuaLiquibaseClient {
 
     private static final SemanticVersion LIQUIBASE_TIMESTAMP_FIX_VERSION = new SemanticVersion("3.3.3"); // https://liquibase.jira.com/browse/CORE-1958
 
-    private static final LiquibaseClientSettings LIQUIBASE_CLIENT_SETTINGS = LiquibaseClientSettings.getInstance();
+    private final LiquibaseClientSettings liquibaseClientSettings = LiquibaseClientSettings.getInstance();
 
     private final String jdbcUrl;
     private final String username;
@@ -111,8 +111,8 @@ public class KapuaLiquibaseClient {
         this.schema = schema;
 
         // Check wether or not fix the timestamp based on Liquibase version
-        boolean forceTimestampFix = LIQUIBASE_CLIENT_SETTINGS.getBoolean(LiquibaseClientSettingKeys.FORCE_TIMESTAMPS_FIX);
-        String currentLiquibaseVersionString = LIQUIBASE_CLIENT_SETTINGS.getString(LiquibaseClientSettingKeys.LIQUIBASE_VERSION);
+        boolean forceTimestampFix = liquibaseClientSettings.getBoolean(LiquibaseClientSettingKeys.FORCE_TIMESTAMPS_FIX);
+        String currentLiquibaseVersionString = liquibaseClientSettings.getString(LiquibaseClientSettingKeys.LIQUIBASE_VERSION);
         SemanticVersion currentLiquibaseVersion = new SemanticVersion(currentLiquibaseVersionString);
 
         runTimestampsFix = (currentLiquibaseVersion.afterOrMatches(LIQUIBASE_TIMESTAMP_FIX_VERSION) || forceTimestampFix);

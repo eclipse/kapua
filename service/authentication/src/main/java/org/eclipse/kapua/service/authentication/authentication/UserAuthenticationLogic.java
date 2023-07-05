@@ -104,15 +104,35 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
     protected UserPermissions updatePermissions(AuthContext authContext) throws KapuaException {
         List<Permission> permissions = new ArrayList<>();
         KapuaId scopeId = KapuaEid.parseCompactId(authContext.getScopeId());
+<<<<<<< HEAD
         permissions.add(permissionFactory.newPermission(Domains.BROKER, Actions.connect, scopeId));
         permissions.add(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.read, scopeId));
         permissions.add(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.write, scopeId));
         permissions.add(permissionFactory.newPermission(Domains.DATASTORE, Actions.read, scopeId));
         permissions.add(permissionFactory.newPermission(Domains.DATASTORE, Actions.write, scopeId));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        permissions.add(permissionFactory.newPermission(BROKER_DOMAIN, Actions.connect, scopeId));
+        permissions.add(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        permissions.add(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
+        permissions.add(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.read, scopeId));
+        permissions.add(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.write, scopeId));
+=======
+        permissions.add(permissionFactory.newPermission(brokerDomain, Actions.connect, scopeId));
+        permissions.add(permissionFactory.newPermission(deviceManagementDomain, Actions.read, scopeId));
+        permissions.add(permissionFactory.newPermission(deviceManagementDomain, Actions.write, scopeId));
+        permissions.add(permissionFactory.newPermission(datastoreDomain, Actions.read, scopeId));
+        permissions.add(permissionFactory.newPermission(datastoreDomain, Actions.write, scopeId));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         UserPermissions userPermissions = new UserPermissions(authorizationService.isPermitted(permissions));
 
         if (!userPermissions.isBrokerConnect()) {
+<<<<<<< HEAD
             throw new KapuaIllegalAccessException(permissionFactory.newPermission(Domains.BROKER, Actions.connect, scopeId).toString());
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+            throw new KapuaIllegalAccessException(permissionFactory.newPermission(BROKER_DOMAIN, Actions.connect, scopeId).toString());
+=======
+            throw new KapuaIllegalAccessException(permissionFactory.newPermission(brokerDomain, Actions.connect, scopeId).toString());
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         }
         return userPermissions;
     }

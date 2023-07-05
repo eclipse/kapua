@@ -29,15 +29,15 @@ import java.io.IOException;
  */
 public class SessionInfoFilter implements ClientRequestFilter {
 
-    private static final JobEngineClientSetting JOB_ENGINE_CLIENT_SETTING = JobEngineClientSetting.getInstance();
-    private static final String JOB_ENGINE_CLIENT_SETTING_AUTH_MODE = JOB_ENGINE_CLIENT_SETTING.getString(JobEngineClientSettingKeys.JOB_ENGINE_CLIENT_AUTH_MODE, "access_token");
-    private static final boolean JOB_ENGINE_CLIENT_AUTH_TRUSTED = "trusted".equals(JOB_ENGINE_CLIENT_SETTING_AUTH_MODE);
+    private final JobEngineClientSetting jobEngineClientSetting = JobEngineClientSetting.getInstance();
+    private final String jobEngineClientSettingAuthMode = jobEngineClientSetting.getString(JobEngineClientSettingKeys.JOB_ENGINE_CLIENT_AUTH_MODE, "access_token");
+    private final boolean jobEngineClientAuthTrusted = "trusted".equals(jobEngineClientSettingAuthMode);
 
     @Override
     public void filter(ClientRequestContext requestContext) throws IOException {
         KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
 
-        if (JOB_ENGINE_CLIENT_AUTH_TRUSTED || kapuaSession.isTrustedMode()) {
+        if (jobEngineClientAuthTrusted || kapuaSession.isTrustedMode()) {
             requestContext.getHeaders().putSingle(SessionInfoHttpHeaders.AUTH_MODE, "trusted");
         } else {
             requestContext.getHeaders().putSingle(SessionInfoHttpHeaders.AUTH_MODE, "access_token");

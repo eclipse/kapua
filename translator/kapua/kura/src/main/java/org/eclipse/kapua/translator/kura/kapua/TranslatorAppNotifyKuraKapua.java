@@ -66,25 +66,25 @@ public class TranslatorAppNotifyKuraKapua extends Translator<KuraNotifyMessage, 
     @Inject
     private TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
 
-    private static final Map<String, KapuaAppProperties> APP_NAME_DICTIONARY;
-    private static final Map<String, KapuaAppProperties> APP_VERSION_DICTIONARY;
+    private final Map<String, KapuaAppProperties> appNameDictionary;
+    private final Map<String, KapuaAppProperties> appVersionDictionary;
 
-    static {
-        APP_NAME_DICTIONARY = new HashMap<>();
+    public TranslatorAppNotifyKuraKapua() {
+        appNameDictionary = new HashMap<>();
 
-        APP_NAME_DICTIONARY.put(AssetMetrics.APP_ID.getName(), DeviceAssetAppProperties.APP_NAME);
-        APP_NAME_DICTIONARY.put(BundleMetrics.APP_ID.getName(), DeviceBundleAppProperties.APP_NAME);
-        APP_NAME_DICTIONARY.put(CommandMetrics.APP_ID.getName(), CommandAppProperties.APP_NAME);
-        APP_NAME_DICTIONARY.put(ConfigurationMetrics.APP_ID.getName(), DeviceConfigurationAppProperties.APP_NAME);
-        APP_NAME_DICTIONARY.put(PackageMetrics.APP_ID.getName(), PackageAppProperties.APP_NAME);
+        appNameDictionary.put(AssetMetrics.APP_ID.getName(), DeviceAssetAppProperties.APP_NAME);
+        appNameDictionary.put(BundleMetrics.APP_ID.getName(), DeviceBundleAppProperties.APP_NAME);
+        appNameDictionary.put(CommandMetrics.APP_ID.getName(), CommandAppProperties.APP_NAME);
+        appNameDictionary.put(ConfigurationMetrics.APP_ID.getName(), DeviceConfigurationAppProperties.APP_NAME);
+        appNameDictionary.put(PackageMetrics.APP_ID.getName(), PackageAppProperties.APP_NAME);
 
-        APP_VERSION_DICTIONARY = new HashMap<>();
+        appVersionDictionary = new HashMap<>();
 
-        APP_VERSION_DICTIONARY.put(AssetMetrics.APP_ID.getName(), DeviceAssetAppProperties.APP_VERSION);
-        APP_VERSION_DICTIONARY.put(BundleMetrics.APP_ID.getName(), DeviceBundleAppProperties.APP_VERSION);
-        APP_VERSION_DICTIONARY.put(CommandMetrics.APP_ID.getName(), CommandAppProperties.APP_VERSION);
-        APP_VERSION_DICTIONARY.put(ConfigurationMetrics.APP_ID.getName(), DeviceConfigurationAppProperties.APP_VERSION);
-        APP_VERSION_DICTIONARY.put(PackageMetrics.APP_ID.getName(), PackageAppProperties.APP_VERSION);
+        appVersionDictionary.put(AssetMetrics.APP_ID.getName(), DeviceAssetAppProperties.APP_VERSION);
+        appVersionDictionary.put(BundleMetrics.APP_ID.getName(), DeviceBundleAppProperties.APP_VERSION);
+        appVersionDictionary.put(CommandMetrics.APP_ID.getName(), CommandAppProperties.APP_VERSION);
+        appVersionDictionary.put(ConfigurationMetrics.APP_ID.getName(), DeviceConfigurationAppProperties.APP_VERSION);
+        appVersionDictionary.put(PackageMetrics.APP_ID.getName(), PackageAppProperties.APP_VERSION);
     }
 
     @Override
@@ -126,8 +126,8 @@ public class TranslatorAppNotifyKuraKapua extends Translator<KuraNotifyMessage, 
             String kuraAppIdVersion = kuraNotifyChannel.getAppId().split("-")[1];
 
             KapuaNotifyChannel kapuaNotifyChannel = new KapuaNotifyChannelImpl();
-            kapuaNotifyChannel.setAppName(APP_NAME_DICTIONARY.get(kuraAppIdName));
-            kapuaNotifyChannel.setVersion(APP_VERSION_DICTIONARY.get(kuraAppIdVersion));
+            kapuaNotifyChannel.setAppName(appNameDictionary.get(kuraAppIdName));
+            kapuaNotifyChannel.setVersion(appVersionDictionary.get(kuraAppIdVersion));
             kapuaNotifyChannel.setResources(kuraNotifyChannel.getResources());
 
             return kapuaNotifyChannel;

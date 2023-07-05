@@ -18,8 +18,8 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  * Crypto setting implementation.
  *
  * @since 1.0
- *
  */
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class KapuaCryptoSetting extends AbstractKapuaSetting<KapuaCryptoSettingKeys> {
 
     private static final String CRYPTO_CONFIG_RESOURCE = "kapua-crypto-setting.properties";

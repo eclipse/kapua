@@ -18,13 +18,12 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  * Class that offers access to account settings
  *
  * @since 1.0
- *
  */
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class KapuaAccountSetting extends AbstractKapuaSetting<KapuaAccountSettingKeys> {
 
     /**
      * Resource file from which source properties.
-     *
      */
     private static final String ACCOUNT_CONFIG_RESOURCE = "kapua-account-setting.properties";
 
@@ -32,7 +31,6 @@ public class KapuaAccountSetting extends AbstractKapuaSetting<KapuaAccountSettin
 
     /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link KapuaAccountSettingKeys#ACCOUNT_KEY} value.
-     *
      */
     private KapuaAccountSetting() {
         super(ACCOUNT_CONFIG_RESOURCE);

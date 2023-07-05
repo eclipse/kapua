@@ -45,9 +45,9 @@ import org.eclipse.kapua.app.console.module.authentication.client.messages.Conso
  */
 public class MfaLoginDialog extends Dialog {
 
-    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
-    private static final ConsoleCredentialMessages CRED_MSGS = GWT.create(ConsoleCredentialMessages.class);
-    private static final ConsoleCoreMessages CORE_MSGS = GWT.create(ConsoleCoreMessages.class);
+    private final ConsoleMessages consoleMessages = GWT.create(ConsoleMessages.class);
+    private final ConsoleCredentialMessages consoleCredentialMessages = GWT.create(ConsoleCredentialMessages.class);
+    private final ConsoleCoreMessages consoleCoreMessages = GWT.create(ConsoleCoreMessages.class);
 
     private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
 
@@ -74,7 +74,7 @@ public class MfaLoginDialog extends Dialog {
         setButtons(""); // don't show OK button
         setIcon(IconHelper.createStyle("user"));
 
-        setHeading(CRED_MSGS.mfaLoginTitle());
+        setHeading(consoleCredentialMessages.mfaLoginTitle());
 
         setModal(true);
         setBodyBorder(true);
@@ -96,29 +96,29 @@ public class MfaLoginDialog extends Dialog {
             }
         };
 
-        Label title = new Label(MSGS.loginDialogMfaTitle());
+        Label title = new Label(consoleMessages.loginDialogMfaTitle());
         title.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         add(title);
 
         // MFA presentation text
         add(new HTML(BR));
-        add(new Label(MSGS.loginMfa()));
+        add(new Label(consoleMessages.loginMfa()));
         add(new HTML(BR));
-        add(new Label(MSGS.loginMfa1()));
+        add(new Label(consoleMessages.loginMfa1()));
         add(new HTML(BR));
 
         // MFA code
         code = new TextField<String>();
-        code.setFieldLabel(MSGS.loginCode());
+        code.setFieldLabel(consoleMessages.loginCode());
         code.addKeyListener(keyListener);
         add(code);
 
         // checkbox
         trustCheckbox = new CheckBox();
         trustCheckbox.setName("Trustpc");
-        trustCheckbox.setBoxLabel(MSGS.loginDialogMfaBoxLabel());
+        trustCheckbox.setBoxLabel(consoleMessages.loginDialogMfaBoxLabel());
         trustCheckbox.setLabelSeparator("");
-        trustCheckbox.setToolTip(MSGS.userFormLockedTooltip());
+        trustCheckbox.setToolTip(consoleMessages.userFormLockedTooltip());
         add(trustCheckbox);
 
         if (this.isVisible()) {
@@ -138,7 +138,7 @@ public class MfaLoginDialog extends Dialog {
 
             @Override
             public void onFailure(Throwable caught) {
-                ConsoleInfo.display(CORE_MSGS.loginError(), caught.getLocalizedMessage());
+                ConsoleInfo.display(consoleCoreMessages.loginError(), caught.getLocalizedMessage());
                 reset();
 
                 // Go back
@@ -174,7 +174,7 @@ public class MfaLoginDialog extends Dialog {
         super.createButtons();
 
         status = new Status();
-        status.setBusy(MSGS.waitMsg());
+        status.setBusy(consoleMessages.waitMsg());
         status.hide();
         status.setAutoWidth(true);
 
@@ -182,7 +182,7 @@ public class MfaLoginDialog extends Dialog {
         getButtonBar().add(new FillToolItem());
 
         // submit
-        submit = new Button(CORE_MSGS.loginLogin());
+        submit = new Button(consoleCoreMessages.loginLogin());
         submit.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override

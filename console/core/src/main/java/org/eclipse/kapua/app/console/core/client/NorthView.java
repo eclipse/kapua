@@ -61,8 +61,8 @@ import java.util.List;
 
 public class NorthView extends LayoutContainer {
 
-    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
-    private static final ConsoleCredentialMessages CREDENTIAL_MSGS = GWT.create(ConsoleCredentialMessages.class);
+    private final ConsoleMessages messages = GWT.create(ConsoleMessages.class);
+    private final ConsoleCredentialMessages credentialMessages = GWT.create(ConsoleCredentialMessages.class);
 
     private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
     private final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
@@ -184,7 +184,7 @@ public class NorthView extends LayoutContainer {
                 //  (only if the current user is an INTERNAL one; note that an INTERNAL user has no ssoIdToken)
                 if (currentSession.getOpenIDIdToken() == null) {
                     KapuaMenuItem changePassword = new KapuaMenuItem();
-                    changePassword.setText(MSGS.changePassword());
+                    changePassword.setText(messages.changePassword());
                     changePassword.setIcon(IconSet.KEY);
                     changePassword.addSelectionListener(new SelectionListener<MenuEvent>() {
 
@@ -211,7 +211,7 @@ public class NorthView extends LayoutContainer {
                 }
 
                 KapuaMenuItem manageMfa = new KapuaMenuItem();
-                manageMfa.setText(CREDENTIAL_MSGS.manageMfaMenuItem());
+                manageMfa.setText(credentialMessages.manageMfaMenuItem());
                 manageMfa.setIcon(IconSet.LOCK);
                 manageMfa.addSelectionListener(new SelectionListener<MenuEvent>() {
 
@@ -226,7 +226,7 @@ public class NorthView extends LayoutContainer {
                 userActionMenu.add(new SeparatorMenuItem());
                 // Logout menu item
                 KapuaMenuItem userLogoutMenuItem = new KapuaMenuItem();
-                userLogoutMenuItem.setText(MSGS.consoleHeaderUserActionLogout());
+                userLogoutMenuItem.setText(messages.consoleHeaderUserActionLogout());
                 userLogoutMenuItem.setIcon(IconSet.SIGN_OUT);
                 userLogoutMenuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
 
@@ -288,8 +288,8 @@ public class NorthView extends LayoutContainer {
      */
     public MenuItem createAccountNavigationMenuItem() {
         KapuaMenuItem mainAccountMenuItem = new KapuaMenuItem();
-        mainAccountMenuItem.setText(MSGS.accountSelectorItemYourAccount(accountName));
-        mainAccountMenuItem.setToolTip(MSGS.accountSelectorTooltipYourAccount());
+        mainAccountMenuItem.setText(messages.accountSelectorItemYourAccount(accountName));
+        mainAccountMenuItem.setToolTip(messages.accountSelectorTooltipYourAccount());
         mainAccountMenuItem.setIcon(IconSet.USER_MD);
         mainAccountMenuItem.setId(accountId);
         mainAccountMenuItem.addSelectionListener(switchToAccountListener);
@@ -303,7 +303,7 @@ public class NorthView extends LayoutContainer {
         populateNavigatorMenu(subAccountMenu, accountId);
 
         KapuaMenuItem switchToAccountMenuItem = new KapuaMenuItem();
-        switchToAccountMenuItem.setText(MSGS.consoleHeaderUserActionSwitchToAccount());
+        switchToAccountMenuItem.setText(messages.consoleHeaderUserActionSwitchToAccount());
         switchToAccountMenuItem.setIcon(IconSet.USERS);
         switchToAccountMenuItem.setSubMenu(subAccountMenu);
 
@@ -319,8 +319,8 @@ public class NorthView extends LayoutContainer {
      */
     private void populateNavigatorMenu(final Menu menu, String accountId) {
         final KapuaMenuItem loadingChildAccounts;
-        loadingChildAccounts = new KapuaMenuItem(MSGS.accountSelectorLoadingChildAccounts());
-        loadingChildAccounts.setToolTip(MSGS.accountSelectorTooltipYourAccount());
+        loadingChildAccounts = new KapuaMenuItem(messages.accountSelectorLoadingChildAccounts());
+        loadingChildAccounts.setToolTip(messages.accountSelectorTooltipYourAccount());
         loadingChildAccounts.setIcon(IconSet.USER_MD);
         loadingChildAccounts.setId(accountId);
         loadingChildAccounts.disable();
@@ -339,7 +339,7 @@ public class NorthView extends LayoutContainer {
                 // If no children are found, add "No Child" label
                 if (result.getChildAccounts() != null && result.getChildAccounts().isEmpty()) {
                     menu.remove(loadingChildAccounts);
-                    MenuItem noChildMenuItem = new MenuItem(MSGS.accountSelectorItemNoChild());
+                    MenuItem noChildMenuItem = new MenuItem(messages.accountSelectorItemNoChild());
                     noChildMenuItem.disable();
                     menu.add(noChildMenuItem);
                 } else {
@@ -387,7 +387,7 @@ public class NorthView extends LayoutContainer {
         String accountIdString = ce.getItem().getId();
 
         // Mask the whole page
-        parent.getViewport().mask(MSGS.accountSelectorMenuMaskLoading(accountName));
+        parent.getViewport().mask(messages.accountSelectorMenuMaskLoading(accountName));
 
         gwtAccountService.find(accountIdString, new AsyncCallback<GwtAccount>() {
 
@@ -451,7 +451,7 @@ public class NorthView extends LayoutContainer {
             userDisplayName = username;
         }
 
-        userActionButton.setText(MSGS.consoleHeaderUserActionButtonLabel(userDisplayName, accountName));
+        userActionButton.setText(messages.consoleHeaderUserActionButtonLabel(userDisplayName, accountName));
     }
 
 }

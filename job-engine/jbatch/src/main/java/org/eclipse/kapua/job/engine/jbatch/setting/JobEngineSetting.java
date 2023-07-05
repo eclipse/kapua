@@ -17,6 +17,7 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 /**
  * {@link org.eclipse.kapua.job.engine.jbatch.JobEngineServiceJbatch} setting implementation.
  */
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class JobEngineSetting extends AbstractKapuaSetting<JobEngineSettingKeys> {
 
     private static final String JOB_ENGINE_SETTING_RESOURCE = "job-engine-setting.properties";

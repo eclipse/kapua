@@ -32,13 +32,13 @@ public class KapuaQuartzConnectionProvider implements ConnectionProvider {
 
     private static final String JDBC_CONNECTION_URL = JdbcConnectionUrlResolvers.resolveJdbcUrl();
 
-    private static final SystemSetting CONFIG = SystemSetting.getInstance();
-    private static final String USERNAME = CONFIG.getString(SystemSettingKey.DB_USERNAME);
-    private static final String PASSWORD = CONFIG.getString(SystemSettingKey.DB_PASSWORD);
+    private final SystemSetting systemSetting = SystemSetting.getInstance();
+    private final String username = systemSetting.getString(SystemSettingKey.DB_USERNAME);
+    private final String password = systemSetting.getString(SystemSettingKey.DB_PASSWORD);
 
     @Override
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(JDBC_CONNECTION_URL, USERNAME, PASSWORD);
+        return DriverManager.getConnection(JDBC_CONNECTION_URL, username, password);
     }
 
     @Override

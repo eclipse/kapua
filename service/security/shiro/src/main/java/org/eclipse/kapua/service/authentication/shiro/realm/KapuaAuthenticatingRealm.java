@@ -47,7 +47,9 @@ import java.util.Map;
  */
 public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    protected final AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
+    protected final CredentialService credentialService = KapuaLocator.getInstance().getService(CredentialService.class);
+
     // Session
 
     /**
@@ -81,8 +83,6 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
      * @since 2.0.0
      */
     protected Account checkAccount(KapuaId accountId) {
-        AccountService accountService = LOCATOR.getService(AccountService.class);
-
         Account account;
         try {
             account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(accountId));
@@ -167,7 +167,6 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
      */
     protected Map<String, Object> getCredentialServiceConfig(KapuaId scopeId) {
         try {
-            CredentialService credentialService = LOCATOR.getService(CredentialService.class);
             return KapuaSecurityUtils.doPrivileged(() -> credentialService.getConfigValues(scopeId));
         } catch (KapuaException e) {
             throw new ShiroException("Unexpected error while looking for the CredentialService!", e);
@@ -211,8 +210,6 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
                         failedCredential.setLockoutReset(resetDate);
                     }
                 }
-
-                CredentialService credentialService = LOCATOR.getService(CredentialService.class);
                 credentialService.update(failedCredential);
             });
         } catch (KapuaException kex) {
@@ -230,7 +227,6 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
     protected void resetCredentialLockout(Credential credential) {
         //TODO find a proper way to update only if needed (obviously database update has a cost)
         if (shouldResetCredentialLockout(credential)) {
-            CredentialService credentialService = LOCATOR.getService(CredentialService.class);
             credential.setFirstLoginFailure(null);
             credential.setLoginFailuresReset(null);
             credential.setLockoutReset(null);

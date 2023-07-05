@@ -45,7 +45,7 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/devices/{deviceId}/packages")
 public class DeviceManagementPackages extends AbstractKapuaResource {
 
-    private static final Boolean RESPONSE_LEGACY_MODE = KapuaApiCoreSetting.getInstance().getBoolean(KapuaApiCoreSettingKeys.API_DEVICE_MANAGEMENT_PACKAGE_RESPONSE_LEGACY_MODE, false);
+    private final Boolean responseLegacyMode = KapuaApiCoreSetting.getInstance().getBoolean(KapuaApiCoreSettingKeys.API_DEVICE_MANAGEMENT_PACKAGE_RESPONSE_LEGACY_MODE, false);
 
     @Inject
     public DevicePackageManagementService devicePackageManagementService;
@@ -101,7 +101,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
 
         DeviceManagementOperation deviceManagementOperation = deviceManagementOperationRegistryService.find(scopeId, deviceManagementOperationId);
 
-        return RESPONSE_LEGACY_MODE || legacy ? returnNoContent() : returnOk(deviceManagementOperation);
+        return responseLegacyMode || legacy ? returnNoContent() : returnOk(deviceManagementOperation);
     }
 
     /**
@@ -131,7 +131,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
 
         DeviceManagementOperation deviceManagementOperation = deviceManagementOperationRegistryService.find(scopeId, deviceManagementOperationId);
 
-        return RESPONSE_LEGACY_MODE || legacy ? returnNoContent() : returnOk(deviceManagementOperation);
+        return responseLegacyMode || legacy ? returnNoContent() : returnOk(deviceManagementOperation);
     }
 
 }

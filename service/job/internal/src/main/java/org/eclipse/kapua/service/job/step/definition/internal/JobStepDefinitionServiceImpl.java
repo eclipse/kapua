@@ -21,6 +21,12 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+<<<<<<< HEAD
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+import org.eclipse.kapua.service.job.JobDomains;
+=======
+import org.eclipse.kapua.service.job.JobDomain;
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionCreator;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionListResult;
@@ -64,7 +70,13 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
         ArgumentValidator.validateEntityName(stepDefinitionCreator.getName(), "stepDefinitionCreator.name");
         ArgumentValidator.notEmptyOrNull(stepDefinitionCreator.getProcessorName(), "stepDefinitionCreator.processorName");
         // Check access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, null));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.write, null));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         return txManager.execute(tx -> {
             // Check duplicate name
@@ -96,7 +108,13 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
         ArgumentValidator.notEmptyOrNull(jobStepDefinition.getProcessorName(), "jobStepDefinition.processorName");
 
         // Check access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, null));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.write, null));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         return txManager.execute(tx -> {
             // Check duplicate name
@@ -116,7 +134,13 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
         ArgumentValidator.notNull(stepDefinitionId, "stepDefinitionId");
 
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, KapuaId.ANY));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, KapuaId.ANY));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         // Do find
         return txManager.execute(tx -> repository.find(tx, scopeId, stepDefinitionId))
@@ -133,7 +157,13 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
             Optional<JobStepDefinition> jobStepDefinition = repository.findByName(tx, name);
             if (jobStepDefinition.isPresent()) {
                 // Check Access
+<<<<<<< HEAD
                 authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, KapuaId.ANY));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+                authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+=======
+                authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, KapuaId.ANY));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
             }
             return jobStepDefinition;
         }).orElse(null);
@@ -144,7 +174,13 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, KapuaId.ANY));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, KapuaId.ANY));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do query
         return txManager.execute(tx -> repository.query(tx, query));
     }
@@ -154,7 +190,13 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, KapuaId.ANY));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, KapuaId.ANY));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do query
         return txManager.execute(tx -> repository.count(tx, query));
     }
@@ -165,7 +207,13 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(stepDefinitionId, "stepDefinitionId");
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.delete, null));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, null));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.delete, null));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do delete
         txManager.execute(tx -> repository.delete(tx, scopeId, stepDefinitionId));
     }

@@ -12,11 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.artemis.plugin.security.connector;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.activemq.artemis.api.core.ActiveMQException;
 import org.apache.activemq.artemis.api.core.ActiveMQExceptionType;
 import org.apache.activemq.artemis.api.core.TransportConfiguration;
@@ -24,13 +19,17 @@ import org.apache.activemq.artemis.core.server.ActiveMQServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Helper class to handle acceptor lifecycle (add/remove acceptors on demand)
- *
  */
 public class AcceptorHandler {
 
-    private static Logger logger = LoggerFactory.getLogger(AcceptorHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(AcceptorHandler.class);
 
     private ActiveMQServer server;
     //TODO should take care of concurrency?
@@ -38,23 +37,24 @@ public class AcceptorHandler {
 
     /**
      * Creates the handler (without synchronizing acceptors so the {@link #syncAcceptors()} should be call to make acceptor configuration applied)
+     *
      * @param definedAcceptors
      * @param server
      */
     public AcceptorHandler(ActiveMQServer server, Map<String, String> definedAcceptors) {
         this.server = server;
-        if (definedAcceptors!=null) {
+        if (definedAcceptors != null) {
             this.definedAcceptors = definedAcceptors;
-        }
-        else {
+        } else {
             this.definedAcceptors = new HashMap<>();
         }
     }
 
     /**
      * Add acceptor
+     *
      * @param name acceptor name
-     * @param uri acceptor uri
+     * @param uri  acceptor uri
      * @return the previous acceptor uri (if present)
      * @throws Exception
      */
@@ -66,7 +66,7 @@ public class AcceptorHandler {
 
     /**
      * Remove acceptor
-     * 
+     *
      * @param name acceptor name
      * @return the current acceptor uri (if present)
      * @throws Exception
@@ -79,8 +79,8 @@ public class AcceptorHandler {
 
     /**
      * Synchronize acceptors (to be used at startup since add and remove acceptor are already calling this method)
-     * 
-     * @throws Exception 
+     *
+     * @throws Exception
      */
     public void syncAcceptors() throws Exception {
         logger.info("Init acceptors... server started: {} - {}", server.isStarted(), server.getState());
@@ -92,8 +92,7 @@ public class AcceptorHandler {
                 if (definedAcceptors.get(acceptorName) == null) {
                     acceptorToRemove.add(acceptorName);
                     logger.info("Adding acceptor {} to the remove list", acceptorName);
-                }
-                else {
+                } else {
                     logger.info("Leaving acceptor {} running", acceptorName);
                 }
             });
@@ -115,7 +114,7 @@ public class AcceptorHandler {
         definedAcceptors.forEach((name, uri) -> {
             logger.info("Adding acceptor... name: {} - uri: {}", name, uri);
             try {
-                if (server.getRemotingService().getAcceptor(name)==null || !server.getRemotingService().getAcceptor(name).isStarted()) {
+                if (server.getRemotingService().getAcceptor(name) == null || !server.getRemotingService().getAcceptor(name).isStarted()) {
                     server.getConfiguration().addAcceptorConfiguration(name, uri);
                     server.getRemotingService().createAcceptor(name, uri);
                     if (server.isStarted()) {

@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class KeycloakJwtProcessor extends AbstractJwtProcessor {
 
-    private static final OpenIDSetting OPENID_SETTING = OpenIDSetting.getInstance();
+    private final OpenIDSetting openIDSetting = OpenIDSetting.getInstance();
 
     public KeycloakJwtProcessor() throws OpenIDException {
     }
@@ -42,9 +42,9 @@ public class KeycloakJwtProcessor extends AbstractJwtProcessor {
 
     @Override
     protected List<String> getJwtAudiences() throws OpenIDIllegalArgumentException {
-        List<String> jwtAudiences = OPENID_SETTING.getList(String.class, OpenIDSettingKeys.SSO_OPENID_CLIENT_ID);
+        List<String> jwtAudiences = openIDSetting.getList(String.class, OpenIDSettingKeys.SSO_OPENID_CLIENT_ID);
         if (CollectionUtils.isEmpty(jwtAudiences)) {
-            throw new OpenIDIllegalArgumentException(OpenIDSettingKeys.SSO_OPENID_CLIENT_ID.key(), (jwtAudiences == null ? null : "") );
+            throw new OpenIDIllegalArgumentException(OpenIDSettingKeys.SSO_OPENID_CLIENT_ID.key(), (jwtAudiences == null ? null : ""));
         }
         return jwtAudiences;
     }

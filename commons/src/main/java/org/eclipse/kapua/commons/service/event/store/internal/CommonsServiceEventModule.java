@@ -12,12 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.event.store.internal;
 
+import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
+import org.eclipse.kapua.storage.TxManager;
+
+import javax.inject.Named;
 
 public class CommonsServiceEventModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(EventStoreFactory.class).to(EventStoreFactoryImpl.class);
     }
+
+    @Provides
+    @Named("kapuaEventsTxManager")
+    TxManager kapuaEventsTxManager(@Named("maxInsertAttempts") Integer maxInsertAttempts) {
+        return new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-events");
+    }
+
 }

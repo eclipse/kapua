@@ -37,6 +37,12 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
+<<<<<<< HEAD
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+import org.eclipse.kapua.service.user.UserDomains;
+=======
+import org.eclipse.kapua.service.user.UserDomain;
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
@@ -72,7 +78,13 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
             TxManager txManager,
             UserRepository userRepository, UserFactory userFactory,
             EventStorer eventStorer) {
+<<<<<<< HEAD
         super(txManager, serviceConfigurationManager, Domains.USER, authorizationService, permissionFactory);
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        super(txManager, serviceConfigurationManager, UserDomains.USER_DOMAIN, authorizationService, permissionFactory);
+=======
+        super(txManager, serviceConfigurationManager, new UserDomain(), authorizationService, permissionFactory);
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         this.userRepository = userRepository;
         this.userFactory = userFactory;
         this.eventStorer = eventStorer;
@@ -102,7 +114,13 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
             ArgumentValidator.isEmptyOrNull(userCreator.getExternalUsername(), "userCreator.externalUsername");
         }
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.USER, Actions.write, userCreator.getScopeId()));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.write, userCreator.getScopeId()));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new UserDomain(), Actions.write, userCreator.getScopeId()));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         return txManager.execute(tx -> {
             // Check entity limit
@@ -174,7 +192,13 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
             ArgumentValidator.isEmptyOrNull(user.getExternalUsername(), "user.externalUsername");
         }
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.USER, Actions.write, user.getScopeId()));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.write, user.getScopeId()));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new UserDomain(), Actions.write, user.getScopeId()));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         return txManager.execute(
                 tx -> {
@@ -246,7 +270,13 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
         ArgumentValidator.notNull(scopeId.getId(), "user.scopeId");
 
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.USER, Actions.delete, scopeId));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.delete, scopeId));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new UserDomain(), Actions.delete, scopeId));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         txManager.execute(
                 tx -> {
@@ -273,7 +303,13 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(userId, "userId");
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.USER, Actions.read, scopeId));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, scopeId));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new UserDomain(), Actions.read, scopeId));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         // Do the find
         return txManager.execute(tx -> userRepository.find(tx, scopeId, userId))
@@ -313,7 +349,13 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.USER, Actions.read, query.getScopeId()));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new UserDomain(), Actions.read, query.getScopeId()));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do query
         return txManager.execute(tx -> userRepository.query(tx, query));
     }
@@ -324,7 +366,13 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
         // Argument Validator
         ArgumentValidator.notNull(query, "query");
         // Check Access
+<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.USER, Actions.read, query.getScopeId()));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
+=======
+        authorizationService.checkPermission(permissionFactory.newPermission(new UserDomain(), Actions.read, query.getScopeId()));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do count
         return txManager.execute(tx -> userRepository.count(tx, query));
     }
@@ -335,7 +383,13 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
 
     private Optional<User> checkReadAccess(Optional<User> user) throws KapuaException {
         if (user.isPresent()) {
+<<<<<<< HEAD
             authorizationService.checkPermission(permissionFactory.newPermission(Domains.USER, Actions.read, user.get().getScopeId()));
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+            authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, user.get().getScopeId()));
+=======
+            authorizationService.checkPermission(permissionFactory.newPermission(new UserDomain(), Actions.read, user.get().getScopeId()));
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         }
         return user;
     }

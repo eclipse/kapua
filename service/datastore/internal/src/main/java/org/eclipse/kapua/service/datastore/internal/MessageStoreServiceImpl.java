@@ -27,6 +27,12 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+<<<<<<< HEAD
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+import org.eclipse.kapua.service.datastore.DatastoreDomains;
+=======
+import org.eclipse.kapua.service.datastore.DatastoreDomain;
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreCommunicationException;
@@ -63,8 +69,8 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
     protected AuthorizationService authorizationService;
     protected PermissionFactory permissionFactory;
 
-    protected static final Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.CONFIG_MAX_ENTRIES_ON_DELETE);
-    protected static final Integer MAX_LIMIT_VALUE = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.MAX_LIMIT_VALUE);
+    protected final Integer maxLimitValue = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.MAX_LIMIT_VALUE);
+    protected final Integer maxEntriesOnDelete = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.CONFIG_MAX_ENTRIES_ON_DELETE);
     protected final MessageStoreFacade messageStoreFacade;
 
     @Inject
@@ -75,7 +81,13 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
             ServiceConfigurationManager serviceConfigurationManager,
             MessageStoreFacade messageStoreFacade
     ) {
+<<<<<<< HEAD
         super(txManager, serviceConfigurationManager, Domains.DATASTORE, authorizationService, permissionFactory);
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        super(txManager, serviceConfigurationManager, DatastoreDomains.DATASTORE_DOMAIN, authorizationService, permissionFactory);
+=======
+        super(txManager, serviceConfigurationManager, new DatastoreDomain(), authorizationService, permissionFactory);
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         this.metrics = MetricsDatastore.getInstance();
@@ -157,7 +169,7 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
             throws KapuaException {
         checkDataAccess(query.getScopeId(), Actions.read);
         if (query.getLimit() != null) {
-            ArgumentValidator.numRange(query.getLimit(), 0, MAX_LIMIT_VALUE, "limit");
+            ArgumentValidator.numRange(query.getLimit(), 0, maxLimitValue, "limit");
         }
         try {
             return messageStoreFacade.query(query);
@@ -198,7 +210,7 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
     @Override
     public void delete(MessageQuery query)
             throws KapuaException {
-        ArgumentValidator.numRange(query.getLimit(), 0, MAX_ENTRIES_ON_DELETE, "limit");
+        ArgumentValidator.numRange(query.getLimit(), 0, maxEntriesOnDelete, "limit");
 
         checkDataAccess(query.getScopeId(), Actions.delete);
         try {
@@ -211,7 +223,13 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
 
     protected void checkDataAccess(KapuaId scopeId, Actions action)
             throws KapuaException {
+<<<<<<< HEAD
         Permission permission = permissionFactory.newPermission(Domains.DATASTORE, action, scopeId);
+||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
+        Permission permission = permissionFactory.newPermission(DatastoreDomains.DATASTORE_DOMAIN, action, scopeId);
+=======
+        Permission permission = permissionFactory.newPermission(new DatastoreDomain(), action, scopeId);
+>>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         authorizationService.checkPermission(permission);
     }
 

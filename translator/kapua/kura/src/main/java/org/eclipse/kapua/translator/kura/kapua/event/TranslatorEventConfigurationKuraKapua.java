@@ -190,6 +190,7 @@ public class TranslatorEventConfigurationKuraKapua extends Translator<KuraConfig
     }
     // Things copied from AbstractSimpleTranslatorResponseKuraKapua than need to be refactored
 
+    //TODO: FIXME: promote following methods as an external, injectable collaborator
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper()
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)

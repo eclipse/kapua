@@ -24,6 +24,7 @@ import java.net.URI;
 /**
  * A dummy locator to return when the providerId (on the ProviderOpenIDLocator) is null.
  */
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class DisabledLocator implements ProviderLocator {
 
     public static final ProviderLocator INSTANCE = new DisabledLocator();

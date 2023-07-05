@@ -18,6 +18,7 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Base64;
+import java.util.Optional;
 
 /**
  * {@link KapuaId} implementation.
@@ -72,7 +73,11 @@ public class KapuaEid implements KapuaId, Serializable {
      * @since 1.0.0
      */
     public static KapuaEid parseKapuaId(KapuaId kapuaId) {
-        return kapuaId != null ? (kapuaId instanceof KapuaEid ? (KapuaEid) kapuaId : new KapuaEid(kapuaId)) : null;
+        return Optional.ofNullable(kapuaId)
+                .map(kId -> kId instanceof KapuaEid
+                        ? (KapuaEid) kId
+                        : new KapuaEid(kId))
+                .orElse(null);
     }
 
     /**

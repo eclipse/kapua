@@ -26,11 +26,11 @@ import org.eclipse.kapua.service.authorization.permission.PermissionAttributes;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
+//TODO: FIXME: promote from static utility to injectable collaborator
 public class PermissionValidator {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final DomainRegistryService DOMAIN_SERVICE = LOCATOR.getService(DomainRegistryService.class);
-    private static final DomainFactory DOMAIN_FACTORY = LOCATOR.getFactory(DomainFactory.class);
+    private static final DomainRegistryService DOMAIN_SERVICE = KapuaLocator.getInstance().getService(DomainRegistryService.class);
+    private static final DomainFactory DOMAIN_FACTORY = KapuaLocator.getInstance().getFactory(DomainFactory.class);
 
     private PermissionValidator() {
     }

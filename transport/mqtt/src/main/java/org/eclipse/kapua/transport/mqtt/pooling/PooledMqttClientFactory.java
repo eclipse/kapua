@@ -37,7 +37,7 @@ import java.net.URI;
 public class PooledMqttClientFactory extends BasePooledObjectFactory<MqttClient> {
 
     private static final Logger LOG = LoggerFactory.getLogger(PooledMqttClientFactory.class);
-    private static final ClientIdGenerator CLIENT_ID_GENERATOR = ClientIdGenerator.getInstance();
+    private final ClientIdGenerator clientIdGenerator = ClientIdGenerator.getInstance();
 
     private final String serverURI;
 
@@ -63,7 +63,7 @@ public class PooledMqttClientFactory extends BasePooledObjectFactory<MqttClient>
 
         String username = mqttClientSettings.getString(MqttClientSettingKeys.TRANSPORT_CREDENTIAL_USERNAME);
         char[] password = mqttClientSettings.getString(MqttClientSettingKeys.TRANSPORT_CREDENTIAL_PASSWORD).toCharArray();
-        String clientId = CLIENT_ID_GENERATOR.next(mqttClientPoolSettings.getString(MqttClientPoolSettingKeys.CLIENT_POOL_CLIENT_ID_PREFIX));
+        String clientId = clientIdGenerator.next(mqttClientPoolSettings.getString(MqttClientPoolSettingKeys.CLIENT_POOL_CLIENT_ID_PREFIX));
         // Get new client and connection options
         MqttClientConnectionOptions connectionOptions = new MqttClientConnectionOptions();
         connectionOptions.setClientId(clientId);

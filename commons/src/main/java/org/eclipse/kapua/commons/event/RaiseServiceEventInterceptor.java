@@ -17,16 +17,15 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.commons.core.InterceptorBind;
-import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
-import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.api.ServiceEventUtil;
-import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.event.RaiseServiceEvent;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.event.ServiceEvent.EventStatus;
@@ -59,12 +58,12 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(RaiseServiceEventInterceptor.class);
 
-    //FIXME: inject the repo!
-    private final EventStoreRecordRepository repository = new EventStoreRecordImplJpaRepository(new KapuaJpaRepositoryConfiguration());
-
-    @Named("maxInsertAttempts")
     @Inject
-    private Integer maxInsertAttempts;
+    private EventStoreRecordRepository eventStoreRecordRepository;
+    @Named("kapuaEventsTxManager")
+    @Inject
+    private TxManager txManager;
+    private final MetricsService metricsService = MetricServiceFactory.getInstance();
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -254,15 +253,13 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
             return;
         }
         try {
-            final TxManager txManager = new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-events");
-
             serviceEventBus.setStatus(newServiceEventStatus);
             txManager.execute(tx -> {
                 final KapuaEid eventId = KapuaEid.parseCompactId(serviceEventBus.getId());
-                final EventStoreRecord eventStoreRecord = repository.find(tx, serviceEventBus.getScopeId(), eventId)
+                final EventStoreRecord eventStoreRecord = eventStoreRecordRepository.find(tx, serviceEventBus.getScopeId(), eventId)
                         .orElseThrow(() -> new KapuaEntityNotFoundException(EventStoreRecord.TYPE, eventId));
                 final EventStoreRecord updatedEventStoreRecord = ServiceEventUtil.mergeToEntity(eventStoreRecord, serviceEventBus);
-                return repository.update(tx, eventStoreRecord, updatedEventStoreRecord);
+                return eventStoreRecordRepository.update(tx, eventStoreRecord, updatedEventStoreRecord);
             });
         } catch (Throwable t) {
             // this may be a valid condition if the HouseKeeper is doing the update concurrently with this task

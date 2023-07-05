@@ -21,6 +21,7 @@ import org.eclipse.kapua.plugin.sso.openid.provider.keycloak.setting.KeycloakOpe
 /**
  * The Keycloak OpenID service utility class.
  */
+//TODO: FIXME: promote from static utility to injectable collaborator
 public class KeycloakOpenIDUtils {
 
     private static final KeycloakOpenIDSetting KEYCLOAK_OPENID_SETTING = KeycloakOpenIDSetting.getInstance();
