@@ -24,15 +24,23 @@ import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.credential.cache.CachedPasswordMatcher;
+import org.eclipse.kapua.service.authentication.credential.cache.DefaultPasswordMatcher;
+import org.eclipse.kapua.service.authentication.credential.cache.PasswordMatcher;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeService;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
+import org.eclipse.kapua.service.authentication.shiro.AuthenticationServiceShiroImpl;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.MfaRequiredException;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorServiceLocator;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.user.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.Date;
@@ -44,11 +52,15 @@ import java.util.Date;
  */
 public class UserPassCredentialsMatcher implements CredentialsMatcher {
 
+    private final Logger logger = LoggerFactory.getLogger(AuthenticationServiceShiroImpl.class);
+
     private final KapuaLocator locator;
     private final MfaOptionService mfaOptionService;
     private final ScratchCodeService scratchCodeService;
     private final MfaAuthenticatorServiceLocator mfaAuthServiceLocator;
     private final MfaAuthenticator mfaAuthenticator;
+    //TODO inject????
+    private PasswordMatcher passwordMatcher;
 
     public UserPassCredentialsMatcher() {
         locator = KapuaLocator.getInstance();
@@ -56,6 +68,14 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
         scratchCodeService = locator.getService(ScratchCodeService.class);
         mfaAuthServiceLocator = MfaAuthenticatorServiceLocator.getInstance();
         mfaAuthenticator = mfaAuthServiceLocator.getMfaAuthenticator();
+        if (KapuaAuthenticationSetting.getInstance().getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_USERPASS_CACHE_ENABLE, true)) {
+            logger.info("Cache enabled. Initializing CachePasswordChecker...");
+            passwordMatcher = new CachedPasswordMatcher();
+        }
+        else {
+            logger.info("Cache disabled. Initializing NoCachePasswordChecker...");
+            passwordMatcher = new DefaultPasswordMatcher();
+        }
     }
 
     @Override
@@ -80,7 +100,7 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
         boolean credentialMatch = false;
         if (tokenUsername.equals(infoUser.getName()) &&
                 CredentialType.PASSWORD.equals(infoCredential.getCredentialType()) &&
-                BCrypt.checkpw(tokenPassword, infoCredential.getCredentialKey())) {
+                passwordMatcher.checkPassword(tokenUsername, tokenPassword, infoCredential)) {
 
             if (!mfaAuthenticator.isEnabled()) {
                 credentialMatch = true;

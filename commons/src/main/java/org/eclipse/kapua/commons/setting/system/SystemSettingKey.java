@@ -341,6 +341,14 @@ public enum SystemSettingKey implements SettingKey {
      */
     CACHE_TTL("commons.cache.config.ttl"),
     /**
+     * Provide the Authentication Cache TTL
+     */
+    AUTHENTICATION_CACHE_TTL("commons.authentication-cache.config.ttl"),
+    /**
+     * Provide the Authentication Cache Size
+     */
+    AUTHENTICATION_CACHE_SIZE("commons.authentication-cache.config.size"),
+    /**
      * Provide the JCache Expiry Policy. Allowed values: MODIFIED, TOUCHED
      */
     JCACHE_EXPIRY_POLICY("commons.cache.config.expiryPolicy");
