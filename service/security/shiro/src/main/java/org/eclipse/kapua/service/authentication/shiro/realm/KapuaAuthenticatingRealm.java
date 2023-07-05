@@ -235,17 +235,26 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
      * @since 2.0.0
      */
     protected void resetCredentialLockout(Credential credential) {
-        CredentialService credentialService = LOCATOR.getService(CredentialService.class);
-
-        credential.setFirstLoginFailure(null);
-        credential.setLoginFailuresReset(null);
-        credential.setLockoutReset(null);
-        credential.setLoginFailures(0);
-        try {
-            KapuaSecurityUtils.doPrivileged(() -> credentialService.update(credential));
-        } catch (KapuaException kex) {
-            throw new ShiroException("Unexpected error while looking for the lockout policy", kex);
+        //TODO find a proper way to update only if needed (obviously database update has a cost)
+        if (shouldResetCredentialLockout(credential)) {
+            CredentialService credentialService = LOCATOR.getService(CredentialService.class);
+            credential.setFirstLoginFailure(null);
+            credential.setLoginFailuresReset(null);
+            credential.setLockoutReset(null);
+            credential.setLoginFailures(0);
+            try {
+                KapuaSecurityUtils.doPrivileged(() -> credentialService.update(credential));
+            } catch (KapuaException kex) {
+                throw new ShiroException("Unexpected error while looking for the lockout policy", kex);
+            }
         }
+    }
+
+    private boolean shouldResetCredentialLockout(Credential credential) {
+        return credential.getFirstLoginFailure() != null ||
+            credential.getLoginFailuresReset() != null ||
+            credential.getLockoutReset() != null ||
+            credential.getLoginFailures() != 0;
     }
 
     //
