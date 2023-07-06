@@ -151,6 +151,8 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
             throw new KapuaIllegalArgumentException("packageDownloadRequest.uri", packageDownloadRequest.getUri().toString());
         }
 
+        verifyOverflowPackageFields(packageDownloadRequest);
+
         //
         // Generate requestId
         KapuaId operationId = new KapuaEid(IdGenerator.generate());
@@ -574,4 +576,25 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         // Check response
         return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDevicePackageUninstallOperation());
     }
+
+    private void verifyOverflowPackageFields(DevicePackageDownloadRequest packageDownloadRequest) throws KapuaIllegalArgumentException {
+        int uriLength = packageDownloadRequest.getUri().toString().length();
+        int nameLength = packageDownloadRequest.getName().length();
+        int versionLength = packageDownloadRequest.getVersion().length();
+
+        if (uriLength > 2048) {
+            throw new KapuaIllegalArgumentException("packageDownloadRequest.uri", packageDownloadRequest.getUri().toString());
+        }
+
+        if (nameLength > 256) {
+            throw new KapuaIllegalArgumentException("packageDownloadRequest.name", packageDownloadRequest.getName().toString());
+        }
+
+        if (versionLength > 256) {
+            throw new KapuaIllegalArgumentException("packageDownloadRequest.version", packageDownloadRequest.getVersion().toString());
+        }
+
+    }
+
+
 }
