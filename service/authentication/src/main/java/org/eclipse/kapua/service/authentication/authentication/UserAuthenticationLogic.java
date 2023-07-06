@@ -38,12 +38,12 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
 
     @Override
     public List<AuthAcl> connect(AuthContext authContext) throws KapuaException {
-        Context timeUserTotal = loginMetric.getExternalAddConnectionTimeUserTotal().time();
-        Context timeUserTotalCheckAccess = loginMetric.getExternalAddConnectionTimeUserTotalCheckAccess().time();
+        Context timeUserTotal = authenticationMetric.getExtConnectorTime().getUser().time();
+        Context timeUserTotalCheckAccess = authenticationMetric.getExtConnectorTime().getUserCheckAccess().time();
         UserPermissions userPermissions = updatePermissions(authContext);
         timeUserTotalCheckAccess.stop();
 
-        Context timeUserTotalFindDevice = loginMetric.getExternalAddConnectionTimeUserTotalFindDevice().time();
+        Context timeUserTotalFindDevice = authenticationMetric.getExtConnectorTime().getUserFindDevice().time();
         DeviceConnection deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(
             KapuaEid.parseCompactId(authContext.getScopeId()), authContext.getClientId()));
         timeUserTotalFindDevice.stop();
@@ -53,7 +53,7 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
         final KapuaId userId = KapuaEid.parseCompactId(authContext.getUserId());
         enforceDeviceConnectionUserBound(KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.getConfigValues(scopeId)), deviceConnection, scopeId, userId);
 
-        Context timeUserTotalUpdateDevice = loginMetric.getExternalAddConnectionTimeUserTotalUpdateDevice().time();
+        Context timeUserTotalUpdateDevice = authenticationMetric.getExtConnectorTime().getUserUpdateDevice().time();
         deviceConnection = deviceConnection!=null ? updateDeviceConnection(authContext, deviceConnection) : createDeviceConnection(authContext);
         if (deviceConnection!=null && deviceConnection.getId()!=null) {
             authContext.setKapuaConnectionId(deviceConnection.getId());
@@ -68,6 +68,7 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
 
     @Override
     public boolean disconnect(AuthContext authContext) {
+        Context timeTotal = authenticationMetric.getExtConnectorTime().getRemoveConnection().time();
         boolean deviceOwnedByTheCurrentNode = true;
         if (!authContext.isStealingLink() && !authContext.isIllegalState()) {
             // update device connection (if the disconnection wasn't caused by a stealing link)
@@ -88,6 +89,7 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
                 }
             }
         }
+        timeTotal.stop();
         return !authContext.isStealingLink() && deviceOwnedByTheCurrentNode && !authContext.isMissing();
     }
 
