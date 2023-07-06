@@ -340,6 +340,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
                 textArea.setData(PROPERTY_TYPE, property.getPropertyType());
                 textArea.setData(PROPERTY_NAME, property.getPropertyName());
+                textArea.setMaxLength(65535);
                 jobStepPropertiesPanel.add(textArea);
 
                 if (property.getExampleValue() != null) {
