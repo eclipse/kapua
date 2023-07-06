@@ -30,6 +30,9 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.eclipse.kapua.broker.artemis.plugin.security.connector.AcceptorHandler;
 import org.eclipse.kapua.broker.artemis.plugin.security.event.BrokerEvent;
 import org.eclipse.kapua.broker.artemis.plugin.security.event.BrokerEvent.EventType;
+import org.eclipse.kapua.broker.artemis.plugin.security.metric.LoginMetric;
+import org.eclipse.kapua.broker.artemis.plugin.security.metric.PublishMetric;
+import org.eclipse.kapua.broker.artemis.plugin.security.metric.SubscribeMetric;
 import org.eclipse.kapua.broker.artemis.plugin.security.event.BrokerEventHanldler;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
@@ -39,9 +42,6 @@ import org.eclipse.kapua.client.security.ServiceClient.SecurityAction;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.context.SessionContext;
 import org.eclipse.kapua.client.security.context.Utils;
-import org.eclipse.kapua.client.security.metric.LoginMetric;
-import org.eclipse.kapua.client.security.metric.PublishMetric;
-import org.eclipse.kapua.client.security.metric.SubscribeMetric;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
@@ -296,7 +296,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     }
 
     private void cleanUpConnectionData(RemotingConnection connection, Failure reason, Exception exception) {
-        Context timeTotal = loginMetric.getRemoveConnectionTimeTotal().time();
+        Context timeTotal = loginMetric.getRemoveConnection().time();
         try {
             String connectionId = PluginUtility.getConnectionId(connection);
             serverContext.getSecurityContext().updateConnectionTokenOnDisconnection(connectionId);

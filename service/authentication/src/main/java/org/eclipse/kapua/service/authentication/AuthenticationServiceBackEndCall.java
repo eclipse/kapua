@@ -28,7 +28,7 @@ import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.bean.AuthContext;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
-import org.eclipse.kapua.client.security.metric.LoginMetric;
+import org.eclipse.kapua.client.security.metric.AuthMetric;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
@@ -49,7 +49,7 @@ public class AuthenticationServiceBackEndCall {
 
     protected static Logger logger = LoggerFactory.getLogger(AuthenticationServiceBackEndCall.class);
 
-    private LoginMetric loginMetric = LoginMetric.getInstance();
+    private AuthMetric authenticationMetric = AuthMetric.getInstance();
 
     @Inject
     private Authenticator authenticator;
@@ -89,12 +89,12 @@ public class AuthenticationServiceBackEndCall {
             return buildLoginResponseNotAuthorized(authRequest, e);
         }
         finally {
-            Context timeShiroLogout = loginMetric.getExternalAddConnectionTimeShiroLogout().time();
+            Context timeShiroLogout = authenticationMetric.getExtConnectorTime().getLogoutOnConnect().time();
             try {
                 authenticationService.logout();
             } catch (Exception e) {
                 //error while cleaning up the logged user
-                loginMetric.getAuthServiceLogoutFailure().inc();
+                authenticationMetric.getFailure().getLogoutFailure().inc();
                 logger.error("Logout error: {}", e.getMessage(), e);
             }
             timeShiroLogout.stop();
@@ -109,7 +109,7 @@ public class AuthenticationServiceBackEndCall {
             return buildLogoutResponseAuthorized(authRequest);
         } catch (Exception e) {
             //this is an error since the disconnect shouldn't throws exception
-            loginMetric.getAuthServiceDisconnectFailure().inc();
+            authenticationMetric.getFailure().getDisconnectFailure().inc();
             logger.error("Login error: {}", e.getMessage(), e);
             return buildLogoutResponseNotAuthorized(authRequest, e);
         }
