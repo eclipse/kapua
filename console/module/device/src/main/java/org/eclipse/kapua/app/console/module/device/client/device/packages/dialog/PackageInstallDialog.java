@@ -116,7 +116,7 @@ public class PackageInstallDialog extends TabbedDialog {
             packageInfoForm.add(dpInfoText);
 
             dpURIField = new KapuaTextField<String>();
-            dpURIField.setMaxLength(125);
+            dpURIField.setMaxLength(2048);
             dpURIField.setName("dpUri");
             dpURIField.setAllowBlank(false);
             dpURIField.setValidator(new TextFieldValidator(dpURIField, FieldType.URL));
@@ -125,7 +125,7 @@ public class PackageInstallDialog extends TabbedDialog {
             packageInfoForm.add(dpURIField, formData);
 
             dpNameField = new KapuaTextField<String>();
-            dpNameField.setMaxLength(125);
+            dpNameField.setMaxLength(256);
             dpNameField.setName("dpName");
             dpNameField.setAllowBlank(false);
             dpNameField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpDialogName());
@@ -133,7 +133,7 @@ public class PackageInstallDialog extends TabbedDialog {
             packageInfoForm.add(dpNameField, formData);
 
             dpVersionField = new KapuaTextField<String>();
-            dpVersionField.setMaxLength(125);
+            dpVersionField.setMaxLength(256);
             dpVersionField.setName("dpVersion");
             dpVersionField.setValidator(new TextFieldValidator(dpVersionField, FieldType.PACKAGE_VERSION));
             dpVersionField.setAllowBlank(false);
