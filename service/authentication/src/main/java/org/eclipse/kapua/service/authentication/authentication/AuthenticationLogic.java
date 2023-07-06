@@ -19,9 +19,7 @@ import org.eclipse.kapua.client.security.bean.AclUtils;
 import org.eclipse.kapua.client.security.bean.AuthAcl;
 import org.eclipse.kapua.client.security.bean.AuthAcl.Action;
 import org.eclipse.kapua.client.security.bean.AuthContext;
-import org.eclipse.kapua.client.security.metric.LoginMetric;
-import org.eclipse.kapua.client.security.metric.PublishMetric;
-import org.eclipse.kapua.client.security.metric.SubscribeMetric;
+import org.eclipse.kapua.client.security.metric.AuthMetric;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -68,9 +66,8 @@ public abstract class AuthenticationLogic {
     //TODO move to configuration
     protected boolean invalidateCache = true;
 
-    protected LoginMetric loginMetric = LoginMetric.getInstance();
-    protected PublishMetric publishMetric = PublishMetric.getInstance();
-    protected SubscribeMetric subscribeMetric = SubscribeMetric.getInstance();
+    //TODO inject!!!
+    protected AuthMetric authenticationMetric = AuthMetric.getInstance();
 
     protected static final Domain BROKER_DOMAIN = BrokerDomains.BROKER_DOMAIN;
     //TODO remove domain object. I cannot import one module just to get a constant
@@ -319,11 +316,11 @@ public abstract class AuthenticationLogic {
         boolean ownedByTheCurrentNode = false;
         if (authContext.getBrokerHost() == null) {
             logger.warn("Broker Ip or host name is not correctly set! Please check the configuration!");
-            loginMetric.getAuthServiceBrokerHostFailure().inc();
+            authenticationMetric.getFailure().getBrokerHostFailure().inc();
         }
         else if (deviceConnection == null){
             logger.warn("Cannot find device connection for device: {}/{}", authContext.getScopeId() , authContext.getClientId());
-            loginMetric.getAuthServiceFindDeviceConnectionFailure().inc();
+            authenticationMetric.getFailure().getFindDeviceConnectionFailure().inc();
         }
         else {
             ownedByTheCurrentNode = authContext.getBrokerHost().equals(deviceConnection.getServerIp());

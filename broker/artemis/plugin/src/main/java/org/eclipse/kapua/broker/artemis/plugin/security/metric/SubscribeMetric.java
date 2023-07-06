@@ -10,12 +10,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.client.security.metric;
+package org.eclipse.kapua.broker.artemis.plugin.security.metric;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
 
-import org.eclipse.kapua.client.security.MetricLabel;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
@@ -24,6 +23,11 @@ import org.eclipse.kapua.commons.metric.MetricsService;
 public class SubscribeMetric {
 
     private static final SubscribeMetric SUBSCRIBE_METRIC = new SubscribeMetric();
+
+    public static final String COMPONENT_SUBSCRIBE = "subscribe";
+
+    public static final String ALLOWED = "allowed";
+    public static final String NOT_ALLOWED = "not_allowed";
 
     private Counter allowedMessages;
     private Counter notAllowedMessages;
@@ -35,9 +39,9 @@ public class SubscribeMetric {
 
     private SubscribeMetric() {
         MetricsService metricsService = MetricServiceFactory.getInstance();
-        allowedMessages = metricsService.getCounter(CommonsMetric.module, MetricLabel.COMPONENT_SUBSCRIBE, MetricLabel.ALLOWED);
-        notAllowedMessages = metricsService.getCounter(CommonsMetric.module, MetricLabel.COMPONENT_SUBSCRIBE, MetricLabel.NOT_ALLOWED);
-        time = metricsService.getTimer(CommonsMetric.module, MetricLabel.COMPONENT_SUBSCRIBE, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        allowedMessages = metricsService.getCounter(CommonsMetric.module, COMPONENT_SUBSCRIBE, ALLOWED);
+        notAllowedMessages = metricsService.getCounter(CommonsMetric.module, COMPONENT_SUBSCRIBE, NOT_ALLOWED);
+        time = metricsService.getTimer(CommonsMetric.module, COMPONENT_SUBSCRIBE, MetricsLabel.TIME, MetricsLabel.SECONDS);
     }
 
     public Counter getAllowedMessages() {

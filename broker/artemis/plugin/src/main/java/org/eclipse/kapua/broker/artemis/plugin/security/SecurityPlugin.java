@@ -29,6 +29,9 @@ import org.apache.activemq.artemis.core.security.CheckType;
 import org.apache.activemq.artemis.core.security.Role;
 import org.apache.activemq.artemis.spi.core.protocol.RemotingConnection;
 import org.apache.activemq.artemis.spi.core.security.ActiveMQSecurityManager5;
+import org.eclipse.kapua.broker.artemis.plugin.security.metric.LoginMetric;
+import org.eclipse.kapua.broker.artemis.plugin.security.metric.PublishMetric;
+import org.eclipse.kapua.broker.artemis.plugin.security.metric.SubscribeMetric;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
 import org.eclipse.kapua.client.security.ServiceClient.EntityType;
@@ -41,9 +44,6 @@ import org.eclipse.kapua.client.security.bean.ConnectionInfo;
 import org.eclipse.kapua.client.security.bean.KapuaPrincipalImpl;
 import org.eclipse.kapua.client.security.context.SessionContext;
 import org.eclipse.kapua.client.security.context.Utils;
-import org.eclipse.kapua.client.security.metric.LoginMetric;
-import org.eclipse.kapua.client.security.metric.PublishMetric;
-import org.eclipse.kapua.client.security.metric.SubscribeMetric;
 import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -133,7 +133,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
     }
 
     private Subject authenticateInternalConn(ConnectionInfo connectionInfo, String connectionId, String username, String password, RemotingConnection remotingConnection) {
-        loginMetric.getInternalConnectorAttempt().inc();
+        loginMetric.getInternalConnector().getAttempt().inc();
         String usernameToCompare = SystemSetting.getInstance().getString(SystemSettingKey.BROKER_INTERNAL_CONNECTOR_USERNAME);
         String passToCompare = SystemSetting.getInstance().getString(SystemSettingKey.BROKER_INTERNAL_CONNECTOR_PASSWORD);
         try {
@@ -162,24 +162,23 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                 serverContext.getBrokerIdentity().getBrokerId(), serverContext.getBrokerIdentity().getBrokerHost(),
                 true, false);
             serverContext.getSecurityContext().setSessionContext(sessionContext, null);
-            loginMetric.getInternalConnectorSuccess().inc();
+            loginMetric.getInternalConnector().getSuccess().inc();
             return subject;
         }
         catch (Exception e) {
-            loginMetric.getInternalConnectorFailure().inc();
+            loginMetric.getInternalConnector().getFailure().inc();
             logger.error("Authenticate internal: error: {}", e.getMessage());
             return null;
         }
     }
 
     private Subject authenticateExternalConn(ConnectionInfo connectionInfo, String connectionId, String username, String password, RemotingConnection remotingConnection) {
-        loginMetric.getExternalAttempt().inc();
-        Context timeTotal = loginMetric.getExternalAddConnectionTimeTotal().time();
+        loginMetric.getExternalConnector().getAttempt().inc();
+        Context timeTotal = loginMetric.getExternalAddConnection().time();
         try {
             logger.info("Authenticate external: user: {} - clientId: {} - connectionIp: {} - connectionId: {} isOpen: {}",
                 username, connectionInfo.getClientId(), connectionInfo.getClientIp(), remotingConnection.getID(), remotingConnection.getTransportConnection().isOpen());
             String fullClientId = Utils.getFullClientId(getScopeId(username), connectionInfo.getClientId());
-            Context timeShiroLogin = loginMetric.getExternalAddConnectionTimeShiroLogin().time();
             AuthRequest authRequest = new AuthRequest(
                 serverContext.getClusterName(),
                 serverContext.getBrokerIdentity().getBrokerHost(), SecurityAction.brokerConnect.name(),
@@ -193,7 +192,6 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             SessionContext sessionContext = new SessionContext(principal, connectionInfo, authResponse.getKapuaConnectionId(),
                 serverContext.getBrokerIdentity().getBrokerId(), serverContext.getBrokerIdentity().getBrokerHost(),
                 authResponse.isAdmin(), authResponse.isMissing());
-            timeShiroLogin.stop();
 
             //update client id with account|clientId (see pattern)
             remotingConnection.setClientID(fullClientId);
@@ -203,11 +201,11 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             if (serverContext.getSecurityContext().setSessionContext(sessionContext, authResponse.getAcls())) {
                 subject = serverContext.getSecurityContext().buildFromPrincipal(sessionContext.getPrincipal());
             }
-            loginMetric.getExternalSuccess().inc();
+            loginMetric.getExternalConnector().getSuccess().inc();
             return subject;
         }
         catch (Exception e) {
-            loginMetric.getExternalFailure().inc();
+            loginMetric.getExternalConnector().getFailure().inc();
             logger.error("Authenticate external: error: {}", e.getMessage());
             return null;
         }

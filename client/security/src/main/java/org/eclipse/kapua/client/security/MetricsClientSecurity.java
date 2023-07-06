@@ -36,8 +36,8 @@ public class MetricsClientSecurity {
 
     private MetricsClientSecurity() {
         MetricsService metricsService = MetricServiceFactory.getInstance();
-        loginCallbackError = metricsService.getCounter(CommonsMetric.module, MetricLabel.COMPONENT_LOGIN, CALLBACK, MetricsLabel.ERROR);
-        loginCallbackTimeout = metricsService.getCounter(CommonsMetric.module, MetricLabel.COMPONENT_LOGIN, CALLBACK, MetricsLabel.TIMEOUT);
+        loginCallbackError = metricsService.getCounter(CommonsMetric.module, CALLBACK, MetricsLabel.ERROR);
+        loginCallbackTimeout = metricsService.getCounter(CommonsMetric.module, CALLBACK, MetricsLabel.TIMEOUT);
     }
 
     public Counter getLoginCallbackError() {
