@@ -37,7 +37,6 @@ import com.spotify.docker.client.messages.PortBinding;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-
 import org.eclipse.kapua.commons.core.ServiceModuleBundle;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.common.BasicSteps;
@@ -68,7 +67,7 @@ public class DockerSteps {
     private static final Logger logger = LoggerFactory.getLogger(DockerSteps.class);
 
     private static final String NETWORK_PREFIX = "kapua-net";
-    private static final String KAPUA_VERSION = "2.0.0-SNAPSHOT";
+    private static final String KAPUA_VERSION = "2.0.0-NO_STATICS-SNAPSHOT";
     private static final String ES_IMAGE = "elasticsearch:7.8.1";
     private static final String BROKER_IMAGE = "kapua-broker-artemis";
     private static final String LIFECYCLE_CONSUMER_IMAGE = "kapua-consumer-lifecycle";

@@ -17,7 +17,7 @@
 #
 
 DOCKER_ACCOUNT=${DOCKER_ACCOUNT:=kapua}
-IMAGE_VERSION=${IMAGE_VERSION:=2.0.0-REPO-SNAPSHOT}
+IMAGE_VERSION=${IMAGE_VERSION:=2.0.0-NO_STATICS-SNAPSHOT}
 SERVICES=("console" "api" "sql" "broker" "events-broker")
 
 echo "Pulling Kapua images..."

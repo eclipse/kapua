@@ -22,12 +22,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-<<<<<<< HEAD
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-import org.eclipse.kapua.service.scheduler.SchedulerDomains;
-=======
-import org.eclipse.kapua.service.scheduler.SchedulerDomain;
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.scheduler.exception.TriggerInvalidDatesException;
 import org.eclipse.kapua.service.scheduler.exception.TriggerInvalidSchedulingException;
 import org.eclipse.kapua.service.scheduler.quartz.driver.QuartzTriggerDriver;
@@ -115,13 +109,7 @@ public class TriggerServiceImpl implements TriggerService {
         ArgumentValidator.notNull(triggerCreator.getStartsOn(), "triggerCreator.startsOn");
 
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.SCHEDULER, Actions.write, triggerCreator.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.write, triggerCreator.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new SchedulerDomain(), Actions.write, triggerCreator.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         // Convert creator to new model.
         // To be removed after removing of TriggerCreator.cronScheduling and TriggerCreator.retryInterval
@@ -207,13 +195,7 @@ public class TriggerServiceImpl implements TriggerService {
         ArgumentValidator.validateEntityName(trigger.getName(), "trigger.name");
 
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.SCHEDULER, Actions.write, trigger.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.write, trigger.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new SchedulerDomain(), Actions.write, trigger.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         return txManager.execute(tx -> {
             // Check existence
@@ -293,13 +275,7 @@ public class TriggerServiceImpl implements TriggerService {
         ArgumentValidator.notNull(triggerId, "scopeId");
         ArgumentValidator.notNull(scopeId, "triggerId");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.SCHEDULER, Actions.delete, scopeId));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.delete, scopeId));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new SchedulerDomain(), Actions.delete, scopeId));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         // Do delete
         QuartzTriggerDriver.deleteTrigger(txManager.execute(tx -> {
@@ -314,13 +290,7 @@ public class TriggerServiceImpl implements TriggerService {
         ArgumentValidator.notNull(triggerId, "triggerId");
 
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.SCHEDULER, Actions.read, scopeId));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, scopeId));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new SchedulerDomain(), Actions.read, scopeId));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         // Do find
         return txManager.execute(tx -> {
@@ -337,13 +307,7 @@ public class TriggerServiceImpl implements TriggerService {
         // Argument validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.SCHEDULER, Actions.read, query.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, query.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new SchedulerDomain(), Actions.read, query.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         return txManager.execute(tx -> {
             // Do query
             TriggerListResult triggers = triggerRepository.query(tx, query);
@@ -362,13 +326,7 @@ public class TriggerServiceImpl implements TriggerService {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobId, "jobId");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.SCHEDULER, Actions.delete, scopeId));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.delete, scopeId));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new SchedulerDomain(), Actions.delete, scopeId));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         txManager.execute(tx -> {
             triggerRepository.deleteAllByJobId(tx, scopeId, jobId);
             return null;
@@ -380,13 +338,7 @@ public class TriggerServiceImpl implements TriggerService {
         // Argument validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.SCHEDULER, Actions.read, query.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, query.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new SchedulerDomain(), Actions.read, query.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do count
         return txManager.execute(tx -> triggerRepository.count(tx, query));
     }

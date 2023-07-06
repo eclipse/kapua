@@ -14,37 +14,30 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
     <parent>
-        <artifactId>kapua-endpoint</artifactId>
+        <artifactId>kapua-broker</artifactId>
         <groupId>org.eclipse.kapua</groupId>
         <version>2.0.0-NO_STATICS-SNAPSHOT</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kapua-endpoint-internal</artifactId>
+    <artifactId>kapua-broker-api</artifactId>
 
     <dependencies>
-        <!-- Implemented service interfaces -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-endpoint-api</artifactId>
+            <artifactId>kapua-service-api</artifactId>
         </dependency>
-
-        <!-- -->
-        <!-- Internal dependencies -->
         <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-commons</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-account-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-locator-guice</artifactId>
+            <artifactId>kapua-qa-markers</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
+
 </project>

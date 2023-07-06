@@ -20,12 +20,6 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-<<<<<<< HEAD
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
-=======
-import org.eclipse.kapua.service.device.management.DeviceManagementDomain;
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementTransactionalServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestBadMethodException;
@@ -103,13 +97,7 @@ public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagement
             default:
                 throw new DeviceManagementRequestBadMethodException(requestInput.getChannel().getMethod());
         }
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, action, requestInput.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, action, requestInput.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new DeviceManagementDomain(), action, requestInput.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Prepare the request
         GenericRequestChannel genericRequestChannel = genericRequestFactory.newRequestChannel();
         genericRequestChannel.setAppName(requestInput.getChannel().getAppName());

@@ -33,12 +33,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfo;
 import org.eclipse.kapua.service.endpoint.EndpointInfoAttributes;
 import org.eclipse.kapua.service.endpoint.EndpointInfoCreator;
-<<<<<<< HEAD
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-import org.eclipse.kapua.service.endpoint.EndpointInfoDomains;
-=======
-import org.eclipse.kapua.service.endpoint.EndpointInfoDomain;
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
@@ -112,13 +106,7 @@ public class EndpointInfoServiceImpl
         KapuaId scopeIdPermission = endpointInfoCreator.getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS) ?
                 endpointInfoCreator.getScopeId() : null;
         authorizationService.checkPermission(
-<<<<<<< HEAD
                 permissionFactory.newPermission(Domains.ENDPOINT_INFO, Actions.write, scopeIdPermission)
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-                permissionFactory.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.write, scopeIdPermission)
-=======
-                permissionFactory.newPermission(new EndpointInfoDomain(), Actions.write, scopeIdPermission)
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         );
         // Check duplicate endpoint
         checkDuplicateEndpointInfo(
@@ -160,13 +148,7 @@ public class EndpointInfoServiceImpl
         KapuaId scopeIdPermission = endpointInfo.getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS) ?
                 endpointInfo.getScopeId() : null;
         authorizationService.checkPermission(
-<<<<<<< HEAD
                 permissionFactory.newPermission(Domains.ENDPOINT_INFO, Actions.write, scopeIdPermission)
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-                permissionFactory.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.write, scopeIdPermission)
-=======
-                permissionFactory.newPermission(new EndpointInfoDomain(), Actions.write, scopeIdPermission)
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         );
         // Check duplicate endpoint
         checkDuplicateEndpointInfo(
@@ -196,13 +178,7 @@ public class EndpointInfoServiceImpl
             }
 
             authorizationService.checkPermission(
-<<<<<<< HEAD
                     permissionFactory.newPermission(Domains.ENDPOINT_INFO, Actions.delete, scopeIdPermission)
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-                    permissionFactory.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.delete, scopeIdPermission)
-=======
-                    permissionFactory.newPermission(new EndpointInfoDomain(), Actions.delete, scopeIdPermission)
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
             );
             // Do delete
             return repository.delete(tx, scopeId, endpointInfoId);
@@ -217,13 +193,7 @@ public class EndpointInfoServiceImpl
         // Check Access
         return txManager.execute(tx -> {
             authorizationService.checkPermission(
-<<<<<<< HEAD
                     permissionFactory.newPermission(Domains.ENDPOINT_INFO, Actions.read, scopeId)
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-                    permissionFactory.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, scopeId)
-=======
-                    permissionFactory.newPermission(new EndpointInfoDomain(), Actions.read, scopeId)
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
             );
             EndpointInfo endpointInfoToFind = repository.find(tx, KapuaId.ANY, endpointInfoId)
                     .orElseThrow(() -> new KapuaEntityNotFoundException(EndpointInfo.TYPE, endpointInfoId)); // search the endpoint in any scope
@@ -260,13 +230,7 @@ public class EndpointInfoServiceImpl
         ArgumentValidator.notNull(query, "query");
         // Check Access
         authorizationService.checkPermission(
-<<<<<<< HEAD
                 permissionFactory.newPermission(Domains.ENDPOINT_INFO, Actions.read, query.getScopeId())
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-                permissionFactory.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, query.getScopeId())
-=======
-                permissionFactory.newPermission(new EndpointInfoDomain(), Actions.read, query.getScopeId())
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         );
         return traverse(
                 txContext,
@@ -291,13 +255,7 @@ public class EndpointInfoServiceImpl
         //
         // Check Access
         authorizationService.checkPermission(
-<<<<<<< HEAD
                 permissionFactory.newPermission(Domains.ENDPOINT_INFO, Actions.read, query.getScopeId())
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-                permissionFactory.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, query.getScopeId())
-=======
-                permissionFactory.newPermission(new EndpointInfoDomain(), Actions.read, query.getScopeId())
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         );
         return traverse(
                 tx,

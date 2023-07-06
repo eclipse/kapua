@@ -25,12 +25,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagCreator;
-<<<<<<< HEAD
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-import org.eclipse.kapua.service.tag.TagDomains;
-=======
-import org.eclipse.kapua.service.tag.TagDomain;
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagRepository;
@@ -73,13 +67,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
             TxManager txManager,
             TagRepository tagRepository,
             TagFactory tagFactory) {
-<<<<<<< HEAD
         super(txManager, serviceConfigurationManager, Domains.TAG, authorizationService, permissionFactory);
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        super(txManager, serviceConfigurationManager, TagDomains.TAG_DOMAIN, authorizationService, permissionFactory);
-=======
-        super(txManager, serviceConfigurationManager, new TagDomain(), authorizationService, permissionFactory);
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         this.tagRepository = tagRepository;
@@ -94,13 +82,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         ArgumentValidator.notNull(tagCreator.getScopeId(), "tagCreator.scopeId");
         ArgumentValidator.validateEntityName(tagCreator.getName(), "tagCreator.name");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.TAG, Actions.write, tagCreator.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.write, tagCreator.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new TagDomain(), Actions.write, tagCreator.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         return txManager.execute(tx -> {
             // Check entity limit
             serviceConfigurationManager.checkAllowedEntities(tx, tagCreator.getScopeId(), "Tags");
@@ -128,13 +110,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
 
         // Check Access
         authorizationService.checkPermission(
-<<<<<<< HEAD
                 permissionFactory.newPermission(Domains.TAG, Actions.write, tag.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-                permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.write, tag.getScopeId()));
-=======
-                permissionFactory.newPermission(new TagDomain(), Actions.write, tag.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         // Check duplicate name
         return txManager.execute(tx -> {
@@ -155,13 +131,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(tagId, "tagId");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.TAG, Actions.delete, scopeId));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.delete, scopeId));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new TagDomain(), Actions.delete, scopeId));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Check existence
         txManager.execute(tx -> tagRepository.delete(tx, scopeId, tagId));
     }
@@ -172,13 +142,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(tagId, "tagId");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.TAG, Actions.read, scopeId));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.read, scopeId));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new TagDomain(), Actions.read, scopeId));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do find
         return txManager.execute(tx -> tagRepository.find(tx, scopeId, tagId))
                 .orElse(null);
@@ -189,13 +153,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         // Argument validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.TAG, Actions.read, query.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.read, query.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new TagDomain(), Actions.read, query.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do query
         return txManager.execute(tx -> tagRepository.query(tx, query));
     }
@@ -205,13 +163,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         // Argument validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.TAG, Actions.read, query.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.read, query.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new TagDomain(), Actions.read, query.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do count
         return txManager.execute(tx -> tagRepository.count(tx, query));
     }

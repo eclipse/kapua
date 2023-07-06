@@ -29,12 +29,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobCreator;
-<<<<<<< HEAD
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-import org.eclipse.kapua.service.job.JobDomains;
-=======
-import org.eclipse.kapua.service.job.JobDomain;
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.job.JobListResult;
 import org.eclipse.kapua.service.job.JobRepository;
 import org.eclipse.kapua.service.job.JobService;
@@ -76,13 +70,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
             TxManager txManager,
             JobRepository jobRepository,
             TriggerService triggerService) {
-<<<<<<< HEAD
         super(txManager, serviceConfigurationManager, Domains.JOB, authorizationService, permissionFactory);
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        super(txManager, serviceConfigurationManager, JobDomains.JOB_DOMAIN, authorizationService, permissionFactory);
-=======
-        super(txManager, serviceConfigurationManager, new JobDomain(), authorizationService, permissionFactory);
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         this.jobEngineService = jobEngineService;
         this.jobRepository = jobRepository;
         this.triggerService = triggerService;
@@ -95,13 +83,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
         ArgumentValidator.notNull(creator.getScopeId(), "jobCreator.scopeId");
         ArgumentValidator.validateJobName(creator.getName(), "jobCreator.name");
         // Check access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, creator.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, creator.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.write, creator.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         return txManager.execute(tx -> {
             // Check entity limit
             serviceConfigurationManager.checkAllowedEntities(tx, creator.getScopeId(), "Jobs");
@@ -125,13 +107,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
         ArgumentValidator.notNull(job.getScopeId(), "job.scopeId");
         ArgumentValidator.validateEntityName(job.getName(), "job.name");
         // Check access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, job.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, job.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.write, job.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         return txManager.execute(tx -> {
             // Check existence
@@ -153,13 +129,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, scopeId));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, scopeId));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do find
         return txManager.execute(tx -> jobRepository.find(tx, scopeId, jobId))
                 .orElse(null);
@@ -170,13 +140,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, query.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do query
         return txManager.execute(tx -> jobRepository.query(tx, query));
     }
@@ -186,13 +150,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, query.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do query
         return txManager.execute(tx -> jobRepository.count(tx, query));
     }
@@ -225,13 +183,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.delete, forced ? null : scopeId));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, forced ? null : scopeId));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.delete, forced ? null : scopeId));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         txManager.execute(tx -> {
             // Check existence

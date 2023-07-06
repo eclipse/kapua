@@ -19,12 +19,6 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-<<<<<<< HEAD
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
-=======
-import org.eclipse.kapua.service.device.management.DeviceManagementDomain;
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
@@ -79,13 +73,7 @@ public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagement
         ArgumentValidator.notNull(commandInput, "commandInput");
         ArgumentValidator.notNull(commandInput.getTimeout(), "commandInput.timeout");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.execute, scopeId));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.execute, scopeId));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new DeviceManagementDomain(), Actions.execute, scopeId));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Prepare the request
         CommandRequestChannel commandRequestChannel = new CommandRequestChannel();
         commandRequestChannel.setAppName(CommandAppProperties.APP_NAME);

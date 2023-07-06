@@ -267,7 +267,7 @@ public class KapuaGwtCommonsModelConverter {
 //            gwtDomain = GwtDomain.access_info;
 //        } else if (new AccessTokenDomain().getName().equals(domain)) {
 //            gwtDomain = GwtDomain.access_token;
-//        } else if (new AccountDomain().getName().equals(domain)) {
+//        } else if (Domains.ACCOUNT.getName().equals(domain)) {
 //            gwtDomain = GwtDomain.account;
 //        } else if (new BrokerDomain().getName().equals(domain)) {
 //            gwtDomain = GwtDomain.broker;

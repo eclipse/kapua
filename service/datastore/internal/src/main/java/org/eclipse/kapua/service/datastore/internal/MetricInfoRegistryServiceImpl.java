@@ -22,12 +22,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-<<<<<<< HEAD
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-import org.eclipse.kapua.service.datastore.DatastoreDomains;
-=======
-import org.eclipse.kapua.service.datastore.DatastoreDomain;
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
@@ -204,13 +198,7 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
 
     private void checkDataAccess(KapuaId scopeId, Actions action)
             throws KapuaException {
-<<<<<<< HEAD
         Permission permission = permissionFactory.newPermission(Domains.DATASTORE, action, scopeId);
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        Permission permission = permissionFactory.newPermission(DatastoreDomains.DATASTORE_DOMAIN, action, scopeId);
-=======
-        Permission permission = permissionFactory.newPermission(new DatastoreDomain(), action, scopeId);
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         authorizationService.checkPermission(permission);
     }
 

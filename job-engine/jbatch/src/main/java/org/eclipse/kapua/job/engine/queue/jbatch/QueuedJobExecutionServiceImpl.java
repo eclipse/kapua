@@ -25,12 +25,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-<<<<<<< HEAD
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-import org.eclipse.kapua.service.job.JobDomains;
-=======
-import org.eclipse.kapua.service.job.JobDomain;
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Singleton;
@@ -63,13 +57,7 @@ public class QueuedJobExecutionServiceImpl implements QueuedJobExecutionService 
         ArgumentValidator.notNull(creator, "queuedJobExecutionCreator");
         ArgumentValidator.notNull(creator.getScopeId(), "queuedJobExecutionCreator.scopeId");
         // Check access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, null));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.write, null));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         QueuedJobExecution queuedJobExecutionImpl = new QueuedJobExecutionImpl(creator.getScopeId());
         queuedJobExecutionImpl.setJobId(creator.getJobId());
@@ -86,13 +74,7 @@ public class QueuedJobExecutionServiceImpl implements QueuedJobExecutionService 
         ArgumentValidator.notNull(queuedJobExecution, "queuedJobExecution");
         ArgumentValidator.notNull(queuedJobExecution.getScopeId(), "queuedJobExecution.scopeId");
         // Check access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, null));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.write, null));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         return txManager.execute(tx -> repository.update(tx, queuedJobExecution));
     }
@@ -103,13 +85,7 @@ public class QueuedJobExecutionServiceImpl implements QueuedJobExecutionService 
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(queuedJobExecutionId, "queuedJobExecutionId");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, scopeId));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, scopeId));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do find
         return txManager.execute(tx -> repository.find(tx, scopeId, queuedJobExecutionId))
                 .orElse(null);
@@ -120,13 +96,7 @@ public class QueuedJobExecutionServiceImpl implements QueuedJobExecutionService 
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, query.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do query
         return txManager.execute(tx -> repository.query(tx, query));
     }
@@ -136,13 +106,7 @@ public class QueuedJobExecutionServiceImpl implements QueuedJobExecutionService 
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, query.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do query
         return txManager.execute(tx -> repository.count(tx, query));
     }
@@ -153,13 +117,7 @@ public class QueuedJobExecutionServiceImpl implements QueuedJobExecutionService 
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(queuedJobExecutionId, "queuedJobExecutionId");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.delete, scopeId));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.delete, scopeId));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do delete
         txManager.execute(tx -> repository.delete(tx, scopeId, queuedJobExecutionId));
     }

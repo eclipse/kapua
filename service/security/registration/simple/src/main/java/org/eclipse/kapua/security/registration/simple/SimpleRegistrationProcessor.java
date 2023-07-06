@@ -25,12 +25,6 @@ import org.eclipse.kapua.security.registration.simple.setting.SimpleSetting;
 import org.eclipse.kapua.security.registration.simple.setting.SimpleSettingKeys;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
-<<<<<<< HEAD
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-import org.eclipse.kapua.service.account.AccountDomains;
-=======
-import org.eclipse.kapua.service.account.AccountDomain;
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
@@ -43,25 +37,9 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-<<<<<<< HEAD
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-import org.eclipse.kapua.service.datastore.DatastoreDomains;
-import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
-import org.eclipse.kapua.service.device.registry.DeviceDomains;
-=======
-import org.eclipse.kapua.service.datastore.DatastoreDomain;
-import org.eclipse.kapua.service.device.management.DeviceManagementDomain;
-import org.eclipse.kapua.service.device.registry.DeviceDomains;
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
-<<<<<<< HEAD
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-import org.eclipse.kapua.service.user.UserDomains;
-=======
-import org.eclipse.kapua.service.user.UserDomain;
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserType;
@@ -286,7 +264,6 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
         Set<Permission> permissions = new HashSet<>();
         permissions.add(permissionFactory.newPermission(Domains.ACCESS_INFO, Actions.read, user.getScopeId()));
 
-<<<<<<< HEAD
         permissions.addAll(permissionFactory.newPermissions(Domains.ACCOUNT, user.getScopeId(), Actions.read));
         permissions.addAll(permissionFactory.newPermissions(Domains.CREDENTIAL, user.getScopeId(), Actions.read, Actions.write, Actions.delete));
         permissions.addAll(permissionFactory.newPermissions(Domains.DATASTORE, user.getScopeId(), Actions.read));
@@ -297,29 +274,6 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
         permissions.addAll(permissionFactory.newPermissions(Domains.GROUP, user.getScopeId(), Actions.read));
         permissions.addAll(permissionFactory.newPermissions(Domains.ROLE, user.getScopeId(), Actions.read));
         permissions.addAll(permissionFactory.newPermissions(Domains.USER, user.getScopeId(), Actions.read));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        permissions.addAll(permissionFactory.newPermissions(AccountDomains.ACCOUNT_DOMAIN, user.getScopeId(), Actions.read));
-        permissions.addAll(permissionFactory.newPermissions(AuthenticationDomains.CREDENTIAL_DOMAIN, user.getScopeId(), Actions.read, Actions.write, Actions.delete));
-        permissions.addAll(permissionFactory.newPermissions(DatastoreDomains.DATASTORE_DOMAIN, user.getScopeId(), Actions.read));
-        permissions.addAll(permissionFactory.newPermissions(DeviceDomains.DEVICE_DOMAIN, user.getScopeId(), Actions.read, Actions.write, Actions.delete));
-        permissions.addAll(permissionFactory.newPermissions(DeviceDomains.DEVICE_CONNECTION_DOMAIN, user.getScopeId(), Actions.read));
-        permissions.addAll(permissionFactory.newPermissions(DeviceDomains.DEVICE_EVENT_DOMAIN, user.getScopeId(), Actions.read, Actions.write));
-        permissions.addAll(permissionFactory.newPermissions(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, user.getScopeId(), Actions.read, Actions.write, Actions.execute));
-        permissions.addAll(permissionFactory.newPermissions(AuthorizationDomains.GROUP_DOMAIN, user.getScopeId(), Actions.read));
-        permissions.addAll(permissionFactory.newPermissions(AuthorizationDomains.ROLE_DOMAIN, user.getScopeId(), Actions.read));
-        permissions.addAll(permissionFactory.newPermissions(UserDomains.USER_DOMAIN, user.getScopeId(), Actions.read));
-=======
-        permissions.addAll(permissionFactory.newPermissions(new AccountDomain(), user.getScopeId(), Actions.read));
-        permissions.addAll(permissionFactory.newPermissions(AuthenticationDomains.CREDENTIAL_DOMAIN, user.getScopeId(), Actions.read, Actions.write, Actions.delete));
-        permissions.addAll(permissionFactory.newPermissions(new DatastoreDomain(), user.getScopeId(), Actions.read));
-        permissions.addAll(permissionFactory.newPermissions(DeviceDomains.DEVICE_DOMAIN, user.getScopeId(), Actions.read, Actions.write, Actions.delete));
-        permissions.addAll(permissionFactory.newPermissions(DeviceDomains.DEVICE_CONNECTION_DOMAIN, user.getScopeId(), Actions.read));
-        permissions.addAll(permissionFactory.newPermissions(DeviceDomains.DEVICE_EVENT_DOMAIN, user.getScopeId(), Actions.read, Actions.write));
-        permissions.addAll(permissionFactory.newPermissions(new DeviceManagementDomain(), user.getScopeId(), Actions.read, Actions.write, Actions.execute));
-        permissions.addAll(permissionFactory.newPermissions(AuthorizationDomains.GROUP_DOMAIN, user.getScopeId(), Actions.read));
-        permissions.addAll(permissionFactory.newPermissions(AuthorizationDomains.ROLE_DOMAIN, user.getScopeId(), Actions.read));
-        permissions.addAll(permissionFactory.newPermissions(new UserDomain(), user.getScopeId(), Actions.read));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 
         accessInfoCreator.setPermissions(permissions);
 

@@ -23,12 +23,6 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
-<<<<<<< HEAD
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-import org.eclipse.kapua.service.job.JobDomains;
-=======
-import org.eclipse.kapua.service.job.JobDomain;
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.job.JobRepository;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetAttributes;
@@ -84,13 +78,7 @@ public class JobTargetServiceImpl implements JobTargetService {
         ArgumentValidator.notNull(jobTargetCreator.getJobId(), "jobTargetCreator.jobId");
         ArgumentValidator.notNull(jobTargetCreator.getJobTargetId(), "jobTargetCreator.jobTargetId");
         // Check access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, jobTargetCreator.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobTargetCreator.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.write, jobTargetCreator.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         return txManager.execute(tx -> {
             // Check Job Existing
             final Job job = jobRepository.find(tx, jobTargetCreator.getScopeId(), jobTargetCreator.getJobId())
@@ -130,13 +118,7 @@ public class JobTargetServiceImpl implements JobTargetService {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobTargetId, "jobTargetId");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, scopeId));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, scopeId));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.write, scopeId));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do find
         return txManager.execute(tx -> jobTargetRepository.find(tx, scopeId, jobTargetId))
                 .orElse(null);
@@ -147,13 +129,7 @@ public class JobTargetServiceImpl implements JobTargetService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, query.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do query
         return txManager.execute(tx -> jobTargetRepository.query(tx, query));
     }
@@ -163,13 +139,7 @@ public class JobTargetServiceImpl implements JobTargetService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.read, query.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do query
         return txManager.execute(tx -> jobTargetRepository.count(tx, query));
     }
@@ -183,13 +153,7 @@ public class JobTargetServiceImpl implements JobTargetService {
         ArgumentValidator.notNull(jobTarget.getStepIndex(), "jobTarget.stepIndex");
         ArgumentValidator.notNull(jobTarget.getStatus(), "jobTarget.status");
         // Check access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, jobTarget.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobTarget.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.write, jobTarget.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Check existence
         return txManager.execute(tx -> {
             if (!jobTargetRepository.find(tx, jobTarget.getScopeId(), jobTarget.getId()).isPresent()) {
@@ -206,13 +170,7 @@ public class JobTargetServiceImpl implements JobTargetService {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobTargetId, "jobTargetId");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.delete, scopeId));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new JobDomain(), Actions.delete, scopeId));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do delete
         txManager.execute(tx -> jobTargetRepository.delete(tx, scopeId, jobTargetId));
     }

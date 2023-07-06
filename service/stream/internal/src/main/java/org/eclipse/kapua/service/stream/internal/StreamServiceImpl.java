@@ -36,12 +36,6 @@ import org.eclipse.kapua.service.endpoint.EndpointInfoAttributes;
 import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 import org.eclipse.kapua.service.endpoint.EndpointInfoService;
-<<<<<<< HEAD
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-import org.eclipse.kapua.service.stream.StreamDomains;
-=======
-import org.eclipse.kapua.service.stream.StreamDomain;
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
 import org.eclipse.kapua.service.stream.StreamService;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.TranslatorHub;
@@ -98,13 +92,7 @@ public class StreamServiceImpl implements StreamService {
         ArgumentValidator.notNull(kapuaDataMessage.getScopeId(), "dataMessage.scopeId");
         ArgumentValidator.notNull(kapuaDataMessage.getChannel(), "dataMessage.channel");
         // Check Access
-<<<<<<< HEAD
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.STREAM, Actions.write, kapuaDataMessage.getScopeId()));
-||||||| parent of 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
-        authorizationService.checkPermission(permissionFactory.newPermission(StreamDomains.STREAM_DOMAIN, Actions.write, kapuaDataMessage.getScopeId()));
-=======
-        authorizationService.checkPermission(permissionFactory.newPermission(new StreamDomain(), Actions.write, kapuaDataMessage.getScopeId()));
->>>>>>> 9d99c5f1ab (:enh: removed further statics, and marked for fix those that could not be changed yet)
         // Do publish
         try (TransportFacade transportFacade = borrowClient(kapuaDataMessage)) {
             // Get Kura to transport translator for the request and vice versa
