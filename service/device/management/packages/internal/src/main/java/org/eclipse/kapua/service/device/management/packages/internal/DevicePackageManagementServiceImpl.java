@@ -141,17 +141,16 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         ArgumentValidator.notNull(packageDownloadRequest.getVersion(), "packageDownloadRequest.version");
         ArgumentValidator.notNull(packageDownloadOptions, "packageDownloadOptions");
 
-        //
-        // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
-
         try {
             packageDownloadRequest.getUri().toURL();
         } catch (MalformedURLException | IllegalArgumentException ignored) {
             throw new KapuaIllegalArgumentException("packageDownloadRequest.uri", packageDownloadRequest.getUri().toString());
         }
-
         verifyOverflowPackageFields(packageDownloadRequest);
+
+        //
+        // Check Access
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
 
         //
         // Generate requestId
@@ -578,22 +577,9 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
     }
 
     private void verifyOverflowPackageFields(DevicePackageDownloadRequest packageDownloadRequest) throws KapuaIllegalArgumentException {
-        int uriLength = packageDownloadRequest.getUri().toString().length();
-        int nameLength = packageDownloadRequest.getName().length();
-        int versionLength = packageDownloadRequest.getVersion().length();
-
-        if (uriLength > 2048) {
-            throw new KapuaIllegalArgumentException("packageDownloadRequest.uri", packageDownloadRequest.getUri().toString());
-        }
-
-        if (nameLength > 256) {
-            throw new KapuaIllegalArgumentException("packageDownloadRequest.name", packageDownloadRequest.getName().toString());
-        }
-
-        if (versionLength > 256) {
-            throw new KapuaIllegalArgumentException("packageDownloadRequest.version", packageDownloadRequest.getVersion().toString());
-        }
-
+        ArgumentValidator.lengthRange(packageDownloadRequest.getUri().toString(), null, 2048, "packageDownloadRequest.uri");
+        ArgumentValidator.lengthRange(packageDownloadRequest.getName(), null, 256, "packageDownloadRequest.name");
+        ArgumentValidator.lengthRange(packageDownloadRequest.getVersion(), null, 256, "packageDownloadRequest.version");
     }
 
 
