@@ -44,8 +44,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter {
      * @param exchange
      * @param value
      * @return Message container that contains application message
-     * @throws KapuaException
-     *             if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
+     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
     @Converter
     public CamelKapuaMessage<?> convertToApps(Exchange exchange, Object value) throws KapuaException {
@@ -59,8 +58,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter {
      * @param exchange
      * @param value
      * @return Message container that contains birth message
-     * @throws KapuaException
-     *             if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
+     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
     @Converter
     public CamelKapuaMessage<?> convertToBirth(Exchange exchange, Object value) throws KapuaException {
@@ -74,8 +72,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter {
      * @param exchange
      * @param value
      * @return Message container that contains disconnect message
-     * @throws KapuaException
-     *             if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
+     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
     @Converter
     public CamelKapuaMessage<?> convertToDisconnect(Exchange exchange, Object value) throws KapuaException {
@@ -89,8 +86,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter {
      * @param exchange
      * @param value
      * @return Message container that contains missing message
-     * @throws KapuaException
-     *             if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
+     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
     @Converter
     public CamelKapuaMessage<?> convertToMissing(Exchange exchange, Object value) throws KapuaException {

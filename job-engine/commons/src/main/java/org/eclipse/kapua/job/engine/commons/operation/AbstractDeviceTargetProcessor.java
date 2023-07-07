@@ -23,7 +23,7 @@ import javax.inject.Inject;
 public abstract class AbstractDeviceTargetProcessor extends AbstractTargetProcessor {
 
     @Inject
-    DeviceRegistryService deviceRegistryService;
+    protected DeviceRegistryService deviceRegistryService;
 
     @Override
     protected String getTargetDisplayName(JobTarget jobTarget) throws KapuaException {

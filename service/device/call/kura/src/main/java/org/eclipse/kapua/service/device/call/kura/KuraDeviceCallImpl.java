@@ -59,10 +59,10 @@ import java.util.Random;
 public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraResponseMessage> {
 
     private static final Random RANDOM = RandomUtils.getInstance();
-    private final AccountService accountService;
-    private final DeviceRegistryService deviceRegistryService;
-    private final TransportClientFactory transportClientFactory;
-    private final TranslatorHub translatorHub;
+    protected final AccountService accountService;
+    protected final DeviceRegistryService deviceRegistryService;
+    protected final TransportClientFactory transportClientFactory;
+    protected final TranslatorHub translatorHub;
 
     @Inject
     public KuraDeviceCallImpl(

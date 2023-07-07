@@ -50,12 +50,8 @@ import java.util.Map;
  */
 public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapuaKura<ConfigurationRequestChannel, ConfigurationRequestPayload, ConfigurationRequestMessage> {
 
-    private final DeviceConfigurationFactory deviceConfigurationFactory;
-
     @Inject
-    public TranslatorAppConfigurationKapuaKura(DeviceConfigurationFactory deviceConfigurationFactory) {
-        this.deviceConfigurationFactory = deviceConfigurationFactory;
-    }
+    protected DeviceConfigurationFactory deviceConfigurationFactory;
 
     @Override
     protected KuraRequestChannel translateChannel(ConfigurationRequestChannel kapuaChannel) throws InvalidChannelException {
