@@ -141,15 +141,16 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         ArgumentValidator.notNull(packageDownloadRequest.getVersion(), "packageDownloadRequest.version");
         ArgumentValidator.notNull(packageDownloadOptions, "packageDownloadOptions");
 
-        //
-        // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
-
         try {
             packageDownloadRequest.getUri().toURL();
         } catch (MalformedURLException | IllegalArgumentException ignored) {
             throw new KapuaIllegalArgumentException("packageDownloadRequest.uri", packageDownloadRequest.getUri().toString());
         }
+        verifyOverflowPackageFields(packageDownloadRequest);
+
+        //
+        // Check Access
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
 
         //
         // Generate requestId
@@ -574,4 +575,12 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         // Check response
         return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDevicePackageUninstallOperation());
     }
+
+    private void verifyOverflowPackageFields(DevicePackageDownloadRequest packageDownloadRequest) throws KapuaIllegalArgumentException {
+        ArgumentValidator.lengthRange(packageDownloadRequest.getUri().toString(), null, 2048, "packageDownloadRequest.uri");
+        ArgumentValidator.lengthRange(packageDownloadRequest.getName(), null, 256, "packageDownloadRequest.name");
+        ArgumentValidator.lengthRange(packageDownloadRequest.getVersion(), null, 256, "packageDownloadRequest.version");
+    }
+
+
 }
