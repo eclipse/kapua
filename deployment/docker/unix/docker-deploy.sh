@@ -37,14 +37,26 @@ docker_compose() {
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.rest-debug.yml")
     fi
 
-    # Dev Mode
+    # JMX Mode
     if [[ "$2" == true ]]; then
+      echo "JMX mode enabled!"
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.broker-jmx.yml")
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.console-jmx.yml")
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.consumer-lifecycle-jmx.yml")
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.consumer-telemetry-jmx.yml")
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.service-authentication-jmx.yml")
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.job-engine-jmx.yml")
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.rest-jmx.yml")
+    fi
+
+    # Dev Mode
+    if [[ "$3" == true ]]; then
       echo "Dev mode enabled!"
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.db-dev.yml")
     fi
 
     # SSO Mode
-    if [[ "$3" == true ]]; then
+    if [[ "$4" == true ]]; then
       echo "SSO enabled!"
       . "${SCRIPT_DIR}/sso/docker-sso-config.sh"
 
@@ -53,7 +65,7 @@ docker_compose() {
     fi
 
     # Swagger UI
-    if [[ "$4" == false ]]; then
+    if [[ "$5" == false ]]; then
       echo "Swagger disabled!"
     fi
     export KAPUA_SWAGGER_ENABLE=$4
@@ -62,12 +74,13 @@ docker_compose() {
 }
 
 print_usage_deploy() {
-    echo "Usage: $(basename "$0") [-h|--help] [--dev] [--debug] [--logs] [--sso] [--no-swagger]" >&2
+    echo "Usage: $(basename "$0") [-h|--help] [--dev] [--debug] [--jmx] [--logs] [--sso] [--no-swagger]" >&2
 }
 
 DEBUG_MODE=false
 DEV_MODE=false
 OPEN_LOGS=false
+JMX_MODE=false
 SSO_MODE=false
 SWAGGER=true
 for option in "$@"; do
@@ -84,6 +97,9 @@ for option in "$@"; do
       ;;
     --logs)
       OPEN_LOGS=true
+      ;;
+    --jmx)
+      JMX_MODE=true
       ;;
     --sso)
       SSO_MODE=true
@@ -104,7 +120,7 @@ done
 docker_common
 
 echo "Deploying Eclipse Kapua version $IMAGE_VERSION..."
-docker_compose ${DEBUG_MODE} ${DEV_MODE} ${SSO_MODE} ${SWAGGER} || {
+docker_compose ${DEBUG_MODE} ${JMX_MODE} ${DEV_MODE} ${SSO_MODE} ${SWAGGER} || {
     echo "Deploying Eclipse Kapua... ERROR!"
     exit 1
 }

@@ -138,14 +138,40 @@ Example:
 
 Following ports will be opened
 
-| Application/Service | Remote JVM debug endpoint |
-|---------------------|---------------------------|
-| Message Broker      | localhost:5005            |
-| Consumer Lifecycle  | localhost:8002            |
-| Consumer Telemetry  | localhost:8001            |
-| Admin WEB Console   | localhost:5007            |
-| REST API endpoint   | localhost:5006            |
-| Job Engine          | localhost:5008            |
+| Application/Service    | Remote JVM debug endpoint |
+|------------------------|---------------------------|
+| Message Broker         | localhost:5005            |
+| Consumer Lifecycle     | localhost:8002            |
+| Consumer Telemetry     | localhost:8001            |
+| Service Authentication | localhost:8004            |
+| Admin WEB Console      | localhost:5007            |
+| REST API endpoint      | localhost:5006            |
+| Job Engine             | localhost:5008            |
+
+---
+
+### Enabling JMX mode
+
+Containers can be accessed via JMX. For example, you can use it to analyse the JVM using jConsole. 
+To enable it, provide the `--jmx` option.
+
+Example:
+
+```bash
+./docker-deploy.sh --jmx
+```
+
+Following ports will be opened
+
+| Application/Service    | Remote JVM debug endpoint |
+|------------------------|---------------------------|
+| Message Broker         | localhost:9875            |
+| Consumer Lifecycle     | localhost:9876            |
+| Consumer Telemetry     | localhost:9877            |
+| Service Authentication | localhost:9880            |
+| REST API endpoint      | localhost:9881            |
+| Admin WEB Console      | localhost:9882            |
+| Job Engine             | localhost:9883            |
 
 ---
 

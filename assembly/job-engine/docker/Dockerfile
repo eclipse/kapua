@@ -40,6 +40,7 @@ ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
                -Djavax.xml.bind.JAXBContextFactory=org.eclipse.persistence.jaxb.JAXBContextFactory \
                -Dcipher.key=\${CIPHER_KEY} \
                -Dcrypto.secret.key=\${CRYPTO_SECRET_KEY} \
+               \${JETTY_JMX_OPTS} \
                \${JETTY_DEBUG_OPTS}"
 
 USER 0

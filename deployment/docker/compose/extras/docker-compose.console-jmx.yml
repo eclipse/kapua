@@ -1,0 +1,8 @@
+version: '3.1'
+
+services:
+  kapua-console:
+    ports:
+      - ${KAPUA_CONSOLE_JMX_PORT:-9882}:${KAPUA_CONSOLE_JMX_PORT:-9882}
+    environment:
+      - JETTY_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=${KAPUA_CONSOLE_JMX_PORT:-9882} -Dcom.sun.management.jmxremote.rmi.port=${KAPUA_CONSOLE_JMX_PORT:-9882} -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=0.0.0.0
