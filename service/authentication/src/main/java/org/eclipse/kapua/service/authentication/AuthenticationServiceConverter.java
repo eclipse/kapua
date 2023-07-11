@@ -59,10 +59,10 @@ public class AuthenticationServiceConverter extends AbstractKapuaConverter {
         try {
             String body = ((JmsMessage)exchange.getIn()).getBody(String.class);
             AuthRequest authRequest = reader.readValue(body, AuthRequest.class);
-            metrics.getAuthentication().inc();
+            metrics.getConverter().inc();
             return authRequest;
         } catch (IOException e) {
-            metrics.getAuthenticationError().inc();
+            metrics.getConverterError().inc();
             throw KapuaException.internalError(e, "Error while converting authentication message");
         }
     }
@@ -72,10 +72,10 @@ public class AuthenticationServiceConverter extends AbstractKapuaConverter {
         try {
             String body = ((JmsMessage)exchange.getIn()).getBody(String.class);
             EntityRequest entityRequest = reader.readValue(body, EntityRequest.class);
-            metrics.getAuthentication().inc();
+            metrics.getConverter().inc();
             return entityRequest;
         } catch (IOException e) {
-            metrics.getAuthenticationError().inc();
+            metrics.getConverterError().inc();
             throw KapuaException.internalError(e, "Error while converting getEntity message");
         }
     }

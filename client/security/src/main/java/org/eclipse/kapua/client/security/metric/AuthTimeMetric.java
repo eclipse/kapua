@@ -24,38 +24,39 @@ public class AuthTimeMetric {
     private static final String ADD_CONNECTION = "add_connection";
     private static final String CHECK_ACCESS = "check_access";
     private static final String FIND_DEVICE = "find_device";
+    private static final String LOGIN = "login";
     private static final String UPDATE_DEVICE = "update_device";
     private static final String RAISE_LIFECYCLE_EVENT = "raise_lifecycle_event";
     private static final String LOGOUT_ON_CONNECTION = "logout_on_connection";
     private static final String REMOVE_CONNECTION = "remove_connection";
 
-    private Timer user;
+    private Timer userAddConnection;
     private Timer userCheckAccess;
     private Timer userFindDevice;
     private Timer userUpdateDevice;
-    private Timer logoutOnConnect;
-    private Timer admin;
+    private Timer userRemoveConnection;
+    private Timer logoutOnLogin;
+    private Timer adminAddConnection;
     private Timer raiseLifecycleEvent;
-    private Timer removeConnection;
 
     public AuthTimeMetric() {
         MetricsService metricsService = MetricServiceFactory.getInstance();
-        user = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, ADD_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        userAddConnection = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, ADD_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
         userCheckAccess = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, CHECK_ACCESS, MetricsLabel.TIME, MetricsLabel.SECONDS);
         userFindDevice = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, FIND_DEVICE, MetricsLabel.TIME, MetricsLabel.SECONDS);
         userUpdateDevice = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, UPDATE_DEVICE, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        logoutOnConnect = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, LOGOUT_ON_CONNECTION, AuthMetric.LOGOUT, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        admin = metricsService.getTimer(CommonsMetric.module, AuthMetric.ADMIN, ADD_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        userRemoveConnection = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, REMOVE_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        logoutOnLogin = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, LOGOUT_ON_CONNECTION, LOGIN, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        adminAddConnection = metricsService.getTimer(CommonsMetric.module, AuthMetric.ADMIN, ADD_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
         raiseLifecycleEvent = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, RAISE_LIFECYCLE_EVENT, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        removeConnection = metricsService.getTimer(CommonsMetric.module, REMOVE_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
     }
 
     /**
      * Add connection user login total time
      * @return
      */
-    public Timer getUser() {
-        return user;
+    public Timer getUserAddConnection() {
+        return userAddConnection;
     }
 
     /**
@@ -83,19 +84,27 @@ public class AuthTimeMetric {
     }
 
     /**
+     * Remove connection total time
+     * @return
+     */
+    public Timer getUserRemoveConnection() {
+        return userRemoveConnection;
+    }
+
+    /**
      * Add connection after connect logout time
      * @return
      */
-    public Timer getLogoutOnConnect() {
-        return logoutOnConnect;
+    public Timer getLogoutOnLogin() {
+        return logoutOnLogin;
     }
 
     /**
      * Add connection admin total time
      * @return
      */
-    public Timer getAdmin() {
-        return admin;
+    public Timer getAdminAddConnection() {
+        return adminAddConnection;
     }
 
     /**
@@ -106,12 +115,5 @@ public class AuthTimeMetric {
         return raiseLifecycleEvent;
     }
 
-    /**
-     * Remove connection total time
-     * @return
-     */
-    public Timer getRemoveConnection() {
-        return removeConnection;
-    }
 
 }

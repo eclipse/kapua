@@ -152,25 +152,6 @@ public class JmsUtil {
         return message;
     }
 
-    /**
-     * Convert a {@link KapuaMessage} message to a {@link JmsMessage}
-     *
-     * @param connectorDescriptor
-     * @param messageType
-     * @param kapuaMessage
-     * @return
-     * @throws KapuaException
-     */
-    public static JmsMessage convertToJmsMessage(ProtocolDescriptor connectorDescriptor, MessageType messageType, KapuaMessage<?, ?> kapuaMessage) throws KapuaException, ClassNotFoundException {
-        // first step... from Kapua to device level dependent protocol (unknown)
-        Translator<KapuaMessage<?, ?>, DeviceMessage<?, ?>> translatorFromKapua = Translator.getTranslatorFor(connectorDescriptor.getKapuaClass(messageType), connectorDescriptor.getDeviceClass(messageType));
-        DeviceMessage<?, ?> deviceMessage = translatorFromKapua.translate(kapuaMessage);
-
-        // second step.... from device level dependent protocol (unknown) to jms
-        Translator<DeviceMessage<?, ?>, JmsMessage> translatorToJms = Translator.getTranslatorFor(connectorDescriptor.getDeviceClass(messageType), JmsMessage.class);
-        return translatorToJms.translate(deviceMessage);
-    }
-
     public static String getTopic(org.apache.camel.Message message) throws JMSException {
         String topicOrig = message.getHeader(MessageConstants.PROPERTY_ORIGINAL_TOPIC, String.class);
         if (topicOrig != null) {

@@ -29,7 +29,6 @@ public class AuthMetric {
     public static final String LOGOUT = "logout";
 
     private static final String REMOVE_CONNECTION = "remove_connection";
-    private static final String CLIENTS = "clients";
 
     private AuthLoginMetric adminLogin;
     private AuthLoginMetric userLogin;
@@ -43,7 +42,7 @@ public class AuthMetric {
 
     private AuthMetric() {
         adminLogin = new AuthLoginMetric(ADMIN);
-        userLogin = new AuthLoginMetric(CLIENTS);
+        userLogin = new AuthLoginMetric(USER);
         extConnectorTime = new AuthTimeMetric();
         failure = new AuthFailureMetric();
         MetricsService metricsService = MetricServiceFactory.getInstance();

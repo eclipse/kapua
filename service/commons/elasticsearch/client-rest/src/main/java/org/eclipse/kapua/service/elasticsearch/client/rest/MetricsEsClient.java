@@ -25,6 +25,7 @@ public class MetricsEsClient {
     public static final String TIMEOUT_RETRY = "timeout_retry";
     public static final String TIMEOUT_RETRY_LIMIT_REACHED = "timeout_retry_limit_reached";
     private static final String RUNTIME_ERROR = "runtime_error";
+    private static final String RECONNECT_CALL = "reconnect_call";
 
     // metrics
     private Counter exception;
@@ -48,7 +49,7 @@ public class MetricsEsClient {
         //timeout
         timeoutRetry = metricsService.getCounter(CommonsMetric.module, REST_CLIENT, TIMEOUT_RETRY);
         timeoutRetryLimitReached = metricsService.getCounter(CommonsMetric.module, REST_CLIENT, TIMEOUT_RETRY_LIMIT_REACHED);
-        clientReconnectCall = metricsService.getCounter(CommonsMetric.module, "elasticsearch-client-rest", "reconnect_call");
+        clientReconnectCall = metricsService.getCounter(CommonsMetric.module, REST_CLIENT, RECONNECT_CALL);
 
         //exception
         exception = metricsService.getCounter(CommonsMetric.module, REST_CLIENT, MetricsLabel.ERROR);

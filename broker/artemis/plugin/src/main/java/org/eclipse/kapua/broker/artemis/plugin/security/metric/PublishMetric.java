@@ -25,7 +25,7 @@ public class PublishMetric {
 
     private static final PublishMetric PUBLISH_METRIC = new PublishMetric();
 
-    public static final String COMPONENT_PUBLISH = "publish";
+    public static final String PUBLISH = "publish";
 
     public static final String ALLOWED = "allowed";
     public static final String NOT_ALLOWED = "not_allowed";
@@ -43,11 +43,11 @@ public class PublishMetric {
     private PublishMetric() {
         MetricsService metricsService = MetricServiceFactory.getInstance();
         // publish/subscribe
-        allowedMessages = metricsService.getCounter(CommonsMetric.module, COMPONENT_PUBLISH, ALLOWED);
-        notAllowedMessages = metricsService.getCounter(CommonsMetric.module, COMPONENT_PUBLISH, NOT_ALLOWED);
-        time = metricsService.getTimer(CommonsMetric.module, COMPONENT_PUBLISH, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        allowedMessages = metricsService.getCounter(CommonsMetric.module, PUBLISH, ALLOWED);
+        notAllowedMessages = metricsService.getCounter(CommonsMetric.module, PUBLISH, NOT_ALLOWED);
+        time = metricsService.getTimer(CommonsMetric.module, PUBLISH, MetricsLabel.TIME, MetricsLabel.SECONDS);
         // message size
-        messageSizeAllowed = metricsService.getHistogram(CommonsMetric.module, COMPONENT_PUBLISH, ALLOWED, MetricsLabel.SIZE, MetricsLabel.BYTES);
+        messageSizeAllowed = metricsService.getHistogram(CommonsMetric.module, PUBLISH, ALLOWED, MetricsLabel.SIZE, MetricsLabel.BYTES);
     }
 
     public Counter getAllowedMessages() {

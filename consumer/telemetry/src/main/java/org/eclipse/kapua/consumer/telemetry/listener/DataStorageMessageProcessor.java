@@ -16,12 +16,12 @@ package org.eclipse.kapua.consumer.telemetry.listener;
 import org.apache.camel.Exchange;
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.consumer.telemetry.MetricsTelemetry;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
+import org.eclipse.kapua.service.datastore.internal.MetricsDatastore;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreCommunicationException;
 import org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreService;
 import org.slf4j.Logger;
@@ -42,10 +42,10 @@ public class DataStorageMessageProcessor {
     private final DeviceAssetStoreService deviceAssetStoreService = KapuaLocator.getInstance().getService(DeviceAssetStoreService.class);
 
     //TODO inject!!!
-    private MetricsTelemetry metrics;
+    private MetricsDatastore metrics;
 
     public DataStorageMessageProcessor() {
-        metrics = MetricsTelemetry.getInstance();
+        metrics = MetricsDatastore.getInstance();
     }
 
     /**
@@ -78,17 +78,17 @@ public class DataStorageMessageProcessor {
     public void processCommunicationErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
         LOG.info("Message datastoreId: '{}' - Message Id: '{}'", message.getDatastoreId(), message.getMessage().getId());
         processMessage(message);
-        metrics.getQueueCommunicationError().dec();
+        metrics.getProcessedCommunicationError().dec();
     }
 
     public void processConfigurationErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
         LOG.info("Message datastoreId: '{}' - Message Id '{}'", message.getDatastoreId(), message.getMessage().getId());
-        metrics.getQueueConfigurationError().dec();
+        metrics.getProcessedConfigurationError().dec();
     }
 
     public void processGenericErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
         LOG.info("Message datastoreId: '{}' - Message Id '{}'", message.getDatastoreId(), message.getMessage().getId());
-        metrics.getQueueGenericError().dec();
+        metrics.getProcessedGenericError().dec();
     }
 
 }

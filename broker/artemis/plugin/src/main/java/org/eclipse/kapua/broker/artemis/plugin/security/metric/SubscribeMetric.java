@@ -24,7 +24,7 @@ public class SubscribeMetric {
 
     private static final SubscribeMetric SUBSCRIBE_METRIC = new SubscribeMetric();
 
-    public static final String COMPONENT_SUBSCRIBE = "subscribe";
+    public static final String SUBSCRIBE = "subscribe";
 
     public static final String ALLOWED = "allowed";
     public static final String NOT_ALLOWED = "not_allowed";
@@ -39,9 +39,9 @@ public class SubscribeMetric {
 
     private SubscribeMetric() {
         MetricsService metricsService = MetricServiceFactory.getInstance();
-        allowedMessages = metricsService.getCounter(CommonsMetric.module, COMPONENT_SUBSCRIBE, ALLOWED);
-        notAllowedMessages = metricsService.getCounter(CommonsMetric.module, COMPONENT_SUBSCRIBE, NOT_ALLOWED);
-        time = metricsService.getTimer(CommonsMetric.module, COMPONENT_SUBSCRIBE, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        allowedMessages = metricsService.getCounter(CommonsMetric.module, SUBSCRIBE, ALLOWED);
+        notAllowedMessages = metricsService.getCounter(CommonsMetric.module, SUBSCRIBE, NOT_ALLOWED);
+        time = metricsService.getTimer(CommonsMetric.module, SUBSCRIBE, MetricsLabel.TIME, MetricsLabel.SECONDS);
     }
 
     public Counter getAllowedMessages() {

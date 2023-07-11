@@ -30,14 +30,13 @@ public class LoginMetric {
 
     private static final String INTERNAL_CONNECTOR = "internal_connector";
     private static final String EXTERNAL_CONNECTOR = "external_connector";
-    private static final String SUCCESS_FROM_CACHE = "success_from_cache";
+    private static final String AUTHENTICATE_FROM_CACHE = "authenticate_from_cache";
     private static final String PASSWORD = "password";
-    private static final String CONNECTION_CLEANUP = "connection_cleanup";
-    private static final String CONNECTION_CLEANUP_NULL_SESSION = "connection_cleanup_null_session";
-    private static final String CRITICAL = "critical";
-    private static final String LOGIN_CLOSED_CONNECTION = "login_closed_connection";
+    private static final String CLEANUP_GENERIC = "cleanup_generic";
+    private static final String CLEANUP_NULL_SESSION = "cleanup_null_session";
+    private static final String CLOSED_CONNECTION = "closed_connection";
     private static final String DUPLICATE_SESSION_METADATA = "duplicate_session_metadata";
-    private static final String CONNECT_CALLBACK_CALL = "connect_callback_call";
+    private static final String DISCONNECT_CALLBACK_CALL = "disconnect_callback_call";
     private static final String SESSION_CONTEXT_BY_CLIENT_ID = "session_context_by_client_id";
     private static final String ACL_CACHE_HIT = "acl_cache_hit";
     private static final String ACL_CREATION = "acl_creation";
@@ -47,11 +46,9 @@ public class LoginMetric {
 
     private ActionMetric externalConnector;
     private ActionMetric internalConnector;
-    private Counter successFromCache;
-    private Counter cleanupConnectionFailure;
-    //other failures
-    private Counter cleanupConnectionNullSession;
-    private Counter criticalFailure;
+    private Counter authenticateFromCache;
+    private Counter cleanupGenericFailure;
+    private Counter cleanupNullSessionFailure;
     private Counter loginClosedConnectionFailure;
     private Counter duplicateSessionMetadataFailure;
     private Counter disconnectCallbackCallFailure;//disconnect callback called before the connect callback (usually when a stealing link happens)
@@ -73,14 +70,13 @@ public class LoginMetric {
         MetricsService metricsService = MetricServiceFactory.getInstance();
         // login by connectors
         externalConnector = new ActionMetric(CommonsMetric.module, COMPONENT_LOGIN, EXTERNAL_CONNECTOR);
-        successFromCache = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, SUCCESS_FROM_CACHE);
+        authenticateFromCache = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, AUTHENTICATE_FROM_CACHE);
         internalConnector = new ActionMetric(CommonsMetric.module, COMPONENT_LOGIN, INTERNAL_CONNECTOR);
-        cleanupConnectionFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, CONNECTION_CLEANUP, MetricsLabel.FAILURE);
-        cleanupConnectionNullSession = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, CONNECTION_CLEANUP_NULL_SESSION, MetricsLabel.FAILURE);
-        criticalFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, CRITICAL, MetricsLabel.FAILURE);
-        loginClosedConnectionFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, LOGIN_CLOSED_CONNECTION, MetricsLabel.FAILURE);
+        cleanupGenericFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, CLEANUP_GENERIC, MetricsLabel.FAILURE);
+        cleanupNullSessionFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, CLEANUP_NULL_SESSION, MetricsLabel.FAILURE);
+        loginClosedConnectionFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, CLOSED_CONNECTION, MetricsLabel.FAILURE);
         duplicateSessionMetadataFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, DUPLICATE_SESSION_METADATA, MetricsLabel.FAILURE);
-        disconnectCallbackCallFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, CONNECT_CALLBACK_CALL, MetricsLabel.FAILURE);
+        disconnectCallbackCallFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, DISCONNECT_CALLBACK_CALL, MetricsLabel.FAILURE);
         sessionContextByClientIdFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, SESSION_CONTEXT_BY_CLIENT_ID, MetricsLabel.FAILURE);
         aclCacheHit = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, ACL_CACHE_HIT);
         aclCreationFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, ACL_CREATION, MetricsLabel.FAILURE);
@@ -93,8 +89,8 @@ public class LoginMetric {
         removeConnection = metricsService.getTimer(CommonsMetric.module, COMPONENT_LOGIN, REMOVE_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
     }
 
-    public Counter getSuccessFromCache() {
-        return successFromCache;
+    public Counter getAuthenticateFromCache() {
+        return authenticateFromCache;
     }
 
     public ActionMetric getExternalConnector() {
@@ -105,16 +101,12 @@ public class LoginMetric {
         return internalConnector;
     }
 
-    public Counter getCleanupConnectionFailure() {
-        return cleanupConnectionFailure;
+    public Counter getCleanupGenericFailure() {
+        return cleanupGenericFailure;
     }
 
-    public Counter getCleanupConnectionNullSession() {
-        return cleanupConnectionNullSession;
-    }
-
-    public Counter getCriticalFailure() {
-        return criticalFailure;
+    public Counter getCleanupNullSessionFailure() {
+        return cleanupNullSessionFailure;
     }
 
     public Counter getLoginClosedConnectionFailure() {

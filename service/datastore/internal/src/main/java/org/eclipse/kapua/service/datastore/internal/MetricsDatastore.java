@@ -23,7 +23,7 @@ public class MetricsDatastore {
 
     private static final String CONSUMER_TELEMETRY = "consumer_telemetry";
     private static final String STORE = "store";
-    private static final String STORE_QUEUE = "store_queue";
+    private static final String PROCESSED = "processed";
     private static final String DUPLICATED_STORE = "duplicated_store";
 
     private Counter alreadyInTheDatastore;
@@ -36,9 +36,9 @@ public class MetricsDatastore {
     // store timers
     private final Timer dataSaveTime;
     // queues counters
-    private final Counter queueCommunicationError;
-    private final Counter queueConfigurationError;
-    private final Counter queueGenericError;
+    private final Counter processedCommunicationError;
+    private final Counter processedConfigurationError;
+    private final Counter processedGenericError;
 
     private static MetricsDatastore instance;
 
@@ -61,9 +61,9 @@ public class MetricsDatastore {
         validationError = metricsService.getCounter(CONSUMER_TELEMETRY, STORE, MetricsLabel.VALIDATION, MetricsLabel.ERROR);
 
         // error messages queues size
-        queueCommunicationError = metricsService.getCounter(CONSUMER_TELEMETRY, STORE_QUEUE, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR);
-        queueConfigurationError = metricsService.getCounter(CONSUMER_TELEMETRY, STORE_QUEUE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR);
-        queueGenericError = metricsService.getCounter(CONSUMER_TELEMETRY, STORE_QUEUE, MetricsLabel.GENERIC, MetricsLabel.ERROR);
+        processedCommunicationError = metricsService.getCounter(CONSUMER_TELEMETRY, PROCESSED, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR);
+        processedConfigurationError = metricsService.getCounter(CONSUMER_TELEMETRY, PROCESSED, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR);
+        processedGenericError = metricsService.getCounter(CONSUMER_TELEMETRY, PROCESSED, MetricsLabel.GENERIC, MetricsLabel.ERROR);
 
         // store timers
         dataSaveTime = metricsService.getTimer(CONSUMER_TELEMETRY, STORE, MetricsLabel.TIME, MetricsLabel.SECONDS);
@@ -97,16 +97,16 @@ public class MetricsDatastore {
         return dataSaveTime;
     }
 
-    public Counter getQueueCommunicationError() {
-        return queueCommunicationError;
+    public Counter getProcessedCommunicationError() {
+        return processedCommunicationError;
     }
 
-    public Counter getQueueConfigurationError() {
-        return queueConfigurationError;
+    public Counter getProcessedConfigurationError() {
+        return processedConfigurationError;
     }
 
-    public Counter getQueueGenericError() {
-        return queueGenericError;
+    public Counter getProcessedGenericError() {
+        return processedGenericError;
     }
 
 }

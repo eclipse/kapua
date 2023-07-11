@@ -38,7 +38,7 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
 
     @Override
     public List<AuthAcl> connect(AuthContext authContext) throws KapuaException {
-        Context timeUserTotal = authenticationMetric.getExtConnectorTime().getUser().time();
+        Context timeUserTotal = authenticationMetric.getExtConnectorTime().getUserAddConnection().time();
         Context timeUserTotalCheckAccess = authenticationMetric.getExtConnectorTime().getUserCheckAccess().time();
         UserPermissions userPermissions = updatePermissions(authContext);
         timeUserTotalCheckAccess.stop();
@@ -68,7 +68,7 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
 
     @Override
     public boolean disconnect(AuthContext authContext) {
-        Context timeTotal = authenticationMetric.getExtConnectorTime().getRemoveConnection().time();
+        Context timeTotal = authenticationMetric.getExtConnectorTime().getUserRemoveConnection().time();
         boolean deviceOwnedByTheCurrentNode = true;
         if (!authContext.isStealingLink() && !authContext.isIllegalState()) {
             // update device connection (if the disconnection wasn't caused by a stealing link)

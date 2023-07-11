@@ -24,6 +24,8 @@ import com.codahale.metrics.Gauge;
 
 public class MetricsSecurityPlugin {
 
+    public static final String BROKER_TELEMETRY = "broker-telemetry";
+
     private static final String CONNECTION = "connection";
     private static final String SESSION = "session";
     private static final String ACL = "acl";
