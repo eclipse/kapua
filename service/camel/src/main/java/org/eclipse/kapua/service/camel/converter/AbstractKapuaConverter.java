@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.camel.converter;
 
-import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.jms.JmsMessage;
 import org.apache.camel.support.DefaultMessage;
@@ -30,9 +29,7 @@ import org.eclipse.kapua.service.client.protocol.ProtocolDescriptorProviders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jms.BytesMessage;
 import javax.jms.JMSException;
-import javax.jms.Message;
 
 import java.util.Base64;
 import java.util.Date;
@@ -79,26 +76,6 @@ public abstract class AbstractKapuaConverter {
             }
         }
         MetricsCamel.getInstance().getConverterErrorMessage().inc();
-        throw KapuaException.internalError("Cannot convert the message - Wrong instance type: " + exchange.getIn().getClass());
-    }
-
-    /**
-     * Convert incoming message to a javax.jms.Message
-     *
-     * @param exchange
-     * @param value
-     * @return jms Message
-     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage
-     */
-    @Converter
-    public Message convertToJmsMessage(Exchange exchange, Object value) throws KapuaException {
-        MetricsCamel.getInstance().getConverterJmsAttemptMessage().inc();
-        // assume that the message is a Camel Jms message
-        JmsMessage message = exchange.getIn(JmsMessage.class);
-        if (message.getJmsMessage() instanceof BytesMessage) {
-            return message.getJmsMessage();
-        }
-        MetricsCamel.getInstance().getConverterJmsErrorMessage().inc();
         throw KapuaException.internalError("Cannot convert the message - Wrong instance type: " + exchange.getIn().getClass());
     }
 

@@ -21,14 +21,9 @@ import com.codahale.metrics.Counter;
 public class MetricsTelemetry {
 
     public static final String CONSUMER_TELEMETRY = "consumer_telemetry";
-    private static final String CONVERSION = "conversion";
-    private static final String STORE = "store";
+    private static final String CONVERTER = "converter";
 
     private Counter converterDataMessage;
-    // queues counters
-    private Counter queueCommunicationError;
-    private Counter queueConfigurationError;
-    private Counter queueGenericError;
 
     private static MetricsTelemetry instance;
 
@@ -41,27 +36,11 @@ public class MetricsTelemetry {
 
     private MetricsTelemetry() {
         MetricsService metricsService = MetricServiceFactory.getInstance();
-        converterDataMessage = metricsService.getCounter(CONSUMER_TELEMETRY, CONVERSION, MetricsLabel.MESSAGE_DATA);
-
-        queueCommunicationError = metricsService.getCounter(CONSUMER_TELEMETRY, STORE, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR);
-        queueConfigurationError = metricsService.getCounter(CONSUMER_TELEMETRY, STORE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR);
-        queueGenericError = metricsService.getCounter(CONSUMER_TELEMETRY, STORE, MetricsLabel.GENERIC, MetricsLabel.ERROR);
+        converterDataMessage = metricsService.getCounter(CONSUMER_TELEMETRY, CONVERTER, MetricsLabel.MESSAGE_DATA);
     }
 
     public Counter getConverterDataMessage() {
         return converterDataMessage;
-    }
-
-    public Counter getQueueCommunicationError() {
-        return queueCommunicationError;
-    }
-
-    public Counter getQueueConfigurationError() {
-        return queueConfigurationError;
-    }
-
-    public Counter getQueueGenericError() {
-        return queueGenericError;
     }
 
 }

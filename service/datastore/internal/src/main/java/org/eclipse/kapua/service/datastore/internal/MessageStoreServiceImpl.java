@@ -111,19 +111,15 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
             return messageStoreFacade.store(message, datastoreId, true);
         } catch (ConfigurationException e) {
             metrics.getConfigurationError().inc();
-            metrics.getQueueConfigurationError().inc();
             throw e;
         } catch (KapuaIllegalArgumentException e) {
             metrics.getValidationError().inc();
-            metrics.getQueueGenericError().inc();
             throw e;
         } catch (ClientCommunicationException e) {
             metrics.getCommunicationError().inc();
-            metrics.getQueueCommunicationError().inc();
             throw new DatastoreCommunicationException(datastoreId, e);
         } catch (Exception e) {
             metrics.getGenericError().inc();
-            metrics.getQueueGenericError().inc();
             logException(e);
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
         } finally {
@@ -142,19 +138,15 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
             return messageStoreFacade.store(message, datastoreId, false);
         } catch (ConfigurationException e) {
             metrics.getConfigurationError().inc();
-            metrics.getQueueConfigurationError().inc();
             throw e;
         } catch (KapuaIllegalArgumentException e) {
             metrics.getValidationError().inc();
-            metrics.getQueueGenericError().inc();
             throw e;
         } catch (ClientCommunicationException e) {
             metrics.getCommunicationError().inc();
-            metrics.getQueueCommunicationError().inc();
             throw new DatastoreCommunicationException(datastoreId, e);
         } catch (Exception e) {
             metrics.getGenericError().inc();
-            metrics.getQueueGenericError().inc();
             logException(e);
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
         } finally {

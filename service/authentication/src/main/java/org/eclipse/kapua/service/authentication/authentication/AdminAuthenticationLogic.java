@@ -33,7 +33,7 @@ public class AdminAuthenticationLogic extends AuthenticationLogic {
 
     @Override
     public List<AuthAcl> connect(AuthContext authContext) throws KapuaException {
-        Context timeAdminTotal = authenticationMetric.getExtConnectorTime().getAdmin().time();
+        Context timeAdminTotal = authenticationMetric.getExtConnectorTime().getAdminAddConnection().time();
         authContext.setAdmin(true);
         DeviceConnection deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(
                 KapuaEid.parseCompactId(authContext.getScopeId()), authContext.getClientId()));

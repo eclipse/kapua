@@ -45,6 +45,7 @@ import org.eclipse.kapua.client.security.bean.KapuaPrincipalImpl;
 import org.eclipse.kapua.client.security.context.SessionContext;
 import org.eclipse.kapua.client.security.context.Utils;
 import org.eclipse.kapua.commons.cache.LocalCache;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
@@ -72,9 +73,10 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
     private static final AtomicInteger INDEX = new AtomicInteger();
     private String clientIdPrefix = "internal-client-id-";
 
-    private LoginMetric loginMetric = LoginMetric.getInstance();
-    private PublishMetric publishMetric = PublishMetric.getInstance();
-    private SubscribeMetric subscribeMetric = SubscribeMetric.getInstance();
+    //TODO inject!!!
+    private LoginMetric loginMetric;
+    private PublishMetric publishMetric;
+    private SubscribeMetric subscribeMetric;
 
     protected ServerContext serverContext;
     //to avoid deadlock this field will be initialized by the first internal login call
@@ -83,6 +85,11 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
 
     public SecurityPlugin() {
         logger.info("Initializing SecurityPlugin...");
+        //TODO find which is the right plugin to use to set this parameter (ServerPlugin or SecurityPlugin???)
+        CommonsMetric.module = MetricsSecurityPlugin.BROKER_TELEMETRY;
+        loginMetric = LoginMetric.getInstance();
+        publishMetric = PublishMetric.getInstance();
+        subscribeMetric = SubscribeMetric.getInstance();
         serverContext = ServerContext.getInstance();
         usernameScopeIdCache = new LocalCache<>(
                 BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_SCOPE_ID_SIZE), BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_SCOPE_ID_SIZE), null);
@@ -108,7 +115,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextWithCacheFallback(connectionId);
         if (sessionContext!=null && sessionContext.getPrincipal()!=null) {
             logger.info("### authenticate user (cache found): {} - clientId: {} - remoteIP: {} - connectionId: {}", username, clientId, remotingConnection.getTransportConnection().getRemoteAddress(), connectionId);
-            loginMetric.getSuccessFromCache().inc();
+            loginMetric.getAuthenticateFromCache().inc();
             return serverContext.getSecurityContext().buildFromPrincipal(sessionContext.getPrincipal());
         }
         else {

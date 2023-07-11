@@ -32,9 +32,9 @@ public class MetricsAuthentication {
     private Counter getAccount;
     private Counter getAccountRequest;
 
-    public static final String CONVERSION = "conversion";
-    private Counter authentication;
-    private Counter authenticationError;
+    public static final String CONVERTER = "converter";
+    private Counter converter;
+    private Counter converterError;
 
     private static MetricsAuthentication instance;
 
@@ -47,9 +47,8 @@ public class MetricsAuthentication {
 
     private MetricsAuthentication() {
         MetricsService metricsService = MetricServiceFactory.getInstance();
-        //authentication
-        authentication = metricsService.getCounter(SERVICE_AUTHENTICATION, CONVERSION, MetricsLabel.SUCCESS);
-        authenticationError = metricsService.getCounter(SERVICE_AUTHENTICATION, CONVERSION, MetricsLabel.ERROR);
+        converter = metricsService.getCounter(SERVICE_AUTHENTICATION, CONVERTER, MetricsLabel.SUCCESS);
+        converterError = metricsService.getCounter(SERVICE_AUTHENTICATION, CONVERTER, MetricsLabel.ERROR);
 
         login = metricsService.getCounter(SERVICE_AUTHENTICATION, LOGIN, MetricsLabel.SUCCESS);
         loginRequest = metricsService.getCounter(SERVICE_AUTHENTICATION, LOGIN, REQUEST);
@@ -59,12 +58,12 @@ public class MetricsAuthentication {
         getAccountRequest = metricsService.getCounter(SERVICE_AUTHENTICATION, GET_ACCOUNT, REQUEST);
     }
 
-    public Counter getAuthentication() {
-        return authentication;
+    public Counter getConverter() {
+        return converter;
     }
 
-    public Counter getAuthenticationError() {
-        return authenticationError;
+    public Counter getConverterError() {
+        return converterError;
     }
 
     public Counter getLogin() {

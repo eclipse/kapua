@@ -23,15 +23,16 @@ public class AuthFailureMetric {
 
     private static final String FIND_DEVICE = "find_device";
     private static final String BROKER_HOST = "broker_host";
+    private static final String LOGOUT_ON_FAILURE = "logout_failure_on_login";
 
-    private Counter logoutFailure;
+    private Counter logoutFailureOnLogin;
     private Counter disconnectFailure;
     private Counter findDeviceConnectionFailure;
     private Counter brokerHostFailure;
 
     public AuthFailureMetric() {
         MetricsService metricsService = MetricServiceFactory.getInstance();
-        logoutFailure = metricsService.getCounter(CommonsMetric.module, AuthMetric.LOGOUT, MetricsLabel.FAILURE);
+        logoutFailureOnLogin = metricsService.getCounter(CommonsMetric.module, LOGOUT_ON_FAILURE);
         disconnectFailure = metricsService.getCounter(CommonsMetric.module, AuthMetric.DISCONNECT, MetricsLabel.FAILURE);
         findDeviceConnectionFailure = metricsService.getCounter(CommonsMetric.module, FIND_DEVICE, MetricsLabel.FAILURE);
         brokerHostFailure = metricsService.getCounter(CommonsMetric.module, BROKER_HOST, MetricsLabel.FAILURE);
@@ -41,8 +42,8 @@ public class AuthFailureMetric {
      * Failure while doing Shiro logout (Internal error)
      * @return
      */
-    public Counter getLogoutFailure() {
-        return logoutFailure;
+    public Counter getLogoutFailureOnLogin() {
+        return logoutFailureOnLogin;
     }
 
     /**

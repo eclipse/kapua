@@ -89,12 +89,12 @@ public class AuthenticationServiceBackEndCall {
             return buildLoginResponseNotAuthorized(authRequest, e);
         }
         finally {
-            Context timeShiroLogout = authenticationMetric.getExtConnectorTime().getLogoutOnConnect().time();
+            Context timeShiroLogout = authenticationMetric.getExtConnectorTime().getLogoutOnLogin().time();
             try {
                 authenticationService.logout();
             } catch (Exception e) {
                 //error while cleaning up the logged user
-                authenticationMetric.getFailure().getLogoutFailure().inc();
+                authenticationMetric.getFailure().getLogoutFailureOnLogin().inc();
                 logger.error("Logout error: {}", e.getMessage(), e);
             }
             timeShiroLogout.stop();

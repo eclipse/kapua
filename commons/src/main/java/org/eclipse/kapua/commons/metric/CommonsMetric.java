@@ -36,7 +36,7 @@ public class CommonsMetric {
     private Counter registeredCache;
 
     //raise service events
-    private static final String RAISE_EVENT = "raise_event_data_filler";
+    private static final String EVENT_DATA_FILLER = "event_data_filler";
     private Counter raiseEventWrongId;
     private Counter raiseEventWrongEntity;
 
@@ -77,20 +77,20 @@ public class CommonsMetric {
         metricsService.registerGauge(() -> cacheStatus, module, CACHE_MANAGER, "cache_status");
         registeredCache = metricsService.getCounter(module, CACHE_MANAGER, "available_cache");
 
-        raiseEventWrongId = metricsService.getCounter(module, RAISE_EVENT, "wrong_id");
-        raiseEventWrongEntity = metricsService.getCounter(module, RAISE_EVENT, "wrong_entity");
+        raiseEventWrongId = metricsService.getCounter(module, EVENT_DATA_FILLER, "wrong_id");
+        raiseEventWrongEntity = metricsService.getCounter(module, EVENT_DATA_FILLER, "wrong_entity");
 
         eventBusConnectionRetry = metricsService.getCounter(module, EVENT_BUS_CONNECTION, MetricsLabel.RETRY);
         eventBusConnectionError = metricsService.getCounter(module, EVENT_BUS_CONNECTION, MetricsLabel.ERROR);
 
         cacheMiss = metricsService.getCounter(module, CACHE_ENTITY, "miss");
         cacheHit = metricsService.getCounter(module, CACHE_ENTITY, "hit");
-        cacheRemoval = metricsService.getCounter(module, CACHE_ENTITY, "removal");
+        cacheRemoval = metricsService.getCounter(module, CACHE_ENTITY, "removed");
         cacheError = metricsService.getCounter(module, CACHE_ENTITY, "error");
 
-        processedEvent = metricsService.getCounter(module, EVENT, "processed_event");
-        dequeuedEvent = metricsService.getCounter(module, EVENT, "dequeued_event");
-        enqueuedEvent = metricsService.getCounter(module, EVENT, "enqueued_event");
+        processedEvent = metricsService.getCounter(module, EVENT, "processed");
+        dequeuedEvent = metricsService.getCounter(module, EVENT, "dequeued");
+        enqueuedEvent = metricsService.getCounter(module, EVENT, "enqueued");
     }
 
     //TODO should be synchronized?

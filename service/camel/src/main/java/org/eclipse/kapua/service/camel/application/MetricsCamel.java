@@ -21,18 +21,13 @@ import com.codahale.metrics.Counter;
 
 public class MetricsCamel {
 
-    private static final String STORED_TO_FILE = "stored_to_file";
-    private static final String MESSAGE_UNKNOWN = "message_conversion_unknown_type";
-    private Counter errorTotal;
-    private Counter errorStoredToFileSuccess;
-    private Counter errorStoredToFileError;
-    private Counter errorUnknownBodyType;
+    private static final String STORED_TO_FILE = "store_to_file";
+    private static final String UNKNOWN_BODY_TYPE = "unknown_body_type";
+    private Counter storedToFileSuccess;
+    private Counter storedToFileError;
+    private Counter unknownBodyType;
 
     private static final String CONVERTER = "converter";
-    private static final String CONVERTER_JMS = "converter_jms";
-
-    private Counter converterJmsAttemptMessage;
-    private Counter converterJmsErrorMessage;
     private Counter converterErrorMessage;
 
     //failure processor
@@ -57,23 +52,9 @@ public class MetricsCamel {
     private MetricsCamel() {
         MetricsService metricsService = MetricServiceFactory.getInstance();
         //error handler
-        errorTotal = metricsService.getCounter(CommonsMetric.module, MetricsLabel.ERROR, MetricsLabel.TOTAL);
-        errorStoredToFileSuccess = metricsService.getCounter(CommonsMetric.module, MetricsLabel.ERROR, STORED_TO_FILE, MetricsLabel.SUCCESS);
-        errorStoredToFileError = metricsService.getCounter(CommonsMetric.module, MetricsLabel.ERROR, STORED_TO_FILE, MetricsLabel.ERROR);
-        errorUnknownBodyType = metricsService.getCounter(CommonsMetric.module, MetricsLabel.ERROR, MESSAGE_UNKNOWN, MetricsLabel.ERROR);
-
-        //converter
-        converterJmsAttemptMessage = metricsService.getCounter(
-            CommonsMetric.module,
-            CONVERTER_JMS,
-            MetricsLabel.ATTEMPT
-        );
-
-        converterJmsErrorMessage = metricsService.getCounter(
-            CommonsMetric.module,
-            CONVERTER_JMS,
-            MetricsLabel.ERROR
-        );
+        storedToFileSuccess = metricsService.getCounter(CommonsMetric.module, MetricsLabel.ERROR, STORED_TO_FILE, MetricsLabel.SUCCESS);
+        storedToFileError = metricsService.getCounter(CommonsMetric.module, MetricsLabel.ERROR, STORED_TO_FILE, MetricsLabel.ERROR);
+        unknownBodyType = metricsService.getCounter(CommonsMetric.module, MetricsLabel.ERROR, UNKNOWN_BODY_TYPE);
 
         converterErrorMessage = metricsService.getCounter(
             CommonsMetric.module,
@@ -85,32 +66,20 @@ public class MetricsCamel {
         genericError = metricsService.getCounter(CommonsMetric.module, MetricsLabel.FAILURE, GENERIC);
     }
 
-    public Counter getErrorTotal() {
-        return errorTotal;
-    }
-
     public Counter getErrorStoredToFileSuccess() {
-        return errorStoredToFileSuccess;
+        return storedToFileSuccess;
     }
 
     public Counter getErrorStoredToFileError() {
-        return errorStoredToFileError;
+        return storedToFileError;
     }
 
-    public Counter getErrorUnknownBodyType() {
-        return errorUnknownBodyType;
+    public Counter getUnknownBodyType() {
+        return unknownBodyType;
     }
 
     public Counter getConverterErrorMessage() {
         return converterErrorMessage;
-    }
-
-    public Counter getConverterJmsAttemptMessage() {
-        return converterJmsAttemptMessage;
-    }
-
-    public Counter getConverterJmsErrorMessage() {
-        return converterJmsErrorMessage;
     }
 
     public Counter getUnauthenticatedError() {

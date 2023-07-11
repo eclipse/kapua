@@ -65,7 +65,6 @@ public class ServerPlugin implements ActiveMQServerPlugin {
 
     protected static Logger logger = LoggerFactory.getLogger(ServerPlugin.class);
 
-    private static final String BROKER_TELEMETRY = "broker-telemetry";
     private static final int DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD = 100000;
     private static final String MISSING_TOPIC_SUFFIX = "MQTT.LWT";
 
@@ -80,9 +79,10 @@ public class ServerPlugin implements ActiveMQServerPlugin {
      */
     private int publishInfoMessageSizeLimit;
 
-    private LoginMetric loginMetric = LoginMetric.getInstance();
-    private PublishMetric publishMetric = PublishMetric.getInstance();
-    private SubscribeMetric subscribeMetric = SubscribeMetric.getInstance();
+    //TODO inject!!!
+    private LoginMetric loginMetric;
+    private PublishMetric publishMetric;
+    private SubscribeMetric subscribeMetric;
 
     protected BrokerEventHanldler brokerEventHanldler;
     protected AcceptorHandler acceptorHandler;
@@ -90,7 +90,11 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     protected ServerContext serverContext;
 
     public ServerPlugin() {
-        CommonsMetric.module = BROKER_TELEMETRY;
+        //TODO find which is the right plugin to use to set this parameter (ServerPlugin or SecurityPlugin???)
+        CommonsMetric.module = MetricsSecurityPlugin.BROKER_TELEMETRY;
+        loginMetric = LoginMetric.getInstance();
+        publishMetric = PublishMetric.getInstance();
+        subscribeMetric = SubscribeMetric.getInstance();
         publishInfoMessageSizeLimit = BrokerSetting.getInstance().getInt(BrokerSettingKey.PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD, DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD);
         //TODO find a proper way to initialize database
         DatabaseCheckUpdate databaseCheckUpdate = new DatabaseCheckUpdate();
@@ -287,7 +291,6 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     @Override
     public void criticalFailure(CriticalComponent components) throws ActiveMQException {
         logger.error("Critical failure on component {}", components.toString());
-        loginMetric.getCriticalFailure().inc();
         ActiveMQServerPlugin.super.criticalFailure(components);
     }
 
@@ -319,11 +322,11 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             }
             else {
                 logger.warn("Cannot find any session context for connection id: {}", connectionId);
-                loginMetric.getCleanupConnectionNullSession().inc();
+                loginMetric.getCleanupNullSessionFailure().inc();
             }
         }
         catch (Exception e) {
-            loginMetric.getCleanupConnectionFailure().inc();
+            loginMetric.getCleanupGenericFailure().inc();
             logger.error("Cleanup connection data error: {}", e.getMessage(), e);
         }
         finally {

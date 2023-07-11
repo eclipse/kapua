@@ -37,8 +37,6 @@ public class ErrorMessageListener {
 
     // use already defined constants on the new versions
     public static final String JMS_EXCHANGE_REDELIVERY_COUNTER = org.apache.camel.Exchange.REDELIVERY_COUNTER;
-    public static final String HEADER_DYNAMIC_ROUTE_CAMEL_EXCEPTION_CAUGHT = org.apache.camel.Exchange.EXCEPTION_CAUGHT;
-    public static final String HEADER_DYNAMIC_ROUTE_CAMEL_FAILURE_ENDPOINT = org.apache.camel.Exchange.FAILURE_ENDPOINT;
     private static final String EMPTY_ENCODED_MESSAGE = "N/A";
     private static final String EMPTY_FIELD = "N/A";
 
@@ -108,7 +106,7 @@ public class ErrorMessageListener {
         else {
             //something wrong happened! Anyway try to get the message to be stored
             logger.error("Wrong message type! Cannot convert message of type {} to byte[]", body!=null ? body.getClass() : "N/A");
-            metrics.getErrorUnknownBodyType().inc();
+            metrics.getUnknownBodyType().inc();
             return EMPTY_ENCODED_MESSAGE;
         }
      }

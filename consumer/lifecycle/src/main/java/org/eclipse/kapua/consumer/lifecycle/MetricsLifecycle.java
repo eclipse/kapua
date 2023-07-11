@@ -21,7 +21,7 @@ import com.codahale.metrics.Counter;
 public class MetricsLifecycle {
 
     public static final String CONSUMER_LIFECYCLE = "consumer_lifecycle";
-    public static final String CONVERSION = "conversion";
+    public static final String CONVERTER = "converter";
     private static final String DEVICE_MANAGEMENT_NOTIFICATION = "device_management_notification";
 
     //lifecycle
@@ -57,13 +57,13 @@ public class MetricsLifecycle {
 
     private MetricsLifecycle() {
         MetricsService metricsService = MetricServiceFactory.getInstance();
-        converterAppMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERSION, MetricsLabel.MESSAGE_APPS);
-        converterBirthMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERSION, MetricsLabel.MESSAGE_BIRTH);
-        converterDcMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERSION, MetricsLabel.MESSAGE_DC);
-        converterMissingMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERSION, MetricsLabel.MESSAGE_MISSING);
-        converterNotifyMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERSION, MetricsLabel.MESSAGE_NOTIFY);
+        converterAppMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERTER, MetricsLabel.MESSAGE_APPS);
+        converterBirthMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERTER, MetricsLabel.MESSAGE_BIRTH);
+        converterDcMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERTER, MetricsLabel.MESSAGE_DC);
+        converterMissingMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERTER, MetricsLabel.MESSAGE_MISSING);
+        converterNotifyMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERTER, MetricsLabel.MESSAGE_NOTIFY);
 
-        converterDeviceManagementNotificationMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERSION, MetricsLabel.MESSAGE_NOTIFY);
+        converterDeviceManagementNotificationMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERTER, MetricsLabel.MESSAGE_NOTIFY);
 
         queueCommunicationError = metricsService.getCounter(CONSUMER_LIFECYCLE, DEVICE_MANAGEMENT_NOTIFICATION, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR);
         queueConfigurationError = metricsService.getCounter(CONSUMER_LIFECYCLE, DEVICE_MANAGEMENT_NOTIFICATION, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR);

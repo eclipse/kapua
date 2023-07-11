@@ -59,7 +59,6 @@ public final class SecurityContext {
         DetailedServer
     }
 
-    private MetricsSecurityPlugin metrics;
     private LoginMetric loginMetric;
 
     //reserved String used as separator by Artemis on NOT_DURABLE_QUEUES (and DURABLE also?)

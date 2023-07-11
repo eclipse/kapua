@@ -34,8 +34,8 @@ public class Acl {
     private static final char SEPARATOR = '/';
 
     private static final WildcardConfiguration WILDCARD_CONFIGURATION;
-    //TODO inject!
-    private LoginMetric loginMetric = LoginMetric.getInstance();
+    //TODO inject!!!
+    private LoginMetric loginMetric;
 
     static {
         WILDCARD_CONFIGURATION = new WildcardConfiguration();
@@ -49,6 +49,7 @@ public class Acl {
     private HierarchicalRepository<KapuaPrincipal> admin;
 
     public Acl(KapuaPrincipal principal, List<AuthAcl> authAcls) throws KapuaIllegalArgumentException {
+        loginMetric = LoginMetric.getInstance();
         if (principal==null) {
             throw new KapuaIllegalArgumentException("principal", null);
         }
