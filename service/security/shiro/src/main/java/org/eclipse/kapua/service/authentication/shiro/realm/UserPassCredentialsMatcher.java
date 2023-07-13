@@ -18,6 +18,7 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
@@ -43,6 +44,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 /**
@@ -70,7 +73,11 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
         mfaAuthenticator = mfaAuthServiceLocator.getMfaAuthenticator();
         if (KapuaAuthenticationSetting.getInstance().getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_USERPASS_CACHE_ENABLE, true)) {
             logger.info("Cache enabled. Initializing CachePasswordChecker...");
-            passwordMatcher = new CachedPasswordMatcher();
+            try {
+                passwordMatcher = new CachedPasswordMatcher();
+            } catch (InvalidKeyException | NoSuchAlgorithmException e) {
+                throw KapuaRuntimeException.internalError(e, "Cannot instantiate CachedPasswordMatcher");
+            }
         }
         else {
             logger.info("Cache disabled. Initializing NoCachePasswordChecker...");

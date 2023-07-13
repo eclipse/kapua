@@ -16,6 +16,7 @@ import org.apache.shiro.codec.Base64;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -52,6 +53,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
+
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -68,6 +71,8 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
 
     private static final String PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY = "password.minLength";
 
+    private SecureRandom random;
+
     /**
      * The minimum password length specified for the whole system. If not defined, assume 12; if defined and less than 12, assume 12.
      */
@@ -77,6 +82,11 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
 
     public CredentialServiceImpl() {
         super(CredentialService.class.getName(), AuthenticationDomains.CREDENTIAL_DOMAIN, AuthenticationEntityManagerFactory.getInstance());
+        try {
+            random = SecureRandom.getInstance("SHA1PRNG");
+        } catch (NoSuchAlgorithmException e) {
+            throw KapuaRuntimeException.internalError(e, "Cannot instantiate SecureRandom (SHA1PRNG)");
+        }
         int minPasswordLengthConfigValue;
         try {
             minPasswordLengthConfigValue = KapuaAuthenticationSetting.getInstance().getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_USERPASS_PASSWORD_MINLENGTH);
@@ -141,8 +151,6 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             String fullKey = null;
             switch (credentialCreator.getCredentialType()) {
                 case API_KEY: // Generate new api key
-                    SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-
                     KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
                     int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
                     int keyLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_KEY_LENGTH);

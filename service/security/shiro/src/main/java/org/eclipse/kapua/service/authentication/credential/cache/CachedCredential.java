@@ -12,26 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.cache;
 
-import java.util.Base64;
 import java.util.Date;
-
-import org.apache.commons.codec.digest.DigestUtils;
 
 public class CachedCredential {
 
     private Date modifiedOn;
-    private String digest;
-    private String hashed;
+    private String tmpHash;
+    private String hash;
 
-    CachedCredential(Date modifiedOn, String digest, String hashed) {
+    CachedCredential(Date modifiedOn, String tmpHash, String hash) {
         this.modifiedOn = modifiedOn;
-        this.digest = digest;
-        this.hashed = hashed;
+        this.tmpHash = tmpHash;
+        this.hash = hash;
     }
 
-    public boolean isTokenMatches(String tokenPassword, String hashed) {
-        String digest = Base64.getEncoder().encodeToString(DigestUtils.sha3_512(tokenPassword));
-        return this.digest.equals(digest) && this.hashed.equals(hashed);
+    public boolean isTokenMatches(String tmpHash, String hash) {
+        return this.tmpHash.equals(tmpHash) && this.hash.equals(hash);
     }
 
     public boolean isStillValid(Date lastModifiedOn) {
