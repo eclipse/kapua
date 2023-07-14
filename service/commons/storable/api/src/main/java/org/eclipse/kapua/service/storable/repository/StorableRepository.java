@@ -10,23 +10,34 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal;
+package org.eclipse.kapua.service.storable.repository;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
-import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.Storable;
+import org.eclipse.kapua.service.storable.model.StorableListResult;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.StorableQuery;
 
-public interface DatastoreRepository<T extends Storable, Q extends StorableQuery> {
-    ResultList<T> query(Q query) throws ClientException;
+import java.util.List;
+import java.util.Set;
 
-    long count(Q query) throws ClientException;
+public interface StorableRepository<
+        T extends Storable,
+        L extends StorableListResult<T>,
+        Q extends StorableQuery> {
+    L query(Q query);
 
-    void delete(KapuaId scopeId, String id) throws ClientException;
+    long count(Q query);
 
-    void delete(Q query) throws ClientException;
+    void delete(KapuaId scopeId, StorableId id);
 
-    void upsertIndex(KapuaId scopeId) throws ClientException, MappingException;
+    void delete(Q query);
+
+    void upsertIndex(KapuaId scopeId);
+
+    String upsert(String itemId, T item);
+
+    Set<String> upsert(List<T> items);
+
+    T find(KapuaId scopeId, StorableId id);
 }

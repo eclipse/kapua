@@ -45,15 +45,14 @@ import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryI
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.predicate.ChannelMatchPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.Schema;
-import org.eclipse.kapua.service.datastore.model.ChannelInfo;
-import org.eclipse.kapua.service.datastore.model.ClientInfo;
+import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
+import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
-import org.eclipse.kapua.service.datastore.model.MetricInfo;
+import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
-import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
@@ -71,7 +70,7 @@ import java.util.Optional;
  *
  * @since 1.0.0
  */
-public final class MessageStoreFacadeImpl extends AbstractRegistryFacade implements MessageStoreFacade {
+public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implements MessageStoreFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(MessageStoreFacadeImpl.class);
 
@@ -156,7 +155,7 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
 
         if (!newInsert && !MessageUniquenessCheck.NONE.equals(accountServicePlan.getMessageUniquenessCheck())) {
             DatastoreMessage datastoreMessage = MessageUniquenessCheck.FULL.equals(accountServicePlan.getMessageUniquenessCheck()) ?
-                    messageRepository.find(message.getScopeId(), SchemaUtil.getDataIndexName(message.getScopeId()), storableIdFactory.newStorableId(messageId)) :
+                    messageRepository.find(message.getScopeId(), DatastoreUtils.getDataIndexName(message.getScopeId()), storableIdFactory.newStorableId(messageId)) :
                     messageRepository.find(message.getScopeId(), schemaMetadata.getDataIndexName(), storableIdFactory.newStorableId(messageId));
             if (datastoreMessage != null) {
                 LOG.debug("Message with datastore id '{}' already found", messageId);
@@ -253,7 +252,7 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
             } catch (KapuaException e) {
                 LOG.warn("Retrieving metadata error", e);
             }
-            messageRepository.delete(scopeId, id.toString(), messageToBeDeleted.getTimestamp().getTime());
+            messageRepository.delete(scopeId, id, messageToBeDeleted.getTimestamp().getTime());
         } else {
             LOG.warn("Cannot find the message to be deleted. scopeId: '{}' - id: '{}'", scopeId, id);
         }
@@ -365,10 +364,8 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
             LOG.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
             return new MessageListResultImpl();
         }
-        final ResultList<DatastoreMessage> datastoreMessages = messageRepository.query(query);
-        MessageListResult result = new MessageListResultImpl(datastoreMessages);
-        AbstractRegistryFacade.setLimitExceed(query, datastoreMessages.getTotalHitsExceedsCount(), result);
-        return result;
+
+        return messageRepository.query(query);
     }
 
 
@@ -407,14 +404,14 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
 
         // Remove metrics
         while (totalHits > 0) {
-            ResultList<MetricInfo> metrics = metricInfoRepository.query(metricQuery);
+            MetricInfoListResult metrics = metricInfoRepository.query(metricQuery);
 
             totalHits = metrics.getTotalCount();
             LocalCache<String, Boolean> metricsCache = DatastoreCacheManager.getInstance().getMetricsCache();
             long toBeProcessed = totalHits > pageSize ? pageSize : totalHits;
 
             for (int i = 0; i < toBeProcessed; i++) {
-                String id = metrics.getResult().get(i).getId().toString();
+                String id = metrics.getItem(i).getId().toString();
                 if (metricsCache.get(id)) {
                     metricsCache.remove(id);
                 }
@@ -438,14 +435,14 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
         offset = 0;
         totalHits = 1;
         while (totalHits > 0) {
-            final ResultList<ChannelInfo> channels = channelInfoRepository.query(channelQuery);
+            final ChannelInfoListResult channels = channelInfoRepository.query(channelQuery);
 
             totalHits = channels.getTotalCount();
             LocalCache<String, Boolean> channelsCache = DatastoreCacheManager.getInstance().getChannelsCache();
             long toBeProcessed = totalHits > pageSize ? pageSize : totalHits;
 
             for (int i = 0; i < toBeProcessed; i++) {
-                String id = channels.getResult().get(0).getId().toString();
+                String id = channels.getFirstItem().getId().toString();
                 if (channelsCache.get(id)) {
                     channelsCache.remove(id);
                 }
@@ -470,13 +467,13 @@ public final class MessageStoreFacadeImpl extends AbstractRegistryFacade impleme
             offset = 0;
             totalHits = 1;
             while (totalHits > 0) {
-                ResultList<ClientInfo> clients = clientInfoRepository.query(clientInfoQuery);
+                ClientInfoListResult clients = clientInfoRepository.query(clientInfoQuery);
                 totalHits = clients.getTotalCount();
                 LocalCache<String, Boolean> clientsCache = DatastoreCacheManager.getInstance().getClientsCache();
                 long toBeProcessed = totalHits > pageSize ? pageSize : totalHits;
 
                 for (int i = 0; i < toBeProcessed; i++) {
-                    String id = clients.getResult().get(i).getId().toString();
+                    String id = clients.getItem(i).getId().toString();
                     if (clientsCache.get(id)) {
                         clientsCache.remove(id);
                     }

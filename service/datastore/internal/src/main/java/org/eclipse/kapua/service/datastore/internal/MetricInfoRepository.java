@@ -13,14 +13,10 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
+import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateResponse;
+import org.eclipse.kapua.service.storable.repository.StorableRepository;
 
-import java.util.List;
+public interface MetricInfoRepository extends StorableRepository<MetricInfo, MetricInfoListResult, MetricInfoQuery> {
 
-public interface MetricInfoRepository extends DatastoreRepository<MetricInfo, MetricInfoQuery> {
-    String upsert(String metricInfoId, MetricInfo metricInfo) throws ClientException;
-
-    BulkUpdateResponse upsert(List<MetricInfo> metricInfos) throws ClientException;
 }

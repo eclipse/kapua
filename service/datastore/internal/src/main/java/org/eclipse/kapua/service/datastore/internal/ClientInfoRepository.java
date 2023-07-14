@@ -13,9 +13,9 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
+import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.storable.repository.StorableRepository;
 
-public interface ClientInfoRepository extends DatastoreRepository<ClientInfo, ClientInfoQuery> {
-    String upsert(ClientInfo clientInfo) throws ClientException;
+public interface ClientInfoRepository extends StorableRepository<ClientInfo, ClientInfoListResult, ClientInfoQuery> {
 }

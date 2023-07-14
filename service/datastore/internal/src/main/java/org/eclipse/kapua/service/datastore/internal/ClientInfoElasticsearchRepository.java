@@ -15,24 +15,30 @@ package org.eclipse.kapua.service.datastore.internal;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
+import org.eclipse.kapua.service.datastore.internal.model.ClientInfoListResultImpl;
+import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
+import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
+import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.storable.exception.MappingException;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
+import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
 
 import javax.inject.Inject;
 
-public class ClientInfoRepositoryImpl extends ElasticsearchRepository<ClientInfo, ClientInfoQuery> implements ClientInfoRepository {
+public class ClientInfoElasticsearchRepository extends DatastoreElasticSearchRepositoryBase<ClientInfo, ClientInfoListResult, ClientInfoQuery> implements ClientInfoRepository {
 
     @Inject
-    protected ClientInfoRepositoryImpl(
-            ElasticsearchClientProvider elasticsearchClientProviderInstance) {
+    protected ClientInfoElasticsearchRepository(
+            ElasticsearchClientProvider elasticsearchClientProviderInstance,
+            StorablePredicateFactory storablePredicateFactory) {
         super(elasticsearchClientProviderInstance,
                 ClientInfoSchema.CLIENT_TYPE_NAME,
-                ClientInfo.class);
+                ClientInfo.class,
+                storablePredicateFactory);
     }
 
     @Override
@@ -41,16 +47,22 @@ public class ClientInfoRepositoryImpl extends ElasticsearchRepository<ClientInfo
     }
 
     @Override
-    public String upsert(ClientInfo clientInfo) throws ClientException {
-        final String clientIndexName = DatastoreUtils.getClientIndexName(clientInfo.getScopeId());
-        UpdateRequest request = new UpdateRequest(clientInfo.getId().toString(), getDescriptor(clientIndexName), clientInfo);
-        final String responseId = elasticsearchClientProviderInstance.getElasticsearchClient().upsert(request).getId();
-        logger.debug("Upsert on asset successfully executed [{}.{}, {} - {}]", clientIndexName, ClientInfoSchema.CLIENT_TYPE_NAME, responseId, responseId);
-        return responseId;
+    protected ClientInfoListResult buildList(ResultList<ClientInfo> fromItems) {
+        return new ClientInfoListResultImpl(fromItems);
     }
 
     @Override
-    JsonNode getIndexSchema() throws MappingException {
+    protected JsonNode getIndexSchema() throws MappingException {
         return ClientInfoSchema.getClientTypeSchema();
+    }
+
+    @Override
+    protected StorableId idExtractor(ClientInfo storable) {
+        return storable.getId();
+    }
+
+    @Override
+    protected ClientInfoQuery createQuery(KapuaId scopeId) {
+        return new ClientInfoQueryImpl(scopeId);
     }
 }

@@ -25,7 +25,6 @@ import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
@@ -41,7 +40,7 @@ import javax.inject.Inject;
  *
  * @since 1.0.0
  */
-public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implements ChannelInfoRegistryFacade {
+public class ChannelInfoRegistryFacadeImpl extends AbstractDatastoreFacade implements ChannelInfoRegistryFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(ChannelInfoRegistryFacadeImpl.class);
 
@@ -66,7 +65,8 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
             ConfigurationProvider configProvider,
             StorableIdFactory storableIdFactory,
             StorablePredicateFactory storablePredicateFactory,
-            Schema esSchema, ChannelInfoRepository channelInfoRepository) {
+            Schema esSchema,
+            ChannelInfoRepository channelInfoRepository) {
         super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
@@ -102,7 +102,7 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
             // updated and skip the update.
             synchronized (metadataUpdateSync) {
                 if (!DatastoreCacheManager.getInstance().getChannelsCache().get(channelInfoId)) {
-                    ChannelInfo storedField = find(channelInfo.getScopeId(), storableId);
+                    ChannelInfo storedField = doFind(channelInfo.getScopeId(), storableId);
                     if (storedField == null) {
                         esSchema.synch(channelInfo.getScopeId(), channelInfo.getFirstMessageOn().getTime());
                         repository.upsert(channelInfoId, channelInfo);
@@ -137,9 +137,9 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
             return;
         }
 
-        ChannelInfo channelInfo = find(scopeId, id);
+        ChannelInfo channelInfo = doFind(scopeId, id);
         if (channelInfo != null) {
-            repository.delete(scopeId, id.toString());
+            repository.delete(scopeId, id);
         }
     }
 
@@ -155,9 +155,10 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
      */
     @Override
     public ChannelInfo find(KapuaId scopeId, StorableId id) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(id, "id");
+        return doFind(scopeId, id);
+    }
 
+    private ChannelInfo doFind(KapuaId scopeId, StorableId id) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ChannelInfoQueryImpl idsQuery = new ChannelInfoQueryImpl(scopeId);
         idsQuery.setLimit(1);
 
@@ -188,10 +189,7 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractRegistryFacade implem
             return new ChannelInfoListResultImpl();
         }
 
-        final ResultList<ChannelInfo> queried = repository.query(query);
-        ChannelInfoListResult result = new ChannelInfoListResultImpl(queried);
-        setLimitExceed(query, queried.getTotalHitsExceedsCount(), result);
-        return result;
+        return repository.query(query);
     }
 
     /**

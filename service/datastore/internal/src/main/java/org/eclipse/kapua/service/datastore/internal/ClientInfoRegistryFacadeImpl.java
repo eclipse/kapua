@@ -25,7 +25,6 @@ import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
@@ -41,7 +40,7 @@ import javax.inject.Inject;
  *
  * @since 1.0.0
  */
-public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade implements ClientInfoRegistryFacade {
+public class ClientInfoRegistryFacadeImpl extends AbstractDatastoreFacade implements ClientInfoRegistryFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClientInfoRegistryFacadeImpl.class);
 
@@ -106,7 +105,7 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
                     ClientInfo storedField = find(clientInfo.getScopeId(), storableId);
                     if (storedField == null) {
                         esSchema.synch(clientInfo.getScopeId(), clientInfo.getFirstMessageOn().getTime());
-                        repository.upsert(clientInfo);
+                        repository.upsert(clientInfoId, clientInfo);
                     }
                     // Update cache if client update is completed successfully
                     DatastoreCacheManager.getInstance().getClientsCache().put(clientInfo.getClientId(), true);
@@ -137,7 +136,7 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             return;
         }
 
-        repository.delete(scopeId, id.toString());
+        repository.delete(scopeId, id);
     }
 
     /**
@@ -185,10 +184,7 @@ public class ClientInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             return new ClientInfoListResultImpl();
         }
 
-        final ResultList<ClientInfo> queried = repository.query(query);
-        ClientInfoListResultImpl result = new ClientInfoListResultImpl(queried);
-        setLimitExceed(query, queried.getTotalHitsExceedsCount(), result);
-        return result;
+        return repository.query(query);
     }
 
     /**

@@ -16,29 +16,31 @@ import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
+import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
+import org.eclipse.kapua.service.storable.repository.StorableRepository;
 
 import java.util.Map;
 
-public interface MessageRepository extends DatastoreRepository<DatastoreMessage, MessageQuery> {
+public interface MessageRepository extends StorableRepository<DatastoreMessage, MessageListResult, MessageQuery> {
 
     String store(DatastoreMessage messageToStore) throws ClientException;
 
     DatastoreMessage find(KapuaId scopeId, String indexName, StorableId id)
             throws KapuaIllegalArgumentException, ClientException;
 
-    void refreshAllIndexes() throws ClientException;
+    void refreshAllIndexes();
 
-    void deleteAllIndexes() throws ClientException;
+    void deleteAllIndexes();
 
-    void deleteIndexes(String indexExp) throws ClientException;
+    void deleteIndexes(String indexExp);
 
-    void upsertMappings(KapuaId scopeId, Map<String, Metric> esMetrics) throws ClientException, MappingException;
+    void upsertMappings(KapuaId scopeId, Map<String, Metric> esMetrics);
 
-    void upsertIndex(String dataIndexName) throws ClientException, MappingException;
+    void upsertIndex(String dataIndexName);
 
-    void delete(KapuaId scopeId, String id, long time) throws ClientException;
+    void delete(KapuaId scopeId, StorableId id, long time);
+
 }

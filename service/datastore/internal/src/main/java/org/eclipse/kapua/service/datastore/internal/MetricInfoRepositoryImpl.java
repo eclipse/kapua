@@ -15,28 +15,35 @@ package org.eclipse.kapua.service.datastore.internal;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
+import org.eclipse.kapua.service.datastore.internal.model.MetricInfoListResultImpl;
+import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
+import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateRequest;
-import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateResponse;
-import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
-import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
+import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.storable.exception.MappingException;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
+import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
 
 import javax.inject.Inject;
-import java.util.List;
 
-public class MetricInfoRepositoryImpl extends ElasticsearchRepository<MetricInfo, MetricInfoQuery> implements MetricInfoRepository {
+public class MetricInfoRepositoryImpl extends DatastoreElasticSearchRepositoryBase<MetricInfo, MetricInfoListResult, MetricInfoQuery> implements MetricInfoRepository {
 
     @Inject
     protected MetricInfoRepositoryImpl(
-            ElasticsearchClientProvider elasticsearchClientProviderInstance) {
+            ElasticsearchClientProvider elasticsearchClientProviderInstance,
+            StorablePredicateFactory storablePredicateFactory) {
         super(elasticsearchClientProviderInstance,
                 MetricInfoSchema.METRIC_TYPE_NAME,
-                MetricInfo.class);
+                MetricInfo.class,
+                storablePredicateFactory);
+    }
+
+    @Override
+    protected JsonNode getIndexSchema() throws MappingException {
+        return MetricInfoSchema.getMetricTypeSchema();
     }
 
     @Override
@@ -45,30 +52,17 @@ public class MetricInfoRepositoryImpl extends ElasticsearchRepository<MetricInfo
     }
 
     @Override
-    public String upsert(String metricInfoId, MetricInfo metricInfo) throws ClientException {
-        UpdateRequest request = new UpdateRequest(metricInfo.getId().toString(), getDescriptor(indexResolver(metricInfo.getScopeId())), metricInfo);
-        final String responseId = elasticsearchClientProviderInstance.getElasticsearchClient().upsert(request).getId();
-        logger.debug("Upsert on metric successfully executed [{}.{}, {} - {}]", DatastoreUtils.getMetricIndexName(metricInfo.getScopeId()), MetricInfoSchema.METRIC_TYPE_NAME, metricInfoId, responseId);
-        return responseId;
+    protected MetricInfoListResult buildList(ResultList<MetricInfo> fromItems) {
+        return new MetricInfoListResultImpl(fromItems);
     }
 
     @Override
-    public BulkUpdateResponse upsert(List<MetricInfo> metricInfos) throws ClientException {
-        final BulkUpdateRequest bulkUpdateRequest = new BulkUpdateRequest();
-        metricInfos.stream()
-                .map(metricInfo -> {
-                    return new UpdateRequest(
-                            metricInfo.getId().toString(),
-                            new TypeDescriptor(indexResolver(metricInfo.getScopeId()),
-                                    MetricInfoSchema.METRIC_TYPE_NAME),
-                            metricInfo);
-                })
-                .forEach(bulkUpdateRequest::add);
-        return elasticsearchClientProviderInstance.getElasticsearchClient().upsert(bulkUpdateRequest);
+    protected StorableId idExtractor(MetricInfo storable) {
+        return storable.getId();
     }
 
     @Override
-    JsonNode getIndexSchema() throws MappingException {
-        return MetricInfoSchema.getMetricTypeSchema();
+    protected MetricInfoQuery createQuery(KapuaId scopeId) {
+        return new MetricInfoQueryImpl(scopeId);
     }
 }

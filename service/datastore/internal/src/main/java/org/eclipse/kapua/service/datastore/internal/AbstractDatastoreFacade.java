@@ -15,19 +15,16 @@ package org.eclipse.kapua.service.datastore.internal;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
-import org.eclipse.kapua.service.storable.model.Storable;
-import org.eclipse.kapua.service.storable.model.StorableListResult;
-import org.eclipse.kapua.service.storable.model.query.StorableQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractRegistryFacade {
+public abstract class AbstractDatastoreFacade {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractRegistryFacade.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractDatastoreFacade.class);
 
     protected final ConfigurationProvider configProvider;
 
-    public AbstractRegistryFacade(ConfigurationProvider configProvider) {
+    public AbstractDatastoreFacade(ConfigurationProvider configProvider) {
         this.configProvider = configProvider;
     }
 
@@ -36,16 +33,5 @@ public abstract class AbstractRegistryFacade {
         long ttl = messageStoreConfiguration.getDataTimeToLiveMilliseconds();
 
         return messageStoreConfiguration.getDataStorageEnabled() && ttl != MessageStoreConfiguration.DISABLED;
-    }
-
-
-    public static <T extends Storable> void setLimitExceed(StorableQuery query, boolean hitsExceedsTotalCount, StorableListResult<T> list) {
-        int offset = query.getOffset() != null ? query.getOffset() : 0;
-        if (query.getLimit() != null) {
-            if (hitsExceedsTotalCount || //pre-condition: there are more than 10k documents in ES && query limit is <= 10k
-                    list.getTotalCount() > offset + query.getLimit()) {
-                list.setLimitExceeded(true);
-            }
-        }
     }
 }

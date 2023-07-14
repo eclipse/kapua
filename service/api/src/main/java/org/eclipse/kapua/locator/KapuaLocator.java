@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator;
 
-import java.util.ServiceLoader;
-
 import org.eclipse.kapua.KapuaRuntimeErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ServiceLoader;
 
 /**
  * Interface to load KapuaService instances in a given environment.<br>
@@ -57,6 +57,7 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
             String locatorImplementation = locatorClassName();
             if (locatorImplementation != null && !locatorImplementation.trim().isEmpty()) {
                 try {
+                    logger.info("initializing locator class {}... ", locatorImplementation);
                     return (KapuaLocator) Class.forName(locatorImplementation).newInstance();
                 } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
                     logger.info("An error occurred during Servicelocator initialization", e);

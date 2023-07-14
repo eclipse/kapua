@@ -30,12 +30,12 @@ import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
+import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory;
-import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
@@ -229,11 +229,11 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
         andPredicate.getPredicates().add(metricPredicate);
         messageQuery.setPredicate(andPredicate);
 
-        ResultList<DatastoreMessage> messageList = messageRepository.query(messageQuery);
+        MessageListResult messageList = messageRepository.query(messageQuery);
 
         StorableId lastPublishedMessageId = null;
         Date lastPublishedMessageTimestamp = null;
-        final List<DatastoreMessage> messages = Optional.ofNullable(messageList.getResult()).orElse(new ArrayList<>());
+        final List<DatastoreMessage> messages = Optional.ofNullable(messageList).map(ml -> ml.getItems()).orElse(new ArrayList<>());
         if (messages.size() == 1) {
             lastPublishedMessageId = messages.get(0).getDatastoreId();
             lastPublishedMessageTimestamp = messages.get(0).getTimestamp();

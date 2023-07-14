@@ -25,9 +25,6 @@ import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateResponse;
-import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
-import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
@@ -39,13 +36,14 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Metric information registry facade
  *
  * @since 1.0.0
  */
-public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade implements MetricInfoRegistryFacade {
+public class MetricInfoRegistryFacadeImpl extends AbstractDatastoreFacade implements MetricInfoRegistryFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(MetricInfoRegistryFacadeImpl.class);
 
@@ -100,7 +98,7 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
         // Store channel. Look up channel in the cache, and cache it if it doesn't exist
         if (!DatastoreCacheManager.getInstance().getMetricsCache().get(metricInfoId)) {
             // fix #REPLACE_ISSUE_NUMBER
-            MetricInfo storedField = find(metricInfo.getScopeId(), storableId);
+            MetricInfo storedField = doFind(metricInfo.getScopeId(), storableId);
             if (storedField == null) {
                 esSchema.synch(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
                 repository.upsert(metricInfoId, metricInfo);
@@ -121,7 +119,7 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
      * @throws ClientException
      */
     @Override
-    public BulkUpdateResponse upstore(MetricInfo[] metricInfos)
+    public void upstore(MetricInfo[] metricInfos)
             throws KapuaIllegalArgumentException,
             ConfigurationException,
             ClientException,
@@ -135,7 +133,7 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             // fix #REPLACE_ISSUE_NUMBER
             if (!DatastoreCacheManager.getInstance().getMetricsCache().get(metricInfoId)) {
                 StorableId storableId = storableIdFactory.newStorableId(metricInfoId);
-                MetricInfo storedField = find(metricInfo.getScopeId(), storableId);
+                MetricInfo storedField = doFind(metricInfo.getScopeId(), storableId);
                 if (storedField != null) {
                     DatastoreCacheManager.getInstance().getMetricsCache().put(metricInfoId, true);
                     continue;
@@ -145,37 +143,21 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             }
         }
 
-        BulkUpdateResponse upsertResponse = null;
+        Set<String> changedIds = null;
         if (!toUpsert.isEmpty()) {
             // execute the upstore
-            try {
-                upsertResponse = repository.upsert(toUpsert);
-            } catch (ClientException e) {
-                LOG.trace("Upsert failed {}", e.getMessage());
-                throw e;
-            }
-
-            if (upsertResponse != null) {
-                if (upsertResponse.getResponse().isEmpty()) {
-                    return upsertResponse;
-                }
-
-                for (UpdateResponse response : upsertResponse.getResponse()) {
-                    String index = response.getTypeDescriptor().getIndex();
-                    String type = response.getTypeDescriptor().getType();
-                    String id = response.getId();
-                    LOG.debug("Upsert on channel metric successfully executed [{}.{}, {}]", index, type, id);
-
-                    if (id == null || DatastoreCacheManager.getInstance().getMetricsCache().get(id)) {
+            changedIds = repository.upsert(toUpsert);
+            if (changedIds != null) {
+                for (String changedId : changedIds) {
+                    if (changedId == null || DatastoreCacheManager.getInstance().getMetricsCache().get(changedId)) {
                         continue;
                     }
 
                     // Update cache if channel metric update is completed successfully
-                    DatastoreCacheManager.getInstance().getMetricsCache().put(id, true);
+                    DatastoreCacheManager.getInstance().getMetricsCache().put(changedId, true);
                 }
             }
         }
-        return upsertResponse;
     }
 
     /**
@@ -199,7 +181,7 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             return;
         }
 
-        repository.delete(scopeId, id.toString());
+        repository.delete(scopeId, id);
     }
 
     /**
@@ -216,7 +198,10 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
     public MetricInfo find(KapuaId scopeId, StorableId id) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(id, "id");
+        return doFind(scopeId, id);
+    }
 
+    private MetricInfo doFind(KapuaId scopeId, StorableId id) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         MetricInfoQueryImpl idsQuery = new MetricInfoQueryImpl(scopeId);
         idsQuery.setLimit(1);
 
@@ -247,10 +232,7 @@ public class MetricInfoRegistryFacadeImpl extends AbstractRegistryFacade impleme
             return new MetricInfoListResultImpl();
         }
 
-        final ResultList<MetricInfo> queried = repository.query(query);
-        MetricInfoListResult result = new MetricInfoListResultImpl(queried);
-        setLimitExceed(query, queried.getTotalHitsExceedsCount(), result);
-        return result;
+        return repository.query(query);
     }
 
     /**

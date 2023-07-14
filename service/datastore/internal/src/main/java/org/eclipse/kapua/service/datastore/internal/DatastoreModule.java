@@ -59,27 +59,27 @@ import java.lang.reflect.Constructor;
 public class DatastoreModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(MessageRepository.class).to(ElasticsearchMessageRepository.class).in(Singleton.class);
-        bind(ClientInfoRepository.class).to(ClientInfoRepositoryImpl.class).in(Singleton.class);
-        bind(ChannelInfoRepository.class).to(ChannelInfoRepositoryImpl.class).in(Singleton.class);
-        bind(MetricInfoRepository.class).to(MetricInfoRepositoryImpl.class).in(Singleton.class);
         bind(Schema.class).in(Singleton.class);
 
-        bind(ClientInfoRegistryFacade.class).to(ClientInfoRegistryFacadeImpl.class).in(Singleton.class);
-        ;
-        bind(MetricInfoRegistryFacade.class).to(MetricInfoRegistryFacadeImpl.class).in(Singleton.class);
-        ;
-        bind(ChannelInfoRegistryFacade.class).to(ChannelInfoRegistryFacadeImpl.class).in(Singleton.class);
-        ;
-        bind(MessageStoreFacade.class).to(MessageStoreFacadeImpl.class).in(Singleton.class);
-        ;
-        bind(ChannelInfoFactory.class).to(ChannelInfoFactoryImpl.class);
-        bind(ChannelInfoRegistryService.class).to(ChannelInfoRegistryServiceImpl.class);
         bind(ClientInfoFactory.class).to(ClientInfoFactoryImpl.class);
+        bind(ClientInfoRepository.class).to(ClientInfoElasticsearchRepository.class).in(Singleton.class);
+        bind(ClientInfoRegistryFacade.class).to(ClientInfoRegistryFacadeImpl.class).in(Singleton.class);
         bind(ClientInfoRegistryService.class).to(ClientInfoRegistryServiceImpl.class);
-        bind(MessageStoreFactory.class).to(MessageStoreFactoryImpl.class);
+
         bind(MetricInfoFactory.class).to(MetricInfoFactoryImpl.class);
+        bind(MetricInfoRepository.class).to(MetricInfoRepositoryImpl.class).in(Singleton.class);
+        bind(MetricInfoRegistryFacade.class).to(MetricInfoRegistryFacadeImpl.class).in(Singleton.class);
         bind(MetricInfoRegistryService.class).to(MetricInfoRegistryServiceImpl.class);
+
+        bind(ChannelInfoFactory.class).to(ChannelInfoFactoryImpl.class);
+        bind(ChannelInfoRepository.class).to(ChannelInfoElasticsearchRepository.class).in(Singleton.class);
+        bind(ChannelInfoRegistryFacade.class).to(ChannelInfoRegistryFacadeImpl.class).in(Singleton.class);
+        bind(ChannelInfoRegistryService.class).to(ChannelInfoRegistryServiceImpl.class);
+
+        bind(MessageStoreFactory.class).to(MessageStoreFactoryImpl.class);
+        bind(MessageRepository.class).to(MessageElasticsearchRepository.class).in(Singleton.class);
+        bind(MessageStoreFacade.class).to(MessageStoreFacadeImpl.class).in(Singleton.class);
+
     }
 
     @ProvidesIntoSet

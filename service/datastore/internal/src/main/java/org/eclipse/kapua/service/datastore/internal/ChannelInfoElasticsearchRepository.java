@@ -15,24 +15,35 @@ package org.eclipse.kapua.service.datastore.internal;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
+import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoListResultImpl;
+import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
+import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
+import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.storable.exception.MappingException;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
+import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
 
 import javax.inject.Inject;
 
-public class ChannelInfoRepositoryImpl extends ElasticsearchRepository<ChannelInfo, ChannelInfoQuery> implements ChannelInfoRepository {
+public class ChannelInfoElasticsearchRepository extends DatastoreElasticSearchRepositoryBase<ChannelInfo, ChannelInfoListResult, ChannelInfoQuery> implements ChannelInfoRepository {
 
     @Inject
-    protected ChannelInfoRepositoryImpl(
-            ElasticsearchClientProvider elasticsearchClientProviderInstance) {
+    protected ChannelInfoElasticsearchRepository(
+            ElasticsearchClientProvider elasticsearchClientProviderInstance,
+            StorablePredicateFactory storablePredicateFactory) {
         super(elasticsearchClientProviderInstance,
                 ChannelInfoSchema.CHANNEL_TYPE_NAME,
-                ChannelInfo.class);
+                ChannelInfo.class,
+                storablePredicateFactory);
+    }
+
+    @Override
+    protected StorableId idExtractor(ChannelInfo storable) {
+        return storable.getId();
     }
 
     @Override
@@ -41,16 +52,17 @@ public class ChannelInfoRepositoryImpl extends ElasticsearchRepository<ChannelIn
     }
 
     @Override
-    public String upsert(String channelInfoId, ChannelInfo channelInfo) throws ClientException {
-        final String registryIndexName = indexResolver(channelInfo.getScopeId());
-        UpdateRequest request = new UpdateRequest(channelInfo.getId().toString(), getDescriptor(registryIndexName), channelInfo);
-        final String responseId = elasticsearchClientProviderInstance.getElasticsearchClient().upsert(request).getId();
-        logger.debug("Upsert on channel successfully executed [{}.{}, {} - {}]", registryIndexName, type, channelInfoId, responseId);
-        return responseId;
+    protected ChannelInfoListResult buildList(ResultList<ChannelInfo> fromItems) {
+        return new ChannelInfoListResultImpl(fromItems);
     }
 
     @Override
-    JsonNode getIndexSchema() throws MappingException {
+    protected ChannelInfoQuery createQuery(KapuaId scopeId) {
+        return new ChannelInfoQueryImpl(scopeId);
+    }
+
+    @Override
+    protected JsonNode getIndexSchema() throws MappingException {
         return ChannelInfoSchema.getChannelTypeSchema();
     }
 }

@@ -13,9 +13,9 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
+import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.storable.repository.StorableRepository;
 
-public interface ChannelInfoRepository extends DatastoreRepository<ChannelInfo, ChannelInfoQuery> {
-    String upsert(String channelInfoId, ChannelInfo channelInfo) throws ClientException;
+public interface ChannelInfoRepository extends StorableRepository<ChannelInfo, ChannelInfoListResult, ChannelInfoQuery> {
 }

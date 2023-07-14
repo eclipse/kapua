@@ -23,7 +23,11 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  */
 public class KapuaIdAdapter extends XmlAdapter<String, KapuaId> {
 
-    private final KapuaIdFactory kapuaIdFactory = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class);
+    private final KapuaIdFactory kapuaIdFactory;
+
+    public KapuaIdAdapter() {
+        this.kapuaIdFactory = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class);
+    }
 
     @Override
     public String marshal(KapuaId v) throws Exception {

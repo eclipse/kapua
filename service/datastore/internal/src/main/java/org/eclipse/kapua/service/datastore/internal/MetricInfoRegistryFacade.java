@@ -19,14 +19,13 @@ import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateResponse;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 
 public interface MetricInfoRegistryFacade {
     StorableId upstore(MetricInfo metricInfo) throws KapuaIllegalArgumentException, ConfigurationException, ClientException, MappingException;
 
-    BulkUpdateResponse upstore(MetricInfo[] metricInfos)
+    void upstore(MetricInfo[] metricInfos)
             throws KapuaIllegalArgumentException,
             ConfigurationException,
             ClientException,
