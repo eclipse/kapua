@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -166,7 +167,7 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
             throw new DatastoreException(
                     KapuaErrorCodes.INTERNAL_ERROR,
                     e,
-                    e.getCause().getMessage() != null ? e.getCause().getMessage() : e.getMessage()
+                    Optional.ofNullable(e.getCause()).flatMap(c -> Optional.ofNullable(c.getMessage())).orElse(e.getMessage())
             );
         }
     }

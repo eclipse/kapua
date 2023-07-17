@@ -25,6 +25,12 @@ public interface StorableRepository<
         T extends Storable,
         L extends StorableListResult<T>,
         Q extends StorableQuery> {
+    String upsert(String itemId, T item);
+
+    Set<String> upsert(List<T> items);
+
+    T find(KapuaId scopeId, StorableId id);
+
     L query(Q query);
 
     long count(Q query);
@@ -33,11 +39,10 @@ public interface StorableRepository<
 
     void delete(Q query);
 
-    void upsertIndex(KapuaId scopeId);
+    void refreshAllIndexes();
 
-    String upsert(String itemId, T item);
+    void deleteAllIndexes();
 
-    Set<String> upsert(List<T> items);
+    void deleteIndexes(String indexExp);
 
-    T find(KapuaId scopeId, StorableId id);
 }

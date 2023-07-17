@@ -20,7 +20,6 @@ import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
-import org.eclipse.kapua.service.datastore.internal.schema.Schema;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
@@ -49,7 +48,6 @@ public class MetricInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
 
     private final StorableIdFactory storableIdFactory;
     private final StorablePredicateFactory storablePredicateFactory;
-    private final Schema esSchema;
     private final MetricInfoRepository repository;
 
     private static final String QUERY = "query";
@@ -67,12 +65,10 @@ public class MetricInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
     public MetricInfoRegistryFacadeImpl(ConfigurationProvider configProvider,
                                         StorableIdFactory storableIdFactory,
                                         StorablePredicateFactory storablePredicateFactory,
-                                        Schema esSchema,
                                         MetricInfoRepository metricInfoRepository) {
         super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
-        this.esSchema = esSchema;
         this.repository = metricInfoRepository;
     }
 
@@ -100,7 +96,6 @@ public class MetricInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
             // fix #REPLACE_ISSUE_NUMBER
             MetricInfo storedField = doFind(metricInfo.getScopeId(), storableId);
             if (storedField == null) {
-                esSchema.synch(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
                 repository.upsert(metricInfoId, metricInfo);
             }
             // Update cache if metric update is completed successfully
@@ -113,7 +108,6 @@ public class MetricInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
      * Update the metrics informations after a message store operation (for few metrics)
      *
      * @param metricInfos
-     * @return
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException
@@ -138,7 +132,6 @@ public class MetricInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
                     DatastoreCacheManager.getInstance().getMetricsCache().put(metricInfoId, true);
                     continue;
                 }
-                esSchema.synch(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
                 toUpsert.add(metricInfo);
             }
         }

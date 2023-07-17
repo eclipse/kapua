@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.model;
 
+import org.eclipse.kapua.service.storable.model.Storable;
+
 /**
  * Base {@link Request} definition.
  *
@@ -36,7 +38,7 @@ public abstract class Request {
     /**
      * The Object of the {@link Request}
      */
-    private Object storable;
+    private Storable storable;
 
     /**
      * Constructor.
@@ -45,7 +47,7 @@ public abstract class Request {
      * @param storable       the objetc of the request
      * @since 1.0.0
      */
-    protected Request(String id, TypeDescriptor typeDescriptor, Object storable) {
+    protected Request(String id, TypeDescriptor typeDescriptor, Storable storable) {
         setId(id);
         setTypeDescriptor(typeDescriptor);
         setStorable(storable);
@@ -97,7 +99,7 @@ public abstract class Request {
      * @return The object of the request.
      * @since 1.0.0
      */
-    public Object getStorable() {
+    public Storable getStorable() {
         return storable;
     }
 
@@ -107,7 +109,7 @@ public abstract class Request {
      * @param storable The object of the request.
      * @since 1.0.0
      */
-    public void setStorable(Object storable) {
+    public void setStorable(Storable storable) {
         this.storable = storable;
     }
 

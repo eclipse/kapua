@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.elasticsearch.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateRequest;
@@ -25,6 +26,7 @@ import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
+import org.eclipse.kapua.service.storable.StorableFactory;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.Storable;
 import org.eclipse.kapua.service.storable.model.StorableListResult;
@@ -47,12 +49,12 @@ public abstract class ElasticsearchRepository<
     protected final ElasticsearchClientProvider elasticsearchClientProviderInstance;
     protected final String type;
     private final Class<T> clazz;
+    private final StorableFactory<T, L, Q> storableFactory;
     protected final StorablePredicateFactory storablePredicateFactory;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected final LocalCache<String, Boolean> indexUpserted;
 
     protected abstract String indexResolver(KapuaId scopeId);
-
-    protected abstract L buildList(ResultList<T> fromItems);
 
     protected abstract JsonNode getIndexSchema() throws MappingException;
 
@@ -60,23 +62,39 @@ public abstract class ElasticsearchRepository<
 
     protected abstract StorableId idExtractor(T storable);
 
-    protected abstract Q createQuery(KapuaId scopeId);
+    protected ElasticsearchRepository(
+            ElasticsearchClientProvider elasticsearchClientProviderInstance,
+            String type,
+            Class<T> clazz,
+            StorableFactory<T, L, Q> storableFactory,
+            StorablePredicateFactory storablePredicateFactory,
+            LocalCache<String, Boolean> indexesCache) {
+        this.elasticsearchClientProviderInstance = elasticsearchClientProviderInstance;
+        this.type = type;
+        this.storableFactory = storableFactory;
+        this.storablePredicateFactory = storablePredicateFactory;
+        this.clazz = clazz;
+        this.indexUpserted = indexesCache;
+    }
 
     protected ElasticsearchRepository(
             ElasticsearchClientProvider elasticsearchClientProviderInstance,
             String type,
             Class<T> clazz,
+            StorableFactory<T, L, Q> storableFactory,
             StorablePredicateFactory storablePredicateFactory) {
         this.elasticsearchClientProviderInstance = elasticsearchClientProviderInstance;
         this.type = type;
+        this.storableFactory = storableFactory;
         this.storablePredicateFactory = storablePredicateFactory;
         this.clazz = clazz;
+        this.indexUpserted = new LocalCache<>(0, null);
     }
 
     @Override
     public T find(KapuaId scopeId, StorableId id) {
         try {
-            final Q idsQuery = createQuery(scopeId);
+            final Q idsQuery = storableFactory.newQuery(scopeId);
             idsQuery.setLimit(1);
 
             final IdsPredicate idsPredicate = storablePredicateFactory.newIdsPredicate(type);
@@ -84,21 +102,33 @@ public abstract class ElasticsearchRepository<
             idsQuery.setPredicate(idsPredicate);
 
             final String indexName = indexResolver(scopeId);
-            TypeDescriptor typeDescriptor = getDescriptor(indexName);
+            synchIndex(indexName);
             final T res;
-            res = (T) elasticsearchClientProviderInstance.getElasticsearchClient().<T>find(typeDescriptor, idsQuery, clazz);
+            res = (T) elasticsearchClientProviderInstance.getElasticsearchClient().<T>find(getDescriptor(indexName), idsQuery, clazz);
             return res;
         } catch (ClientException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private void synchIndex(String indexName) {
+        if (!indexUpserted.containsKey(indexName)) {
+            synchronized (clazz) {
+                doUpsertIndex(indexName);
+                indexUpserted.put(indexName, true);
+            }
+        }
+    }
+
     @Override
     public L query(Q query) {
-        final ResultList<T> partialResult;
         try {
-            partialResult = elasticsearchClientProviderInstance.getElasticsearchClient().query(getDescriptor(indexResolver(query.getScopeId())), query, clazz);
-            final L res = buildList(partialResult);
+            final String indexName = indexResolver(query.getScopeId());
+            synchIndex(indexName);
+            final ResultList<T> partialResult = elasticsearchClientProviderInstance.getElasticsearchClient().query(getDescriptor(indexName), query, clazz);
+            final L res = storableFactory.newListResult();
+            res.addItems(partialResult.getResult());
+            res.setTotalCount(partialResult.getTotalCount());
             setLimitExceed(query, partialResult.getTotalHitsExceedsCount(), res);
             return res;
         } catch (ClientException e) {
@@ -119,7 +149,10 @@ public abstract class ElasticsearchRepository<
     @Override
     public long count(Q query) {
         try {
-            return elasticsearchClientProviderInstance.getElasticsearchClient().count(getDescriptor(indexResolver(query.getScopeId())), query);
+            final String indexName = indexResolver(query.getScopeId());
+            synchIndex(indexName);
+
+            return elasticsearchClientProviderInstance.getElasticsearchClient().count(getDescriptor(indexName), query);
         } catch (ClientException e) {
             throw new RuntimeException(e);
         }
@@ -133,6 +166,8 @@ public abstract class ElasticsearchRepository<
 
     protected void doDelete(String indexName, StorableId id) {
         try {
+            synchIndex(indexName);
+
             elasticsearchClientProviderInstance.getElasticsearchClient().delete(getDescriptor(indexName), id.toString());
         } catch (ClientException e) {
             throw new RuntimeException(e);
@@ -149,16 +184,12 @@ public abstract class ElasticsearchRepository<
     }
 
     @Override
-    public void upsertIndex(KapuaId scopeId) {
-        final String indexName = indexResolver(scopeId);
-        doUpsertIndex(indexName);
-    }
-
-    @Override
     public String upsert(String itemId, T item) {
         try {
             final String indexName = indexResolver(item.getScopeId());
-            UpdateRequest request = new UpdateRequest(itemId.toString(), getDescriptor(indexName), item);
+            synchIndex(indexName);
+
+            final UpdateRequest request = new UpdateRequest(itemId.toString(), getDescriptor(indexName), item);
             final UpdateResponse upsertResponse;
             upsertResponse = elasticsearchClientProviderInstance.getElasticsearchClient().upsert(request);
             final String responseId = upsertResponse.getId();
@@ -172,14 +203,22 @@ public abstract class ElasticsearchRepository<
     @Override
     public Set<String> upsert(List<T> items) {
         try {
-            final BulkUpdateRequest bulkUpdateRequest = new BulkUpdateRequest();
-            items.stream()
+            final List<UpdateRequest> requests = items.stream()
                     .map(storableItem -> new UpdateRequest(
                             idExtractor(storableItem).toString(),
                             getDescriptor(indexResolver(storableItem.getScopeId())),
                             storableItem))
-                    .forEach(bulkUpdateRequest::add);
-            final BulkUpdateResponse updateResponse = elasticsearchClientProviderInstance.getElasticsearchClient().upsert(bulkUpdateRequest);
+                    .collect(Collectors.toList());
+            requests.stream().map(r -> r.getStorable().getScopeId()).collect(Collectors.toSet())
+                    .forEach(scopeId -> {
+                        final String indexName = indexResolver(scopeId);
+                        synchIndex(indexName);
+                    });
+            final BulkUpdateRequest bulkUpdateRequest = new BulkUpdateRequest();
+            bulkUpdateRequest.setRequest(requests);
+            final BulkUpdateResponse updateResponse = elasticsearchClientProviderInstance
+                    .getElasticsearchClient()
+                    .upsert(bulkUpdateRequest);
             return updateResponse.getResponse()
                     .stream()
                     .peek(response -> {
@@ -215,4 +254,35 @@ public abstract class ElasticsearchRepository<
     public TypeDescriptor getDescriptor(String indexName) {
         return new TypeDescriptor(indexName, type);
     }
+
+    @Override
+    public void refreshAllIndexes() {
+        try {
+            this.indexUpserted.invalidateAll();
+            elasticsearchClientProviderInstance.getElasticsearchClient().refreshAllIndexes();
+        } catch (ClientException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void deleteAllIndexes() {
+        try {
+            this.indexUpserted.invalidateAll();
+            elasticsearchClientProviderInstance.getElasticsearchClient().deleteAllIndexes();
+        } catch (ClientException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void deleteIndexes(String indexExp) {
+        try {
+            this.indexUpserted.invalidateAll();
+            elasticsearchClientProviderInstance.getElasticsearchClient().deleteIndexes(indexExp);
+        } catch (ClientException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

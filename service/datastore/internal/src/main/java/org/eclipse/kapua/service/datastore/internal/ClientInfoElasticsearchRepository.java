@@ -14,15 +14,13 @@ package org.eclipse.kapua.service.datastore.internal;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.datastore.ClientInfoFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
-import org.eclipse.kapua.service.datastore.internal.model.ClientInfoListResultImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
-import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
@@ -34,21 +32,19 @@ public class ClientInfoElasticsearchRepository extends DatastoreElasticSearchRep
     @Inject
     protected ClientInfoElasticsearchRepository(
             ElasticsearchClientProvider elasticsearchClientProviderInstance,
+            ClientInfoFactory clientInfoFactory,
             StorablePredicateFactory storablePredicateFactory) {
         super(elasticsearchClientProviderInstance,
                 ClientInfoSchema.CLIENT_TYPE_NAME,
                 ClientInfo.class,
-                storablePredicateFactory);
+                clientInfoFactory,
+                storablePredicateFactory,
+                DatastoreCacheManager.getInstance().getClientsCache());
     }
 
     @Override
     protected String indexResolver(KapuaId scopeId) {
         return DatastoreUtils.getClientIndexName(scopeId);
-    }
-
-    @Override
-    protected ClientInfoListResult buildList(ResultList<ClientInfo> fromItems) {
-        return new ClientInfoListResultImpl(fromItems);
     }
 
     @Override
@@ -61,8 +57,4 @@ public class ClientInfoElasticsearchRepository extends DatastoreElasticSearchRep
         return storable.getId();
     }
 
-    @Override
-    protected ClientInfoQuery createQuery(KapuaId scopeId) {
-        return new ClientInfoQueryImpl(scopeId);
-    }
 }

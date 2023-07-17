@@ -14,15 +14,13 @@ package org.eclipse.kapua.service.datastore.internal;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.datastore.ChannelInfoFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
-import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoListResultImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
-import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
@@ -34,11 +32,14 @@ public class ChannelInfoElasticsearchRepository extends DatastoreElasticSearchRe
     @Inject
     protected ChannelInfoElasticsearchRepository(
             ElasticsearchClientProvider elasticsearchClientProviderInstance,
+            ChannelInfoFactory channelInfoFactory,
             StorablePredicateFactory storablePredicateFactory) {
         super(elasticsearchClientProviderInstance,
                 ChannelInfoSchema.CHANNEL_TYPE_NAME,
                 ChannelInfo.class,
-                storablePredicateFactory);
+                channelInfoFactory,
+                storablePredicateFactory,
+                DatastoreCacheManager.getInstance().getChannelsCache());
     }
 
     @Override
@@ -49,16 +50,6 @@ public class ChannelInfoElasticsearchRepository extends DatastoreElasticSearchRe
     @Override
     protected String indexResolver(KapuaId scopeId) {
         return DatastoreUtils.getChannelIndexName(scopeId);
-    }
-
-    @Override
-    protected ChannelInfoListResult buildList(ResultList<ChannelInfo> fromItems) {
-        return new ChannelInfoListResultImpl(fromItems);
-    }
-
-    @Override
-    protected ChannelInfoQuery createQuery(KapuaId scopeId) {
-        return new ChannelInfoQueryImpl(scopeId);
     }
 
     @Override

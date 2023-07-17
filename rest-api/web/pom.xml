@@ -51,7 +51,6 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-locator-guice</artifactId>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -253,11 +252,6 @@
             <artifactId>logback-core</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-locator-guice</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>

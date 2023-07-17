@@ -14,15 +14,13 @@ package org.eclipse.kapua.service.datastore.internal;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.datastore.MetricInfoFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
-import org.eclipse.kapua.service.datastore.internal.model.MetricInfoListResultImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
-import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
@@ -34,11 +32,14 @@ public class MetricInfoRepositoryImpl extends DatastoreElasticSearchRepositoryBa
     @Inject
     protected MetricInfoRepositoryImpl(
             ElasticsearchClientProvider elasticsearchClientProviderInstance,
+            MetricInfoFactory metricInfoFactory,
             StorablePredicateFactory storablePredicateFactory) {
         super(elasticsearchClientProviderInstance,
                 MetricInfoSchema.METRIC_TYPE_NAME,
                 MetricInfo.class,
-                storablePredicateFactory);
+                metricInfoFactory,
+                storablePredicateFactory,
+                DatastoreCacheManager.getInstance().getMetricsCache());
     }
 
     @Override
@@ -52,17 +53,7 @@ public class MetricInfoRepositoryImpl extends DatastoreElasticSearchRepositoryBa
     }
 
     @Override
-    protected MetricInfoListResult buildList(ResultList<MetricInfo> fromItems) {
-        return new MetricInfoListResultImpl(fromItems);
-    }
-
-    @Override
     protected StorableId idExtractor(MetricInfo storable) {
         return storable.getId();
-    }
-
-    @Override
-    protected MetricInfoQuery createQuery(KapuaId scopeId) {
-        return new MetricInfoQueryImpl(scopeId);
     }
 }

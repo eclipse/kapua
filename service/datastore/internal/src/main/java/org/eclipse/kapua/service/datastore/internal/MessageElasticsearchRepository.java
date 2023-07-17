@@ -15,31 +15,25 @@ package org.eclipse.kapua.service.datastore.internal;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
-import org.eclipse.kapua.service.datastore.internal.model.MessageListResultImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
-import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
-import org.eclipse.kapua.service.elasticsearch.client.model.IndexRequest;
-import org.eclipse.kapua.service.elasticsearch.client.model.IndexResponse;
 import org.eclipse.kapua.service.elasticsearch.client.model.InsertRequest;
-import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
-import org.eclipse.kapua.service.storable.model.query.predicate.IdsPredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
 import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
 import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
@@ -47,20 +41,22 @@ import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
 import javax.inject.Inject;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class MessageElasticsearchRepository extends DatastoreElasticSearchRepositoryBase<DatastoreMessage, MessageListResult, MessageQuery> implements MessageRepository {
-    private final StorablePredicateFactory storablePredicateFactory;
-
     @Inject
     public MessageElasticsearchRepository(
             ElasticsearchClientProvider elasticsearchClientProviderInstance,
+            MessageStoreFactory messageStoreFactory,
             StorablePredicateFactory storablePredicateFactory) {
         super(elasticsearchClientProviderInstance,
                 MessageSchema.MESSAGE_TYPE_NAME,
                 DatastoreMessage.class,
+                messageStoreFactory,
                 storablePredicateFactory);
-        this.storablePredicateFactory = storablePredicateFactory;
     }
+
+    private final LocalCache<String, Map<String, Metric>> metricsByIndex = DatastoreCacheManager.getInstance().getMetadataCache();
 
     @Override
     protected JsonNode getIndexSchema() {
@@ -77,18 +73,8 @@ public class MessageElasticsearchRepository extends DatastoreElasticSearchReposi
     }
 
     @Override
-    protected MessageQuery createQuery(KapuaId scopeId) {
-        return new MessageQueryImpl(scopeId);
-    }
-
-    @Override
     protected String indexResolver(KapuaId scopeId) {
         return DatastoreUtils.getDataIndexName(scopeId);
-    }
-
-    @Override
-    protected MessageListResult buildList(ResultList<DatastoreMessage> fromItems) {
-        return new MessageListResultImpl(fromItems);
     }
 
     protected String indexResolver(KapuaId scopeId, Long time) {
@@ -102,178 +88,55 @@ public class MessageElasticsearchRepository extends DatastoreElasticSearchReposi
      * @throws ClientException
      */
     @Override
-    public String store(DatastoreMessage messageToStore) throws ClientException {
-        final TypeDescriptor typeDescriptor;
+    public String store(DatastoreMessage messageToStore, Map<String, Metric> metrics) throws ClientException {
         final Long messageTime = Optional.ofNullable(messageToStore.getTimestamp())
                 .map(date -> date.getTime())
                 .orElse(null);
-        typeDescriptor = getDescriptor(indexResolver(messageToStore.getScopeId(), messageTime));
-        InsertRequest insertRequest = new InsertRequest(messageToStore.getDatastoreId().toString(), typeDescriptor, messageToStore);
+
+        final String indexName = indexResolver(messageToStore.getScopeId(), messageTime);
+
+        if (!metricsByIndex.containsKey(indexName)) {
+            synchronized (DatastoreMessage.class) {
+                doUpsertIndex(indexName);
+                doUpsertMappings(indexName, metrics);
+                metricsByIndex.put(indexName, metrics);
+            }
+        } else {
+            final Map<String, Metric> newMetrics = getMessageMappingDiffs(metricsByIndex.get(indexName), metrics);
+            synchronized (DatastoreMessage.class) {
+                doUpsertMappings(indexName, metrics);
+                metricsByIndex.get(indexName).putAll(newMetrics);
+            }
+        }
+        final TypeDescriptor typeDescriptor = getDescriptor(indexName);
+        final InsertRequest insertRequest = new InsertRequest(idExtractor(messageToStore).toString(), typeDescriptor, messageToStore);
         return elasticsearchClientProviderInstance.getElasticsearchClient().insert(insertRequest).getId();
     }
 
-    @Override
-    public DatastoreMessage find(KapuaId scopeId, String indexName, StorableId id)
-            throws KapuaIllegalArgumentException, ClientException {
-        return doFind(scopeId, indexName, id);
+    private Map<String, Metric> getMessageMappingDiffs(Map<String, Metric> currentMetrics, Map<String, Metric> newMetrics) {
+        final Map<String, Metric> newEntries = newMetrics.entrySet()
+                .stream()
+                .filter(kv -> !currentMetrics.containsKey(kv.getKey()))
+                .collect(Collectors.toMap(kv -> kv.getKey(), kv -> kv.getValue()));
+        return newEntries;
     }
 
-<<<<<<< HEAD:service/datastore/internal/src/main/java/org/eclipse/kapua/service/datastore/internal/ElasticsearchMessageRepository.java
-    @Override
-    public void refreshAllIndexes() throws ClientException {
-        elasticsearchClientProviderInstance.getElasticsearchClient().refreshAllIndexes();
-    }
-
-    @Override
-    public void deleteAllIndexes() throws ClientException {
-        elasticsearchClientProviderInstance.getElasticsearchClient().deleteAllIndexes();
-    }
-
-    @Override
-    public void deleteIndexes(String indexExp) throws ClientException {
-        elasticsearchClientProviderInstance.getElasticsearchClient().deleteIndexes(indexExp);
-    }
-
-    @Override
-    public void upsertMappings(KapuaId scopeId, Map<String, Metric> esMetrics) throws ClientException, MappingException {
-        final ObjectNode metricsMapping = getNewMessageMappingsBuilder(esMetrics);
-        logger.trace("Sending dynamic message mappings: {}", metricsMapping);
-        elasticsearchClientProviderInstance.getElasticsearchClient().putMapping(new TypeDescriptor(indexResolver(scopeId), MessageSchema.MESSAGE_TYPE_NAME), metricsMapping);
-    }
-
-    @Override
-    public void upsertIndex(String dataIndexName) throws ClientException, MappingException {
-        super.upsertIndex(dataIndexName);
-    }
-
-    @Override
-    public void delete(KapuaId scopeId, String id, long time) throws ClientException {
-        super.doDelete(id, indexResolver(scopeId, time));
-    }
-
-    @Override
-    public void upsertIndex(KapuaId scopeId) throws ClientException, MappingException {
-        final ElasticsearchClient elasticsearchClient = elasticsearchClientProviderInstance.getElasticsearchClient();
-        // Check existence of the kapua internal indexes
-        final String indexName = indexResolver(scopeId);
-        IndexResponse indexExistsResponse = elasticsearchClient.isIndexExists(new IndexRequest(indexName));
-        if (!indexExistsResponse.isIndexExists()) {
-            elasticsearchClient.createIndex(indexName, getMappingSchema(indexName));
-            logger.info("Index created: {}", indexExistsResponse);
-            elasticsearchClient.putMapping(getDescriptor(indexName), getIndexSchema());
-||||||| parent of cdd73a5fc0 (:enh: generalizing elasticsearch implementation of storable object repository):service/datastore/internal/src/main/java/org/eclipse/kapua/service/datastore/internal/ElasticsearchMessageRepository.java
-    @Override
-    public void refreshAllIndexes() throws ClientException {
-        elasticsearchClientProviderInstance.getElasticsearchClient().refreshAllIndexes();
-    }
-
-    @Override
-    public void deleteAllIndexes() throws ClientException {
-        elasticsearchClientProviderInstance.getElasticsearchClient().deleteAllIndexes();
-    }
-
-    @Override
-    public void deleteIndexes(String indexExp) throws ClientException {
-        elasticsearchClientProviderInstance.getElasticsearchClient().deleteIndexes(indexExp);
-    }
-
-    @Override
-    public void upsertMappings(KapuaId scopeId, Map<String, Metric> esMetrics) throws ClientException, MappingException {
-        final ObjectNode metricsMapping = getNewMessageMappingsBuilder(esMetrics);
-        logger.trace("Sending dynamic message mappings: {}", metricsMapping);
-        elasticsearchClientProviderInstance.getElasticsearchClient().putMapping(new TypeDescriptor(indexResolver(scopeId), MessageSchema.MESSAGE_TYPE_NAME), metricsMapping);
-    }
-
-    @Override
-    public void upsertIndex(String dataIndexName) throws ClientException, MappingException {
-        super.upsertIndex(dataIndexName);
-    }
-
-    @Override
-    public void delete(KapuaId scopeId, String id, long time) throws ClientException {
-        super.doDelete(id, indexResolver(scopeId, time));
-    }
-
-    @Override
-    public void upsertIndex(KapuaId scopeId) throws ClientException, MappingException {
-        final ElasticsearchClient elasticsearchClient = elasticsearchClientProviderInstance.getElasticsearchClient();
-        // Check existence of the kapua internal indexes
-        final String indexName = indexResolver(scopeId);
-        IndexResponse indexExistsResponse = elasticsearchClient.isIndexExists(new IndexRequest(indexName));
-        if (!indexExistsResponse.isIndexExists()) {
-            elasticsearchClient.createIndex(indexName, getMappingSchema(indexName));
-            logger.info("Index created: {}", indexExistsResponse);
-            elasticsearchClient.putMapping(getDescriptor(indexName), getIndexSchema());
-=======
-    public void refreshAllIndexes() {
+    private void doUpsertMappings(String index, Map<String, Metric> esMetrics) {
         try {
-            elasticsearchClientProviderInstance.getElasticsearchClient().refreshAllIndexes();
-        } catch (ClientException e) {
-            throw new RuntimeException(e);
->>>>>>> cdd73a5fc0 (:enh: generalizing elasticsearch implementation of storable object repository):service/datastore/internal/src/main/java/org/eclipse/kapua/service/datastore/internal/MessageElasticsearchRepository.java
-        }
-    }
-
-    @Override
-    public void deleteAllIndexes() {
-        try {
-            elasticsearchClientProviderInstance.getElasticsearchClient().deleteAllIndexes();
-        } catch (ClientException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void deleteIndexes(String indexExp) {
-        try {
-            elasticsearchClientProviderInstance.getElasticsearchClient().deleteIndexes(indexExp);
-        } catch (ClientException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void upsertMappings(KapuaId scopeId, Map<String, Metric> esMetrics) {
-        try {
+            if (esMetrics.isEmpty()) {
+                return;
+            }
             final ObjectNode metricsMapping = getNewMessageMappingsBuilder(esMetrics);
             logger.trace("Sending dynamic message mappings: {}", metricsMapping);
-            elasticsearchClientProviderInstance.getElasticsearchClient().putMapping(new TypeDescriptor(indexResolver(scopeId), MessageSchema.MESSAGE_TYPE_NAME), metricsMapping);
+            elasticsearchClientProviderInstance.getElasticsearchClient().putMapping(getDescriptor(index), metricsMapping);
         } catch (ClientException | MappingException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public void upsertIndex(String dataIndexName) {
-        super.doUpsertIndex(dataIndexName);
-    }
-
-    @Override
-    public void doUpsertIndex(String dataIndexName) {
-        super.doUpsertIndex(dataIndexName);
     }
 
     @Override
     public void delete(KapuaId scopeId, StorableId id, long time) {
         super.doDelete(indexResolver(scopeId, time), id);
-    }
-
-    @Override
-    public void upsertIndex(KapuaId scopeId) {
-        try {
-            final ElasticsearchClient elasticsearchClient = elasticsearchClientProviderInstance.getElasticsearchClient();
-            // Check existence of the kapua internal indexes
-            final String indexName = indexResolver(scopeId);
-            IndexResponse indexExistsResponse = elasticsearchClient.isIndexExists(new IndexRequest(indexName));
-            if (!indexExistsResponse.isIndexExists()) {
-                elasticsearchClient.createIndex(indexName, getMappingSchema(indexName));
-                logger.info("Index created: {}", indexExistsResponse);
-                elasticsearchClient.putMapping(getDescriptor(indexName), getIndexSchema());
-            }
-        } catch (ClientException | MappingException e) {
-            throw new RuntimeException(e);
-        }
-
     }
 
     /**
@@ -284,7 +147,7 @@ public class MessageElasticsearchRepository extends DatastoreElasticSearchReposi
      * @since 1.0.0
      */
     private ObjectNode getNewMessageMappingsBuilder(Map<String, Metric> esMetrics) throws MappingException {
-        if (esMetrics == null) {
+        if (esMetrics == null || esMetrics.isEmpty()) {
             return null;
         }
         // metrics mapping container (to be added to message mapping)
@@ -325,16 +188,21 @@ public class MessageElasticsearchRepository extends DatastoreElasticSearchReposi
         return typeNode;
     }
 
-    public DatastoreMessage doFind(KapuaId scopeId, String indexName, StorableId id) throws ClientException {
-        MessageQueryImpl idsQuery = new MessageQueryImpl(scopeId);
-        idsQuery.setLimit(1);
+    @Override
+    public void refreshAllIndexes() {
+        super.refreshAllIndexes();
+        this.metricsByIndex.invalidateAll();
+    }
 
-        IdsPredicate idsPredicate = storablePredicateFactory.newIdsPredicate(type);
-        idsPredicate.addId(id);
-        idsQuery.setPredicate(idsPredicate);
+    @Override
+    public void deleteAllIndexes() {
+        super.deleteAllIndexes();
+        this.metricsByIndex.invalidateAll();
+    }
 
-        TypeDescriptor typeDescriptor = getDescriptor(indexName);
-        final DatastoreMessage res = (DatastoreMessage) elasticsearchClientProviderInstance.getElasticsearchClient().<DatastoreMessage>find(typeDescriptor, idsQuery, DatastoreMessage.class);
-        return res;
+    @Override
+    public void deleteIndexes(String indexExp) {
+        super.deleteIndexes(indexExp);
+        this.metricsByIndex.invalidateAll();
     }
 }

@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
@@ -26,20 +25,7 @@ import java.util.Map;
 
 public interface MessageRepository extends StorableRepository<DatastoreMessage, MessageListResult, MessageQuery> {
 
-    String store(DatastoreMessage messageToStore) throws ClientException;
-
-    DatastoreMessage find(KapuaId scopeId, String indexName, StorableId id)
-            throws KapuaIllegalArgumentException, ClientException;
-
-    void refreshAllIndexes();
-
-    void deleteAllIndexes();
-
-    void deleteIndexes(String indexExp);
-
-    void upsertMappings(KapuaId scopeId, Map<String, Metric> esMetrics);
-
-    void upsertIndex(String dataIndexName);
+    String store(DatastoreMessage messageToStore, Map<String, Metric> metrics) throws ClientException;
 
     void delete(KapuaId scopeId, StorableId id, long time);
 

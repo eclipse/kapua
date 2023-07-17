@@ -20,7 +20,6 @@ import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationExcept
 import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
-import org.eclipse.kapua.service.datastore.internal.schema.Schema;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
@@ -46,7 +45,6 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractDatastoreFacade imple
 
     private final StorableIdFactory storableIdFactory;
     private final StorablePredicateFactory storablePredicateFactory;
-    private final Schema esSchema;
     private final ChannelInfoRepository repository;
     private final Object metadataUpdateSync = new Object();
 
@@ -57,7 +55,6 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractDatastoreFacade imple
      * Constructs the channel info registry facade
      *
      * @param configProvider
-     * @param esSchema
      * @since 1.0.0
      */
     @Inject
@@ -65,12 +62,10 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractDatastoreFacade imple
             ConfigurationProvider configProvider,
             StorableIdFactory storableIdFactory,
             StorablePredicateFactory storablePredicateFactory,
-            Schema esSchema,
             ChannelInfoRepository channelInfoRepository) {
         super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
-        this.esSchema = esSchema;
         this.repository = channelInfoRepository;
     }
 
@@ -104,7 +99,6 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractDatastoreFacade imple
                 if (!DatastoreCacheManager.getInstance().getChannelsCache().get(channelInfoId)) {
                     ChannelInfo storedField = doFind(channelInfo.getScopeId(), storableId);
                     if (storedField == null) {
-                        esSchema.synch(channelInfo.getScopeId(), channelInfo.getFirstMessageOn().getTime());
                         repository.upsert(channelInfoId, channelInfo);
                     }
                     // Update cache if channel update is completed successfully

@@ -13,9 +13,11 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.commons.cache.LocalCache;
-import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
+import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
+
+import java.util.Map;
 
 /**
  * Datastore cache manager.<br>
@@ -28,7 +30,7 @@ public class DatastoreCacheManager {
 
     private static final DatastoreCacheManager INSTANCE = new DatastoreCacheManager();
 
-    private final LocalCache<String, Metadata> schemaCache;
+    private final LocalCache<String, Map<String, Metric>> schemaCache;
     private final LocalCache<String, Boolean> channelsCache;
     private final LocalCache<String, Boolean> metricsCache;
     private final LocalCache<String, Boolean> clientsCache;
@@ -93,7 +95,7 @@ public class DatastoreCacheManager {
      * @return
      * @since 1.0.0
      */
-    public LocalCache<String, Metadata> getMetadataCache() {
+    public LocalCache<String, Map<String, Metric>> getMetadataCache() {
         return schemaCache;
     }
 }

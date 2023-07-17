@@ -18,9 +18,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.model.ClientInfoListResultImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
-import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
-import org.eclipse.kapua.service.datastore.internal.schema.Schema;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
@@ -28,7 +25,6 @@ import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
-import org.eclipse.kapua.service.storable.model.query.predicate.IdsPredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +42,6 @@ public class ClientInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
 
     private final StorableIdFactory storableIdFactory;
     private final StorablePredicateFactory storablePredicateFactory;
-    private final Schema esSchema;
     private final ClientInfoRepository repository;
     private final Object metadataUpdateSync = new Object();
 
@@ -64,12 +59,10 @@ public class ClientInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
             ConfigurationProvider configProvider,
             StorableIdFactory storableIdFactory,
             StorablePredicateFactory storablePredicateFactory,
-            Schema esSchema,
             ClientInfoRepository clientInfoRepository) {
         super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
-        this.esSchema = esSchema;
         this.repository = clientInfoRepository;
     }
 
@@ -102,9 +95,8 @@ public class ClientInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
             synchronized (metadataUpdateSync) {
                 if (!DatastoreCacheManager.getInstance().getClientsCache().get(clientInfo.getClientId())) {
                     // fix #REPLACE_ISSUE_NUMBER
-                    ClientInfo storedField = find(clientInfo.getScopeId(), storableId);
+                    ClientInfo storedField = repository.find(clientInfo.getScopeId(), storableId);
                     if (storedField == null) {
-                        esSchema.synch(clientInfo.getScopeId(), clientInfo.getFirstMessageOn().getTime());
                         repository.upsert(clientInfoId, clientInfo);
                     }
                     // Update cache if client update is completed successfully
@@ -151,18 +143,7 @@ public class ClientInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
      */
     @Override
     public ClientInfo find(KapuaId scopeId, StorableId id) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(id, "id");
-
-        ClientInfoQueryImpl idsQuery = new ClientInfoQueryImpl(scopeId);
-        idsQuery.setLimit(1);
-
-        IdsPredicate idsPredicate = storablePredicateFactory.newIdsPredicate(ClientInfoSchema.CLIENT_TYPE_NAME);
-        idsPredicate.addId(id);
-        idsQuery.setPredicate(idsPredicate);
-
-        ClientInfoListResult result = query(idsQuery);
-        return result.getFirstItem();
+        return repository.find(scopeId, id);
     }
 
     /**

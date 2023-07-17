@@ -13,11 +13,13 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchRepository;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
+import org.eclipse.kapua.service.storable.StorableFactory;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.Storable;
 import org.eclipse.kapua.service.storable.model.StorableListResult;
@@ -38,8 +40,15 @@ public abstract class DatastoreElasticSearchRepositoryBase<
             ElasticsearchClientProvider elasticsearchClientProviderInstance,
             String type,
             Class<T> clazz,
-            StorablePredicateFactory storablePredicateFactory) {
-        super(elasticsearchClientProviderInstance, type, clazz, storablePredicateFactory);
+            StorableFactory<T, L, Q> storableFactory,
+            StorablePredicateFactory storablePredicateFactory,
+            LocalCache<String, Boolean> indexesCache) {
+        super(elasticsearchClientProviderInstance, type, clazz, storableFactory, storablePredicateFactory,
+                indexesCache);
+    }
+
+    protected DatastoreElasticSearchRepositoryBase(ElasticsearchClientProvider elasticsearchClientProviderInstance, String type, Class<T> clazz, StorableFactory<T, L, Q> storableFactory, StorablePredicateFactory storablePredicateFactory) {
+        super(elasticsearchClientProviderInstance, type, clazz, storableFactory, storablePredicateFactory);
     }
 
     /**

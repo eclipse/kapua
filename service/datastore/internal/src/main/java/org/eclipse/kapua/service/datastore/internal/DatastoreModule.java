@@ -44,7 +44,6 @@ import org.eclipse.kapua.service.datastore.exception.DatastoreInternalError;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreElasticsearchClientConfiguration;
 import org.eclipse.kapua.service.datastore.internal.converter.ModelContextImpl;
 import org.eclipse.kapua.service.datastore.internal.converter.QueryConverterImpl;
-import org.eclipse.kapua.service.datastore.internal.schema.Schema;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
@@ -59,8 +58,6 @@ import java.lang.reflect.Constructor;
 public class DatastoreModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(Schema.class).in(Singleton.class);
-
         bind(ClientInfoFactory.class).to(ClientInfoFactoryImpl.class);
         bind(ClientInfoRepository.class).to(ClientInfoElasticsearchRepository.class).in(Singleton.class);
         bind(ClientInfoRegistryFacade.class).to(ClientInfoRegistryFacadeImpl.class).in(Singleton.class);

@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -44,7 +43,6 @@ import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQuery
 import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.predicate.ChannelMatchPredicateImpl;
-import org.eclipse.kapua.service.datastore.internal.schema.Schema;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
@@ -83,7 +81,6 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
     private final ChannelInfoRepository channelInfoRepository;
     private final ClientInfoRepository clientInfoRepository;
     private final MetricsDatastore metrics;
-    private final Schema esSchema;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -96,7 +93,6 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
             ClientInfoRegistryFacade clientInfoRegistryFacade,
             ChannelInfoRegistryFacade channelInfoStoreFacade,
             MetricInfoRegistryFacade metricInfoStoreFacade,
-            Schema esSchema,
             MessageRepository messageRepository,
             MetricInfoRepository metricInfoRepository,
             ChannelInfoRepository channelInfoRepository,
@@ -111,7 +107,6 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
         this.channelInfoRepository = channelInfoRepository;
         this.clientInfoRepository = clientInfoRepository;
         this.metrics = MetricsDatastore.getInstance();
-        this.esSchema = esSchema;
     }
 
     /**
@@ -149,8 +144,6 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
             }
         }
         // Extract schema metadata
-        esSchema.synch(message.getScopeId(), indexedOn);
-
         Date indexedOnDate = new Date(indexedOn);
 
         if (!newInsert && !MessageUniquenessCheck.NONE.equals(accountServicePlan.getMessageUniquenessCheck())) {
@@ -165,7 +158,7 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
         }
 
         // Save message (the big one)
-        DatastoreMessage messageToStore = convertTo(message, messageId);
+        final DatastoreMessage messageToStore = convertTo(message, messageId);
         messageToStore.setTimestamp(indexedOnDate);
         // Possibly update the schema with new metric mappings
         Map<String, Metric> metrics = new HashMap<>();
@@ -181,13 +174,8 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
                 metrics.put(mappedName, metric);
             }
         }
-        try {
-            esSchema.updateMessageMappings(message.getScopeId(), indexedOn, metrics);
-        } catch (KapuaException e) {
-            LOG.warn("Update mappings error", e);
-        }
 
-        String storedId = messageRepository.store(messageToStore);
+        final String storedId = messageRepository.store(messageToStore, metrics);
         messageToStore.setDatastoreId(storableIdFactory.newStorableId(storedId));
 
         MessageInfo messageInfo = configProvider.getInfo(message.getScopeId());
@@ -247,11 +235,6 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
         // get the index by finding the object by id
         DatastoreMessage messageToBeDeleted = messageRepository.find(scopeId, DatastoreUtils.getDataIndexName(scopeId), id);
         if (messageToBeDeleted != null) {
-            try {
-                esSchema.synch(scopeId, messageToBeDeleted.getTimestamp().getTime());
-            } catch (KapuaException e) {
-                LOG.warn("Retrieving metadata error", e);
-            }
             messageRepository.delete(scopeId, id, messageToBeDeleted.getTimestamp().getTime());
         } else {
             LOG.warn("Cannot find the message to be deleted. scopeId: '{}' - id: '{}'", scopeId, id);
@@ -508,25 +491,26 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
     @Override
     public void refreshAllIndexes() throws ClientException {
         messageRepository.refreshAllIndexes();
+        clientInfoRepository.refreshAllIndexes();
+        channelInfoRepository.refreshAllIndexes();
+        metricInfoRepository.refreshAllIndexes();
     }
 
     @Override
     public void deleteAllIndexes() throws ClientException {
         messageRepository.deleteAllIndexes();
-        clearCache();
+        clientInfoRepository.deleteAllIndexes();
+        channelInfoRepository.deleteAllIndexes();
+        metricInfoRepository.deleteAllIndexes();
     }
 
 
     @Override
     public void deleteIndexes(String indexExp) throws ClientException {
         messageRepository.deleteIndexes(indexExp);
-        clearCache();
+        clientInfoRepository.deleteIndexes(indexExp);
+        channelInfoRepository.deleteIndexes(indexExp);
+        metricInfoRepository.deleteIndexes(indexExp);
     }
 
-    public void clearCache() {
-        DatastoreCacheManager.getInstance().getChannelsCache().invalidateAll();
-        DatastoreCacheManager.getInstance().getClientsCache().invalidateAll();
-        DatastoreCacheManager.getInstance().getMetricsCache().invalidateAll();
-        DatastoreCacheManager.getInstance().getMetadataCache().invalidateAll();
-    }
 }

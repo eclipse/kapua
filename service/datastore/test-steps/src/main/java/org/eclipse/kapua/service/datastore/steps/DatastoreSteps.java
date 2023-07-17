@@ -337,12 +337,14 @@ public class DatastoreSteps extends TestBase {
     public void deleteIndices() throws Exception {
         messageStoreFacade.refreshAllIndexes();
         messageStoreFacade.deleteAllIndexes();
-
     }
 
     @When("I refresh all indices")
     public void refreshIndeces() throws Throwable {
         messageStoreFacade.refreshAllIndexes();
+        DatastoreCacheManager.getInstance().getMetricsCache().invalidateAll();
+        DatastoreCacheManager.getInstance().getChannelsCache().invalidateAll();
+        DatastoreCacheManager.getInstance().getClientsCache().invalidateAll();
     }
 
     @When("I clear all the database caches")
