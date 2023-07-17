@@ -18,7 +18,7 @@ import javax.validation.constraints.Null;
 import java.util.Base64;
 
 /**
- * This class is used to deserialize a {@link Byte}[] QueryParam from a {@link Base64} encoded {@link String} to a {@link Byte[]}
+ * This class is used to deserialize a {@link Byte}[] QueryParam from a {@link Base64} encoded {@link String} to a {@link Byte}[].
  *
  * @since 1.0.0
  */
