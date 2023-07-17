@@ -80,6 +80,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     protected final AuthorizationService authorizationService = LOCATOR.getService(AuthorizationService.class);
     protected final PermissionFactory permissionFactory = LOCATOR.getFactory(PermissionFactory.class);
     protected static final Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.CONFIG_MAX_ENTRIES_ON_DELETE);
+    protected static final Integer MAX_LIMIT_VALUE = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.MAX_LIMIT_VALUE);
 
     protected final MessageStoreFacade messageStoreFacade;
 
@@ -195,6 +196,9 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     public MessageListResult query(MessageQuery query)
             throws KapuaException {
         checkDataAccess(query.getScopeId(), Actions.read);
+        if (query.getLimit() != null) {
+            ArgumentValidator.numRange(query.getLimit(), 0, MAX_LIMIT_VALUE, "limit");
+        }
         try {
             return messageStoreFacade.query(query);
         } catch (Exception e) {
