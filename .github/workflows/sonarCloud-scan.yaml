@@ -13,7 +13,7 @@ env:
 
 jobs:
   scan:
-    name: Scan code with sonarCould
+    name: Scan code with sonarCoul
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
