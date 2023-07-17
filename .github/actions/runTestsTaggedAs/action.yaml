@@ -12,7 +12,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Setup java
+    - name: Setup jav
       uses: actions/setup-java@v3
       with:
         distribution: 'zulu'
