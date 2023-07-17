@@ -69,7 +69,11 @@ public enum DatastoreSettingsKey implements SettingKey {
     /**
      * Disables the entire Datastore feature
      */
-    DISABLE_DATASTORE("datastore.disable");
+    DISABLE_DATASTORE("datastore.disable"),
+    /**
+     * Elasticsearch limit maximum value
+     */
+    MAX_LIMIT_VALUE("datastore.query.limit.max");
 
     private String key;
 
