@@ -44,9 +44,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
+
+import javax.crypto.NoSuchPaddingException;
 
 /**
  * {@link ApiKeyCredentials} {@link CredentialsMatcher} implementation.
@@ -75,7 +80,7 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
             logger.info("Cache enabled. Initializing CachePasswordChecker...");
             try {
                 passwordMatcher = new CachedPasswordMatcher();
-            } catch (InvalidKeyException | NoSuchAlgorithmException e) {
+            } catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException | UnsupportedEncodingException | InvalidAlgorithmParameterException | NoSuchPaddingException e) {
                 throw KapuaRuntimeException.internalError(e, "Cannot instantiate CachedPasswordMatcher");
             }
         }
