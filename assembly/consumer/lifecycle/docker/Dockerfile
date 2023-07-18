@@ -15,6 +15,12 @@ FROM @docker.account@/java-base
 
 COPY maven /
 
+RUN yum -y install unzip
+
+RUN curl -L https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2023.9-docker.zip -o /tmp/YourKit-JavaProfiler-2023.9-docker.zip && \
+  unzip /tmp/YourKit-JavaProfiler-2023.9-docker.zip -d /usr/local && \
+  rm /tmp/YourKit-JavaProfiler-2023.9-docker.zip
+
 ENV BROKER_HOST=${BROKER_HOST:-message-broker}
 ENV BROKER_PORT=${BROKER_PORT:-5672}
 
@@ -43,6 +49,6 @@ ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
               -Dcipher.key=\${CIPHER_KEY} \
               -Dcrypto.secret.key=\${CRYPTO_SECRET_KEY}"
 
-EXPOSE 8080
+EXPOSE 8080 10011
 
 ENTRYPOINT /run-consumer-lifecycle

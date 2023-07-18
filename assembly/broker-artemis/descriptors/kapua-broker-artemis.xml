@@ -52,6 +52,11 @@
             <outputDirectory>opt/artemis/certificates/</outputDirectory>
             <fileMode>0644</fileMode>
         </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/script</directory>
+            <outputDirectory>opt/artemis/script/</outputDirectory>
+            <fileMode>0644</fileMode>
+        </fileSet>
     </fileSets>
 
     <dependencySets>

@@ -44,5 +44,9 @@ echo 'copying libraries...'
 cp /opt/artemis/base-lib/* /opt/artemis/kapua/lib
 echo 'copying libraries... DONE'
 
+echo 'copying bin...'
+cp /opt/artemis/script/* /opt/artemis/kapua/bin/artemis
+echo 'copying bin... DONE'
+
 echo 'starting Artemis...'
 /opt/artemis/kapua/bin/artemis run xml:/opt/artemis/kapua/etc/bootstrap.xml

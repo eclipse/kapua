@@ -15,6 +15,12 @@ FROM @docker.account@/java-base
 
 COPY maven /
 
+RUN yum -y install unzip
+
+RUN curl -L https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2023.9-docker.zip -o /tmp/YourKit-JavaProfiler-2023.9-docker.zip && \
+  unzip /tmp/YourKit-JavaProfiler-2023.9-docker.zip -d /usr/local && \
+  rm /tmp/YourKit-JavaProfiler-2023.9-docker.zip
+
 ENV SERVICE_BROKER_HOST=${SERVICE_BROKER_HOST:-events-broker}
 ENV SERVICE_BROKER_PORT=${SERVICE_BROKER_PORT:-5672}
 ENV SERVICE_BROKER_USERNAME=${SERVICE_BROKER_USERNAME:-kapua-sys}
@@ -38,6 +44,6 @@ ENV JAVA_OPTS -Dcommons.db.schema.update=true \
               -Dcommons.service_bus.username="${SERVICE_BROKER_USERNAME}" \
               -Dcommons.service_bus.password="${SERVICE_BROKER_PASSWORD}"
 
-EXPOSE 8080
+EXPOSE 8080 10013
 
 ENTRYPOINT /run-service-authentication

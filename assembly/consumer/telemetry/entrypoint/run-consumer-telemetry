@@ -13,4 +13,6 @@
 
 JAVA_OPTS="${JAVA_OPTS} --add-opens java.base/java.lang=ALL-UNNAMED"
 
-java ${JAVA_OPTS} ${DEBUG_OPTS} ${JMX_OPTS} -jar kapua-consumer-telemetry-2.1.0-SNAPSHOT-app.jar
+YOURKIT_AGENT="-agentpath:/usr/local/YourKit-JavaProfiler-2023.9/bin/linux-arm-64/libyjpagent.so=port=10001,listen=all"
+
+java ${YOURKIT_AGENT} ${JAVA_OPTS} ${DEBUG_OPTS} ${JMX_OPTS} -jar kapua-consumer-telemetry-2.1.0-SNAPSHOT-app.jar

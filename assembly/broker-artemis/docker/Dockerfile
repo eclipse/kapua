@@ -28,6 +28,12 @@ ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=100
 
 USER 0
 
+RUN yum -y install unzip
+
+RUN curl -L https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2023.9-docker.zip -o /tmp/YourKit-JavaProfiler-2023.9-docker.zip && \
+  unzip /tmp/YourKit-JavaProfiler-2023.9-docker.zip -d /usr/local && \
+  rm /tmp/YourKit-JavaProfiler-2023.9-docker.zip
+
 RUN useradd -u 1002 -g 0 -d '/opt/artemis' -s '/sbin/nologin' artemis && \
     chown -R artemis:root /opt/artemis && \
     chmod -R g=u /opt/artemis && \
@@ -43,7 +49,7 @@ ENV JAVA_ARGS "-Dcommons.db.schema.update=true \
                    -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
                    -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem"
 
-EXPOSE 1883 1893 5672 8883
+EXPOSE 1883 1893 5672 8883 10001
 
 VOLUME /opt/activemq/kapua/
 

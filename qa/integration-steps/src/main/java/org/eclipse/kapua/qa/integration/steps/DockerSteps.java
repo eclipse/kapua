@@ -573,7 +573,7 @@ public class DockerSteps {
     @And("Start MessageBroker container with name {string}")
     public void startMessageBrokerContainer(String name) throws DockerException, InterruptedException {
         logger.info("Starting Message Broker container {}...", name);
-        ContainerConfig mbConfig = getBrokerContainerConfig("message-broker", 1883, 1883, 1893, 1893, 8883, 8883, 8161, 8161, 5005, 5005, "kapua/" + BROKER_IMAGE + ":" + KAPUA_VERSION);
+        ContainerConfig mbConfig = getBrokerContainerConfig("message-broker", 1883, 1883, 1893, 1893, 8883, 8883, 8161, 8161, 5005, 5005, 10001, 10001, "kapua/" + BROKER_IMAGE + ":" + KAPUA_VERSION);
         ContainerCreation mbContainerCreation = DockerUtil.getDockerClient().createContainer(mbConfig, name);
         String containerId = mbContainerCreation.id();
 
@@ -586,7 +586,7 @@ public class DockerSteps {
     @And("Start TelemetryConsumer container with name {string}")
     public void startTelemetryConsumerContainer(String name) throws DockerException, InterruptedException {
         logger.info("Starting Telemetry Consumer container {}...", name);
-        ContainerCreation mbContainerCreation = DockerUtil.getDockerClient().createContainer(getTelemetryConsumerConfig(8080, 8091, 8001, 8002), name);
+        ContainerCreation mbContainerCreation = DockerUtil.getDockerClient().createContainer(getTelemetryConsumerConfig(8080, 8091, 8001, 8002, 10001, 10006), name);
         String containerId = mbContainerCreation.id();
 
         DockerUtil.getDockerClient().startContainer(containerId);
@@ -598,7 +598,7 @@ public class DockerSteps {
     @And("Start LifecycleConsumer container with name {string}")
     public void startLifecycleConsumerContainer(String name) throws DockerException, InterruptedException {
         logger.info("Starting Lifecycle Consumer container {}...", name);
-        ContainerCreation mbContainerCreation = DockerUtil.getDockerClient().createContainer(getLifecycleConsumerConfig(8080, 8090, 8001, 8001), name);
+        ContainerCreation mbContainerCreation = DockerUtil.getDockerClient().createContainer(getLifecycleConsumerConfig(8080, 8090, 8001, 8001, 10001, 10005), name);
         String containerId = mbContainerCreation.id();
 
         DockerUtil.getDockerClient().startContainer(containerId);
@@ -610,7 +610,7 @@ public class DockerSteps {
     @And("Start Auth service container with name {string}")
     public void startAuthServiceContainer(String name) throws DockerException, InterruptedException {
         logger.info("Starting Auth service container {}...", name);
-        ContainerCreation mbContainerCreation = DockerUtil.getDockerClient().createContainer(getAuthServiceConfig(8080, 8092, 8001, 8003), name);
+        ContainerCreation mbContainerCreation = DockerUtil.getDockerClient().createContainer(getAuthServiceConfig(8080, 8092, 8001, 8003, 10001, 10007), name);
         String containerId = mbContainerCreation.id();
 
         DockerUtil.getDockerClient().startContainer(containerId);
@@ -742,6 +742,7 @@ public class DockerSteps {
                                                      int mqttsPort, int mqttsHostPort,
                                                      int webPort, int webHostPort,
                                                      int debugPort, int debugHostPort,
+                                                     int yourKitPort, int yourKitHostPort,
                                                      String dockerImage) {
 
         final Map<String, List<PortBinding>> portBindings = new HashMap<>();
@@ -750,6 +751,7 @@ public class DockerSteps {
         addHostPort(ALL_IP, portBindings, mqttsPort, mqttsHostPort);
         addHostPort(ALL_IP, portBindings, webPort, webHostPort);
         addHostPort(ALL_IP, portBindings, debugPort, debugHostPort);
+        addHostPort(ALL_IP, portBindings, yourKitPort, yourKitHostPort);
 
         final HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).build();
 
@@ -776,7 +778,8 @@ public class DockerSteps {
                 String.valueOf(mqttInternalPort),
                 String.valueOf(mqttsPort),
                 String.valueOf(webPort),
-                String.valueOf(debugPort)
+                String.valueOf(debugPort),
+                String.valueOf(yourKitPort)
         };
 
         return ContainerConfig.builder()
@@ -851,8 +854,8 @@ public class DockerSteps {
      *
      * @return Container configuration for telemetry consumer.
      */
-    private ContainerConfig getTelemetryConsumerConfig(int healthPort, int healthHostPort, int debugPort, int debugHostPort) {
-        return getContainerConfig(TELEMETRY_CONSUMER_IMAGE, healthPort, healthHostPort, debugPort, debugHostPort);
+    private ContainerConfig getTelemetryConsumerConfig(int healthPort, int healthHostPort, int debugPort, int debugHostPort, int yourKitPort, int yourKitHostPort) {
+        return getContainerConfig(TELEMETRY_CONSUMER_IMAGE, healthPort, healthHostPort, debugPort, debugHostPort, yourKitPort, yourKitHostPort);
     }
 
     /**
@@ -860,8 +863,8 @@ public class DockerSteps {
      *
      * @return Container configuration for lifecycle consumer.
      */
-    private ContainerConfig getLifecycleConsumerConfig(int healthPort, int healthHostPort, int debugPort, int debugHostPort) {
-        return getContainerConfig(LIFECYCLE_CONSUMER_IMAGE, healthPort, healthHostPort, debugPort, debugHostPort);
+    private ContainerConfig getLifecycleConsumerConfig(int healthPort, int healthHostPort, int debugPort, int debugHostPort, int yourKitPort, int yourKitHostPort) {
+        return getContainerConfig(LIFECYCLE_CONSUMER_IMAGE, healthPort, healthHostPort, debugPort, debugHostPort, yourKitPort, yourKitHostPort);
     }
 
     /**
@@ -869,8 +872,8 @@ public class DockerSteps {
      *
      * @return Container configuration for auth service.
      */
-    private ContainerConfig getAuthServiceConfig(int healthPort, int healthHostPort, int debugPort, int debugHostPort) {
-        return getContainerConfig(AUTH_SERVICE_IMAGE, healthPort, healthHostPort, debugPort, debugHostPort);
+    private ContainerConfig getAuthServiceConfig(int healthPort, int healthHostPort, int debugPort, int debugHostPort, int yourKitPort, int yourKitHostPort) {
+        return getContainerConfig(AUTH_SERVICE_IMAGE, healthPort, healthHostPort, debugPort, debugHostPort, yourKitPort, yourKitHostPort);
     }
 
     /**
@@ -878,15 +881,20 @@ public class DockerSteps {
      *
      * @return Container configuration external consumer with provided image name.
      */
-    private ContainerConfig getContainerConfig(String imageName, int healthPort, int healthHostPort, int debugPort, int debugHostPort) {
+    private ContainerConfig getContainerConfig(String imageName,
+            int healthPort, int healthHostPort,
+            int debugPort, int debugHostPort,
+            int yourKitPort, int yourKitHostPort) {
         final Map<String, List<PortBinding>> portBindings = new HashMap<>();
         addHostPort("0.0.0.0", portBindings, healthPort, healthHostPort);
         addHostPort("0.0.0.0", portBindings, debugPort, debugHostPort);
+        addHostPort("0.0.0.0", portBindings, yourKitPort, yourKitHostPort);
         final HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).build();
 
         String[] ports = {
                 String.valueOf(healthPort),
-                String.valueOf(debugPort)
+                String.valueOf(debugPort),
+                String.valueOf(yourKitPort)
         };
 
         List<String> envVars = new ArrayList<>();
