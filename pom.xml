@@ -36,6 +36,10 @@
         <kapua-client.maven.compiler.target>11</kapua-client.maven.compiler.target>
         <kapua-client.maven.toolchain.jdk.version>11</kapua-client.maven.toolchain.jdk.version>
 
+        <!-- Maven Javadoc Plugin compiler level -->
+        <!-- See: https://bugs.openjdk.org/browse/JDK-8212233 -->
+        <javadoc-plugin.maven.compiler.source>8</javadoc-plugin.maven.compiler.source>
+
         <!-- Console compiler level and JDK -->
         <!-- Console is limited to Java 1.6, so we are using JDK 8 -->
         <console.maven.compiler.source>1.6</console.maven.compiler.source>
@@ -239,6 +243,9 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${maven-javadoc-plugin.version}</version>
+                    <configuration>
+                        <source>${javadoc-plugin.maven.compiler.source}</source>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

@@ -14,11 +14,11 @@ package org.eclipse.kapua.app.api.core.model;
 
 import org.eclipse.kapua.model.xml.BinaryXmlAdapter;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import javax.validation.constraints.Null;
 import java.util.Base64;
 
 /**
- * This class is used to deserialize a {@link Byte}[] {@link javax.ws.rs.QueryParam} from a {@link Base64} encoded {@link String} to a {@link Byte[]}
+ * This class is used to deserialize a {@link Byte}[] QueryParam from a {@link Base64} encoded {@link String} to a {@link Byte}[].
  *
  * @since 1.0.0
  */
@@ -29,10 +29,10 @@ public class ByteArrayParam extends BinaryXmlAdapter {
     /**
      * This converts a {@link Base64} encoded {@link String} to a {@link Byte}[]
      *
-     * @param base64encoded The {@link Base64} encoded  {@link String} representation of the {@link Byte}[].
+     * @param base64encoded The {@link Base64} encoded {@link String} representation of the {@link Byte}[].
      * @since 1.0.0
      */
-    public ByteArrayParam(@Nullable String base64encoded) {
+    public ByteArrayParam(@Null String base64encoded) {
         value = super.unmarshal(base64encoded);
     }
 
