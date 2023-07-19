@@ -86,7 +86,7 @@ public class MetricPredicateImpl extends RangePredicateImpl implements MetricPre
         termNode.set(
                 getField().field()
                         .concat(".")
-                        .concat(getName())
+                        .concat(DatastoreUtils.normalizeMetricName(getName()))
                         .concat(".")
                         .concat(DatastoreUtils.getClientMetricFromAcronym(getType().getSimpleName().toLowerCase())),
                 valuesNode);

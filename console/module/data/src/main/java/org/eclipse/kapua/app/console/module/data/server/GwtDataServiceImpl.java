@@ -464,7 +464,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         if (headers != null) {
             OrPredicate metricsPredicate = DATASTORE_PREDICATE_FACTORY.newOrPredicate();
             for (GwtHeader header : headers) {
-                metricsPredicate.getPredicates().add(DATASTORE_PREDICATE_FACTORY.newExistsPredicate(String.format(MessageSchema.MESSAGE_METRICS + ".%s", header.getName())));
+                metricsPredicate.getPredicates().add(DATASTORE_PREDICATE_FACTORY.newMetricExistsPredicate(header.getName(), null));
             }
             andPredicate.getPredicates().add(metricsPredicate);
         }
