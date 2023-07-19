@@ -3802,7 +3802,7 @@ public final class KuraPayloadProto {
       @java.lang.Override
       public <Type> Builder clearExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
-              KuraPayloadProto.KuraPayload, ?> extension) {
+              KuraPayloadProto.KuraPayload, Type> extension) {
         return super.clearExtension(extension);
       }
       @java.lang.Override
