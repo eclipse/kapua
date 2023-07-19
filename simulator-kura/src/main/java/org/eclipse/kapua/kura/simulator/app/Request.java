@@ -12,19 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.app;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.eclipse.kapua.kura.simulator.payload.Message;
+import org.eclipse.kapua.kura.simulator.payload.Metrics;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto.KuraPayload;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto.KuraPayload.Builder;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto.KuraPayload.KuraMetricOrBuilder;
+import org.eclipse.kapua.kura.simulator.topic.Topic;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.eclipse.kapua.kura.simulator.payload.Message;
-import org.eclipse.kapua.kura.simulator.payload.Metrics;
-import org.eclipse.kapua.kura.simulator.topic.Topic;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.Builder;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.KuraMetricOrBuilder;
 
 public class Request {
 

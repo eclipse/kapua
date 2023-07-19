@@ -73,29 +73,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>com.github.os72</groupId>
-                <artifactId>protoc-jar-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe</protocArtifact>
-                            <protocVersion>${protobuf.version}</protocVersion>
-                            <includeMavenTypes>transitive</includeMavenTypes>
-                            <inputDirectories>
-                                <include>src/main/protobuf</include>
-                            </inputDirectories>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>
