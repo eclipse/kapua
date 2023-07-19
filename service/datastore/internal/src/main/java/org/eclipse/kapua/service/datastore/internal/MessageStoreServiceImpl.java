@@ -93,15 +93,19 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
             metrics.getMessage().inc();
             return messageStoreFacade.store(message, datastoreId, true);
         } catch (ConfigurationException e) {
+            logger.error("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ", e);
             metrics.getConfigurationError().inc();
             throw e;
         } catch (KapuaIllegalArgumentException e) {
+            logger.error("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ", e);
             metrics.getValidationError().inc();
             throw e;
         } catch (ClientCommunicationException e) {
+            logger.error("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ", e);
             metrics.getCommunicationError().inc();
             throw new DatastoreCommunicationException(datastoreId, e);
         } catch (Exception e) {
+            logger.error("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ", e);
             metrics.getGenericError().inc();
             logException(e);
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());

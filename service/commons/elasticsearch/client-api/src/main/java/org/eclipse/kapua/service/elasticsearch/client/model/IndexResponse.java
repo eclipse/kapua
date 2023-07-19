@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.model;
 
+import java.util.Arrays;
+
 /**
  * {@link IndexResponse} definition.
  *
@@ -62,4 +64,11 @@ public class IndexResponse {
         return indexes;
     }
 
+    @Override
+    public String toString() {
+        return "IndexResponse{" +
+                "indexExists=" + indexExists +
+                ", indexes=" + Arrays.toString(indexes) +
+                '}';
+    }
 }

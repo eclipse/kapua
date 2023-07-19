@@ -136,7 +136,7 @@ public class MetricInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
             }
         }
 
-        Set<String> changedIds = null;
+        final Set<String> changedIds;
         if (!toUpsert.isEmpty()) {
             // execute the upstore
             changedIds = repository.upsert(toUpsert);
