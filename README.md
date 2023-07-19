@@ -12,9 +12,8 @@
 
 ![Gitter](https://img.shields.io/gitter/room/eclipse/kapua?label=Chat&logo=gitter)
 
-![GitHub Actions CI](https://img.shields.io/github/workflow/status/eclipse/kapua/kapua-continuous-integration?label=GitHub%20Actions%20CI&logo=github%20actions) <br/>
+![GitHub Actions CI](https://img.shields.io/github/actions/workflow/status/eclipse/kapua/kapua-ci.yaml) <br/>
 ![Jenkins](https://img.shields.io/jenkins/build?jobUrl=https:%2F%2Fci.eclipse.org%2Fkapua%2Fjob%2Fdevelop-build&label=Jenkins%20Build&logo=jenkins) <br/>
-![Jenkins](https://img.shields.io/jenkins/tests?compact_message&failed_label=%E2%9D%8C&jobUrl=https%3A%2F%2Fci.eclipse.org%2Fkapua%2Fjob%2Fdevelop%2F&label=Jenkins%20CI&passed_label=%E2%9C%85&skipped_label=%E2%9D%95&logo=jenkins) <br/>
 
 [Eclipse Kapua&trade;](http://eclipse.org/kapua) is a modular platform providing the services required to manage IoT gateways and smart edge devices. Kapua provides a core integration framework and an
 initial set of core IoT services including a device registry, device management services, messaging services, data management, and application enablement.
