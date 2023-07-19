@@ -68,7 +68,7 @@ docker_compose() {
     if [[ "$5" == false ]]; then
       echo "Swagger disabled!"
     fi
-    export KAPUA_SWAGGER_ENABLE=$4
+    export KAPUA_SWAGGER_ENABLE=$5
 
     docker-compose -f "${SCRIPT_DIR}/../compose/docker-compose.yml" "${COMPOSE_FILES[@]}" up -d
 }
