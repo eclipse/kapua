@@ -67,7 +67,7 @@ public class MetricExistsPredicateImpl extends ExistsPredicateImpl implements Me
 
         fieldNameSb.append(MessageField.METRICS.field())
                 .append(".")
-                .append(getName());
+                .append(DatastoreUtils.normalizeMetricName(getName()));
 
         if (getType() != null) {
             fieldNameSb.append(".")
