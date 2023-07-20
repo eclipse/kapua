@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.DateParam;
@@ -221,11 +222,14 @@ public class DataMessages extends AbstractKapuaResource {
         return channelPredicate;
     }
 
-    private <V extends Comparable<V>> StorablePredicate getMetricPredicate(String metricName, MetricType<V> metricType, String metricMinValue, String metricMaxValue) {
+    private <V extends Comparable<V>> StorablePredicate getMetricPredicate(String metricName, MetricType<V> metricType, String metricMinValue, String metricMaxValue) throws KapuaIllegalNullArgumentException {
         if (metricMinValue == null && metricMaxValue == null) {
             Class<V> type = metricType != null ? metricType.getType() : null;
             return DATASTORE_PREDICATE_FACTORY.newMetricExistsPredicate(metricName, type);
         } else {
+            if (metricType == null) {
+                throw new KapuaIllegalNullArgumentException("metricType");
+            }
             V minValue = (V) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
             V maxValue = (V) ObjectValueConverter.fromString(metricMaxValue, metricType.getType());
 
