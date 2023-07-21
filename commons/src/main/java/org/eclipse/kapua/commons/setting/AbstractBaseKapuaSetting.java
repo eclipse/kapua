@@ -12,18 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting;
 
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.DataConfiguration;
+import org.apache.commons.configuration.MapConfiguration;
+import org.apache.commons.configuration.PropertyConverter;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.DataConfiguration;
-import org.apache.commons.configuration.MapConfiguration;
-import org.apache.commons.configuration.PropertyConverter;
 
 /**
  * An abstract base class which does not make any assumptions on where the
@@ -51,9 +50,13 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
         return new AbstractBaseKapuaSetting<>(new DataConfiguration(new MapConfiguration(map)));
     }
 
-    protected final DataConfiguration config;
+    protected DataConfiguration config;
 
     public AbstractBaseKapuaSetting(final DataConfiguration dataConfiguration) {
+        init(dataConfiguration);
+    }
+
+    protected void init(final DataConfiguration dataConfiguration) {
         this.config = dataConfiguration;
         systemPropertyHotSwap = config.getBoolean(SystemSettingKey.SETTINGS_HOTSWAP.key(), false);
     }
