@@ -188,7 +188,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         String address = message.getAddress();
         int messageSize = message.getEncodeSize();
         SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextWithCacheFallback(PluginUtility.getConnectionId(session));
-        logger.info("Publishing message on address {} from clientId: {} - clientIp: {}", address, sessionContext.getClientId(), sessionContext.getClientIp());
+        logger.debug("Publishing message on address {} from clientId: {} - clientIp: {}", address, sessionContext.getClientId(), sessionContext.getClientIp());
         message.putStringProperty(MessageConstants.HEADER_KAPUA_CLIENT_ID, sessionContext.getClientId());
         message.putStringProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_NAME, sessionContext.getConnectorName());
         message.putStringProperty(MessageConstants.HEADER_KAPUA_SESSION, Base64.getEncoder().encodeToString(SerializationUtils.serialize(sessionContext.getKapuaSession())));
@@ -215,7 +215,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         }
         message.putStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC, address);
         publishMetric.getMessageSizeAllowed().update(messageSize);
-        logger.info("Published message on address {} from clientId: {} - clientIp: {}", address, sessionContext.getClientId(), sessionContext.getClientIp());
+        logger.debug("Published message on address {} from clientId: {} - clientIp: {}", address, sessionContext.getClientId(), sessionContext.getClientIp());
         ActiveMQServerPlugin.super.beforeSend(session, tx, message, direct, noAutoCreateQueue);
     }
 
@@ -303,7 +303,9 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             String connectionId = PluginUtility.getConnectionId(connection);
             serverContext.getSecurityContext().updateConnectionTokenOnDisconnection(connectionId);
             logger.info("### cleanUpConnectionData connection: {} - reason: {} - Error: {}", connectionId, reason, exception!=null?exception.getMessage():"N/A");
-            logger.debug("", exception);
+            if (exception!=null && logger.isDebugEnabled()) {
+                logger.debug("### cleanUpConnectionData error", exception);
+            }
             SessionContext sessionContext = serverContext.getSecurityContext().getSessionContext(connectionId);
             if (sessionContext!=null) {
                 SessionContext sessionContextByClient = serverContext.getSecurityContext().cleanSessionContext(sessionContext);

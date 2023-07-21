@@ -16,16 +16,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Helper class to run code encapsulated into a lock/unlock block
  *
  */
 public class RunWithLock {
-
-    private static Logger logger = LoggerFactory.getLogger(RunWithLock.class);
 
     //TODO make it configurable?
     //TODO how many threads are available?
@@ -54,9 +49,7 @@ public class RunWithLock {
     public static <T> T run(String key, Callable<T> callable) throws Exception {
         Lock lock = getLock(key);
         try {
-            long start = System.currentTimeMillis();
             lock.lock();
-            logger.info("lock acquired in {}msec", System.currentTimeMillis() - start);
             return callable.call();
         }
         finally {
