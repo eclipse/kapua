@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
+import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
 /**
  * {@link JobStepService} exposes APIs to manage JobStep objects.<br>
@@ -37,5 +38,13 @@ public interface JobStepService extends KapuaEntityService<JobStep, JobStepCreat
      */
     @Override
     JobStepListResult query(KapuaQuery query)
+            throws KapuaException;
+
+    /**
+     * Gets the maximum length that a {@link JobStepProperty#getPropertyValue()} is allowed to have.
+     *
+     * @since 2.0.0
+     */
+    int getJobStepPropertyMaxLength()
             throws KapuaException;
 }
