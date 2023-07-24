@@ -69,4 +69,9 @@ public class JobStepMigratorServiceImpl extends AbstractKapuaService implements 
     public void delete(KapuaId scopeId, KapuaId jobStepId) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public int getJobStepPropertyMaxLength() throws KapuaException {
+        throw new UnsupportedOperationException();
+    }
 }

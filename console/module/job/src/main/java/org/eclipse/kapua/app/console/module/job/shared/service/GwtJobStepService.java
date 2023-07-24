@@ -51,6 +51,11 @@ public interface GwtJobStepService extends RemoteService {
     public GwtJobStep update(GwtXSRFToken xsrfToken, GwtJobStep gwtJobStep)
             throws GwtKapuaException;
 
-    // Just to make Gwt serialize GwtJobStepProperty
+    int getJobStepPropertyLengthMax()
+            throws GwtKapuaException;
+
+    /**
+     * Just to make Gwt serialize {@link GwtJobStepProperty}
+     */
     GwtJobStepProperty trickGwt();
 }

@@ -314,8 +314,21 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
                 textArea.setData(PROPERTY_TYPE, property.getPropertyType());
                 textArea.setData(PROPERTY_NAME, property.getPropertyName());
-                textArea.setMaxLength(65535);
                 jobStepPropertiesPanel.add(textArea);
+
+                JOB_STEP_SERVICE.getJobStepPropertyLengthMax(new AsyncCallback<Integer>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        textArea.setMaxLength(104857600); // 100MB
+
+                        FailureHandler.handle(caught);
+                    }
+
+                    @Override
+                    public void onSuccess(Integer jobStepPropertyMaxLength) {
+                        textArea.setMaxLength(jobStepPropertyMaxLength);
+                    }
+                });
 
                 if (property.getExampleValue() != null) {
                     final String exampleValue = KapuaSafeHtmlUtils.htmlUnescape(property.getExampleValue());

@@ -79,6 +79,11 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
     private final JobServiceSettings jobServiceSettings = JobServiceSettings.getInstance();
 
+    /**
+     * The maximum length that a {@link JobStepProperty#getPropertyValue()} is allowed to have
+     *
+     * @since 2.0.0
+     */
     private final int jobStepPropertyValueLengthMax = jobServiceSettings.getInt(JobServiceSettingKeys.JOB_STEP_PROPERTY_VALUE_LENGTH_MAX);
 
     public JobStepServiceImpl() {
@@ -339,6 +344,17 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
             }
             return deletedJobStep;
         });
+    }
+
+    @Override
+    public int getJobStepPropertyMaxLength() throws KapuaException {
+        //
+        // Check access
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+
+        //
+        // Return the value
+        return jobStepPropertyValueLengthMax;
     }
 
     //
