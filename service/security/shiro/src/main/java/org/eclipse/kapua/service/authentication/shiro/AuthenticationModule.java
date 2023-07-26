@@ -12,7 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
+import com.google.inject.Provides;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.model.config.metatype.KapuaTocd;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
@@ -33,6 +40,12 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenFactoryImpl;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenServiceImpl;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+
+import javax.inject.Named;
+import java.util.Map;
+import java.util.Optional;
 
 public class AuthenticationModule extends AbstractKapuaModule {
     @Override
@@ -53,4 +66,47 @@ public class AuthenticationModule extends AbstractKapuaModule {
 
         bind(RegistrationService.class).to(RegistrationServiceImpl.class);
     }
+
+    @Provides
+    @Named("CredentialServiceConfigurationManager")
+    public CredentialServiceConfigurationManager deviceConnectionServiceConfigurationManager(
+            AuthenticationEntityManagerFactory authenticationEntityManagerFactory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            RootUserTester rootUserTester) {
+        final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
+                new EntityManagerSession(authenticationEntityManagerFactory),
+                permissionFactory,
+                authorizationService,
+                rootUserTester);
+
+        final ServiceConfigurationManagerCachingWrapper cached = new ServiceConfigurationManagerCachingWrapper(credentialServiceConfigurationManager);
+        return new CredentialServiceConfigurationManager() {
+            @Override
+            public int getSystemMinimumPasswordLength() {
+                return credentialServiceConfigurationManager.getSystemMinimumPasswordLength();
+            }
+
+            @Override
+            public void checkAllowedEntities(KapuaId scopeId, String entityType) throws KapuaException {
+                cached.checkAllowedEntities(scopeId, entityType);
+            }
+
+            @Override
+            public void setConfigValues(KapuaId scopeId, Optional<KapuaId> parentId, Map<String, Object> values) throws KapuaException {
+                cached.setConfigValues(scopeId, parentId, values);
+            }
+
+            @Override
+            public Map<String, Object> getConfigValues(KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
+                return cached.getConfigValues(scopeId, excludeDisabled);
+            }
+
+            @Override
+            public KapuaTocd getConfigMetadata(KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
+                return cached.getConfigMetadata(scopeId, excludeDisabled);
+            }
+        };
+    }
+
 }

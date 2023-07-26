@@ -16,14 +16,20 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.internal.KapuaMessageFactoryImpl;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
+import org.eclipse.kapua.service.account.AccountFactory;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -39,6 +45,7 @@ import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventFacto
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventServiceImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
+import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCacheFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -58,30 +65,46 @@ public class DeviceRegistryLocatorConfiguration {
 
                 // Inject mocked Authorization Service method checkPermission
                 AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
+                // Inject mocked Permission Factory
+                final PermissionFactory permissionFactory = Mockito.mock(PermissionFactory.class);
+                bind(PermissionFactory.class).toInstance(permissionFactory);
                 try {
                     Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(Permission.class));
                 } catch (KapuaException e) {
                     // skip
                 }
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
-                // Inject mocked Permission Factory
-                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
+
+                bind(AccountChildrenFinder.class).toInstance(Mockito.mock(AccountChildrenFinder.class));
+                bind(AccountFactory.class).toInstance(Mockito.mock(AccountFactory.class));
+                bind(AccountService.class).toInstance(Mockito.mock(AccountService.class));
+
+                bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
+
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
                 // Inject actual Device registry service related services
-                DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.getInstance();
+                final DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.getInstance();
                 bind(DeviceEntityManagerFactory.class).toInstance(deviceEntityManagerFactory);
 
-                bind(DeviceRegistryService.class).toInstance(new DeviceRegistryServiceImpl());
-                bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
+                final DeviceRegistryCacheFactory deviceRegistryCacheFactory = new DeviceRegistryCacheFactory();
+                bind(DeviceRegistryCacheFactory.class).toInstance(deviceRegistryCacheFactory);
 
-                bind(DeviceConnectionService.class).toInstance(new DeviceConnectionServiceImpl());
+                bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("DeviceConnectionServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
+                bind(DeviceConnectionService.class).to(DeviceConnectionServiceImpl.class);
                 bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
 
                 bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl());
                 bind(DeviceEventFactory.class).toInstance(new DeviceEventFactoryImpl());
                 bind(KapuaMessageFactory.class).toInstance(new KapuaMessageFactoryImpl());
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("DeviceRegistryServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
+                bind(DeviceRegistryService.class).to(DeviceRegistryServiceImpl.class);
             }
         };
 

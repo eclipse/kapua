@@ -18,16 +18,17 @@ import org.eclipse.kapua.KapuaDuplicateExternalUsernameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
-import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -36,8 +37,8 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserDomains;
-import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
+import org.eclipse.kapua.service.user.UserNamedEntityService;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
@@ -46,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Objects;
 
@@ -55,27 +57,58 @@ import java.util.Objects;
  * @since 1.0.0
  */
 @Singleton
-public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<User, UserCreator, UserService, UserListResult, UserQuery, UserFactory> implements UserService {
+public class UserServiceImpl extends KapuaConfigurableServiceBase implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    @Inject
+    public UserNamedEntityService getUserNamedEntityService() {
+        if (userNamedEntityService == null) {
+            userNamedEntityService = KapuaLocator.getInstance().getService(UserNamedEntityService.class);
+        }
+        return userNamedEntityService;
+    }
+
     private AuthorizationService authorizationService;
-    @Inject
     private PermissionFactory permissionFactory;
+    private UserNamedEntityService userNamedEntityService;
+
 
     /**
      * Constructor.
      *
      * @since 1.0.0
+     * @deprecated since 2.0.0 - Please use {@link #UserServiceImpl(AuthorizationService, PermissionFactory, UserEntityManagerFactory, UserCacheFactory, UserNamedEntityService, ServiceConfigurationManager)} instead. This constructor may be removed in a next release
      */
+    @Deprecated
     public UserServiceImpl() {
-        super(UserService.class.getName(),
-                UserDomains.USER_DOMAIN,
-                UserEntityManagerFactory.getInstance(),
-                UserCacheFactory.getInstance(),
-                UserService.class,
-                UserFactory.class);
+        super(new UserEntityManagerFactory(), new UserCacheFactory(), null);
+        this.authorizationService = null;
+        this.permissionFactory = null;
+    }
+
+
+    /**
+     * Injectable Constructor
+     *
+     * @param authorizationService        The {@link AuthorizationService} instance.
+     * @param permissionFactory           The {@link PermissionFactory} instance.
+     * @param userEntityManagerFactory    The {@link UserEntityManagerFactory} instance.
+     * @param userCacheFactory            The {@link UserCacheFactory} instance.
+     * @param userNamedEntityService      The {@link UserNamedEntityService} instance.
+     * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance.
+     */
+    @Inject
+    public UserServiceImpl(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            UserEntityManagerFactory userEntityManagerFactory,
+            UserCacheFactory userCacheFactory,
+            UserNamedEntityService userNamedEntityService,
+            @Named("UserServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
+        super(userEntityManagerFactory, userCacheFactory, serviceConfigurationManager);
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.userNamedEntityService = userNamedEntityService;
     }
 
     @Override
@@ -105,11 +138,11 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.write, userCreator.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.write, userCreator.getScopeId()));
 
         //
         // Check entity limit
-        checkAllowedEntities(userCreator.getScopeId(), "Users");
+        serviceConfigurationManager.checkAllowedEntities(userCreator.getScopeId(), "Users");
 
         //
         // Check duplicate name
@@ -170,7 +203,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.write, user.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.write, user.getScopeId()));
 
         //
         // Check existence
@@ -257,7 +290,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.delete, scopeId));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -289,7 +322,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, scopeId));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.read, scopeId));
 
         // Do the find
         return entityManagerSession.doAction(EntityManagerContainer.<User>create().onResultHandler(em -> UserDAO.find(em, scopeId, userId))
@@ -300,15 +333,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     @Override
     public User findByName(String name) throws KapuaException {
-        //
-        // Validation of the fields
-        ArgumentValidator.notEmptyOrNull(name, "name");
-
-        //
-        // Do the find
-        return entityManagerSession.doAction(EntityManagerContainer.<User>create().onResultHandler(em -> checkReadAccess(UserDAO.findByName(em, name)))
-                .onBeforeHandler(() -> checkReadAccess((User) ((NamedEntityCache) entityCache).get(null, name)))
-                .onAfterHandler((entity) -> entityCache.put(entity)));
+        return getUserNamedEntityService().findByName(name);
     }
 
     @Override
@@ -344,7 +369,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -360,7 +385,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
@@ -375,7 +400,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     private User checkReadAccess(User user) throws KapuaException {
         if (user != null) {
-            authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, user.getScopeId()));
+            getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.read, user.getScopeId()));
         }
         return user;
     }
@@ -414,4 +439,31 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         }
     }
 
+    /**
+     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link AuthorizationService} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected AuthorizationService getAuthorizationService() {
+        if (authorizationService == null) {
+            authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
+        }
+        return authorizationService;
+    }
+
+    /**
+     * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link PermissionFactory} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected PermissionFactory getPermissionFactory() {
+        if (permissionFactory == null) {
+            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
+        }
+        return permissionFactory;
+    }
 }

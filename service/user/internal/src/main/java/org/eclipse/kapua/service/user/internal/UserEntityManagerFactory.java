@@ -24,23 +24,26 @@ public class UserEntityManagerFactory extends AbstractEntityManagerFactory imple
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-user";
 
-    private static final UserEntityManagerFactory INSTANCE = new UserEntityManagerFactory();
-
     /**
      * Constructor.
      *
      * @since 1.0.0
      */
-    private UserEntityManagerFactory() {
+    public UserEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME);
     }
+
+    //TODO: remove me along with deprecated singleton access point
+    private final static UserEntityManagerFactory INSTANCE = new UserEntityManagerFactory();
 
     /**
      * Returns the {@link EntityManagerFactory} instance.
      *
      * @return The {@link EntityManagerFactory} instance.
      * @since 1.0.0
+     * @deprecated Since 2.0.0 - Please use {@link UserEntityManagerFactory#UserEntityManagerFactory()} instead. This may be removed in future releases.
      */
+    @Deprecated
     public static UserEntityManagerFactory getInstance() {
         return INSTANCE;
     }

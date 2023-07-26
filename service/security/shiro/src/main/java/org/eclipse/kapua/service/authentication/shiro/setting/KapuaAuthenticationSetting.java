@@ -14,12 +14,14 @@ package org.eclipse.kapua.service.authentication.shiro.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
+import javax.inject.Singleton;
+
 /**
  * Authentication setting implementation.
  *
  * @since 1.0
- *
  */
+@Singleton
 public class KapuaAuthenticationSetting extends AbstractKapuaSetting<KapuaAuthenticationSettingKeys> {
 
     private static final String AUTHENTICATION_CONFIG_RESOURCE = "kapua-authentication-setting.properties";
@@ -29,15 +31,17 @@ public class KapuaAuthenticationSetting extends AbstractKapuaSetting<KapuaAuthen
     /**
      * Construct a new authentication setting reading settings from {@link KapuaAuthenticationSetting#AUTHENTICATION_CONFIG_RESOURCE}
      */
-    private KapuaAuthenticationSetting() {
+    public KapuaAuthenticationSetting() {
         super(AUTHENTICATION_CONFIG_RESOURCE);
     }
 
     /**
      * Return the authentication setting instance (singleton)
      *
-     * @return
+     * @return the authentication setting instance (singleton)
+     * @deprecated since 2.0.0 - Please use {@link KapuaAuthenticationSetting#KapuaAuthenticationSetting()} instead. This might be removed in future releases
      */
+    @Deprecated
     public static KapuaAuthenticationSetting getInstance() {
         return INSTANCE;
     }

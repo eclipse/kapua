@@ -32,6 +32,11 @@ public class DeviceRegistryCacheFactory extends AbstractEntityCacheFactory {
         return new DeviceRegistryCache(getEntityIdCacheName(), "DeviceClientId", "DeviceConnectionId");
     }
 
+    /**
+     * @return the built instance
+     * @deprecated since 2.0.0 - Please use {@link DeviceRegistryCacheFactory#DeviceRegistryCacheFactory()} instead. This may be removed in future releases
+     **/
+    @Deprecated
     public static DeviceRegistryCacheFactory getInstance() {
         return new DeviceRegistryCacheFactory();
     }

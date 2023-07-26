@@ -14,7 +14,8 @@ package org.eclipse.kapua.service.job.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -30,9 +31,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobCreator;
 import org.eclipse.kapua.service.job.JobDomains;
-import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobListResult;
-import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
@@ -44,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
@@ -52,7 +52,7 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
-public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Job, JobCreator, JobService, JobListResult, JobQuery, JobFactory> implements JobService {
+public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobService {
 
     private static final Logger LOG = LoggerFactory.getLogger(JobServiceImpl.class);
 
@@ -60,22 +60,45 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
     private final JobEngineService jobEngineService = LOCATOR.getService(JobEngineService.class);
 
-    @Inject
-    private AuthorizationService authorizationService;
-    @Inject
     private PermissionFactory permissionFactory;
-
-    @Inject
+    private AuthorizationService authorizationService;
+    //TODO: make final
     private TriggerService triggerService;
-    @Inject
+    //TODO: make final
     private TriggerFactory triggerFactory;
 
+    /**
+     * Deprecated Constructor
+     *
+     * @deprecated since 2.0.0 - Please use {@link #JobServiceImpl(JobEntityManagerFactory, PermissionFactory, AuthorizationService, TriggerService, TriggerFactory, ServiceConfigurationManager)} instead. This constructor may be removed in future releases
+     */
+    @Deprecated
     public JobServiceImpl() {
-        super(JobService.class.getName(),
-                JobDomains.JOB_DOMAIN,
-                JobEntityManagerFactory.getInstance(),
-                JobService.class,
-                JobFactory.class);
+        super(JobEntityManagerFactory.getInstance(), null, null);
+    }
+
+    /**
+     * Default constructor for injection
+     *
+     * @param jobEntityManagerFactory The {@link JobEntityManagerFactory} instance
+     * @param permissionFactory       The {@link PermissionFactory} instance
+     * @param authorizationService    The {@link AuthorizationService} instance
+     * @param triggerService          The {@link TriggerService} instance
+     * @param triggerFactory          The {@link TriggerFactory} instance
+     * @since 2.0.0
+     */
+    @Inject
+    public JobServiceImpl(JobEntityManagerFactory jobEntityManagerFactory,
+                          PermissionFactory permissionFactory,
+                          AuthorizationService authorizationService,
+                          TriggerService triggerService,
+                          TriggerFactory triggerFactory,
+                          @Named("JobServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
+        super(jobEntityManagerFactory, null, serviceConfigurationManager);
+        this.permissionFactory = permissionFactory;
+        this.authorizationService = authorizationService;
+        this.triggerService = triggerService;
+        this.triggerFactory = triggerFactory;
     }
 
     @Override
@@ -88,11 +111,11 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, creator.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.write, creator.getScopeId()));
 
         //
         // Check entity limit
-        checkAllowedEntities(creator.getScopeId(), "Jobs");
+        serviceConfigurationManager.checkAllowedEntities(creator.getScopeId(), "Jobs");
 
         //
         // Check duplicate name
@@ -113,7 +136,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, job.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.write, job.getScopeId()));
 
         //
         // Check existence
@@ -139,7 +162,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
@@ -154,7 +177,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -169,7 +192,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -211,7 +234,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, forced ? null : scopeId));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.delete, forced ? null : scopeId));
 
         //
         // Check existence
@@ -253,5 +276,34 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         }
 
         entityManagerSession.doTransactedAction(em -> JobDAO.delete(em, scopeId, jobId));
+    }
+
+
+    /**
+     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link AuthorizationService} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected AuthorizationService getAuthorizationService() {
+        if (authorizationService == null) {
+            authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
+        }
+        return authorizationService;
+    }
+
+    /**
+     * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link PermissionFactory} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected PermissionFactory getPermissionFactory() {
+        if (permissionFactory == null) {
+            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
+        }
+        return permissionFactory;
     }
 }

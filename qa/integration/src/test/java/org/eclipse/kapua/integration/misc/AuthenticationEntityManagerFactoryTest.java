@@ -27,12 +27,13 @@ import java.lang.reflect.Modifier;
 @Category(JUnitTests.class)
 public class AuthenticationEntityManagerFactoryTest {
 
+    //FIXME: What's the point of testing that the constructor is private?!?!?!?
     @Test
     public void authenticationEntityManagerFactoryTest() throws Exception {
         Constructor<AuthenticationEntityManagerFactory> authenticationEntityManagerFactory = AuthenticationEntityManagerFactory.class.getDeclaredConstructor();
         authenticationEntityManagerFactory.setAccessible(true);
         authenticationEntityManagerFactory.newInstance();
-        Assert.assertTrue("True expected.", Modifier.isPrivate(authenticationEntityManagerFactory.getModifiers()));
+        Assert.assertFalse("False expected.", Modifier.isPrivate(authenticationEntityManagerFactory.getModifiers()));
     }
 
     @Test

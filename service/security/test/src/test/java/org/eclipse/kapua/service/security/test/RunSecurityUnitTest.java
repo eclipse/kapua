@@ -14,14 +14,14 @@ package org.eclipse.kapua.service.security.test;
 
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
-
 import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = {"classpath:features/RoleServiceUnitTests.feature",
-                    "classpath:features/GroupServiceUnitTests.feature",
-                    "classpath:features/CredentialServiceUnitTests.feature"
+        features = {
+                "classpath:features/RoleServiceUnitTests.feature",
+                "classpath:features/GroupServiceUnitTests.feature",
+                "classpath:features/CredentialServiceUnitTests.feature"
         },
         glue = {"org.eclipse.kapua.service.security.test",
                 "org.eclipse.kapua.service.authorization.steps",

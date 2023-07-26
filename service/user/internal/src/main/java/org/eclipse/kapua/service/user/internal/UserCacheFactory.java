@@ -19,12 +19,17 @@ import org.eclipse.kapua.commons.jpa.AbstractNamedEntityCacheFactory;
  */
 public class UserCacheFactory extends AbstractNamedEntityCacheFactory {
 
-    private UserCacheFactory() {
+    public UserCacheFactory() {
         super("UserId", "UserName");
     }
 
-    protected static UserCacheFactory getInstance() {
+
+    /**
+     * @return The constructed instance
+     * @deprecated since 2.0.0. Please use {@link UserCacheFactory#UserCacheFactory()} instead. This static constructor may be replaced in future releases.
+     */
+    @Deprecated
+    public static UserCacheFactory getInstance() {
         return new UserCacheFactory();
     }
-
 }

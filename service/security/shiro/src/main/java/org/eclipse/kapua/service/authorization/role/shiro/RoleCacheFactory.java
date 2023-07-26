@@ -14,12 +14,15 @@ package org.eclipse.kapua.service.authorization.role.shiro;
 
 import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
 
+import javax.inject.Singleton;
+
 /**
  * Cache factory for the {@link RoleServiceImpl}
  */
+@Singleton
 public class RoleCacheFactory extends AbstractEntityCacheFactory {
 
-    private RoleCacheFactory() {
+    public RoleCacheFactory() {
         super("RoleId");
     }
 

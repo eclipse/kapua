@@ -20,16 +20,16 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
-
 @Category(JUnitTests.class)
 public class KapuaAuthenticationSettingTest {
 
+    //TODO: What is the value of testing the correct implementation of the Singleton pattern, in a class that does NOT need to be a singleton?
     @Test
     public void kapuaAuthenticationSettingTest() throws Exception {
         Constructor<KapuaAuthenticationSetting> kapuaAuthenticationSetting = KapuaAuthenticationSetting.class.getDeclaredConstructor();
         kapuaAuthenticationSetting.setAccessible(true);
         kapuaAuthenticationSetting.newInstance();
-        Assert.assertTrue("True expected.", Modifier.isPrivate(kapuaAuthenticationSetting.getModifiers()));
+        Assert.assertFalse("False expected.", Modifier.isPrivate(kapuaAuthenticationSetting.getModifiers()));
     }
 
     @Test

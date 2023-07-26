@@ -12,7 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
+import com.google.inject.Provides;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
+import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
@@ -32,6 +41,7 @@ import org.eclipse.kapua.service.authorization.domain.shiro.DomainFactoryImpl;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainRegistryServiceImpl;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupService;
+import org.eclipse.kapua.service.authorization.group.shiro.GroupDAO;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -40,10 +50,13 @@ import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleService;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleDAO;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionServiceImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
+
+import javax.inject.Named;
 
 public class AuthorizationModule extends AbstractKapuaModule {
     @Override
@@ -70,5 +83,64 @@ public class AuthorizationModule extends AbstractKapuaModule {
 
         bind(GroupService.class).to(GroupServiceImpl.class);
         bind(GroupFactory.class).to(GroupFactoryImpl.class);
+    }
+
+
+    @Provides
+    @Named("RoleServiceConfigurationManager")
+    public ServiceConfigurationManager roleServiceConfigurationManager(
+            RoleFactory roleFactory,
+            AuthorizationEntityManagerFactory authorizationEntityManagerFactory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            RootUserTester rootUserTester,
+            AccountChildrenFinder accountChildrenFinder
+    ) {
+        return new ServiceConfigurationManagerCachingWrapper(
+                new ResourceLimitedServiceConfigurationManagerImpl(
+                        RoleService.class.getName(),
+                        AuthorizationDomains.ROLE_DOMAIN,
+                        new EntityManagerSession(authorizationEntityManagerFactory),
+                        permissionFactory,
+                        authorizationService,
+                        rootUserTester,
+                        accountChildrenFinder,
+                        new UsedEntitiesCounterImpl(
+                                roleFactory,
+                                AuthorizationDomains.ROLE_DOMAIN,
+                                RoleDAO::count,
+                                authorizationService,
+                                permissionFactory,
+                                new EntityManagerSession(authorizationEntityManagerFactory)
+                        )));
+    }
+
+    @Provides
+    @Named("GroupServiceConfigurationManager")
+    public ServiceConfigurationManager groupServiceConfigurationManager(
+            AuthorizationEntityManagerFactory authorizationEntityManagerFactory,
+            GroupFactory factory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            RootUserTester rootUserTester,
+            AccountChildrenFinder accountChildrenFinder
+    ) {
+        return new ServiceConfigurationManagerCachingWrapper(
+                new ResourceLimitedServiceConfigurationManagerImpl(
+                        GroupService.class.getName(),
+                        AuthorizationDomains.GROUP_DOMAIN,
+                        new EntityManagerSession(authorizationEntityManagerFactory),
+                        permissionFactory,
+                        authorizationService,
+                        rootUserTester,
+                        accountChildrenFinder,
+                        new UsedEntitiesCounterImpl(
+                                factory,
+                                AuthorizationDomains.GROUP_DOMAIN,
+                                GroupDAO::count,
+                                authorizationService,
+                                permissionFactory,
+                                new EntityManagerSession(authorizationEntityManagerFactory)
+                        )));
     }
 }

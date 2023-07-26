@@ -16,7 +16,8 @@ import com.codahale.metrics.Timer.Context;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -44,6 +45,8 @@ import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.UUID;
 
@@ -53,21 +56,18 @@ import java.util.UUID;
  * @since 1.0.0
  */
 @Singleton
-public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService implements MessageStoreService {
+public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implements MessageStoreService {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceImpl.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    protected final AccountService accountService = LOCATOR.getService(AccountService.class);
-    protected final AuthorizationService authorizationService = LOCATOR.getService(AuthorizationService.class);
-    protected final PermissionFactory permissionFactory = LOCATOR.getFactory(PermissionFactory.class);
-    protected static final Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.CONFIG_MAX_ENTRIES_ON_DELETE);
-
-    protected final MessageStoreFacade messageStoreFacade;
-
     //TODO inject!!!
     private MetricsDatastore metrics;
+    protected AccountService accountService;
+    protected AuthorizationService authorizationService;
+    protected PermissionFactory permissionFactory;
+
+    protected static final Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.CONFIG_MAX_ENTRIES_ON_DELETE);
+    protected final MessageStoreFacade messageStoreFacade;
 
     /**
      * Constructor.
@@ -75,11 +75,26 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
      * Initializes {@link ConfigurationProvider} and {@link MetricsService}
      *
      * @since 1.0.0
+     * @deprecated since 2.0.0 - please use {@link #MessageStoreServiceImpl(DatastoreEntityManagerFactory, PermissionFactory, AuthorizationService, AccountService, ServiceConfigurationManager)} instead. This constructor might be removed in future releases.
      */
+    @Deprecated
     public MessageStoreServiceImpl() {
-        super(MessageStoreService.class.getName(), DatastoreDomains.DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
+        this(new DatastoreEntityManagerFactory(), null, null, KapuaLocator.getInstance().getService(AccountService.class), null);
+    }
+
+    @Inject
+    public MessageStoreServiceImpl(
+            DatastoreEntityManagerFactory entityManagerFactory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            AccountService accountService,
+            @Named("MessageStoreServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager
+    ) {
+        super(entityManagerFactory, null, serviceConfigurationManager);
+        this.permissionFactory = permissionFactory;
+        this.authorizationService = authorizationService;
+        final ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this, accountService);
         metrics = MetricsDatastore.getInstance();
-        ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this, accountService);
         messageStoreFacade = new MessageStoreFacade(configurationProvider, DatastoreMediator.getInstance());
         DatastoreMediator.getInstance().setMessageStoreFacade(messageStoreFacade);
     }
@@ -216,20 +231,43 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         }
     }
 
-    @Override
-    public boolean isServiceEnabled(KapuaId scopeId) {
-        return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
-    }
-
     protected void checkDataAccess(KapuaId scopeId, Actions action)
             throws KapuaException {
-        Permission permission = permissionFactory.newPermission(DatastoreDomains.DATASTORE_DOMAIN, action, scopeId);
-        authorizationService.checkPermission(permission);
+        Permission permission = getPermissionFactory().newPermission(DatastoreDomains.DATASTORE_DOMAIN, action, scopeId);
+        getAuthorizationService().checkPermission(permission);
     }
 
     private void logException(Exception e) {
         if (e instanceof RuntimeException) {
             logger.debug("", e);
         }
+    }
+
+    /**
+     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link AuthorizationService} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected AuthorizationService getAuthorizationService() {
+        if (authorizationService == null) {
+            authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
+        }
+        return authorizationService;
+    }
+
+    /**
+     * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link PermissionFactory} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected PermissionFactory getPermissionFactory() {
+        if (permissionFactory == null) {
+            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
+        }
+        return permissionFactory;
     }
 }

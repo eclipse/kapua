@@ -15,11 +15,14 @@ package org.eclipse.kapua.service.account.internal;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 
+import javax.inject.Singleton;
+
 /**
  * {@link AccountServiceImpl} {@link EntityManagerFactory} implementation.
  *
  * @since 1.0.0
  */
+@Singleton
 public class AccountEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-account";
@@ -31,7 +34,7 @@ public class AccountEntityManagerFactory extends AbstractEntityManagerFactory im
      *
      * @since 1.0.0
      */
-    private AccountEntityManagerFactory() {
+    public AccountEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME);
     }
 
@@ -40,7 +43,9 @@ public class AccountEntityManagerFactory extends AbstractEntityManagerFactory im
      *
      * @return The {@link EntityManagerFactory} instance.
      * @since 1.0.0
+     * @deprecated Since 2.0.0 - Please use {@link AccountEntityManagerFactory#AccountEntityManagerFactory()} instead. This may be removed in future releases
      */
+    @Deprecated
     public static AccountEntityManagerFactory getInstance() {
         return INSTANCE;
     }

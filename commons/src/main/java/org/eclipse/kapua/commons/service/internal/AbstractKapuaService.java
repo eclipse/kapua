@@ -33,6 +33,7 @@ import javax.validation.constraints.NotNull;
  */
 public abstract class AbstractKapuaService implements KapuaService {
 
+    //todo: Not needed, but cannot removed due to potential custom implementations extending this.
     protected final EntityManagerFactory entityManagerFactory;
     protected final EntityManagerSession entityManagerSession;
     protected final EntityCache entityCache;

@@ -16,7 +16,8 @@ import org.apache.commons.lang.NotImplementedException;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
@@ -41,6 +42,8 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCacheFac
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
@@ -49,7 +52,7 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
-public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableService implements DeviceConnectionService {
+public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase implements DeviceConnectionService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceConnectionServiceImpl.class);
 
@@ -57,7 +60,9 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableServic
      * Constructor.
      *
      * @since 1.0.0
+     * @deprecated Since 2.0.0 - Please use {@link #DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, ServiceConfigurationManager)} )}
      */
+    @Deprecated
     public DeviceConnectionServiceImpl() {
         this(DeviceEntityManagerFactory.getInstance());
     }
@@ -67,12 +72,28 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableServic
      *
      * @param deviceEntityManagerFactory The {@link DeviceEntityManagerFactory#getInstance()}.
      * @since 1.0.0
+     * @deprecated Since 2.0.0 - Please use {@link #DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, ServiceConfigurationManager)}
      */
+    @Deprecated
     public DeviceConnectionServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
-        super(DeviceConnectionService.class.getName(),
-                DeviceDomains.DEVICE_CONNECTION_DOMAIN,
-                deviceEntityManagerFactory,
-                DeviceRegistryCacheFactory.getInstance());
+        super(deviceEntityManagerFactory, new DeviceRegistryCacheFactory(), null);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param deviceEntityManagerFactory  The {@link DeviceEntityManagerFactory} instance.
+     * @param deviceRegistryCacheFactory  The {@link DeviceRegistryCacheFactory} instance.
+     * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance.
+     * @since 2.0.0
+     */
+    @Inject
+    public DeviceConnectionServiceImpl(
+            DeviceEntityManagerFactory deviceEntityManagerFactory,
+            DeviceRegistryCacheFactory deviceRegistryCacheFactory,
+            @Named("DeviceConnectionServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager
+    ) {
+        super(deviceEntityManagerFactory, deviceRegistryCacheFactory, serviceConfigurationManager);
     }
 
     @Override

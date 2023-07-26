@@ -16,7 +16,11 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 import io.cucumber.java.Before;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -83,8 +87,11 @@ public class JobLocatorConfiguration {
                 bind(QueryFactory.class).toInstance(new QueryFactoryImpl());
 
                 // Account
+                bind(AccountChildrenFinder.class).toInstance(Mockito.mock(AccountChildrenFinder.class));
                 bind(AccountService.class).toInstance(Mockito.spy(new AccountServiceImpl()));
                 bind(AccountFactory.class).toInstance(Mockito.spy(new AccountFactoryImpl()));
+
+                bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
 
                 // Auth
                 // Inject mocked Authorization Service method checkPermission
@@ -101,8 +108,11 @@ public class JobLocatorConfiguration {
                 JobEntityManagerFactory jobEntityManagerFactory = JobEntityManagerFactory.getInstance();
                 bind(JobEntityManagerFactory.class).toInstance(jobEntityManagerFactory);
 
-                bind(JobService.class).toInstance(new JobServiceImpl());
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("JobServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
                 bind(JobFactory.class).toInstance(new JobFactoryImpl());
+                bind(JobService.class).to(JobServiceImpl.class);
                 bind(JobStepDefinitionService.class).toInstance(new JobStepDefinitionServiceImpl());
                 bind(JobStepDefinitionFactory.class).toInstance(new JobStepDefinitionFactoryImpl());
                 bind(JobStepService.class).toInstance(new JobStepServiceImpl());

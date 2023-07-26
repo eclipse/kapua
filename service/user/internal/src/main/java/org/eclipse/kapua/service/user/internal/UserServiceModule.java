@@ -30,11 +30,11 @@ public class UserServiceModule extends ServiceEventModule {
 
     @Override
     protected ServiceEventModuleConfiguration initializeConfiguration() {
-        KapuaUserSetting kas = KapuaUserSetting.getInstance();
-        List<ServiceEventClientConfiguration> selc = ServiceInspector.getEventBusClients(userService, UserService.class);
+        final KapuaUserSetting kas = KapuaUserSetting.getInstance();
+        final List<ServiceEventClientConfiguration> selc = ServiceInspector.getEventBusClients(userService, UserService.class);
         return new ServiceEventModuleConfiguration(
                 kas.getString(KapuaUserSettingKeys.USER_EVENT_ADDRESS),
-                UserEntityManagerFactory.getInstance(),
+                new UserEntityManagerFactory(),
                 selc.toArray(new ServiceEventClientConfiguration[0]));
     }
 }

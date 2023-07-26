@@ -18,7 +18,8 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
@@ -27,6 +28,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
@@ -36,9 +38,7 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountAttributes;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountDomains;
-import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
-import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.exception.KapuaAccountErrorCodes;
 import org.eclipse.kapua.service.account.internal.exception.KapuaAccountException;
@@ -46,6 +46,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.persistence.TypedQuery;
 import java.util.Objects;
@@ -56,29 +57,45 @@ import java.util.Objects;
  * @since 1.0.0
  */
 @Singleton
-public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Account, AccountCreator, AccountService, AccountListResult, AccountQuery, AccountFactory>
+public class AccountServiceImpl
+        extends KapuaConfigurableServiceBase
         implements AccountService {
 
     private static final String NO_EXPIRATION_DATE_SET = "no expiration date set";
-
-    @Inject
-    private AuthorizationService authorizationService;
-
-    @Inject
     private PermissionFactory permissionFactory;
+    private AuthorizationService authorizationService;
 
     /**
      * Constructor.
      *
      * @since 1.0.0
+     * @deprecated since 2.0.0 - Please use {@link #AccountServiceImpl(AccountEntityManagerFactory, AccountCacheFactory, PermissionFactory, AuthorizationService, ServiceConfigurationManager)} instead. This may be removed in future releases.
      */
+    @Deprecated
     public AccountServiceImpl() {
-        super(AccountService.class.getName(),
-                AccountDomains.ACCOUNT_DOMAIN,
-                AccountEntityManagerFactory.getInstance(),
-                AccountCacheFactory.getInstance(),
-                AccountService.class,
-                AccountFactory.class);
+        super(AccountEntityManagerFactory.getInstance(), AccountCacheFactory.getInstance(), null);
+    }
+
+    /**
+     * Injectable constructor
+     *
+     * @param accountEntityManagerFactory The {@link AccountEntityManagerFactory} instance
+     * @param accountCacheFactory         The {@link AccountCacheFactory} instance
+     * @param permissionFactory           The {@link PermissionFactory} instance
+     * @param authorizationService        The {@link AuthorizationService} instance
+     * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance
+     * @since 2.0.0
+     */
+    @Inject
+    public AccountServiceImpl(
+            AccountEntityManagerFactory accountEntityManagerFactory,
+            AccountCacheFactory accountCacheFactory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            @Named("AccountServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
+        super(accountEntityManagerFactory, accountCacheFactory, serviceConfigurationManager);
+        this.permissionFactory = permissionFactory;
+        this.authorizationService = authorizationService;
     }
 
     @Override
@@ -95,11 +112,11 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, accountCreator.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, accountCreator.getScopeId()));
 
         //
         // Check entity limit
-        checkAllowedEntities(accountCreator.getScopeId(), "Accounts");
+        serviceConfigurationManager.checkAllowedEntities(accountCreator.getScopeId(), "Accounts");
 
         //
         // Check if the parent account exists
@@ -163,10 +180,10 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Check Access
         if (KapuaSecurityUtils.getSession().getScopeId().equals(account.getId())) {
             // Editing self
-            authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, account.getId()));
+            getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, account.getId()));
         } else {
             // Editing child
-            authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, account.getScopeId()));
+            getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, account.getScopeId()));
         }
 
         if (account.getExpirationDate() != null) {
@@ -189,11 +206,11 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Check if user tries to change expiration date of the account in which it is defined (the account is not the admin one considering previous checks)
         if (KapuaSecurityUtils.getSession().getScopeId().equals(account.getId())) {
             // Editing self - aka user that edits its account
-             if ( (oldAccount.getExpirationDate() == null && account.getExpirationDate() != null) || //old exp. date was "no expiration" and now the update restricts it
-                     (oldAccount.getExpirationDate() != null && ! oldAccount.getExpirationDate().equals(account.getExpirationDate())) ) { //old exp. date was some date and the update refers to another date
-                 // Editing the expiration date
-                 throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "A user cannot modify expiration date of the account in which it's defined");
-             }
+            if ((oldAccount.getExpirationDate() == null && account.getExpirationDate() != null) || //old exp. date was "no expiration" and now the update restricts it
+                    (oldAccount.getExpirationDate() != null && !oldAccount.getExpirationDate().equals(account.getExpirationDate()))) { //old exp. date was some date and the update refers to another date
+                // Editing the expiration date
+                throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "A user cannot modify expiration date of the account in which it's defined");
+            }
         }
 
         //
@@ -256,7 +273,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Check Access
         Actions action = Actions.delete;
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, action, scopeId));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AccountDomains.ACCOUNT_DOMAIN, action, scopeId));
 
         //
         // Check if it has children
@@ -414,7 +431,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -432,7 +449,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
@@ -470,10 +487,39 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, Domain domain, Actions action, boolean forwardable) throws KapuaException {
         if (KapuaSecurityUtils.getSession().getScopeId().equals(accountId)) {
             // I'm looking for myself, so let's check if I have the correct permission
-            authorizationService.checkPermission(permissionFactory.newPermission(domain, action, accountId, null, forwardable));
+            getAuthorizationService().checkPermission(getPermissionFactory().newPermission(domain, action, accountId, null, forwardable));
         } else {
             // I'm looking for another account, so I need to check the permission on the account scope
-            authorizationService.checkPermission(permissionFactory.newPermission(domain, action, scopeId, null, forwardable));
+            getAuthorizationService().checkPermission(getPermissionFactory().newPermission(domain, action, scopeId, null, forwardable));
         }
+    }
+
+
+    /**
+     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link AuthorizationService} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected AuthorizationService getAuthorizationService() {
+        if (authorizationService == null) {
+            authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
+        }
+        return authorizationService;
+    }
+
+    /**
+     * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link PermissionFactory} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected PermissionFactory getPermissionFactory() {
+        if (permissionFactory == null) {
+            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
+        }
+        return permissionFactory;
     }
 }

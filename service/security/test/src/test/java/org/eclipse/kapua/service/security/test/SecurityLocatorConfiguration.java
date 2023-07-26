@@ -16,9 +16,14 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
@@ -28,6 +33,9 @@ import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFactoryImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
+import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
+import org.eclipse.kapua.service.authentication.shiro.CredentialServiceConfigurationManager;
+import org.eclipse.kapua.service.authentication.shiro.CredentialServiceConfigurationManagerImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupService;
@@ -43,7 +51,10 @@ import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryI
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.user.UserFactory;
+import org.eclipse.kapua.service.user.UserNamedEntityService;
 import org.eclipse.kapua.service.user.UserService;
+import org.eclipse.kapua.service.user.internal.UserCacheFactory;
+import org.eclipse.kapua.service.user.internal.UserEntityManagerFactory;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
 import org.eclipse.kapua.service.user.internal.UserServiceImpl;
 import org.mockito.Matchers;
@@ -73,22 +84,52 @@ public class SecurityLocatorConfiguration {
 
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
                 // Inject mocked Permission Factory
-                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
+                PermissionFactory mockPermissionFactory = Mockito.mock(PermissionFactory.class);
+                bind(PermissionFactory.class).toInstance(mockPermissionFactory);
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
                 // Inject actual Role service related services
                 AuthorizationEntityManagerFactory authorizationEntityManagerFactory = AuthorizationEntityManagerFactory.getInstance();
                 bind(AuthorizationEntityManagerFactory.class).toInstance(authorizationEntityManagerFactory);
-                bind(RoleService.class).toInstance(new RoleServiceImpl());
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("RoleServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
+                bind(RoleService.class).to(RoleServiceImpl.class);
                 bind(RoleFactory.class).toInstance(new RoleFactoryImpl());
                 bind(RolePermissionFactory.class).toInstance(new RolePermissionFactoryImpl());
-                bind(GroupService.class).toInstance(new GroupServiceImpl());
+
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("GroupServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
+                bind(GroupService.class).to(GroupServiceImpl.class);
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
-                bind(CredentialService.class).toInstance(new CredentialServiceImpl());
                 bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
-                bind(UserService.class).toInstance(new UserServiceImpl());
-                bind(UserFactory.class).toInstance(new UserFactoryImpl());
+
+                bind(CredentialServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("CredentialServiceConfigurationManager"))
+                        .toInstance(
+                                new CredentialServiceConfigurationManagerImpl(
+                                        new EntityManagerSession(AuthenticationEntityManagerFactory.getInstance()),
+                                        mockPermissionFactory,
+                                        mockedAuthorization,
+                                        Mockito.mock(RootUserTester.class))
+                        );
+                bind(CredentialService.class).to(CredentialServiceImpl.class);
+                final UserFactoryImpl userFactory = new UserFactoryImpl();
+                bind(UserFactory.class).toInstance(userFactory);
+                final RootUserTester rootUserTester = Mockito.mock(RootUserTester.class);
+                bind(RootUserTester.class).toInstance(rootUserTester);
+                final AccountChildrenFinder accountChildrenFinder = Mockito.mock(AccountChildrenFinder.class);
+                bind(AccountChildrenFinder.class).toInstance(accountChildrenFinder);
+                bind(UserService.class).toInstance(new UserServiceImpl(
+                        mockedAuthorization,
+                        mockPermissionFactory,
+                        new UserEntityManagerFactory(),
+                        new UserCacheFactory(),
+                        Mockito.mock(UserNamedEntityService.class),
+                        Mockito.mock(ServiceConfigurationManager.class)
+                ));
             }
         };
 

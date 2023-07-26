@@ -17,6 +17,8 @@ import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 
+import javax.inject.Inject;
+
 /**
  * {@link AuthorizationServiceImpl} {@link EntityManagerFactory} implementation.
  *
@@ -33,7 +35,8 @@ public class AuthorizationEntityManagerFactory extends AbstractEntityManagerFact
      *
      * @since 1.0.0
      */
-    private AuthorizationEntityManagerFactory() {
+    @Inject
+    public AuthorizationEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME);
     }
 

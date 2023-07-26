@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration.exception;
 
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 /**
- * {@link KapuaConfigurationException} to {@code throw} when an update of a {@link AbstractKapuaConfigurableResourceLimitedService}
+ * {@link KapuaConfigurationException} to {@code throw} when an update of a {@link ResourceLimitedServiceConfigurationManagerImpl}
  * {@code maxNumberChildEntities} property exceeds available resources of the current scope.
  *
  * @since 2.0.0

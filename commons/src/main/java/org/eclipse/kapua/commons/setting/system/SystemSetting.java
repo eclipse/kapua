@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting.system;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * System setting implementation.<br>

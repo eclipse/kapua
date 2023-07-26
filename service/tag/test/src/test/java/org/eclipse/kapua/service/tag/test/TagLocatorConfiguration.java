@@ -16,8 +16,12 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -73,43 +77,53 @@ public class TagLocatorConfiguration {
 
                 // Inject mocked Authorization Service method checkPermission
                 AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
+                bind(AuthorizationService.class).toInstance(mockedAuthorization);
+                // Inject mocked Permission Factory
+                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
                 try {
                     Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(Permission.class));
                 } catch (KapuaException e) {
                     // skip
                 }
-
                 bind(QueryFactory.class).toInstance(new QueryFactoryImpl());
 
-                bind(AuthorizationService.class).toInstance(mockedAuthorization);
-                // Inject mocked Permission Factory
-                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
                 // binding Account related services
+                bind(AccountChildrenFinder.class).toInstance(Mockito.mock(AccountChildrenFinder.class));
                 bind(AccountService.class).toInstance(Mockito.spy(new AccountServiceImpl()));
                 bind(AccountFactory.class).toInstance(Mockito.spy(new AccountFactoryImpl()));
+                bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
 
                 // Inject actual Tag service related services
-                TagEntityManagerFactory tagEntityManagerFactory = TagEntityManagerFactory.getInstance();
-                bind(TagEntityManagerFactory.class).toInstance(tagEntityManagerFactory);
-                bind(TagService.class).toInstance(new TagServiceImpl());
-                bind(TagFactory.class).toInstance(new TagFactoryImpl());
+                bind(TagEntityManagerFactory.class).toInstance(new TagEntityManagerFactory());
 
                 // Inject actual Device service related services
                 DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.getInstance();
                 bind(DeviceEntityManagerFactory.class).toInstance(deviceEntityManagerFactory);
 
-                bind(DeviceRegistryService.class).toInstance(new DeviceRegistryServiceImpl());
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("DeviceRegistryServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
+                bind(DeviceRegistryService.class).to(DeviceRegistryServiceImpl.class);
                 bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
 
-                bind(DeviceConnectionService.class).toInstance(new DeviceConnectionServiceImpl());
-                bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("DeviceConnectionServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
+                bind(DeviceConnectionService.class).to(DeviceConnectionServiceImpl.class);
+                bind(DeviceConnectionFactory.class).to(DeviceConnectionFactoryImpl.class);
 
                 bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl());
                 bind(DeviceEventFactory.class).toInstance(new DeviceEventFactoryImpl());
                 bind(KapuaMessageFactory.class).toInstance(new KapuaMessageFactoryImpl());
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("TagServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
+
+                bind(TagFactory.class).to(TagFactoryImpl.class);
+                bind(TagService.class).to(TagServiceImpl.class);
             }
         };
 

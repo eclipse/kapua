@@ -13,16 +13,9 @@
  -->
 <!DOCTYPE xml>
 <locator-config>
-    <provided>
-    </provided>
+    <provided/>
     <packages>
         <package>org.eclipse.kapua.commons.model</package>
         <package>org.eclipse.kapua.message</package>
-        <package>org.eclipse.kapua.service.authentication</package>
-        <package>org.eclipse.kapua.service.authorization</package>
-
-        <package>org.eclipse.kapua.test.account</package>
-        <package>org.eclipse.kapua.test.authentication</package>
-        <package>org.eclipse.kapua.test.user</package>
     </packages>
 </locator-config>
