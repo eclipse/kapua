@@ -33,6 +33,7 @@ import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.type.ObjectTypeConverter;
 import org.eclipse.kapua.qa.common.Session;
 import org.eclipse.kapua.qa.common.SimulatedDevice;
 import org.eclipse.kapua.qa.common.SimulatedDeviceApplication;
@@ -190,13 +191,18 @@ public class DatastoreSteps extends TestBase {
 
     @When("I create message query for following metrics")
     public void iCreateMessageQueryForMetrics(List<String> metricList) throws Exception {
+        iCreateMessageQueryForMetrics(null, metricList);
+    }
+
+    @When("I create message query for metric type {string} for following metrics")
+    public void iCreateMessageQueryForMetrics(String type, List<String> metricList) throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         List<MessageQuery> listOfMessageQueries = new ArrayList<>();
 
         try {
             for (String metricName : metricList) {
                 MessageQuery messageQuery = createBaseMessageQuery(account.getId(), 100);
-                messageQuery.setPredicate(datastorePredicateFactory.newExistsPredicate(String.format(MessageSchema.MESSAGE_METRICS + ".%s", metricName)));
+                messageQuery.setPredicate(datastorePredicateFactory.newMetricExistsPredicate(metricName, (Class<? extends Comparable>) ObjectTypeConverter.fromString(type)));
 
                 stepData.put(MESSAGE_QUERY, messageQuery);
                 listOfMessageQueries.add(messageQuery);

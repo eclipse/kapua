@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -38,6 +39,7 @@ import org.eclipse.kapua.app.console.module.data.shared.util.GwtKapuaDataModelCo
 import org.eclipse.kapua.app.console.module.data.shared.util.KapuaGwtDataModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.type.ObjectTypeConverter;
 import org.eclipse.kapua.service.datastore.ChannelInfoFactory;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.ClientInfoFactory;
@@ -437,7 +439,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             MetricInfoListResult result = metricService.query(query);
             if (result != null && !result.isEmpty()) {
                 for (MetricInfo metric : result.getItems()) {
-                    metrics.put(metric.getName(), KapuaGwtDataModelConverter.convertToHeader(metric));
+                    metrics.put(metric.getName() + "." + metric.getMetricType().getSimpleName(), KapuaGwtDataModelConverter.convertToHeader(metric));
                 }
             }
 
@@ -464,7 +466,11 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         if (headers != null) {
             OrPredicate metricsPredicate = DATASTORE_PREDICATE_FACTORY.newOrPredicate();
             for (GwtHeader header : headers) {
-                metricsPredicate.getPredicates().add(DATASTORE_PREDICATE_FACTORY.newMetricExistsPredicate(header.getName(), null));
+                try {
+                    metricsPredicate.getPredicates().add(DATASTORE_PREDICATE_FACTORY.newMetricExistsPredicate(header.getName(), (Class<? extends Comparable>) ObjectTypeConverter.fromString(header.getType().toLowerCase())));
+                } catch (ClassNotFoundException e) {
+                    throw new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, e);
+                }
             }
             andPredicate.getPredicates().add(metricsPredicate);
         }
