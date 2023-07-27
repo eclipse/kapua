@@ -221,6 +221,15 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
         }
     }
 
+    @Override
+    public int getJobStepPropertyLengthMax() throws GwtKapuaException {
+        try {
+            return JOB_STEP_SERVICE.getJobStepPropertyMaxLength();
+        } catch (Exception e) {
+            throw KapuaExceptionHandler.buildExceptionFromError(e);
+        }
+    }
+
     /**
      * Set the {@link GwtJobStepProperty#isEnum()} property.
      * This cannot be performed in *.shared.* packages (entity converters are in that package), since `Class.forName` is not present in the JRE Emulation library.

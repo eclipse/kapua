@@ -37,6 +37,8 @@ import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
 import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
 import org.eclipse.kapua.service.job.execution.JobExecutionService;
 import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
+import org.eclipse.kapua.service.job.internal.settings.JobServiceSettingKeys;
+import org.eclipse.kapua.service.job.internal.settings.JobServiceSettings;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepAttributes;
 import org.eclipse.kapua.service.job.step.JobStepCreator;
@@ -80,6 +82,15 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
     @Inject
     QueryFactory queryFactory;
 
+    private final JobServiceSettings jobServiceSettings = JobServiceSettings.getInstance();
+
+    /**
+     * The maximum length that a {@link JobStepProperty#getPropertyValue()} is allowed to have
+     *
+     * @since 2.0.0
+     */
+    private final int jobStepPropertyValueLengthMax = jobServiceSettings.getInt(JobServiceSettingKeys.JOB_STEP_PROPERTY_VALUE_LENGTH_MAX);
+
     public JobStepServiceImpl() {
         super(JobEntityManagerFactory.getInstance(), null);
     }
@@ -95,8 +106,8 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         for (JobStepProperty jobStepProperty : jobStepCreator.getStepProperties()) {
             if (jobStepProperty.getPropertyValue() != null) {
-                Integer stepPropertyMaxLength = jobStepProperty.getMaxLength() != null ? jobStepProperty.getMaxLength() : 65535;
-                ArgumentValidator.lengthRange(jobStepProperty.getPropertyValue(), jobStepProperty.getMinLength(), stepPropertyMaxLength, "stepProperties[]." + jobStepProperty.getName());
+                Integer stepPropertyMaxLength = jobStepProperty.getMaxLength() != null ? jobStepProperty.getMaxLength() : jobStepPropertyValueLengthMax;
+                ArgumentValidator.lengthRange(jobStepProperty.getPropertyValue(), jobStepProperty.getMinLength(), stepPropertyMaxLength, "jobStepCreator.stepProperties[]." + jobStepProperty.getName());
             }
         }
 
@@ -186,6 +197,14 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
         ArgumentValidator.notNull(jobStep.getScopeId(), "jobStep.scopeId");
         ArgumentValidator.validateEntityName(jobStep.getName(), "jobStep.name");
         ArgumentValidator.notNull(jobStep.getJobStepDefinitionId(), "jobStep.stepDefinitionId");
+
+        for (JobStepProperty jobStepProperty : jobStep.getStepProperties()) {
+            if (jobStepProperty.getPropertyValue() != null) {
+                Integer stepPropertyMaxLength = jobStepProperty.getMaxLength() != null ? jobStepProperty.getMaxLength() : jobStepPropertyValueLengthMax;
+                ArgumentValidator.lengthRange(jobStepProperty.getPropertyValue(), jobStepProperty.getMinLength(), stepPropertyMaxLength, "jobStep.stepProperties[]." + jobStepProperty.getName());
+            }
+        }
+
         if (jobStep.getDescription() != null) {
             ArgumentValidator.numRange(jobStep.getDescription().length(), 0, 8192, "jobStep.description");
         }
@@ -366,6 +385,17 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
             }
             return deletedJobStep;
         });
+    }
+
+    @Override
+    public int getJobStepPropertyMaxLength() throws KapuaException {
+        //
+        // Check access
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+
+        //
+        // Return the value
+        return jobStepPropertyValueLengthMax;
     }
 
     //
