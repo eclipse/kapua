@@ -153,6 +153,9 @@ paths:
     $ref: './deviceAsset/deviceAsset-scopeId-deviceId-_read.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1assets~1_read'
   /{scopeId}/devices/{deviceId}/assets/_write:
     $ref: './deviceAsset/deviceAsset-scopeId-deviceId-_write.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1assets~1_write'
+  ### Device Asset Store ###
+  /{scopeId}/devices/{deviceId}/assets/_settings:
+    $ref: './deviceAsset/deviceAsset-scopeId-deviceId-_settings.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1assets~1_settings'
   ### Device Bundle ###
   /{scopeId}/devices/{deviceId}/bundles:
     $ref: './deviceBundle/deviceBundle-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1bundles'
@@ -636,6 +639,16 @@ components:
         - SUBMIT
         - CANCEL
         - SENT
+    byDeviceAppManagementSettings:
+      description: Base class for Device Management Applications that have per-device settings
+      type: object
+      properties:
+        scopeId:
+          description: The scopeId of the selected device
+          $ref: '#/components/schemas/kapuaId'
+        deviceId:
+          description: The Device id of the selected device
+          $ref: '#/components/schemas/kapuaId'
     ### AccessInfo Entities ###
     accessInfo:
       $ref: './accessInfo/accessInfo.yaml#/components/schemas/accessInfo'
