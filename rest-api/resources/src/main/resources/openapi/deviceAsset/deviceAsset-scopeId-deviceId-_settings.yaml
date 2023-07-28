@@ -1,0 +1,64 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Asset
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/devices/{deviceId}/assets/_settings:
+    get:
+      tags:
+        - Device Management - Asset
+      summary: Gets the settings of the Device Asset Store settings of this Device
+      operationId: getDeviceAssetStoreSettings
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+      responses:
+        200:
+          description: The Device Management Settings retrieved
+          content:
+            application/json:
+              schema:
+                $ref: './deviceAsset.yaml#/components/schemas/deviceAssetStoreSettings'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    put:
+      tags:
+        - Device Management - Asset
+      summary: Applies the given settings to the Device Asset Store settings of this Device
+      operationId: putDeviceAssetStoreSettings
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+      requestBody:
+        description: The Device Asset Store Settings for this Device
+        content:
+          application/json:
+            schema:
+              $ref: './deviceAsset.yaml#/components/schemas/deviceAssetStoreSettings'
+        required: true
+      responses:
+        204:
+          description: The Device Management Settings have been applied
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
