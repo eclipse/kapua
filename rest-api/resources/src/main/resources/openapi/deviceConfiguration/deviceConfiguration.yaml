@@ -11,7 +11,7 @@ info:
     name: Eclipse Public License 2.0
     url: https://www.eclipse.org/legal/epl-2.0
 
-paths: {}
+paths: { }
 
 components:
   parameters:
@@ -55,7 +55,7 @@ components:
         name: WireGraph
         required: true
         type: String
-        Option: []
+        Option: [ ]
     propertyDefinition:
       type: object
       properties:
@@ -120,8 +120,8 @@ components:
               name: WireGraph
               required: true
               type: String
-              Option: []
-          Icon: []
+              Option: [ ]
+          Icon: [ ]
         properties:
           property:
             - name: WireGraph
@@ -176,8 +176,8 @@ components:
                   name: WireGraph
                   required: true
                   type: String
-                  Option: []
-              Icon: []
+                  Option: [ ]
+              Icon: [ ]
             properties:
               property:
                 - name: WireGraph
@@ -230,3 +230,20 @@ components:
           type: string
         value:
           type: string
+    deviceConfigurationStoreEnablementPolicy:
+      description: The policy for which the Device Configuration Store Application is enabled or not for this device. 'INHERITED' means that it inherits the setting from the Account-wide Configuration Store Service Configuration
+      enum:
+        - ENABLED
+        - DISABLED
+        - INHERITED
+    deviceConfigurationStoreSettings:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/byDeviceAppManagementSettings'
+        - type: object
+          properties:
+            enablementPolicy:
+              $ref: '#/components/schemas/deviceConfigurationStoreEnablementPolicy'
+          example:
+            scopeId: AQ
+            deviceId: dIVxI5QpFUI
+            enablementPolicy: ENABLED

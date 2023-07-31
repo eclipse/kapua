@@ -171,6 +171,9 @@ paths:
     $ref: './deviceConfiguration/deviceConfiguration-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1configurations'
   /{scopeId}/devices/{deviceId}/configurations/{componentId}:
     $ref: './deviceConfiguration/deviceConfiguration-scopeId-deviceId-componentId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1configurations~1{componentId}'
+  ### Device Configuration Store ###
+  /{scopeId}/devices/{deviceId}/configurations/_settings:
+    $ref: './deviceConfiguration/deviceConfiguration-scopeId-deviceId-_settings.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1configurations~1_settings'
   ### Device Inventory ###
   /{scopeId}/devices/{deviceId}/inventory:
     $ref: './deviceInventory/deviceInventory-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1inventory'
