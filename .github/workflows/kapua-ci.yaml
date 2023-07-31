@@ -1,4 +1,4 @@
-name: kapua-ci
+name: kapua ci
 on: [ push, pull_request ] # Triggers the workflow on push or pull request events
 
 env: #the last 2 env variables defines respectively the maven projects were cucumber tests resides and maven projects were consumers applications needed for docker images building resides.
@@ -26,15 +26,6 @@ jobs:
       - run: mvn -v
       - run: docker images -a  # used as log (should show only github environment standard docker images; if kapua images are present, something is wrong)
       - run: mvn -B ${BUILD_OPTS} -DskipTests clean install
-      - name: Save PR number to file for the sonarCloud scan
-        if: github.event_name == 'pull_request'
-        run: echo ${{ github.event.number }} > PR_NUMBER.txt
-      - name: Archive PR number
-        if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v3
-        with:
-          name: PR_NUMBER
-          path: PR_NUMBER.txt
       - run: bash <(curl -s https://codecov.io/bash)
   test-brokerAcl:
     needs: build
