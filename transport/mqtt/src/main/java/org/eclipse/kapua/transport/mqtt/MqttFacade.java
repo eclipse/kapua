@@ -15,7 +15,6 @@ package org.eclipse.kapua.transport.mqtt;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.transport.TransportFacade;
 import org.eclipse.kapua.transport.exception.TransportClientGetException;
-import org.eclipse.kapua.transport.exception.TransportClientPoolExhaustedException;
 import org.eclipse.kapua.transport.exception.TransportException;
 import org.eclipse.kapua.transport.exception.TransportSendException;
 import org.eclipse.kapua.transport.exception.TransportTimeoutException;
@@ -56,8 +55,7 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
     /**
      * Initializes a {@link MqttFacade} to be used to send requests to devices.
      *
-     * @throws TransportClientPoolExhaustedException When {@link MqttClient} cannot be borrowed in the configured timeout (client.pool.borrow.wait.max)
-     * @throws TransportClientGetException           When {@link MqttClient} is not available for the given node URI.
+     * @throws TransportClientGetException When {@link MqttClient} is not available for the given node URI.
      * @since 1.0.0
      */
     public MqttFacade(@NotNull String nodeUri) throws TransportException {
