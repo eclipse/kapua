@@ -40,7 +40,6 @@ import org.eclipse.kapua.translator.exception.TranslatorNotFoundException;
 import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.TransportFacade;
 import org.eclipse.kapua.transport.exception.TransportClientGetException;
-import org.eclipse.kapua.transport.exception.TransportClientPoolExhaustedException;
 import org.eclipse.kapua.transport.exception.TransportException;
 import org.eclipse.kapua.transport.exception.TransportTimeoutException;
 import org.eclipse.kapua.transport.message.TransportMessage;
@@ -194,8 +193,8 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
      *
      * @param kuraRequestMessage The {@link KuraRequestMessage} to send.
      * @return The {@link TransportFacade} to use to send the {@link KuraResponseMessage}.
-     * @throws TransportClientPoolExhaustedException If a {@link TransportFacade} cannot be obtained within the configured timeout.
-     * @throws TransportClientGetException           If getting the {@link TransportFacade} causes an {@link Exception}.
+     * @throws TransportClientGetException If getting the {@link TransportFacade} causes an {@link Exception}.
+     * @throws TransportException          For all other errors
      * @since 1.0.0
      */
     protected TransportFacade<?, ?, ?, ?> borrowClient(KuraRequestMessage kuraRequestMessage) throws TransportException {
