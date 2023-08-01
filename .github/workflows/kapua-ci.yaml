@@ -1,4 +1,4 @@
-name: kapua ci
+name: Kapua CI
 on: [ push, pull_request ] # Triggers the workflow on push or pull request events
 
 env: #the last 2 env variables defines respectively the maven projects were cucumber tests resides and maven projects were consumers applications needed for docker images building resides.
