@@ -348,11 +348,9 @@ public class JobStepServiceImpl implements JobStepService {
 
     @Override
     public int getJobStepPropertyMaxLength() throws KapuaException {
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, KapuaId.ANY));
 
-        //
         // Return the value
         return jobStepPropertyValueLengthMax;
     }
