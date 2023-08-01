@@ -215,6 +215,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         }
         message.putStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC, address);
         publishMetric.getMessageSizeAllowed().update(messageSize);
+        serverContext.getAddressMap().refresh(address);
         logger.debug("Published message on address {} from clientId: {} - clientIp: {}", address, sessionContext.getClientId(), sessionContext.getClientIp());
         ActiveMQServerPlugin.super.beforeSend(session, tx, message, direct, noAutoCreateQueue);
     }

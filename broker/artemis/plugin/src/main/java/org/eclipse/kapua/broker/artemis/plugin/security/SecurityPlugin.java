@@ -256,6 +256,9 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                 case CREATE_NON_DURABLE_QUEUE:
                     allowed = serverContext.getSecurityContext().checkConsumerAllowed(sessionContext, address);
                     break;
+                case DELETE_ADDRESS:
+                    serverContext.getAddressMap().remove(address);
+                    break;
                 default:
                     allowed = serverContext.getSecurityContext().checkAdminAllowed(sessionContext, address);
                     break;
