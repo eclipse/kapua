@@ -41,7 +41,7 @@ public class InvalidValueMappingException extends MappingException {
      * @since 1.3.0
      */
     public InvalidValueMappingException(Throwable cause, String name, Object value, Class<?> type) {
-        super(StorableErrorCodes.INVALID_VALUE, cause, value, type);
+        super(StorableErrorCodes.INVALID_VALUE, cause, name, value, type);
 
         this.name = name;
         this.value = value;
