@@ -49,7 +49,7 @@ import java.util.UUID;
         "payload", //
 }, factoryClass = MessageXmlRegistry.class, factoryMethod = "newKapuaMessage")
 @XmlSeeAlso(KapuaDataMessage.class)
-public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> extends Message<C, P> {
+public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> extends Message<C, P> { //TODO : CODE SMELL HERE
 
     /**
      * Gets the unique identifier.
