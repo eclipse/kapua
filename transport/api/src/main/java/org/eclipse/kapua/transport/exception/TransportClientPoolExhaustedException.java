@@ -15,26 +15,26 @@ package org.eclipse.kapua.transport.exception;
 import javax.validation.constraints.NotNull;
 
 /**
- * The {@link TransportException} to throw when is not possible to get an instance of the {@link org.eclipse.kapua.transport.TransportFacade}
+ * The {@link TransportException} to throw when is not possible to get an instance of the {@link org.eclipse.kapua.transport.TransportFacade} within the configured timeout
  *
- * @since 1.2.0
+ * @since 2.0.0
  */
-public class TransportClientGetException extends TransportException {
+public class TransportClientPoolExhaustedException extends TransportException {
 
     private final String serverIp;
-    private final String causeMessage;
+    private final Long borrowWaitTimeout;
 
     /**
      * Constructor.
      *
      * @param serverIp The serverIp to which connect the {@link org.eclipse.kapua.transport.TransportFacade}
-     * @since 1.2.0
+     * @since 2.0.0
      */
-    public TransportClientGetException(@NotNull String serverIp) {
-        super(TransportErrorCodes.CLIENT_GET, serverIp);
+    public TransportClientPoolExhaustedException(@NotNull String serverIp, Long borrowWaitTimeout) {
+        super(TransportErrorCodes.CLIENT_POOL_EXHAUSTED, serverIp, borrowWaitTimeout);
 
         this.serverIp = serverIp;
-        this.causeMessage = null;
+        this.borrowWaitTimeout = borrowWaitTimeout;
     }
 
     /**
@@ -42,25 +42,13 @@ public class TransportClientGetException extends TransportException {
      *
      * @param cause    the root cause of the {@link Exception}.
      * @param serverIp The serverIp to which connect the {@link org.eclipse.kapua.transport.TransportFacade}
-     * @since 1.2.0
+     * @since 2.0.0
      */
-    public TransportClientGetException(@NotNull Throwable cause, @NotNull String serverIp) {
-        super(TransportErrorCodes.CLIENT_GET_WITH_CAUSE, cause, serverIp, cause.getMessage());
+    public TransportClientPoolExhaustedException(@NotNull Throwable cause, @NotNull String serverIp, Long borrowWaitTimeout) {
+        super(TransportErrorCodes.CLIENT_POOL_EXHAUSTED, cause, serverIp, borrowWaitTimeout);
 
         this.serverIp = serverIp;
-        this.causeMessage = cause.getMessage();
-    }
-
-    /**
-     * Gets the IP to which we wanted unsuccessfully to connect.
-     *
-     * @return The IP to which we wanted unsuccessfully to connect.
-     * @since 1.2.0
-     * @deprecated Since 2.0.0. It was not renamed after copy-pasting from another class. Please make use of {@link #getServerIp()}.
-     */
-    @Deprecated
-    public String getRequestMessage() {
-        return getServerIp();
+        this.borrowWaitTimeout = borrowWaitTimeout;
     }
 
     /**
@@ -74,12 +62,12 @@ public class TransportClientGetException extends TransportException {
     }
 
     /**
-     * Gets the {@link Throwable#getMessage()} if provided.
+     * Gets the configured timeout for the borrow operation.
      *
-     * @return The {@link Throwable#getMessage()} if provided.
+     * @return The configured timeout for the borrow operation.
      * @since 2.0.0
      */
-    public String getCauseMessage() {
-        return causeMessage;
+    public Long getBorrowWaitTimeout() {
+        return borrowWaitTimeout;
     }
 }

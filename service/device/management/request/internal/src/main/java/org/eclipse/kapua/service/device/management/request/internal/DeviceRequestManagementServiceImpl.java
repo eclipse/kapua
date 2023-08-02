@@ -20,7 +20,7 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
-import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
+import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestBadMethodException;
 import org.eclipse.kapua.service.device.management.request.DeviceRequestManagementService;
 import org.eclipse.kapua.service.device.management.request.GenericRequestFactory;
@@ -28,6 +28,8 @@ import org.eclipse.kapua.service.device.management.request.message.request.Gener
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestPayload;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 import java.util.Date;
@@ -39,6 +41,8 @@ import java.util.Date;
  */
 @Singleton
 public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceRequestManagementService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DeviceRequestManagementServiceImpl.class);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final GenericRequestFactory FACTORY = LOCATOR.getFactory(GenericRequestFactory.class);
@@ -98,9 +102,22 @@ public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagement
         genericRequestMessage.setPosition(requestInput.getPosition());
 
         //
-        // Do exec
-        DeviceCallExecutor<?, ?, ?, GenericResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(genericRequestMessage, timeout);
-        GenericResponseMessage responseMessage = deviceApplicationCall.send();
+        // Build request
+        DeviceCallBuilder<GenericRequestChannel, GenericRequestPayload, GenericRequestMessage, GenericResponseMessage> genericDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(genericRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
+        // Do it
+        GenericResponseMessage responseMessage;
+        try {
+            responseMessage = genericDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while sending GenericRequestMessage {} for Device {}. Error: {}", genericRequestMessage, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event

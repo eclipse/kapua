@@ -23,7 +23,8 @@ import javax.validation.constraints.NotNull;
  */
 public class DeviceCallSendException extends DeviceCallException {
 
-    private final DeviceMessage requestMessage;
+    private final DeviceMessage<?, ?> requestMessage;
+    private final String causeMessage;
 
     /**
      * Constructor.
@@ -31,9 +32,11 @@ public class DeviceCallSendException extends DeviceCallException {
      * @param requestMessage The {@link DeviceMessage} that we tried to send.
      * @since 1.1.0
      */
-    public DeviceCallSendException(@NotNull DeviceMessage requestMessage) {
+    public DeviceCallSendException(@NotNull DeviceMessage<?, ?> requestMessage) {
         super(DeviceCallErrorCodes.SEND_ERROR, requestMessage);
+
         this.requestMessage = requestMessage;
+        this.causeMessage = null;
     }
 
     /**
@@ -43,9 +46,11 @@ public class DeviceCallSendException extends DeviceCallException {
      * @param requestMessage The {@link DeviceMessage} that we tried to send.
      * @since 1.1.0
      */
-    public DeviceCallSendException(@NotNull Throwable cause, @NotNull DeviceMessage requestMessage) {
-        super(DeviceCallErrorCodes.SEND_ERROR, cause, requestMessage);
+    public DeviceCallSendException(@NotNull Throwable cause, @NotNull DeviceMessage<?, ?> requestMessage) {
+        super(DeviceCallErrorCodes.SEND_ERROR_WITH_CAUSE, cause, requestMessage, cause.getMessage());
+
         this.requestMessage = requestMessage;
+        this.causeMessage = cause.getMessage();
     }
 
     /**
@@ -54,7 +59,7 @@ public class DeviceCallSendException extends DeviceCallException {
      * @return The {@link DeviceMessage} that we tried to send.
      * @since 1.1.0
      */
-    public DeviceMessage getRequestMessage() {
+    public DeviceMessage<?, ?> getRequestMessage() {
         return requestMessage;
     }
 }

@@ -22,9 +22,7 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
-import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
-import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
-import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
+import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
@@ -49,6 +47,8 @@ import org.eclipse.kapua.service.device.management.packages.model.install.Device
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOperation;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOptions;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 import java.net.MalformedURLException;
@@ -62,7 +62,7 @@ import java.util.Date;
 @Singleton
 public class DevicePackageManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DevicePackageManagementService {
 
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private static final Logger LOG = LoggerFactory.getLogger(DevicePackageManagementServiceImpl.class);
 
     private static final PackageManagementServiceSetting PACKAGE_MANAGEMENT_SERVICE_SETTING = PackageManagementServiceSetting.getInstance();
 
@@ -104,9 +104,22 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestMessage.setChannel(packageRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage, PackageResponseMessage> packageDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(packageRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, timeout);
-        PackageResponseMessage responseMessage = deviceApplicationCall.send();
+        PackageResponseMessage responseMessage;
+        try {
+            responseMessage = packageDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while getting DevicePackages {} for Device {}. Error: {}", deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -202,13 +215,21 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         KapuaId deviceManagementOperationId = createManagementOperation(scopeId, deviceId, operationId, packageRequestMessage);
 
         //
+        // Build request
+        DeviceCallBuilder<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage, PackageResponseMessage> packageDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(packageRequestMessage)
+                        .withTimeoutOrDefault(packageDownloadOptions.getTimeout());
+
+        //
         // Do exec
-        DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, packageDownloadOptions.getTimeout());
         PackageResponseMessage responseMessage;
         try {
-            responseMessage = deviceApplicationCall.send();
+            responseMessage = packageDeviceCallBuilder.send();
         } catch (Exception e) {
             closeManagementOperation(scopeId, deviceId, operationId);
+            LOG.error("Error while executing DevicePackageDownloadRequest {} for Device {}. Error: {}", packageDownloadRequest.getUri(), deviceId, e.getMessage(), e);
             throw e;
         }
 
@@ -259,9 +280,22 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestMessage.setChannel(packageRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage, PackageResponseMessage> packageDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(packageRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, timeout);
-        PackageResponseMessage responseMessage = deviceApplicationCall.send();
+        PackageResponseMessage responseMessage;
+        try {
+            responseMessage = packageDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while getting DevicePackageDownloadOperation for Device {}. Error: {}", deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -311,9 +345,22 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestMessage.setChannel(packageRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage, PackageResponseMessage> packageDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(packageRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do del
-        DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, timeout);
-        PackageResponseMessage responseMessage = deviceApplicationCall.send();
+        PackageResponseMessage responseMessage;
+        try {
+            responseMessage = packageDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while stopping DevicePackageDownloadOperation for Device {}. Error: {}", deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -380,13 +427,21 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         KapuaId deviceManagementOperationId = createManagementOperation(scopeId, deviceId, operationId, packageRequestMessage);
 
         //
+        // Build request
+        DeviceCallBuilder<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage, PackageResponseMessage> packageDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(packageRequestMessage)
+                        .withTimeoutOrDefault(packageInstallOptions.getTimeout());
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, packageInstallOptions.getTimeout());
         PackageResponseMessage responseMessage;
         try {
-            responseMessage = deviceApplicationCall.send();
+            responseMessage = packageDeviceCallBuilder.send();
         } catch (Exception e) {
             closeManagementOperation(scopeId, deviceId, operationId);
+            LOG.error("Error while executing DevicePackageInstallRequest {} for Device {}. Error: {}", deployInstallRequest.getName(), deviceId, e.getMessage(), e);
             throw e;
         }
 
@@ -437,9 +492,22 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestMessage.setChannel(packageRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage, PackageResponseMessage> packageDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(packageRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, timeout);
-        PackageResponseMessage responseMessage = deviceApplicationCall.send();
+        PackageResponseMessage responseMessage;
+        try {
+            responseMessage = packageDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while getting DevicePackageInstallOperation for Device {}. Error: {}", deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -506,13 +574,21 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         KapuaId deviceManagementOperationId = createManagementOperation(scopeId, deviceId, operationId, packageRequestMessage);
 
         //
-        // Do get
-        DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, packageUninstallOptions.getTimeout());
+        // Build request
+        DeviceCallBuilder<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage, PackageResponseMessage> packageDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(packageRequestMessage)
+                        .withTimeoutOrDefault(packageUninstallOptions.getTimeout());
+
+        //
+        // Do uninstall
         PackageResponseMessage responseMessage;
         try {
-            responseMessage = deviceApplicationCall.send();
+            responseMessage = packageDeviceCallBuilder.send();
         } catch (Exception e) {
             closeManagementOperation(scopeId, deviceId, operationId);
+            LOG.error("Error while executing DevicePackageUninstallRequest {} for Device {}. Error: {}", packageUninstallRequest.getName(), deviceId, e.getMessage(), e);
             throw e;
         }
 
@@ -563,9 +639,22 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestMessage.setChannel(packageRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage, PackageResponseMessage> packageDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(packageRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, timeout);
-        PackageResponseMessage responseMessage = deviceApplicationCall.send();
+        PackageResponseMessage responseMessage;
+        try {
+            responseMessage = packageDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while getting DevicePackageUninstallOperation for Device {}. Error: {}", deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event

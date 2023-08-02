@@ -26,8 +26,10 @@ import org.eclipse.kapua.service.device.management.command.message.internal.Comm
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponseMessage;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponsePayload;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
-import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
+import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 import java.util.Date;
@@ -39,6 +41,8 @@ import java.util.Date;
  */
 @Singleton
 public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceCommandManagementService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DeviceCommandManagementServiceImpl.class);
 
     @Override
     public DeviceCommandOutput exec(KapuaId scopeId, KapuaId deviceId, DeviceCommandInput commandInput, Long timeout)
@@ -80,9 +84,23 @@ public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagement
         commandRequestMessage.setChannel(commandRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<CommandRequestChannel, CommandRequestPayload, CommandRequestMessage, CommandResponseMessage> commandDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(commandRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do exec
-        DeviceCallExecutor<?, ?, ?, CommandResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(commandRequestMessage, timeout);
-        CommandResponseMessage responseMessage = deviceApplicationCall.send();
+        CommandResponseMessage responseMessage;
+
+        try {
+            responseMessage = commandDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while executing DeviceCommand {} with arguments {} for Device {}. Error: {}", commandInput.getCommand(), String.join(" ", commandInput.getArguments()), deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event

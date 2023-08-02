@@ -18,7 +18,7 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
-import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
+import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementService;
 import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryBundleExecRequestMessage;
@@ -42,6 +42,8 @@ import org.eclipse.kapua.service.device.management.inventory.model.inventory.Dev
 import org.eclipse.kapua.service.device.management.inventory.model.packages.DeviceInventoryPackages;
 import org.eclipse.kapua.service.device.management.inventory.model.system.DeviceInventorySystemPackages;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 import java.util.Date;
@@ -53,6 +55,8 @@ import java.util.Date;
  */
 @Singleton
 public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceInventoryManagementService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DeviceInventoryManagementServiceImpl.class);
 
     private static final String SCOPE_ID = "scopeId";
     private static final String DEVICE_ID = "deviceId";
@@ -93,9 +97,22 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         inventoryRequestMessage.setChannel(inventoryRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<InventoryRequestChannel, InventoryRequestPayload, InventoryEmptyRequestMessage, InventoryListResponseMessage> inventoryDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(inventoryRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, InventoryListResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventoryListResponseMessage responseMessage = deviceApplicationCall.send();
+        InventoryListResponseMessage responseMessage;
+        try {
+            responseMessage = inventoryDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while getting DeviceInventory for Device {}. Error: {}", deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -142,9 +159,22 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         inventoryRequestMessage.setChannel(inventoryRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<InventoryRequestChannel, InventoryRequestPayload, InventoryEmptyRequestMessage, InventoryBundlesResponseMessage> inventoryDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(inventoryRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, InventoryBundlesResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventoryBundlesResponseMessage responseMessage = deviceApplicationCall.send();
+        InventoryBundlesResponseMessage responseMessage;
+        try {
+            responseMessage = inventoryDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while getting DeviceInventoryBundles for Device {}. Error: {}", deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -199,9 +229,22 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         inventoryRequestMessage.setChannel(inventoryRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<InventoryRequestChannel, InventoryRequestPayload, InventoryBundleExecRequestMessage, InventoryNoContentResponseMessage> inventoryDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(inventoryRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do exec
-        DeviceCallExecutor<?, ?, ?, InventoryNoContentResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventoryNoContentResponseMessage responseMessage = deviceApplicationCall.send();
+        InventoryNoContentResponseMessage responseMessage;
+        try {
+            responseMessage = inventoryDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while executing {} on DeviceInventoryBundle {} for Device {}. Error: {}", deviceInventoryBundleAction, deviceInventoryBundle.getName(), deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -248,9 +291,22 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         inventoryRequestMessage.setChannel(inventoryRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<InventoryRequestChannel, InventoryRequestPayload, InventoryEmptyRequestMessage, InventoryContainersResponseMessage> inventoryDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(inventoryRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, InventoryContainersResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventoryContainersResponseMessage responseMessage = deviceApplicationCall.send();
+        InventoryContainersResponseMessage responseMessage;
+        try {
+            responseMessage = inventoryDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while getting DeviceInventoryContainers {} for Device {}. Error: {}", deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -307,9 +363,22 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         inventoryRequestMessage.setChannel(inventoryRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<InventoryRequestChannel, InventoryRequestPayload, InventoryContainerExecRequestMessage, InventoryNoContentResponseMessage> inventoryDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(inventoryRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do exec
-        DeviceCallExecutor<?, ?, ?, InventoryNoContentResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventoryNoContentResponseMessage responseMessage = deviceApplicationCall.send();
+        InventoryNoContentResponseMessage responseMessage;
+        try {
+            responseMessage = inventoryDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while executing {} on DeviceInventoryContainer {}:{} for Device {}. Error: {}", deviceInventoryContainerAction, deviceInventoryContainer.getName(), deviceInventoryContainer.getVersion(), deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -356,9 +425,22 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         inventoryRequestMessage.setChannel(inventoryRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<InventoryRequestChannel, InventoryRequestPayload, InventoryEmptyRequestMessage, InventorySystemPackagesResponseMessage> inventoryDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(inventoryRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, InventorySystemPackagesResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventorySystemPackagesResponseMessage responseMessage = deviceApplicationCall.send();
+        InventorySystemPackagesResponseMessage responseMessage;
+        try {
+            responseMessage = inventoryDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while getting DeviceInventorySystemPackages for Device {}. Error: {}", deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -405,9 +487,22 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         inventoryRequestMessage.setChannel(inventoryRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<InventoryRequestChannel, InventoryRequestPayload, InventoryEmptyRequestMessage, InventoryPackagesResponseMessage> inventoryDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(inventoryRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, InventoryPackagesResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventoryPackagesResponseMessage responseMessage = deviceApplicationCall.send();
+        InventoryPackagesResponseMessage responseMessage;
+        try {
+            responseMessage = inventoryDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while getting DeviceInventoryPackages for Device {}. Error: {}", deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event

@@ -14,6 +14,7 @@
 package org.eclipse.kapua.service.device.call.kura;
 
 import com.google.common.base.Strings;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -39,10 +40,10 @@ import org.eclipse.kapua.translator.exception.TranslatorNotFoundException;
 import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.TransportFacade;
 import org.eclipse.kapua.transport.exception.TransportClientGetException;
+import org.eclipse.kapua.transport.exception.TransportException;
 import org.eclipse.kapua.transport.exception.TransportTimeoutException;
 import org.eclipse.kapua.transport.message.TransportMessage;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.HashMap;
@@ -68,49 +69,49 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
 
     @Override
     public KuraResponseMessage create(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
-            throws DeviceCallTimeoutException, DeviceCallSendException {
+            throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
         return sendInternal(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage read(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
-            throws DeviceCallTimeoutException, DeviceCallSendException {
+            throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
         return sendInternal(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage options(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
-            throws DeviceCallTimeoutException, DeviceCallSendException {
+            throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
         return sendInternal(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage delete(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
-            throws DeviceCallTimeoutException, DeviceCallSendException {
+            throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
         return sendInternal(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage execute(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
-            throws DeviceCallTimeoutException, DeviceCallSendException {
+            throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
         return sendInternal(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage write(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
-            throws DeviceCallTimeoutException, DeviceCallSendException {
+            throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
         return sendInternal(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage submit(KuraRequestMessage requestMessage, @Nullable Long timeout)
-            throws DeviceCallTimeoutException, DeviceCallSendException {
+            throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
         return sendInternal(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage cancel(KuraRequestMessage requestMessage, @Nullable Long timeout)
-            throws DeviceCallTimeoutException, DeviceCallSendException {
+            throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
         return sendInternal(requestMessage, timeout);
     }
 
@@ -133,7 +134,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
      * @throws DeviceCallSendException    if sending the request produces any error.
      * @since 1.0.0
      */
-    protected KuraResponseMessage sendInternal(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException {
+    protected KuraResponseMessage sendInternal(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException, TransportException {
 
         KuraResponseMessage response = null;
         try {
@@ -177,6 +178,8 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
             }
         } catch (TransportTimeoutException te) {
             throw new DeviceCallTimeoutException(te, timeout);
+        } catch (TransportException te) {
+            throw te;
         } catch (KapuaException se) {
             throw new DeviceCallSendException(se, requestMessage);
         }
@@ -191,9 +194,10 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
      * @param kuraRequestMessage The {@link KuraRequestMessage} to send.
      * @return The {@link TransportFacade} to use to send the {@link KuraResponseMessage}.
      * @throws TransportClientGetException If getting the {@link TransportFacade} causes an {@link Exception}.
+     * @throws TransportException          For all other errors
      * @since 1.0.0
      */
-    protected TransportFacade<?, ?, ?, ?> borrowClient(KuraRequestMessage kuraRequestMessage) throws TransportClientGetException {
+    protected TransportFacade<?, ?, ?, ?> borrowClient(KuraRequestMessage kuraRequestMessage) throws TransportException {
         String serverIp = null;
         try {
             serverIp = KapuaSecurityUtils.doPrivileged(() -> {
@@ -217,9 +221,10 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
 
             Map<String, Object> configParameters = new HashMap<>(1);
             configParameters.put("serverAddress", serverIp);
+
             return TRANSPORT_CLIENT_FACTORY.getFacade(configParameters);
-        } catch (TransportClientGetException tcge) {
-            throw tcge;
+        } catch (TransportException tce) {
+            throw tce;
         } catch (Exception e) {
             throw new TransportClientGetException(e, serverIp);
         }

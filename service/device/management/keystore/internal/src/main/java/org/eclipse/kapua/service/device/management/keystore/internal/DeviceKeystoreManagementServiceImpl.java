@@ -25,7 +25,7 @@ import org.eclipse.kapua.service.certificate.info.CertificateInfoFactory;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoService;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
-import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
+import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService;
 import org.eclipse.kapua.service.device.management.keystore.internal.message.request.KeystoreCertificateRequestMessage;
@@ -110,9 +110,22 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
         keystoreRequestMessage.setChannel(keystoreRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<KeystoreRequestChannel, KeystoreRequestPayload, KeystoreQueryRequestMessage, KeystoreResponseMessage> keystoreDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(keystoreRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, KeystoreResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(keystoreRequestMessage, timeout);
-        KeystoreResponseMessage responseMessage = deviceApplicationCall.send();
+        KeystoreResponseMessage responseMessage;
+        try {
+            responseMessage = keystoreDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while getting DeviceKeystores for Device {}. Error: {}", deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -177,9 +190,22 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
         keystoreRequestMessage.setChannel(keystoreRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<KeystoreRequestChannel, KeystoreRequestPayload, KeystoreQueryRequestMessage, KeystoreResponseMessage> keystoreDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(keystoreRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, KeystoreResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(keystoreRequestMessage, timeout);
-        KeystoreResponseMessage responseMessage = deviceApplicationCall.send();
+        KeystoreResponseMessage responseMessage;
+        try {
+            responseMessage = keystoreDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while getting DeviceKeystoreItems with DeviceKeystoreQuery {} for Device {}. Error: {}", itemQuery, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -237,9 +263,22 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
         keystoreRequestMessage.setChannel(keystoreRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<KeystoreRequestChannel, KeystoreRequestPayload, KeystoreQueryRequestMessage, KeystoreResponseMessage> keystoreDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(keystoreRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, KeystoreResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(keystoreRequestMessage, timeout);
-        KeystoreResponseMessage responseMessage = deviceApplicationCall.send();
+        KeystoreResponseMessage responseMessage;
+        try {
+            responseMessage = keystoreDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while getting DeviceKeystoreItem with alias {} in DeviceKeystore {} for Device {}. Error: {}", alias, keystoreId, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -323,9 +362,22 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
         keystoreRequestMessage.setChannel(keystoreRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<KeystoreRequestChannel, KeystoreRequestPayload, KeystoreCertificateRequestMessage, KeystoreResponseMessage> keystoreDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(keystoreRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, KeystoreResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(keystoreRequestMessage, timeout);
-        KeystoreResponseMessage responseMessage = deviceApplicationCall.send();
+        KeystoreResponseMessage responseMessage;
+        try {
+            responseMessage = keystoreDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while creating DeviceKeystoreCertificate {} for Device {}. Error: {}", keystoreCertificate, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -377,9 +429,22 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
         keystoreRequestMessage.setChannel(keystoreRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<KeystoreRequestChannel, KeystoreRequestPayload, KeystoreKeypairRequestMessage, KeystoreResponseMessage> keystoreDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(keystoreRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, KeystoreResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(keystoreRequestMessage, timeout);
-        KeystoreResponseMessage responseMessage = deviceApplicationCall.send();
+        KeystoreResponseMessage responseMessage;
+        try {
+            responseMessage = keystoreDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while creating DeviceKeystoreKeypair {} for Device {}. Error: {}", keystoreKeypair, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -431,9 +496,22 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
         keystoreRequestMessage.setChannel(keystoreRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<KeystoreRequestChannel, KeystoreRequestPayload, KeystoreCsrRequestMessage, KeystoreResponseMessage> keystoreDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(keystoreRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, KeystoreResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(keystoreRequestMessage, timeout);
-        KeystoreResponseMessage responseMessage = deviceApplicationCall.send();
+        KeystoreResponseMessage responseMessage;
+        try {
+            responseMessage = keystoreDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while creating DeviceKeystoreCsrInfo {} for Device {}. Error: {}", keystoreCSRInfo, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event
@@ -491,9 +569,22 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
         keystoreRequestMessage.setChannel(keystoreRequestChannel);
 
         //
+        // Build request
+        DeviceCallBuilder<KeystoreRequestChannel, KeystoreRequestPayload, KeystoreQueryRequestMessage, KeystoreResponseMessage> keystoreDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(keystoreRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do get
-        DeviceCallExecutor<?, ?, ?, KeystoreResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(keystoreRequestMessage, timeout);
-        KeystoreResponseMessage responseMessage = deviceApplicationCall.send();
+        KeystoreResponseMessage responseMessage;
+        try {
+            responseMessage = keystoreDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while deleting DeviceKeystoreItem with alias {} in DeviceKeystore {} for Device {}. Error: {}", alias, keystoreId, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event

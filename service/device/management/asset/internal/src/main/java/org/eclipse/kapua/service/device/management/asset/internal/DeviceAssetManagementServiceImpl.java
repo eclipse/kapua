@@ -26,10 +26,12 @@ import org.eclipse.kapua.service.device.management.asset.message.internal.AssetR
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponseMessage;
 import org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreService;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
-import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
+import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 import org.eclipse.kapua.service.device.management.exception.DeviceNeverConnectedException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 import java.util.Date;
@@ -42,11 +44,13 @@ import java.util.Date;
 @Singleton
 public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceAssetManagementService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DeviceAssetManagementServiceImpl.class);
+
+    private static final DeviceAssetStoreService ASSET_STORE_SERVICE = KapuaLocator.getInstance().getService(DeviceAssetStoreService.class);
+
     private static final String SCOPE_ID = "scopeId";
     private static final String DEVICE_ID = "deviceId";
     private static final String DEVICE_ASSETS = "deviceAssets";
-
-    private static final DeviceAssetStoreService ASSET_STORE_SERVICE = KapuaLocator.getInstance().getService(DeviceAssetStoreService.class);
 
     @Override
     public DeviceAssets get(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout)
@@ -83,11 +87,23 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         assetRequestMessage.setChannel(assetRequestChannel);
 
         //
-        // Do get
-        DeviceCallExecutor<?, ?, ?, AssetResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(assetRequestMessage, timeout);
+        // Build call
+        DeviceCallBuilder<AssetRequestChannel, AssetRequestPayload, AssetRequestMessage, AssetResponseMessage> assetDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(assetRequestMessage)
+                        .withTimeoutOrDefault(timeout);
 
+        //
+        // Do get
         if (isDeviceConnected(scopeId, deviceId)) {
-            AssetResponseMessage responseMessage = deviceApplicationCall.send();
+            AssetResponseMessage responseMessage;
+            try {
+                responseMessage = assetDeviceCallBuilder.send();
+            } catch (Exception e) {
+                LOG.error("Error while reading DeviceAssets {} for Device {}. Error: {}", deviceAssets, deviceId, e.getMessage(), e);
+                throw e;
+            }
 
             //
             // Create event
@@ -149,11 +165,23 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         assetRequestMessage.setChannel(assetRequestChannel);
 
         //
-        // Do read
-        DeviceCallExecutor<?, ?, ?, AssetResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(assetRequestMessage, timeout);
+        // Build call
+        DeviceCallBuilder<AssetRequestChannel, AssetRequestPayload, AssetRequestMessage, AssetResponseMessage> assetDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(assetRequestMessage)
+                        .withTimeoutOrDefault(timeout);
 
+        //
+        // Do read
         if (isDeviceConnected(scopeId, deviceId)) {
-            AssetResponseMessage responseMessage = deviceApplicationCall.send();
+            AssetResponseMessage responseMessage;
+            try {
+                responseMessage = assetDeviceCallBuilder.send();
+            } catch (Exception e) {
+                LOG.error("Error while reading DeviceAssets values {} for Device {}. Error: {}", deviceAssets, deviceId, e.getMessage(), e);
+                throw e;
+            }
 
             //
             // Create event
@@ -216,9 +244,22 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         assetRequestMessage.setChannel(assetRequestChannel);
 
         //
+        // Build call
+        DeviceCallBuilder<AssetRequestChannel, AssetRequestPayload, AssetRequestMessage, AssetResponseMessage> assetDeviceCallBuilder =
+                DeviceCallBuilder
+                        .newBuilder()
+                        .withRequestMessage(assetRequestMessage)
+                        .withTimeoutOrDefault(timeout);
+
+        //
         // Do write
-        DeviceCallExecutor<?, ?, ?, AssetResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(assetRequestMessage, timeout);
-        AssetResponseMessage responseMessage = deviceApplicationCall.send();
+        AssetResponseMessage responseMessage;
+        try {
+            responseMessage = assetDeviceCallBuilder.send();
+        } catch (Exception e) {
+            LOG.error("Error while writing DeviceAssets {} for Device {}. Error: {}", deviceAssets, deviceId, e.getMessage(), e);
+            throw e;
+        }
 
         //
         // Create event

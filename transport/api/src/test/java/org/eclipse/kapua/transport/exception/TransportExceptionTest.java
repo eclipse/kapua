@@ -13,175 +13,124 @@
 package org.eclipse.kapua.transport.exception;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.transport.exception.model.TestCodesTransportClientException;
+import org.eclipse.kapua.transport.exception.model.TestTransportMessage;
+import org.eclipse.kapua.transport.message.TransportMessage;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import java.text.MessageFormat;
 
-
+/**
+ * {@link TransportException}s tests.
+ *
+ * @since 1.0.0
+ */
 @Category(JUnitTests.class)
 public class TransportExceptionTest {
 
-    TransportErrorCodes[] transportErrorCodes;
-    String kapuaErrorMessage;
-    String[] expectedMessageWithoutObject;
-    String[] expectedMessageWithObject;
-    Object object, stringObject, intObject;
-    Throwable[] throwable;
+    private final Throwable cause = new Throwable("This is the cause");
 
-    @Before
-    public void initialize() {
-        transportErrorCodes = new TransportErrorCodes[]{TransportErrorCodes.SEND_ERROR, TransportErrorCodes.TIMEOUT, TransportErrorCodes.CLIENT_GET};
-        kapuaErrorMessage = "transport-client-error-messages";
-        object = new Object();
-        stringObject = "String Object";
-        intObject = 11;
-        expectedMessageWithoutObject = new String[]{"An error occurred when sending the message: {0}", "The request has not received a response within the timeout of: {0}ms", "Cannot get an instance of the transport client to connect to host: {0}"};
-        expectedMessageWithObject = new String[]{"An error occurred when sending the message: " + object, "The request has not received a response within the timeout of: " + object + "ms", "Cannot get an instance of the transport client to connect to host: " + object};
-        throwable = new Throwable[]{new Throwable(), null};
-    }
+    private final String serverIp = "serverIp";
+    private final Long aTimeout = 15000L;
+    private final TransportMessage<?, ?> transportMessage = new TestTransportMessage();
 
-    private class TransportExceptionImpl extends TransportException {
+    @Test
+    public void testTransportErrorCodesHaveMessages() {
+        for (TransportErrorCodes errorCode : TransportErrorCodes.values()) {
+            TransportException mqttClientException = new TestCodesTransportClientException(errorCode);
 
-        protected TransportExceptionImpl(TransportErrorCodes code) {
-            super(code);
-        }
-
-        protected TransportExceptionImpl(TransportErrorCodes code, @Nullable Object... arguments) {
-            super(code, arguments);
-        }
-
-        protected TransportExceptionImpl(TransportErrorCodes code, Throwable cause, @Nullable Object... arguments) {
-            super(code, cause, arguments);
+            Assert.assertNotEquals("TransportErrorCodes." + errorCode + " doesn't have an error message", "Error: ", mqttClientException.getMessage());
+            Assert.assertNotEquals("TransportErrorCodes." + errorCode + " doesn't have an error message", "Error: ", mqttClientException.getLocalizedMessage());
         }
     }
 
     @Test
-    public void transportExceptionCodeTest() {
-        for (int i = 0; i < transportErrorCodes.length; i++) {
-            TransportException transportException = new TransportExceptionImpl(transportErrorCodes[i]);
-            Assert.assertEquals("Expected and actual values should be the same.", transportErrorCodes[i], transportException.getCode());
-            Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithoutObject[i], transportException.getMessage());
-            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
-            Assert.assertNull("Null expected.", transportException.getCause());
-        }
+    public void testTransportClientGetException() {
+        String exceptionMessage = "Cannot get an instance of the TransportClient to connect to host: " + serverIp;
+
+        // Without cause
+        TransportClientGetException transportClientGetException = new TransportClientGetException(serverIp);
+
+        Assert.assertEquals(TransportErrorCodes.CLIENT_GET, transportClientGetException.getCode());
+        Assert.assertNull(transportClientGetException.getCause());
+        Assert.assertEquals(serverIp, transportClientGetException.getServerIp());
+        Assert.assertEquals(exceptionMessage, transportClientGetException.getMessage());
+        Assert.assertEquals(exceptionMessage, transportClientGetException.getLocalizedMessage());
+
+        // With cause
+        exceptionMessage = exceptionMessage + ". Caused by: " + cause.getMessage();
+
+        transportClientGetException = new TransportClientGetException(cause, serverIp);
+
+        Assert.assertEquals(TransportErrorCodes.CLIENT_GET_WITH_CAUSE, transportClientGetException.getCode());
+        Assert.assertEquals(cause, transportClientGetException.getCause());
+        Assert.assertEquals(serverIp, transportClientGetException.getServerIp());
+        Assert.assertEquals(exceptionMessage, transportClientGetException.getMessage());
+        Assert.assertEquals(exceptionMessage, transportClientGetException.getLocalizedMessage());
     }
 
     @Test
-    public void transportExceptionNullCodeTest() {
-        TransportException transportException = new TransportExceptionImpl(null);
-        Assert.assertNull("Null expected.", transportException.getCode());
-        Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
-        Assert.assertNull("Null expected.", transportException.getCause());
-        try {
-            transportException.getMessage();
-        } catch (Exception e) {
-            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-        }
+    public void testTransportClientPoolExhaustedException() {
+        String exceptionMessage = "Cannot get an instance of the TransportClient to connect to host " + serverIp + " within the configured timeout of " + MessageFormat.format("{0}", aTimeout) + "ms";
+
+        // Without cause
+        TransportClientPoolExhaustedException transportClientPoolExhaustedException = new TransportClientPoolExhaustedException(serverIp, aTimeout);
+
+        Assert.assertEquals(TransportErrorCodes.CLIENT_POOL_EXHAUSTED, transportClientPoolExhaustedException.getCode());
+        Assert.assertNull(transportClientPoolExhaustedException.getCause());
+        Assert.assertEquals(serverIp, transportClientPoolExhaustedException.getServerIp());
+        Assert.assertEquals(aTimeout, transportClientPoolExhaustedException.getBorrowWaitTimeout());
+        Assert.assertEquals(exceptionMessage, transportClientPoolExhaustedException.getMessage());
+        Assert.assertEquals(exceptionMessage, transportClientPoolExhaustedException.getLocalizedMessage());
+
+        // With cause
+        transportClientPoolExhaustedException = new TransportClientPoolExhaustedException(cause, serverIp, aTimeout);
+
+        Assert.assertEquals(TransportErrorCodes.CLIENT_POOL_EXHAUSTED, transportClientPoolExhaustedException.getCode());
+        Assert.assertEquals(cause, transportClientPoolExhaustedException.getCause());
+        Assert.assertEquals(serverIp, transportClientPoolExhaustedException.getServerIp());
+        Assert.assertEquals(aTimeout, transportClientPoolExhaustedException.getBorrowWaitTimeout());
+        Assert.assertEquals(exceptionMessage, transportClientPoolExhaustedException.getMessage());
+        Assert.assertEquals(exceptionMessage, transportClientPoolExhaustedException.getLocalizedMessage());
     }
 
     @Test
-    public void transportExceptionCodeArgumentsTest() {
-        for (int i = 0; i < transportErrorCodes.length; i++) {
-            TransportException transportException = new TransportExceptionImpl(transportErrorCodes[i], object, stringObject, intObject);
-            Assert.assertEquals("Expected and actual values should be the same.", transportErrorCodes[i], transportException.getCode());
-            Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithObject[i], transportException.getMessage());
-            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
-            Assert.assertNull("Null expected.", transportException.getCause());
-        }
+    public void testTransportSendException() {
+        String exceptionMessage = "An error occurred when sending the message: " + transportMessage;
+
+        // Without cause
+        TransportSendException transportSendException = new TransportSendException(transportMessage);
+
+        Assert.assertEquals(TransportErrorCodes.SEND_ERROR, transportSendException.getCode());
+        Assert.assertNull(transportSendException.getCause());
+        Assert.assertEquals(transportMessage, transportSendException.getRequestMessage());
+        Assert.assertEquals(exceptionMessage, transportSendException.getMessage());
+        Assert.assertEquals(exceptionMessage, transportSendException.getLocalizedMessage());
+
+        // With cause
+        exceptionMessage = exceptionMessage + ". Caused by: " + cause.getMessage();
+
+        transportSendException = new TransportSendException(cause, transportMessage);
+
+        Assert.assertEquals(TransportErrorCodes.SEND_ERROR_WITH_CAUSE, transportSendException.getCode());
+        Assert.assertEquals(cause, transportSendException.getCause());
+        Assert.assertEquals(transportMessage, transportSendException.getRequestMessage());
+        Assert.assertEquals(exceptionMessage, transportSendException.getMessage());
+        Assert.assertEquals(exceptionMessage, transportSendException.getLocalizedMessage());
     }
 
     @Test
-    public void transportExceptionCodeNullArgumentsTest() {
-        for (int i = 0; i < transportErrorCodes.length; i++) {
-            TransportException transportException = new TransportExceptionImpl(transportErrorCodes[i], null);
-            Assert.assertEquals("Expected and actual values should be the same.", transportErrorCodes[i], transportException.getCode());
-            Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithoutObject[i], transportException.getMessage());
-            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
-            Assert.assertNull("Null expected.", transportException.getCause());
-        }
-    }
+    public void testTransportTimeoutException() {
+        String exceptionMessage = "The request has not received a response within the timeout of: " + MessageFormat.format("{0}", aTimeout) + "ms";
 
-    @Test
-    public void transportExceptionNullCodeArgumentsTest() {
-        for (int i = 0; i < transportErrorCodes.length; i++) {
-            TransportException transportException = new TransportExceptionImpl(null, object, stringObject, intObject);
-            Assert.assertNull("Null expected.", transportException.getCode());
-            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
-            Assert.assertNull("Null expected.", transportException.getCause());
-            try {
-                transportException.getMessage();
-            } catch (Exception e) {
-                Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-            }
-        }
-    }
+        TransportTimeoutException transportTimeoutException = new TransportTimeoutException(aTimeout);
 
-    @Test
-    public void transportExceptionCodeCauseArgumentsTest() {
-        for (int i = 0; i < transportErrorCodes.length; i++) {
-            for (Throwable cause : throwable) {
-                TransportException transportException = new TransportExceptionImpl(transportErrorCodes[i], cause, object, stringObject, intObject);
-                Assert.assertEquals("Expected and actual values should be the same.", transportErrorCodes[i], transportException.getCode());
-                Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithObject[i], transportException.getMessage());
-                Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
-                Assert.assertEquals("Expected and actual values should be the same.", cause, transportException.getCause());
-            }
-        }
-    }
-
-    @Test
-    public void transportExceptionCodeCauseNullArgumentsTest() {
-        for (int i = 0; i < transportErrorCodes.length; i++) {
-            for (Throwable cause : throwable) {
-                TransportException transportException = new TransportExceptionImpl(transportErrorCodes[i], cause, null);
-                Assert.assertEquals("Expected and actual values should be the same.", transportErrorCodes[i], transportException.getCode());
-                Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithoutObject[i], transportException.getMessage());
-                Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
-                Assert.assertEquals("Expected and actual values should be the same.", cause, transportException.getCause());
-            }
-        }
-    }
-
-    @Test
-    public void transportExceptionNullCodeCauseArgumentsTest() {
-        for (int i = 0; i < transportErrorCodes.length; i++) {
-            for (Throwable cause : throwable) {
-                TransportException transportException = new TransportExceptionImpl(null, cause, object, stringObject, intObject);
-                Assert.assertNull("Null expected.", transportException.getCode());
-                Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
-                Assert.assertEquals("Expected and actual values should be the same.", cause, transportException.getCause());
-                try {
-                    transportException.getMessage();
-                } catch (Exception e) {
-                    Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-                }
-            }
-        }
-    }
-
-    @Test(expected = TransportException.class)
-    public void throwingTransportExceptionCodeTest() throws TransportExceptionImpl {
-        for (TransportErrorCodes code : transportErrorCodes) {
-            throw new TransportExceptionImpl(code);
-        }
-    }
-
-    @Test(expected = TransportException.class)
-    public void throwingTransportExceptionCodeArgumentsTest() throws TransportExceptionImpl {
-        for (TransportErrorCodes code : transportErrorCodes) {
-            throw new TransportExceptionImpl(code, object, stringObject, intObject);
-        }
-    }
-
-    @Test(expected = TransportException.class)
-    public void throwingTransportExceptionCodeCauseArgumentsTest() throws TransportExceptionImpl {
-        for (TransportErrorCodes code : transportErrorCodes) {
-            for (Throwable cause : throwable) {
-                throw new TransportExceptionImpl(code, cause, object, stringObject, intObject);
-            }
-        }
+        Assert.assertEquals(TransportErrorCodes.TIMEOUT, transportTimeoutException.getCode());
+        Assert.assertNull(transportTimeoutException.getCause());
+        Assert.assertEquals(aTimeout, transportTimeoutException.getTimeout());
+        Assert.assertEquals(exceptionMessage, transportTimeoutException.getMessage());
+        Assert.assertEquals(exceptionMessage, transportTimeoutException.getLocalizedMessage());
     }
 }

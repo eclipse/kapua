@@ -15,6 +15,7 @@ package org.eclipse.kapua.transport;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.transport.exception.TransportClientGetException;
+import org.eclipse.kapua.transport.exception.TransportException;
 import org.eclipse.kapua.transport.message.TransportChannel;
 import org.eclipse.kapua.transport.message.TransportMessage;
 import org.eclipse.kapua.transport.message.TransportPayload;
@@ -46,7 +47,7 @@ public interface TransportClientFactory<C extends TransportChannel, P extends Tr
      * @throws TransportClientGetException If error occurs when getting the {@link TransportFacade}.
      * @since 1.0.0
      */
-    T getFacade(Map<String, Object> configParameters) throws TransportClientGetException;
+    T getFacade(Map<String, Object> configParameters) throws TransportException;
 
     /**
      * Gets an instance of the {@link TransportClientConnectOptions} implementing class.
