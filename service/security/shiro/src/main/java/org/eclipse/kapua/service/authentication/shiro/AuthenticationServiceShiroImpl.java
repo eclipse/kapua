@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authentication.shiro;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -37,9 +38,7 @@ import org.eclipse.kapua.commons.util.KapuaDelayUtil;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
-import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
-import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.SessionCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
@@ -101,6 +100,8 @@ import org.slf4j.MDC;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Date;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -164,6 +165,9 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         this.userService = userService;
     }
 
+    @Inject
+    private Set<CredentialsHandler> credentialsHandlers;
+
     @Override
     public AccessToken login(LoginCredentials loginCredentials, boolean enableTrust) throws KapuaException {
 
@@ -177,6 +181,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     @Override
     public AccessToken login(LoginCredentials loginCredentials) throws KapuaException {
+        //
         // Check LoginCredentials
         if (loginCredentials == null) {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
@@ -184,38 +189,18 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
         // Check subject
         checkCurrentSubjectNotAuthenticated();
+
         // Parse login credentials
-        AuthenticationToken shiroAuthenticationToken;
-        String openIDidToken = null;
-        if (loginCredentials instanceof UsernamePasswordCredentials) {
-            UsernamePasswordCredentialsImpl usernamePasswordCredentials = UsernamePasswordCredentialsImpl.parse((UsernamePasswordCredentials) loginCredentials);
+        final CredentialsHandler credentialsHandler = credentialsHandlers
+                .stream()
+                .filter(ch -> ch.canProcess(loginCredentials))
+                .findFirst()
+                .orElseThrow(() -> new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED));
 
-            if (Strings.isNullOrEmpty(usernamePasswordCredentials.getUsername()) ||
-                    Strings.isNullOrEmpty(usernamePasswordCredentials.getPassword())) {
-                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
-            }
+        final ImmutablePair<AuthenticationToken, Optional<String>> authenticationTokenAndOpenIDToken = credentialsHandler.mapToShiro(loginCredentials);
+        AuthenticationToken shiroAuthenticationToken = authenticationTokenAndOpenIDToken.getLeft();
 
-            shiroAuthenticationToken = usernamePasswordCredentials;
-        } else if (loginCredentials instanceof ApiKeyCredentials) {
-            ApiKeyCredentialsImpl apiKeyCredentials = ApiKeyCredentialsImpl.parse((ApiKeyCredentials) loginCredentials);
-
-            if (Strings.isNullOrEmpty(apiKeyCredentials.getApiKey())) {
-                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
-            }
-
-            shiroAuthenticationToken = apiKeyCredentials;
-        } else if (loginCredentials instanceof JwtCredentials) {
-            JwtCredentialsImpl jwtCredentials = JwtCredentialsImpl.parse((JwtCredentials) loginCredentials);
-            openIDidToken = jwtCredentials.getIdToken();
-
-            if (Strings.isNullOrEmpty(openIDidToken)) {
-                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
-            }
-
-            shiroAuthenticationToken = jwtCredentials;
-        } else {
-            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED);
-        }
+        //
         // Login the user
         AccessToken accessToken = null;
         Subject currentUser = null;
@@ -231,6 +216,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             accessToken = createAccessToken(shiroSession);
 
             // Establish session
+            final String openIDidToken = authenticationTokenAndOpenIDToken.getRight().orElse(null);
             establishSession(shiroSubject, accessToken, openIDidToken);
 
             // Create trust key if required
@@ -246,6 +232,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     @Override
     public void authenticate(SessionCredentials sessionCredentials) throws KapuaException {
+        //
         // Check LoginCredentials
         if (sessionCredentials == null) {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_SESSION_CREDENTIALS);
@@ -253,6 +240,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
         // Check subject
         checkCurrentSubjectNotAuthenticated();
+
+        //
         // Parse login credentials
         AuthenticationToken shiroAuthenticationToken;
         if (sessionCredentials instanceof AccessTokenCredentials) {
@@ -266,6 +255,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         } else {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED);
         }
+
+        //
         // Login the user
         Subject currentUser = null;
         try {
@@ -307,6 +298,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     @Override
     public void verifyCredentials(LoginCredentials loginCredentials) throws KapuaException {
+        //
         // Parse login credentials
         AuthenticationToken shiroAuthenticationToken;
         if (loginCredentials instanceof UsernamePasswordCredentials) {
@@ -316,6 +308,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         } else {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED);
         }
+
+        //
         // Login the user
         Subject verifySubject = null;
         try {
@@ -428,20 +422,30 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     @Override
     public LoginInfo getLoginInfo() throws KapuaException {
         LoginInfo loginInfo = accessTokenFactory.newLoginInfo();
+
+        //
         // AccessToken
         AccessToken accessToken = KapuaSecurityUtils.getSession().getAccessToken();
         loginInfo.setAccessToken(accessToken);
+
+        //
         // AccessInfo
         AccessInfo accessInfo = KapuaSecurityUtils.doPrivileged(() -> accessInfoService.findByUserId(accessToken.getScopeId(), accessToken.getUserId()));
+
+        //
         // AccessRole
         AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(accessToken.getScopeId());
         accessRoleQuery.setPredicate(accessRoleQuery.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfo.getId()));
         AccessRoleListResult accessRoleListResult = KapuaSecurityUtils.doPrivileged(() -> accessRoleService.query(accessRoleQuery));
+
+        //
         // RolePermission
         RolePermissionQuery rolePermissionQuery = rolePermissionFactory.newQuery(accessToken.getScopeId());
         rolePermissionQuery.setPredicate(rolePermissionQuery.attributePredicate(RolePermissionAttributes.ROLE_ID, accessRoleListResult.getItems().stream().map(AccessRole::getRoleId).collect(Collectors.toList())));
         RolePermissionListResult rolePermissions = KapuaSecurityUtils.doPrivileged(() -> rolePermissionService.query(rolePermissionQuery));
         loginInfo.setRolePermission(Sets.newHashSet(rolePermissions.getItems()));
+
+        //
         // AccessPermission
         AccessPermissionQuery accessPermissionQuery = accessPermissionFactory.newQuery(accessToken.getScopeId());
         accessPermissionQuery.setPredicate(accessPermissionQuery.attributePredicate(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfo.getId()));
@@ -462,7 +466,10 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
         return session.isTrustedMode() || SecurityUtils.getSubject().isAuthenticated();
     }
+
+    //
     // Private Methods
+    //
 
     /**
      * Checks if the Shiro {@link Subject} is authenticated or not.
@@ -606,6 +613,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     private String generateJwt(KapuaEid scopeId, KapuaEid userId, Date now, long ttl) {
 
         KapuaAuthenticationSetting settings = KapuaAuthenticationSetting.getInstance();
+
+        //
         // Build claims
         JwtClaims claims = new JwtClaims();
 
