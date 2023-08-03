@@ -30,7 +30,7 @@ public class UnsupportedTypeMappingException extends MappingException {
      * @since 1.3.0
      */
     public UnsupportedTypeMappingException(String name, Object value) {
-        super(StorableErrorCodes.UNSUPPORTED_TYPE, name, value, value != null ? value.getClass().getName() : "null");
+        super(StorableErrorCodes.UNSUPPORTED_TYPE, name, value, value != null ? value.getClass().getSimpleName() : "null");
 
         this.name = name;
         this.value = value;
