@@ -115,6 +115,21 @@ public class AuthenticationModule extends AbstractKapuaModule {
                 ));
     }
 
+    @ProvidesIntoSet
+    public CredentialsHandler usernamePasswordCredentialsHandler() {
+        return new UsernamePasswordCredentialsHandler();
+    }
+
+    @ProvidesIntoSet
+    public CredentialsHandler apiKeyCredentialsHandler() {
+        return new ApiKeyCredentialsHandler();
+    }
+
+    @ProvidesIntoSet
+    public CredentialsHandler jwtCredentialsHandler() {
+        return new JwtCredentialsHandler();
+    }
+
     @Provides
     @Singleton
     PasswordValidator passwordValidator(CredentialServiceConfigurationManager credentialServiceConfigurationManager) {
