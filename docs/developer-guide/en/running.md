@@ -11,13 +11,17 @@ production setup. {% endhint %}
 Before running Kapua on Docker, you need to
 
 1. Install `docker` and `docker-compose`
-2. Make sure that you have built Kapua docker images locally, following the provided building section of this documentation. Alternatively, you can utilize images hosted under the [Kapua DockerHub account](https://hub.docker.com/r/kapua/), for this case we recommend you to follow the "Quick Start Guide" section that can be found in the readme.md file under the root folder.
+2. Make sure that you have built Kapua docker images locally, following the provided building section of this documentation. Alternatively, you can utilize images hosted under
+   the [Kapua DockerHub account](https://hub.docker.com/r/kapua/), for this case we recommend you to follow the "Quick Start Guide" section that can be found in the readme.md file under the root
+   folder.
 
 Now, you can start Kapua by using Docker Compose. To do so, run
 
     kapua/deployment/docker/docker-deploy.sh
 
-Note in case of a deployment of and old version: Assuming that you have built images for a release previous to 2.0.0, and consequently you have done a checkout to the proper tagged commit, keep in mind that the building procedure created a set of docker images tagged as "latest". The "docker-deploy" script pulls images tagged in this way. This implies that the newly built images will be launched. 
+Note in case of a deployment of and old version: Assuming that you have built images for a release previous to 2.0.0, and consequently you have done a checkout to the proper tagged commit, keep in
+mind that the building procedure created a set of docker images tagged as "latest". The "docker-deploy" script pulls images tagged in this way. This implies that the newly built images will be
+launched.
 
 After Kapua has been started, you can navigate your browser to http://localhost:8080 and log in using the following
 credentials:
@@ -39,7 +43,6 @@ It's possible to deploy kapua with some advanced options that are exposed in thi
 kapua/deployment/docker/README.md
 
 If you are interested in having debugging/logging capabilities we recommend you to consult it.
-
 
 ## OpenShift
 
@@ -172,7 +175,7 @@ default, Kapua comes with the NodePort service that routes all traffic from port
 connect your MQTT clients directly to this service. For the simulator example similar to the above, that would look
 something like
 
-    java -jar target/kapua-simulator-kura-2.0.0-REPO-SNAPSHOT-app.jar --broker tcp://kapua-broker:kapua-password@192.168.64.2:31883
+    java -jar target/kapua-simulator-kura-2.0.0-SNAPSHOT-app.jar --broker tcp://kapua-broker:kapua-password@192.168.64.2:31883
 
 This is suitable only for the local deployments. In the cloud or production environments, you should deploy a proper
 LoadBalancer Openshift service to enable external traffic flow to the broker.
