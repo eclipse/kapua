@@ -45,7 +45,7 @@ public class ServiceConfigurationManagerCachingWrapper implements ServiceConfigu
      *
      * @since 1.2.0
      */
-    private static final LocalCache<Pair<KapuaId, Boolean>, KapuaTocd> KAPUA_TOCD_LOCAL_CACHE = new LocalCache<>(LOCAL_CACHE_SIZE_MAX, null);
+    private final LocalCache<Pair<KapuaId, Boolean>, KapuaTocd> kapuaTocdLocalCache = new LocalCache<>(LOCAL_CACHE_SIZE_MAX, null);
 
     /**
      * This cache only holds the {@link Boolean} value {@literal True} if the {@link KapuaTocd} has been already read from the file
@@ -55,7 +55,7 @@ public class ServiceConfigurationManagerCachingWrapper implements ServiceConfigu
      *
      * @since 1.2.0
      */
-    private static final LocalCache<Pair<KapuaId, Boolean>, Boolean> KAPUA_TOCD_EMPTY_LOCAL_CACHE = new LocalCache<>(LOCAL_CACHE_SIZE_MAX, false);
+    private final LocalCache<Pair<KapuaId, Boolean>, Boolean> kapuaTocdEmptyLocalCache = new LocalCache<>(LOCAL_CACHE_SIZE_MAX, false);
 
 
     public ServiceConfigurationManagerCachingWrapper(ServiceConfigurationManager wrapped) {
@@ -89,18 +89,18 @@ public class ServiceConfigurationManagerCachingWrapper implements ServiceConfigu
         try {
             // Check if the OCD is already in cache, but not in the "empty" cache
             KapuaTocd tocd;
-            tocd = KAPUA_TOCD_LOCAL_CACHE.get(cacheKey);
-            if (tocd == null && !KAPUA_TOCD_EMPTY_LOCAL_CACHE.get(cacheKey)) {
+            tocd = kapuaTocdLocalCache.get(cacheKey);
+            if (tocd == null && !kapuaTocdEmptyLocalCache.get(cacheKey)) {
                 // If not, read metadata and process it
                 tocd = wrapped.getConfigMetadata(txContext, scopeId, excludeDisabled);
                 // If null, put it in the "empty" ocd cache, else put it in the "standard" cache
                 if (tocd != null) {
                     // If the value is not null, put it in "standard" cache and remove the entry from the "empty" cache if present
-                    KAPUA_TOCD_LOCAL_CACHE.put(cacheKey, tocd);
-                    KAPUA_TOCD_EMPTY_LOCAL_CACHE.remove(cacheKey);
+                    kapuaTocdLocalCache.put(cacheKey, tocd);
+                    kapuaTocdEmptyLocalCache.remove(cacheKey);
                 } else {
                     // If the value is null, just remember we already read it from file at least once
-                    KAPUA_TOCD_EMPTY_LOCAL_CACHE.put(cacheKey, true);
+                    kapuaTocdEmptyLocalCache.put(cacheKey, true);
                 }
             }
             return tocd;
