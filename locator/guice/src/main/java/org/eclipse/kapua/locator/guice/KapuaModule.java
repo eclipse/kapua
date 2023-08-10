@@ -17,10 +17,15 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.ClassPath.ClassInfo;
 import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
+import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.multibindings.ProvidesIntoSet;
+import com.google.inject.spi.InjectionListener;
+import com.google.inject.spi.TypeEncounter;
+import com.google.inject.spi.TypeListener;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
@@ -36,7 +41,9 @@ import org.eclipse.kapua.service.KapuaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Arrays;
@@ -176,12 +183,58 @@ public class KapuaModule extends AbstractKapuaModule {
             //sic!
             bind(ServiceModuleBundle.class).in(Singleton.class);
 
+            bindListener(new HasPostConstructAnnotationMatcher(), new TypeListener() {
+                @Override
+                public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
+                    encounter.register(PostConstructAnnotationInvoker.INSTANCE);
+                }
+            });
             logger.trace("Binding completed");
 
         } catch (Exception e) {
             logger.error("Exeption configuring module", e);
             throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, "Cannot load " + SERVICE_RESOURCE);
         }
+    }
+
+    private static class HasPostConstructAnnotationMatcher extends AbstractMatcher<TypeLiteral<?>> {
+
+        @Override
+        public boolean matches(TypeLiteral<?> t) {
+            return Arrays.stream(t.getRawType().getDeclaredMethods()).anyMatch(this::hasPostConstructAnnotation);
+        }
+
+        private boolean hasPostConstructAnnotation(Method method) {
+            Annotation[] declaredAnnotations = method.getAnnotations();
+            return Arrays.stream(declaredAnnotations).anyMatch(a -> a.annotationType().equals(PostConstruct.class));
+        }
+    }
+
+
+    private static class PostConstructAnnotationInvoker implements InjectionListener<Object> {
+        private static final PostConstructAnnotationInvoker INSTANCE = new PostConstructAnnotationInvoker();
+
+        private boolean hasPostConstructAnnotation(Method method) {
+            Annotation[] declaredAnnotations = method.getAnnotations();
+            return Arrays.stream(declaredAnnotations).anyMatch(a -> a.annotationType().equals(PostConstruct.class));
+        }
+
+        @Override
+        public void afterInjection(Object injectee) {
+            //@formatter:off
+            Arrays.stream(injectee.getClass().getDeclaredMethods())
+                    .filter(this::hasPostConstructAnnotation)
+                    .forEach(m -> {
+                        try {
+                            m.setAccessible(true);
+                            m.invoke(injectee);
+                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                    });
+            //@formatter:on
+        }
+
     }
 
     //Provides an empty one, just so at least one is found and initialization of ServiceModuleBundle does not fail
