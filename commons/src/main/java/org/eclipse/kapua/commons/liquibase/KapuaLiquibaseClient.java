@@ -19,7 +19,7 @@ import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
-import liquibase.resource.FileSystemResourceAccessor;
+import liquibase.resource.DirectoryResourceAccessor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -72,8 +73,8 @@ public class KapuaLiquibaseClient {
      * Constructor.
      *
      * @param jdbcUrl  The JDBC connection string.
-     * @param username The username to connect to to the database.
-     * @param password The password to connect to to the database.
+     * @param username The username to connect to the database.
+     * @param password The password to connect to the database.
      * @since 1.0.0
      */
     public KapuaLiquibaseClient(String jdbcUrl, String username, String password) {
@@ -84,8 +85,8 @@ public class KapuaLiquibaseClient {
      * Constructor.
      *
      * @param jdbcUrl  The JDBC connection string.
-     * @param username The username to connect to to the database.
-     * @param password The password to connect to to the database.
+     * @param username The username to connect to the database.
+     * @param password The password to connect to the database.
      * @param schema   The {@link java.util.Optional} schema name.
      * @since 1.0.0
      * @deprecated Since 1.2.0. Removed usage of {@link Optional} as parameter.
@@ -99,8 +100,8 @@ public class KapuaLiquibaseClient {
      * Constructor.
      *
      * @param jdbcUrl  The JDBC connection string.
-     * @param username The username to connect to to the database.
-     * @param password The password to connect to to the database.
+     * @param username The username to connect to the database.
+     * @param password The password to connect to the database.
      * @param schema   The schema name.
      * @since 1.2.0
      */
@@ -172,9 +173,9 @@ public class KapuaLiquibaseClient {
         LOG.info("Trying to release changelog lock...");
         try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password)) {
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
-            Liquibase liquibase = new Liquibase((String) null, new FileSystemResourceAccessor(), database);
+            Liquibase liquibase = new Liquibase((String) null, new DirectoryResourceAccessor(new File("/")), database);
             liquibase.forceReleaseLocks();
-        } catch (LiquibaseException | SQLException e) {
+        } catch (LiquibaseException | SQLException | FileNotFoundException e) {
             LOG.error("Running release changelog lock... ERROR! Error: {}", e.getMessage(), e);
             throw new RuntimeException(e); // TODO: throw an appropriate exception!
         }
@@ -210,7 +211,7 @@ public class KapuaLiquibaseClient {
         return changelogTempDirectory;
     }
 
-    protected static void executeMasters(Connection connection, String schema, File changelogDir, List<String> contexts) throws LiquibaseException {
+    protected static void executeMasters(Connection connection, String schema, File changelogDir, List<String> contexts) throws LiquibaseException, FileNotFoundException {
         // Find and execute all master scripts
         LOG.info("Executing pre master files...");
         executeMasters(connection, schema, changelogDir, "-master.pre.xml", contexts);
@@ -225,7 +226,7 @@ public class KapuaLiquibaseClient {
         LOG.info("Executing post master files... DONE!");
     }
 
-    protected static void executeMasters(Connection connection, String schema, File changelogTempDirectory, String preMaster, List<String> contexts) throws LiquibaseException {
+    protected static void executeMasters(Connection connection, String schema, File changelogTempDirectory, String preMaster, List<String> contexts) throws LiquibaseException, FileNotFoundException {
         List<File> masterChangelogs = Arrays.asList(changelogTempDirectory.listFiles((dir, name) -> name.endsWith(preMaster)));
 
         LOG.info("\tMaster Liquibase files found: {}", masterChangelogs.size());
@@ -240,7 +241,7 @@ public class KapuaLiquibaseClient {
             if (!Strings.isNullOrEmpty(schema)) {
                 database.setDefaultSchemaName(schema);
             }
-            Liquibase liquibase = new Liquibase(masterChangelog.getAbsolutePath(), new FileSystemResourceAccessor("/"), database);
+            Liquibase liquibase = new Liquibase(masterChangelog.getAbsolutePath(), new DirectoryResourceAccessor(new File("/")), database);
             liquibase.update(ctx);
 
             LOG.debug("\t\tExecuting liquibase script: {}... DONE!", masterChangelog.getAbsolutePath());
