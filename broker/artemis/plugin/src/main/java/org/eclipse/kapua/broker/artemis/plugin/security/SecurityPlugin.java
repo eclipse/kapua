@@ -12,16 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.artemis.plugin.security;
 
-import java.security.cert.Certificate;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.jms.JMSException;
-import javax.net.ssl.SSLPeerUnverifiedException;
-import javax.security.auth.Subject;
-import javax.security.auth.login.CredentialException;
-import javax.security.cert.X509Certificate;
-
+import com.codahale.metrics.Timer.Context;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.common.base.Strings;
+import io.netty.handler.ssl.SslHandler;
 import org.apache.activemq.artemis.api.core.ActiveMQException;
 import org.apache.activemq.artemis.api.core.ActiveMQExceptionType;
 import org.apache.activemq.artemis.core.remoting.impl.netty.NettyServerConnection;
@@ -36,11 +30,11 @@ import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
 import org.eclipse.kapua.client.security.ServiceClient.EntityType;
 import org.eclipse.kapua.client.security.ServiceClient.SecurityAction;
-import org.eclipse.kapua.client.security.bean.EntityRequest;
-import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
 import org.eclipse.kapua.client.security.bean.ConnectionInfo;
+import org.eclipse.kapua.client.security.bean.EntityRequest;
+import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.bean.KapuaPrincipalImpl;
 import org.eclipse.kapua.client.security.context.SessionContext;
 import org.eclipse.kapua.client.security.context.Utils;
@@ -49,21 +43,24 @@ import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.KapuaPrincipal;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Timer.Context;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.common.base.Strings;
-
-import io.netty.handler.ssl.SslHandler;
+import javax.jms.JMSException;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.security.auth.Subject;
+import javax.security.auth.login.CredentialException;
+import javax.security.cert.X509Certificate;
+import java.security.cert.Certificate;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Kapua Artemis security plugin implementation (authentication/authorization)
- *
  */
 public class SecurityPlugin implements ActiveMQSecurityManager5 {
 
@@ -87,7 +84,10 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         logger.info("Initializing SecurityPlugin...");
         //TODO find which is the right plugin to use to set this parameter (ServerPlugin or SecurityPlugin???)
         CommonsMetric.module = MetricsSecurityPlugin.BROKER_TELEMETRY;
-        loginMetric = LoginMetric.getInstance();
+        loginMetric = KapuaLocator.getInstance().getComponent(LoginMetric.class);
+//        publishMetric = KapuaLocator.getInstance().getComponent(PublishMetric.class);
+//        subscribeMetric = KapuaLocator.getInstance().getComponent(SubscribeMetric.class);
+//        serverContext = KapuaLocator.getInstance().getComponent(ServerContext.class);
         publishMetric = PublishMetric.getInstance();
         subscribeMetric = SubscribeMetric.getInstance();
         serverContext = ServerContext.getInstance();
@@ -103,22 +103,21 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         //since we keep a "Kapua session" map that is cleaned when the connection is dropped no security issues will come if this cache is used to avoid redundant login process
         String connectionId = PluginUtility.getConnectionId(remotingConnection);
         logger.debug("### authenticate user: {} - clientId: {} - remoteIP: {} - connectionId: {} - securityDomain: {}",
-            username, remotingConnection.getClientID(), remotingConnection.getTransportConnection().getRemoteAddress(), connectionId, securityDomain);
+                username, remotingConnection.getClientID(), remotingConnection.getTransportConnection().getRemoteAddress(), connectionId, securityDomain);
         String clientIp = remotingConnection.getTransportConnection().getRemoteAddress();
         String clientId = remotingConnection.getClientID();
         //leave the clientId validation to the DeviceCreator. Here just check for / or ::
         //ArgumentValidator.match(clientId, DeviceValidationRegex.CLIENT_ID, "deviceCreator.clientId");
-        if (clientId!=null && (clientId.contains("/") || clientId.contains("::"))) {
+        if (clientId != null && (clientId.contains("/") || clientId.contains("::"))) {
             //TODO look for the right exception mapped to MQTT invalid client id error code
             throw new SecurityException("Invalid Client Id!");
         }
         SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextWithCacheFallback(connectionId);
-        if (sessionContext!=null && sessionContext.getPrincipal()!=null) {
+        if (sessionContext != null && sessionContext.getPrincipal() != null) {
             logger.debug("### authenticate user (cache found): {} - clientId: {} - remoteIP: {} - connectionId: {}", username, clientId, remotingConnection.getTransportConnection().getRemoteAddress(), connectionId);
             loginMetric.getAuthenticateFromCache().inc();
             return serverContext.getSecurityContext().buildFromPrincipal(sessionContext.getPrincipal());
-        }
-        else {
+        } else {
             logger.debug("### authenticate user (no cache): {} - clientId: {} - remoteIP: {} - connectionId: {}", username, clientId, remotingConnection.getTransportConnection().getRemoteAddress(), connectionId);
             if (!remotingConnection.getTransportConnection().isOpen()) {
                 logger.info("Connection (connectionId: {}) is closed (stealing link occurred?)", connectionId);
@@ -126,16 +125,16 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                 return null;
             }
             ConnectionInfo connectionInfo = new ConnectionInfo(
-                PluginUtility.getConnectionId(remotingConnection),//connectionId
-                clientId,//clientId
-                clientIp,//clientIp
-                remotingConnection.getTransportConnection().getConnectorConfig().getName(),//connectorName
-                remotingConnection.getProtocolName(),//transportProtocol
-                (String)remotingConnection.getTransportConnection().getConnectorConfig().getCombinedParams().get("sslEnabled"),//sslEnabled
-                getPeerCertificates(remotingConnection));//clientsCertificates
+                    PluginUtility.getConnectionId(remotingConnection),//connectionId
+                    clientId,//clientId
+                    clientIp,//clientIp
+                    remotingConnection.getTransportConnection().getConnectorConfig().getName(),//connectorName
+                    remotingConnection.getProtocolName(),//transportProtocol
+                    (String) remotingConnection.getTransportConnection().getConnectorConfig().getCombinedParams().get("sslEnabled"),//sslEnabled
+                    getPeerCertificates(remotingConnection));//clientsCertificates
             return PluginUtility.isInternal(remotingConnection) ?
-                authenticateInternalConn(connectionInfo, connectionId, username, password, remotingConnection) :
-                authenticateExternalConn(connectionInfo, connectionId, username, password, remotingConnection);
+                    authenticateInternalConn(connectionInfo, connectionId, username, password, remotingConnection) :
+                    authenticateExternalConn(connectionInfo, connectionId, username, password, remotingConnection);
         }
     }
 
@@ -144,13 +143,13 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         String usernameToCompare = SystemSetting.getInstance().getString(SystemSettingKey.BROKER_INTERNAL_CONNECTOR_USERNAME);
         String passToCompare = SystemSetting.getInstance().getString(SystemSettingKey.BROKER_INTERNAL_CONNECTOR_PASSWORD);
         try {
-            if (usernameToCompare==null || !usernameToCompare.equals(username) ||
-                passToCompare==null || !passToCompare.equals(password)) {
+            if (usernameToCompare == null || !usernameToCompare.equals(username) ||
+                    passToCompare == null || !passToCompare.equals(password)) {
                 throw new ActiveMQException(ActiveMQExceptionType.SECURITY_EXCEPTION, "User not authorized!");
             }
             logger.info("Authenticate internal: user: {} - clientId: {} - connectionIp: {} - connectionId: {} - remoteIP: {} - isOpen: {}",
-                username, connectionInfo.getClientId(), connectionInfo.getClientIp(), remotingConnection.getID(),
-                remotingConnection.getTransportConnection().getRemoteAddress(), remotingConnection.getTransportConnection().isOpen());
+                    username, connectionInfo.getClientId(), connectionInfo.getClientIp(), remotingConnection.getID(),
+                    remotingConnection.getTransportConnection().getRemoteAddress(), remotingConnection.getTransportConnection().isOpen());
             //TODO double check why the client id is null once coming from AMQP connection (the Kapua connection factory with custom client id generation is called)
             KapuaPrincipal kapuaPrincipal = buildInternalKapuaPrincipal(getAdminAccountInfo().getId(), username, connectionInfo.getClientId());
             //auto generate client id if null. It shouldn't be null but in some case the one from JMS connection is.
@@ -166,13 +165,12 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             remotingConnection.setClientID(fullClientId);
             Subject subject = buildInternalSubject(kapuaPrincipal);
             SessionContext sessionContext = new SessionContext(kapuaPrincipal, getAdminAccountInfo().getName(), connectionInfo,
-                serverContext.getBrokerIdentity().getBrokerId(), serverContext.getBrokerIdentity().getBrokerHost(),
-                true, false);
+                    serverContext.getBrokerIdentity().getBrokerId(), serverContext.getBrokerIdentity().getBrokerHost(),
+                    true, false);
             serverContext.getSecurityContext().setSessionContext(sessionContext, null);
             loginMetric.getInternalConnector().getSuccess().inc();
             return subject;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             loginMetric.getInternalConnector().getFailure().inc();
             logger.error("Authenticate internal: error: {}", e.getMessage());
             return null;
@@ -184,25 +182,25 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         Context timeTotal = loginMetric.getExternalAddConnection().time();
         try {
             logger.info("Authenticate external: user: {} - clientId: {} - connectionIp: {} - connectionId: {} - isOpen: {}",
-                username, connectionInfo.getClientId(), connectionInfo.getClientIp(), remotingConnection.getID(), remotingConnection.getTransportConnection().isOpen());
+                    username, connectionInfo.getClientId(), connectionInfo.getClientIp(), remotingConnection.getID(), remotingConnection.getTransportConnection().isOpen());
             String fullClientId = Utils.getFullClientId(getScopeId(username), connectionInfo.getClientId());
             AuthRequest authRequest = new AuthRequest(
-                serverContext.getClusterName(),
-                serverContext.getBrokerIdentity().getBrokerHost(), SecurityAction.brokerConnect.name(),
-                username, password, connectionInfo,
-                serverContext.getBrokerIdentity().getBrokerHost(), serverContext.getBrokerIdentity().getBrokerId());
+                    serverContext.getClusterName(),
+                    serverContext.getBrokerIdentity().getBrokerHost(), SecurityAction.brokerConnect.name(),
+                    username, password, connectionInfo,
+                    serverContext.getBrokerIdentity().getBrokerHost(), serverContext.getBrokerIdentity().getBrokerId());
             SessionContext currentSessionContext = serverContext.getSecurityContext().getSessionContextByClientId(fullClientId);
-            serverContext.getSecurityContext().updateStealingLinkAndIllegalState(authRequest, connectionId, currentSessionContext!=null ? currentSessionContext.getConnectionId() : null);
+            serverContext.getSecurityContext().updateStealingLinkAndIllegalState(authRequest, connectionId, currentSessionContext != null ? currentSessionContext.getConnectionId() : null);
             AuthResponse authResponse = serverContext.getAuthServiceClient().brokerConnect(authRequest);
             validateAuthResponse(authResponse);
             KapuaPrincipal principal = new KapuaPrincipalImpl(authResponse);
             SessionContext sessionContext = new SessionContext(principal, authResponse.getAccountName(), connectionInfo, authResponse.getKapuaConnectionId(),
-                serverContext.getBrokerIdentity().getBrokerId(), serverContext.getBrokerIdentity().getBrokerHost(),
-                authResponse.isAdmin(), authResponse.isMissing());
+                    serverContext.getBrokerIdentity().getBrokerId(), serverContext.getBrokerIdentity().getBrokerHost(),
+                    authResponse.isAdmin(), authResponse.isMissing());
 
             //update client id with account|clientId (see pattern)
             remotingConnection.setClientID(fullClientId);
-            logger.info("Authenticate external: connectionId: {} - old: {}", sessionContext.getConnectionId(), currentSessionContext!=null ? currentSessionContext.getConnectionId() : "N/A");
+            logger.info("Authenticate external: connectionId: {} - old: {}", sessionContext.getConnectionId(), currentSessionContext != null ? currentSessionContext.getConnectionId() : "N/A");
             Subject subject = null;
             //this call is synchronized on sessionId value
             if (serverContext.getSecurityContext().setSessionContext(sessionContext, authResponse.getAcls())) {
@@ -210,13 +208,11 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             }
             loginMetric.getExternalConnector().getSuccess().inc();
             return subject;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             loginMetric.getExternalConnector().getFailure().inc();
             logger.error("Authenticate external: error: {}", e.getMessage());
             return null;
-        }
-        finally {
+        } finally {
             timeTotal.stop();
         }
     }
@@ -227,44 +223,42 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         //TODO improve it to check for null
         KapuaPrincipal principal = getKapuaPrincipal(subject);
         logger.debug("### authorizing address: {} - check type: {}", address, checkType.name());
-        if (principal!=null) {
+        if (principal != null) {
             logger.debug("### authorizing address: {} - check type: {} - clientId: {} - clientIp: {}", address, checkType.name(), principal.getClientId(), principal.getClientIp());
             if (!principal.isInternal()) {
                 SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextWithCacheFallback(principal.getConnectionId());
                 switch (checkType) {
-                case CONSUME:
-                    allowed = serverContext.getSecurityContext().checkConsumerAllowed(sessionContext, address);
-                    if (!allowed) {
-                        subscribeMetric.getNotAllowedMessages().inc();
-                    }
-                    break;
-                case SEND:
-                    allowed = serverContext.getSecurityContext().checkPublisherAllowed(sessionContext, address);
-                    if (!allowed) {
-                        publishMetric.getNotAllowedMessages().inc();
-                    }
-                    else {
-                        publishMetric.getAllowedMessages().inc();
-                    }
-                    break;
-                case BROWSE:
-                    allowed = serverContext.getSecurityContext().checkConsumerAllowed(sessionContext, address);
-                    break;
-                case DELETE_DURABLE_QUEUE:
-                    allowed = true;
-                    break;
-                case CREATE_NON_DURABLE_QUEUE:
-                    allowed = serverContext.getSecurityContext().checkConsumerAllowed(sessionContext, address);
-                    break;
-                case DELETE_ADDRESS:
-                    serverContext.getAddressAccessTracker().remove(address);
-                    break;
-                default:
-                    allowed = serverContext.getSecurityContext().checkAdminAllowed(sessionContext, address);
-                    break;
+                    case CONSUME:
+                        allowed = serverContext.getSecurityContext().checkConsumerAllowed(sessionContext, address);
+                        if (!allowed) {
+                            subscribeMetric.getNotAllowedMessages().inc();
+                        }
+                        break;
+                    case SEND:
+                        allowed = serverContext.getSecurityContext().checkPublisherAllowed(sessionContext, address);
+                        if (!allowed) {
+                            publishMetric.getNotAllowedMessages().inc();
+                        } else {
+                            publishMetric.getAllowedMessages().inc();
+                        }
+                        break;
+                    case BROWSE:
+                        allowed = serverContext.getSecurityContext().checkConsumerAllowed(sessionContext, address);
+                        break;
+                    case DELETE_DURABLE_QUEUE:
+                        allowed = true;
+                        break;
+                    case CREATE_NON_DURABLE_QUEUE:
+                        allowed = serverContext.getSecurityContext().checkConsumerAllowed(sessionContext, address);
+                        break;
+                    case DELETE_ADDRESS:
+                        serverContext.getAddressAccessTracker().remove(address);
+                        break;
+                    default:
+                        allowed = serverContext.getSecurityContext().checkAdminAllowed(sessionContext, address);
+                        break;
                 }
-            }
-            else {
+            } else {
                 allowed = true;
             }
         }
@@ -291,10 +285,9 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
     //Utilities methods
     //
     private void validateAuthResponse(AuthResponse authResponse) throws CredentialException, ActiveMQException {
-        if (authResponse==null) {
+        if (authResponse == null) {
             throw new ActiveMQException(ActiveMQExceptionType.SECURITY_EXCEPTION, "User not authorized!");
-        }
-        else if (authResponse.getErrorCode()!=null) {
+        } else if (authResponse.getErrorCode() != null) {
             //analyze response code
             String errorCode = authResponse.getErrorCode();
             if (KapuaAuthenticationErrorCodes.UNKNOWN_LOGIN_CREDENTIAL.name().equals(errorCode) ||
@@ -320,16 +313,15 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
     }
 
     private Certificate[] getPeerCertificates(RemotingConnection remotingConnection) {
-        NettyServerConnection nettyServerConnection = ((NettyServerConnection)remotingConnection.getTransportConnection());
+        NettyServerConnection nettyServerConnection = ((NettyServerConnection) remotingConnection.getTransportConnection());
         try {
             SslHandler sslhandler = (SslHandler) nettyServerConnection.getChannel().pipeline().get("ssl");
-            if (sslhandler!=null) {
+            if (sslhandler != null) {
                 Certificate[] localCertificates = sslhandler.engine().getSession().getLocalCertificates();
                 Certificate[] clientCertificates = sslhandler.engine().getSession().getPeerCertificates();
                 X509Certificate[] x509ClientCertificates = sslhandler.engine().getSession().getPeerCertificateChain();//???
                 return clientCertificates;
-            }
-            else {
+            } else {
                 return null;
             }
         } catch (SSLPeerUnverifiedException e) {
@@ -341,9 +333,8 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
     private KapuaPrincipal getKapuaPrincipal(Subject subject) {
         try {
             //return the first Principal if it's a KapuaPrincipal, otherwise catch every Exception and return null
-            return (KapuaPrincipal)subject.getPrincipals().iterator().next();
-        }
-        catch (Exception e) {
+            return (KapuaPrincipal) subject.getPrincipals().iterator().next();
+        } catch (Exception e) {
             return null;
         }
     }
@@ -359,7 +350,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
     }
 
     private AccountInfo getAdminAccountInfo() throws JsonProcessingException, JMSException, InterruptedException {
-        if (adminAccountInfo==null) {
+        if (adminAccountInfo == null) {
             adminAccountInfo = getAdminAccountInfoNoCache();
         }
         return adminAccountInfo;
@@ -368,7 +359,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
     private KapuaId getScopeId(String username) throws JsonProcessingException, JMSException, InterruptedException {
         KapuaId scopeId = usernameScopeIdCache.get(username);
         //no synchronization needed. At the worst the getScopeId will be called few times instead of just one but the overall performances will be better without synchronization
-        if (scopeId==null) {
+        if (scopeId == null) {
             scopeId = getScopeIdNoCache(username);
             usernameScopeIdCache.put(username, scopeId);
         }
@@ -377,11 +368,11 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
 
     private AccountInfo getAdminAccountInfoNoCache() throws JsonProcessingException, JMSException, InterruptedException {
         EntityRequest accountRequest = new EntityRequest(
-            serverContext.getClusterName(),
-            serverContext.getBrokerIdentity().getBrokerHost(),
-            SecurityAction.getEntity.name(),
-            EntityType.account.name(),
-            SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_ACCOUNT));
+                serverContext.getClusterName(),
+                serverContext.getBrokerIdentity().getBrokerHost(),
+                SecurityAction.getEntity.name(),
+                EntityType.account.name(),
+                SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_ACCOUNT));
         EntityResponse accountResponse = serverContext.getAuthServiceClient().getEntity(accountRequest);
         if (accountResponse != null) {
             return new AccountInfo(KapuaEid.parseCompactId(accountResponse.getId()), accountResponse.getName());
@@ -392,6 +383,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
     /**
      * Return the scopeId, if user exist, otherwise throws SecurityException
      * No checks for user validity, just return scope id to be used, for example, to build full client id
+     *
      * @param username
      * @return
      * @throws InterruptedException
@@ -400,13 +392,13 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
      */
     private KapuaId getScopeIdNoCache(String username) throws JsonProcessingException, JMSException, InterruptedException {
         EntityRequest userRequest = new EntityRequest(
-            serverContext.getClusterName(),
-            serverContext.getBrokerIdentity().getBrokerHost(),
-            SecurityAction.getEntity.name(),
-            EntityType.user.name(),
-            username);
+                serverContext.getClusterName(),
+                serverContext.getBrokerIdentity().getBrokerHost(),
+                SecurityAction.getEntity.name(),
+                EntityType.user.name(),
+                username);
         EntityResponse userResponse = serverContext.getAuthServiceClient().getEntity(userRequest);
-        if (userResponse != null && userResponse.getScopeId()!=null) {
+        if (userResponse != null && userResponse.getScopeId() != null) {
             return KapuaEid.parseCompactId(userResponse.getScopeId());
         }
         throw new SecurityException("User not authorized!");

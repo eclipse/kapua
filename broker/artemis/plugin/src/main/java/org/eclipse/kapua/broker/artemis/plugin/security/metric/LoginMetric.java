@@ -14,15 +14,13 @@ package org.eclipse.kapua.broker.artemis.plugin.security.metric;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
-
 import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-public class LoginMetric {
+import javax.inject.Inject;
 
-    private static final LoginMetric LOGIN_METRIC = new LoginMetric();
+public class LoginMetric {
 
     public static final String COMPONENT_LOGIN = "login";
     //action
@@ -62,12 +60,8 @@ public class LoginMetric {
     private Timer externalAddConnection;
     private Timer removeConnection;
 
-    public static LoginMetric getInstance() {
-        return LOGIN_METRIC;
-    }
-
-    private LoginMetric() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    @Inject
+    public LoginMetric(MetricsService metricsService) {
         // login by connectors
         externalConnector = new ActionMetric(CommonsMetric.module, COMPONENT_LOGIN, EXTERNAL_CONNECTOR);
         authenticateFromCache = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, AUTHENTICATE_FROM_CACHE);
@@ -127,6 +121,7 @@ public class LoginMetric {
 
     /**
      * Disconnect callback called before the connect callback (usually when a stealing link happens)
+     *
      * @return
      */
     public Counter getDisconnectCallbackCallFailure() {
@@ -136,6 +131,7 @@ public class LoginMetric {
     /**
      * No session context is found by client id on disconnect on cleanupConnectionData (disconnect)
      * It's not necessary an error or failure but the metric is classified as failure
+     *
      * @return
      */
     public Counter getSessionContextByClientIdFailure() {
@@ -144,6 +140,7 @@ public class LoginMetric {
 
     /**
      * ACL found from cache (it happens when a client id disconnected but some address related to this client id deleted after)
+     *
      * @return
      */
     public Counter getAclCacheHit() {
@@ -152,6 +149,7 @@ public class LoginMetric {
 
     /**
      * Failure while creating ACL count (a failure doesn't mean all the ACL for a user aren't created but just one of the available ACLs)
+     *
      * @return
      */
     public Counter getAclCreationFailure() {
@@ -160,6 +158,7 @@ public class LoginMetric {
 
     /**
      * External connector - Add connection total time
+     *
      * @return
      */
     public Timer getExternalAddConnection() {
@@ -168,6 +167,7 @@ public class LoginMetric {
 
     /**
      * Remove connection total time
+     *
      * @return
      */
     public Timer getRemoveConnection() {

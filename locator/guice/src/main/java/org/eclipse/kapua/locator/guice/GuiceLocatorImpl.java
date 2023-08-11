@@ -35,6 +35,7 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -145,6 +146,11 @@ public class GuiceLocatorImpl extends KapuaLocator {
         List<AbstractKapuaModule> kapuaModules = new ArrayList<>();
         List<Class<? extends AbstractKapuaModule>> excludedKapuaModules = new ArrayList<>();
         for (Class<? extends AbstractKapuaModule> moduleClazz : kapuaModuleClasses) {
+            final boolean parameterlessConstructorExist = Arrays.stream(moduleClazz.getDeclaredConstructors()).anyMatch(c -> c.getParameterTypes().length == 0);
+            if (!parameterlessConstructorExist) {
+                excludedKapuaModules.add(moduleClazz);
+                continue;
+            }
             if (isExcluded(moduleClazz.getName(), locatorConfig.getExcludedPackageNames())) {
                 excludedKapuaModules.add(moduleClazz);
                 continue;

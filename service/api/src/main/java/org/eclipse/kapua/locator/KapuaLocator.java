@@ -32,7 +32,7 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
 
     private static final Logger logger = LoggerFactory.getLogger(KapuaLocator.class);
 
-    private static KapuaLocator instance = createInstance();
+    private static KapuaLocator instance;
 
     /**
      * {@link KapuaLocator} implementation classname specified via "System property" constants
@@ -58,7 +58,8 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
             if (locatorImplementation != null && !locatorImplementation.trim().isEmpty()) {
                 try {
                     logger.info("initializing locator class {}... ", locatorImplementation);
-                    return (KapuaLocator) Class.forName(locatorImplementation).newInstance();
+                    final Class<?> locatorClass = Class.forName(locatorImplementation);
+                    return (KapuaLocator) locatorClass.newInstance();
                 } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
                     logger.info("An error occurred during Servicelocator initialization", e);
                 }
@@ -88,6 +89,9 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
      * @return
      */
     public static KapuaLocator getInstance() {
+        if (instance == null) {
+            instance = createInstance();
+        }
         return instance;
     }
 

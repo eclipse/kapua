@@ -118,12 +118,18 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     public ServerPlugin() {
         //TODO find which is the right plugin to use to set this parameter (ServerPlugin or SecurityPlugin???)
         CommonsMetric.module = MetricsSecurityPlugin.BROKER_TELEMETRY;
-        loginMetric = LoginMetric.getInstance();
+        //TODO find a proper way to initialize database
+        DatabaseCheckUpdate databaseCheckUpdate = new DatabaseCheckUpdate();
+        final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
+        loginMetric = kapuaLocator.getComponent(LoginMetric.class);
+//        publishMetric = kapuaLocator.getComponent(PublishMetric.class);
+//        subscribeMetric = kapuaLocator.getComponent(SubscribeMetric.class);
+//        publishInfoMessageSizeLimit = kapuaLocator.getComponent(BrokerSetting.class).getInt(BrokerSettingKey.PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD, DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD);
+//        serverContext = kapuaLocator.getComponent(ServerContext.class);
+
         publishMetric = PublishMetric.getInstance();
         subscribeMetric = SubscribeMetric.getInstance();
         publishInfoMessageSizeLimit = BrokerSetting.getInstance().getInt(BrokerSettingKey.PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD, DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD);
-        //TODO find a proper way to initialize database
-        DatabaseCheckUpdate databaseCheckUpdate = new DatabaseCheckUpdate();
         serverContext = ServerContext.getInstance();
         brokerEventHanldler = BrokerEventHandler.getInstance();
         brokerEventHanldler.registerConsumer((brokerEvent) -> disconnectClient(brokerEvent));

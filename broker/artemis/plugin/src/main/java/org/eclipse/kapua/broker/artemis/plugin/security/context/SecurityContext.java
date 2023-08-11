@@ -81,7 +81,9 @@ public final class SecurityContext {
     private boolean printData = BrokerSetting.getInstance().getBoolean(BrokerSettingKey.PRINT_SECURITY_CONTEXT_REPORT, false);
     private ExecutorWrapper executorWrapper;
 
-    public SecurityContext(ActiveMQServer server) {
+    public SecurityContext(ActiveMQServer server,
+                           LoginMetric loginMetric) {
+        this.loginMetric = loginMetric;
         connectionTokenCache = new LocalCache<>(
                 BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_CONNECTION_TOKEN_SIZE), BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_CONNECTION_TOKEN_TTL), null);
         sessionContextCache = new LocalCache<>(
@@ -99,13 +101,13 @@ public final class SecurityContext {
                 logger.warn("ServerReportTask already started!");
             }
         }
+        //TODO: FIXME: Move this into a module
         try {
             MetricsSecurityPlugin.getInstance(server,
                     () -> sessionContextMap.size(),
                     () -> sessionContextMapByClient.size(),
                     () -> aclMap.size(),
                     () -> activeConnections.size());
-            loginMetric = LoginMetric.getInstance();
         } catch (KapuaException e) {
             //do nothing
             //in this case one or more metrics are not registered but it's not a blocking issue
@@ -128,7 +130,7 @@ public final class SecurityContext {
                 activeConnections.add(connectionId);
                 //fill by connection id context
                 sessionContextMap.put(connectionId, sessionContext);
-                aclMap.put(connectionId, new Acl(sessionContext.getPrincipal(), authAcls));
+                aclMap.put(connectionId, new Acl(loginMetric, sessionContext.getPrincipal(), authAcls));
                 //fill by full client id context
                 sessionContextMapByClient.put(Utils.getFullClientId(sessionContext), sessionContext);
                 return true;

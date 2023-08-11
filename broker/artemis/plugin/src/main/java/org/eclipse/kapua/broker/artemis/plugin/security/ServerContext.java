@@ -15,9 +15,11 @@ package org.eclipse.kapua.broker.artemis.plugin.security;
 import org.apache.activemq.artemis.core.server.ActiveMQServer;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.artemis.plugin.security.context.SecurityContext;
+import org.eclipse.kapua.broker.artemis.plugin.security.metric.LoginMetric;
 import org.eclipse.kapua.broker.artemis.plugin.utils.BrokerIdentity;
 import org.eclipse.kapua.client.security.ServiceClient;
 import org.eclipse.kapua.client.security.ServiceClientMessagingImpl;
+import org.eclipse.kapua.locator.KapuaLocator;
 
 public class ServerContext {
 
@@ -44,7 +46,7 @@ public class ServerContext {
         this.clusterName = clusterName;
         brokerIdentity.init(server);
         authServiceClient = new ServiceClientMessagingImpl(clusterName, brokerIdentity.getBrokerHost());
-        securityContext = new SecurityContext(server);
+        securityContext = new SecurityContext(server, KapuaLocator.getInstance().getComponent(LoginMetric.class));
     }
 
     public void shutdown(ActiveMQServer server) throws KapuaException {

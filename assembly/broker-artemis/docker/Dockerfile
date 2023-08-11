@@ -38,6 +38,7 @@ ENV JAVA_ARGS "-Dcommons.db.schema.update=true \
                    -Dcommons.db.connection.port=\${SQL_DB_PORT} \
                    -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
                    -Dbroker.ip=message-broker \
+                   -Dlocator.class.impl=org.eclipse.kapua.locator.guice.GuiceLocatorImpl \
                    -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
                    -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem"
 

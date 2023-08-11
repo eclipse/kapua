@@ -77,6 +77,16 @@
                 <include>com.h2database:h2</include>
                 <include>com.zaxxer:HikariCP</include>
 
+                <!-- Locator dependencies -->
+                <include>com.google.inject:guice</include>
+                <include>org.reflections:reflections</include>
+                <include>org.javassist:javassist</include>
+                <include>javax.cache:cache-api</include>
+                <include>aopalliance:aopalliance</include>
+                <include>${pom.groupId}:kapua-locator-guice</include>
+                
+                <!-- / Locator dependencies -->
+
                 <include>com.fasterxml.jackson.core:jackson-core</include>
                 <include>com.fasterxml.jackson.core:jackson-databind</include>
                 <include>com.fasterxml.jackson.core:jackson-annotations</include>
