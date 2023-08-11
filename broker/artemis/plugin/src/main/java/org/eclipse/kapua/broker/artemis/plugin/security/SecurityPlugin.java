@@ -87,8 +87,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         loginMetric = kapuaLocator.getComponent(LoginMetric.class);
         publishMetric = kapuaLocator.getComponent(PublishMetric.class);
         subscribeMetric = kapuaLocator.getComponent(SubscribeMetric.class);
-        serverContext = ServerContext.getInstance();
-//        serverContext = KapuaLocator.getInstance().getComponent(ServerContext.class);
+        serverContext = KapuaLocator.getInstance().getComponent(ServerContext.class);
         final BrokerSetting brokerSettings = kapuaLocator.getComponent(BrokerSetting.class);
         usernameScopeIdCache = new LocalCache<>(
                 brokerSettings.getInt(BrokerSettingKey.CACHE_SCOPE_ID_SIZE),

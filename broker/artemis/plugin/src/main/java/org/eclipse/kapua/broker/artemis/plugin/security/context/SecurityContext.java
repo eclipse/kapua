@@ -33,6 +33,7 @@ import org.eclipse.kapua.service.authentication.KapuaPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.security.auth.Subject;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,19 +82,23 @@ public final class SecurityContext {
     private final boolean printData;
     private ExecutorWrapper executorWrapper;
 
-    public SecurityContext(ActiveMQServer server,
-                           LoginMetric loginMetric,
+    @Inject
+    public SecurityContext(LoginMetric loginMetric,
                            BrokerSetting brokerSettings) {
         this.loginMetric = loginMetric;
+        //TODO: FIXME: Move this into a module
         this.printData = brokerSettings.getBoolean(BrokerSettingKey.PRINT_SECURITY_CONTEXT_REPORT, false);
+        //TODO: FIXME: Move this into a module
         connectionTokenCache = new LocalCache<>(
                 brokerSettings.getInt(BrokerSettingKey.CACHE_CONNECTION_TOKEN_SIZE),
                 brokerSettings.getInt(BrokerSettingKey.CACHE_CONNECTION_TOKEN_TTL),
                 null);
+        //TODO: FIXME: Move this into a module
         sessionContextCache = new LocalCache<>(
                 brokerSettings.getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_SIZE),
                 brokerSettings.getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_TTL),
                 null);
+        //TODO: FIXME: Move this into a module
         aclCache = new LocalCache<>(
                 brokerSettings.getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_SIZE),
                 brokerSettings.getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_TTL),
@@ -101,6 +106,10 @@ public final class SecurityContext {
         sessionContextMapByClient = new ConcurrentHashMap<>();
         sessionContextMap = new ConcurrentHashMap<>();
         aclMap = new ConcurrentHashMap<>();
+
+    }
+
+    public void init(ActiveMQServer server) {
         if (printData) {
             if (executorWrapper == null) {
                 executorWrapper = new ExecutorWrapper("ServerReport", () -> printCompactReport(server, "ServerReportTask", "N/A"), 60, 30, TimeUnit.SECONDS);

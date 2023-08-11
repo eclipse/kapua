@@ -125,10 +125,9 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         publishMetric = kapuaLocator.getComponent(PublishMetric.class);
         subscribeMetric = kapuaLocator.getComponent(SubscribeMetric.class);
         this.brokerSetting = kapuaLocator.getComponent(BrokerSetting.class);
-        publishInfoMessageSizeLimit = brokerSetting.getInt(BrokerSettingKey.PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD, DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD);
-        serverContext = ServerContext.getInstance();
+        this.publishInfoMessageSizeLimit = brokerSetting.getInt(BrokerSettingKey.PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD, DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD);
+        serverContext = kapuaLocator.getComponent(ServerContext.class);
         brokerEventHanldler = BrokerEventHandler.getInstance();
-//        serverContext = kapuaLocator.getComponent(ServerContext.class);
         brokerEventHanldler.registerConsumer((brokerEvent) -> disconnectClient(brokerEvent));
         brokerEventHanldler.start();
 
@@ -140,7 +139,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         logger.info("registering plugin {}...", this.getClass().getName());
         try {
             String clusterName = SystemSetting.getInstance().getString(SystemSettingKey.CLUSTER_NAME);
-            serverContext.init(server, clusterName, loginMetric, brokerSetting);
+            serverContext.init(server);
             acceptorHandler = new AcceptorHandler(server,
                     brokerSetting.getMap(String.class, BrokerSettingKey.ACCEPTORS));
             //init acceptors

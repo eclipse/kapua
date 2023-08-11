@@ -15,40 +15,39 @@ package org.eclipse.kapua.broker.artemis.plugin.security;
 import org.apache.activemq.artemis.core.server.ActiveMQServer;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.artemis.plugin.security.context.SecurityContext;
-import org.eclipse.kapua.broker.artemis.plugin.security.metric.LoginMetric;
-import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.utils.BrokerIdentity;
 import org.eclipse.kapua.client.security.ServiceClient;
 import org.eclipse.kapua.client.security.ServiceClientMessagingImpl;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 public class ServerContext {
 
     //TODO provide client pluggability once the rest one will be implemented (now just the AMQP client is available)
-    //TODO manage through injection if possible
-    protected String clusterName;
-    protected ServiceClient authServiceClient;
-    protected SecurityContext securityContext;
-    protected BrokerIdentity brokerIdentity;
+    protected final String clusterName;
+    protected final ServiceClient authServiceClient;
+    protected final SecurityContext securityContext;
+    protected final BrokerIdentity brokerIdentity;
     protected ActiveMQServer server;
     protected AddressAccessTracker addressAccessTracker;
 
-    private final static ServerContext INSTANCE = new ServerContext();
-
-    public static ServerContext getInstance() {
-        return INSTANCE;
+    @Inject
+    public ServerContext(
+            @Named("clusterName") String clusterName,
+            BrokerIdentity brokerIdentity,
+            SecurityContext securityContext) {
+        this.clusterName = clusterName;
+        this.brokerIdentity = brokerIdentity;
+        this.securityContext = securityContext;
+        this.authServiceClient = new ServiceClientMessagingImpl(clusterName, brokerIdentity.getBrokerHost());
+        addressAccessTracker = new AddressAccessTracker();
     }
 
-    public void init(ActiveMQServer server, String clusterName, LoginMetric loginMetric, BrokerSetting brokerSetting) throws KapuaException {
+    public void init(ActiveMQServer server) throws KapuaException {
         this.server = server;
-        addressAccessTracker = new AddressAccessTracker();
-        //TODO see comment above
-        brokerIdentity = BrokerIdentity.getInstance();
-        this.clusterName = clusterName;
-        brokerIdentity.init(server, brokerSetting);
-        authServiceClient = new ServiceClientMessagingImpl(clusterName, brokerIdentity.getBrokerHost());
-        securityContext = new SecurityContext(server,
-                loginMetric,
-                brokerSetting);
+        brokerIdentity.init(server);
+        securityContext.init(server);
     }
 
     public void shutdown(ActiveMQServer server) throws KapuaException {
