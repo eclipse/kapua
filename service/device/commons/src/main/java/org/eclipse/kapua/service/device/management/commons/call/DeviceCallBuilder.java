@@ -116,7 +116,7 @@ public class DeviceCallBuilder<C extends KapuaRequestChannel, P extends KapuaReq
     }
 
     /**
-     * Configures the timeout of the MQTT request-reply and sets the {@link #DEFAULT_TIMEOUT} if provided timeout is {@code null}.
+     * Configures the timeout of the MQTT request-reply or sets the default timeout (see {@link DeviceManagementSettingKey#REQUEST_TIMEOUT}) in case the provided timeout is {@code null}.
      *
      * @return The {@link DeviceCallBuilder} itself.
      * @since 1.4.0
