@@ -144,8 +144,7 @@ public class BrokerSteps extends TestBase {
      */
     private static DeviceConnectionService deviceConnectionService;
     private static DeviceAssetManagementService deviceAssetManagementService;
-    private BrokerSetting brokerSettings;
-
+    private BrokerSetting brokerSettings = new BrokerSetting();
     /**
      * Client simulating Kura device
      */
@@ -168,7 +167,6 @@ public class BrokerSteps extends TestBase {
         deviceCommandFactory = locator.getFactory(DeviceCommandFactory.class);
         deviceConnectionService = locator.getService(DeviceConnectionService.class);
         deviceAssetManagementService = locator.getService(DeviceAssetManagementService.class);
-        brokerSettings = locator.getComponent(BrokerSetting.class);
     }
 
     @Before(value = "@env_docker or @env_docker_base or @env_none", order = 10)
