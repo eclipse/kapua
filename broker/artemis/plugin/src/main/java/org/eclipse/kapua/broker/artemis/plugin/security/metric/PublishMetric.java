@@ -15,15 +15,13 @@ package org.eclipse.kapua.broker.artemis.plugin.security.metric;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Timer;
-
 import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-public class PublishMetric {
+import javax.inject.Inject;
 
-    private static final PublishMetric PUBLISH_METRIC = new PublishMetric();
+public class PublishMetric {
 
     public static final String PUBLISH = "publish";
 
@@ -36,12 +34,8 @@ public class PublishMetric {
     // message size
     private Histogram messageSizeAllowed;
 
-    public static PublishMetric getInstance() {
-        return PUBLISH_METRIC;
-    }
-
-    private PublishMetric() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    @Inject
+    private PublishMetric(MetricsService metricsService) {
         // publish/subscribe
         allowedMessages = metricsService.getCounter(CommonsMetric.module, PUBLISH, ALLOWED);
         notAllowedMessages = metricsService.getCounter(CommonsMetric.module, PUBLISH, NOT_ALLOWED);

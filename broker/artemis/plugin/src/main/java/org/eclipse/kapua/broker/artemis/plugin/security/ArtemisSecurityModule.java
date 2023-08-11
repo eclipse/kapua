@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,18 +10,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.broker.artemis.plugin.security.metric;
+package org.eclipse.kapua.broker.artemis.plugin.security;
 
+import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 
 import javax.inject.Singleton;
 
-public class MetricsModule extends AbstractKapuaModule {
+public class ArtemisSecurityModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(LoginMetric.class).in(Singleton.class);
-        bind(PublishMetric.class).in(Singleton.class);
-        bind(SubscribeMetric.class).in(Singleton.class);
-
+        bind(BrokerSetting.class).in(Singleton.class);
     }
 }

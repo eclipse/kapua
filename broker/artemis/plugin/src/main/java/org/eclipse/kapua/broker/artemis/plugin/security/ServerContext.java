@@ -16,10 +16,10 @@ import org.apache.activemq.artemis.core.server.ActiveMQServer;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.artemis.plugin.security.context.SecurityContext;
 import org.eclipse.kapua.broker.artemis.plugin.security.metric.LoginMetric;
+import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.utils.BrokerIdentity;
 import org.eclipse.kapua.client.security.ServiceClient;
 import org.eclipse.kapua.client.security.ServiceClientMessagingImpl;
-import org.eclipse.kapua.locator.KapuaLocator;
 
 public class ServerContext {
 
@@ -38,15 +38,17 @@ public class ServerContext {
         return INSTANCE;
     }
 
-    public void init(ActiveMQServer server, String clusterName) throws KapuaException {
+    public void init(ActiveMQServer server, String clusterName, LoginMetric loginMetric, BrokerSetting brokerSetting) throws KapuaException {
         this.server = server;
         addressAccessTracker = new AddressAccessTracker();
         //TODO see comment above
         brokerIdentity = BrokerIdentity.getInstance();
         this.clusterName = clusterName;
-        brokerIdentity.init(server);
+        brokerIdentity.init(server, brokerSetting);
         authServiceClient = new ServiceClientMessagingImpl(clusterName, brokerIdentity.getBrokerHost());
-        securityContext = new SecurityContext(server, KapuaLocator.getInstance().getComponent(LoginMetric.class));
+        securityContext = new SecurityContext(server,
+                loginMetric,
+                brokerSetting);
     }
 
     public void shutdown(ActiveMQServer server) throws KapuaException {

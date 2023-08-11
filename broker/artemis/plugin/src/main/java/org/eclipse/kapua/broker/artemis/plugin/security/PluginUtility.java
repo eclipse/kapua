@@ -20,6 +20,7 @@ import org.apache.activemq.artemis.spi.core.protocol.RemotingConnection;
 import org.apache.activemq.artemis.spi.core.remoting.Connection;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,7 @@ public class PluginUtility {
     private static String mqttInternalConnectorName;
 
     static {
-        BrokerSetting brokerSetting = BrokerSetting.getInstance();
+        BrokerSetting brokerSetting = KapuaLocator.getInstance().getComponent(BrokerSetting.class);
         amqpInternalConectorPort = ":" + brokerSetting.getString(BrokerSettingKey.INTERNAL_AMQP_ACCEPTOR_PORT);
         amqpInternalConnectorName = brokerSetting.getString(BrokerSettingKey.INTERNAL_AMQP_ACCEPTOR_NAME);
         mqttInternalConectorPort = ":" + brokerSetting.getString(BrokerSettingKey.INTERNAL_MQTT_ACCEPTOR_PORT);
@@ -63,22 +64,20 @@ public class PluginUtility {
         String protocolName = remotingConnection.getProtocolName();
         if (remotingConnection instanceof ActiveMQProtonRemotingConnection) {
 //            AMQPConnectionContext connectionContext = ((ActiveMQProtonRemotingConnection)remotingConnection).getAmqpConnection();
-            Connection connection = ((ActiveMQProtonRemotingConnection)remotingConnection).getAmqpConnection().getConnectionCallback().getTransportConnection();
+            Connection connection = ((ActiveMQProtonRemotingConnection) remotingConnection).getAmqpConnection().getConnectionCallback().getTransportConnection();
             if (logger.isDebugEnabled()) {
                 logger.debug("Protocol: {} - Remote container: {} - connection id: {} - local address: {}",
-                    protocolName, ((ActiveMQProtonRemotingConnection)remotingConnection).getAmqpConnection().getRemoteContainer(), connection.getID(), connection.getLocalAddress());
+                        protocolName, ((ActiveMQProtonRemotingConnection) remotingConnection).getAmqpConnection().getRemoteContainer(), connection.getID(), connection.getLocalAddress());
             }
             return isAmqpInternal(connection.getLocalAddress(), protocolName);//and connector name as expected
-        }
-        else if(remotingConnection instanceof MQTTConnection) {
-            Connection connection = ((MQTTConnection)remotingConnection).getTransportConnection();
+        } else if (remotingConnection instanceof MQTTConnection) {
+            Connection connection = ((MQTTConnection) remotingConnection).getTransportConnection();
             if (logger.isDebugEnabled()) {
                 logger.debug("Protocol: {} - Remote address: {} - connection id: {} - local address: {}",
-                    protocolName, connection.getRemoteAddress(), connection.getID(), connection.getLocalAddress());
+                        protocolName, connection.getRemoteAddress(), connection.getID(), connection.getLocalAddress());
             }
             return isMqttInternal(connection.getLocalAddress(), protocolName);//and connector name as expected
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -87,15 +86,15 @@ public class PluginUtility {
         //is internal if the inbound connection is coming from the amqp connector
         //are the first check redundant? If the connector name is what is expected should be enough?
         return
-            (localAddress.endsWith(amqpInternalConectorPort) && //local port amqp
-                amqpInternalConnectorName.equalsIgnoreCase(protocolName));
+                (localAddress.endsWith(amqpInternalConectorPort) && //local port amqp
+                        amqpInternalConnectorName.equalsIgnoreCase(protocolName));
     }
 
     protected static boolean isMqttInternal(String localAddress, String protocolName) {
         //is internal if the inbound connection is coming from the mqtt internal connector
         //are the first check redundant? If the connector name is what is expected should be enough?
         return
-            (localAddress.endsWith(mqttInternalConectorPort) && //local port internal mqtt
-                mqttInternalConnectorName.equalsIgnoreCase(protocolName));
+                (localAddress.endsWith(mqttInternalConectorPort) && //local port internal mqtt
+                        mqttInternalConnectorName.equalsIgnoreCase(protocolName));
     }
 }

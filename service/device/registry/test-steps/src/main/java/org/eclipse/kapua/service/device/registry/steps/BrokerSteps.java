@@ -144,6 +144,7 @@ public class BrokerSteps extends TestBase {
      */
     private static DeviceConnectionService deviceConnectionService;
     private static DeviceAssetManagementService deviceAssetManagementService;
+    private BrokerSetting brokerSettings;
 
     /**
      * Client simulating Kura device
@@ -167,6 +168,7 @@ public class BrokerSteps extends TestBase {
         deviceCommandFactory = locator.getFactory(DeviceCommandFactory.class);
         deviceConnectionService = locator.getService(DeviceConnectionService.class);
         deviceAssetManagementService = locator.getService(DeviceAssetManagementService.class);
+        brokerSettings = locator.getComponent(BrokerSetting.class);
     }
 
     @Before(value = "@env_docker or @env_docker_base or @env_none", order = 10)
@@ -177,7 +179,7 @@ public class BrokerSteps extends TestBase {
     private void beforeInternal(Scenario scenario) {
         updateScenario(scenario);
         stepData.put(KURA_DEVICES, kuraDevices);
-        BrokerSetting.resetInstance();
+        brokerSettings.resetInstance();
     }
 
     @After(value = "not (@setup or @teardown)", order = 10)
@@ -249,14 +251,14 @@ public class BrokerSteps extends TestBase {
         try {
             deviceBirthMessage();
             boolean checkDone = false;
-            while(!checkDone && timeout-->0) {
+            while (!checkDone && timeout-- > 0) {
                 checkDone = true;
                 logger.info("Device(s) status countdown check: {}", timeout);
                 for (KuraDevice kuraDevice : kuraDevices) {
                     Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
-                    boolean deviceStatusCheck = device!=null &&
-                        device.getConnection()!=null &&
-                        DeviceConnectionStatus.CONNECTED.equals(device.getConnection().getStatus());
+                    boolean deviceStatusCheck = device != null &&
+                            device.getConnection() != null &&
+                            DeviceConnectionStatus.CONNECTED.equals(device.getConnection().getStatus());
                     checkDone = checkDone && deviceStatusCheck;
                 }
                 if (!checkDone) {
@@ -554,7 +556,7 @@ public class BrokerSteps extends TestBase {
     @Then("Device(s) status is {string} within {int} second(s)")
     public void deviceStatusIs(String deviceStatus, int timeout) throws Exception {
         boolean checkDone = false;
-        while(!checkDone && timeout-->0) {
+        while (!checkDone && timeout-- > 0) {
             checkDone = true;
             logger.info("Device(s) status countdown check: {}", timeout);
             for (KuraDevice kuraDevice : kuraDevices) {

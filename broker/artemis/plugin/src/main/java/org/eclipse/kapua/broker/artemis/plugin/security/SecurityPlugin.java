@@ -70,7 +70,6 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
     private static final AtomicInteger INDEX = new AtomicInteger();
     private String clientIdPrefix = "internal-client-id-";
 
-    //TODO inject!!!
     private LoginMetric loginMetric;
     private PublishMetric publishMetric;
     private SubscribeMetric subscribeMetric;
@@ -84,15 +83,17 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         logger.info("Initializing SecurityPlugin...");
         //TODO find which is the right plugin to use to set this parameter (ServerPlugin or SecurityPlugin???)
         CommonsMetric.module = MetricsSecurityPlugin.BROKER_TELEMETRY;
-        loginMetric = KapuaLocator.getInstance().getComponent(LoginMetric.class);
-//        publishMetric = KapuaLocator.getInstance().getComponent(PublishMetric.class);
-//        subscribeMetric = KapuaLocator.getInstance().getComponent(SubscribeMetric.class);
-//        serverContext = KapuaLocator.getInstance().getComponent(ServerContext.class);
-        publishMetric = PublishMetric.getInstance();
-        subscribeMetric = SubscribeMetric.getInstance();
+        final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
+        loginMetric = kapuaLocator.getComponent(LoginMetric.class);
+        publishMetric = kapuaLocator.getComponent(PublishMetric.class);
+        subscribeMetric = kapuaLocator.getComponent(SubscribeMetric.class);
         serverContext = ServerContext.getInstance();
+//        serverContext = KapuaLocator.getInstance().getComponent(ServerContext.class);
+        final BrokerSetting brokerSettings = kapuaLocator.getComponent(BrokerSetting.class);
         usernameScopeIdCache = new LocalCache<>(
-                BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_SCOPE_ID_SIZE), BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_SCOPE_ID_SIZE), null);
+                brokerSettings.getInt(BrokerSettingKey.CACHE_SCOPE_ID_SIZE),
+                brokerSettings.getInt(BrokerSettingKey.CACHE_SCOPE_ID_SIZE),
+                null);
         logger.info("Initializing SecurityPlugin... DONE");
     }
 

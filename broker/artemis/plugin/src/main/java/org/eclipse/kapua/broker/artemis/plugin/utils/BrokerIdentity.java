@@ -35,12 +35,13 @@ public class BrokerIdentity {
     }
 
     //TODO find a way to inject these classes
-    public synchronized void init(ActiveMQServer server) throws KapuaException {
+    public synchronized void init(ActiveMQServer server,
+                                  BrokerSetting brokerSettings) throws KapuaException {
         BrokerIdResolver brokerIdResolver =
-                ReflectionUtil.newInstance(BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_ID_RESOLVER_CLASS_NAME), DefaultBrokerIdResolver.class);
+                ReflectionUtil.newInstance(brokerSettings.getString(BrokerSettingKey.BROKER_ID_RESOLVER_CLASS_NAME), DefaultBrokerIdResolver.class);
         brokerId = brokerIdResolver.getBrokerId(server);
         BrokerHostResolver brokerIpResolver =
-                ReflectionUtil.newInstance(BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_HOST_RESOLVER_CLASS_NAME), DefaultBrokerHostResolver.class);
+                ReflectionUtil.newInstance(brokerSettings.getString(BrokerSettingKey.BROKER_HOST_RESOLVER_CLASS_NAME), DefaultBrokerHostResolver.class);
         brokerHost = brokerIpResolver.getBrokerHost();
     }
 

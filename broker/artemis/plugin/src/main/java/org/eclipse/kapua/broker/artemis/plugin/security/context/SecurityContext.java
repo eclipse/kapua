@@ -78,18 +78,26 @@ public final class SecurityContext {
     private final Map<String, SessionContext> sessionContextMap;
     private final Map<String, Acl> aclMap;
 
-    private boolean printData = BrokerSetting.getInstance().getBoolean(BrokerSettingKey.PRINT_SECURITY_CONTEXT_REPORT, false);
+    private final boolean printData;
     private ExecutorWrapper executorWrapper;
 
     public SecurityContext(ActiveMQServer server,
-                           LoginMetric loginMetric) {
+                           LoginMetric loginMetric,
+                           BrokerSetting brokerSettings) {
         this.loginMetric = loginMetric;
+        this.printData = brokerSettings.getBoolean(BrokerSettingKey.PRINT_SECURITY_CONTEXT_REPORT, false);
         connectionTokenCache = new LocalCache<>(
-                BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_CONNECTION_TOKEN_SIZE), BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_CONNECTION_TOKEN_TTL), null);
+                brokerSettings.getInt(BrokerSettingKey.CACHE_CONNECTION_TOKEN_SIZE),
+                brokerSettings.getInt(BrokerSettingKey.CACHE_CONNECTION_TOKEN_TTL),
+                null);
         sessionContextCache = new LocalCache<>(
-                BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_SIZE), BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_TTL), null);
+                brokerSettings.getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_SIZE),
+                brokerSettings.getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_TTL),
+                null);
         aclCache = new LocalCache<>(
-                BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_SIZE), BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_TTL), null);
+                brokerSettings.getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_SIZE),
+                brokerSettings.getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_TTL),
+                null);
         sessionContextMapByClient = new ConcurrentHashMap<>();
         sessionContextMap = new ConcurrentHashMap<>();
         aclMap = new ConcurrentHashMap<>();

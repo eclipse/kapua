@@ -55,20 +55,21 @@ public class DeviceManagementInventorySteps extends TestBase {
     private DeviceRegistryService deviceRegistryService;
 
     private DeviceInventoryManagementService deviceInventoryManagementService;
+    private BrokerSetting brokerSettings = KapuaLocator.getInstance().getComponent(BrokerSetting.class);
 
     @Inject
     public DeviceManagementInventorySteps(StepData stepData) {
         super(stepData);
     }
 
-    @Before(value="@env_docker or @env_docker_base or @env_none", order=10)
+    @Before(value = "@env_docker or @env_docker_base or @env_none", order = 10)
     public void beforeScenarioNone(Scenario scenario) {
         updateScenario(scenario);
     }
 
-    @After(value="@setup")
+    @After(value = "@setup")
     public void setServices() {
-        BrokerSetting.resetInstance();
+        brokerSettings.resetInstance();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         deviceRegistryService = locator.getService(DeviceRegistryService.class);

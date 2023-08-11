@@ -17,6 +17,7 @@ import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,7 @@ public class DefaultBrokerHostResolver implements BrokerHostResolver {
     private String brokerHost;
 
     public DefaultBrokerHostResolver() throws KapuaException {
-        brokerHost = BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_HOST);
+        brokerHost = KapuaLocator.getInstance().getComponent(BrokerSetting.class).getString(BrokerSettingKey.BROKER_HOST);
         logger.info("Loaded broker host: {}", brokerHost);
         if (StringUtils.isEmpty(brokerHost)) {
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, CANNOT_FIND_IP_ERROR_MSG);
