@@ -22,6 +22,5 @@ public class MetricsModule extends AbstractKapuaModule {
         bind(LoginMetric.class).in(Singleton.class);
         bind(PublishMetric.class).in(Singleton.class);
         bind(SubscribeMetric.class).in(Singleton.class);
-
     }
 }

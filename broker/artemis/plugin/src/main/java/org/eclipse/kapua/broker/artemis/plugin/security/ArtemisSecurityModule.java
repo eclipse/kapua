@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.artemis.plugin.security;
 
+import com.google.inject.Provides;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.artemis.plugin.security.context.SecurityContext;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
@@ -40,12 +41,14 @@ public class ArtemisSecurityModule extends AbstractKapuaModule {
         bind(ServerContext.class).in(Singleton.class);
     }
 
+    @Provides
     @Singleton
     @Named("clusterName")
     String clusterName(SystemSetting systemSetting) {
         return systemSetting.getString(SystemSettingKey.CLUSTER_NAME);
     }
 
+    @Provides
     @Singleton
     @Named("brokerHost")
     String brokerHost(BrokerHostResolver brokerHostResolver) {
@@ -53,16 +56,21 @@ public class ArtemisSecurityModule extends AbstractKapuaModule {
     }
 
     @Singleton
+    @Provides
     ServiceClient authServiceClient(
             @Named("clusterName") String clusterName,
             @Named("brokerHost") String brokerHost) {
         return new ServiceClientMessagingImpl(clusterName, brokerHost);
     }
 
+    @Singleton
+    @Provides
     BrokerIdResolver brokerIdResolver(BrokerSetting brokerSettings) throws KapuaException {
         return ReflectionUtil.newInstance(brokerSettings.getString(BrokerSettingKey.BROKER_ID_RESOLVER_CLASS_NAME), DefaultBrokerIdResolver.class);
     }
 
+    @Singleton
+    @Provides
     BrokerHostResolver brokerHostResolver(BrokerSetting brokerSettings) throws KapuaException {
         return ReflectionUtil.newInstance(brokerSettings.getString(BrokerSettingKey.BROKER_HOST_RESOLVER_CLASS_NAME), DefaultBrokerHostResolver.class);
     }
