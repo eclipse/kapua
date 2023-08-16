@@ -214,7 +214,6 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             message.putBooleanProperty(MessageConstants.HEADER_KAPUA_BROKER_CONTEXT, true);
         }
         message.putStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC, address);
-        publishMetric.getAllowedMessages().inc();
         publishMetric.getMessageSizeAllowed().update(messageSize);
         logger.info("Published message on address {} from clientId: {} - clientIp: {}", address, sessionContext.getClientId(), sessionContext.getClientIp());
         ActiveMQServerPlugin.super.beforeSend(session, tx, message, direct, noAutoCreateQueue);
