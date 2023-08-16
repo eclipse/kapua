@@ -45,7 +45,7 @@ public class KapuaPrincipalImpl implements KapuaPrincipal {
      * @param authResponse
      */
     public KapuaPrincipalImpl(AuthResponse authResponse) {
-        name = authResponse.getUsername();
+        name = authResponse.getUsername() + "@" + authResponse.getClientId();
         clientId = authResponse.getClientId();
         accessTokenId = authResponse.getAccessTokenId();
         userId = KapuaEid.parseCompactId(authResponse.getUserId());
@@ -60,10 +60,11 @@ public class KapuaPrincipalImpl implements KapuaPrincipal {
      * @param accountId
      * @param clientId
      */
-    public KapuaPrincipalImpl(KapuaId accountId, String clientId) {
+    public KapuaPrincipalImpl(KapuaId accountId, String name, String clientId) {
         internal = true;
-        this.clientId = clientId;
         this.accountId = accountId;
+        this.name = name + "@" + clientId;
+        this.clientId = clientId;
     }
 
     @Override
@@ -108,12 +109,8 @@ public class KapuaPrincipalImpl implements KapuaPrincipal {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result
-                + (accountId == null ? 0 : accountId.hashCode());
-        result = prime * result + (name == null ? 0 : name.hashCode());
-        return result;
+        //name is unique so let's use it for hashing
+        return (name == null ? 0 : name.hashCode());
     }
 
     @Override
@@ -128,13 +125,6 @@ public class KapuaPrincipalImpl implements KapuaPrincipal {
             return false;
         }
         KapuaPrincipalImpl other = (KapuaPrincipalImpl) obj;
-        if (accountId == null) {
-            if (other.accountId != null) {
-                return false;
-            }
-        } else if (!accountId.equals(other.accountId)) {
-            return false;
-        }
         if (name == null) {
             if (other.name != null) {
                 return false;

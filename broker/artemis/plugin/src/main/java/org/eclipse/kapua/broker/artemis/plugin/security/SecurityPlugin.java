@@ -114,7 +114,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         }
         SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextWithCacheFallback(connectionId);
         if (sessionContext!=null && sessionContext.getPrincipal()!=null) {
-            logger.info("### authenticate user (cache found): {} - clientId: {} - remoteIP: {} - connectionId: {}", username, clientId, remotingConnection.getTransportConnection().getRemoteAddress(), connectionId);
+            logger.debug("### authenticate user (cache found): {} - clientId: {} - remoteIP: {} - connectionId: {}", username, clientId, remotingConnection.getTransportConnection().getRemoteAddress(), connectionId);
             loginMetric.getAuthenticateFromCache().inc();
             return serverContext.getSecurityContext().buildFromPrincipal(sessionContext.getPrincipal());
         }
@@ -152,7 +152,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                 username, connectionInfo.getClientId(), connectionInfo.getClientIp(), remotingConnection.getID(),
                 remotingConnection.getTransportConnection().getRemoteAddress(), remotingConnection.getTransportConnection().isOpen());
             //TODO double check why the client id is null once coming from AMQP connection (the Kapua connection factory with custom client id generation is called)
-            KapuaPrincipal kapuaPrincipal = buildInternalKapuaPrincipal(getAdminScopeId(), connectionInfo.getClientId());
+            KapuaPrincipal kapuaPrincipal = buildInternalKapuaPrincipal(getAdminScopeId(), username, connectionInfo.getClientId());
             //auto generate client id if null. It shouldn't be null but in some case the one from JMS connection is.
             String clientId = connectionInfo.getClientId();
             //set a random client id value if not set by the client
@@ -183,7 +183,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         loginMetric.getExternalConnector().getAttempt().inc();
         Context timeTotal = loginMetric.getExternalAddConnection().time();
         try {
-            logger.info("Authenticate external: user: {} - clientId: {} - connectionIp: {} - connectionId: {} isOpen: {}",
+            logger.info("Authenticate external: user: {} - clientId: {} - connectionIp: {} - connectionId: {} - isOpen: {}",
                 username, connectionInfo.getClientId(), connectionInfo.getClientIp(), remotingConnection.getID(), remotingConnection.getTransportConnection().isOpen());
             String fullClientId = Utils.getFullClientId(getScopeId(username), connectionInfo.getClientId());
             AuthRequest authRequest = new AuthRequest(
@@ -242,6 +242,9 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                     allowed = serverContext.getSecurityContext().checkPublisherAllowed(sessionContext, address);
                     if (!allowed) {
                         publishMetric.getNotAllowedMessages().inc();
+                    }
+                    else {
+                        publishMetric.getAllowedMessages().inc();
                     }
                     break;
                 case BROWSE:
@@ -340,8 +343,8 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         }
     }
 
-    private KapuaPrincipal buildInternalKapuaPrincipal(KapuaId accountId, String clientId) {
-        return new KapuaPrincipalImpl(accountId, clientId);
+    private KapuaPrincipal buildInternalKapuaPrincipal(KapuaId accountId, String name, String clientId) {
+        return new KapuaPrincipalImpl(accountId, name, clientId);
     }
 
     private Subject buildInternalSubject(KapuaPrincipal kapuaPrincipal) {
