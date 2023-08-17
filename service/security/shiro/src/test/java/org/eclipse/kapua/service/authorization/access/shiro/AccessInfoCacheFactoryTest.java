@@ -27,6 +27,7 @@ public class AccessInfoCacheFactoryTest {
 
     @Before
     public void initialize() {
+        System.setProperty(org.eclipse.kapua.locator.KapuaLocator.LOCATOR_CLASS_NAME_SYSTEM_PROPERTY, MockitoLocator.class.getName());
         accessInfoCacheFactory = new AccessInfoCacheFactory();
     }
 

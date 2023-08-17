@@ -12,11 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.lifecycle;
 
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
-
-import com.codahale.metrics.Counter;
+import org.eclipse.kapua.locator.KapuaLocator;
 
 public class MetricsLifecycle {
 
@@ -48,15 +47,15 @@ public class MetricsLifecycle {
 
     private static MetricsLifecycle instance;
 
+    //TODO: FIXME: singletons should not be handled manually, we have DI for that
     public synchronized static MetricsLifecycle getInstance() {
         if (instance == null) {
-            instance = new MetricsLifecycle();
+            instance = new MetricsLifecycle(KapuaLocator.getInstance().getComponent(MetricsService.class));
         }
         return instance;
     }
 
-    private MetricsLifecycle() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    public MetricsLifecycle(MetricsService metricsService) {
         converterAppMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERTER, MetricsLabel.MESSAGE_APPS);
         converterBirthMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERTER, MetricsLabel.MESSAGE_BIRTH);
         converterDcMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERTER, MetricsLabel.MESSAGE_DC);

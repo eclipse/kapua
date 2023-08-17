@@ -12,16 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.metric;
 
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Counter;
+import javax.inject.Inject;
 
 /**
  * Helper class to handle commons metrics.
  * TODO inject when injection will be available
- *
  */
 public class CommonsMetric {
 
@@ -60,10 +61,11 @@ public class CommonsMetric {
 
     private static CommonsMetric instance;
 
+    //TODO: FIXME: singletons should not be handled manually, we have DI for that
     public synchronized static CommonsMetric getInstance() {
         if (instance == null) {
             try {
-                instance = new CommonsMetric();
+                instance = new CommonsMetric(KapuaLocator.getInstance().getComponent(MetricsService.class));
             } catch (KapuaException e) {
                 //TODO throw runtime exception
                 logger.error("Creating metrics error: {}", e.getMessage(), e);
@@ -72,8 +74,8 @@ public class CommonsMetric {
         return instance;
     }
 
-    private CommonsMetric() throws KapuaException {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    @Inject
+    public CommonsMetric(MetricsService metricsService) throws KapuaException {
         metricsService.registerGauge(() -> cacheStatus, module, CACHE_MANAGER, "cache_status");
         registeredCache = metricsService.getCounter(module, CACHE_MANAGER, "available_cache");
 

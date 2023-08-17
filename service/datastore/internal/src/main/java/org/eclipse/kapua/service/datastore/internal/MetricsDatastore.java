@@ -12,12 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsLabel;
-import org.eclipse.kapua.commons.metric.MetricsService;
-
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
+import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.locator.KapuaLocator;
 
 public class MetricsDatastore {
 
@@ -42,15 +41,15 @@ public class MetricsDatastore {
 
     private static MetricsDatastore instance;
 
+    //TODO: FIXME: singletons should not be handled manually, we have DI for that
     public synchronized static MetricsDatastore getInstance() {
         if (instance == null) {
-            instance = new MetricsDatastore();
+            instance = new MetricsDatastore(KapuaLocator.getInstance().getComponent(MetricsService.class));
         }
         return instance;
     }
 
-    private MetricsDatastore() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    private MetricsDatastore(MetricsService metricsService) {
         alreadyInTheDatastore = metricsService.getCounter(CONSUMER_TELEMETRY, STORE, DUPLICATED_STORE);
 
         // data message

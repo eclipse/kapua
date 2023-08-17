@@ -12,12 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.camel.application;
 
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
-
-import com.codahale.metrics.Counter;
+import org.eclipse.kapua.locator.KapuaLocator;
 
 public class MetricsCamel {
 
@@ -38,28 +37,28 @@ public class MetricsCamel {
 
     private static MetricsCamel instance;
 
+    //TODO: FIXME: singletons should not be handled manually, we have DI for that
     public static MetricsCamel getInstance() {
         if (instance == null) {
             synchronized (CommonsMetric.class) {
                 if (instance == null) {
-                    instance = new MetricsCamel();
+                    instance = new MetricsCamel(KapuaLocator.getInstance().getComponent(MetricsService.class));
                 }
             }
         }
         return instance;
     }
 
-    private MetricsCamel() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    private MetricsCamel(MetricsService metricsService) {
         //error handler
         storedToFileSuccess = metricsService.getCounter(CommonsMetric.module, MetricsLabel.ERROR, STORED_TO_FILE, MetricsLabel.SUCCESS);
         storedToFileError = metricsService.getCounter(CommonsMetric.module, MetricsLabel.ERROR, STORED_TO_FILE, MetricsLabel.ERROR);
         unknownBodyType = metricsService.getCounter(CommonsMetric.module, MetricsLabel.ERROR, UNKNOWN_BODY_TYPE);
 
         converterErrorMessage = metricsService.getCounter(
-            CommonsMetric.module,
-            CONVERTER,
-            MetricsLabel.ERROR
+                CommonsMetric.module,
+                CONVERTER,
+                MetricsLabel.ERROR
         );
 
         unauthenticatedError = metricsService.getCounter(CommonsMetric.module, MetricsLabel.FAILURE, UNAUTHENTICATED);

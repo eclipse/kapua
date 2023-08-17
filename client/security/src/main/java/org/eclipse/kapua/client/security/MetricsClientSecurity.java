@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security;
 
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-import com.codahale.metrics.Counter;
+import javax.inject.Inject;
 
 public class MetricsClientSecurity {
 
@@ -25,17 +25,8 @@ public class MetricsClientSecurity {
     private Counter loginCallbackError;
     private Counter loginCallbackTimeout;
 
-    private static MetricsClientSecurity instance;
-
-    public synchronized static MetricsClientSecurity getInstance() {
-        if (instance == null) {
-            instance = new MetricsClientSecurity();
-        }
-        return instance;
-    }
-
-    private MetricsClientSecurity() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    @Inject
+    public MetricsClientSecurity(MetricsService metricsService) {
         loginCallbackError = metricsService.getCounter(CommonsMetric.module, CALLBACK, MetricsLabel.ERROR);
         loginCallbackTimeout = metricsService.getCounter(CommonsMetric.module, CALLBACK, MetricsLabel.TIMEOUT);
     }

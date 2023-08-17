@@ -12,12 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security.metric;
 
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
-
-import com.codahale.metrics.Counter;
 
 public class AuthLoginMetric {
 
@@ -32,8 +30,7 @@ public class AuthLoginMetric {
     private Counter stealingLinkDisconnect;
     private Counter illegalStateDisconnect;
 
-    public AuthLoginMetric(String type) {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    public AuthLoginMetric(MetricsService metricsService, String type) {
         connected = metricsService.getCounter(CommonsMetric.module, type, CONNECT);
         attempt = metricsService.getCounter(CommonsMetric.module, type, MetricsLabel.ATTEMPT);
         disconnected = metricsService.getCounter(CommonsMetric.module, type, AuthMetric.DISCONNECT);

@@ -61,7 +61,7 @@ public abstract class AuthenticationLogic {
     protected boolean invalidateCache = true;
 
     //TODO inject!!!
-    protected AuthMetric authenticationMetric = AuthMetric.getInstance();
+    protected AuthMetric authenticationMetric = KapuaLocator.getInstance().getComponent(AuthMetric.class);
 
     //TODO: FIXME: find a better way to bridge spring and guice, in order to avoid duplicating all wiring logic
     protected DeviceConnectionOptionFactory deviceConnectionOptionFactory = KapuaLocator.getInstance().getFactory(DeviceConnectionOptionFactory.class);

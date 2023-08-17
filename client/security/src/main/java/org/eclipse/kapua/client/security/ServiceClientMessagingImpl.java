@@ -12,17 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security;
 
-import java.util.UUID;
-
-import javax.jms.JMSException;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.client.security.amqpclient.Client;
-import org.eclipse.kapua.client.security.bean.EntityRequest;
-import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
+import org.eclipse.kapua.client.security.bean.EntityRequest;
+import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.bean.Request;
 import org.eclipse.kapua.client.security.bean.ResponseContainer;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -30,11 +27,11 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import javax.jms.JMSException;
+import java.util.UUID;
 
 /**
  * Security service. Implementation through AMQP messaging layer.
- *
  */
 public class ServiceClientMessagingImpl implements ServiceClient {
 
@@ -44,10 +41,12 @@ public class ServiceClientMessagingImpl implements ServiceClient {
     public static final String RESPONSE_QUEUE_PATTERN = "$SYS/SVC/auth/response/%s_%s";
 
     private static final int TIMEOUT = 5000;
+    private final MessageListener messageListener;
 
     private Client client;
 
-    public ServiceClientMessagingImpl(String clusterName, String requester) {
+    public ServiceClientMessagingImpl(MessageListener messageListener, String clusterName, String requester) {
+        this.messageListener = messageListener;
         //TODO change configuration (use service event broker for now)
         String clientId = "svc-ath-" + UUID.randomUUID().toString();
         String host = SystemSetting.getInstance().getString(SystemSettingKey.SERVICE_BUS_HOST, "events-broker");
@@ -56,9 +55,9 @@ public class ServiceClientMessagingImpl implements ServiceClient {
         String password = SystemSetting.getInstance().getString(SystemSettingKey.SERVICE_BUS_PASSWORD, "password");
         try {
             client = new Client(username, password, host, port, clientId,
-                REQUEST_QUEUE, String.format(RESPONSE_QUEUE_PATTERN, clusterName, requester), new MessageListener());
+                    REQUEST_QUEUE, String.format(RESPONSE_QUEUE_PATTERN, clusterName, requester), messageListener);
         } catch (JMSException e) {
-            throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, (Object[])null);
+            throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, (Object[]) null);
         }
     }
 
@@ -68,13 +67,13 @@ public class ServiceClientMessagingImpl implements ServiceClient {
         String requestId = MessageHelper.getNewRequestId();
         authRequest.setRequestId(requestId);
         authRequest.setAction(SecurityAction.brokerConnect.name());
-        ResponseContainer<AuthResponse> responseContainer = ResponseContainer.createAnRegisterNewMessageContainer(authRequest);
+        ResponseContainer<AuthResponse> responseContainer = ResponseContainer.createAnRegisterNewMessageContainer(messageListener, authRequest);
         logRequest(authRequest);
         client.sendMessage(MessageHelper.getBrokerConnectMessage(client.createTextMessage(), authRequest));
         synchronized (responseContainer) {
             responseContainer.wait(TIMEOUT);
         }
-        MessageListener.removeCallback(requestId);
+        messageListener.removeCallback(requestId);
         return responseContainer.getResponse();
     }
 
@@ -84,13 +83,13 @@ public class ServiceClientMessagingImpl implements ServiceClient {
         String requestId = MessageHelper.getNewRequestId();
         authRequest.setRequestId(requestId);
         authRequest.setAction(SecurityAction.brokerDisconnect.name());
-        ResponseContainer<AuthResponse> responseContainer = ResponseContainer.createAnRegisterNewMessageContainer(authRequest);
+        ResponseContainer<AuthResponse> responseContainer = ResponseContainer.createAnRegisterNewMessageContainer(messageListener, authRequest);
         logRequest(authRequest);
         client.sendMessage(MessageHelper.getBrokerDisconnectMessage(client.createTextMessage(), authRequest));
         synchronized (responseContainer) {
             responseContainer.wait(TIMEOUT);
         }
-        MessageListener.removeCallback(requestId);
+        messageListener.removeCallback(requestId);
         return responseContainer.getResponse();
     }
 
@@ -99,18 +98,18 @@ public class ServiceClientMessagingImpl implements ServiceClient {
         client.checkAuthServiceConnection();
         String requestId = MessageHelper.getNewRequestId();
         entityRequest.setRequestId(requestId);
-        ResponseContainer<EntityResponse> responseContainer = ResponseContainer.createAnRegisterNewMessageContainer(entityRequest);
+        ResponseContainer<EntityResponse> responseContainer = ResponseContainer.createAnRegisterNewMessageContainer(messageListener, entityRequest);
         logRequest(entityRequest);
         client.sendMessage(MessageHelper.getEntityMessage(client.createTextMessage(), entityRequest));
         synchronized (responseContainer) {
             responseContainer.wait(TIMEOUT);
         }
-        MessageListener.removeCallback(requestId);
+        messageListener.removeCallback(requestId);
         return responseContainer.getResponse();
     }
 
     private void logRequest(Request request) {
         logger.info("Request id: {} - action: {} - requester: {}",
-            request.getRequestId(), request.getAction(), request.getRequester());
+                request.getRequestId(), request.getAction(), request.getRequester());
     }
 }

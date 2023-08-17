@@ -23,6 +23,8 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.commons.metric.MetricsServiceImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -90,6 +92,7 @@ public class JobLocatorConfiguration {
 
             @Override
             protected void configure() {
+                bind(MetricsService.class).to(MetricsServiceImpl.class).in(Singleton.class);
 
                 // Commons
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());

@@ -24,6 +24,8 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.commons.metric.MetricsServiceImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.job.engine.client.JobEngineServiceClient;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -66,6 +68,7 @@ public class SchedulerLocatorConfiguration {
 
             @Override
             protected void configure() {
+                bind(MetricsService.class).to(MetricsServiceImpl.class).in(Singleton.class);
 
                 // Inject mocked Authorization Service method checkPermission
                 AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);

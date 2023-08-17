@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.authentication.authentication;
 
 import com.codahale.metrics.Timer.Context;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.client.security.bean.AuthAcl;
 import org.eclipse.kapua.client.security.bean.AuthContext;
@@ -38,10 +37,9 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStat
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.util.Date;
 import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * Default authenticator implementation
@@ -58,7 +56,7 @@ public class DefaultAuthenticator implements Authenticator {
     }
 
     private DeviceRegistryService deviceRegistryService;
-    private AuthMetric authenticationMetric = AuthMetric.getInstance();
+    private final AuthMetric authenticationMetric;
     private boolean raiseLifecycleEvents;
     private String lifecycleEventAddress;
 
@@ -81,12 +79,12 @@ public class DefaultAuthenticator implements Authenticator {
     public DefaultAuthenticator() throws KapuaException {
         deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
         adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
+        authenticationMetric = KapuaLocator.getInstance().getComponent(AuthMetric.class);
         raiseLifecycleEvents = ServiceAuthenticationSetting.getInstance().getBoolean(ServiceAuthenticationSettingKey.SERVICE_AUTHENTICATION_ENABLE_LIFECYCLE_EVENTS, false);
         if (raiseLifecycleEvents) {
             lifecycleEventAddress = ServiceAuthenticationSetting.getInstance().getString(ServiceAuthenticationSettingKey.SERVICE_AUTHENTICATION_LIFECYCLE_EVENTS_ADDRESS);
             serviceEventBus = ServiceEventBusManager.getInstance();
-        }
-        else {
+        } else {
             logger.info("Skipping AuthenticationService event bus initialization since the raise of connect/disconnect event is disabled!");
         }
     }
@@ -95,7 +93,7 @@ public class DefaultAuthenticator implements Authenticator {
     public List<AuthAcl> connect(AuthContext authContext) throws KapuaException {
         List<AuthAcl> authorizationEntries = null;
         Device device = KapuaSecurityUtils.doPrivileged(() ->
-            deviceRegistryService.findByClientId(KapuaEid.parseCompactId(authContext.getScopeId()), authContext.getClientId()));
+                deviceRegistryService.findByClientId(KapuaEid.parseCompactId(authContext.getScopeId()), authContext.getClientId()));
         if (device != null && DeviceStatus.DISABLED.equals(device.getStatus())) {
             logger.warn("Device {} is disabled", authContext.getClientId());
             throw new SecurityException("Device is disabled");
@@ -104,8 +102,7 @@ public class DefaultAuthenticator implements Authenticator {
             updateMetricAndCheckForStealingLink(authContext, authenticationMetric.getAdminLogin());
             authorizationEntries = adminAuthenticationLogic.connect(authContext);
             authenticationMetric.getAdminLogin().getConnected().inc();
-        }
-        else {
+        } else {
             updateMetricAndCheckForStealingLink(authContext, authenticationMetric.getUserLogin());
             authorizationEntries = userAuthenticationLogic.connect(authContext);
             authenticationMetric.getUserLogin().getConnected().inc();
@@ -127,8 +124,7 @@ public class DefaultAuthenticator implements Authenticator {
                 authenticationMetric.getAdminLogin().getStealingLinkDisconnect().inc();
             }
             adminAuthenticationLogic.disconnect(authContext);
-        }
-        else {
+        } else {
             disconnectUser(authContext, authenticationMetric.getUserLogin());
         }
     }
@@ -137,18 +133,17 @@ public class DefaultAuthenticator implements Authenticator {
         loginMetric.getDisconnected().inc();
         String error = authContext.getExceptionClass();
         logger.info("Disconnecting client: connection id: {} - error: {} - isStealingLink {} - isIllegalState: {}",
-            authContext.getConnectionId(), error, authContext.isStealingLink(), authContext.isIllegalState());
+                authContext.getConnectionId(), error, authContext.isStealingLink(), authContext.isIllegalState());
         if (authContext.isStealingLink()) {
             loginMetric.getStealingLinkDisconnect().inc();
             logger.info("Stealing link: skip device connection status update. Client id: {} - Connection id: {}",
-                authContext.getClientId(),
-                authContext.getConnectionId());
-        }
-        else if (authContext.isIllegalState()) {
+                    authContext.getClientId(),
+                    authContext.getConnectionId());
+        } else if (authContext.isIllegalState()) {
             loginMetric.getIllegalStateDisconnect().inc();
             logger.info("Illegal device connection status: skip device connection status update. Client id: {} - Connection id: {}",
-                authContext.getClientId(),
-                authContext.getConnectionId());
+                    authContext.getClientId(),
+                    authContext.getConnectionId());
         }
         if (userAuthenticationLogic.disconnect(authContext)) {
             logger.info("raising disconnect lifecycle event for clientId: {}", authContext.getClientId());
@@ -165,12 +160,11 @@ public class DefaultAuthenticator implements Authenticator {
     protected void raiseLifecycleEvent(AuthContext authContext, DeviceConnectionStatus deviceConnectionStatus) throws ServiceEventBusException {
         logger.debug("raising lifecycle events: clientId: {} - connection status: {}", authContext.getClientId(), deviceConnectionStatus);
         //internal connections with not registered user/account shouldn't raise connect/disconnect events
-        if (authContext.getUserId()!=null && authContext.getScopeId()!=null) {
+        if (authContext.getUserId() != null && authContext.getScopeId() != null) {
             serviceEventBus.publish(lifecycleEventAddress, getServiceEvent(authContext, deviceConnectionStatus));
-        }
-        else {
+        } else {
             logger.info("Skipping event raising for clientId {} (username: {} - clientIp: {}) since userId ({}) and/or scopeId ({}) are null",
-                authContext.getClientId(), authContext.getUsername(), authContext.getClientIp(), authContext.getUserId(), authContext.getScopeId());
+                    authContext.getClientId(), authContext.getUsername(), authContext.getClientIp(), authContext.getUserId(), authContext.getScopeId());
         }
     }
 

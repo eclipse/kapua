@@ -22,6 +22,7 @@ import org.eclipse.kapua.broker.artemis.plugin.utils.BrokerIdResolver;
 import org.eclipse.kapua.broker.artemis.plugin.utils.BrokerIdentity;
 import org.eclipse.kapua.broker.artemis.plugin.utils.DefaultBrokerHostResolver;
 import org.eclipse.kapua.broker.artemis.plugin.utils.DefaultBrokerIdResolver;
+import org.eclipse.kapua.client.security.MessageListener;
 import org.eclipse.kapua.client.security.ServiceClient;
 import org.eclipse.kapua.client.security.ServiceClientMessagingImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
@@ -50,6 +51,13 @@ public class ArtemisSecurityModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
+    @Named("metricModuleName")
+    String metricModuleName() {
+        return "broker-telemetry";
+    }
+
+    @Provides
+    @Singleton
     @Named("brokerHost")
     String brokerHost(BrokerHostResolver brokerHostResolver) {
         return brokerHostResolver.getBrokerHost();
@@ -58,9 +66,10 @@ public class ArtemisSecurityModule extends AbstractKapuaModule {
     @Singleton
     @Provides
     ServiceClient authServiceClient(
+            MessageListener messageListener,
             @Named("clusterName") String clusterName,
             @Named("brokerHost") String brokerHost) {
-        return new ServiceClientMessagingImpl(clusterName, brokerHost);
+        return new ServiceClientMessagingImpl(messageListener, clusterName, brokerHost);
     }
 
     @Singleton

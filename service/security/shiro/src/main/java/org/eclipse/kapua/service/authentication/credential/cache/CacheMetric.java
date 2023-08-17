@@ -12,15 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.cache;
 
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.codahale.metrics.Counter;
 
 public class CacheMetric {
 
@@ -35,10 +34,11 @@ public class CacheMetric {
 
     private static CacheMetric instance;
 
+    //TODO: FIXME: singletons should not be handled manually, we have DI for that
     public synchronized static CacheMetric getInstance() {
         if (instance == null) {
             try {
-                instance = new CacheMetric();
+                instance = new CacheMetric(KapuaLocator.getInstance().getComponent(MetricsService.class));
             } catch (KapuaException e) {
                 //TODO throw runtime exception
                 logger.error("Creating metrics error: {}", e.getMessage(), e);
@@ -47,8 +47,7 @@ public class CacheMetric {
         return instance;
     }
 
-    private CacheMetric() throws KapuaException {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    public CacheMetric(MetricsService metricsService) throws KapuaException {
         cacheMiss = metricsService.getCounter(CommonsMetric.module, AUTH_CACHE, "miss");
         cacheHit = metricsService.getCounter(CommonsMetric.module, AUTH_CACHE, "hit");
         cachePutError = metricsService.getCounter(CommonsMetric.module, AUTH_CACHE, "put", MetricsLabel.ERROR);
@@ -56,7 +55,7 @@ public class CacheMetric {
     }
 
     public Counter getCacheHit() {
-         return cacheHit;
+        return cacheHit;
     }
 
     public Counter getCacheMiss() {

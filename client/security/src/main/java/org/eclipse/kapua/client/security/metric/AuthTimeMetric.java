@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security.metric;
 
+import com.codahale.metrics.Timer;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-import com.codahale.metrics.Timer;
+import javax.inject.Inject;
 
 public class AuthTimeMetric {
 
@@ -39,8 +39,8 @@ public class AuthTimeMetric {
     private Timer adminAddConnection;
     private Timer raiseLifecycleEvent;
 
-    public AuthTimeMetric() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    @Inject
+    public AuthTimeMetric(MetricsService metricsService) {
         userAddConnection = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, ADD_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
         userCheckAccess = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, CHECK_ACCESS, MetricsLabel.TIME, MetricsLabel.SECONDS);
         userFindDevice = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, FIND_DEVICE, MetricsLabel.TIME, MetricsLabel.SECONDS);
@@ -53,6 +53,7 @@ public class AuthTimeMetric {
 
     /**
      * Add connection user login total time
+     *
      * @return
      */
     public Timer getUserAddConnection() {
@@ -61,6 +62,7 @@ public class AuthTimeMetric {
 
     /**
      * Add connection user login check access time
+     *
      * @return
      */
     public Timer getUserCheckAccess() {
@@ -69,6 +71,7 @@ public class AuthTimeMetric {
 
     /**
      * Add connection user login find device time
+     *
      * @return
      */
     public Timer getUserFindDevice() {
@@ -77,6 +80,7 @@ public class AuthTimeMetric {
 
     /**
      * Add connection user login update device time
+     *
      * @return
      */
     public Timer getUserUpdateDevice() {
@@ -85,6 +89,7 @@ public class AuthTimeMetric {
 
     /**
      * Remove connection total time
+     *
      * @return
      */
     public Timer getUserRemoveConnection() {
@@ -93,6 +98,7 @@ public class AuthTimeMetric {
 
     /**
      * Add connection after connect logout time
+     *
      * @return
      */
     public Timer getLogoutOnLogin() {
@@ -101,6 +107,7 @@ public class AuthTimeMetric {
 
     /**
      * Add connection admin total time
+     *
      * @return
      */
     public Timer getAdminAddConnection() {
@@ -109,6 +116,7 @@ public class AuthTimeMetric {
 
     /**
      * Raise lifecycle event time (could be on connect or disconnect event)
+     *
      * @return
      */
     public Timer getRaiseLifecycleEvent() {

@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security.metric;
 
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-import com.codahale.metrics.Counter;
+import javax.inject.Inject;
 
 public class AuthFailureMetric {
 
@@ -30,8 +30,8 @@ public class AuthFailureMetric {
     private Counter findDeviceConnectionFailure;
     private Counter brokerHostFailure;
 
-    public AuthFailureMetric() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    @Inject
+    public AuthFailureMetric(MetricsService metricsService) {
         logoutFailureOnLogin = metricsService.getCounter(CommonsMetric.module, LOGOUT_ON_FAILURE);
         disconnectFailure = metricsService.getCounter(CommonsMetric.module, AuthMetric.DISCONNECT, MetricsLabel.FAILURE);
         findDeviceConnectionFailure = metricsService.getCounter(CommonsMetric.module, FIND_DEVICE, MetricsLabel.FAILURE);
@@ -40,6 +40,7 @@ public class AuthFailureMetric {
 
     /**
      * Failure while doing Shiro logout (Internal error)
+     *
      * @return
      */
     public Counter getLogoutFailureOnLogin() {
@@ -48,6 +49,7 @@ public class AuthFailureMetric {
 
     /**
      * Failure while calling authenticator disconnect (Internal error)
+     *
      * @return
      */
     public Counter getDisconnectFailure() {
@@ -56,6 +58,7 @@ public class AuthFailureMetric {
 
     /**
      * Failure while getting device connection (Internal error)
+     *
      * @return
      */
     public Counter getFindDeviceConnectionFailure() {
@@ -64,6 +67,7 @@ public class AuthFailureMetric {
 
     /**
      * Failure while getting broker host from authentication context (Internal error)
+     *
      * @return
      */
     public Counter getBrokerHostFailure() {

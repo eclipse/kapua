@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.artemis.plugin.security.context.SecurityContext;
 import org.eclipse.kapua.broker.artemis.plugin.utils.BrokerIdentity;
 import org.eclipse.kapua.client.security.ServiceClient;
-import org.eclipse.kapua.client.security.ServiceClientMessagingImpl;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -34,14 +33,15 @@ public class ServerContext {
 
     @Inject
     public ServerContext(
+            ServiceClient authServiceClient,
             @Named("clusterName") String clusterName,
             BrokerIdentity brokerIdentity,
             SecurityContext securityContext) {
         this.clusterName = clusterName;
         this.brokerIdentity = brokerIdentity;
         this.securityContext = securityContext;
-        this.authServiceClient = new ServiceClientMessagingImpl(clusterName, brokerIdentity.getBrokerHost());
-        addressAccessTracker = new AddressAccessTracker();
+        this.addressAccessTracker = new AddressAccessTracker();
+        this.authServiceClient = authServiceClient;
     }
 
     public void init(ActiveMQServer server) throws KapuaException {

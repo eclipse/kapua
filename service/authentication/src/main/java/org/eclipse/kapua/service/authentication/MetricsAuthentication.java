@@ -12,11 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
-
-import com.codahale.metrics.Counter;
+import org.eclipse.kapua.locator.KapuaLocator;
 
 public class MetricsAuthentication {
 
@@ -38,15 +37,15 @@ public class MetricsAuthentication {
 
     private static MetricsAuthentication instance;
 
+    //TODO: FIXME: singletons should not be handled manually, we have DI for that
     public synchronized static MetricsAuthentication getInstance() {
         if (instance == null) {
-            instance = new MetricsAuthentication();
+            instance = new MetricsAuthentication(KapuaLocator.getInstance().getComponent(MetricsService.class));
         }
         return instance;
     }
 
-    private MetricsAuthentication() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    private MetricsAuthentication(MetricsService metricsService) {
         converter = metricsService.getCounter(SERVICE_AUTHENTICATION, CONVERTER, MetricsLabel.SUCCESS);
         converterError = metricsService.getCounter(SERVICE_AUTHENTICATION, CONVERTER, MetricsLabel.ERROR);
 

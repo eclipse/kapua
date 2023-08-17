@@ -15,8 +15,6 @@ package org.eclipse.kapua.commons.jpa;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
@@ -25,7 +23,6 @@ import javax.inject.Named;
 public class CommonJpaModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(MetricsService.class).toInstance(MetricServiceFactory.getInstance());
     }
 
     @Provides

@@ -33,6 +33,7 @@ public class AccessInfoCacheTest {
         idCacheNames = new String[]{"", " id 123<> cache(*&% NAME", ")(87CASHE name ^%$id", "98ID <id>     name%$^#62522", ",, #@IDcacheNAME-09", "cache_ID 0998@#$", "C12_...cache==_NAME ID   "};
         nameCacheNames = new String[]{"", "name &^5CACHE-name;'...,,,   ", "!@@@name123CACHE ;,.,,name", "cache--987name,*(NAME", "CACHE      32%$#$%^ name", "CaChE 098)  (name     "};
         kapuaEntity = Mockito.mock(AccessInfo.class);
+        System.setProperty(org.eclipse.kapua.locator.KapuaLocator.LOCATOR_CLASS_NAME_SYSTEM_PROPERTY, MockitoLocator.class.getName());
     }
 
     @Test

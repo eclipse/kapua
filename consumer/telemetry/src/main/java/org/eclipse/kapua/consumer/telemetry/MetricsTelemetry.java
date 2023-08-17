@@ -12,11 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.telemetry;
 
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
-
-import com.codahale.metrics.Counter;
+import org.eclipse.kapua.locator.KapuaLocator;
 
 public class MetricsTelemetry {
 
@@ -27,15 +26,15 @@ public class MetricsTelemetry {
 
     private static MetricsTelemetry instance;
 
+    //TODO: FIXME: singletons should not be handled manually, we have DI for that
     public synchronized static MetricsTelemetry getInstance() {
         if (instance == null) {
-            instance = new MetricsTelemetry();
+            instance = new MetricsTelemetry(KapuaLocator.getInstance().getComponent(MetricsService.class));
         }
         return instance;
     }
 
-    private MetricsTelemetry() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    private MetricsTelemetry(MetricsService metricsService) {
         converterDataMessage = metricsService.getCounter(CONSUMER_TELEMETRY, CONVERTER, MetricsLabel.MESSAGE_DATA);
     }
 

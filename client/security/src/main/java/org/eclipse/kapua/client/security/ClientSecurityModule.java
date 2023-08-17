@@ -10,31 +10,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.metric;
+package org.eclipse.kapua.client.security;
 
-/**
- * {@link MetricsService} factory.
- *
- * @since 1.0
- */
-public class MetricServiceFactory {
+import org.eclipse.kapua.client.security.metric.AuthMetric;
+import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 
-    private static MetricsService instance;
+import javax.inject.Singleton;
 
-    private MetricServiceFactory() {
-
+public class ClientSecurityModule extends AbstractKapuaModule {
+    @Override
+    protected void configureModule() {
+        bind(MetricsClientSecurity.class).in(Singleton.class);
+        bind(MessageListener.class).in(Singleton.class);
+        bind(AuthMetric.class).in(Singleton.class);
     }
-
-    /**
-     * Get the {@link MetricsService} singleton instance
-     *
-     * @return
-     */
-    public synchronized static MetricsService getInstance() {
-        if (instance == null) {
-            instance = new MetricsServiceImpl();
-        }
-        return instance;
-    }
-
 }

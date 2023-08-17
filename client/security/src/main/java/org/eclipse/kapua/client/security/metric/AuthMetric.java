@@ -13,15 +13,13 @@
 package org.eclipse.kapua.client.security.metric;
 
 import com.codahale.metrics.Timer;
-
 import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-public class AuthMetric {
+import javax.inject.Inject;
 
-    private static final AuthMetric AUTH_METRIC = new AuthMetric();
+public class AuthMetric {
 
     public static final String DISCONNECT = "disconnect";
     public static final String USER = "user";
@@ -36,16 +34,12 @@ public class AuthMetric {
     private AuthFailureMetric failure;
     private Timer removeConnection;
 
-    public static AuthMetric getInstance() {
-        return AUTH_METRIC;
-    }
-
-    private AuthMetric() {
-        adminLogin = new AuthLoginMetric(ADMIN);
-        userLogin = new AuthLoginMetric(USER);
-        extConnectorTime = new AuthTimeMetric();
-        failure = new AuthFailureMetric();
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    @Inject
+    public AuthMetric(MetricsService metricsService) {
+        adminLogin = new AuthLoginMetric(metricsService, ADMIN);
+        userLogin = new AuthLoginMetric(metricsService, USER);
+        extConnectorTime = new AuthTimeMetric(metricsService);
+        failure = new AuthFailureMetric(metricsService);
         removeConnection = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, REMOVE_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
     }
 
@@ -67,6 +61,7 @@ public class AuthMetric {
 
     /**
      * Remove connection total time
+     *
      * @return
      */
     public Timer getRemoveConnection() {

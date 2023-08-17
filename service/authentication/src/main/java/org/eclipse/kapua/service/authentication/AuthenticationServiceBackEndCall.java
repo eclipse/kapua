@@ -43,7 +43,6 @@ import org.eclipse.kapua.service.authentication.authentication.Authenticator;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
-import org.eclipse.kapua.service.device.authentication.api.DeviceConnectionCredentialAdapter;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.user.User;
@@ -58,7 +57,7 @@ public class AuthenticationServiceBackEndCall {
 
     protected static Logger logger = LoggerFactory.getLogger(AuthenticationServiceBackEndCall.class);
 
-    private AuthMetric authenticationMetric = AuthMetric.getInstance();
+    private AuthMetric authenticationMetric;
 
     @Inject
     private Authenticator authenticator;
@@ -82,6 +81,7 @@ public class AuthenticationServiceBackEndCall {
         credentialFactory = locator.getFactory(CredentialsFactory.class);
         kapuaIdFactory = locator.getFactory(KapuaIdFactory.class);
         userService = locator.getService(UserService.class);
+        authenticationMetric = locator.getComponent(AuthMetric.class);
     }
 
     public AuthResponse brokerConnect(AuthRequest authRequest) {

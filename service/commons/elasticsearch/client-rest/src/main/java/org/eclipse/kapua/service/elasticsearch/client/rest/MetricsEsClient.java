@@ -12,12 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.rest;
 
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
-
-import com.codahale.metrics.Counter;
+import org.eclipse.kapua.locator.KapuaLocator;
 
 public class MetricsEsClient {
 
@@ -37,15 +36,15 @@ public class MetricsEsClient {
 
     private static MetricsEsClient instance;
 
+    //TODO: FIXME: singletons should not be handled manually, we have DI for that
     public synchronized static MetricsEsClient getInstance() {
         if (instance == null) {
-            instance = new MetricsEsClient();
+            instance = new MetricsEsClient(KapuaLocator.getInstance().getComponent(MetricsService.class));
         }
         return instance;
     }
 
-    private MetricsEsClient() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    private MetricsEsClient(MetricsService metricsService) {
         //timeout
         timeoutRetry = metricsService.getCounter(CommonsMetric.module, REST_CLIENT, TIMEOUT_RETRY);
         timeoutRetryLimitReached = metricsService.getCounter(CommonsMetric.module, REST_CLIENT, TIMEOUT_RETRY_LIMIT_REACHED);

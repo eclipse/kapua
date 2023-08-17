@@ -18,7 +18,6 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.commons.core.InterceptorBind;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -63,7 +62,8 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
     @Named("kapuaEventsTxManager")
     @Inject
     private TxManager txManager;
-    private final MetricsService metricsService = MetricServiceFactory.getInstance();
+    @Inject
+    private MetricsService metricsService;
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {

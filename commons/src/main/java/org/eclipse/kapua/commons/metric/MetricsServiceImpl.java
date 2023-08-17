@@ -26,6 +26,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
 
@@ -54,7 +55,8 @@ public class MetricsServiceImpl implements MetricsService {
     /**
      * Default metric service constructor
      */
-    MetricsServiceImpl() {
+    @Inject
+    public MetricsServiceImpl() {
         try {
             metricRegistry = SharedMetricRegistries.getDefault();
             logger.info("Default Metric Registry loaded");
@@ -142,10 +144,9 @@ public class MetricsServiceImpl implements MetricsService {
      * @return
      */
     private String getMetricName(MetricType metricType, String module, String component, String... metricsName) {
-        if (metricsName==null || metricsName.length<=0) {
-            return MessageFormat.format(METRICS_SHORT_NAME_FORMAT, module, component, metricType!=null ? SEPARATOR + metricType.name() : "");
-        }
-        else {
+        if (metricsName == null || metricsName.length <= 0) {
+            return MessageFormat.format(METRICS_SHORT_NAME_FORMAT, module, component, metricType != null ? SEPARATOR + metricType.name() : "");
+        } else {
             return MessageFormat.format(METRICS_NAME_FORMAT, module, component, convertToDotNotation(metricType, metricsName));
         }
     }
@@ -166,7 +167,7 @@ public class MetricsServiceImpl implements MetricsService {
             firstMetricName = false;
             builder.append(s);
         }
-        if (metricType!=null) {
+        if (metricType != null) {
             builder.append(SEPARATOR).append(metricType.name());
         }
         return builder.toString();

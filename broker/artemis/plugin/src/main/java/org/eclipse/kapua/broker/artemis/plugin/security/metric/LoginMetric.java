@@ -63,9 +63,9 @@ public class LoginMetric {
     @Inject
     public LoginMetric(MetricsService metricsService) {
         // login by connectors
-        externalConnector = new ActionMetric(CommonsMetric.module, COMPONENT_LOGIN, EXTERNAL_CONNECTOR);
+        externalConnector = new ActionMetric(metricsService, CommonsMetric.module, COMPONENT_LOGIN, EXTERNAL_CONNECTOR);
         authenticateFromCache = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, AUTHENTICATE_FROM_CACHE);
-        internalConnector = new ActionMetric(CommonsMetric.module, COMPONENT_LOGIN, INTERNAL_CONNECTOR);
+        internalConnector = new ActionMetric(metricsService, CommonsMetric.module, COMPONENT_LOGIN, INTERNAL_CONNECTOR);
         cleanupGenericFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, CLEANUP_GENERIC, MetricsLabel.FAILURE);
         cleanupNullSessionFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, CLEANUP_NULL_SESSION, MetricsLabel.FAILURE);
         loginClosedConnectionFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, CLOSED_CONNECTION, MetricsLabel.FAILURE);

@@ -20,6 +20,8 @@ import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.commons.metric.MetricsServiceImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
@@ -63,6 +65,7 @@ public class TranslatorLocatorConfiguration {
 
             @Override
             protected void configure() {
+                bind(MetricsService.class).to(MetricsServiceImpl.class).in(Singleton.class);
                 bind(KapuaMessageFactory.class).to(KapuaMessageFactoryImpl.class).in(Singleton.class);
                 // Inject mocked Authorization Service method checkPermission
                 AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);

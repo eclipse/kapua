@@ -17,6 +17,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdImpl;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -27,6 +28,10 @@ import java.math.BigInteger;
 
 @Category(JUnitTests.class)
 public class NamedEntityCacheTest {
+    @Before
+    public void setFakeLocator() {
+        System.setProperty(org.eclipse.kapua.locator.KapuaLocator.LOCATOR_CLASS_NAME_SYSTEM_PROPERTY, MockitoLocator.class.getName());
+    }
 
     @Test
     public void namedEntityCacheTest() {
