@@ -17,8 +17,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.artemis.plugin.security.MetricsSecurityPlugin;
 import org.eclipse.kapua.broker.artemis.plugin.security.RunWithLock;
 import org.eclipse.kapua.broker.artemis.plugin.security.metric.LoginMetric;
-import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
-import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
 import org.eclipse.kapua.client.security.AuthErrorCodes;
 import org.eclipse.kapua.client.security.KapuaIllegalDeviceStateException;
 import org.eclipse.kapua.client.security.ServiceClient.SecurityAction;
@@ -70,6 +68,8 @@ public final class SecurityContext {
     private final LocalCache<String, ConnectionToken> connectionTokenCache;
     private final LocalCache<String, SessionContext> sessionContextCache;
     private final LocalCache<String, Acl> aclCache;
+    private final MetricsSecurityPlugin metricsSecurityPlugin;
+    private final RunWithLock runWithLock;
 
     //use string as key since some method returns DefaultChannelId as connection id, some other a string
     //the string returned by some method as connection id is the asShortText of DefaultChannelId
@@ -84,29 +84,22 @@ public final class SecurityContext {
 
     @Inject
     public SecurityContext(LoginMetric loginMetric,
-                           BrokerSetting brokerSettings) {
+                           boolean printData,
+                           LocalCache<String, ConnectionToken> connectionTokenCache,
+                           LocalCache<String, SessionContext> sessionContextCache,
+                           LocalCache<String, Acl> aclCache,
+                           MetricsSecurityPlugin metricsSecurityPlugin,
+                           RunWithLock runWithLock) {
         this.loginMetric = loginMetric;
-        //TODO: FIXME: Move this into a module
-        this.printData = brokerSettings.getBoolean(BrokerSettingKey.PRINT_SECURITY_CONTEXT_REPORT, false);
-        //TODO: FIXME: Move this into a module
-        connectionTokenCache = new LocalCache<>(
-                brokerSettings.getInt(BrokerSettingKey.CACHE_CONNECTION_TOKEN_SIZE),
-                brokerSettings.getInt(BrokerSettingKey.CACHE_CONNECTION_TOKEN_TTL),
-                null);
-        //TODO: FIXME: Move this into a module
-        sessionContextCache = new LocalCache<>(
-                brokerSettings.getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_SIZE),
-                brokerSettings.getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_TTL),
-                null);
-        //TODO: FIXME: Move this into a module
-        aclCache = new LocalCache<>(
-                brokerSettings.getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_SIZE),
-                brokerSettings.getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_TTL),
-                null);
-        sessionContextMapByClient = new ConcurrentHashMap<>();
-        sessionContextMap = new ConcurrentHashMap<>();
-        aclMap = new ConcurrentHashMap<>();
-
+        this.printData = printData;
+        this.connectionTokenCache = connectionTokenCache;
+        this.sessionContextCache = sessionContextCache;
+        this.aclCache = aclCache;
+        this.metricsSecurityPlugin = metricsSecurityPlugin;
+        this.runWithLock = runWithLock;
+        this.sessionContextMapByClient = new ConcurrentHashMap<>();
+        this.sessionContextMap = new ConcurrentHashMap<>();
+        this.aclMap = new ConcurrentHashMap<>();
     }
 
     public void init(ActiveMQServer server) {
@@ -118,9 +111,8 @@ public final class SecurityContext {
                 logger.warn("ServerReportTask already started!");
             }
         }
-        //TODO: FIXME: Move this into a module
         try {
-            MetricsSecurityPlugin.getInstance(server,
+            metricsSecurityPlugin.init(server,
                     () -> sessionContextMap.size(),
                     () -> sessionContextMapByClient.size(),
                     () -> aclMap.size(),
@@ -141,7 +133,7 @@ public final class SecurityContext {
     public boolean setSessionContext(SessionContext sessionContext, List<AuthAcl> authAcls) throws Exception {
         logger.info("Updating session context for connection id: {}", sessionContext.getConnectionId());
         String connectionId = sessionContext.getConnectionId();
-        return RunWithLock.run(connectionId, () -> {
+        return runWithLock.run(connectionId, () -> {
             if (updateConnectionTokenOnConnection(connectionId) == null) {
                 logger.info("Setting session context for connection id: {}", connectionId);
                 activeConnections.add(connectionId);
@@ -171,7 +163,7 @@ public final class SecurityContext {
     }
 
     public void updateConnectionTokenOnDisconnection(String connectionId) throws Exception {
-        RunWithLock.run(connectionId, () -> {
+        runWithLock.run(connectionId, () -> {
             if (connectionTokenCache.getAndRemove(connectionId) == null) {
                 //put the connection token
                 connectionTokenCache.put(connectionId,
@@ -184,7 +176,7 @@ public final class SecurityContext {
     public SessionContext cleanSessionContext(SessionContext sessionContext) throws Exception {
         logger.info("Updating session context for connection id: {}", sessionContext.getConnectionId());
         String connectionId = sessionContext.getConnectionId();
-        return RunWithLock.run(connectionId, () -> {
+        return runWithLock.run(connectionId, () -> {
             logger.info("Cleaning session context for connection id: {}", connectionId);
             //cleaning context and filling cache
             SessionContext sessionContextOld = sessionContextMap.remove(connectionId);

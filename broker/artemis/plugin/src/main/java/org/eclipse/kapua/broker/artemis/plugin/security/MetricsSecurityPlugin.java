@@ -19,7 +19,8 @@ import org.eclipse.kapua.broker.artemis.plugin.security.metric.LoginMetric;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
-import org.eclipse.kapua.locator.KapuaLocator;
+
+import javax.inject.Inject;
 
 public class MetricsSecurityPlugin {
 
@@ -38,38 +39,29 @@ public class MetricsSecurityPlugin {
     private static final String TOTAL_MESSAGE_ACKNOWLEDGED = "total_message_acknowledged";
     private static final String TOTAL_MESSAGE_ADDED = "total_message_added";
 
-    private static MetricsSecurityPlugin instance;
+    private final MetricsService metricsService;
 
-    public synchronized static MetricsSecurityPlugin getInstance(ActiveMQServer server,
-                                                                 Gauge<Integer> mapSize, Gauge<Integer> mapByClientSize, Gauge<Integer> aclSize, Gauge<Integer> activeConnection) throws KapuaException {
-        if (instance == null) {
-            instance = new MetricsSecurityPlugin(server, mapSize, mapByClientSize, aclSize, activeConnection, KapuaLocator.getInstance().getComponent(MetricsService.class));
-        }
-        return instance;
+    @Inject
+    public MetricsSecurityPlugin(
+            MetricsService metricsService) {
+        this.metricsService = metricsService;
     }
 
-    //TODO move to an init method??
-    private MetricsSecurityPlugin(
-            ActiveMQServer server,
-            Gauge<Integer> mapSize,
-            Gauge<Integer> mapByClientSize,
-            Gauge<Integer> aclSize,
-            Gauge<Integer> activeConnection,
-            MetricsService metricsService) throws KapuaException {
-        metricsService.registerGauge(() -> server.getSessions().size(), CommonsMetric.module, LoginMetric.COMPONENT_LOGIN, SESSION);
-        metricsService.registerGauge(() -> server.getConnectionCount(), CommonsMetric.module, LoginMetric.COMPONENT_LOGIN, CONNECTION);
-        metricsService.registerGauge(() -> server.getBrokerConnections().size(), CommonsMetric.module, LoginMetric.COMPONENT_LOGIN, BROKER_CONNECTION);
+    public void init(ActiveMQServer server, Gauge<Integer> mapSize, Gauge<Integer> mapByClientSize, Gauge<Integer> aclSize, Gauge<Integer> activeConnection) throws KapuaException {
         metricsService.registerGauge(mapSize, CommonsMetric.module, LoginMetric.COMPONENT_LOGIN, SESSION_CONTEXT);
         metricsService.registerGauge(mapByClientSize, CommonsMetric.module, LoginMetric.COMPONENT_LOGIN, SESSION_CONTEXT_BY_CLIENT);
         metricsService.registerGauge(aclSize, CommonsMetric.module, LoginMetric.COMPONENT_LOGIN, ACL);
         metricsService.registerGauge(activeConnection, CommonsMetric.module, LoginMetric.COMPONENT_LOGIN, ACTIVE_CONNECTION);
+
+        metricsService.registerGauge(() -> server.getSessions().size(), CommonsMetric.module, LoginMetric.COMPONENT_LOGIN, SESSION);
+        metricsService.registerGauge(() -> server.getConnectionCount(), CommonsMetric.module, LoginMetric.COMPONENT_LOGIN, CONNECTION);
+        metricsService.registerGauge(() -> server.getBrokerConnections().size(), CommonsMetric.module, LoginMetric.COMPONENT_LOGIN, BROKER_CONNECTION);
         //from broker
+        metricsService.registerGauge(() -> server.getDiskStoreUsage(), CommonsMetric.module, LoginMetric.COMPONENT_LOGIN, DISK_USAGE, MetricsLabel.SIZE);
         metricsService.registerGauge(() -> server.getTotalConnectionCount(), CommonsMetric.module, LoginMetric.COMPONENT_LOGIN, TOTAL_CONNECTION, MetricsLabel.SIZE);
         metricsService.registerGauge(() -> server.getTotalMessageCount(), CommonsMetric.module, LoginMetric.COMPONENT_LOGIN, TOTAL_MESSAGE, MetricsLabel.SIZE);
         metricsService.registerGauge(() -> server.getTotalMessagesAcknowledged(), CommonsMetric.module, LoginMetric.COMPONENT_LOGIN, TOTAL_MESSAGE_ACKNOWLEDGED, MetricsLabel.SIZE);
         metricsService.registerGauge(() -> server.getTotalMessagesAdded(), CommonsMetric.module, LoginMetric.COMPONENT_LOGIN, TOTAL_MESSAGE_ADDED, MetricsLabel.SIZE);
-
     }
-
 
 }

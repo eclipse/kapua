@@ -107,6 +107,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     private final PublishMetric publishMetric;
     private final SubscribeMetric subscribeMetric;
     private final BrokerSetting brokerSetting;
+    private final PluginUtility pluginUtility;
 
     protected BrokerEventHandler brokerEventHanldler;
     protected AcceptorHandler acceptorHandler;
@@ -125,6 +126,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         publishMetric = kapuaLocator.getComponent(PublishMetric.class);
         subscribeMetric = kapuaLocator.getComponent(SubscribeMetric.class);
         this.brokerSetting = kapuaLocator.getComponent(BrokerSetting.class);
+        this.pluginUtility = kapuaLocator.getComponent(PluginUtility.class);
         this.publishInfoMessageSizeLimit = brokerSetting.getInt(BrokerSettingKey.PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD, DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD);
         serverContext = kapuaLocator.getComponent(ServerContext.class);
         brokerEventHanldler = BrokerEventHandler.getInstance();
@@ -226,7 +228,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
                            boolean noAutoCreateQueue) throws ActiveMQException {
         String address = message.getAddress();
         int messageSize = message.getEncodeSize();
-        SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextWithCacheFallback(PluginUtility.getConnectionId(session));
+        SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextWithCacheFallback(pluginUtility.getConnectionId(session.getRemotingConnection()));
         logger.debug("Publishing message on address {} from clientId: {} - clientIp: {}", address, sessionContext.getClientId(), sessionContext.getClientIp());
         message.putStringProperty(MessageConstants.HEADER_KAPUA_CLIENT_ID, sessionContext.getClientId());
         message.putStringProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_NAME, sessionContext.getConnectorName());
@@ -304,7 +306,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         String fullClientId = Utils.getFullClientId(scopeId, clientId);
         return serverContext.getServer().getSessions().stream().map(session -> {
             RemotingConnection remotingConnection = session.getRemotingConnection();
-            String clientIdToCheck = PluginUtility.getConnectionId(remotingConnection);
+            String clientIdToCheck = pluginUtility.getConnectionId(remotingConnection);
             SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextByClientId(clientIdToCheck);
             String connectionFullClientId = Utils.getFullClientId(sessionContext);
             if (fullClientId.equals(connectionFullClientId)) {
@@ -323,7 +325,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         logger.info("Disconnecting client for connection: {}", connectionId);
         return serverContext.getServer().getRemotingService().getConnections().stream().map(remotingConnection -> {
             int removed = 0;
-            String connectionIdTmp = PluginUtility.getConnectionId(remotingConnection);
+            String connectionIdTmp = pluginUtility.getConnectionId(remotingConnection);
             if (connectionId.equals(connectionIdTmp)) {
                 logger.info("\tconnection: {} - compared to: {} ... CLOSE", connectionId, connectionIdTmp);
                 remotingConnection.disconnect(false);
@@ -387,7 +389,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     private void cleanUpConnectionData(RemotingConnection connection, Failure reason, Exception exception) {
         Context timeTotal = loginMetric.getRemoveConnection().time();
         try {
-            String connectionId = PluginUtility.getConnectionId(connection);
+            String connectionId = pluginUtility.getConnectionId(connection);
             serverContext.getSecurityContext().updateConnectionTokenOnDisconnection(connectionId);
             logger.info("### cleanUpConnectionData connection: {} - reason: {} - Error: {}", connectionId, reason, exception != null ? exception.getMessage() : "N/A");
             if (exception != null && logger.isDebugEnabled()) {
@@ -396,7 +398,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             SessionContext sessionContext = serverContext.getSecurityContext().getSessionContext(connectionId);
             if (sessionContext != null) {
                 SessionContext sessionContextByClient = serverContext.getSecurityContext().cleanSessionContext(sessionContext);
-                if (!PluginUtility.isInternal(connection)) {
+                if (!pluginUtility.isInternal(connection)) {
                     AuthRequest authRequest = new AuthRequest(
                             serverContext.getClusterName(),
                             serverContext.getBrokerIdentity().getBrokerHost(),

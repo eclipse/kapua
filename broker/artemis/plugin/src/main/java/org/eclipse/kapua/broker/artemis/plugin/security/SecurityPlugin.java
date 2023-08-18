@@ -70,9 +70,10 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
     private static final AtomicInteger INDEX = new AtomicInteger();
     private String clientIdPrefix = "internal-client-id-";
 
-    private LoginMetric loginMetric;
-    private PublishMetric publishMetric;
-    private SubscribeMetric subscribeMetric;
+    private final LoginMetric loginMetric;
+    private final PublishMetric publishMetric;
+    private final SubscribeMetric subscribeMetric;
+    private final PluginUtility pluginUtility;
 
     protected ServerContext serverContext;
     //to avoid deadlock this field will be initialized by the first internal login call
@@ -88,6 +89,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         publishMetric = kapuaLocator.getComponent(PublishMetric.class);
         subscribeMetric = kapuaLocator.getComponent(SubscribeMetric.class);
         serverContext = KapuaLocator.getInstance().getComponent(ServerContext.class);
+        pluginUtility = KapuaLocator.getInstance().getComponent(PluginUtility.class);
         final BrokerSetting brokerSettings = kapuaLocator.getComponent(BrokerSetting.class);
         usernameScopeIdCache = new LocalCache<>(
                 brokerSettings.getInt(BrokerSettingKey.CACHE_SCOPE_ID_SIZE),
@@ -101,7 +103,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         //like a cache looks for an already authenticated user in context
         //Artemis does the authenticate call even when checking for authorization (publish, subscribe, manage)
         //since we keep a "Kapua session" map that is cleaned when the connection is dropped no security issues will come if this cache is used to avoid redundant login process
-        String connectionId = PluginUtility.getConnectionId(remotingConnection);
+        String connectionId = pluginUtility.getConnectionId(remotingConnection);
         logger.debug("### authenticate user: {} - clientId: {} - remoteIP: {} - connectionId: {} - securityDomain: {}",
                 username, remotingConnection.getClientID(), remotingConnection.getTransportConnection().getRemoteAddress(), connectionId, securityDomain);
         String clientIp = remotingConnection.getTransportConnection().getRemoteAddress();
@@ -125,14 +127,14 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                 return null;
             }
             ConnectionInfo connectionInfo = new ConnectionInfo(
-                    PluginUtility.getConnectionId(remotingConnection),//connectionId
+                    pluginUtility.getConnectionId(remotingConnection),//connectionId
                     clientId,//clientId
                     clientIp,//clientIp
                     remotingConnection.getTransportConnection().getConnectorConfig().getName(),//connectorName
                     remotingConnection.getProtocolName(),//transportProtocol
                     (String) remotingConnection.getTransportConnection().getConnectorConfig().getCombinedParams().get("sslEnabled"),//sslEnabled
                     getPeerCertificates(remotingConnection));//clientsCertificates
-            return PluginUtility.isInternal(remotingConnection) ?
+            return pluginUtility.isInternal(remotingConnection) ?
                     authenticateInternalConn(connectionInfo, connectionId, username, password, remotingConnection) :
                     authenticateExternalConn(connectionInfo, connectionId, username, password, remotingConnection);
         }

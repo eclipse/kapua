@@ -27,9 +27,9 @@ public class SubscribeMetric {
     public static final String ALLOWED = "allowed";
     public static final String NOT_ALLOWED = "not_allowed";
 
-    private Counter allowedMessages;
-    private Counter notAllowedMessages;
-    private Timer time;
+    private final Counter allowedMessages;
+    private final Counter notAllowedMessages;
+    private final Timer time;
 
     @Inject
     private SubscribeMetric(MetricsService metricsService) {

@@ -42,23 +42,23 @@ public class LoginMetric {
     private static final String ADD_CONNECTION = "add_connection";
     private static final String REMOVE_CONNECTION = "remove_connection";
 
-    private ActionMetric externalConnector;
-    private ActionMetric internalConnector;
-    private Counter authenticateFromCache;
-    private Counter cleanupGenericFailure;
-    private Counter cleanupNullSessionFailure;
-    private Counter loginClosedConnectionFailure;
-    private Counter duplicateSessionMetadataFailure;
-    private Counter disconnectCallbackCallFailure;//disconnect callback called before the connect callback (usually when a stealing link happens)
-    private Counter sessionContextByClientIdFailure;//no session context is found by client id on disconnect on cleanupConnectionData (disconnect)
-    private Counter aclCacheHit;//acl found from cache (it happens when a client id disconnected but some address related to this client id deleted after)
-    private Counter aclCreationFailure;//error while creating acl
+    private final ActionMetric externalConnector;
+    private final ActionMetric internalConnector;
+    private final Counter authenticateFromCache;
+    private final Counter cleanupGenericFailure;
+    private final Counter cleanupNullSessionFailure;
+    private final Counter loginClosedConnectionFailure;
+    private final Counter duplicateSessionMetadataFailure;
+    private final Counter disconnectCallbackCallFailure;//disconnect callback called before the connect callback (usually when a stealing link happens)
+    private final Counter sessionContextByClientIdFailure;//no session context is found by client id on disconnect on cleanupConnectionData (disconnect)
+    private final Counter aclCacheHit;//acl found from cache (it happens when a client id disconnected but some address related to this client id deleted after)
+    private final Counter aclCreationFailure;//error while creating acl
 
-    private Counter invalidUserPassword;
-    private Counter disconnectByEvent;
+    private final Counter invalidUserPassword;
+    private final Counter disconnectByEvent;
 
-    private Timer externalAddConnection;
-    private Timer removeConnection;
+    private final Timer externalAddConnection;
+    private final Timer removeConnection;
 
     @Inject
     public LoginMetric(MetricsService metricsService) {

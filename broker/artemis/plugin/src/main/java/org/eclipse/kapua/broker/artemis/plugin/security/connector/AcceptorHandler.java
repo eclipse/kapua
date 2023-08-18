@@ -20,9 +20,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Helper class to handle acceptor lifecycle (add/remove acceptors on demand)
@@ -46,7 +46,7 @@ public class AcceptorHandler {
         if (definedAcceptors != null) {
             this.definedAcceptors = definedAcceptors;
         } else {
-            this.definedAcceptors = new HashMap<>();
+            this.definedAcceptors = new ConcurrentHashMap<>();
         }
     }
 
