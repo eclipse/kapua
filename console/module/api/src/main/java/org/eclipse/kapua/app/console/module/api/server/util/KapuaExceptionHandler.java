@@ -50,6 +50,8 @@ import java.util.Map;
 public class KapuaExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(KapuaExceptionHandler.class);
+    //TODO: FIXME: Inject
+    private static final SystemSetting SYSTEM_SETTING = SystemSetting.getInstance();
 
     private KapuaExceptionHandler() {
     }
@@ -204,7 +206,7 @@ public class KapuaExceptionHandler {
             return new GwtKapuaException(GwtKapuaErrorCode.ENTITY_UNIQUENESS, throwable, errorFieldsSb.toString());
         } else if (throwable instanceof KapuaIllegalArgumentException) {
             KapuaIllegalArgumentException kiae = (KapuaIllegalArgumentException) throwable;
-            if (kiae.getArgumentName().equals("name") && kiae.getArgumentValue().equals(SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME))) {
+            if (kiae.getArgumentName().equals("name") && kiae.getArgumentValue().equals(SYSTEM_SETTING.getString(SystemSettingKey.SYS_ADMIN_USERNAME))) {
                 return new GwtKapuaException(GwtKapuaErrorCode.OPERATION_NOT_ALLOWED_ON_ADMIN_USER, throwable);
             } else {
                 return new GwtKapuaException(GwtKapuaErrorCode.ILLEGAL_ARGUMENT, throwable, ((KapuaIllegalArgumentException) throwable).getArgumentName(), ((KapuaIllegalArgumentException) throwable).getArgumentValue());

@@ -22,6 +22,7 @@ import javax.inject.Singleton;
 
 @Singleton
 public class ExceptionConfigurationProviderImpl implements ExceptionConfigurationProvider {
+    //TODO: FIXME: Inject
     private final boolean showStackTrace = KapuaApiCoreSetting.getInstance().getBoolean(KapuaApiCoreSettingKeys.API_EXCEPTION_STACKTRACE_SHOW, false);
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

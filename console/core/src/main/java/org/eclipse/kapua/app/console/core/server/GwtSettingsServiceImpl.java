@@ -31,6 +31,7 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtS
 
     private static final long serialVersionUID = -6876999298300071273L;
 
+    //TODO: FIXME: Inject
     private static final ConsoleSetting CONSOLE_SETTINGS = ConsoleSetting.getInstance();
 
     @Override

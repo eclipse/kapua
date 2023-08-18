@@ -33,6 +33,7 @@ public class RestApiListener implements ServletContextListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(RestApiListener.class);
 
+    //TODO: FIXME: Inject
     private final SystemSetting systemSetting = SystemSetting.getInstance();
 
     private ServiceModuleBundle moduleBundle;

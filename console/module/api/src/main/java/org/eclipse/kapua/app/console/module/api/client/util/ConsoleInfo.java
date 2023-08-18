@@ -40,6 +40,7 @@ public class ConsoleInfo extends Info {
      *
      * @return static instance of ConsoleInfo class
      */
+    //TODO: FIXME: singletons should not be handled manually, we have DI for that
     public static ConsoleInfo getInstance() {
         return SINGLE_INSTANCE;
     }

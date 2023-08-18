@@ -67,6 +67,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
 
     private static final long serialVersionUID = 7323313459749361320L;
 
+    //TODO: FIXME: Inject
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     private static final AuthenticationService AUTHENTICATION_SERVICE = LOCATOR.getService(AuthenticationService.class);

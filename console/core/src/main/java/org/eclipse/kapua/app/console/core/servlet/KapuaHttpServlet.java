@@ -12,22 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.servlet;
 
-import java.io.File;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.FileCleanerCleanup;
+import org.apache.commons.io.FileCleaningTracker;
+import org.eclipse.kapua.app.console.core.shared.model.KapuaFormFields;
+import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
+import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.FileCleanerCleanup;
-import org.apache.commons.io.FileCleaningTracker;
-import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
-import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
-import org.eclipse.kapua.app.console.core.shared.model.KapuaFormFields;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.File;
 
 public class KapuaHttpServlet extends HttpServlet {
 
@@ -36,6 +35,8 @@ public class KapuaHttpServlet extends HttpServlet {
 
     protected DiskFileItemFactory diskFileItemFactory;
     protected FileCleaningTracker fileCleaningTracker;
+    //TODO: FIXME: Inject
+    private ConsoleSetting consoleSetting = ConsoleSetting.getInstance();
 
     @Override
     public void init() throws ServletException {
@@ -46,7 +47,7 @@ public class KapuaHttpServlet extends HttpServlet {
         ServletContext ctx = getServletContext();
         fileCleaningTracker = FileCleanerCleanup.getFileCleaningTracker(ctx);
 
-        int sizeThreshold = ConsoleSetting.getInstance().getInt(ConsoleSettingKeys.FILE_UPLOAD_INMEMORY_SIZE_THRESHOLD);
+        int sizeThreshold = consoleSetting.getInt(ConsoleSettingKeys.FILE_UPLOAD_INMEMORY_SIZE_THRESHOLD);
         File repository = new File(System.getProperty("java.io.tmpdir"));
 
         logger.info("DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD: {}", DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD);

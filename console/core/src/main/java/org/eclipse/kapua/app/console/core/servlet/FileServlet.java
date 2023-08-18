@@ -53,6 +53,20 @@ public class FileServlet extends KapuaHttpServlet {
     private static final String SCOPE_ID_STRING = "scopeIdString";
     private static final String DEVICE_ID_STRING = "deviceIdString";
 
+    private final DeviceConfigurationManagementService deviceConfigurationManagementService;
+    private final DeviceCommandManagementService deviceCommandManagementService;
+    private final DeviceCommandFactory deviceCommandFactory;
+    private final ConsoleSetting config;
+
+    //TODO: FIXME: Inject
+    public FileServlet() {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        deviceConfigurationManagementService = locator.getService(DeviceConfigurationManagementService.class);
+        deviceCommandManagementService = locator.getService(DeviceCommandManagementService.class);
+        deviceCommandFactory = locator.getFactory(DeviceCommandFactory.class);
+        config = ConsoleSetting.getInstance();
+    }
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -102,9 +116,6 @@ public class FileServlet extends KapuaHttpServlet {
             if (fileItems == null || fileItems.size() != 1) {
                 throw new IllegalArgumentException("configuration");
             }
-
-            KapuaLocator locator = KapuaLocator.getInstance();
-            DeviceConfigurationManagementService deviceConfigurationManagementService = locator.getService(DeviceConfigurationManagementService.class);
 
             FileItem fileItem = fileItems.get(0);
             byte[] data = fileItem.get();
@@ -167,13 +178,9 @@ public class FileServlet extends KapuaHttpServlet {
                 timeout = Integer.parseInt(timeoutString);
             }
 
-            KapuaLocator locator = KapuaLocator.getInstance();
-            DeviceCommandManagementService deviceService = locator.getService(DeviceCommandManagementService.class);
-
             // FIXME: set a max size on the MQtt payload
             byte[] data = fileItems.isEmpty() ? null : fileItems.get(0).get();
 
-            DeviceCommandFactory deviceCommandFactory = locator.getFactory(DeviceCommandFactory.class);
             DeviceCommandInput commandInput = deviceCommandFactory.newCommandInput();
 
             StringTokenizer st = new StringTokenizer(command);
@@ -196,7 +203,7 @@ public class FileServlet extends KapuaHttpServlet {
             commandInput.setWorkingDir("/tmp/");
             commandInput.setBody(data);
 
-            DeviceCommandOutput deviceCommandOutput = deviceService.exec(KapuaEid.parseCompactId(scopeIdString),
+            DeviceCommandOutput deviceCommandOutput = deviceCommandManagementService.exec(KapuaEid.parseCompactId(scopeIdString),
                     KapuaEid.parseCompactId(deviceIdString),
                     commandInput,
                     null);
@@ -267,8 +274,6 @@ public class FileServlet extends KapuaHttpServlet {
         if (!tmpPath.endsWith("/")) {
             filePathSb.append("/");
         }
-
-        ConsoleSetting config = ConsoleSetting.getInstance();
 
         filePathSb.append(config.getString(ConsoleSettingKeys.DEVICE_CONFIGURATION_ICON_FOLDER))
                 .append("/")

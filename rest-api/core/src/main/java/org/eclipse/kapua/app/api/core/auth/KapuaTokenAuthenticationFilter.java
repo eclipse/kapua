@@ -31,6 +31,12 @@ public class KapuaTokenAuthenticationFilter extends AuthenticatingFilter {
     private static final String OPTIONS = "OPTIONS";
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER = "Bearer";
+    private final CredentialsFactory credentialsFactory;
+
+    public KapuaTokenAuthenticationFilter() {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        this.credentialsFactory = locator.getFactory(CredentialsFactory.class);
+    }
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
@@ -58,8 +64,6 @@ public class KapuaTokenAuthenticationFilter extends AuthenticatingFilter {
             tokenId = httpRequest.getHeader(AUTHORIZATION_HEADER).replace(BEARER + " ", "");
         }
         // Build AccessToken for Shiro Auth
-        KapuaLocator locator = KapuaLocator.getInstance();
-        CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
         AccessTokenCredentials accessTokenCredentials = credentialsFactory.newAccessTokenCredentials(tokenId);
         // Return token
         return (AuthenticationToken) accessTokenCredentials;
