@@ -106,4 +106,11 @@ public enum KapuaJobEngineErrorCodes implements KapuaErrorCode {
      * @since 1.0.0
      */
     CANNOT_CLEANUP_JOB_DATA,
+
+    /**
+     * See {@link CleanJobDataException}.
+     *
+     * @since 2.0.0
+     */
+    CANNOT_CLEANUP_JOB_DATA_WITH_CAUSE,
 }
