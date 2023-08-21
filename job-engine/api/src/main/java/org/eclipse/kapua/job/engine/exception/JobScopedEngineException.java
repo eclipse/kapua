@@ -17,6 +17,8 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.Job;
 
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
  * Base {@link JobEngineException} for {@link Exception} that have a {@link Job} as a subject.
@@ -40,7 +42,7 @@ public abstract class JobScopedEngineException extends JobEngineException {
      * @since 1.0.0
      */
     protected JobScopedEngineException(@NotNull JobEngineErrorCodes code, @NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull Object... arguments) {
-        super(code, scopeId, jobId, arguments);
+        super(code, Stream.concat(Stream.of(scopeId, jobId), Arrays.stream(arguments)).toArray());
 
         this.scopeId = scopeId;
         this.jobId = jobId;
@@ -57,7 +59,7 @@ public abstract class JobScopedEngineException extends JobEngineException {
      * @since 1.0.0
      */
     protected JobScopedEngineException(@NotNull JobEngineErrorCodes code, @NotNull Throwable cause, @NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull Object... arguments) {
-        super(code, cause, scopeId, jobId, arguments);
+        super(code, cause, Stream.concat(Stream.of(scopeId, jobId), Arrays.stream(arguments)).toArray());
 
         this.scopeId = scopeId;
         this.jobId = jobId;
