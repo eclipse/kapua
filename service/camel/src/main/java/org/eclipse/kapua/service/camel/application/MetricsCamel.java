@@ -13,10 +13,11 @@
 package org.eclipse.kapua.service.camel.application;
 
 import com.codahale.metrics.Counter;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
-import org.eclipse.kapua.locator.KapuaLocator;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 public class MetricsCamel {
 
@@ -35,34 +36,23 @@ public class MetricsCamel {
     private Counter unauthenticatedError;
     private Counter genericError;
 
-    private static MetricsCamel instance;
-
-    //TODO: FIXME: singletons should not be handled manually, we have DI for that
-    public static MetricsCamel getInstance() {
-        if (instance == null) {
-            synchronized (CommonsMetric.class) {
-                if (instance == null) {
-                    instance = new MetricsCamel(KapuaLocator.getInstance().getComponent(MetricsService.class));
-                }
-            }
-        }
-        return instance;
-    }
-
-    private MetricsCamel(MetricsService metricsService) {
+    @Inject
+    private MetricsCamel(MetricsService metricsService,
+                         @Named("metricModuleName")
+                         String metricModuleName) {
         //error handler
-        storedToFileSuccess = metricsService.getCounter(CommonsMetric.module, MetricsLabel.ERROR, STORED_TO_FILE, MetricsLabel.SUCCESS);
-        storedToFileError = metricsService.getCounter(CommonsMetric.module, MetricsLabel.ERROR, STORED_TO_FILE, MetricsLabel.ERROR);
-        unknownBodyType = metricsService.getCounter(CommonsMetric.module, MetricsLabel.ERROR, UNKNOWN_BODY_TYPE);
+        storedToFileSuccess = metricsService.getCounter(metricModuleName, MetricsLabel.ERROR, STORED_TO_FILE, MetricsLabel.SUCCESS);
+        storedToFileError = metricsService.getCounter(metricModuleName, MetricsLabel.ERROR, STORED_TO_FILE, MetricsLabel.ERROR);
+        unknownBodyType = metricsService.getCounter(metricModuleName, MetricsLabel.ERROR, UNKNOWN_BODY_TYPE);
 
         converterErrorMessage = metricsService.getCounter(
-                CommonsMetric.module,
+                metricModuleName,
                 CONVERTER,
                 MetricsLabel.ERROR
         );
 
-        unauthenticatedError = metricsService.getCounter(CommonsMetric.module, MetricsLabel.FAILURE, UNAUTHENTICATED);
-        genericError = metricsService.getCounter(CommonsMetric.module, MetricsLabel.FAILURE, GENERIC);
+        unauthenticatedError = metricsService.getCounter(metricModuleName, MetricsLabel.FAILURE, UNAUTHENTICATED);
+        genericError = metricsService.getCounter(metricModuleName, MetricsLabel.FAILURE, GENERIC);
     }
 
     public Counter getErrorStoredToFileSuccess() {

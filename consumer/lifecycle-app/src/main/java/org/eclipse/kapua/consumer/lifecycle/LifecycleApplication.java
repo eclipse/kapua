@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.lifecycle;
 
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.camel.setting.ServiceSettingKey;
 import org.eclipse.kapua.service.security.SecurityUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 
@@ -27,6 +27,7 @@ import org.springframework.context.annotation.PropertySource;
  */
 @ImportResource({"classpath:spring/applicationContext.xml"})
 @PropertySource(value = "classpath:spring/application.properties")
+@Import(SpringBridge.class)
 @SpringBootApplication
 public class LifecycleApplication {
 
@@ -39,8 +40,6 @@ public class LifecycleApplication {
     }
 
     public static void main(String[] args) {
-        //TODO to be injected!!!
-        CommonsMetric.module = MetricsLifecycle.CONSUMER_LIFECYCLE;
         //statically set parameters
         System.setProperty(ServiceSettingKey.JAXB_CONTEXT_CLASS_NAME.key(), LifecycleJAXBContextProvider.class.getName());
         //org.springframework.context.ApplicationContext is not needed now so don't keep the SpringApplication.run return

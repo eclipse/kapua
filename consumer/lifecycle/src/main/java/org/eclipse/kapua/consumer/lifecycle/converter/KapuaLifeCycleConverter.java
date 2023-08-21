@@ -22,6 +22,8 @@ import org.eclipse.kapua.service.client.message.MessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+
 /**
  * Kapua message converter used to convert life cycle messages.
  *
@@ -31,11 +33,11 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter {
 
     public static final Logger logger = LoggerFactory.getLogger(KapuaLifeCycleConverter.class);
 
-    //TODO inject!!!
-    private MetricsLifecycle metrics;
+    private final MetricsLifecycle metrics;
 
-    public KapuaLifeCycleConverter() {
-        metrics = MetricsLifecycle.getInstance();
+    @Inject
+    public KapuaLifeCycleConverter(MetricsLifecycle metricsLifecycle) {
+        this.metrics = metricsLifecycle;
     }
 
     /**

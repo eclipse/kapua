@@ -13,6 +13,7 @@
 package org.eclipse.kapua.commons.service.internal.cache;
 
 import org.eclipse.kapua.commons.metric.CommonsMetric;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -32,6 +33,7 @@ public class EntityCache {
 
     protected Cache<Serializable, Serializable> idCache;
     protected Cache<Serializable, Serializable> listsCache;  // listsCache does not use the same keys as idCache
+    private final CommonsMetric commonsMetric;
 
     /**
      * The constructor initializes the {@link #idCache} and the {@link #listsCache}.
@@ -41,6 +43,7 @@ public class EntityCache {
     public EntityCache(String idCacheName) {
         idCache = KapuaCacheManager.getCache(idCacheName);
         listsCache = KapuaCacheManager.getCache(idCacheName + "_list");
+        commonsMetric = KapuaLocator.getInstance().getComponent(CommonsMetric.class);
     }
 
     public KapuaEntity get(KapuaId scopeId, KapuaId kapuaId) {
@@ -53,9 +56,9 @@ public class EntityCache {
                 cacheErrorLogger("get", idCache.getName(), kapuaId, e);
             }
             if (entity == null) {
-                CommonsMetric.getInstance().getCacheMiss().inc();
+                commonsMetric.getCacheMiss().inc();
             } else {
-                CommonsMetric.getInstance().getCacheHit().inc();
+                commonsMetric.getCacheHit().inc();
             }
             return entity;
         }
@@ -104,7 +107,7 @@ public class EntityCache {
             if (entity != null) {
                 try {
                     idCache.remove(kapuaId);
-                    CommonsMetric.getInstance().getCacheRemoval().inc();
+                    commonsMetric.getCacheRemoval().inc();
                     return entity;
                 } catch (Exception e) {
                     cacheErrorLogger("remove", idCache.getName(), kapuaId, e);
@@ -190,7 +193,7 @@ public class EntityCache {
      * @param t         the exception
      */
     protected void cacheErrorLogger(String operation, String cacheName, Serializable keyId, Throwable t) {
-        CommonsMetric.getInstance().getCacheError().inc();
+        commonsMetric.getCacheError().inc();
         LOGGER.warn("Cache error while performing {} on {} for key {} : {}", operation, cacheName, keyId, t.getLocalizedMessage());
         LOGGER.debug("Cache exception", t);
     }

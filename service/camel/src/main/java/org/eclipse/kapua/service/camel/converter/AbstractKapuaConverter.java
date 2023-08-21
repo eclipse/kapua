@@ -37,6 +37,7 @@ import org.eclipse.kapua.transport.message.jms.JmsTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.jms.JMSException;
 import java.util.Base64;
 import java.util.Date;
@@ -51,6 +52,12 @@ public abstract class AbstractKapuaConverter {
     public static final Logger logger = LoggerFactory.getLogger(AbstractKapuaConverter.class);
 
     private final TranslatorHub translatorHub = KapuaLocator.getInstance().getComponent(TranslatorHub.class);
+    @Inject
+    private MetricsCamel metricsCamel;
+
+    @Inject
+    protected AbstractKapuaConverter() {
+    }
 
     /**
      * Convert incoming message to a Kapua message (depending on messageType parameter)
@@ -78,13 +85,13 @@ public abstract class AbstractKapuaConverter {
                     }
                     return convertToCamelKapuaMessage(connectorDescriptor, messageType, messageContent, JmsUtil.getTopic(message), queuedOn, connectionId, clientId);
                 } catch (JMSException e) {
-                    MetricsCamel.getInstance().getConverterErrorMessage().inc();
+                    metricsCamel.getConverterErrorMessage().inc();
                     logger.error("Exception converting message {}", e.getMessage(), e);
                     throw KapuaException.internalError(e, "Cannot convert the message type " + exchange.getIn().getClass());
                 }
             }
         }
-        MetricsCamel.getInstance().getConverterErrorMessage().inc();
+        metricsCamel.getConverterErrorMessage().inc();
         throw KapuaException.internalError("Cannot convert the message - Wrong instance type: " + exchange.getIn().getClass());
     }
 

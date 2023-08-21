@@ -15,7 +15,8 @@ package org.eclipse.kapua.consumer.lifecycle;
 import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
-import org.eclipse.kapua.locator.KapuaLocator;
+
+import javax.inject.Inject;
 
 public class MetricsLifecycle {
 
@@ -45,16 +46,7 @@ public class MetricsLifecycle {
     private Counter deviceAppsMessage;
     private Counter deviceErrorMessage;
 
-    private static MetricsLifecycle instance;
-
-    //TODO: FIXME: singletons should not be handled manually, we have DI for that
-    public synchronized static MetricsLifecycle getInstance() {
-        if (instance == null) {
-            instance = new MetricsLifecycle(KapuaLocator.getInstance().getComponent(MetricsService.class));
-        }
-        return instance;
-    }
-
+    @Inject
     public MetricsLifecycle(MetricsService metricsService) {
         converterAppMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERTER, MetricsLabel.MESSAGE_APPS);
         converterBirthMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERTER, MetricsLabel.MESSAGE_BIRTH);

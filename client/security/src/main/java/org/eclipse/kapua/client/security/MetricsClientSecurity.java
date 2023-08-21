@@ -13,11 +13,11 @@
 package org.eclipse.kapua.client.security;
 
 import com.codahale.metrics.Counter;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 public class MetricsClientSecurity {
 
@@ -26,9 +26,11 @@ public class MetricsClientSecurity {
     private Counter loginCallbackTimeout;
 
     @Inject
-    public MetricsClientSecurity(MetricsService metricsService) {
-        loginCallbackError = metricsService.getCounter(CommonsMetric.module, CALLBACK, MetricsLabel.ERROR);
-        loginCallbackTimeout = metricsService.getCounter(CommonsMetric.module, CALLBACK, MetricsLabel.TIMEOUT);
+    public MetricsClientSecurity(MetricsService metricsService,
+                                 @Named("metricModuleName")
+                                 String metricModuleName) {
+        loginCallbackError = metricsService.getCounter(metricModuleName, CALLBACK, MetricsLabel.ERROR);
+        loginCallbackTimeout = metricsService.getCounter(metricModuleName, CALLBACK, MetricsLabel.TIMEOUT);
     }
 
     public Counter getLoginCallbackError() {

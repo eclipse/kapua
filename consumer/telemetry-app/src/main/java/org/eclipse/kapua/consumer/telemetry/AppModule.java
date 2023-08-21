@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,16 +10,23 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.metric;
+package org.eclipse.kapua.consumer.telemetry;
 
+import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
-public class CommonMetricsModule extends AbstractKapuaModule {
+public class AppModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(MetricsService.class).to(MetricsServiceImpl.class).in(Singleton.class);
-        bind(CommonsMetric.class).in(Singleton.class);
+        bind(MetricsTelemetry.class).in(Singleton.class);
+    }
+
+    @Provides
+    @Named("metricModuleName")
+    String metricModuleName() {
+        return MetricsTelemetry.CONSUMER_TELEMETRY;
     }
 }

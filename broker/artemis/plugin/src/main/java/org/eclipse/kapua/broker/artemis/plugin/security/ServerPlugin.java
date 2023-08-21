@@ -109,7 +109,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     private final BrokerSetting brokerSetting;
     private final PluginUtility pluginUtility;
 
-    protected BrokerEventHandler brokerEventHanldler;
+    protected BrokerEventHandler brokerEventHandler;
     protected AcceptorHandler acceptorHandler;
     protected String version;
     protected ServerContext serverContext;
@@ -117,8 +117,6 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     protected DeviceConnectionEventListenerService deviceConnectionEventListenerService;
 
     public ServerPlugin() {
-        //TODO find which is the right plugin to use to set this parameter (ServerPlugin or SecurityPlugin???)
-        CommonsMetric.module = MetricsSecurityPlugin.BROKER_TELEMETRY;
         //TODO find a proper way to initialize database
         DatabaseCheckUpdate databaseCheckUpdate = new DatabaseCheckUpdate();
         final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
@@ -129,11 +127,9 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         this.pluginUtility = kapuaLocator.getComponent(PluginUtility.class);
         this.publishInfoMessageSizeLimit = brokerSetting.getInt(BrokerSettingKey.PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD, DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD);
         serverContext = kapuaLocator.getComponent(ServerContext.class);
-        brokerEventHanldler = BrokerEventHandler.getInstance();
-        brokerEventHanldler.registerConsumer((brokerEvent) -> disconnectClient(brokerEvent));
-        brokerEventHanldler.start();
-
-        deviceConnectionEventListenerService = KapuaLocator.getInstance().getService(DeviceConnectionEventListenerService.class);
+        brokerEventHandler = new BrokerEventHandler(kapuaLocator.getComponent(CommonsMetric.class));
+        brokerEventHandler.registerConsumer((brokerEvent) -> disconnectClient(brokerEvent));
+        brokerEventHandler.start();
     }
 
     @Override

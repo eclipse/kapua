@@ -41,6 +41,7 @@ import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialRepository;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
+import org.eclipse.kapua.service.authentication.credential.cache.CacheMetric;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionFactory;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionRepository;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
@@ -97,6 +98,7 @@ public class AuthenticationModule extends AbstractKapuaModule {
         bind(AccessTokenFactory.class).to(AccessTokenFactoryImpl.class);
         bind(RegistrationService.class).to(RegistrationServiceImpl.class);
         bind(MfaAuthenticator.class).toInstance(new MfaAuthenticatorImpl());
+        bind(CacheMetric.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet

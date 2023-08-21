@@ -40,14 +40,16 @@ public class DeviceManagementNotificationMessageProcessor {
     private final DeviceManagementRegistryManagerService deviceManagementRegistryManagerService;
     private final JobDeviceManagementOperationManagerService jobDeviceManagementOperationManagerService;
 
-    //TODO inject!!!
-    private MetricsLifecycle metrics;
+    private final MetricsLifecycle metrics;
 
     @Inject
-    public DeviceManagementNotificationMessageProcessor(DeviceManagementRegistryManagerService deviceManagementRegistryManagerService, JobDeviceManagementOperationManagerService jobDeviceManagementOperationManagerService) {
+    public DeviceManagementNotificationMessageProcessor(
+            DeviceManagementRegistryManagerService deviceManagementRegistryManagerService,
+            JobDeviceManagementOperationManagerService jobDeviceManagementOperationManagerService,
+            MetricsLifecycle metricsLifecycle) {
         this.deviceManagementRegistryManagerService = deviceManagementRegistryManagerService;
         this.jobDeviceManagementOperationManagerService = jobDeviceManagementOperationManagerService;
-        metrics = MetricsLifecycle.getInstance();
+        this.metrics = metricsLifecycle;
     }
 
     /**

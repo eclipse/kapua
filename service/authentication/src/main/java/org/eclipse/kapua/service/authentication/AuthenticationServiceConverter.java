@@ -24,6 +24,7 @@ import org.eclipse.kapua.service.camel.converter.AbstractKapuaConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.io.IOException;
 
 /**
@@ -36,11 +37,11 @@ public class AuthenticationServiceConverter extends AbstractKapuaConverter {
     private static ObjectMapper mapper = new ObjectMapper();
     private static ObjectReader reader = mapper.reader();//check if it's thread safe
 
-    //TODO inject!!!
-    private MetricsAuthentication metrics;
+    private final MetricsAuthentication metrics;
 
-    public AuthenticationServiceConverter() {
-        metrics = MetricsAuthentication.getInstance();
+    @Inject
+    public AuthenticationServiceConverter(MetricsAuthentication metricsAuthentication) {
+        this.metrics = metricsAuthentication;
     }
 
     /**

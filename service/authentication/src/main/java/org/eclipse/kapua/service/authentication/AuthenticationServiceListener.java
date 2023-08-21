@@ -12,24 +12,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
-import javax.inject.Inject;
-import javax.jms.JMSException;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.spi.UriEndpoint;
+import org.eclipse.kapua.client.security.bean.AuthRequest;
+import org.eclipse.kapua.client.security.bean.AuthResponse;
 import org.eclipse.kapua.client.security.bean.EntityRequest;
 import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.bean.MessageConstants;
 import org.eclipse.kapua.client.security.bean.Request;
-import org.eclipse.kapua.client.security.bean.AuthRequest;
-import org.eclipse.kapua.client.security.bean.AuthResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import javax.inject.Inject;
+import javax.jms.JMSException;
 
 @UriEndpoint(title = "authentication service listener", syntax = "bean:authenticationServiceListener", scheme = "bean")
 public class AuthenticationServiceListener {
@@ -39,44 +38,43 @@ public class AuthenticationServiceListener {
     private static ObjectMapper mapper = new ObjectMapper();
     private static ObjectWriter writer = mapper.writer();
 
+    private final AuthenticationServiceBackEndCall authenticationServiceBackEndCall;
+    private final MetricsAuthentication metricsAuthentication;
+
     @Inject
-    private AuthenticationServiceBackEndCall authenticationServiceBackEndCall;
-
-    //TODO inject!!!
-    private MetricsAuthentication metrics;
-
-    public AuthenticationServiceListener() {
-        metrics = MetricsAuthentication.getInstance();
+    public AuthenticationServiceListener(AuthenticationServiceBackEndCall authenticationServiceBackEndCall, MetricsAuthentication metricsAuthentication) {
+        this.authenticationServiceBackEndCall = authenticationServiceBackEndCall;
+        this.metricsAuthentication = metricsAuthentication;
     }
 
     public void brokerConnect(Exchange exchange, AuthRequest authRequest) throws JsonProcessingException, JMSException {
-        metrics.getLoginRequest().inc();
+        metricsAuthentication.getLoginRequest().inc();
         logRequest(exchange, authRequest);
         AuthResponse authResponse = authenticationServiceBackEndCall.brokerConnect(authRequest);
         updateMessage(exchange, authRequest, authResponse);
-        metrics.getLogin().inc();
+        metricsAuthentication.getLogin().inc();
     }
 
     public void brokerDisconnect(Exchange exchange, AuthRequest authRequest) throws JsonProcessingException, JMSException {
-        metrics.getLogoutRequest().inc();
+        metricsAuthentication.getLogoutRequest().inc();
         logRequest(exchange, authRequest);
         AuthResponse authResponse = authenticationServiceBackEndCall.brokerDisconnect(authRequest);
         updateMessage(exchange, authRequest, authResponse);
-        metrics.getLogout().inc();
+        metricsAuthentication.getLogout().inc();
     }
 
     public void getEntity(Exchange exchange, EntityRequest accountRequest) throws JsonProcessingException, JMSException {
-        metrics.getGetAccountRequest().inc();
+        metricsAuthentication.getGetAccountRequest().inc();
         logRequest(exchange, accountRequest);
         EntityResponse accountResponse = authenticationServiceBackEndCall.getEntity(accountRequest);
         updateMessage(exchange, accountRequest, accountResponse);
-        metrics.getGetAccount().inc();
+        metricsAuthentication.getGetAccount().inc();
     }
 
     public void updateMessage(Exchange exchange, AuthRequest authRequest, AuthResponse authResponse) throws JMSException, JsonProcessingException {
         Message message = exchange.getIn();
         String textPayload = null;
-        if (authResponse!=null) {
+        if (authResponse != null) {
             textPayload = writer.writeValueAsString(authResponse);
             message.setBody(textPayload, String.class);
         }
@@ -95,7 +93,7 @@ public class AuthenticationServiceListener {
     public void updateMessage(Exchange exchange, EntityRequest entityRequest, EntityResponse entityResponse) throws JMSException, JsonProcessingException {
         Message message = exchange.getIn();
         String textPayload = null;
-        if (entityResponse!=null) {
+        if (entityResponse != null) {
             textPayload = writer.writeValueAsString(entityResponse);
             message.setBody(textPayload, String.class);
         }
@@ -109,7 +107,7 @@ public class AuthenticationServiceListener {
 
     private void logRequest(Exchange exchange, Request request) {
         logger.info("Message id: {} - request id: {} - action: {} - requester: {}",
-            exchange.getIn().getMessageId(),
-            request.getRequestId(), request.getAction(), request.getRequester());
+                exchange.getIn().getMessageId(),
+                request.getRequestId(), request.getAction(), request.getRequester());
     }
 }

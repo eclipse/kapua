@@ -13,9 +13,10 @@
 package org.eclipse.kapua.client.security.metric;
 
 import com.codahale.metrics.Counter;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
+
+import javax.inject.Named;
 
 public class AuthLoginMetric {
 
@@ -30,13 +31,15 @@ public class AuthLoginMetric {
     private Counter stealingLinkDisconnect;
     private Counter illegalStateDisconnect;
 
-    public AuthLoginMetric(MetricsService metricsService, String type) {
-        connected = metricsService.getCounter(CommonsMetric.module, type, CONNECT);
-        attempt = metricsService.getCounter(CommonsMetric.module, type, MetricsLabel.ATTEMPT);
-        disconnected = metricsService.getCounter(CommonsMetric.module, type, AuthMetric.DISCONNECT);
-        stealingLinkConnect = metricsService.getCounter(CommonsMetric.module, type, STEALING_LINK, CONNECT);
-        stealingLinkDisconnect = metricsService.getCounter(CommonsMetric.module, type, STEALING_LINK, AuthMetric.DISCONNECT);
-        illegalStateDisconnect = metricsService.getCounter(CommonsMetric.module, type, ILLEGAL_STATE, AuthMetric.DISCONNECT);
+    public AuthLoginMetric(MetricsService metricsService, String type,
+                           @Named("metricModuleName")
+                           String metricModuleName) {
+        connected = metricsService.getCounter(metricModuleName, type, CONNECT);
+        attempt = metricsService.getCounter(metricModuleName, type, MetricsLabel.ATTEMPT);
+        disconnected = metricsService.getCounter(metricModuleName, type, AuthMetric.DISCONNECT);
+        stealingLinkConnect = metricsService.getCounter(metricModuleName, type, STEALING_LINK, CONNECT);
+        stealingLinkDisconnect = metricsService.getCounter(metricModuleName, type, STEALING_LINK, AuthMetric.DISCONNECT);
+        illegalStateDisconnect = metricsService.getCounter(metricModuleName, type, ILLEGAL_STATE, AuthMetric.DISCONNECT);
     }
 
     public Counter getAttempt() {

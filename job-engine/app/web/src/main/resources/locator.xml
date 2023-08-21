@@ -17,6 +17,7 @@
     </provided>
 
     <packages>
+        <package>org.eclipse.kapua.job.engine.app.web</package>
         <package>org.eclipse.kapua.commons</package>
         <package>org.eclipse.kapua.job.engine.jbatch</package>
         <package>org.eclipse.kapua.job.engine.queue.jbatch</package>

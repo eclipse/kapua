@@ -14,11 +14,11 @@ package org.eclipse.kapua.broker.artemis.plugin.security.metric;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 public class SubscribeMetric {
 
@@ -32,10 +32,12 @@ public class SubscribeMetric {
     private final Timer time;
 
     @Inject
-    private SubscribeMetric(MetricsService metricsService) {
-        allowedMessages = metricsService.getCounter(CommonsMetric.module, SUBSCRIBE, ALLOWED);
-        notAllowedMessages = metricsService.getCounter(CommonsMetric.module, SUBSCRIBE, NOT_ALLOWED);
-        time = metricsService.getTimer(CommonsMetric.module, SUBSCRIBE, MetricsLabel.TIME, MetricsLabel.SECONDS);
+    private SubscribeMetric(MetricsService metricsService,
+                            @Named("metricModuleName")
+                            String metricModuleName) {
+        allowedMessages = metricsService.getCounter(metricModuleName, SUBSCRIBE, ALLOWED);
+        notAllowedMessages = metricsService.getCounter(metricModuleName, SUBSCRIBE, NOT_ALLOWED);
+        time = metricsService.getTimer(metricModuleName, SUBSCRIBE, MetricsLabel.TIME, MetricsLabel.SECONDS);
     }
 
     public Counter getAllowedMessages() {

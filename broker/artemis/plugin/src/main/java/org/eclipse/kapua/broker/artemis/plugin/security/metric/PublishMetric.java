@@ -15,11 +15,11 @@ package org.eclipse.kapua.broker.artemis.plugin.security.metric;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Timer;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 public class PublishMetric {
 
@@ -35,13 +35,15 @@ public class PublishMetric {
     private final Histogram messageSizeAllowed;
 
     @Inject
-    private PublishMetric(MetricsService metricsService) {
+    private PublishMetric(MetricsService metricsService,
+                          @Named("metricModuleName")
+                          String metricModuleName) {
         // publish/subscribe
-        allowedMessages = metricsService.getCounter(CommonsMetric.module, PUBLISH, ALLOWED);
-        notAllowedMessages = metricsService.getCounter(CommonsMetric.module, PUBLISH, NOT_ALLOWED);
-        time = metricsService.getTimer(CommonsMetric.module, PUBLISH, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        allowedMessages = metricsService.getCounter(metricModuleName, PUBLISH, ALLOWED);
+        notAllowedMessages = metricsService.getCounter(metricModuleName, PUBLISH, NOT_ALLOWED);
+        time = metricsService.getTimer(metricModuleName, PUBLISH, MetricsLabel.TIME, MetricsLabel.SECONDS);
         // message size
-        messageSizeAllowed = metricsService.getHistogram(CommonsMetric.module, PUBLISH, ALLOWED, MetricsLabel.SIZE, MetricsLabel.BYTES);
+        messageSizeAllowed = metricsService.getHistogram(metricModuleName, PUBLISH, ALLOWED, MetricsLabel.SIZE, MetricsLabel.BYTES);
     }
 
     public Counter getAllowedMessages() {

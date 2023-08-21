@@ -12,6 +12,31 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event.jms;
 
+import org.apache.commons.pool2.BasePooledObjectFactory;
+import org.apache.commons.pool2.PooledObject;
+import org.apache.commons.pool2.impl.DefaultPooledObject;
+import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.apache.qpid.jms.jndi.JmsInitialContextFactory;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.event.ServiceEventBusDriver;
+import org.eclipse.kapua.commons.event.ServiceEventBusManager;
+import org.eclipse.kapua.commons.event.ServiceEventMarshaler;
+import org.eclipse.kapua.commons.event.ServiceEventScope;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.event.ServiceEventBus;
+import org.eclipse.kapua.event.ServiceEventBusException;
+import org.eclipse.kapua.event.ServiceEventBusListener;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.ExceptionListener;
@@ -30,36 +55,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.pool2.BasePooledObjectFactory;
-import org.apache.commons.pool2.PooledObject;
-import org.apache.commons.pool2.impl.DefaultPooledObject;
-import org.apache.commons.pool2.impl.GenericObjectPool;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.apache.qpid.jms.jndi.JmsInitialContextFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.event.ServiceEventBusDriver;
-import org.eclipse.kapua.commons.event.ServiceEventBusManager;
-import org.eclipse.kapua.commons.event.ServiceEventMarshaler;
-import org.eclipse.kapua.commons.event.ServiceEventScope;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.event.ServiceEvent;
-import org.eclipse.kapua.event.ServiceEventBus;
-import org.eclipse.kapua.event.ServiceEventBusException;
-import org.eclipse.kapua.event.ServiceEventBusListener;
-
 /**
  * JMS event bus implementation
  *
  * @since 1.0
  */
+//TODO: FIXME: Replace Service Loader with DI
 public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDriver {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JMSServiceEventBus.class);
@@ -75,6 +76,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
     private List<Subscription> subscriptionList = new ArrayList<>();
     private EventBusJMSConnectionBridge eventBusJMSConnectionBridge;
     private ServiceEventMarshaler eventBusMarshaler;
+    private final CommonsMetric commonsMetric = KapuaLocator.getInstance().getComponent(CommonsMetric.class);
 
     /**
      * Default constructor
@@ -175,13 +177,12 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
         } catch (Exception e) {
             LOGGER.warn("Error while creating new Service Event Bus instance: {}", e.getMessage());
             //try to cleanup the messy instance
-            if (newInstance!=null) {
+            if (newInstance != null) {
                 try {
                     LOGGER.warn("Stopping new Service Event Bus instance...");
                     newInstance.stop();
                     LOGGER.warn("Stopping new Service Event Bus instance... DONE");
-                }
-                catch(Exception e1) {
+                } catch (Exception e1) {
                     //don't throw this exception since the real exception is the first one
                     LOGGER.warn("Stopping new Service Event Bus instance error: {}", e1.getMessage(), e1);
                 }
@@ -436,12 +437,12 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
             @Override
             public void onException(JMSException e) {
                 LOGGER.error("EventBus Listener {} -  Connection thrown exception: {}", this, e.getMessage(), e);
-                CommonsMetric.getInstance().getEventBusConnectionError().inc();
+                commonsMetric.getEventBusConnectionError().inc();
                 int i = 1;
                 while (active) {
                     LOGGER.info("EventBus Listener {} - restarting attempt... {}", this, i);
                     try {
-                        CommonsMetric.getInstance().getEventBusConnectionRetry().inc();
+                        commonsMetric.getEventBusConnectionRetry().inc();
                         restart();
                         LOGGER.info("EventBus Listener {} - EventBus restarting attempt... {} DONE (Connection restored)", this, i);
                         break;

@@ -29,6 +29,7 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.ModelContext;
 import org.eclipse.kapua.service.elasticsearch.client.QueryConverter;
@@ -90,7 +91,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     private MetricsEsClient metrics;
 
     public RestElasticsearchClientProvider() {
-        metrics = MetricsEsClient.getInstance();
+        metrics = KapuaLocator.getInstance().getComponent(MetricsEsClient.class);
     }
 
     @Override
@@ -319,7 +320,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
         RestClient restClient = restClientBuilder.build();
 
         // Init Kapua Elasticsearch Client
-        restElasticsearchClient = new RestElasticsearchClient();
+        restElasticsearchClient = new RestElasticsearchClient(metrics);
         restElasticsearchClient
                 .withClientConfiguration(clientConfiguration)
                 .withModelContext(modelContext)

@@ -15,7 +15,6 @@ package org.eclipse.kapua.consumer.lifecycle.listener;
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.consumer.lifecycle.MetricsLifecycle;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage;
@@ -25,6 +24,8 @@ import org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDevi
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
 
 /**
  * Device messages listener (device life cycle).
@@ -40,16 +41,16 @@ public class DeviceMessageListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceMessageListener.class);
 
-    private DeviceLifeCycleService deviceLifeCycleService;
-    private JobDeviceManagementTriggerManagerService jobDeviceManagementTriggerManagerService;
+    private final DeviceLifeCycleService deviceLifeCycleService;
+    private final JobDeviceManagementTriggerManagerService jobDeviceManagementTriggerManagerService;
 
-    //TODO inject!!!
-    private MetricsLifecycle metrics;
+    private final MetricsLifecycle metrics;
 
-    public DeviceMessageListener() {
-        metrics = MetricsLifecycle.getInstance();
-        deviceLifeCycleService = KapuaLocator.getInstance().getService(DeviceLifeCycleService.class);
-        jobDeviceManagementTriggerManagerService = KapuaLocator.getInstance().getService(JobDeviceManagementTriggerManagerService.class);
+    @Inject
+    public DeviceMessageListener(MetricsLifecycle metricsLifecycle, DeviceLifeCycleService deviceLifeCycleService, JobDeviceManagementTriggerManagerService jobDeviceManagementTriggerManagerService) {
+        this.metrics = metricsLifecycle;
+        this.deviceLifeCycleService = deviceLifeCycleService;
+        this.jobDeviceManagementTriggerManagerService = jobDeviceManagementTriggerManagerService;
     }
 
     /**

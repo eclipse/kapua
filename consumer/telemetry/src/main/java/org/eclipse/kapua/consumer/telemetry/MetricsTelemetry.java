@@ -15,7 +15,8 @@ package org.eclipse.kapua.consumer.telemetry;
 import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
-import org.eclipse.kapua.locator.KapuaLocator;
+
+import javax.inject.Inject;
 
 public class MetricsTelemetry {
 
@@ -24,17 +25,8 @@ public class MetricsTelemetry {
 
     private Counter converterDataMessage;
 
-    private static MetricsTelemetry instance;
-
-    //TODO: FIXME: singletons should not be handled manually, we have DI for that
-    public synchronized static MetricsTelemetry getInstance() {
-        if (instance == null) {
-            instance = new MetricsTelemetry(KapuaLocator.getInstance().getComponent(MetricsService.class));
-        }
-        return instance;
-    }
-
-    private MetricsTelemetry(MetricsService metricsService) {
+    @Inject
+    public MetricsTelemetry(MetricsService metricsService) {
         converterDataMessage = metricsService.getCounter(CONSUMER_TELEMETRY, CONVERTER, MetricsLabel.MESSAGE_DATA);
     }
 

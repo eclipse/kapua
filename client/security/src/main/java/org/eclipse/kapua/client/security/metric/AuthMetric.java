@@ -13,11 +13,11 @@
 package org.eclipse.kapua.client.security.metric;
 
 import com.codahale.metrics.Timer;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 public class AuthMetric {
 
@@ -35,12 +35,14 @@ public class AuthMetric {
     private Timer removeConnection;
 
     @Inject
-    public AuthMetric(MetricsService metricsService) {
-        adminLogin = new AuthLoginMetric(metricsService, ADMIN);
-        userLogin = new AuthLoginMetric(metricsService, USER);
-        extConnectorTime = new AuthTimeMetric(metricsService);
-        failure = new AuthFailureMetric(metricsService);
-        removeConnection = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, REMOVE_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
+    public AuthMetric(MetricsService metricsService,
+                      @Named("metricModuleName")
+                      String metricModuleName) {
+        adminLogin = new AuthLoginMetric(metricsService, ADMIN, metricModuleName);
+        userLogin = new AuthLoginMetric(metricsService, USER, metricModuleName);
+        extConnectorTime = new AuthTimeMetric(metricsService, metricModuleName);
+        failure = new AuthFailureMetric(metricsService, metricModuleName);
+        removeConnection = metricsService.getTimer(metricModuleName, AuthMetric.USER, REMOVE_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
     }
 
     public AuthLoginMetric getAdminLogin() {

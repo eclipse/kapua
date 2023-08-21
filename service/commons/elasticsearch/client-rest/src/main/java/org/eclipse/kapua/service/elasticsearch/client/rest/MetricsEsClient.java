@@ -13,10 +13,11 @@
 package org.eclipse.kapua.service.elasticsearch.client.rest;
 
 import com.codahale.metrics.Counter;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
-import org.eclipse.kapua.locator.KapuaLocator;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 public class MetricsEsClient {
 
@@ -34,25 +35,18 @@ public class MetricsEsClient {
     private Counter timeoutRetry;
     private Counter timeoutRetryLimitReached;
 
-    private static MetricsEsClient instance;
-
-    //TODO: FIXME: singletons should not be handled manually, we have DI for that
-    public synchronized static MetricsEsClient getInstance() {
-        if (instance == null) {
-            instance = new MetricsEsClient(KapuaLocator.getInstance().getComponent(MetricsService.class));
-        }
-        return instance;
-    }
-
-    private MetricsEsClient(MetricsService metricsService) {
+    @Inject
+    private MetricsEsClient(MetricsService metricsService,
+                            @Named("metricModuleName")
+                            String metricModuleName) {
         //timeout
-        timeoutRetry = metricsService.getCounter(CommonsMetric.module, REST_CLIENT, TIMEOUT_RETRY);
-        timeoutRetryLimitReached = metricsService.getCounter(CommonsMetric.module, REST_CLIENT, TIMEOUT_RETRY_LIMIT_REACHED);
-        clientReconnectCall = metricsService.getCounter(CommonsMetric.module, REST_CLIENT, RECONNECT_CALL);
+        timeoutRetry = metricsService.getCounter(metricModuleName, REST_CLIENT, TIMEOUT_RETRY);
+        timeoutRetryLimitReached = metricsService.getCounter(metricModuleName, REST_CLIENT, TIMEOUT_RETRY_LIMIT_REACHED);
+        clientReconnectCall = metricsService.getCounter(metricModuleName, REST_CLIENT, RECONNECT_CALL);
 
         //exception
-        exception = metricsService.getCounter(CommonsMetric.module, REST_CLIENT, MetricsLabel.ERROR);
-        runtimeException = metricsService.getCounter(CommonsMetric.module, REST_CLIENT, RUNTIME_ERROR);
+        exception = metricsService.getCounter(metricModuleName, REST_CLIENT, MetricsLabel.ERROR);
+        runtimeException = metricsService.getCounter(metricModuleName, REST_CLIENT, RUNTIME_ERROR);
     }
 
     public Counter getException() {

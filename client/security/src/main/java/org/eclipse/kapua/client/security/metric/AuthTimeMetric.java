@@ -13,11 +13,11 @@
 package org.eclipse.kapua.client.security.metric;
 
 import com.codahale.metrics.Timer;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 public class AuthTimeMetric {
 
@@ -40,15 +40,17 @@ public class AuthTimeMetric {
     private Timer raiseLifecycleEvent;
 
     @Inject
-    public AuthTimeMetric(MetricsService metricsService) {
-        userAddConnection = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, ADD_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        userCheckAccess = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, CHECK_ACCESS, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        userFindDevice = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, FIND_DEVICE, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        userUpdateDevice = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, UPDATE_DEVICE, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        userRemoveConnection = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, REMOVE_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        logoutOnLogin = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, LOGOUT_ON_CONNECTION, LOGIN, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        adminAddConnection = metricsService.getTimer(CommonsMetric.module, AuthMetric.ADMIN, ADD_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        raiseLifecycleEvent = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, RAISE_LIFECYCLE_EVENT, MetricsLabel.TIME, MetricsLabel.SECONDS);
+    public AuthTimeMetric(MetricsService metricsService,
+                          @Named("metricModuleName")
+                          String metricModuleName) {
+        userAddConnection = metricsService.getTimer(metricModuleName, AuthMetric.USER, ADD_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        userCheckAccess = metricsService.getTimer(metricModuleName, AuthMetric.USER, CHECK_ACCESS, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        userFindDevice = metricsService.getTimer(metricModuleName, AuthMetric.USER, FIND_DEVICE, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        userUpdateDevice = metricsService.getTimer(metricModuleName, AuthMetric.USER, UPDATE_DEVICE, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        userRemoveConnection = metricsService.getTimer(metricModuleName, AuthMetric.USER, REMOVE_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        logoutOnLogin = metricsService.getTimer(metricModuleName, AuthMetric.USER, LOGOUT_ON_CONNECTION, LOGIN, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        adminAddConnection = metricsService.getTimer(metricModuleName, AuthMetric.ADMIN, ADD_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        raiseLifecycleEvent = metricsService.getTimer(metricModuleName, AuthMetric.USER, RAISE_LIFECYCLE_EVENT, MetricsLabel.TIME, MetricsLabel.SECONDS);
     }
 
     /**

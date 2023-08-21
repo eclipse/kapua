@@ -22,6 +22,8 @@ import org.eclipse.kapua.service.client.message.MessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+
 /**
  * Kapua message converter used to convert device management notification messages.
  *
@@ -31,11 +33,11 @@ public class DeviceManagementNotificationConverter extends AbstractKapuaConverte
 
     public static final Logger logger = LoggerFactory.getLogger(DeviceManagementNotificationConverter.class);
 
-    //TODO inject!!!
-    private MetricsLifecycle metrics;
+    private final MetricsLifecycle metrics;
 
-    public DeviceManagementNotificationConverter() {
-        metrics = MetricsLifecycle.getInstance();
+    @Inject
+    public DeviceManagementNotificationConverter(MetricsLifecycle metricsLifecycle) {
+        this.metrics = metricsLifecycle;
     }
 
     /**

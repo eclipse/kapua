@@ -39,7 +39,6 @@ import org.eclipse.kapua.client.security.bean.KapuaPrincipalImpl;
 import org.eclipse.kapua.client.security.context.SessionContext;
 import org.eclipse.kapua.client.security.context.Utils;
 import org.eclipse.kapua.commons.cache.LocalCache;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
@@ -82,8 +81,6 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
 
     public SecurityPlugin() {
         logger.info("Initializing SecurityPlugin...");
-        //TODO find which is the right plugin to use to set this parameter (ServerPlugin or SecurityPlugin???)
-        CommonsMetric.module = MetricsSecurityPlugin.BROKER_TELEMETRY;
         final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
         loginMetric = kapuaLocator.getComponent(LoginMetric.class);
         publishMetric = kapuaLocator.getComponent(PublishMetric.class);

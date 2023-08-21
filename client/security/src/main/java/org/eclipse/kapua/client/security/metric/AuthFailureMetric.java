@@ -13,11 +13,11 @@
 package org.eclipse.kapua.client.security.metric;
 
 import com.codahale.metrics.Counter;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 public class AuthFailureMetric {
 
@@ -31,11 +31,13 @@ public class AuthFailureMetric {
     private Counter brokerHostFailure;
 
     @Inject
-    public AuthFailureMetric(MetricsService metricsService) {
-        logoutFailureOnLogin = metricsService.getCounter(CommonsMetric.module, LOGOUT_ON_FAILURE);
-        disconnectFailure = metricsService.getCounter(CommonsMetric.module, AuthMetric.DISCONNECT, MetricsLabel.FAILURE);
-        findDeviceConnectionFailure = metricsService.getCounter(CommonsMetric.module, FIND_DEVICE, MetricsLabel.FAILURE);
-        brokerHostFailure = metricsService.getCounter(CommonsMetric.module, BROKER_HOST, MetricsLabel.FAILURE);
+    public AuthFailureMetric(MetricsService metricsService,
+                             @Named("metricModuleName")
+                             String metricModuleName) {
+        logoutFailureOnLogin = metricsService.getCounter(metricModuleName, LOGOUT_ON_FAILURE);
+        disconnectFailure = metricsService.getCounter(metricModuleName, AuthMetric.DISCONNECT, MetricsLabel.FAILURE);
+        findDeviceConnectionFailure = metricsService.getCounter(metricModuleName, FIND_DEVICE, MetricsLabel.FAILURE);
+        brokerHostFailure = metricsService.getCounter(metricModuleName, BROKER_HOST, MetricsLabel.FAILURE);
     }
 
     /**

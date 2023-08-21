@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,16 +10,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.metric;
+package org.eclipse.kapua.service.elasticsearch.client.rest;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 
 import javax.inject.Singleton;
 
-public class CommonMetricsModule extends AbstractKapuaModule {
+public class EsClientModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(MetricsService.class).to(MetricsServiceImpl.class).in(Singleton.class);
-        bind(CommonsMetric.class).in(Singleton.class);
+        bind(MetricsEsClient.class).in(Singleton.class);
     }
 }

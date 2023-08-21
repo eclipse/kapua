@@ -23,6 +23,7 @@ import org.eclipse.kapua.service.client.message.MessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.util.UUID;
 
 /**
@@ -34,11 +35,11 @@ public class KapuaDataConverter extends AbstractKapuaConverter {
 
     public static final Logger logger = LoggerFactory.getLogger(KapuaDataConverter.class);
 
-    //TODO inject!!!
-    private MetricsTelemetry metrics;
+    private final MetricsTelemetry metrics;
 
-    public KapuaDataConverter() {
-        metrics = MetricsTelemetry.getInstance();
+    @Inject
+    public KapuaDataConverter(MetricsTelemetry metricsTelemetry) {
+        this.metrics = metricsTelemetry;
     }
 
     /**

@@ -18,7 +18,6 @@ import org.eclipse.kapua.app.console.ConsoleJAXBContextProvider;
 import org.eclipse.kapua.commons.core.ServiceModuleBundle;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
@@ -47,8 +46,6 @@ public class ConsoleListener implements ServletContextListener {
     public void contextInitialized(final ServletContextEvent event) {
         try {
             LOG.info("Initialize Console JABContext Provider...");
-            //TODO to be injected!!!
-            CommonsMetric.module = "web-console";
             JAXBContextProvider consoleProvider = new ConsoleJAXBContextProvider();
             XmlUtil.setContextProvider(consoleProvider);
             LOG.info("Initialize Console JABContext Provider... DONE!");

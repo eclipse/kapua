@@ -21,6 +21,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaFileUtils;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +64,7 @@ public class KapuaCacheManager {
     private static final URI CACHE_CONFIG_URI = getCacheConfig();
 
     private static CacheManager cacheManager;
+    private static final CommonsMetric COMMONS_METRIC = KapuaLocator.getInstance().getComponent(CommonsMetric.class);
 
     private KapuaCacheManager() {
     }
@@ -115,7 +117,7 @@ public class KapuaCacheManager {
                     checkCacheManager();
                     cache = cacheManager.createCache(cacheName, initConfig());
                     CACHE_MAP.put(cacheName, cache);
-                    CommonsMetric.getInstance().getRegisteredCache().inc();
+                    COMMONS_METRIC.getRegisteredCache().inc();
                     LOGGER.info("Created cache: {} - Expiry Policy: {} - TTL: {}", cacheName, EXPIRY_POLICY, TTL);
                 }
             }
@@ -135,7 +137,7 @@ public class KapuaCacheManager {
                     cachingProvider = Caching.getCachingProvider();
                 }
                 //set the default cache flag
-                CommonsMetric.getInstance().setCacheStatus(1);
+                COMMONS_METRIC.setCacheStatus(1);
             } catch (CacheException e) {
                 //set the "default cache" flag (already done by initDefualtCacheProvider)
                 LOGGER.warn("Error while loading the CachingProvider... Loading the default one ({}).", DEFAULT_CACHING_PROVIDER_CLASS_NAME);
@@ -155,7 +157,7 @@ public class KapuaCacheManager {
 
     private static CachingProvider initDefualtCacheProvider() {
         //set the default cache flag
-        CommonsMetric.getInstance().setCacheStatus(-1);
+        COMMONS_METRIC.setCacheStatus(-1);
         return Caching.getCachingProvider(DEFAULT_CACHING_PROVIDER_CLASS_NAME);
     }
 
@@ -177,7 +179,7 @@ public class KapuaCacheManager {
     public static void invalidateAll() {
         CACHE_MAP.forEach((cacheKey, cache) -> {
             cache.clear();
-            CommonsMetric.getInstance().getRegisteredCache().dec();
+            COMMONS_METRIC.getRegisteredCache().dec();
         });
     }
 

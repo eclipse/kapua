@@ -27,6 +27,7 @@ import java.util.ServiceLoader;
  *
  * @since 1.0
  */
+//TODO: FIXME: Replace Service Loader with DI
 public class ServiceEventBusManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEventBusManager.class);

@@ -25,6 +25,7 @@ import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.credential.cache.CacheMetric;
 import org.eclipse.kapua.service.authentication.credential.cache.CachedPasswordMatcher;
 import org.eclipse.kapua.service.authentication.credential.cache.DefaultPasswordMatcher;
 import org.eclipse.kapua.service.authentication.credential.cache.PasswordMatcher;
@@ -44,14 +45,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import javax.crypto.NoSuchPaddingException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
-
-import javax.crypto.NoSuchPaddingException;
 
 /**
  * {@link ApiKeyCredentials} {@link CredentialsMatcher} implementation.
@@ -79,12 +79,11 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
         if (KapuaAuthenticationSetting.getInstance().getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_USERPASS_CACHE_ENABLE, true)) {
             logger.info("Cache enabled. Initializing CachePasswordChecker...");
             try {
-                passwordMatcher = new CachedPasswordMatcher();
+                passwordMatcher = new CachedPasswordMatcher(locator.getComponent(CacheMetric.class), locator.getComponent(KapuaAuthenticationSetting.class));
             } catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException | UnsupportedEncodingException | InvalidAlgorithmParameterException | NoSuchPaddingException e) {
                 throw KapuaRuntimeException.internalError(e, "Cannot instantiate CachedPasswordMatcher");
             }
-        }
-        else {
+        } else {
             logger.info("Cache disabled. Initializing NoCachePasswordChecker...");
             passwordMatcher = new DefaultPasswordMatcher();
         }

@@ -18,7 +18,6 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.commons.core.InterceptorBind;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -63,7 +62,7 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
     @Inject
     private TxManager txManager;
     @Inject
-    private MetricsService metricsService;
+    private CommonsMetric commonsMetric;
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -165,7 +164,7 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
     private void useEntityToFillEvent(ServiceEvent serviceEvent, List<KapuaEntity> entities) {
         if (entities.size() > 1) {
             LOG.warn("Found more than one KapuaEntity in the parameters! Assuming to use the first one!");
-            CommonsMetric.getInstance().getRaiseEventWrongEntity().inc();
+            commonsMetric.getRaiseEventWrongEntity().inc();
         }
         KapuaEntity entity = entities.get(0);
         serviceEvent.setEntityType(entity.getClass().getName());
@@ -177,7 +176,7 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
     private void useKapuaIdsToFillEvent(ServiceEvent serviceEvent, List<KapuaId> ids, Class<?>[] implementedClass) {
         if (ids.size() > 2) {
             LOG.warn("Found more than two KapuaId in the parameters! Assuming to use the first two!");
-            CommonsMetric.getInstance().getRaiseEventWrongId().inc();
+            commonsMetric.getRaiseEventWrongId().inc();
         }
         if (ids.size() >= 2) {
             serviceEvent.setEntityScopeId(ids.get(0));

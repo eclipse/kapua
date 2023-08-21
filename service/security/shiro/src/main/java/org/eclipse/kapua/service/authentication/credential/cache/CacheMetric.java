@@ -14,12 +14,13 @@ package org.eclipse.kapua.service.authentication.credential.cache;
 
 import com.codahale.metrics.Counter;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 public class CacheMetric {
 
@@ -32,26 +33,14 @@ public class CacheMetric {
     private Counter cachePutError;
     private Counter passwordEncryptionError;
 
-    private static CacheMetric instance;
-
-    //TODO: FIXME: singletons should not be handled manually, we have DI for that
-    public synchronized static CacheMetric getInstance() {
-        if (instance == null) {
-            try {
-                instance = new CacheMetric(KapuaLocator.getInstance().getComponent(MetricsService.class));
-            } catch (KapuaException e) {
-                //TODO throw runtime exception
-                logger.error("Creating metrics error: {}", e.getMessage(), e);
-            }
-        }
-        return instance;
-    }
-
-    public CacheMetric(MetricsService metricsService) throws KapuaException {
-        cacheMiss = metricsService.getCounter(CommonsMetric.module, AUTH_CACHE, "miss");
-        cacheHit = metricsService.getCounter(CommonsMetric.module, AUTH_CACHE, "hit");
-        cachePutError = metricsService.getCounter(CommonsMetric.module, AUTH_CACHE, "put", MetricsLabel.ERROR);
-        passwordEncryptionError = metricsService.getCounter(CommonsMetric.module, AUTH_CACHE, "encryption", MetricsLabel.ERROR);
+    @Inject
+    public CacheMetric(MetricsService metricsService,
+                       @Named("metricModuleName")
+                       String metricModuleName) throws KapuaException {
+        cacheMiss = metricsService.getCounter(metricModuleName, AUTH_CACHE, "miss");
+        cacheHit = metricsService.getCounter(metricModuleName, AUTH_CACHE, "hit");
+        cachePutError = metricsService.getCounter(metricModuleName, AUTH_CACHE, "put", MetricsLabel.ERROR);
+        passwordEncryptionError = metricsService.getCounter(metricModuleName, AUTH_CACHE, "encryption", MetricsLabel.ERROR);
     }
 
     public Counter getCacheHit() {

@@ -14,11 +14,11 @@ package org.eclipse.kapua.broker.artemis.plugin.security.metric;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 public class LoginMetric {
 
@@ -61,26 +61,28 @@ public class LoginMetric {
     private final Timer removeConnection;
 
     @Inject
-    public LoginMetric(MetricsService metricsService) {
+    public LoginMetric(MetricsService metricsService,
+                       @Named("metricModuleName")
+                       String metricModuleName) {
         // login by connectors
-        externalConnector = new ActionMetric(metricsService, CommonsMetric.module, COMPONENT_LOGIN, EXTERNAL_CONNECTOR);
-        authenticateFromCache = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, AUTHENTICATE_FROM_CACHE);
-        internalConnector = new ActionMetric(metricsService, CommonsMetric.module, COMPONENT_LOGIN, INTERNAL_CONNECTOR);
-        cleanupGenericFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, CLEANUP_GENERIC, MetricsLabel.FAILURE);
-        cleanupNullSessionFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, CLEANUP_NULL_SESSION, MetricsLabel.FAILURE);
-        loginClosedConnectionFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, CLOSED_CONNECTION, MetricsLabel.FAILURE);
-        duplicateSessionMetadataFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, DUPLICATE_SESSION_METADATA, MetricsLabel.FAILURE);
-        disconnectCallbackCallFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, DISCONNECT_CALLBACK_CALL, MetricsLabel.FAILURE);
-        sessionContextByClientIdFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, SESSION_CONTEXT_BY_CLIENT_ID, MetricsLabel.FAILURE);
-        aclCacheHit = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, ACL_CACHE_HIT);
-        aclCreationFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, ACL_CREATION, MetricsLabel.FAILURE);
+        externalConnector = new ActionMetric(metricsService, metricModuleName, COMPONENT_LOGIN, EXTERNAL_CONNECTOR);
+        authenticateFromCache = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, AUTHENTICATE_FROM_CACHE);
+        internalConnector = new ActionMetric(metricsService, metricModuleName, COMPONENT_LOGIN, INTERNAL_CONNECTOR);
+        cleanupGenericFailure = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, CLEANUP_GENERIC, MetricsLabel.FAILURE);
+        cleanupNullSessionFailure = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, CLEANUP_NULL_SESSION, MetricsLabel.FAILURE);
+        loginClosedConnectionFailure = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, CLOSED_CONNECTION, MetricsLabel.FAILURE);
+        duplicateSessionMetadataFailure = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, DUPLICATE_SESSION_METADATA, MetricsLabel.FAILURE);
+        disconnectCallbackCallFailure = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, DISCONNECT_CALLBACK_CALL, MetricsLabel.FAILURE);
+        sessionContextByClientIdFailure = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, SESSION_CONTEXT_BY_CLIENT_ID, MetricsLabel.FAILURE);
+        aclCacheHit = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, ACL_CACHE_HIT);
+        aclCreationFailure = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, ACL_CREATION, MetricsLabel.FAILURE);
 
-        invalidUserPassword = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, PASSWORD, MetricsLabel.FAILURE);
-        disconnectByEvent = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, DISCONNECT_BY_EVENT, DISCONNECT);
+        invalidUserPassword = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, PASSWORD, MetricsLabel.FAILURE);
+        disconnectByEvent = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, DISCONNECT_BY_EVENT, DISCONNECT);
 
         // login time
-        externalAddConnection = metricsService.getTimer(CommonsMetric.module, COMPONENT_LOGIN, ADD_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        removeConnection = metricsService.getTimer(CommonsMetric.module, COMPONENT_LOGIN, REMOVE_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        externalAddConnection = metricsService.getTimer(metricModuleName, COMPONENT_LOGIN, ADD_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        removeConnection = metricsService.getTimer(metricModuleName, COMPONENT_LOGIN, REMOVE_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
     }
 
     public Counter getAuthenticateFromCache() {

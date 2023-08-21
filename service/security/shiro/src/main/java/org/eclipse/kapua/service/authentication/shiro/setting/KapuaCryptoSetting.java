@@ -14,6 +14,8 @@ package org.eclipse.kapua.service.authentication.shiro.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
+import javax.inject.Inject;
+
 /**
  * Crypto setting implementation.
  *
@@ -29,7 +31,8 @@ public class KapuaCryptoSetting extends AbstractKapuaSetting<KapuaCryptoSettingK
     /**
      * Construct a new crypto setting reading settings from {@link KapuaCryptoSetting#CRYPTO_CONFIG_RESOURCE}
      */
-    private KapuaCryptoSetting() {
+    @Inject
+    public KapuaCryptoSetting() {
         super(CRYPTO_CONFIG_RESOURCE);
     }
 
