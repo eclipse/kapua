@@ -95,6 +95,7 @@ public class TagLocatorConfiguration {
 
             @Override
             protected void configure() {
+                bind(String.class).annotatedWith(Names.named("metricModuleName")).toInstance("tests");
                 bind(MetricsService.class).to(MetricsServiceImpl.class).in(Singleton.class);
 
                 // Inject mocked Authorization Service method checkPermission

@@ -20,6 +20,7 @@
         </provide>
     </provided>
     <packages>
+        <package>org.eclipse.kapua.integration.misc</package>
         <package>org.eclipse.kapua.commons</package>
         <package>org.eclipse.kapua.job.engine.client</package>
         <package>org.eclipse.kapua.message</package>

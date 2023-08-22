@@ -19,6 +19,7 @@ import com.codahale.metrics.Histogram;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaObjectFactory;
@@ -47,33 +48,41 @@ public class MockitoLocator extends KapuaLocator {
 
     @Override
     public <T> T getComponent(Class<T> componentClass) {
+        final MetricsService metricsService = new MetricsService() {
+            @Override
+            public Counter getCounter(String module, String component, String... names) {
+                return new Counter();
+            }
+
+            @Override
+            public Histogram getHistogram(String module, String component, String... names) {
+                return new Histogram(new ExponentiallyDecayingReservoir());
+            }
+
+            @Override
+            public Timer getTimer(String module, String component, String... names) {
+                return new Timer();
+            }
+
+            @Override
+            public void registerGauge(Gauge<?> gauge, String module, String component, String... names) throws KapuaException {
+
+            }
+
+            @Override
+            public MetricRegistry getMetricRegistry() {
+                return new MetricRegistry();
+            }
+        };
         if (MetricsService.class.equals(componentClass)) {
-            return (T) new MetricsService() {
-                @Override
-                public Counter getCounter(String module, String component, String... names) {
-                    return new Counter();
-                }
-
-                @Override
-                public Histogram getHistogram(String module, String component, String... names) {
-                    return new Histogram(new ExponentiallyDecayingReservoir());
-                }
-
-                @Override
-                public Timer getTimer(String module, String component, String... names) {
-                    return new Timer();
-                }
-
-                @Override
-                public void registerGauge(Gauge<?> gauge, String module, String component, String... names) throws KapuaException {
-
-                }
-
-                @Override
-                public MetricRegistry getMetricRegistry() {
-                    return new MetricRegistry();
-                }
-            };
+            return (T) metricsService;
+        }
+        if (CommonsMetric.class.equals(componentClass)) {
+            try {
+                return (T) new CommonsMetric(metricsService, "tests");
+            } catch (KapuaException e) {
+                throw new RuntimeException(e);
+            }
         }
         return Mockito.mock(componentClass);
     }

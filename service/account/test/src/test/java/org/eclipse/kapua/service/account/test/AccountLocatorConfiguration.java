@@ -16,6 +16,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
@@ -63,6 +64,7 @@ public class AccountLocatorConfiguration {
 
             @Override
             protected void configure() {
+                bind(String.class).annotatedWith(Names.named("metricModuleName")).toInstance("tests");
                 bind(MetricsService.class).to(MetricsServiceImpl.class).in(Singleton.class);
                 bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
                 // Inject mocked Authorization Service method checkPermission
