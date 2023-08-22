@@ -60,10 +60,10 @@ public class KapuaPrincipalImpl implements KapuaPrincipal {
      * @param accountId
      * @param clientId
      */
-    public KapuaPrincipalImpl(KapuaId accountId, String name, String clientId) {
+    public KapuaPrincipalImpl(KapuaId accountId, String username, String clientId) {
         internal = true;
         this.accountId = accountId;
-        this.name = name + "@" + clientId;
+        name = username + "@" + clientId;
         this.clientId = clientId;
     }
 
