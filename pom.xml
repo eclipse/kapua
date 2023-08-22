@@ -58,7 +58,7 @@
         <guava-failureaccess.version>1.0.1</guava-failureaccess.version>
         <guava-listenablefuture.version>9999.0-empty-to-avoid-conflict-with-guava</guava-listenablefuture.version>
         <guice.version>4.1.0</guice.version>
-        <h2.version>1.4.199</h2.version>
+        <h2.version>1.4.200</h2.version>
         <hk2-api.version>2.5.0-b05</hk2-api.version>
         <httpcomponents-asyncclient.version>4.1.5</httpcomponents-asyncclient.version>
         <httpcomponents-client.version>4.5.13</httpcomponents-client.version>
