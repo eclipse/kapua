@@ -290,6 +290,7 @@ public class JobEngineServiceClient implements JobEngineService {
                     EntityNotFoundExceptionInfo entityNotFoundExceptionInfo = XmlUtil.unmarshalJson(responseText, EntityNotFoundExceptionInfo.class);
                     return new KapuaEntityNotFoundException(entityNotFoundExceptionInfo.getEntityType(), entityNotFoundExceptionInfo.getEntityId());
                 case "CANNOT_CLEANUP_JOB_DATA":
+                case "CANNOT_CLEANUP_JOB_DATA_WITH_CAUSE":
                     CleanJobDataExceptionInfo cleanJobDataExceptionInfo = XmlUtil.unmarshalJson(responseText, CleanJobDataExceptionInfo.class);
                     return new CleanJobDataException(cleanJobDataExceptionInfo.getScopeId(), cleanJobDataExceptionInfo.getJobId());
                 case "JOB_ALREADY_RUNNING":

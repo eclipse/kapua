@@ -47,6 +47,6 @@ public class CleanJobDataException extends JobScopedEngineException {
      * @since 1.0.0
      */
     public CleanJobDataException(@NotNull Throwable cause, @NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
-        super(JobEngineErrorCodes.CANNOT_CLEANUP_JOB_DATA, cause, scopeId, jobId);
+        super(JobEngineErrorCodes.CANNOT_CLEANUP_JOB_DATA_WITH_CAUSE, cause, scopeId, jobId, cause.getMessage());
     }
 }
