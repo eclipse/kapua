@@ -93,7 +93,7 @@ public final class SecurityContext {
         aclMap = new ConcurrentHashMap<>();
         if (printData) {
             if (executorWrapper==null) {
-                executorWrapper = new ExecutorWrapper("ServerReport", () -> printReport(server, "ServerReportTask", "N/A"), 60, 30, TimeUnit.SECONDS);
+                executorWrapper = new ExecutorWrapper("ServerReport", () -> printCompactReport(server, "ServerReportTask", "N/A"), 60, 30, TimeUnit.SECONDS);
                 executorWrapper.start();
             }
             else {
@@ -160,7 +160,6 @@ public final class SecurityContext {
                 //put the connection token
                 connectionTokenCache.put(connectionId,
                     new ConnectionToken(SecurityAction.brokerDisconnect, KapuaDateUtils.getKapuaSysDate()));
-                logger.warn("Disconnect callback called before the connection callback for connection id: {}", connectionId);
             }
             return (Void)null;
         });

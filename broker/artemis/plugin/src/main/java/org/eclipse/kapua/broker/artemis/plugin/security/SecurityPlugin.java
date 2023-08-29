@@ -102,7 +102,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         //Artemis does the authenticate call even when checking for authorization (publish, subscribe, manage)
         //since we keep a "Kapua session" map that is cleaned when the connection is dropped no security issues will come if this cache is used to avoid redundant login process
         String connectionId = PluginUtility.getConnectionId(remotingConnection);
-        logger.info("### authenticate user: {} - clientId: {} - remoteIP: {} - connectionId: {} - securityDomain: {}",
+        logger.debug("### authenticate user: {} - clientId: {} - remoteIP: {} - connectionId: {} - securityDomain: {}",
             username, remotingConnection.getClientID(), remotingConnection.getTransportConnection().getRemoteAddress(), connectionId, securityDomain);
         String clientIp = remotingConnection.getTransportConnection().getRemoteAddress();
         String clientId = remotingConnection.getClientID();
@@ -119,7 +119,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             return serverContext.getSecurityContext().buildFromPrincipal(sessionContext.getPrincipal());
         }
         else {
-            logger.info("### authenticate user (no cache): {} - clientId: {} - remoteIP: {} - connectionId: {}", username, clientId, remotingConnection.getTransportConnection().getRemoteAddress(), connectionId);
+            logger.debug("### authenticate user (no cache): {} - clientId: {} - remoteIP: {} - connectionId: {}", username, clientId, remotingConnection.getTransportConnection().getRemoteAddress(), connectionId);
             if (!remotingConnection.getTransportConnection().isOpen()) {
                 logger.info("Connection (connectionId: {}) is closed (stealing link occurred?)", connectionId);
                 loginMetric.getLoginClosedConnectionFailure().inc();
@@ -226,9 +226,9 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         boolean allowed = false;
         //TODO improve it to check for null
         KapuaPrincipal principal = getKapuaPrincipal(subject);
-        logger.info("### authorizing address: {} - check type: {}", address, checkType.name());
+        logger.debug("### authorizing address: {} - check type: {}", address, checkType.name());
         if (principal!=null) {
-            logger.info("### authorizing address: {} - check type: {} - clientId: {} - clientIp: {}", address, checkType.name(), principal.getClientId(), principal.getClientIp());
+            logger.debug("### authorizing address: {} - check type: {} - clientId: {} - clientIp: {}", address, checkType.name(), principal.getClientId(), principal.getClientIp());
             if (!principal.isInternal()) {
                 SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextWithCacheFallback(principal.getConnectionId());
                 switch (checkType) {
@@ -256,6 +256,9 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                 case CREATE_NON_DURABLE_QUEUE:
                     allowed = serverContext.getSecurityContext().checkConsumerAllowed(sessionContext, address);
                     break;
+                case DELETE_ADDRESS:
+                    serverContext.getAddressAccessTracker().remove(address);
+                    break;
                 default:
                     allowed = serverContext.getSecurityContext().checkAdminAllowed(sessionContext, address);
                     break;
@@ -264,7 +267,9 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             else {
                 allowed = true;
             }
-            logger.info("### authorizing address: {} - check type: {} - clientId: {} - clientIp: {} - RESULT: {}", address, checkType.name(), principal.getClientId(), principal.getClientIp(), allowed);
+        }
+        if (!allowed) {
+            logger.info("### authorizing address NOT ALLOWED: {} - check type: {} - clientId: {} - clientIp: {}", address, checkType.name(), principal.getClientId(), principal.getClientIp());
         }
         //otherwise no principal (or error while getting it) so no authorization
         return allowed;
