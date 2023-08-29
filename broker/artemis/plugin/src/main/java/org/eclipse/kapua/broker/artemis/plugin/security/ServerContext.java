@@ -28,7 +28,7 @@ public class ServerContext {
     protected SecurityContext securityContext;
     protected BrokerIdentity brokerIdentity;
     protected ActiveMQServer server;
-    protected AddressMap addressMap;
+    protected AddressAccessTracker addressAccessTracker;
 
     private final static ServerContext INSTANCE = new ServerContext();
 
@@ -38,7 +38,7 @@ public class ServerContext {
 
     public void init(ActiveMQServer server, String clusterName) throws KapuaException {
         this.server = server;
-        addressMap = new AddressMap();
+        addressAccessTracker = new AddressAccessTracker();
         //TODO see comment above
         brokerIdentity = BrokerIdentity.getInstance();
         this.clusterName = clusterName;
@@ -71,7 +71,7 @@ public class ServerContext {
         return clusterName;
     }
 
-    public AddressMap getAddressMap() {
-        return addressMap;
+    public AddressAccessTracker getAddressAccessTracker() {
+        return addressAccessTracker;
     }
 }

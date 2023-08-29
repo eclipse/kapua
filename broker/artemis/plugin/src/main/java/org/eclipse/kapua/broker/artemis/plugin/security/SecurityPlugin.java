@@ -257,7 +257,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                     allowed = serverContext.getSecurityContext().checkConsumerAllowed(sessionContext, address);
                     break;
                 case DELETE_ADDRESS:
-                    serverContext.getAddressMap().remove(address);
+                    serverContext.getAddressAccessTracker().remove(address);
                     break;
                 default:
                     allowed = serverContext.getSecurityContext().checkAdminAllowed(sessionContext, address);

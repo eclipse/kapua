@@ -15,16 +15,15 @@ package org.eclipse.kapua.broker.artemis.plugin.security;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class AddressMap {
+public class AddressAccessTracker {
 
     protected Map<String, Long> accessMap;
 
-    AddressMap() {
-        //TODO could be used a "normal" map?
+    AddressAccessTracker() {
         accessMap = new ConcurrentHashMap<String, Long>();
     }
 
-    public void refresh(String address) {
+    public void update(String address) {
         accessMap.put(address, System.currentTimeMillis());
     }
 
@@ -36,7 +35,7 @@ public class AddressMap {
         return accessMap.get(address);
     }
 
-    public int sie() {
+    public int size() {
         return accessMap.size();
     }
 }
