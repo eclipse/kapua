@@ -22,6 +22,7 @@ import org.junit.experimental.categories.Category;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.math.BigInteger;
 
 
 @Category(JUnitTests.class)
@@ -37,7 +38,7 @@ public class AbstractKapuaResourceTest {
     @Before
     public void initialize() {
         abstractKapuaResource = new AbstractKapuaResourceImpl();
-        objects = new Object[]{new Object(), "", "string", 10, 'c', KapuaId.ONE, new Throwable(), new ScopeId("111")};
+        objects = new Object[]{new Object(), "", "string", 10, 'c', KapuaId.ONE, new Throwable(), new ScopeId(BigInteger.valueOf(111))};
     }
 
     @Test

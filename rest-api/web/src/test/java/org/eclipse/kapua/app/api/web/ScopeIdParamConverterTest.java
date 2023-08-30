@@ -10,9 +10,10 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.api.core.model;
+package org.eclipse.kapua.app.api.web;
 
 import org.eclipse.kapua.app.api.core.exception.SessionNotPopulatedException;
+import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -25,29 +26,28 @@ import org.mockito.Mockito;
 import java.math.BigInteger;
 import java.util.Base64;
 
-
 @Category(JUnitTests.class)
-public class ScopeIdTest {
+public class ScopeIdParamConverterTest {
 
     @Test(expected = NullPointerException.class)
     public void scopeIdNullTest() {
-        new ScopeId(null);
+        new ScopeIdParamConverter().fromString(null);
     }
 
     @Test
     public void scopeIdEqualIdsTest() {
-        KapuaSession kapuaSession = Mockito.mock(KapuaSession.class);
+        final KapuaSession kapuaSession = Mockito.mock(KapuaSession.class);
         KapuaSecurityUtils.setSession(kapuaSession);
 
         Mockito.when(kapuaSession.getScopeId()).thenReturn(KapuaId.ONE);
-        ScopeId scopeId = new ScopeId("_");
+        ScopeId scopeId = new ScopeIdParamConverter().fromString("_");
 
         Assert.assertEquals("Expected and actual values should be the same.", BigInteger.ONE, scopeId.getId());
     }
 
     @Test
     public void scopeIdDifferentIdsTest() {
-        ScopeId scopeId = new ScopeId("scopeID");
+        final ScopeId scopeId = new ScopeIdParamConverter().fromString("scopeID");
 
         Assert.assertEquals("Expected and actual values should be the same.", new BigInteger(Base64.getUrlDecoder().decode("scopeID")), scopeId.getId());
     }
@@ -55,12 +55,12 @@ public class ScopeIdTest {
     @Test(expected = SessionNotPopulatedException.class)
     public void scopeIdNullSessionTest() {
         KapuaSecurityUtils.clearSession();
-        new ScopeId("_");
+        new ScopeIdParamConverter().fromString("_");
     }
 
     @Test
     public void setAndGetIdToStringTest() {
-        ScopeId scopeId = new ScopeId("scopeID");
+        final ScopeId scopeId = new ScopeIdParamConverter().fromString("scopeID");
 
         scopeId.setId(BigInteger.TEN);
         Assert.assertEquals("Expected and actual values should be the same.", BigInteger.TEN, scopeId.getId());
@@ -72,8 +72,10 @@ public class ScopeIdTest {
 
     @Test(expected = NullPointerException.class)
     public void toStringNullIdTest() {
-        ScopeId scopeId = new ScopeId("scopeID");
+        ScopeId scopeId = new ScopeIdParamConverter().fromString("scopeID");
         scopeId.setId(null);
         scopeId.toString();
     }
-} 
+
+
+}
