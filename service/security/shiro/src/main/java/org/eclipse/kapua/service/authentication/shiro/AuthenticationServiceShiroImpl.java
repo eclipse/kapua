@@ -300,14 +300,14 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     public void verifyCredentials(LoginCredentials loginCredentials) throws KapuaException {
         //
         // Parse login credentials
-        AuthenticationToken shiroAuthenticationToken;
-        if (loginCredentials instanceof UsernamePasswordCredentials) {
-            UsernamePasswordCredentials usernamePasswordCredentials = (UsernamePasswordCredentials) loginCredentials;
-            shiroAuthenticationToken = new UsernamePasswordCredentialsImpl(usernamePasswordCredentials.getUsername(), usernamePasswordCredentials.getPassword());
-            ((UsernamePasswordCredentials) shiroAuthenticationToken).setAuthenticationCode(usernamePasswordCredentials.getAuthenticationCode());
-        } else {
-            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED);
-        }
+        final CredentialsHandler credentialsHandler = credentialsHandlers
+                .stream()
+                .filter(ch -> ch.canProcess(loginCredentials))
+                .findFirst()
+                .orElseThrow(() -> new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED));
+
+        final ImmutablePair<AuthenticationToken, Optional<String>> authenticationTokenAndOpenIDToken = credentialsHandler.mapToShiro(loginCredentials);
+        AuthenticationToken shiroAuthenticationToken = authenticationTokenAndOpenIDToken.getLeft();
 
         //
         // Login the user
