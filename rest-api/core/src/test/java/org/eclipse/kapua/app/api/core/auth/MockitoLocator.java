@@ -19,6 +19,7 @@ import com.codahale.metrics.Histogram;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSetting;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -76,6 +77,9 @@ public class MockitoLocator extends KapuaLocator {
         };
         if (MetricsService.class.equals(componentClass)) {
             return (T) metricsService;
+        }
+        if (KapuaApiCoreSetting.class.equals(componentClass)) {
+            return (T) new KapuaApiCoreSetting();
         }
         if (CommonsMetric.class.equals(componentClass)) {
             try {
