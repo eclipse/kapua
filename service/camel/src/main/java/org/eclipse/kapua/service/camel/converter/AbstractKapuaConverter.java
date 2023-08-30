@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.camel.converter;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.component.jms.JmsMessage;
+import org.apache.camel.converter.stream.FileInputStreamCache;
 import org.apache.camel.support.DefaultMessage;
 import org.apache.commons.lang3.SerializationUtils;
 import org.eclipse.kapua.KapuaException;
@@ -31,6 +32,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.jms.JMSException;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Base64;
 import java.util.Date;
 
@@ -53,30 +56,56 @@ public abstract class AbstractKapuaConverter {
      * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
     protected CamelKapuaMessage<?> convertTo(Exchange exchange, Object value, MessageType messageType) throws KapuaException {
-        if (value instanceof byte[]) {
-            byte[] messageContent = (byte[]) value;
-            if (exchange.getIn() instanceof DefaultMessage) {
-                DefaultMessage message = (DefaultMessage) exchange.getIn();
-                try {
-                    // FIX #164
-                    Date queuedOn = new Date(message.getHeader(MessageConstants.HEADER_KAPUA_RECEIVED_TIMESTAMP, Long.class));
-                    KapuaId connectionId = SerializationUtils.deserialize(Base64.getDecoder().decode(message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID, String.class)));
-                    String clientId = message.getHeader(MessageConstants.HEADER_KAPUA_CLIENT_ID, String.class);
-                    String connectorName = message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_NAME, String.class);
-                    ProtocolDescriptor connectorDescriptor = ProtocolDescriptorProviders.getDescriptor(connectorName);
-                    if (connectorDescriptor == null) {
-                        throw new IllegalStateException(String.format("Unable to find connector descriptor for connector '%s'", connectorName));
-                    }
-                    return JmsUtil.convertToCamelKapuaMessage(connectorDescriptor, messageType, messageContent, JmsUtil.getTopic(message), queuedOn, connectionId, clientId);
-                } catch (JMSException e) {
-                    MetricsCamel.getInstance().getConverterErrorMessage().inc();
-                    logger.error("Exception converting message {}", e.getMessage(), e);
-                    throw KapuaException.internalError(e, "Cannot convert the message type " + exchange.getIn().getClass());
-                }
-            }
+        try {
+            return convertMessage(exchange, value, messageType);
+        } catch (JMSException | IOException e) {
+            MetricsCamel.getInstance().getConverterErrorMessage().inc();
+            logger.error("Exception converting message {}", e.getMessage(), e);
+            throw KapuaException.internalError(e, "Cannot convert the message type " + exchange.getIn().getClass());
         }
-        MetricsCamel.getInstance().getConverterErrorMessage().inc();
-        throw KapuaException.internalError("Cannot convert the message - Wrong instance type: " + exchange.getIn().getClass());
+        catch (IllegalArgumentException e) {
+            MetricsCamel.getInstance().getConverterErrorMessage().inc();
+            throw KapuaException.internalError(e);
+        }
+    }
+
+    private CamelKapuaMessage<?> convertMessage(Exchange exchange, Object value, MessageType messageType) throws KapuaException, JMSException, IOException {
+        byte[] messageContent = getContent(exchange, value);
+        if (messageContent!=null && exchange.getIn() instanceof DefaultMessage) {
+            DefaultMessage message = (DefaultMessage) exchange.getIn();
+            // FIX #164
+            Date queuedOn = new Date(message.getHeader(MessageConstants.HEADER_KAPUA_RECEIVED_TIMESTAMP, Long.class));
+            KapuaId connectionId = SerializationUtils.deserialize(Base64.getDecoder().decode(message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID, String.class)));
+            String clientId = message.getHeader(MessageConstants.HEADER_KAPUA_CLIENT_ID, String.class);
+            String connectorName = message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_NAME, String.class);
+            ProtocolDescriptor connectorDescriptor = ProtocolDescriptorProviders.getDescriptor(connectorName);
+            if (connectorDescriptor == null) {
+                throw new IllegalStateException(String.format("Unable to find connector descriptor for connector '%s'", connectorName));
+            }
+            return JmsUtil.convertToCamelKapuaMessage(connectorDescriptor, messageType, messageContent, JmsUtil.getTopic(message), queuedOn, connectionId, clientId);
+        }
+        else {
+            throw new IllegalArgumentException("Cannot convert the message - Wrong instance type: " + exchange.getIn().getClass());
+        }
+    }
+
+    private byte[] getContent(Exchange exchange, Object value) throws IOException {
+        byte[] content = null;
+        if (value instanceof byte[]) {
+            content = (byte[]) value;
+        }
+        else if (value instanceof FileInputStreamCache) {
+            //not good for performances reasons but I don't see any other way now
+            FileInputStreamCache fisc = (FileInputStreamCache) value;
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[2048];
+            int numRead;
+            while((numRead = fisc.read(buffer)) != -1) {
+                baos.write(buffer, 0, numRead);
+            }
+            content = baos.toByteArray();
+        }
+        return content;
     }
 
 }

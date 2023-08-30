@@ -71,7 +71,6 @@
                 <include>commons-configuration:commons-configuration</include>
                 <include>commons-lang:commons-lang</include>
                 <include>io.dropwizard.metrics:metrics-core</include>
-                <include>org.apache.qpid:qpid-jms-client</include>
                 <include>org.liquibase:liquibase-core</include>
                 <include>org.reflections:reflections</include>
                 <include>com.h2database:h2</include>

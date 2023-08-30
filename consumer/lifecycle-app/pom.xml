@@ -148,13 +148,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.qpid</groupId>
-            <artifactId>proton-j</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-transport-native-epoll</artifactId>
-            <!-- used both by qpid and elasticsearch -->
         </dependency>
 
         <dependency>
@@ -285,10 +280,6 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-amqp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
             <artifactId>camel-spring</artifactId>
         </dependency>
         <dependency>
@@ -357,8 +348,8 @@
 
         <!-- AMQP -->
         <dependency>
-            <groupId>org.apache.qpid</groupId>
-            <artifactId>qpid-jms-client</artifactId>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>artemis-jms-client</artifactId>
         </dependency>
 
         <!-- TODO EXT-CAMEL only for test remove and use a proper way to init tables! job dependencies -->

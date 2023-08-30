@@ -10,36 +10,39 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.client.amqp;
+package org.eclipse.kapua.commons.event.jms;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
 
-import org.apache.qpid.jms.JmsConnectionFactory;
+import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ServiceConnectionFactoryImpl extends JmsConnectionFactory {
+public class ServiceConnectionFactoryImpl extends ActiveMQConnectionFactory {
 
     protected static final Logger logger = LoggerFactory.getLogger(ServiceConnectionFactoryImpl.class);
 
     private final static AtomicInteger INDEX = new AtomicInteger();
 
+    private String url;
     private String clientId;
 
     public ServiceConnectionFactoryImpl(String host, int port, String username, String password, String clientId) {
-        super(username, password, "amqp://" + host + ":" + port);
+        super("tcp://" + host + ":" + port + "?minLargeMessageSize=999123&amqpMinLargeMessageSize=999123", username, password);
+        url = "tcp://" + host + ":" + port + "?minLargeMessageSize=999123&amqpMinLargeMessageSize=999123";
         this.clientId = clientId;
-        logger.info("Created connection factory with client id: {}", this.clientId);
+        setMinLargeMessageSize(1124000);
+        logger.info("Created connection factory with client id: {} - {} - min large: {}", url, this.clientId, getMinLargeMessageSize());
     }
 
     @Override
     public Connection createConnection(String username, String password) throws JMSException {
-        Connection connection = super.createConnection(username, password);
         String generatedClient = generateClientId();
-        logger.info("Created connection for generated client id: {}", generatedClient);
+        logger.info("Connecting to {} - Creating connection for generated client id: {} - min large: {}", url, generatedClient, getMinLargeMessageSize());
+        Connection connection = super.createConnection(username, password);
         connection.setClientID(generatedClient);
         return connection;
     }

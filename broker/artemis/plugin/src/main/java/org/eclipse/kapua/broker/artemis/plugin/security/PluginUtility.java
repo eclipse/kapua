@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.artemis.plugin.security;
 
+import org.apache.activemq.artemis.core.protocol.core.impl.RemotingConnectionImpl;
 import org.apache.activemq.artemis.core.protocol.mqtt.MQTTConnection;
 import org.apache.activemq.artemis.core.server.ServerConsumer;
 import org.apache.activemq.artemis.core.server.ServerSession;
-import org.apache.activemq.artemis.protocol.amqp.broker.ActiveMQProtonRemotingConnection;
 import org.apache.activemq.artemis.spi.core.protocol.RemotingConnection;
 import org.apache.activemq.artemis.spi.core.remoting.Connection;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
@@ -61,12 +61,12 @@ public class PluginUtility {
 
     public static boolean isInternal(RemotingConnection remotingConnection) {
         String protocolName = remotingConnection.getProtocolName();
-        if (remotingConnection instanceof ActiveMQProtonRemotingConnection) {
+        if (remotingConnection instanceof RemotingConnectionImpl) {
 //            AMQPConnectionContext connectionContext = ((ActiveMQProtonRemotingConnection)remotingConnection).getAmqpConnection();
-            Connection connection = ((ActiveMQProtonRemotingConnection)remotingConnection).getAmqpConnection().getConnectionCallback().getTransportConnection();
+            RemotingConnectionImpl connection = ((RemotingConnectionImpl)remotingConnection);
             if (logger.isDebugEnabled()) {
-                logger.debug("Protocol: {} - Remote container: {} - connection id: {} - local address: {}",
-                    protocolName, ((ActiveMQProtonRemotingConnection)remotingConnection).getAmqpConnection().getRemoteContainer(), connection.getID(), connection.getLocalAddress());
+                logger.debug("Protocol: {} - connection id: {} - local address: {}",
+                    protocolName, connection.getID(), connection.getLocalAddress());
             }
             return isAmqpInternal(connection.getLocalAddress(), protocolName);//and connector name as expected
         }
@@ -87,8 +87,7 @@ public class PluginUtility {
         //is internal if the inbound connection is coming from the amqp connector
         //are the first check redundant? If the connector name is what is expected should be enough?
         return
-            (localAddress.endsWith(amqpInternalConectorPort) && //local port amqp
-                amqpInternalConnectorName.equalsIgnoreCase(protocolName));
+            localAddress.endsWith(amqpInternalConectorPort);
     }
 
     protected static boolean isMqttInternal(String localAddress, String protocolName) {

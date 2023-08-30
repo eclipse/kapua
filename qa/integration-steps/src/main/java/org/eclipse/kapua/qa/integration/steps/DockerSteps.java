@@ -80,7 +80,7 @@ public class DockerSteps {
     private static final long WAIT_FOR_ES = 10000;
     private static final long WAIT_FOR_EVENTS_BROKER = 10000;
     private static final long WAIT_FOR_JOB_ENGINE = 30000;
-    private static final long WAIT_FOR_BROKER = 60000;
+    private static final long WAIT_FOR_BROKER = 10000;
     private static final int HTTP_COMMUNICATION_TIMEOUT = 3000;
 
     private static final int LIFECYCLE_HEALTH_CHECK_PORT = 8090;
@@ -114,7 +114,7 @@ public class DockerSteps {
     private boolean printImages;
     private NetworkConfig networkConfig;
     private String networkId;
-    private boolean debug;
+    private boolean debug = true;
     private List<String> envVar;
     private Map<String, String> containerMap;
     public Map<String, Integer> portMap;
@@ -359,7 +359,9 @@ public class DockerSteps {
     }
 
     private void stopFullDockerEnvironmentInternal() throws SQLException, DockerException, InterruptedException {
-        database.dropAll();
+        if (database!=null) {
+            database.dropAll();
+        }
         listAllImages("Stop full docker environment");
         printContainersNames("Print containers logs");
         printContainersLog(DEFAULT_DEPLOYMENT_CONTAINERS_NAME);
@@ -701,7 +703,7 @@ public class DockerSteps {
                 "commons.db.connection.port=3306",
                 "datastore.elasticsearch.nodes=es:9200",
                 "datastore.elasticsearch.provider=org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider",
-                "commons.eventbus.url=failover:(amqp://events-broker:5672)?jms.sendTimeout=1000",
+                "commons.eventbus.url=failover:(tcp://events-broker:5672)?jms.sendTimeout=1000",
                 "certificate.jwt.private.key=file:///var/opt/activemq/key.pk8",
                 "certificate.jwt.certificate=file:///var/opt/activemq/cert.pem",
                 "CRYPTO_SECRET_KEY=kapuaTestsKey!!!",

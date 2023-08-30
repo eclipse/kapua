@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.jms.JMSException;
 import javax.jms.Message;
 
-import org.apache.qpid.jms.message.JmsTextMessage;
+import org.apache.activemq.artemis.jms.client.ActiveMQTextMessage;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.client.security.ServiceClient.SecurityAction;
@@ -57,13 +57,13 @@ public class MessageListener extends ClientMessageListener {
             SecurityAction securityAction = SecurityAction.valueOf(message.getStringProperty(MessageConstants.HEADER_ACTION));
             switch (securityAction) {
             case brokerConnect:
-                updateResponseContainer(buildAuthResponseFromMessage((JmsTextMessage)message));
+                updateResponseContainer(buildAuthResponseFromMessage((ActiveMQTextMessage)message));
                 break;
             case brokerDisconnect:
-                updateResponseContainer(buildAuthResponseFromMessage((JmsTextMessage)message));
+                updateResponseContainer(buildAuthResponseFromMessage((ActiveMQTextMessage)message));
                 break;
             case getEntity:
-                updateResponseContainer(buildAccountResponseFromMessage((JmsTextMessage)message));
+                updateResponseContainer(buildAccountResponseFromMessage((ActiveMQTextMessage)message));
                 break;
             default:
                 throw new KapuaRuntimeException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "action");
@@ -89,13 +89,13 @@ public class MessageListener extends ClientMessageListener {
         }
     }
 
-    private AuthResponse buildAuthResponseFromMessage(JmsTextMessage message) throws JMSException, IOException {
-        String body = message.getBody(String.class);
+    private AuthResponse buildAuthResponseFromMessage(ActiveMQTextMessage message) throws JMSException, IOException {
+        String body = message.getText();
         return reader.readValue(body, AuthResponse.class);
     }
 
-    private EntityResponse buildAccountResponseFromMessage(JmsTextMessage message) throws JMSException, IOException {
-        String body = message.getBody(String.class);
+    private EntityResponse buildAccountResponseFromMessage(ActiveMQTextMessage message) throws JMSException, IOException {
+        String body = message.getText();
         return reader.readValue(body, EntityResponse.class);
     }
 

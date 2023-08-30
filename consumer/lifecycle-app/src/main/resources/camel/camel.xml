@@ -12,8 +12,8 @@
         Eurotech - initial API and implementation
  -->
 <routes xmlns="http://camel.apache.org/schema/spring">
-    <route errorHandlerRef="mainRouteMessageErrorHandler" id="lifecycleRoute">
-        <from uri="amqp:topic://$EDC/#?asyncConsumer=true&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;subscriptionDurable=true&amp;subscriptionName=lifecycleConsumers&amp;subscriptionShared=true&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
+    <route errorHandlerRef="mainRouteMessageErrorHandler" id="lifecycleRoute" streamCache="true">
+        <from uri="jms:topic://$EDC/#?asyncConsumer=true&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;subscriptionDurable=true&amp;subscriptionName=lifecycleConsumers&amp;subscriptionShared=true&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
         <!--  handling timeout and communication exceptions in a retry queue -->
         <onException>
             <exception>org.eclipse.kapua.KapuaException</exception>
@@ -22,7 +22,7 @@
                 <constant>true</constant>
             </handled>
             <bean ref="kapuaCamelFilter" method="bridgeError"/>
-            <to uri="amqp:queue:notProcessableMessage"/>
+            <to uri="jms:queue:notProcessableMessage"/>
         </onException>
         <pipeline>
             <choice id="choiceSystenMessageFilter">
@@ -67,8 +67,8 @@
             </choice>
         </pipeline>
     </route>
-    <route id="notProcessableMessage">
-        <from uri="amqp:queue:notProcessableMessage?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
+    <route id="notProcessableMessage" streamCache="true">
+        <from uri="jms:queue:notProcessableMessage?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
         <pipeline>
             <bean ref="kapuaCamelFilter" method="bindSession"/>
             <to uri="bean:errorMessageListener?method=processMessage"/>

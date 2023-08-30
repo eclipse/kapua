@@ -70,7 +70,7 @@ public class RestApiListener implements ServletContextListener {
             if (moduleBundle == null) {
                 moduleBundle = KapuaLocator.getInstance().getService(ServiceModuleBundle.class);
             }
-            moduleBundle.startup();
+            moduleBundle.startup("rest-api");
             LOG.info("Starting service modules... DONE!");
         } catch (KapuaException e) {
             LOG.error("Starting service modules... ERROR! Error: {}", e.getMessage(), e);

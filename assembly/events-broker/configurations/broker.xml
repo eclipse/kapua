@@ -90,7 +90,7 @@
         </acceptors>
         -->
         <acceptors>
-            <acceptor name="amqp">tcp://0.0.0.0:5672?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpMinCredits=300</acceptor>
+            <acceptor name="amqp">tcp://0.0.0.0:5672?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=CORE;useEpoll=true;amqpCredits=1000;amqpMinCredits=300</acceptor>
         </acceptors>
         <!-- allowLinkStealing=true -->
 

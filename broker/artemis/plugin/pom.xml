@@ -49,10 +49,6 @@
             <artifactId>artemis-mqtt-protocol</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.qpid</groupId>
-            <artifactId>qpid-jms-client</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>

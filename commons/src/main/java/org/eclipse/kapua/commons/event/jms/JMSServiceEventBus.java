@@ -21,7 +21,6 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
-import javax.naming.Context;
 import javax.naming.NamingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +34,6 @@ import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.apache.qpid.jms.jndi.JmsInitialContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,6 +73,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
     private List<Subscription> subscriptionList = new ArrayList<>();
     private EventBusJMSConnectionBridge eventBusJMSConnectionBridge;
     private ServiceEventMarshaler eventBusMarshaler;
+    private String clientId;
 
     /**
      * Default constructor
@@ -97,7 +96,8 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
      * @throws ServiceEventBusException
      */
     @Override
-    public void start() throws ServiceEventBusException {
+    public void start(String clientId) throws ServiceEventBusException {
+        this.clientId = clientId;
         try {
             // initialize event bus marshaler
             Class<?> messageSerializerClazz = Class.forName(MESSAGE_SERIALIZER);
@@ -106,7 +106,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
             } else {
                 throw new ServiceEventBusException(String.format("Wrong message serializer Object type ('%s')!", messageSerializerClazz));
             }
-            eventBusJMSConnectionBridge.start();
+            eventBusJMSConnectionBridge.start(clientId);
         } catch (JMSException | ClassNotFoundException | NamingException | InstantiationException | IllegalAccessException e) {
             throw new ServiceEventBusException(e);
         }
@@ -165,7 +165,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
         EventBusJMSConnectionBridge newInstance = null;
         try {
             newInstance = new EventBusJMSConnectionBridge();
-            newInstance.start();
+            newInstance.start(clientId);
             // restore subscriptions
             for (Subscription subscription : subscriptionList) {
                 newInstance.subscribe(subscription);
@@ -213,22 +213,21 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
             this.exceptionListener = new ExceptionListenerImpl();
         }
 
-        void start() throws JMSException, NamingException, ServiceEventBusException {
+        void start(String clientId) throws JMSException, NamingException, ServiceEventBusException {
             stop();
             String eventbusUrl = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_URL);
             String eventbusUsername = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_USERNAME);
             String eventbusPassword = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_PASSWORD);
 
+            LOGGER.info("Event bus url: {}", eventbusUrl);
+            eventbusUrl = "failover:(tcp://events-broker:5672)?jms.sendTimeout=1000";
+            LOGGER.info("Event bus url 2: {}", eventbusUrl);
             Hashtable<String, String> environment = new Hashtable<>();
             environment.put("connectionfactory.eventBusUrl", eventbusUrl);
             environment.put("transport.useEpoll", TRANSPORT_USE_EPOLL);
 
-            JmsInitialContextFactory initialContextFactory = new JmsInitialContextFactory();
-            Context context = initialContextFactory.getInitialContext(environment);
-            ConnectionFactory jmsConnectionFactory = (ConnectionFactory) context.lookup("eventBusUrl");
-
-            jmsConnection = jmsConnectionFactory.createConnection(eventbusUsername, eventbusPassword);
-            jmsConnection.setExceptionListener(exceptionListener);
+            ConnectionFactory connectionFactory = new ServiceConnectionFactoryImpl("events-broker", 5672, eventbusUsername, eventbusPassword, clientId);
+            jmsConnection = connectionFactory.createConnection();
             jmsConnection.start();
         }
 

@@ -32,9 +32,8 @@
         <property name="routeCount" value="2"></property>
     </bean>
 
-    <bean id="connectionFactory" class="org.eclipse.kapua.service.client.amqp.ServiceConnectionFactoryImpl">
-        <constructor-arg name="host" type="java.lang.String" value="${SERVICE_BROKER_HOST}"/>
-        <constructor-arg name="port" type="int" value="${SERVICE_BROKER_PORT}"/>
+    <bean id="connectionFactory" class="org.eclipse.kapua.service.client.jms.ServiceConnectionFactoryImpl">
+        <constructor-arg name="url" type="java.lang.String" value="tcp://${SERVICE_BROKER_HOST}:${SERVICE_BROKER_PORT}?minLargeMessageSize=600000"/>
         <constructor-arg name="username" type="java.lang.String" value="${SERVICE_BROKER_USERNAME}"/>
         <constructor-arg name="password" type="java.lang.String" value="${SERVICE_BROKER_PASSWORD}"/>
         <constructor-arg name="clientId" type="java.lang.String" value="authService"/>
@@ -46,7 +45,7 @@
         <property name="reconnectOnException" value="true"/>
     </bean>
 
-    <bean id="amqp" class="org.apache.camel.component.amqp.AMQPComponent">
+    <bean id="jms" class="org.apache.camel.component.jms.JmsComponent">
         <property name="connectionFactory" ref="cachingConnectionFactory"/>
         <property name="cacheLevel" value="2"/>
     </bean>
@@ -75,13 +74,15 @@
     <bean id="application" class="org.eclipse.kapua.service.camel.application.KapuaApplication"
         init-method="init"
         destroy-method="destroy"
-        depends-on="databaseCheckUpdate"/>
+        depends-on="databaseCheckUpdate">
+        <constructor-arg name="clientId" type="java.lang.String" value="authentication"/>
+    </bean>
 
     <camel:camelContext id="authenticationContext" depends-on="application">
         <!-- exception/error handler -->
         <camel:errorHandler id="authRouteMessageErrorHandler" redeliveryPolicyRef="kapuaRedeliveryPolicy"
             type="DeadLetterChannel"
-            deadLetterUri="amqp:queue:notProcessableMessage"
+            deadLetterUri="jms:queue:notProcessableMessage"
             useOriginalMessage="true">
         </camel:errorHandler>
         <camel:redeliveryPolicyProfile id="kapuaRedeliveryPolicy" maximumRedeliveries="0" redeliveryDelay="0" retryAttemptedLogLevel="WARN" logRetryAttempted="true"/>
