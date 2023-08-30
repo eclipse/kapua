@@ -54,11 +54,11 @@
     <bean id="kapuaCamelFilter" class="org.eclipse.kapua.service.camel.converter.KapuaCamelFilter"/>
 
     <bean id="kapuaDataConverter" class="org.eclipse.kapua.consumer.telemetry.converter.KapuaDataConverter">
-        <constructor-arg ref="metricsTelemetry"/>
+        <constructor-arg name="metricsTelemetry" ref="metricsTelemetry"/>
     </bean>
     <bean id="dataStorageMessageProcessor" class="org.eclipse.kapua.consumer.telemetry.listener.DataStorageMessageProcessor"/>
     <bean id="errorMessageListener" class="org.eclipse.kapua.service.camel.listener.error.ErrorMessageListener">
-        <constructor-arg ref="metricsCamel"/>
+        <constructor-arg name="metricsCamel" ref="metricsCamel"/>
     </bean>
 
     <bean id="jaxbContextLoader" class="org.eclipse.kapua.service.camel.xml.ServiceJAXBContextLoader"

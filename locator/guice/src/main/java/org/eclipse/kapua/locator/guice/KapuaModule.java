@@ -255,7 +255,7 @@ public class KapuaModule extends AbstractKapuaModule {
 
     @Override
     protected void bindInterceptor(Matcher<? super Class<?>> classMatcher, Matcher<? super Method> methodMatcher, MethodInterceptor... interceptors) {
-        super.bindInterceptor(classMatcher, Matchers.not(SyntheticMethodMatcher.getInstance()).and(methodMatcher), interceptors);
+        super.bindInterceptor(classMatcher, Matchers.not(new SyntheticMethodMatcher()).and(methodMatcher), interceptors);
     }
 
     private boolean isExcluded(String className, Collection<String> excludedPkgs) {

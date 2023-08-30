@@ -12,19 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
-import java.lang.reflect.Method;
-
 import com.google.inject.matcher.AbstractMatcher;
+
+import java.lang.reflect.Method;
 
 public class SyntheticMethodMatcher extends AbstractMatcher<Method> {
 
-    private static SyntheticMethodMatcher instance = new SyntheticMethodMatcher();
-
-    private SyntheticMethodMatcher() {
-    }
-
-    public static SyntheticMethodMatcher getInstance() {
-        return instance;
+    public SyntheticMethodMatcher() {
     }
 
     @Override

@@ -13,14 +13,23 @@
 package org.eclipse.kapua.app.api.web;
 
 import com.google.inject.Provides;
+import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSetting;
+import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSettingKeys;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 public class AppModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
+        bind(KapuaApiCoreSetting.class).in(Singleton.class);
+    }
 
+    @Provides
+    @Named("showStackTrace")
+    Boolean showStackTrace(KapuaApiCoreSetting kapuaApiCoreSetting) {
+        return kapuaApiCoreSetting.getBoolean(KapuaApiCoreSettingKeys.API_EXCEPTION_STACKTRACE_SHOW, false);
     }
 
     @Provides

@@ -18,6 +18,7 @@ import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSetting;
 import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSettingKeys;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
@@ -45,7 +46,7 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/devices/{deviceId}/packages")
 public class DeviceManagementPackages extends AbstractKapuaResource {
 
-    private final Boolean responseLegacyMode = KapuaApiCoreSetting.getInstance().getBoolean(KapuaApiCoreSettingKeys.API_DEVICE_MANAGEMENT_PACKAGE_RESPONSE_LEGACY_MODE, false);
+    private final Boolean responseLegacyMode = KapuaLocator.getInstance().getComponent(KapuaApiCoreSetting.class).getBoolean(KapuaApiCoreSettingKeys.API_DEVICE_MANAGEMENT_PACKAGE_RESPONSE_LEGACY_MODE, false);
 
     @Inject
     public DevicePackageManagementService devicePackageManagementService;

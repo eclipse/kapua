@@ -54,15 +54,19 @@
     <bean id="kapuaCamelFilter" class="org.eclipse.kapua.service.camel.converter.KapuaCamelFilter"/>
 
     <bean id="deviceManagementNotificationConverter" class="org.eclipse.kapua.consumer.lifecycle.converter.DeviceManagementNotificationConverter">
-        <constructor-arg ref="metricsLifecycle"/>
+        <constructor-arg name="metricsLifecycle" ref="metricsLifecycle"/>
     </bean>
     <bean id="kapuaLifeCycleConverter" class="org.eclipse.kapua.consumer.lifecycle.converter.KapuaLifeCycleConverter">
-        <constructor-arg ref="metricsLifecycle"/>
+        <constructor-arg name="metricsLifecycle" ref="metricsLifecycle"/>
     </bean>
-    <bean id="deviceMessageListener" class="org.eclipse.kapua.consumer.lifecycle.listener.DeviceMessageListener"/>
+    <bean id="deviceMessageListener" class="org.eclipse.kapua.consumer.lifecycle.listener.DeviceMessageListener">
+        <constructor-arg name="deviceLifeCycleService" ref="deviceLifeCycleService"/>
+        <constructor-arg name="jobDeviceManagementTriggerManagerService" ref="jobDeviceManagementTriggerManagerService"/>
+        <constructor-arg name="metricsLifecycle" ref="metricsLifecycle"/>
+    </bean>
     <bean id="deviceManagementNotificationMessageProcessor" class="org.eclipse.kapua.consumer.lifecycle.listener.DeviceManagementNotificationMessageProcessorSpring"/>
     <bean id="errorMessageListener" class="org.eclipse.kapua.service.camel.listener.error.ErrorMessageListener">
-        <constructor-arg ref="metricsCamel"/>
+        <constructor-arg name="metricsCamel" ref="metricsCamel"/>
     </bean>
 
     <bean id="jaxbContextLoader" class="org.eclipse.kapua.service.camel.xml.ServiceJAXBContextLoader"

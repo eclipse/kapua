@@ -17,6 +17,7 @@ import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSetting;
 import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSettingKeys;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 
 import javax.ws.rs.PathParam;
@@ -36,7 +37,7 @@ public class ScopeId implements KapuaId {
 
     private static final long serialVersionUID = 6893262093856905182L;
 
-    private static final String SCOPE_ID_WILDCARD = KapuaApiCoreSetting.getInstance().getString(KapuaApiCoreSettingKeys.API_PATH_PARAM_SCOPEID_WILDCARD);
+    private static final String SCOPE_ID_WILDCARD = KapuaLocator.getInstance().getComponent(KapuaApiCoreSetting.class).getString(KapuaApiCoreSettingKeys.API_PATH_PARAM_SCOPEID_WILDCARD);
 
     private BigInteger id;
 
