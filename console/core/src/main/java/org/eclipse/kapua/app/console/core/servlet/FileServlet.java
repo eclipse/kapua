@@ -58,8 +58,8 @@ public class FileServlet extends KapuaHttpServlet {
     private final DeviceCommandFactory deviceCommandFactory;
     private final ConsoleSetting config;
 
-    //TODO: FIXME: Inject
     public FileServlet() {
+        //Injection not supported here, unfortunately
         KapuaLocator locator = KapuaLocator.getInstance();
         deviceConfigurationManagementService = locator.getService(DeviceConfigurationManagementService.class);
         deviceCommandManagementService = locator.getService(DeviceCommandManagementService.class);

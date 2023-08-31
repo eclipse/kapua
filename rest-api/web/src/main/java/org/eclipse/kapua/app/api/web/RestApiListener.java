@@ -33,13 +33,13 @@ public class RestApiListener implements ServletContextListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(RestApiListener.class);
 
-    //TODO: FIXME: Inject
-    private final SystemSetting systemSetting = SystemSetting.getInstance();
-
-    private ServiceModuleBundle moduleBundle;
+    //Injection not supported here, unfortunately
+    private SystemSetting systemSetting = KapuaLocator.getInstance().getComponent(SystemSetting.class);
+    private ServiceModuleBundle moduleBundle = KapuaLocator.getInstance().getComponent(ServiceModuleBundle.class);
 
     @Override
     public void contextInitialized(final ServletContextEvent event) {
+        LOG.warn("Initialized, systemSettings:{}, moduleBundle: {}", systemSetting, moduleBundle);
 
         if (systemSetting.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
             try {
@@ -68,9 +68,6 @@ public class RestApiListener implements ServletContextListener {
         // Start service modules
         try {
             LOG.info("Starting service modules...");
-            if (moduleBundle == null) {
-                moduleBundle = KapuaLocator.getInstance().getComponent(ServiceModuleBundle.class);
-            }
             moduleBundle.startup();
             LOG.info("Starting service modules... DONE!");
         } catch (KapuaException e) {

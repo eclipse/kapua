@@ -24,7 +24,6 @@ public class ConsoleSetting extends AbstractKapuaSetting<ConsoleSettingKeys> {
         super(CONSOLE_SETTING_RESOURCE);
     }
 
-    //TODO: FIXME: singletons should not be handled manually, we have DI for that
     public static ConsoleSetting getInstance() {
         return INSTANCE;
     }

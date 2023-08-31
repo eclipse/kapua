@@ -50,7 +50,6 @@ import java.util.Map;
 public class KapuaExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(KapuaExceptionHandler.class);
-    //TODO: FIXME: Inject
     private static final SystemSetting SYSTEM_SETTING = SystemSetting.getInstance();
 
     private KapuaExceptionHandler() {

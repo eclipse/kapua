@@ -35,7 +35,7 @@ public class KapuaHttpServlet extends HttpServlet {
 
     protected DiskFileItemFactory diskFileItemFactory;
     protected FileCleaningTracker fileCleaningTracker;
-    //TODO: FIXME: Inject
+    //Injection not supported here, unfortunately
     private ConsoleSetting consoleSetting = ConsoleSetting.getInstance();
 
     @Override
