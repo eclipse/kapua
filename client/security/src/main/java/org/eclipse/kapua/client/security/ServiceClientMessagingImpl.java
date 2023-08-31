@@ -12,21 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security;
 
-import java.util.UUID;
-
+import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.client.security.amqpclient.Client;
 import org.eclipse.kapua.client.security.bean.EntityRequest;
 import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
 import org.eclipse.kapua.client.security.bean.Request;
 import org.eclipse.kapua.client.security.bean.ResponseContainer;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.client.security.client.Client;
+import org.eclipse.kapua.commons.event.jms.KapuaJavaxServiceConnectionFactory;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,18 +44,17 @@ public class ServiceClientMessagingImpl implements ServiceClient {
 
     private static final int TIMEOUT = 5000;
 
+    //TODO enable me when direct injection will be possible
+//    @Inject
+//    @Named("service-bus")
+    private ConnectionFactory connectionFactory;
     private Client client;
 
     public ServiceClientMessagingImpl(String clusterName, String requester) {
         //TODO change configuration (use service event broker for now)
-        String clientId = "auth-" + UUID.randomUUID().toString();
-        String host = SystemSetting.getInstance().getString(SystemSettingKey.SERVICE_BUS_HOST, "events-broker");
-        int port = SystemSetting.getInstance().getInt(SystemSettingKey.SERVICE_BUS_PORT, 5672);
-        String username = SystemSetting.getInstance().getString(SystemSettingKey.SERVICE_BUS_USERNAME, "username");
-        String password = SystemSetting.getInstance().getString(SystemSettingKey.SERVICE_BUS_PASSWORD, "password");
+        connectionFactory = KapuaLocator.getInstance().getService(KapuaJavaxServiceConnectionFactory.class);
         try {
-            client = new Client(username, password, host, port, clientId,
-                REQUEST_QUEUE, String.format(RESPONSE_QUEUE_PATTERN, clusterName, requester), new MessageListener());
+            client = new Client(connectionFactory, REQUEST_QUEUE, String.format(RESPONSE_QUEUE_PATTERN, clusterName, requester), new MessageListener());
         } catch (JMSException e) {
             throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, (Object[])null);
         }

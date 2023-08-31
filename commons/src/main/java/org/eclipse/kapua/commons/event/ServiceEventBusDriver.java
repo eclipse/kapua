@@ -19,7 +19,7 @@ public interface ServiceEventBusDriver {
 
     public String getType();
 
-    public void start(String clientId) throws ServiceEventBusException;
+    public void start() throws ServiceEventBusException;
 
     public void stop() throws ServiceEventBusException;
 

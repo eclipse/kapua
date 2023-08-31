@@ -25,7 +25,8 @@ ENV DATASTORE_CLIENT org.eclipse.kapua.service.elasticsearch.client.rest.RestEla
 ENV SQL_DB_ADDR db
 ENV SQL_DB_PORT 3306
 
-ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
+ENV COMPONENT_ID=${COMPONENT_ID:-api}
+ENV SERVICE_BROKER_ADDR=${SERVICE_BROKER_ADDR:-tcp://events-broker:5672?minLargeMessageSize=524288}
 
 ENV JOB_ENGINE_BASE_ADDR http://job-engine:8080/v1
 
@@ -46,6 +47,7 @@ ENV JAVA_OPTS "-Dapi.cors.origins.allowed=\${API_CORS_ORIGINS_ALLOWED} \
                -Djob.engine.client.auth.mode=access_token \
                -Dcipher.key=\${CIPHER_KEY} \
                -Dcrypto.secret.key=\${CRYPTO_SECRET_KEY} \
+               -Dcomponent.id=\${COMPONENT_ID} \
                \${JETTY_DEBUG_OPTS} \
                \${JETTY_JMX_OPTS}"
 

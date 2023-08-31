@@ -18,10 +18,11 @@ import javax.jms.Connection;
 import javax.jms.JMSException;
 
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
+import org.eclipse.kapua.commons.event.jms.KapuaJavaxEventConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ServiceConnectionFactoryImpl extends ActiveMQConnectionFactory {
+public class ServiceConnectionFactoryImpl extends ActiveMQConnectionFactory implements KapuaJavaxEventConnectionFactory {
 
     protected static final Logger logger = LoggerFactory.getLogger(ServiceConnectionFactoryImpl.class);
 
@@ -32,14 +33,14 @@ public class ServiceConnectionFactoryImpl extends ActiveMQConnectionFactory {
     public ServiceConnectionFactoryImpl(String url, String username, String password, String clientId) {
         super(url, username, password);
         this.clientId = clientId;
-        logger.info("From service - Created connection factory with client id: {} - min large: {}", this.clientId, getMinLargeMessageSize());
+        logger.info("Created connection factory with client id: {} (min large messages size: {})", this.clientId, getMinLargeMessageSize());
     }
 
     @Override
     public Connection createConnection(String username, String password) throws JMSException {
         Connection connection = super.createConnection(username, password);
         String generatedClient = generateClientId();
-        logger.info("From service - Created connection for generated client id: {} - min large: {}", generatedClient, getMinLargeMessageSize());
+        logger.info("Created connection for generated client id: {} (min large messages size: {})", generatedClient, getMinLargeMessageSize());
         connection.setClientID(generatedClient);
         return connection;
     }

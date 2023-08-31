@@ -70,7 +70,7 @@ public abstract class AbstractKapuaConverter {
     }
 
     private CamelKapuaMessage<?> convertMessage(Exchange exchange, Object value, MessageType messageType) throws KapuaException, JMSException, IOException {
-        byte[] messageContent = getContent(exchange, value);
+        byte[] messageContent = getContent(value);
         if (messageContent!=null && exchange.getIn() instanceof DefaultMessage) {
             DefaultMessage message = (DefaultMessage) exchange.getIn();
             // FIX #164
@@ -89,7 +89,11 @@ public abstract class AbstractKapuaConverter {
         }
     }
 
-    private byte[] getContent(Exchange exchange, Object value) throws IOException {
+    private byte[] getContent(Object value) throws IOException {
+        return getContent(metrics, value);
+    }
+
+    public static byte[] getContent(MetricsCamel metrics, Object value) throws IOException {
         byte[] content = null;
         if (value instanceof byte[]) {
             content = (byte[]) value;
@@ -104,6 +108,9 @@ public abstract class AbstractKapuaConverter {
                 baos.write(buffer, 0, numRead);
             }
             content = baos.toByteArray();
+        }
+        else if (value instanceof String) {
+            return ((String)value).getBytes();
         }
         return content;
     }

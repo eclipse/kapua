@@ -20,12 +20,12 @@ ENV BROKER_PORT=${BROKER_PORT:-5672}
 
 ENV BROKER_INTERNAL_USERNAME=${BROKER_INTERNAL_USERNAME:-internalUsername}
 ENV BROKER_INTERNAL_PASSWORD=${BROKER_INTERNAL_PASSWORD:-internalPassword}
-ENV CONSUMER_HOST=${CONSUMER_HOST:-lifecycle}
+ENV COMPONENT_ID=${COMPONENT_ID:-lifecycle}
+ENV SERVICE_BROKER_ADDR=${SERVICE_BROKER_ADDR:-tcp://events-broker:5672?minLargeMessageSize=524288}
 
 ENV SQL_DB_ADDR db
 ENV SQL_DB_PORT 3306
 
-ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
 ENV JOB_ENGINE_BASE_ADDR http://job-engine:8080/v1
 
 ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
@@ -40,7 +40,8 @@ ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
               -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
               -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \
               -Dcipher.key=\${CIPHER_KEY} \
-              -Dcrypto.secret.key=\${CRYPTO_SECRET_KEY}"
+              -Dcrypto.secret.key=\${CRYPTO_SECRET_KEY} \
+              -Dcomponent.id=\${COMPONENT_ID}"
 
 EXPOSE 8080
 

@@ -31,11 +31,11 @@ public class ServiceModuleBundle implements KapuaService {
         this.serviceModules = serviceModules;
     }
 
-    public final void startup(String clientId) throws KapuaException {
+    public final void startup() throws KapuaException {
         logger.info("Starting up...");
 
         logger.info("Startup Kapua Eventbus...");
-        ServiceEventBusManager.start(clientId);
+        ServiceEventBusManager.start();
 
         logger.info("Startup Kapua Service Modules...");
         for (ServiceModule service : serviceModules) {

@@ -35,15 +35,15 @@ public enum BrokerSettingKey implements SettingKey {
      */
     PRINT_SECURITY_CONTEXT_REPORT("broker.print_security_context_report"),
     /**
-     * AMQP acceptor port for "internal use acceptor" (used by the external consumers, console and rest-api)
-     * default value should be 5672 (AMQP)
+     * CORE acceptor port for "internal use acceptor" (used by the external consumers, console and rest-api)
+     * default value should be 5672 (CORE)
      */
-    INTERNAL_AMQP_ACCEPTOR_PORT("broker.amqp_internal_acceptor.port"),
+    INTERNAL_CORE_ACCEPTOR_PORT("broker.core_internal_acceptor.port"),
     /**
-     * AMQP acceptor name for "internal use acceptor" connector (used by the external consumers, console and rest-api)
-     * default value should be amqp
+     * CORE acceptor name for "internal use acceptor" connector (used by the external consumers, console and rest-api)
+     * default value should be core
      */
-    INTERNAL_AMQP_ACCEPTOR_NAME("broker.amqp_internal_acceptor.name"),
+    INTERNAL_CORE_ACCEPTOR_NAME("broker.core_internal_acceptor.name"),
     /**
      * MQTT acceptor port for "internal use acceptor" (used by the external consumers, console and rest-api)
      * default value should be 1893 (MQTT)

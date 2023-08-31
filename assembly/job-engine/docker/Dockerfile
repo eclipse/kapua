@@ -25,7 +25,8 @@ ENV DATASTORE_CLIENT org.eclipse.kapua.service.elasticsearch.client.rest.RestEla
 ENV SQL_DB_ADDR db
 ENV SQL_DB_PORT 3306
 
-ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
+ENV COMPONENT_ID=${COMPONENT_ID:-job-engine}
+ENV SERVICE_BROKER_ADDR=${SERVICE_BROKER_ADDR:-tcp://events-broker:5672?minLargeMessageSize=524288}
 
 ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
                -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
@@ -40,6 +41,7 @@ ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
                -Djavax.xml.bind.JAXBContextFactory=org.eclipse.persistence.jaxb.JAXBContextFactory \
                -Dcipher.key=\${CIPHER_KEY} \
                -Dcrypto.secret.key=\${CRYPTO_SECRET_KEY} \
+               -Dcomponent.id=\${COMPONENT_ID} \
                \${JETTY_JMX_OPTS} \
                \${JETTY_DEBUG_OPTS}"
 

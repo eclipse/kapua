@@ -84,9 +84,9 @@ public class ServiceEventBusManager {
      *
      * @throws ServiceEventBusException
      */
-    public static void start(String clientId) throws ServiceEventBusException {
+    public static void start() throws ServiceEventBusException {
         if (serviceEventBusDrivers.get(JMS_20_EVENT_BUS) != null) {
-            serviceEventBusDrivers.get(JMS_20_EVENT_BUS).start(clientId);
+            serviceEventBusDrivers.get(JMS_20_EVENT_BUS).start();
         }
         started = true;
     }

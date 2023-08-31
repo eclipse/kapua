@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.client.security.amqpclient;
+package org.eclipse.kapua.client.security.client;
 
 import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
@@ -23,16 +23,14 @@ public class JMSExceptionListner implements ExceptionListener {
     protected static final Logger logger = LoggerFactory.getLogger(JMSExceptionListner.class);
 
     private ConnectionStatus connectionStatus;
-    private String clientId;
 
-    public JMSExceptionListner(ConnectionStatus connectionStatus, String clientId) {
+    public JMSExceptionListner(ConnectionStatus connectionStatus) {
         this.connectionStatus = connectionStatus;
-        this.clientId = clientId;
     }
 
     @Override
     public void onException(JMSException e) {
         connectionStatus.setConnectionFault();
-        logger.warn("Client: {} - Error: {} ", clientId, e.getMessage());
+        logger.warn("Error: {} ", e.getMessage());
     }
 }

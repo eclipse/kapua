@@ -19,12 +19,12 @@ ENV SERVICE_BROKER_HOST=${SERVICE_BROKER_HOST:-events-broker}
 ENV SERVICE_BROKER_PORT=${SERVICE_BROKER_PORT:-5672}
 ENV SERVICE_BROKER_USERNAME=${SERVICE_BROKER_USERNAME:-kapua-sys}
 ENV SERVICE_BROKER_PASSWORD=${SERVICE_BROKER_PASSWORD:-kapua-password}
-ENV SERVICE_HOST=${SERVICE_HOST:-authentication}
+ENV COMPONENT_ID=${COMPONENT_ID:-authentication}
+ENV SERVICE_BROKER_ADDR=${SERVICE_BROKER_ADDR:-tcp://events-broker:5672?minLargeMessageSize=524288}
 
 ENV SQL_DB_ADDR db
 ENV SQL_DB_PORT 3306
 
-ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
 
 ENV JAVA_OPTS -Dcommons.db.schema.update=true \
               -Dcommons.db.connection.host=${SQL_DB_ADDR} \
@@ -35,7 +35,8 @@ ENV JAVA_OPTS -Dcommons.db.schema.update=true \
               -Dcommons.service_bus.host="${SERVICE_BROKER_HOST}" \
               -Dcommons.service_bus.port="${SERVICE_BROKER_PORT}" \
               -Dcommons.service_bus.username="${SERVICE_BROKER_USERNAME}" \
-              -Dcommons.service_bus.password="${SERVICE_BROKER_PASSWORD}"
+              -Dcommons.service_bus.password="${SERVICE_BROKER_PASSWORD} \
+              -Dcomponent.id=\${COMPONENT_ID}"
 
 EXPOSE 8080
 

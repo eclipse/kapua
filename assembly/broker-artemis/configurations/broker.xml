@@ -26,7 +26,7 @@
         <bindings-directory>./data/kapua/bindings</bindings-directory>
         <journal-directory>./data/kapua/journal</journal-directory>
         <large-messages-directory>./data/kapua/large-messages</large-messages-directory>
-        <journal-buffer-size>600000</journal-buffer-size> <!-- set to a larger value than min-large-messages-size - default 490k -->
+        <journal-buffer-size>1048576</journal-buffer-size> <!-- set to a larger value than min-large-messages-size - default 490k -->
         <journal-file-size>10485760</journal-file-size> <!-- set to a larger value than journal-buffer-size - default 10MB -->
         <journal-datasync>true</journal-datasync>
         <journal-min-files>2</journal-min-files>

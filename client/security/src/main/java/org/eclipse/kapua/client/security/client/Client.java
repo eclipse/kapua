@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.client.security.amqpclient;
+package org.eclipse.kapua.client.security.client;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -20,7 +20,6 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-import org.eclipse.kapua.service.client.jms.ServiceConnectionFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +31,6 @@ public class Client {
 
     private static Logger logger = LoggerFactory.getLogger(Client.class);
 
-    private ConnectionFactory connectionFactory;//is this reference needed?
     private Connection connection;//keep to implement cleanup (and object lifecycle)
     private Session session;
     private MessageConsumer consumer;
@@ -40,17 +38,14 @@ public class Client {
 
     private ConnectionStatus connectionStatus;
 
-    public Client(String username, String password, String host, int port, String clientId,
-            String requestAddress, String replyAddress, ClientMessageListener clientMessageListener) throws JMSException {
+    public Client(ConnectionFactory connectionFactory, String requestAddress, String replyAddress, ClientMessageListener clientMessageListener) throws JMSException {
         connectionStatus = new ConnectionStatus();
-        connectionFactory = new ServiceConnectionFactoryImpl("tcp://" + host + ":" + port + "?minLargeMessageSize=600000", username, password, clientId);
         connection = connectionFactory.createConnection();
-        connection.setExceptionListener(new JMSExceptionListner(connectionStatus, clientId));
-//        connection.setClientID(clientId);
+        connection.setExceptionListener(new JMSExceptionListner(connectionStatus));
         connection.start();
         session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-        logger.info("JMS client binding request sender to: {}", requestAddress);
-        logger.info("JMS client binding message listener to: {}", replyAddress);
+        logger.info("Client binding request sender to: {}", requestAddress);
+        logger.info("Client binding message listener to: {}", replyAddress);
         consumer = session.createConsumer(session.createQueue(replyAddress));
         consumer.setMessageListener(clientMessageListener);
         producer = session.createProducer(session.createQueue(requestAddress));

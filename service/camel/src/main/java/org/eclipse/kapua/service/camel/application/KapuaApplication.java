@@ -27,10 +27,8 @@ public class KapuaApplication {
     private static final Logger logger = LoggerFactory.getLogger(KapuaApplication.class);
 
     private static ServiceModuleBundle application;
-    private String clientId;
 
-    public KapuaApplication(String clientId) {
-        this.clientId = clientId;
+    public KapuaApplication() {
     }
 
     public void init() throws Exception {
@@ -39,7 +37,7 @@ public class KapuaApplication {
             if (application == null) {
                 application = KapuaLocator.getInstance().getService(ServiceModuleBundle.class);
             }
-            application.startup(clientId);
+            application.startup();
         }
         logger.info(">>> Kapua Application: calling init... DONE");
     }

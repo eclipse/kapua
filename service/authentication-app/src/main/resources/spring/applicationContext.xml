@@ -33,7 +33,7 @@
     </bean>
 
     <bean id="connectionFactory" class="org.eclipse.kapua.service.client.jms.ServiceConnectionFactoryImpl">
-        <constructor-arg name="url" type="java.lang.String" value="tcp://${SERVICE_BROKER_HOST}:${SERVICE_BROKER_PORT}?minLargeMessageSize=600000"/>
+        <constructor-arg name="url" type="java.lang.String" value="tcp://${SERVICE_BROKER_HOST}:${SERVICE_BROKER_PORT}?minLargeMessageSize=524288"/>
         <constructor-arg name="username" type="java.lang.String" value="${SERVICE_BROKER_USERNAME}"/>
         <constructor-arg name="password" type="java.lang.String" value="${SERVICE_BROKER_PASSWORD}"/>
         <constructor-arg name="clientId" type="java.lang.String" value="authService"/>
@@ -74,9 +74,7 @@
     <bean id="application" class="org.eclipse.kapua.service.camel.application.KapuaApplication"
         init-method="init"
         destroy-method="destroy"
-        depends-on="databaseCheckUpdate">
-        <constructor-arg name="clientId" type="java.lang.String" value="authentication"/>
-    </bean>
+        depends-on="databaseCheckUpdate"/>
 
     <camel:camelContext id="authenticationContext" depends-on="application">
         <!-- exception/error handler -->

@@ -79,7 +79,7 @@ public class DockerSteps {
     private static final long WAIT_FOR_DB = 10000;
     private static final long WAIT_FOR_ES = 10000;
     private static final long WAIT_FOR_EVENTS_BROKER = 10000;
-    private static final long WAIT_FOR_JOB_ENGINE = 30000;
+    private static final long WAIT_FOR_JOB_ENGINE = 10000;
     private static final long WAIT_FOR_BROKER = 10000;
     private static final int HTTP_COMMUNICATION_TIMEOUT = 3000;
 

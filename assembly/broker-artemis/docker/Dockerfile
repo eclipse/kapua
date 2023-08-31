@@ -24,7 +24,7 @@ ENV DATASTORE_CLIENT org.eclipse.kapua.service.elasticsearch.client.rest.RestEla
 ENV SQL_DB_ADDR db
 ENV SQL_DB_PORT 3306
 
-ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
+ENV COMPONENT_ID=${COMPONENT_ID:-broker-telemetry}
 
 USER 0
 
@@ -36,10 +36,10 @@ RUN useradd -u 1002 -g 0 -d '/opt/artemis' -s '/sbin/nologin' artemis && \
 ENV JAVA_ARGS "-Dcommons.db.schema.update=true \
                    -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
                    -Dcommons.db.connection.port=\${SQL_DB_PORT} \
-                   -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
                    -Dbroker.ip=message-broker \
                    -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
-                   -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem"
+                   -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \
+                   -Dcomponent.id=\${COMPONENT_ID}"
 
 EXPOSE 1883 1893 5672 8883
 

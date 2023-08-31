@@ -19,18 +19,11 @@ import org.eclipse.kapua.service.client.protocol.ProtocolDescriptor;
  * Service client settings
  */
 public enum ServiceClientSettingKey implements SettingKey {
+
     /**
-     * No destination service internal use client pool - maximun total size
+     * Component id (used to compose unique client id to connect to various services. Could be the container id on Docker deployment.
      */
-    SERVICE_CLIENT_POOL_NO_DEST_TOTAL_MAX_SIZE("service.client_pool.no_dest_total_max_size"),
-    /**
-     * No destination service internal use client pool - maximun size
-     */
-    SERVICE_CLIENT_POOL_NO_DEST_MAX_SIZE("service.client_pool.no_dest_max_size"),
-    /**
-     * No destination service internal use client pool - minimum size
-     */
-    SERVICE_CLIENT_POOL_NO_DEST_MIN_SIZE("service.client_pool.no_dest_min_size"),
+    COMPONENT_ID("component.id"),
     /**
      * Allow disabling the default connector descriptor
      */
