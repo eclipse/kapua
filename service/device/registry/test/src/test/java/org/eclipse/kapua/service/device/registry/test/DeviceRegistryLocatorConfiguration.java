@@ -23,6 +23,9 @@ import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.crypto.CryptoUtil;
+import org.eclipse.kapua.commons.crypto.CryptoUtilImpl;
+import org.eclipse.kapua.commons.crypto.setting.CryptoSettings;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
@@ -90,6 +93,7 @@ public class DeviceRegistryLocatorConfiguration {
 
             @Override
             protected void configure() {
+                bind(CryptoUtil.class).toInstance(new CryptoUtilImpl(new CryptoSettings()));
                 bind(String.class).annotatedWith(Names.named("metricModuleName")).toInstance("tests");
                 bind(MetricsService.class).to(MetricsServiceImpl.class).in(Singleton.class);
 

@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.device.call.kura.model.configuration.xml;
 
 import org.eclipse.kapua.commons.crypto.CryptoUtil;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraPassword;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.xml.XmlConfigPropertyAdapted.ConfigPropertyType;
 
@@ -28,6 +29,7 @@ import java.util.Map;
  * @since 1.0
  */
 public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigPropertiesAdapted, Map<String, Object>> {
+    private final CryptoUtil cryptoUtil = KapuaLocator.getInstance().getComponent(CryptoUtil.class);
 
     @Override
     public KuraXmlConfigPropertiesAdapted marshal(Map<String, Object> props) throws Exception {
@@ -78,7 +80,7 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
                     adaptedValue.setArray(false);
                     adaptedValue.setEncrypted(true);
                     adaptedValue.setType(ConfigPropertyType.passwordType);
-                    adaptedValue.setValues(new String[]{CryptoUtil.encodeBase64(value.toString())});
+                    adaptedValue.setValues(new String[]{cryptoUtil.encodeBase64(value.toString())});
                 } else if (value instanceof String[]) {
                     adaptedValue.setArray(true);
                     adaptedValue.setType(ConfigPropertyType.stringType);
@@ -179,7 +181,7 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
                     String[] stringValues = new String[nativeValues.length];
                     for (int i = 0; i < nativeValues.length; i++) {
                         if (nativeValues[i] != null) {
-                            stringValues[i] = CryptoUtil.encodeBase64(nativeValues[i].toString());
+                            stringValues[i] = cryptoUtil.encodeBase64(nativeValues[i].toString());
                         }
                     }
                     adaptedValue.setValues(stringValues);
@@ -241,7 +243,7 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
                             propValue = adaptedProp.getValues()[0];
                             propValue =
                                     adaptedProp.isEncrypted() ?
-                                            new KuraPassword(CryptoUtil.decodeBase64((String) propValue)) :
+                                            new KuraPassword(cryptoUtil.decodeBase64((String) propValue)) :
                                             new KuraPassword((String) propValue);
                             break;
                     }
@@ -329,7 +331,7 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
                                 if (adaptedProp.getValues()[i] != null) {
                                     pwdValues[i] =
                                             adaptedProp.isEncrypted() ?
-                                                    new KuraPassword(CryptoUtil.decodeBase64(adaptedProp.getValues()[i])) :
+                                                    new KuraPassword(cryptoUtil.decodeBase64(adaptedProp.getValues()[i])) :
                                                     new KuraPassword(adaptedProp.getValues()[i]);
                                 }
                             }

@@ -15,6 +15,9 @@ package org.eclipse.kapua.commons;
 import com.google.inject.Provides;
 import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.crypto.CryptoUtil;
+import org.eclipse.kapua.commons.crypto.CryptoUtilImpl;
+import org.eclipse.kapua.commons.crypto.setting.CryptoSettings;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
@@ -43,6 +46,9 @@ public class CommonsModule extends AbstractKapuaModule {
     protected void configureModule() {
         bind(QueryFactory.class).to(QueryFactoryImpl.class);
         bind(DataPopulatorRunner.class).in(Singleton.class);
+        bind(QueryFactory.class).to(QueryFactoryImpl.class).in(Singleton.class);
+        bind(CryptoSettings.class).toInstance(new CryptoSettings());
+        bind(CryptoUtil.class).to(CryptoUtilImpl.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet

@@ -20,6 +20,9 @@ import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.crypto.CryptoUtil;
+import org.eclipse.kapua.commons.crypto.CryptoUtilImpl;
+import org.eclipse.kapua.commons.crypto.setting.CryptoSettings;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.metric.MetricsServiceImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
@@ -57,6 +60,7 @@ public class SystemInfoLocatorConfiguration {
 
             @Override
             protected void configure() {
+                bind(CryptoUtil.class).toInstance(new CryptoUtilImpl(new CryptoSettings()));
                 bind(String.class).annotatedWith(Names.named("metricModuleName")).toInstance("tests");
                 bind(MetricsService.class).to(MetricsServiceImpl.class).in(Singleton.class);
 

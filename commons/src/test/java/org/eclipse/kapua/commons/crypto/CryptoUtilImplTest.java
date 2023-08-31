@@ -15,6 +15,7 @@ package org.eclipse.kapua.commons.crypto;
 import org.eclipse.kapua.commons.crypto.exception.AesDecryptionException;
 import org.eclipse.kapua.commons.crypto.exception.AesEncryptionException;
 import org.eclipse.kapua.commons.crypto.exception.InvalidSecretKeyRuntimeException;
+import org.eclipse.kapua.commons.crypto.setting.CryptoSettings;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,15 +30,16 @@ import java.security.NoSuchAlgorithmException;
  */
 
 @Category(JUnitTests.class)
-public class CryptoUtilTest {
+public class CryptoUtilImplTest {
 
     private static final String PLAIN_VALUE = "aPlainValue";
     private static final String ALTERNATIVE_KEY = "alternativeKey!!";
+    private final CryptoUtil cryptoUtil = new CryptoUtilImpl(new CryptoSettings());
     // SHA1
 
     @Test
     public void testSha1Hashing() throws NoSuchAlgorithmException {
-        String hashedValue = CryptoUtil.sha1Hash(PLAIN_VALUE);
+        String hashedValue = cryptoUtil.sha1Hash(PLAIN_VALUE);
 
         Assert.assertNotNull(hashedValue);
         Assert.assertEquals("3VAfPtmZ+ldn8WsYl+hsDlITf+k=", hashedValue);
@@ -46,39 +48,39 @@ public class CryptoUtilTest {
 
     @Test
     public void testAesCryptDecrypt() throws AesEncryptionException, AesDecryptionException {
-        String encryptedValue = CryptoUtil.encryptAes(PLAIN_VALUE);
+        String encryptedValue = cryptoUtil.encryptAes(PLAIN_VALUE);
 
         Assert.assertNotNull(encryptedValue);
         Assert.assertEquals("AVopb0Rbmz9P3XAuWmp/mA==", encryptedValue);
 
-        String decryptedValue = CryptoUtil.decryptAes(encryptedValue);
+        String decryptedValue = cryptoUtil.decryptAes(encryptedValue);
         Assert.assertNotNull(decryptedValue);
         Assert.assertEquals(PLAIN_VALUE, decryptedValue);
     }
 
     @Test
     public void testAesCryptDecryptAlternativeKey() throws AesEncryptionException, AesDecryptionException {
-        String encryptedValue = CryptoUtil.encryptAes(PLAIN_VALUE, ALTERNATIVE_KEY);
+        String encryptedValue = cryptoUtil.encryptAes(PLAIN_VALUE, ALTERNATIVE_KEY);
 
         Assert.assertNotNull(encryptedValue);
         Assert.assertEquals("kYwVe4immFI/SuaSupaMxw==", encryptedValue);
 
-        String decryptedValue = CryptoUtil.decryptAes(encryptedValue, ALTERNATIVE_KEY);
+        String decryptedValue = cryptoUtil.decryptAes(encryptedValue, ALTERNATIVE_KEY);
         Assert.assertNotNull(decryptedValue);
         Assert.assertEquals(PLAIN_VALUE, decryptedValue);
     }
 
     @Test
     public void testAesCryptDecryptDifferentKeys() throws AesEncryptionException, AesDecryptionException {
-        String encryptedValue1 = CryptoUtil.encryptAes(PLAIN_VALUE);
-        String encryptedValue2 = CryptoUtil.encryptAes(PLAIN_VALUE, ALTERNATIVE_KEY);
+        String encryptedValue1 = cryptoUtil.encryptAes(PLAIN_VALUE);
+        String encryptedValue2 = cryptoUtil.encryptAes(PLAIN_VALUE, ALTERNATIVE_KEY);
 
         Assert.assertNotNull(encryptedValue1);
         Assert.assertNotNull(encryptedValue2);
         Assert.assertNotEquals(encryptedValue1, encryptedValue2);
 
-        String decryptedValue1 = CryptoUtil.decryptAes(encryptedValue1);
-        String decryptedValue2 = CryptoUtil.decryptAes(encryptedValue2, ALTERNATIVE_KEY);
+        String decryptedValue1 = cryptoUtil.decryptAes(encryptedValue1);
+        String decryptedValue2 = cryptoUtil.decryptAes(encryptedValue2, ALTERNATIVE_KEY);
 
         Assert.assertNotNull(decryptedValue1);
         Assert.assertNotNull(decryptedValue2);
@@ -87,33 +89,33 @@ public class CryptoUtilTest {
 
     @Test(expected = InvalidSecretKeyRuntimeException.class)
     public void testAesEncryptInvalidAlternativeKey() throws AesEncryptionException {
-        CryptoUtil.encryptAes(PLAIN_VALUE, "notAValidKey");
+        cryptoUtil.encryptAes(PLAIN_VALUE, "notAValidKey");
     }
 
     @Test(expected = InvalidSecretKeyRuntimeException.class)
     public void testAesDecryptInvalidAlternativeKey() throws AesDecryptionException {
-        CryptoUtil.decryptAes(PLAIN_VALUE, "notAValidValue");
+        cryptoUtil.decryptAes(PLAIN_VALUE, "notAValidValue");
     }
 
     @Test(expected = AesDecryptionException.class)
     public void testAesDecryptInvalidRandomValue() throws AesDecryptionException {
-        CryptoUtil.decryptAes("notAValidValue");
+        cryptoUtil.decryptAes("notAValidValue");
     }
 
     @Test(expected = AesDecryptionException.class)
     public void testAesDecryptInvalidEncryptedValue() throws AesDecryptionException {
-        CryptoUtil.decryptAes("kYwVe4immFI/SuaSupaMxw==");
+        cryptoUtil.decryptAes("kYwVe4immFI/SuaSupaMxw==");
     }
     // Base64
 
     @Test
     public void testBase64EncodeDecode() {
-        String encodedValue = CryptoUtil.encodeBase64(PLAIN_VALUE);
+        String encodedValue = cryptoUtil.encodeBase64(PLAIN_VALUE);
 
         Assert.assertNotNull(encodedValue);
         Assert.assertEquals("YVBsYWluVmFsdWU=", encodedValue);
 
-        String decodedValue = CryptoUtil.decodeBase64(encodedValue);
+        String decodedValue = cryptoUtil.decodeBase64(encodedValue);
         Assert.assertNotNull(decodedValue);
         Assert.assertEquals(PLAIN_VALUE, decodedValue);
     }

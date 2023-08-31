@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.management.configuration;
 
 import org.eclipse.kapua.commons.configuration.metatype.Password;
 import org.eclipse.kapua.commons.crypto.CryptoUtil;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.configuration.DeviceXmlConfigPropertyAdapted.ConfigPropertyType;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
@@ -28,6 +29,7 @@ import java.util.Map;
  * @since 1.0
  */
 public class DeviceXmlConfigPropertiesAdapter extends XmlAdapter<DeviceXmlConfigPropertiesAdapted, Map<String, Object>> {
+    private final CryptoUtil cryptoUtil = KapuaLocator.getInstance().getComponent(CryptoUtil.class);
 
     @Override
     public DeviceXmlConfigPropertiesAdapted marshal(Map<String, Object> props) {
@@ -79,7 +81,7 @@ public class DeviceXmlConfigPropertiesAdapter extends XmlAdapter<DeviceXmlConfig
                     adaptedValue.setArray(false);
                     adaptedValue.setEncrypted(true);
                     adaptedValue.setType(ConfigPropertyType.passwordType);
-                    adaptedValue.setValues(new String[]{CryptoUtil.encodeBase64(value.toString())});
+                    adaptedValue.setValues(new String[]{cryptoUtil.encodeBase64(value.toString())});
                 } else if (value instanceof String[]) {
                     adaptedValue.setArray(true);
                     adaptedValue.setType(ConfigPropertyType.stringType);
@@ -180,7 +182,7 @@ public class DeviceXmlConfigPropertiesAdapter extends XmlAdapter<DeviceXmlConfig
                     String[] stringValues = new String[nativeValues.length];
                     for (int i = 0; i < nativeValues.length; i++) {
                         if (nativeValues[i] != null) {
-                            stringValues[i] = CryptoUtil.encodeBase64(nativeValues[i].toString());
+                            stringValues[i] = cryptoUtil.encodeBase64(nativeValues[i].toString());
                         }
                     }
                     adaptedValue.setValues(stringValues);
@@ -242,7 +244,7 @@ public class DeviceXmlConfigPropertiesAdapter extends XmlAdapter<DeviceXmlConfig
                             propValue = adaptedProp.getValues()[0];
                             propValue =
                                     adaptedProp.isEncrypted() ?
-                                            new Password(CryptoUtil.decodeBase64((String) propValue)) :
+                                            new Password(cryptoUtil.decodeBase64((String) propValue)) :
                                             new Password((String) propValue);
 
                             break;
@@ -331,7 +333,7 @@ public class DeviceXmlConfigPropertiesAdapter extends XmlAdapter<DeviceXmlConfig
                                 if (adaptedProp.getValues()[i] != null) {
                                     pwdValues[i] =
                                             adaptedProp.isEncrypted() ?
-                                                    new Password(CryptoUtil.decodeBase64(adaptedProp.getValues()[i])) :
+                                                    new Password(cryptoUtil.decodeBase64(adaptedProp.getValues()[i])) :
                                                     new Password(adaptedProp.getValues()[i]);
                                 }
                             }
