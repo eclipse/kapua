@@ -37,6 +37,7 @@ ENV JAVA_ARGS "-Dcommons.db.schema.update=true \
                    -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
                    -Dcommons.db.connection.port=\${SQL_DB_PORT} \
                    -Dbroker.ip=message-broker \
+                   -Dlocator.class.impl=org.eclipse.kapua.locator.guice.GuiceLocatorImpl \
                    -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
                    -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \
                    -Dcomponent.id=\${COMPONENT_ID}"
