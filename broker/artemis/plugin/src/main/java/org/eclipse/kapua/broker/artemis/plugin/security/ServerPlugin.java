@@ -74,10 +74,30 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         DESTROY
     }
 
-    enum MessageType {
-        T,
-        C,
-        A
+    public static enum MessageType {
+
+        /**
+         * Audit messages
+         */
+        ActiveMq("AMQ"),
+        /**
+         * Control messages
+         */
+        Control("CTL"),
+        /**
+         * Telemetry messages
+         */
+        Telemetry("TEL");
+
+        private String urlValue;
+
+        MessageType(String urlValue) {
+            this.urlValue = urlValue;
+        }
+
+        public String getUrlValue() {
+            return urlValue;
+        }
     }
 
     /**
@@ -229,13 +249,13 @@ public class ServerPlugin implements ActiveMQServerPlugin {
 
     protected String getMessageType(String address) {
         if (address.startsWith("$")) {
-            return MessageType.C.name();
+            return MessageType.Control.getUrlValue();
         }
         else if (address.startsWith("activemq")) {
-            return MessageType.A.name();
+            return MessageType.ActiveMq.getUrlValue();
         }
         else {
-            return MessageType.T.name();
+            return MessageType.Telemetry.getUrlValue();
         }
     }
 

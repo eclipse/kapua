@@ -13,7 +13,7 @@
  -->
 <routes xmlns="http://camel.apache.org/schema/spring">
     <route errorHandlerRef="mainRouteMessageErrorHandler" id="lifecycleRoute" streamCache="true">
-        <from uri="jms:topic://$EDC/#?selector=KAPUA_MESSAGE_TYPE='C'&amp;asyncConsumer=true&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;subscriptionDurable=true&amp;subscriptionName=lifecycleConsumers&amp;subscriptionShared=true&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
+        <from uri="jms:topic://$EDC/#?selector=KAPUA_MESSAGE_TYPE='CTL'&amp;asyncConsumer=true&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;subscriptionDurable=true&amp;subscriptionName=lifecycleConsumers&amp;subscriptionShared=true&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
         <!--  handling timeout and communication exceptions in a retry queue -->
         <onException>
             <exception>org.eclipse.kapua.KapuaException</exception>
