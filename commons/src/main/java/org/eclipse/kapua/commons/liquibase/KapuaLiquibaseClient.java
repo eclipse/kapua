@@ -60,7 +60,7 @@ public class KapuaLiquibaseClient {
 
     private static final SemanticVersion LIQUIBASE_TIMESTAMP_FIX_VERSION = new SemanticVersion("3.3.3"); // https://liquibase.jira.com/browse/CORE-1958
 
-    private final LiquibaseClientSettings liquibaseClientSettings = LiquibaseClientSettings.getInstance();
+    private final LiquibaseClientSettings liquibaseClientSettings = new LiquibaseClientSettings();
 
     private final String jdbcUrl;
     private final String username;

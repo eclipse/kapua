@@ -26,7 +26,6 @@ import org.eclipse.kapua.service.account.AccountAttributes;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountQuery;
 
-//TODO: FIXME: promote from static utility to injectable collaborator
 public class GwtKapuaAccountModelConverter {
 
     private GwtKapuaAccountModelConverter() {

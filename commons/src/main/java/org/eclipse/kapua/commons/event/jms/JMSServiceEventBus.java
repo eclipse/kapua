@@ -59,19 +59,19 @@ import java.util.Map;
  *
  * @since 1.0
  */
-//TODO: FIXME: Replace Service Loader with DI
 public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDriver {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JMSServiceEventBus.class);
 
-    private static final int PRODUCER_POOL_MIN_SIZE = SystemSetting.getInstance().getInt(SystemSettingKey.EVENT_BUS_PRODUCER_POOL_MIN_SIZE);
-    private static final int PRODUCER_POOL_MAX_SIZE = SystemSetting.getInstance().getInt(SystemSettingKey.EVENT_BUS_PRODUCER_POOL_MAX_SIZE);
-    private static final int PRODUCER_POOL_BORROW_WAIT = SystemSetting.getInstance().getInt(SystemSettingKey.EVENT_BUS_PRODUCER_POOL_BORROW_WAIT_MAX);
-    private static final int PRODUCER_POOL_EVICTION_INTERVAL = SystemSetting.getInstance().getInt(SystemSettingKey.EVENT_BUS_PRODUCER_EVICTION_INTERVAL);
-    private static final int CONSUMER_POOL_SIZE = SystemSetting.getInstance().getInt(SystemSettingKey.EVENT_BUS_CONSUMER_POOL_SIZE);
-    private static final String TRANSPORT_USE_EPOLL = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_TRANSPORT_USE_EPOLL);
+    private final int producerPoolMinSize;
+    private final int producerPoolMaxSize;
+    private final int producerPoolBorrowWait;
+    private final int producerPoolEvictionInterval;
+    private final int consumerPoolSize;
+    private final String transportUseEpoll;
 
     private EventBusJMSConnectionBridge eventBusJMSConnectionBridge;
+    private final SystemSetting systemSetting;
     private final CommonsMetric commonsMetric;
     private final List<Subscription> subscriptionList = new ArrayList<>();
     private final ServiceEventMarshaler eventBusMarshaler;
@@ -80,12 +80,19 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
      * Default constructor
      */
     @Inject
-    public JMSServiceEventBus(CommonsMetric commonsMetric,
+    public JMSServiceEventBus(SystemSetting systemSetting,
+                              CommonsMetric commonsMetric,
                               ServiceEventMarshaler eventBusMarshaler) {
+        this.systemSetting = systemSetting;
         this.commonsMetric = commonsMetric;
         this.eventBusMarshaler = eventBusMarshaler;
         this.eventBusJMSConnectionBridge = new EventBusJMSConnectionBridge();
-
+        this.producerPoolMinSize = systemSetting.getInt(SystemSettingKey.EVENT_BUS_PRODUCER_POOL_MIN_SIZE);
+        this.producerPoolMaxSize = systemSetting.getInt(SystemSettingKey.EVENT_BUS_PRODUCER_POOL_MAX_SIZE);
+        this.producerPoolBorrowWait = systemSetting.getInt(SystemSettingKey.EVENT_BUS_PRODUCER_POOL_BORROW_WAIT_MAX);
+        this.producerPoolEvictionInterval = systemSetting.getInt(SystemSettingKey.EVENT_BUS_PRODUCER_EVICTION_INTERVAL);
+        this.consumerPoolSize = systemSetting.getInt(SystemSettingKey.EVENT_BUS_CONSUMER_POOL_SIZE);
+        this.transportUseEpoll = systemSetting.getString(SystemSettingKey.EVENT_BUS_TRANSPORT_USE_EPOLL);
     }
 
     @Override
@@ -209,13 +216,13 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
 
         void start() throws JMSException, NamingException, ServiceEventBusException {
             stop();
-            String eventbusUrl = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_URL);
-            String eventbusUsername = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_USERNAME);
-            String eventbusPassword = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_PASSWORD);
+            String eventbusUrl = systemSetting.getString(SystemSettingKey.EVENT_BUS_URL);
+            String eventbusUsername = systemSetting.getString(SystemSettingKey.EVENT_BUS_USERNAME);
+            String eventbusPassword = systemSetting.getString(SystemSettingKey.EVENT_BUS_PASSWORD);
 
             Hashtable<String, String> environment = new Hashtable<>();
             environment.put("connectionfactory.eventBusUrl", eventbusUrl);
-            environment.put("transport.useEpoll", TRANSPORT_USE_EPOLL);
+            environment.put("transport.useEpoll", transportUseEpoll);
 
             JmsInitialContextFactory initialContextFactory = new JmsInitialContextFactory();
             Context context = initialContextFactory.getInitialContext(environment);
@@ -296,7 +303,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
                 String subscriptionStr = String.format("$SYS/EVT/%s", subscription.getAddress());
                 // create a bunch of sessions to allow parallel event processing
                 LOGGER.info("Subscribing to address {} - name {} ...", subscriptionStr, subscription.getName());
-                for (int i = 0; i < CONSUMER_POOL_SIZE; i++) {
+                for (int i = 0; i < consumerPoolSize; i++) {
                     final Session jmsSession = jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
                     Topic jmsTopic = jmsSession.createTopic(subscriptionStr);
                     MessageConsumer jmsConsumer = jmsSession.createSharedDurableConsumer(jmsTopic, subscription.getName());
@@ -326,7 +333,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
                         }
                     });
                 }
-                LOGGER.info("Subscribing to address {} - name {} - pool size {} ...DONE", subscriptionStr, subscription.getName(), CONSUMER_POOL_SIZE);
+                LOGGER.info("Subscribing to address {} - name {} - pool size {} ...DONE", subscriptionStr, subscription.getName(), consumerPoolSize);
             } catch (JMSException e) {
                 throw new ServiceEventBusException(e);
             }
@@ -409,15 +416,15 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
                 super(factory);
 
                 GenericObjectPoolConfig senderPoolConfig = new GenericObjectPoolConfig();
-                senderPoolConfig.setMinIdle(PRODUCER_POOL_MIN_SIZE);
-                senderPoolConfig.setMaxIdle(PRODUCER_POOL_MAX_SIZE);
-                senderPoolConfig.setMaxTotal(PRODUCER_POOL_MAX_SIZE);
-                senderPoolConfig.setMaxWaitMillis(PRODUCER_POOL_BORROW_WAIT);
+                senderPoolConfig.setMinIdle(producerPoolMinSize);
+                senderPoolConfig.setMaxIdle(producerPoolMaxSize);
+                senderPoolConfig.setMaxTotal(producerPoolMaxSize);
+                senderPoolConfig.setMaxWaitMillis(producerPoolBorrowWait);
                 senderPoolConfig.setTestOnReturn(true);
                 senderPoolConfig.setTestOnBorrow(true);
                 senderPoolConfig.setTestWhileIdle(false);
                 senderPoolConfig.setBlockWhenExhausted(true);
-                senderPoolConfig.setTimeBetweenEvictionRunsMillis(PRODUCER_POOL_EVICTION_INTERVAL);
+                senderPoolConfig.setTimeBetweenEvictionRunsMillis(producerPoolEvictionInterval);
                 setConfig(senderPoolConfig);
             }
 

@@ -89,8 +89,8 @@ public class CommonsModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    ServiceEventBusDriver serviceEventBusDriver(CommonsMetric commonsMetric, ServiceEventMarshaler serviceEventMarshaler) {
-        return new JMSServiceEventBus(commonsMetric, serviceEventMarshaler);
+    ServiceEventBusDriver serviceEventBusDriver(SystemSetting systemSetting, CommonsMetric commonsMetric, ServiceEventMarshaler serviceEventMarshaler) {
+        return new JMSServiceEventBus(systemSetting, commonsMetric, serviceEventMarshaler);
     }
 
     @Provides

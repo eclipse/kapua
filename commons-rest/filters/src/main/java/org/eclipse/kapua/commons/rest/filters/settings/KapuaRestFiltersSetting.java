@@ -19,26 +19,32 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  *
  * @since 1.0
  */
-//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class KapuaRestFiltersSetting extends AbstractKapuaSetting<KapuaRestFiltersSettingKeys> {
 
     private static final String API_SETTING_RESOURCE = "kapua-api-core-settings.properties";
 
-    private static final KapuaRestFiltersSetting INSTANCE = new KapuaRestFiltersSetting();
+    public static enum MessageType {
+
+        ActiveMq('A'),
+        CazzoNeSoIo('C'),
+        TePossino('P');
+
+        private char urlChar;
+
+        MessageType(char urlChar) {
+            this.urlChar = urlChar;
+        }
+
+        public char getUrlChar() {
+            return urlChar;
+        }
+    }
 
     /**
      * Construct a new api setting reading settings from {@link KapuaRestFiltersSetting#API_SETTING_RESOURCE}
      */
-    private KapuaRestFiltersSetting() {
+    public KapuaRestFiltersSetting() {
         super(API_SETTING_RESOURCE);
     }
 
-    /**
-     * Return the api setting instance (singleton)
-     *
-     * @return A singleton instance of {@link KapuaRestFiltersSetting}
-     */
-    public static KapuaRestFiltersSetting getInstance() {
-        return INSTANCE;
-    }
 }
