@@ -36,6 +36,11 @@ public class MetricsCamel {
     private Counter unauthenticatedError;
     private Counter genericError;
 
+    private static final String STANDARD = "standard_messages";
+    private static final String LARGE = "large_messages";
+    private Counter standardMessage;
+    private Counter largeMessage;
+
     private static MetricsCamel instance;
 
     public static MetricsCamel getInstance() {
@@ -64,6 +69,10 @@ public class MetricsCamel {
 
         unauthenticatedError = metricsService.getCounter(CommonsMetric.module, MetricsLabel.FAILURE, UNAUTHENTICATED);
         genericError = metricsService.getCounter(CommonsMetric.module, MetricsLabel.FAILURE, GENERIC);
+
+        //standard/large messages
+        standardMessage = metricsService.getCounter(CommonsMetric.module, CONVERTER, STANDARD);
+        largeMessage = metricsService.getCounter(CommonsMetric.module, CONVERTER, LARGE);
     }
 
     public Counter getErrorStoredToFileSuccess() {
@@ -89,4 +98,13 @@ public class MetricsCamel {
     public Counter getGenericError() {
         return genericError;
     }
+
+    public Counter getLargeMessage() {
+        return largeMessage;
+    }
+
+    public Counter getStandardMessage() {
+        return standardMessage;
+    }
+
 }

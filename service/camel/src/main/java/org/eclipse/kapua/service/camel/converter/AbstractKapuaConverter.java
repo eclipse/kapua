@@ -46,6 +46,13 @@ public abstract class AbstractKapuaConverter {
 
     public static final Logger logger = LoggerFactory.getLogger(AbstractKapuaConverter.class);
 
+    //TODO inject!!!
+    private MetricsCamel metrics;
+
+    protected AbstractKapuaConverter() {
+        metrics = MetricsCamel.getInstance();
+    }
+
     /**
      * Convert incoming message to a Kapua message (depending on messageType parameter)
      *
@@ -96,9 +103,11 @@ public abstract class AbstractKapuaConverter {
     public static byte[] getContent(MetricsCamel metrics, Object value) throws IOException {
         byte[] content = null;
         if (value instanceof byte[]) {
+            metrics.getStandardMessage().inc();
             content = (byte[]) value;
         }
         else if (value instanceof FileInputStreamCache) {
+            metrics.getLargeMessage().inc();
             //not good for performances reasons but I don't see any other way now
             FileInputStreamCache fisc = (FileInputStreamCache) value;
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
