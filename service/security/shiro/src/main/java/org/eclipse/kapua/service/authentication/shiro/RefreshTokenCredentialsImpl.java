@@ -12,13 +12,29 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
+import org.apache.shiro.authc.AuthenticationToken;
 import org.eclipse.kapua.service.authentication.RefreshTokenCredentials;
+import org.eclipse.kapua.service.authentication.token.AccessToken;
 
+/**
+ * {@link RefreshTokenCredentials} implementation.
+ * <p>
+ * This implements also {@link AuthenticationToken} to allow usage in Apache Shiro.
+ *
+ * @since 1.0.0
+ */
 public class RefreshTokenCredentialsImpl implements RefreshTokenCredentials {
 
     private String tokenId;
     private String refreshToken;
 
+    /**
+     * Constructor.
+     *
+     * @param tokenId      The {@link AccessToken#getTokenId()}
+     * @param refreshToken TThe {@link AccessToken#getRefreshToken()}
+     * @since 1.0.0
+     */
     public RefreshTokenCredentialsImpl(String tokenId, String refreshToken) {
         this.tokenId = tokenId;
         this.refreshToken = refreshToken;

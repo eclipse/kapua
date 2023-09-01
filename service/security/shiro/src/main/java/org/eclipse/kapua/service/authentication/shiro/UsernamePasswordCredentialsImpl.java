@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
 /**
  * {@link UsernamePasswordCredentials} implementation.
  * <p>
- * This implements also {@link AuthenticationToken} to allow usage in Shiro.
+ * This implements also {@link AuthenticationToken} to allow usage in Apache Shiro.
  *
  * @since 1.0.0
  */

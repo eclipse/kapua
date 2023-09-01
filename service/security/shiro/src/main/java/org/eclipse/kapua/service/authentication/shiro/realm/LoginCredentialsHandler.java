@@ -10,18 +10,17 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.shiro;
+package org.eclipse.kapua.service.authentication.shiro.realm;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.shiro.authc.AuthenticationToken;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
-import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 
-import java.util.Optional;
+/**
+ * {@link LoginCredentials} {@link CredentialsHandler} definition.
+ * <p>
+ * It maps a {@link LoginCredentials} to a specific implementation.
+ *
+ * @since 2.0.0
+ */
+public interface LoginCredentialsHandler extends CredentialsHandler<LoginCredentials> {
 
-public interface CredentialsHandler {
-
-    boolean canProcess(LoginCredentials loginCredentials);
-
-    ImmutablePair<AuthenticationToken, Optional<String>> mapToShiro(LoginCredentials loginCredentials) throws KapuaAuthenticationException;
 }

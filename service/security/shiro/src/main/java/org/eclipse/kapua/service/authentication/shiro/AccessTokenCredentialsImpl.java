@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.authentication.shiro;
 
 import org.apache.shiro.authc.AuthenticationToken;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 
 import javax.validation.constraints.NotNull;
@@ -22,7 +21,7 @@ import javax.validation.constraints.NotNull;
 /**
  * {@link AccessTokenCredentials} implementation.
  * <p>
- * This implements also {@link AuthenticationToken} to allow usage in Shiro.
+ * This implements also {@link AuthenticationToken} to allow usage in Apache Shiro.
  *
  * @since 1.0.0
  */
@@ -35,7 +34,7 @@ public class AccessTokenCredentialsImpl implements AccessTokenCredentials, Authe
     /**
      * Constructor.
      *
-     * @param tokenId The credential TokenId
+     * @param tokenId The credential JWT
      * @since 1.0.0
      */
     public AccessTokenCredentialsImpl(@NotNull String tokenId) {

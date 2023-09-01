@@ -19,42 +19,46 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Jwt {@link LoginCredentials} definition.
+ * JWT {@link LoginCredentials} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "jwtCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "accessToken", "idToken" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newJwtCredentials")
+@XmlType(factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newJwtCredentials")
 public interface JwtCredentials extends LoginCredentials {
 
     /**
-     * Gets the OpenID Connect accessToken
+     * Gets the OpenID Connect <a href="https://auth0.com/blog/id-token-access-token-what-is-the-difference/#What-Is-an-Access-Token">accessToken</a>.
      *
-     * @return
+     * @return The OpenID Connect accessToken.
+     * @since 1.3.0
      */
     @XmlElement(name = "accessToken")
     String getAccessToken();
 
     /**
-     * Set the OpenID Connect accessToken
+     * Set the OpenID Connect accessToken.
      *
-     * @param accessToken
+     * @param accessToken The OpenID Connect accessToken.
+     * @since 1.3.0
      */
     void setAccessToken(String accessToken);
 
     /**
-     * Gets the OpenID Connect idToken
+     * Gets the OpenID Connect <a href="https://auth0.com/blog/id-token-access-token-what-is-the-difference/#What-Is-an-ID-Token">idToken</a>.
      *
-     * @return
+     * @return The OpenID Connect idToken.
+     * @since 1.3.0
      */
     @XmlElement(name = "idToken")
     String getIdToken();
 
     /**
-     * Set the OpenID Connect idToken
+     * Set the OpenID Connect idToken.
      *
-     * @param idToken
+     * @param idToken The OpenID Connect idToken.
+     * @since 1.3.0
      */
     void setIdToken(String idToken);
 }

@@ -12,6 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
+/**
+ * Login {@link AuthenticationCredentials}.
+ * <p>
+ * {@link AuthenticationCredentials} that can be used start a session.
+ *
+ * @since 1.0.0
+ */
 public interface LoginCredentials extends AuthenticationCredentials {
 
 }
