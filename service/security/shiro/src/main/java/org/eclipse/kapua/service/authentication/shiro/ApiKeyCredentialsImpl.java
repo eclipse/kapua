@@ -13,15 +13,15 @@
 package org.eclipse.kapua.service.authentication.shiro;
 
 import org.apache.shiro.authc.AuthenticationToken;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.validation.constraints.NotNull;
 
 /**
  * {@link ApiKeyCredentials} implementation.
  * <p>
- * This implements also {@link AuthenticationToken} to allow usage in Shiro.
+ * This implements also {@link AuthenticationToken} to allow usage in Apache Shiro.
  *
  * @since 1.0.0
  */
@@ -34,7 +34,7 @@ public class ApiKeyCredentialsImpl implements ApiKeyCredentials, AuthenticationT
     /**
      * Constructor.
      *
-     * @param apiKey The crential key.
+     * @param apiKey The Api Key.
      * @since 1.0.0
      */
     public ApiKeyCredentialsImpl(String apiKey) {

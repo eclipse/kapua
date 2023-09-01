@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.shiro;
+package org.eclipse.kapua.service.authentication.shiro.realm;
 
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -19,10 +19,16 @@ import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
+import org.eclipse.kapua.service.authentication.shiro.UsernamePasswordCredentialsImpl;
 
 import java.util.Optional;
 
-public class UsernamePasswordCredentialsHandler implements CredentialsHandler {
+/**
+ * {@link UsernamePasswordCredentials} {@link LoginCredentialsHandler} implementation.
+ *
+ * @since 2.0.0
+ */
+public class UserPassCredentialsHandler implements LoginCredentialsHandler {
 
     @Override
     public boolean canProcess(LoginCredentials loginCredentials) {

@@ -13,10 +13,9 @@
 package org.eclipse.kapua.service.authentication;
 
 /**
- * Authentication credentials definition
+ * {@link AuthenticationCredentials} definition.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public interface AuthenticationCredentials {
 }

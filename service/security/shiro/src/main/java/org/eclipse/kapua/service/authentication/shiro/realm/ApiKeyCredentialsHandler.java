@@ -10,32 +10,39 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.shiro;
+package org.eclipse.kapua.service.authentication.shiro.realm;
 
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.eclipse.kapua.service.authentication.JwtCredentials;
+import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
+import org.eclipse.kapua.service.authentication.shiro.ApiKeyCredentialsImpl;
 
 import java.util.Optional;
 
-public class JwtCredentialsHandler implements CredentialsHandler {
+/**
+ * {@link ApiKeyCredentials} {@link LoginCredentialsHandler} implementation.
+ *
+ * @since 2.0.0
+ */
+public class ApiKeyCredentialsHandler implements LoginCredentialsHandler {
 
     @Override
     public boolean canProcess(LoginCredentials loginCredentials) {
-        return loginCredentials instanceof JwtCredentials;
+        return loginCredentials instanceof ApiKeyCredentials;
     }
 
     @Override
     public ImmutablePair<AuthenticationToken, Optional<String>> mapToShiro(LoginCredentials loginCredentials) throws KapuaAuthenticationException {
-        JwtCredentialsImpl jwtCredentials = JwtCredentialsImpl.parse((JwtCredentials) loginCredentials);
-        final String openIDidToken = Optional.ofNullable(jwtCredentials.getIdToken())
-                .filter(token -> !Strings.isNullOrEmpty(token))
-                .orElseThrow(() -> new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS));
+        ApiKeyCredentialsImpl apiKeyCredentials = ApiKeyCredentialsImpl.parse((ApiKeyCredentials) loginCredentials);
 
-        return ImmutablePair.of(jwtCredentials, Optional.of(openIDidToken));
+        if (Strings.isNullOrEmpty(apiKeyCredentials.getApiKey())) {
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
+        }
+
+        return ImmutablePair.of(apiKeyCredentials, Optional.empty());
     }
 }
