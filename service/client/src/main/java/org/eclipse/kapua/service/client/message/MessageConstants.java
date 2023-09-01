@@ -35,6 +35,12 @@ public class MessageConstants {
     public static final String HEADER_KAPUA_SESSION = "KAPUA_SESSION";
     public static final String HEADER_KAPUA_BROKER_CONTEXT = "KAPUA_BROKER_CONTEXT";
     public static final String HEADER_KAPUA_PROCESSING_EXCEPTION = "KAPUA_PROCESSING_EXCEPTION";
+    /**
+     * used to filter messages by consumers
+     * T telemetry messages
+     * C control messages
+     */
+    public static final String HEADER_KAPUA_MESSAGE_TYPE = "KAPUA_MESSAGE_TYPE";
 
     public static final String HEADER_CAMEL_JMS_HEADER_TIMESTAMP = "JMSTimestamp";
     public static final String HEADER_CAMEL_JMS_HEADER_DESTINATION = "JMSDestination";

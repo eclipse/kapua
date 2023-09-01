@@ -74,6 +74,12 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         DESTROY
     }
 
+    enum MessageType {
+        T,
+        C,
+        A
+    }
+
     /**
      * publish message size threshold for printing message information
      */
@@ -193,6 +199,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         message.putStringProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_NAME, sessionContext.getConnectorName());
         message.putStringProperty(MessageConstants.HEADER_KAPUA_SESSION, Base64.getEncoder().encodeToString(SerializationUtils.serialize(sessionContext.getKapuaSession())));
         message.putLongProperty(MessageConstants.HEADER_KAPUA_RECEIVED_TIMESTAMP, KapuaDateUtils.getKapuaSysDate().getEpochSecond());
+        message.putStringProperty(MessageConstants.HEADER_KAPUA_MESSAGE_TYPE, getMessageType(address));
         if (!sessionContext.isInternal()) {
             if (isLwt(address)) {
                 //handle the missing message case
@@ -218,6 +225,18 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         serverContext.getAddressAccessTracker().update(address);
         logger.debug("Published message on address {} from clientId: {} - clientIp: {}", address, sessionContext.getClientId(), sessionContext.getClientIp());
         ActiveMQServerPlugin.super.beforeSend(session, tx, message, direct, noAutoCreateQueue);
+    }
+
+    protected String getMessageType(String address) {
+        if (address.startsWith("$")) {
+            return MessageType.C.name();
+        }
+        else if (address.startsWith("activemq")) {
+            return MessageType.A.name();
+        }
+        else {
+            return MessageType.T.name();
+        }
     }
 
     private boolean isLwt(String originalTopic) {
