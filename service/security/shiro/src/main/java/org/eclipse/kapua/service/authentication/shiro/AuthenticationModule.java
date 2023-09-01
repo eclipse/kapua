@@ -29,6 +29,7 @@ import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
+import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
@@ -118,7 +119,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
                                                      PermissionFactory permissionFactory,
                                                      KapuaJpaTxManagerFactory txManagerFactory,
                                                      EventStoreFactory eventStoreFactory,
-                                                     EventStoreRecordRepository eventStoreRecordRepository
+                                                     EventStoreRecordRepository eventStoreRecordRepository,
+                                                     ServiceEventBus serviceEventBus
     ) throws ServiceEventBusException {
         return new AuthenticationServiceModule(
                 credentialService,
@@ -132,8 +134,10 @@ public class AuthenticationModule extends AbstractKapuaModule {
                                 eventStoreFactory,
                                 eventStoreRecordRepository
                         ),
-                        txManagerFactory.create("kapua-authentication")
-                ));
+                        txManagerFactory.create("kapua-authentication"),
+                        serviceEventBus
+                ),
+                serviceEventBus);
     }
 
     @ProvidesIntoSet

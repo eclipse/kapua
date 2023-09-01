@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal;
 
-import org.eclipse.kapua.commons.event.ServiceEventBusManager;
 import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
@@ -20,6 +19,7 @@ import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.event.ServiceEventBusListener;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
 
 import javax.validation.constraints.NotNull;
@@ -39,6 +39,7 @@ public abstract class AbstractKapuaService implements KapuaService {
     protected final EntityManagerFactory entityManagerFactory;
     protected final EntityManagerSession entityManagerSession;
     protected final EntityCache entityCache;
+    private final ServiceEventBus serviceEventBus = KapuaLocator.getInstance().getComponent(ServiceEventBus.class);
 
     /**
      * Constructor
@@ -90,6 +91,6 @@ public abstract class AbstractKapuaService implements KapuaService {
      * @since 1.0.0
      */
     protected void registerEventListener(@NotNull ServiceEventBusListener listener, @NotNull String address, @NotNull Class<? extends KapuaService> clazz) throws ServiceEventBusException {
-        ServiceEventBusManager.getInstance().subscribe(address, clazz.getName(), listener);
+        serviceEventBus.subscribe(address, clazz.getName(), listener);
     }
 }

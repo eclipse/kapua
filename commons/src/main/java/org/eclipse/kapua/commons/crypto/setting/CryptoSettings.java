@@ -20,7 +20,6 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  * @see AbstractKapuaSetting
  * @since 2.0.0
  */
-//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class CryptoSettings extends AbstractKapuaSetting<CryptoSettingKeys> {
 
     /**

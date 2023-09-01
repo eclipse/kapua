@@ -18,7 +18,6 @@ import org.eclipse.kapua.client.security.bean.AuthAcl;
 import org.eclipse.kapua.client.security.bean.AuthContext;
 import org.eclipse.kapua.client.security.metric.AuthLoginMetric;
 import org.eclipse.kapua.client.security.metric.AuthMetric;
-import org.eclipse.kapua.commons.event.ServiceEventBusManager;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -60,13 +59,13 @@ public class DefaultAuthenticator implements Authenticator {
     private boolean raiseLifecycleEvents;
     private String lifecycleEventAddress;
 
-    //TODO declare AuthenticationLogic interface and add parameters to help injector to inject the right instance
+    //TODO: FIXME: declare AuthenticationLogic interface and add parameters to help injector to inject the right instance
     @Inject
     protected AdminAuthenticationLogic adminAuthenticationLogic;
     @Inject
     protected UserAuthenticationLogic userAuthenticationLogic;
 
-    //TODO inject this instance
+    //TODO: FIXME: inject this instance
     private ServiceEventBus serviceEventBus;
 
     protected String adminUserName;
@@ -83,7 +82,7 @@ public class DefaultAuthenticator implements Authenticator {
         raiseLifecycleEvents = ServiceAuthenticationSetting.getInstance().getBoolean(ServiceAuthenticationSettingKey.SERVICE_AUTHENTICATION_ENABLE_LIFECYCLE_EVENTS, false);
         if (raiseLifecycleEvents) {
             lifecycleEventAddress = ServiceAuthenticationSetting.getInstance().getString(ServiceAuthenticationSettingKey.SERVICE_AUTHENTICATION_LIFECYCLE_EVENTS_ADDRESS);
-            serviceEventBus = ServiceEventBusManager.getInstance();
+            serviceEventBus = KapuaLocator.getInstance().getComponent(ServiceEventBus.class);
         } else {
             logger.info("Skipping AuthenticationService event bus initialization since the raise of connect/disconnect event is disabled!");
         }
@@ -160,7 +159,7 @@ public class DefaultAuthenticator implements Authenticator {
     protected void raiseLifecycleEvent(AuthContext authContext, DeviceConnectionStatus deviceConnectionStatus) throws ServiceEventBusException {
         logger.debug("raising lifecycle events: clientId: {} - connection status: {}", authContext.getClientId(), deviceConnectionStatus);
         //internal connections with not registered user/account shouldn't raise connect/disconnect events
-        if (authContext.getUserId() != null && authContext.getScopeId() != null) {
+        if (authContext.getUserId() != null && authContext.getScopeId() != null && serviceEventBus != null) {
             serviceEventBus.publish(lifecycleEventAddress, getServiceEvent(authContext, deviceConnectionStatus));
         } else {
             logger.info("Skipping event raising for clientId {} (username: {} - clientIp: {}) since userId ({}) and/or scopeId ({}) are null",

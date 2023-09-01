@@ -27,6 +27,7 @@ import org.eclipse.kapua.commons.service.event.store.api.ServiceEventUtil;
 import org.eclipse.kapua.event.RaiseServiceEvent;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.event.ServiceEvent.EventStatus;
+import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.KapuaEntity;
@@ -63,6 +64,8 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
     private TxManager txManager;
     @Inject
     private CommonsMetric commonsMetric;
+    @Inject
+    private ServiceEventBus serviceEventBus;
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -230,7 +233,7 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
     private void sendEvent(ServiceEvent serviceEvent) throws ServiceEventBusException {
         String address = ServiceMap.getAddress(serviceEvent.getService());
         try {
-            ServiceEventBusManager.getInstance().publish(address, serviceEvent);
+            serviceEventBus.publish(address, serviceEvent);
             LOG.info("SENT event from service {} to {} - entity type {} - entity scope id {} - entity id {} - context id {}",
                     serviceEvent.getService(),
                     address,

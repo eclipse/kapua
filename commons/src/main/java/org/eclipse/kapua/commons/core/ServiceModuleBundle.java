@@ -13,7 +13,7 @@
 package org.eclipse.kapua.commons.core;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.event.ServiceEventBusManager;
+import org.eclipse.kapua.commons.event.ServiceEventBusDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,10 +23,12 @@ import java.util.Set;
 public class ServiceModuleBundle {
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceModuleBundle.class);
+    private final ServiceEventBusDriver serviceEventBusDriver;
     private final Set<ServiceModule> serviceModules;
 
     @Inject
-    public ServiceModuleBundle(Set<ServiceModule> serviceModules) {
+    public ServiceModuleBundle(ServiceEventBusDriver serviceEventBusDriver, Set<ServiceModule> serviceModules) {
+        this.serviceEventBusDriver = serviceEventBusDriver;
         this.serviceModules = serviceModules;
     }
 
@@ -34,7 +36,7 @@ public class ServiceModuleBundle {
         logger.info("Starting up...");
 
         logger.info("Startup Kapua Eventbus...");
-        ServiceEventBusManager.start();
+        serviceEventBusDriver.start();
 
         logger.info("Startup Kapua Service Modules...");
         for (ServiceModule service : serviceModules) {
@@ -53,7 +55,7 @@ public class ServiceModuleBundle {
         }
 
         logger.info("Shutdown Kapua Eventbus...");
-        ServiceEventBusManager.stop();
+        serviceEventBusDriver.stop();
 
         logger.info("Shutdown...DONE");
     }

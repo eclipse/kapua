@@ -17,6 +17,10 @@ import org.eclipse.kapua.event.ServiceEventBusException;
 
 public interface ServiceEventBusDriver {
 
+    /**
+     * @deprecated since 2.0.0 - this property was part of an unnecessary complication
+     */
+    @Deprecated
     public String getType();
 
     public void start() throws ServiceEventBusException;

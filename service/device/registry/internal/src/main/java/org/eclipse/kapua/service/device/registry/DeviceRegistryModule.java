@@ -33,6 +33,7 @@ import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
+import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
@@ -126,9 +127,10 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                                                 DeviceRegistryService deviceRegistryService,
                                                 AuthorizationService authorizationService,
                                                 PermissionFactory permissionFactory,
-                                                @Named("DeviceRegistryTransactionManager") TxManager txManager,
+                                                KapuaJpaTxManagerFactory jpaTxManagerFactory,
                                                 EventStoreFactory eventStoreFactory,
-                                                EventStoreRecordRepository eventStoreRecordRepository
+                                                EventStoreRecordRepository eventStoreRecordRepository,
+                                                ServiceEventBus serviceEventBus
     ) throws ServiceEventBusException {
         return new DeviceServiceModule(
                 deviceConnectionService,
@@ -138,12 +140,14 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                         new EventStoreServiceImpl(
                                 authorizationService,
                                 permissionFactory,
-                                txManager,
+                                jpaTxManagerFactory.create("kapua-device"),
                                 eventStoreFactory,
                                 eventStoreRecordRepository
                         ),
-                        txManager
-                ));
+                        jpaTxManagerFactory.create("kapua-device"),
+                        serviceEventBus
+                ),
+                serviceEventBus);
     }
 
     @Provides

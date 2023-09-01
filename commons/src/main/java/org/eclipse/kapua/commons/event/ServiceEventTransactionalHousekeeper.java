@@ -26,6 +26,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.event.ServiceEvent.EventStatus;
+import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
@@ -62,11 +63,12 @@ public class ServiceEventTransactionalHousekeeper implements Runnable {
 
     private final Object monitor = new Object();
 
-    private EventStoreService kapuaEventService;
+    private final EventStoreService kapuaEventService;
+    private final ServiceEventBus serviceEventBus;
 
-    private TxContext txContext;
+    private final TxContext txContext;
 
-    private List<ServiceEntry> servicesEntryList;
+    private final List<ServiceEntry> servicesEntryList;
     private boolean running;
 
     /**
@@ -75,10 +77,11 @@ public class ServiceEventTransactionalHousekeeper implements Runnable {
      * @param txManager
      * @param servicesEntryList
      */
-    public ServiceEventTransactionalHousekeeper(EventStoreService eventStoreService, TxManager txManager, List<ServiceEntry> servicesEntryList) {
+    public ServiceEventTransactionalHousekeeper(EventStoreService eventStoreService, TxManager txManager, ServiceEventBus serviceEventBus, List<ServiceEntry> servicesEntryList) {
         this.servicesEntryList = servicesEntryList;
         this.txContext = txManager.getTxContext();
         this.kapuaEventService = eventStoreService;
+        this.serviceEventBus = serviceEventBus;
     }
 
     @Override
@@ -136,7 +139,7 @@ public class ServiceEventTransactionalHousekeeper implements Runnable {
                             kapuaEvent.getOperation(),
                             kapuaEvent.getContextId());
 
-                    ServiceEventBusManager.getInstance().publish(address, ServiceEventUtil.toServiceEventBus(kapuaEvent));
+                    serviceEventBus.publish(address, ServiceEventUtil.toServiceEventBus(kapuaEvent));
                     //if message was sent successfully then confirm the event in the event table
                     //if something goes wrong during this update the event message may be raised twice (but this condition should happens rarely and it is compliant to the contract of the service events)
                     //this is done in a different transaction

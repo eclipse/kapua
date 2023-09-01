@@ -21,7 +21,6 @@ import org.apache.qpid.jms.jndi.JmsInitialContextFactory;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.event.ServiceEventBusDriver;
-import org.eclipse.kapua.commons.event.ServiceEventBusManager;
 import org.eclipse.kapua.commons.event.ServiceEventMarshaler;
 import org.eclipse.kapua.commons.event.ServiceEventScope;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
@@ -33,10 +32,10 @@ import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.event.ServiceEventBusListener;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.ExceptionListener;
@@ -70,27 +69,28 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
     private static final int PRODUCER_POOL_BORROW_WAIT = SystemSetting.getInstance().getInt(SystemSettingKey.EVENT_BUS_PRODUCER_POOL_BORROW_WAIT_MAX);
     private static final int PRODUCER_POOL_EVICTION_INTERVAL = SystemSetting.getInstance().getInt(SystemSettingKey.EVENT_BUS_PRODUCER_EVICTION_INTERVAL);
     private static final int CONSUMER_POOL_SIZE = SystemSetting.getInstance().getInt(SystemSettingKey.EVENT_BUS_CONSUMER_POOL_SIZE);
-    private static final String MESSAGE_SERIALIZER = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_MESSAGE_SERIALIZER);
     private static final String TRANSPORT_USE_EPOLL = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_TRANSPORT_USE_EPOLL);
 
-    private List<Subscription> subscriptionList = new ArrayList<>();
     private EventBusJMSConnectionBridge eventBusJMSConnectionBridge;
-    private ServiceEventMarshaler eventBusMarshaler;
-    private final CommonsMetric commonsMetric = KapuaLocator.getInstance().getComponent(CommonsMetric.class);
+    private final CommonsMetric commonsMetric;
+    private final List<Subscription> subscriptionList = new ArrayList<>();
+    private final ServiceEventMarshaler eventBusMarshaler;
 
     /**
      * Default constructor
-     *
-     * @throws JMSException
-     * @throws NamingException
      */
-    public JMSServiceEventBus() throws JMSException, NamingException {
-        eventBusJMSConnectionBridge = new EventBusJMSConnectionBridge();
+    @Inject
+    public JMSServiceEventBus(CommonsMetric commonsMetric,
+                              ServiceEventMarshaler eventBusMarshaler) {
+        this.commonsMetric = commonsMetric;
+        this.eventBusMarshaler = eventBusMarshaler;
+        this.eventBusJMSConnectionBridge = new EventBusJMSConnectionBridge();
+
     }
 
     @Override
     public String getType() {
-        return ServiceEventBusManager.JMS_20_EVENT_BUS;
+        return "JMS_20_EVENT_BUS";
     }
 
     /**
@@ -101,15 +101,8 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
     @Override
     public void start() throws ServiceEventBusException {
         try {
-            // initialize event bus marshaler
-            Class<?> messageSerializerClazz = Class.forName(MESSAGE_SERIALIZER);
-            if (ServiceEventMarshaler.class.isAssignableFrom(messageSerializerClazz)) {
-                eventBusMarshaler = (ServiceEventMarshaler) messageSerializerClazz.newInstance();
-            } else {
-                throw new ServiceEventBusException(String.format("Wrong message serializer Object type ('%s')!", messageSerializerClazz));
-            }
             eventBusJMSConnectionBridge.start();
-        } catch (JMSException | ClassNotFoundException | NamingException | InstantiationException | IllegalAccessException e) {
+        } catch (JMSException | NamingException e) {
             throw new ServiceEventBusException(e);
         }
     }

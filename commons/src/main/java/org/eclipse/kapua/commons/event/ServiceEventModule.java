@@ -70,7 +70,7 @@ public abstract class ServiceEventModule implements ServiceModule {
         LOGGER.info("Starting service event module... initialize configurations");
         serviceEventModuleConfiguration = initializeConfiguration();
         LOGGER.info("Starting service event module... initialize event bus");
-        ServiceEventBus eventbus = ServiceEventBusManager.getInstance();
+        ServiceEventBus eventbus = KapuaLocator.getInstance().getComponent(ServiceEventBus.class);
         LOGGER.info("Starting service event module... initialize event subscriptions");
         List<ServiceEntry> servicesEntryList = new ArrayList<>();
         if (serviceEventModuleConfiguration.getServiceEventClientConfigurations() != null) {

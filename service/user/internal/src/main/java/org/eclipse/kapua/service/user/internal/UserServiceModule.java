@@ -16,15 +16,17 @@ import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactory;
 import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
+import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.setting.KapuaUserSetting;
 import org.eclipse.kapua.service.user.internal.setting.KapuaUserSettingKeys;
 
 public class UserServiceModule extends ServiceEventTransactionalModule {
 
-    public UserServiceModule(UserService userService, KapuaUserSetting kapuaUserSetting, ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory) {
+    public UserServiceModule(UserService userService, KapuaUserSetting kapuaUserSetting, ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory,
+                             ServiceEventBus serviceEventBus) {
         super(ServiceInspector.getEventBusClients(userService, UserService.class).toArray(new ServiceEventClientConfiguration[0]),
                 kapuaUserSetting.getString(KapuaUserSettingKeys.USER_EVENT_ADDRESS),
-                serviceEventTransactionalHousekeeperFactory);
+                serviceEventTransactionalHousekeeperFactory, serviceEventBus);
     }
 }

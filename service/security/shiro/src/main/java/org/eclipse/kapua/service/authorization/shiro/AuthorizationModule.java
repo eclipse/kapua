@@ -34,6 +34,7 @@ import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
+import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
@@ -151,7 +152,8 @@ public class AuthorizationModule extends AbstractKapuaModule {
                                              PermissionFactory permissionFactory,
                                              KapuaJpaTxManagerFactory txManagerFactory,
                                              EventStoreFactory eventStoreFactory,
-                                             EventStoreRecordRepository eventStoreRecordRepository
+                                             EventStoreRecordRepository eventStoreRecordRepository,
+                                             ServiceEventBus serviceEventBus
     ) throws ServiceEventBusException {
         return new AuthorizationServiceModule(
                 accessInfoService,
@@ -167,8 +169,9 @@ public class AuthorizationModule extends AbstractKapuaModule {
                                 eventStoreFactory,
                                 eventStoreRecordRepository
                         ),
-                        txManagerFactory.create("kapua-authorization")
-                ));
+                        txManagerFactory.create("kapua-authorization"),
+                        serviceEventBus
+                ), serviceEventBus);
     }
 
     @ProvidesIntoSet
