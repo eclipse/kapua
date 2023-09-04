@@ -17,6 +17,8 @@
     </provided>
 
     <packages>
+        <package>javax.jms</package>
+        <package>org.eclipse.kapua.service.account.xml</package>
         <package>org.eclipse.kapua.commons</package>
     </packages>
 </locator-config>
