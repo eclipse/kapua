@@ -58,11 +58,13 @@ import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidat
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidatorImpl;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.registration.RegistrationService;
+import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
+import org.eclipse.kapua.service.authentication.shiro.realm.AccessTokenCredentialsHandler;
 import org.eclipse.kapua.service.authentication.shiro.realm.ApiKeyCredentialsHandler;
 import org.eclipse.kapua.service.authentication.shiro.realm.JwtCredentialsHandler;
 import org.eclipse.kapua.service.authentication.shiro.realm.LoginCredentialsHandler;
+import org.eclipse.kapua.service.authentication.shiro.realm.SessionCredentialsHandler;
 import org.eclipse.kapua.service.authentication.shiro.realm.UserPassCredentialsHandler;
-import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
 import org.eclipse.kapua.service.authentication.shiro.registration.RegistrationServiceImpl;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
@@ -133,6 +135,12 @@ public class AuthenticationModule extends AbstractKapuaModule {
     public LoginCredentialsHandler jwtCredentialsHandler() {
         return new JwtCredentialsHandler();
     }
+
+    @ProvidesIntoSet
+    public SessionCredentialsHandler accessTokenCredentialsHandler() {
+        return new AccessTokenCredentialsHandler();
+    }
+
 
     @Provides
     @Singleton
@@ -267,6 +275,7 @@ public class AuthenticationModule extends AbstractKapuaModule {
 
         final ServiceConfigurationManagerCachingWrapper cached = new ServiceConfigurationManagerCachingWrapper(credentialServiceConfigurationManager);
         return new CredentialServiceConfigurationManager() {
+            @Override
             public int getSystemMinimumPasswordLength() {
                 return credentialServiceConfigurationManager.getSystemMinimumPasswordLength();
             }

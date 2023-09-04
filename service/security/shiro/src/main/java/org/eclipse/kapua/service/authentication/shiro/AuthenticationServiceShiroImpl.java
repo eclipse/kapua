@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.shiro.SecurityUtils;
@@ -37,7 +36,6 @@ import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.KapuaDelayUtil;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
-import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.SessionCredentials;
@@ -52,6 +50,7 @@ import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErr
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.MfaRequiredException;
 import org.eclipse.kapua.service.authentication.shiro.realm.LoginCredentialsHandler;
+import org.eclipse.kapua.service.authentication.shiro.realm.SessionCredentialsHandler;
 import org.eclipse.kapua.service.authentication.shiro.session.ShiroSessionKeys;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
@@ -135,6 +134,13 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     private final UserService userService;
 
     @Inject
+    private Set<LoginCredentialsHandler> loginCredentialsHandlers;
+
+    @Inject
+    private Set<SessionCredentialsHandler> sessionCredentialsHandlers;
+
+
+    @Inject
     public AuthenticationServiceShiroImpl(
             CredentialService credentialService,
             MfaOptionService mfaOptionService,
@@ -165,9 +171,6 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         this.accessPermissionFactory = accessPermissionFactory;
         this.userService = userService;
     }
-
-    @Inject
-    private Set<LoginCredentialsHandler> loginCredentialsHandlers;
 
     @Override
     public AccessToken login(LoginCredentials loginCredentials, boolean enableTrust) throws KapuaException {
@@ -242,20 +245,15 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         // Check subject
         checkCurrentSubjectNotAuthenticated();
 
-        //
         // Parse login credentials
-        AuthenticationToken shiroAuthenticationToken;
-        if (sessionCredentials instanceof AccessTokenCredentials) {
-            AccessTokenCredentialsImpl accessTokenCredentials = AccessTokenCredentialsImpl.parse((AccessTokenCredentials) sessionCredentials);
+        final SessionCredentialsHandler sessionCredentialsHandler = sessionCredentialsHandlers
+                .stream()
+                .filter(ch -> ch.canProcess(sessionCredentials))
+                .findFirst()
+                .orElseThrow(() -> new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED));
 
-            if (Strings.isNullOrEmpty(accessTokenCredentials.getTokenId())) {
-                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_SESSION_CREDENTIALS);
-            }
-
-            shiroAuthenticationToken = accessTokenCredentials;
-        } else {
-            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED);
-        }
+        final ImmutablePair<AuthenticationToken, Optional<String>> authenticationToken = sessionCredentialsHandler.mapToShiro(sessionCredentials);
+        AuthenticationToken shiroAuthenticationToken = authenticationToken.getLeft();
 
         //
         // Login the user
