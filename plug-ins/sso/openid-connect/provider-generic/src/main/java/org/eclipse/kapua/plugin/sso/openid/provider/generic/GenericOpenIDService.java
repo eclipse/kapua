@@ -23,6 +23,7 @@ import org.eclipse.kapua.plugin.sso.openid.provider.generic.setting.GenericOpenI
 import org.eclipse.kapua.plugin.sso.openid.provider.generic.setting.GenericOpenIDSettingKeys;
 import org.eclipse.kapua.plugin.sso.openid.provider.setting.OpenIDSetting;
 
+import javax.inject.Inject;
 import java.net.URI;
 import java.util.Optional;
 
@@ -38,10 +39,12 @@ public class GenericOpenIDService extends AbstractOpenIDService {
 
     private final GenericOpenIDSetting genericSettings;
 
-    public GenericOpenIDService() {
-        this(OpenIDSetting.getInstance(), GenericOpenIDSetting.getInstance());
+    @Override
+    public String getId() {
+        return "generic";
     }
 
+    @Inject
     public GenericOpenIDService(final OpenIDSetting ssoSettings, final GenericOpenIDSetting genericSettings) {
         super(ssoSettings);
         this.genericSettings = genericSettings;

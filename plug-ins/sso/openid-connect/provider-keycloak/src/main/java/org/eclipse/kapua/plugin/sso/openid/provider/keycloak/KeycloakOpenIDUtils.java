@@ -18,16 +18,19 @@ import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDIllegalUriExcepti
 import org.eclipse.kapua.plugin.sso.openid.provider.keycloak.setting.KeycloakOpenIDSetting;
 import org.eclipse.kapua.plugin.sso.openid.provider.keycloak.setting.KeycloakOpenIDSettingKeys;
 
+import javax.inject.Inject;
+
 /**
  * The Keycloak OpenID service utility class.
  */
-//TODO: FIXME: promote from static utility to injectable collaborator
 public class KeycloakOpenIDUtils {
 
-    private static final KeycloakOpenIDSetting KEYCLOAK_OPENID_SETTING = KeycloakOpenIDSetting.getInstance();
+    private final KeycloakOpenIDSetting keycloakOpenIDSetting;
     public static final String KEYCLOAK_URI_COMMON_PART = "/realms/";
 
-    private KeycloakOpenIDUtils() {
+    @Inject
+    public KeycloakOpenIDUtils(KeycloakOpenIDSetting keycloakOpenIDSetting) {
+        this.keycloakOpenIDSetting = keycloakOpenIDSetting;
     }
 
     /**
@@ -36,8 +39,8 @@ public class KeycloakOpenIDUtils {
      * @return the Keycloak realm in the form of a String.
      * @throws OpenIDIllegalArgumentException if the realm is not set.
      */
-    public static String getRealm() throws OpenIDIllegalArgumentException {
-        String realm = KEYCLOAK_OPENID_SETTING.getString(KeycloakOpenIDSettingKeys.KEYCLOAK_REALM);
+    public String getRealm() throws OpenIDIllegalArgumentException {
+        String realm = keycloakOpenIDSetting.getString(KeycloakOpenIDSettingKeys.KEYCLOAK_REALM);
         if (Strings.isNullOrEmpty(realm)) {
             throw new OpenIDIllegalArgumentException(KeycloakOpenIDSettingKeys.KEYCLOAK_REALM.key(), realm);
         }
@@ -50,8 +53,8 @@ public class KeycloakOpenIDUtils {
      * @return the Keycloak provider URI in the form of a String.
      * @throws OpenIDIllegalUriException if the Keycloak provider URI is not set.
      */
-    public static String getProviderUri() throws OpenIDIllegalUriException {
-        String providerUri = KEYCLOAK_OPENID_SETTING.getString(KeycloakOpenIDSettingKeys.KEYCLOAK_URI);
+    public String getProviderUri() throws OpenIDIllegalUriException {
+        String providerUri = keycloakOpenIDSetting.getString(KeycloakOpenIDSettingKeys.KEYCLOAK_URI);
         if (Strings.isNullOrEmpty(providerUri)) {
             throw new OpenIDIllegalUriException(KeycloakOpenIDSettingKeys.KEYCLOAK_URI.key(), providerUri);
         }

@@ -80,4 +80,5 @@ public interface OpenIDService {
      */
     JsonObject getUserInfo(String accessToken) throws OpenIDTokenException;
 
+    String getId();
 }

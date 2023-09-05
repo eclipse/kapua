@@ -20,6 +20,7 @@ import org.eclipse.kapua.plugin.sso.openid.provider.keycloak.KeycloakOpenIDUtils
 import org.eclipse.kapua.plugin.sso.openid.provider.setting.OpenIDSetting;
 import org.eclipse.kapua.plugin.sso.openid.provider.setting.OpenIDSettingKeys;
 
+import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,16 +29,19 @@ import java.util.List;
  */
 public class KeycloakJwtProcessor extends AbstractJwtProcessor {
 
-    private final OpenIDSetting openIDSetting = OpenIDSetting.getInstance();
+    private final KeycloakOpenIDUtils keycloakOpenIDUtils;
 
-    public KeycloakJwtProcessor() throws OpenIDException {
+    @Inject
+    public KeycloakJwtProcessor(OpenIDSetting openIDSetting, KeycloakOpenIDUtils keycloakOpenIDUtils) throws OpenIDException {
+        super(openIDSetting);
+        this.keycloakOpenIDUtils = keycloakOpenIDUtils;
     }
 
     @Override
     protected List<String> getJwtExpectedIssuers() throws OpenIDIllegalArgumentException {
         return Collections.singletonList(
-                KeycloakOpenIDUtils.getProviderUri() + KeycloakOpenIDUtils.KEYCLOAK_URI_COMMON_PART +
-                        KeycloakOpenIDUtils.getRealm());
+                keycloakOpenIDUtils.getProviderUri() + KeycloakOpenIDUtils.KEYCLOAK_URI_COMMON_PART +
+                        keycloakOpenIDUtils.getRealm());
     }
 
     @Override
@@ -47,5 +51,10 @@ public class KeycloakJwtProcessor extends AbstractJwtProcessor {
             throw new OpenIDIllegalArgumentException(OpenIDSettingKeys.SSO_OPENID_CLIENT_ID.key(), (jwtAudiences == null ? null : ""));
         }
         return jwtAudiences;
+    }
+
+    @Override
+    public String getId() {
+        return "keycloak";
     }
 }

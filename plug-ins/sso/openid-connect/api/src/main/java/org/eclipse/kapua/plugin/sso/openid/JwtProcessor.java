@@ -57,4 +57,6 @@ public interface JwtProcessor extends AutoCloseable {
      * @since 2.0.0
      */
     String getExternalUsernameClaimName();
+
+    String getId();
 }

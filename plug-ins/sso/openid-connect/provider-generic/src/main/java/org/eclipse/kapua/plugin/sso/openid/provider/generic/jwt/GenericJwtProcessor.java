@@ -15,10 +15,12 @@ package org.eclipse.kapua.plugin.sso.openid.provider.generic.jwt;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDIllegalArgumentException;
-import org.eclipse.kapua.plugin.sso.openid.provider.jwt.AbstractJwtProcessor;
 import org.eclipse.kapua.plugin.sso.openid.provider.generic.setting.GenericOpenIDSetting;
 import org.eclipse.kapua.plugin.sso.openid.provider.generic.setting.GenericOpenIDSettingKeys;
+import org.eclipse.kapua.plugin.sso.openid.provider.jwt.AbstractJwtProcessor;
+import org.eclipse.kapua.plugin.sso.openid.provider.setting.OpenIDSetting;
 
+import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -26,12 +28,22 @@ import java.util.List;
  */
 public class GenericJwtProcessor extends AbstractJwtProcessor {
 
-    public GenericJwtProcessor() throws OpenIDException {
+    private final GenericOpenIDSetting genericOpenIDSetting;
+
+    @Override
+    public String getId() {
+        return "generic";
+    }
+
+    @Inject
+    public GenericJwtProcessor(OpenIDSetting openIDSetting, GenericOpenIDSetting genericOpenIDSetting) throws OpenIDException {
+        super(openIDSetting);
+        this.genericOpenIDSetting = genericOpenIDSetting;
     }
 
     @Override
     protected List<String> getJwtExpectedIssuers() throws OpenIDIllegalArgumentException {
-        List<String> jwtExpectedIssuers = GenericOpenIDSetting.getInstance().getList(String.class, GenericOpenIDSettingKeys.SSO_OPENID_JWT_ISSUER_ALLOWED);
+        List<String> jwtExpectedIssuers = genericOpenIDSetting.getList(String.class, GenericOpenIDSettingKeys.SSO_OPENID_JWT_ISSUER_ALLOWED);
         if (CollectionUtils.isEmpty(jwtExpectedIssuers)) {
             throw new OpenIDIllegalArgumentException(GenericOpenIDSettingKeys.SSO_OPENID_JWT_ISSUER_ALLOWED.key(), (jwtExpectedIssuers == null ? null : ""));
         }
@@ -40,7 +52,7 @@ public class GenericJwtProcessor extends AbstractJwtProcessor {
 
     @Override
     protected List<String> getJwtAudiences() throws OpenIDIllegalArgumentException {
-        List<String> jwtAudiences = GenericOpenIDSetting.getInstance().getList(String.class, GenericOpenIDSettingKeys.SSO_OPENID_JWT_AUDIENCE_ALLOWED);
+        List<String> jwtAudiences = genericOpenIDSetting.getList(String.class, GenericOpenIDSettingKeys.SSO_OPENID_JWT_AUDIENCE_ALLOWED);
         if (CollectionUtils.isEmpty(jwtAudiences)) {
             throw new OpenIDIllegalArgumentException(GenericOpenIDSettingKeys.SSO_OPENID_JWT_AUDIENCE_ALLOWED.key(), (jwtAudiences == null ? null : ""));
         }

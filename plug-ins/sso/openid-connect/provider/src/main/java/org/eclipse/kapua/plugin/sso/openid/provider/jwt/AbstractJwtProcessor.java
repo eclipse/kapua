@@ -46,9 +46,8 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
 
     private static final String JWKS_URI_WELL_KNOWN_KEY = "jwks_uri";
     private Map<URI, Processor> processors = new HashMap<>();
-    private String[] audiences;
-    private String[] expectedIssuers;
     private Duration timeout;  // the JwtProcessor expiration time.
+    protected final OpenIDSetting openIDSetting;
 
     /**
      * Constructs and AbstractJwtProcessor with the given expiration time.
@@ -56,12 +55,9 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
      * @throws OpenIDJwtException if the concrete implementation of {@link #getJwtExpectedIssuers()
      *                            getJwtExpectedIssuers} method throws such exception.
      */
-    public AbstractJwtProcessor() throws OpenIDException {
-        List<String> audiences = getJwtAudiences();
-        List<String> expectedIssuers = getJwtExpectedIssuers();
-        this.expectedIssuers = expectedIssuers.toArray(new String[expectedIssuers.size()]);
-        this.audiences = audiences.toArray(new String[audiences.size()]);
-        this.timeout = Duration.ofHours(OpenIDSetting.getInstance().getInt(OpenIDSettingKeys.SSO_OPENID_JWT_PROCESSOR_TIMEOUT, 1));
+    public AbstractJwtProcessor(OpenIDSetting openIDSetting) throws OpenIDException {
+        this.openIDSetting = openIDSetting;
+        this.timeout = Duration.ofHours(openIDSetting.getInt(OpenIDSettingKeys.SSO_OPENID_JWT_PROCESSOR_TIMEOUT, 1));
     }
 
     /**
@@ -130,7 +126,7 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
      */
     @Override
     public String getExternalUsernameClaimName() {
-        return OpenIDSetting.getInstance().getString(OpenIDSettingKeys.SSO_OPENID_CLAIMS_EXTERNAL_USERNAME_KEY, "preferred_username");
+        return openIDSetting.getString(OpenIDSettingKeys.SSO_OPENID_CLAIMS_EXTERNAL_USERNAME_KEY, "preferred_username");
     }
 
     @Override
@@ -179,7 +175,10 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
             if (!uri.isPresent()) {
                 return Optional.empty();
             }
-            processor = new Processor(uri.get(), audiences, expectedIssuers);
+            final List<String> audiences = getJwtAudiences();
+            final List<String> expectedIssuers = getJwtExpectedIssuers();
+
+            processor = new Processor(uri.get(), audiences.toArray(new String[audiences.size()]), expectedIssuers.toArray(new String[expectedIssuers.size()]));
             processors.put(uri.get(), processor);
         }
 

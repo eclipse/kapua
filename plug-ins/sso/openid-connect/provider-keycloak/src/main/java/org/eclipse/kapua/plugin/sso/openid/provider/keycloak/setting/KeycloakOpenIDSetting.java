@@ -15,22 +15,11 @@ package org.eclipse.kapua.plugin.sso.openid.provider.keycloak.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
-//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class KeycloakOpenIDSetting extends AbstractKapuaSetting<KeycloakOpenIDSettingKeys> {
 
     private static final String KEYCLOAK_OPENID_SETTING_RESOURCE = "openid-keycloak-setting.properties";
 
-    private static final KeycloakOpenIDSetting INSTANCE = new KeycloakOpenIDSetting();
-
-    private KeycloakOpenIDSetting() {
+    public KeycloakOpenIDSetting() {
         super(KEYCLOAK_OPENID_SETTING_RESOURCE);
-    }
-
-    KeycloakOpenIDSetting(final String resourceName) {
-        super(resourceName);
-    }
-
-    public static KeycloakOpenIDSetting getInstance() {
-        return INSTANCE;
     }
 }

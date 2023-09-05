@@ -18,7 +18,7 @@ if [ -n "$KEYCLOAK_URL" ] && [ -n "$KAPUA_CONSOLE_URL" ]; then
    echo "Activating OpenID Connect Keycloak integration..."
    echo "  Keycloak: $KEYCLOAK_URL"
    echo "  Kapua:    $KAPUA_CONSOLE_URL"
-   
+
    : KEYCLOAK_REALM=${KEYCLOAK_REALM:=kapua}
    : KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT_ID:=console}
 
