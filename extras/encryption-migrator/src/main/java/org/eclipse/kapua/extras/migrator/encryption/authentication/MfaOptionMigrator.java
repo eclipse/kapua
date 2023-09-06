@@ -18,6 +18,7 @@ import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.extras.migrator.encryption.settings.EncryptionMigrationSettingKeys;
 import org.eclipse.kapua.extras.migrator.encryption.settings.EncryptionMigrationSettings;
 import org.eclipse.kapua.extras.migrator.encryption.utils.SecretAttributeMigratorModelUtils;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
@@ -29,6 +30,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
@@ -41,9 +43,12 @@ import java.util.List;
 @Entity(name = "MfaOption")
 @Table(name = "atht_mfa_option")
 public class MfaOptionMigrator extends AbstractKapuaUpdatableEntity implements MfaOption {
-
-    private static final String OLD_MFA_ENCRYPTION_KEY = EncryptionMigrationSettings.getInstance().getString(EncryptionMigrationSettingKeys.MFA_OLD_ENCRYPTION_KEY);
-
+    //TODO: FIXME: REMOVE: A service in a jpa class? Behaviour should not be part of a data class!
+    @Transient
+    private final String oldMfaEncryptionKey = KapuaLocator.getInstance().getComponent(EncryptionMigrationSettings.class).getString(EncryptionMigrationSettingKeys.MFA_OLD_ENCRYPTION_KEY);
+    //TODO: FIXME: REMOVE: A service in a jpa class? Behaviour should not be part of a data class!
+    @Transient
+    private final SecretAttributeMigratorModelUtils secretAttributeMigratorModelUtils = KapuaLocator.getInstance().getComponent(SecretAttributeMigratorModelUtils.class);
     @Basic
     @Column(name = "mfa_secret_key", nullable = false)
     private String mfaSecretKey;
@@ -79,7 +84,7 @@ public class MfaOptionMigrator extends AbstractKapuaUpdatableEntity implements M
     public String getMfaSecretKey() {
         if (mfaSecretKey != null && !mfaSecretKey.startsWith("$aes$")) {
             try {
-                byte[] oldMfaEncryptionKey = OLD_MFA_ENCRYPTION_KEY.getBytes();
+                byte[] oldMfaEncryptionKey = this.oldMfaEncryptionKey.getBytes();
 
                 Key key = new SecretKeySpec(oldMfaEncryptionKey, "AES");
 
@@ -95,12 +100,12 @@ public class MfaOptionMigrator extends AbstractKapuaUpdatableEntity implements M
             }
         }
 
-        return SecretAttributeMigratorModelUtils.read(mfaSecretKey);
+        return secretAttributeMigratorModelUtils.read(mfaSecretKey);
     }
 
     @Override
     public void setMfaSecretKey(String mfaSecretKey) {
-        this.mfaSecretKey = SecretAttributeMigratorModelUtils.write(mfaSecretKey);
+        this.mfaSecretKey = secretAttributeMigratorModelUtils.write(mfaSecretKey);
     }
     // Attributes below do not require migration
 

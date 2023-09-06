@@ -13,14 +13,20 @@
 package org.eclipse.kapua.extras.migrator.encryption.job;
 
 import org.eclipse.kapua.extras.migrator.encryption.utils.SecretAttributeMigratorModelUtils;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 @Embeddable
 public class JobStepPropertyMigrator implements JobStepProperty {
+
+    //TODO: FIXME: REMOVE: A service in a jpa class? Behaviour should not be part of a data class!
+    @Transient
+    private final SecretAttributeMigratorModelUtils secretAttributeMigratorModelUtils = KapuaLocator.getInstance().getComponent(SecretAttributeMigratorModelUtils.class);
 
     @Basic
     @Column(name = "name", nullable = false, updatable = false)
@@ -75,12 +81,12 @@ public class JobStepPropertyMigrator implements JobStepProperty {
 
     @Override
     public String getPropertyValue() {
-        return SecretAttributeMigratorModelUtils.read(propertyValue);
+        return secretAttributeMigratorModelUtils.read(propertyValue);
     }
 
     @Override
     public void setPropertyValue(String propertyValue) {
-        this.propertyValue = SecretAttributeMigratorModelUtils.write(propertyValue);
+        this.propertyValue = secretAttributeMigratorModelUtils.write(propertyValue);
     }
 
     public static JobStepPropertyMigrator parse(JobStepProperty jobStepProperty) {
