@@ -48,6 +48,7 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
 
     private final CertificateInfoService certificateInfoService = KapuaLocator.getInstance().getService(CertificateInfoService.class);
     private final CertificateInfoFactory certificateInfoFactory = KapuaLocator.getInstance().getFactory(CertificateInfoFactory.class);
+    private final KapuaAuthenticationSetting kapuaAuthenticationSetting = KapuaLocator.getInstance().getComponent(KapuaAuthenticationSetting.class);
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
@@ -59,9 +60,8 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
         // Match token with info
         boolean credentialMatch = false;
         if (jwt.equals(infoCredential.getTokenId())) {
-            KapuaAuthenticationSetting settings = KapuaAuthenticationSetting.getInstance();
             try {
-                String issuer = settings.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_ISSUER);
+                String issuer = kapuaAuthenticationSetting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_ISSUER);
 
                 CertificateInfoQuery certificateInfoQuery = certificateInfoFactory.newQuery(null);
                 certificateInfoQuery.setPredicate(

@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authentication.shiro.realm;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
@@ -28,6 +29,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
  * @since 1.0
  */
 public class ApiKeyCredentialsMatcher implements CredentialsMatcher {
+    private final KapuaAuthenticationSetting kapuaAuthenticationSetting = KapuaLocator.getInstance().getComponent(KapuaAuthenticationSetting.class);
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
@@ -41,13 +43,11 @@ public class ApiKeyCredentialsMatcher implements CredentialsMatcher {
         if (CredentialType.API_KEY.equals(infoCredential.getCredentialType())) {
             String fullApiKey = infoCredential.getCredentialKey();
 
-            KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-
-            int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
+            int preLength = kapuaAuthenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
             String tokenPre = tokenApiFullKey.substring(0, preLength);
             String tokenKey = tokenApiFullKey.substring(preLength);
 
-            String preSeparator = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR);
+            String preSeparator = kapuaAuthenticationSetting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR);
             String infoPre = fullApiKey.split(preSeparator)[0];
             String infoHashedKey = fullApiKey.split(preSeparator)[1];
 

@@ -68,7 +68,8 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
     private final MfaAuthenticatorServiceLocator mfaAuthServiceLocator;
     private final MfaAuthenticator mfaAuthenticator;
     //TODO inject????
-    private PasswordMatcher passwordMatcher;
+    private final PasswordMatcher passwordMatcher;
+    private final KapuaAuthenticationSetting kapuaAuthenticationSetting;
 
     public UserPassCredentialsMatcher() {
         locator = KapuaLocator.getInstance();
@@ -76,7 +77,8 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
         scratchCodeService = locator.getService(ScratchCodeService.class);
         mfaAuthServiceLocator = MfaAuthenticatorServiceLocator.getInstance();
         mfaAuthenticator = mfaAuthServiceLocator.getMfaAuthenticator();
-        if (KapuaAuthenticationSetting.getInstance().getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_USERPASS_CACHE_ENABLE, true)) {
+        kapuaAuthenticationSetting = locator.getComponent(KapuaAuthenticationSetting.class);
+        if (kapuaAuthenticationSetting.getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_USERPASS_CACHE_ENABLE, true)) {
             logger.info("Cache enabled. Initializing CachePasswordChecker...");
             try {
                 passwordMatcher = new CachedPasswordMatcher(locator.getComponent(CacheMetric.class), locator.getComponent(KapuaAuthenticationSetting.class));

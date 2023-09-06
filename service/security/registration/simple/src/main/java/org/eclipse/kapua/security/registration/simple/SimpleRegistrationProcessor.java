@@ -142,21 +142,22 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
 
     }
 
-    private final AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
-    private final AccountFactory accountFactory = KapuaLocator.getInstance().getFactory(AccountFactory.class);
+    private final AccountService accountService;
+    private final AccountFactory accountFactory;
 
-    private final CredentialService credentialService = KapuaLocator.getInstance().getService(CredentialService.class);
-    private final CredentialFactory credentialFactory = KapuaLocator.getInstance().getFactory(CredentialFactory.class);
+    private final CredentialService credentialService;
+    private final CredentialFactory credentialFactory;
 
-    private final DeviceRegistryService deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
+    private final DeviceRegistryService deviceRegistryService;
 
-    private final UserService userService = KapuaLocator.getInstance().getService(UserService.class);
-    private final UserFactory userFactory = KapuaLocator.getInstance().getFactory(UserFactory.class);
+    private final UserService userService;
+    private final UserFactory userFactory;
 
-    private final AccessInfoService accessInfoService = KapuaLocator.getInstance().getService(AccessInfoService.class);
-    private final AccessInfoFactory accessInfoFactory = KapuaLocator.getInstance().getFactory(AccessInfoFactory.class);
+    private final AccessInfoService accessInfoService;
+    private final AccessInfoFactory accessInfoFactory;
 
-    private final PermissionFactory permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
+    private final PermissionFactory permissionFactory;
+    private final SimpleSetting simpleSetting;
 
     private final String claimName;
     private final Settings settings;
@@ -164,10 +165,45 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
     /**
      * Create a new simple registration processor
      *
-     * @param claimName the claim to use as account name
-     * @param settings  the settings for the processor
+     * @param accountService
+     * @param accountFactory
+     * @param credentialService
+     * @param credentialFactory
+     * @param deviceRegistryService
+     * @param userService
+     * @param userFactory
+     * @param accessInfoService
+     * @param accessInfoFactory
+     * @param permissionFactory
+     * @param simpleSetting
+     * @param claimName             the claim to use as account name
+     * @param settings              the settings for the processor
      */
-    public SimpleRegistrationProcessor(String claimName, Settings settings) {
+    public SimpleRegistrationProcessor(
+            AccountService accountService,
+            AccountFactory accountFactory,
+            CredentialService credentialService,
+            CredentialFactory credentialFactory,
+            DeviceRegistryService deviceRegistryService,
+            UserService userService,
+            UserFactory userFactory,
+            AccessInfoService accessInfoService,
+            AccessInfoFactory accessInfoFactory,
+            PermissionFactory permissionFactory,
+            SimpleSetting simpleSetting,
+            String claimName,
+            Settings settings) {
+        this.accountService = accountService;
+        this.accountFactory = accountFactory;
+        this.credentialService = credentialService;
+        this.credentialFactory = credentialFactory;
+        this.deviceRegistryService = deviceRegistryService;
+        this.userService = userService;
+        this.userFactory = userFactory;
+        this.accessInfoService = accessInfoService;
+        this.accessInfoFactory = accessInfoFactory;
+        this.permissionFactory = permissionFactory;
+        this.simpleSetting = simpleSetting;
         this.claimName = claimName;
         this.settings = settings;
     }
@@ -211,7 +247,7 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
         accountCreator.setName(name);
         accountCreator.setOrganizationEmail(email);
         accountCreator.setOrganizationName(name);
-        accountCreator.setExpirationDate(Date.from(Instant.now().plus(SimpleSetting.getInstance().getInt(SimpleSettingKeys.ACCOUNT_EXPIRATION_DATE_DAYS, 30), ChronoUnit.DAYS)));
+        accountCreator.setExpirationDate(Date.from(Instant.now().plus(simpleSetting.getInt(SimpleSettingKeys.ACCOUNT_EXPIRATION_DATE_DAYS, 30), ChronoUnit.DAYS)));
 
         // create account
 

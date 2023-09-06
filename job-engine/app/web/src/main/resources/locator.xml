@@ -24,6 +24,7 @@
         <package>org.eclipse.kapua.job.engine.queue.jbatch</package>
         <package>org.eclipse.kapua.message</package>
         <package>org.eclipse.kapua.service</package>
+        <package>org.eclipse.kapua.security</package>
         <package>org.eclipse.kapua.translator</package>
         <package>org.eclipse.kapua.transport</package>
     </packages>

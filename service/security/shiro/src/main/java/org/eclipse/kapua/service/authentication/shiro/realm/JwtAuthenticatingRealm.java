@@ -55,13 +55,12 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
 
     private static final Logger LOG = LoggerFactory.getLogger(JwtAuthenticatingRealm.class);
 
-    private final KapuaAuthenticationSetting authenticationSetting = KapuaAuthenticationSetting.getInstance();
-    private final Boolean ssoUserExternalIdAutofill = authenticationSetting.getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_SSO_USER_EXTERNAL_ID_AUTOFILL);
-    private final Boolean ssoUserExternalUsernameAutofill = authenticationSetting.getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_SSO_USER_EXTERNAL_USERNAME_AUTOFILL);
+    private final Boolean ssoUserExternalIdAutofill;
+    private final Boolean ssoUserExternalUsernameAutofill;
     // Get services
     private final UserService userService = KapuaLocator.getInstance().getService(UserService.class);
     private final OpenIDService openIDService = KapuaLocator.getInstance().getComponent(OpenIDLocator.class).getService();
-
+    private final KapuaAuthenticationSetting authenticationSetting = KapuaLocator.getInstance().getComponent(KapuaAuthenticationSetting.class);
     /**
      * JWT Processor.
      */
@@ -84,6 +83,8 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
         } catch (OpenIDException se) {
             throw new ShiroException("Unexpected error while creating Jwt Processor!", se);
         }
+        ssoUserExternalIdAutofill = authenticationSetting.getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_SSO_USER_EXTERNAL_ID_AUTOFILL);
+        ssoUserExternalUsernameAutofill = authenticationSetting.getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_SSO_USER_EXTERNAL_USERNAME_AUTOFILL);
     }
 
     @Override

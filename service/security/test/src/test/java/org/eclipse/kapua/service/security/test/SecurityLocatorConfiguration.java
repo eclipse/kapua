@@ -45,7 +45,10 @@ import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImplJ
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapperImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidatorImpl;
+import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.CredentialServiceConfigurationManagerImpl;
+import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupService;
@@ -82,6 +85,7 @@ public class SecurityLocatorConfiguration {
 
             @Override
             protected void configure() {
+                bind(MfaAuthenticator.class).toInstance(new MfaAuthenticatorImpl(new KapuaAuthenticationSetting()));
                 bind(CryptoUtil.class).toInstance(new CryptoUtilImpl(new CryptoSettings()));
                 bind(String.class).annotatedWith(Names.named("metricModuleName")).toInstance("tests");
                 bind(MetricsService.class).to(MetricsServiceImpl.class).in(Singleton.class);
@@ -129,7 +133,8 @@ public class SecurityLocatorConfiguration {
                 bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
                 final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
-                        Mockito.mock(RootUserTester.class));
+                        Mockito.mock(RootUserTester.class),
+                        new KapuaAuthenticationSetting());
                 bind(CredentialService.class).toInstance(new CredentialServiceImpl(
                         credentialServiceConfigurationManager,
                         mockedAuthorization,
@@ -137,8 +142,8 @@ public class SecurityLocatorConfiguration {
                         new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-authorization"),
                         new CredentialImplJpaRepository(jpaRepoConfig),
                         new CredentialFactoryImpl(),
-                        new CredentialMapperImpl(new CredentialFactoryImpl()),
-                        new PasswordValidatorImpl(credentialServiceConfigurationManager)));
+                        new CredentialMapperImpl(new CredentialFactoryImpl(), new KapuaAuthenticationSetting()),
+                        new PasswordValidatorImpl(credentialServiceConfigurationManager), new KapuaAuthenticationSetting()));
                 final UserFactoryImpl userFactory = new UserFactoryImpl();
                 bind(UserFactory.class).toInstance(userFactory);
                 final RootUserTester rootUserTester = Mockito.mock(RootUserTester.class);

@@ -55,6 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
@@ -87,14 +88,15 @@ public class JobEngineServiceClient implements JobEngineService {
      *
      * @since 1.5.0
      */
-    public JobEngineServiceClient() {
+    @Inject
+    public JobEngineServiceClient(JobEngineClientSetting jobEngineClientSetting) {
         Client jobEngineClient =
                 ClientBuilder
                         .newClient()
                         .register(SessionInfoFilter.class)
                         .register(MoxyJsonFeature.class);
 
-        jobEngineTarget = jobEngineClient.target(JobEngineClientSetting.getInstance().getString(JobEngineClientSettingKeys.JOB_ENGINE_BASE_URL));
+        jobEngineTarget = jobEngineClient.target(jobEngineClientSetting.getString(JobEngineClientSettingKeys.JOB_ENGINE_BASE_URL));
     }
 
     @Override

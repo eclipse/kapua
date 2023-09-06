@@ -36,13 +36,16 @@ public class CredentialServiceConfigurationManagerImpl extends ServiceConfigurat
     private final int systemMinimumPasswordLength;
     public static final int SYSTEM_MAXIMUM_PASSWORD_LENGTH = 255;
     public static final String PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY = "password.minLength";
+    private final KapuaAuthenticationSetting kapuaAuthenticationSetting;
 
     public CredentialServiceConfigurationManagerImpl(
             ServiceConfigRepository serviceConfigRepository,
-            RootUserTester rootUserTester) {
+            RootUserTester rootUserTester,
+            KapuaAuthenticationSetting kapuaAuthenticationSetting) {
         super(CredentialService.class.getName(),
                 serviceConfigRepository,
                 rootUserTester);
+        this.kapuaAuthenticationSetting = kapuaAuthenticationSetting;
         systemMinimumPasswordLength = fixMinimumPasswordLength();
     }
 
@@ -63,7 +66,7 @@ public class CredentialServiceConfigurationManagerImpl extends ServiceConfigurat
         //TODO: Why is this logic in a constructor?
         int minPasswordLengthConfigValue;
         try {
-            minPasswordLengthConfigValue = KapuaAuthenticationSetting.getInstance().getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_USERPASS_PASSWORD_MINLENGTH);
+            minPasswordLengthConfigValue = kapuaAuthenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_USERPASS_PASSWORD_MINLENGTH);
         } catch (NoSuchElementException ex) {
             LOGGER.warn("Minimum password length not set, 12 characters minimum will be enforced");
             minPasswordLengthConfigValue = 12;

@@ -60,6 +60,7 @@ public class AccountModule extends AbstractKapuaModule implements Module {
     @Override
     protected void configureModule() {
         bind(AccountFactory.class).to(AccountFactoryImpl.class).in(Singleton.class);
+        bind(KapuaAccountSetting.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet
@@ -84,11 +85,12 @@ public class AccountModule extends AbstractKapuaModule implements Module {
                                        KapuaJpaTxManagerFactory txManagerFactory,
                                        EventStoreFactory eventStoreFactory,
                                        EventStoreRecordRepository eventStoreRecordRepository,
-                                       ServiceEventBus serviceEventBus
+                                       ServiceEventBus serviceEventBus,
+                                       KapuaAccountSetting kapuaAccountSetting
     ) throws ServiceEventBusException {
         return new AccountServiceModule(
                 accountService,
-                KapuaAccountSetting.getInstance(),
+                kapuaAccountSetting,
                 new ServiceEventHouseKeeperFactoryImpl(
                         new EventStoreServiceImpl(
                                 authorizationService,

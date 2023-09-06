@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -38,10 +39,12 @@ public class MfaAuthenticatorImpl implements MfaAuthenticator {
 
     private static final Logger LOG = LoggerFactory.getLogger(MfaAuthenticatorImpl.class);
 
-    private final KapuaAuthenticationSetting authenticationSetting = KapuaAuthenticationSetting.getInstance();
+    private final KapuaAuthenticationSetting authenticationSetting;
     private final GoogleAuthenticatorConfig googleAuthenticatorConfig;
 
-    public MfaAuthenticatorImpl() {
+    @Inject
+    public MfaAuthenticatorImpl(KapuaAuthenticationSetting authenticationSetting) {
+        this.authenticationSetting = authenticationSetting;
         // Setup of Google Authenticator Configs
         int timeStepSize = authenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TIME_STEP_SIZE);
         long timeStepSizeInMillis = TimeUnit.SECONDS.toMillis(timeStepSize);

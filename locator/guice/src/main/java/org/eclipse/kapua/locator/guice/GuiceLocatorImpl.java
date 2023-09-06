@@ -179,7 +179,12 @@ public class GuiceLocatorImpl extends KapuaLocator {
         // Print loaded stuff
         printLoadedXmlSerializableConfiguration(locatorConfigURL, locatorConfig, loadedXmlSerializables, excludedXmlSerializables);
         // Create injector
-        injector = Guice.createInjector(kapuaModules);
+        try {
+
+            injector = Guice.createInjector(kapuaModules);
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
     }
 
     /**

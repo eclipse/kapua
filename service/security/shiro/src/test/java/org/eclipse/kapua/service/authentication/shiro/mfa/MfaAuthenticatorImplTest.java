@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 import org.junit.Assert;
@@ -34,7 +35,7 @@ public class MfaAuthenticatorImplTest {
 
     @Before
     public void initialize() throws KapuaException {
-        mfaAuthenticatorImpl = new MfaAuthenticatorImpl();
+        mfaAuthenticatorImpl = new MfaAuthenticatorImpl(new KapuaAuthenticationSetting());
 
         encryptedSecrets = new String[]{
                 AuthenticationUtils.encryptAes("value to encrypt"),

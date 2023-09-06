@@ -15,11 +15,15 @@ package org.eclipse.kapua.job.engine.client;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobEngineService;
+import org.eclipse.kapua.job.engine.client.settings.JobEngineClientSetting;
+
+import javax.inject.Singleton;
 
 public class JobEngineClientModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(JobEngineFactory.class).to(JobEngineFactoryClient.class);
-        bind(JobEngineService.class).to(JobEngineServiceClient.class);
+        bind(JobEngineFactory.class).to(JobEngineFactoryClient.class).in(Singleton.class);
+        bind(JobEngineService.class).to(JobEngineServiceClient.class).in(Singleton.class);
+        bind(JobEngineClientSetting.class).in(Singleton.class);
     }
 }

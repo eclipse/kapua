@@ -17,6 +17,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.job.engine.client.settings.JobEngineClientSetting;
 import org.eclipse.kapua.job.engine.client.settings.JobEngineClientSettingKeys;
+import org.eclipse.kapua.locator.KapuaLocator;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
@@ -29,7 +30,7 @@ import java.io.IOException;
  */
 public class SessionInfoFilter implements ClientRequestFilter {
 
-    private final JobEngineClientSetting jobEngineClientSetting = JobEngineClientSetting.getInstance();
+    private final JobEngineClientSetting jobEngineClientSetting = KapuaLocator.getInstance().getComponent(JobEngineClientSetting.class);
     private final String jobEngineClientSettingAuthMode = jobEngineClientSetting.getString(JobEngineClientSettingKeys.JOB_ENGINE_CLIENT_AUTH_MODE, "access_token");
     private final boolean jobEngineClientAuthTrusted = "trusted".equals(jobEngineClientSettingAuthMode);
 

@@ -91,14 +91,15 @@ import java.util.Optional;
 public class AuthenticationModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(AuthenticationService.class).to(AuthenticationServiceShiroImpl.class);
-        bind(CredentialFactory.class).to(CredentialFactoryImpl.class);
-        bind(CredentialsFactory.class).to(CredentialsFactoryImpl.class);
-        bind(MfaOptionFactory.class).to(MfaOptionFactoryImpl.class);
-        bind(ScratchCodeFactory.class).to(ScratchCodeFactoryImpl.class);
-        bind(AccessTokenFactory.class).to(AccessTokenFactoryImpl.class);
-        bind(RegistrationService.class).to(RegistrationServiceImpl.class);
-        bind(MfaAuthenticator.class).toInstance(new MfaAuthenticatorImpl());
+        bind(KapuaAuthenticationSetting.class).in(Singleton.class);
+        bind(AuthenticationService.class).to(AuthenticationServiceShiroImpl.class).in(Singleton.class);
+        bind(CredentialFactory.class).to(CredentialFactoryImpl.class).in(Singleton.class);
+        bind(CredentialsFactory.class).to(CredentialsFactoryImpl.class).in(Singleton.class);
+        bind(MfaOptionFactory.class).to(MfaOptionFactoryImpl.class).in(Singleton.class);
+        bind(ScratchCodeFactory.class).to(ScratchCodeFactoryImpl.class).in(Singleton.class);
+        bind(AccessTokenFactory.class).to(AccessTokenFactoryImpl.class).in(Singleton.class);
+        bind(RegistrationService.class).to(RegistrationServiceImpl.class).in(Singleton.class);
+        bind(MfaAuthenticator.class).to(MfaAuthenticatorImpl.class).in(Singleton.class);
         bind(CacheMetric.class).in(Singleton.class);
     }
 
@@ -120,12 +121,13 @@ public class AuthenticationModule extends AbstractKapuaModule {
                                                      KapuaJpaTxManagerFactory txManagerFactory,
                                                      EventStoreFactory eventStoreFactory,
                                                      EventStoreRecordRepository eventStoreRecordRepository,
-                                                     ServiceEventBus serviceEventBus
+                                                     ServiceEventBus serviceEventBus,
+                                                     KapuaAuthenticationSetting kapuaAuthenticationSetting
     ) throws ServiceEventBusException {
         return new AuthenticationServiceModule(
                 credentialService,
                 accessTokenService,
-                KapuaAuthenticationSetting.getInstance(),
+                kapuaAuthenticationSetting,
                 new ServiceEventHouseKeeperFactoryImpl(
                         new EventStoreServiceImpl(
                                 authorizationService,
@@ -169,8 +171,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    CredentialMapper credentialMapper(CredentialFactory credentialFactory) {
-        return new CredentialMapperImpl(credentialFactory);
+    CredentialMapper credentialMapper(CredentialFactory credentialFactory, KapuaAuthenticationSetting kapuaAuthenticationSetting) {
+        return new CredentialMapperImpl(credentialFactory, kapuaAuthenticationSetting);
     }
 
     @Provides
@@ -200,10 +202,9 @@ public class AuthenticationModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             UserService userService,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
-
-        final KapuaAuthenticationSetting authenticationSetting = KapuaAuthenticationSetting.getInstance();
-        int trustKeyDuration = authenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TRUST_KEY_DURATION);
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            KapuaAuthenticationSetting kapuaAuthenticationSetting) {
+        int trustKeyDuration = kapuaAuthenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TRUST_KEY_DURATION);
 
         return new MfaOptionServiceImpl(
                 trustKeyDuration,
@@ -263,7 +264,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
             CredentialFactory credentialFactory,
             KapuaJpaTxManagerFactory jpaTxManagerFactory,
             CredentialMapper credentialMapper,
-            PasswordValidator passwordValidator) {
+            PasswordValidator passwordValidator,
+            KapuaAuthenticationSetting kapuaAuthenticationSetting) {
         return new CredentialServiceImpl(serviceConfigurationManager,
                 authorizationService,
                 permissionFactory,
@@ -271,7 +273,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
                 credentialRepository,
                 credentialFactory,
                 credentialMapper,
-                passwordValidator);
+                passwordValidator,
+                kapuaAuthenticationSetting);
     }
 
     @Provides
@@ -284,13 +287,15 @@ public class AuthenticationModule extends AbstractKapuaModule {
     @Singleton
     public CredentialServiceConfigurationManager credentialServiceConfigurationManager(
             RootUserTester rootUserTester,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+            KapuaJpaRepositoryConfiguration jpaRepoConfig,
+            KapuaAuthenticationSetting kapuaAuthenticationSetting) {
         final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
                 new CachingServiceConfigRepository(
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         new AbstractKapuaConfigurableServiceCache().createCache()
                 ),
-                rootUserTester);
+                rootUserTester,
+                kapuaAuthenticationSetting);
 
         final ServiceConfigurationManagerCachingWrapper cached = new ServiceConfigurationManagerCachingWrapper(credentialServiceConfigurationManager);
         return new CredentialServiceConfigurationManager() {

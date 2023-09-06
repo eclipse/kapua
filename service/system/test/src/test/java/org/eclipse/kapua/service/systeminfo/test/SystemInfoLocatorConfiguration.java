@@ -34,6 +34,9 @@ import org.eclipse.kapua.qa.common.MockedLocator;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
+import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
+import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -60,6 +63,7 @@ public class SystemInfoLocatorConfiguration {
 
             @Override
             protected void configure() {
+                bind(MfaAuthenticator.class).toInstance(new MfaAuthenticatorImpl(new KapuaAuthenticationSetting()));
                 bind(CryptoUtil.class).toInstance(new CryptoUtilImpl(new CryptoSettings()));
                 bind(String.class).annotatedWith(Names.named("metricModuleName")).toInstance("tests");
                 bind(MetricsService.class).to(MetricsServiceImpl.class).in(Singleton.class);

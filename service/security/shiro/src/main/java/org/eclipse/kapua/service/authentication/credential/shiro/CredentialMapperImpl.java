@@ -22,11 +22,14 @@ import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 
 public class CredentialMapperImpl implements CredentialMapper {
-    public CredentialMapperImpl(CredentialFactory credentialFactory) {
+    public CredentialMapperImpl(CredentialFactory credentialFactory,
+                                KapuaAuthenticationSetting setting) {
         this.credentialFactory = credentialFactory;
+        this.setting = setting;
     }
 
     private final CredentialFactory credentialFactory;
+    private final KapuaAuthenticationSetting setting;
 
     @Override
     public Credential map(CredentialCreator credentialCreator) throws KapuaException {
@@ -57,7 +60,6 @@ public class CredentialMapperImpl implements CredentialMapper {
     }
 
     private String cryptApiKey(String credentialPlainKey) throws KapuaException {
-        KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
         int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
         String preSeparator = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR);
 
