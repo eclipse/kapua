@@ -68,6 +68,11 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-certificate-internal</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-user-internal</artifactId>
         </dependency>
 

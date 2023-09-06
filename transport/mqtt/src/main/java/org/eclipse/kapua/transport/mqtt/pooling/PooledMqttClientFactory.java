@@ -15,6 +15,7 @@ package org.eclipse.kapua.transport.mqtt.pooling;
 import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.transport.mqtt.MqttClient;
 import org.eclipse.kapua.transport.mqtt.MqttClientConnectionOptions;
 import org.eclipse.kapua.transport.mqtt.exception.MqttClientException;
@@ -37,7 +38,8 @@ import java.net.URI;
 public class PooledMqttClientFactory extends BasePooledObjectFactory<MqttClient> {
 
     private static final Logger LOG = LoggerFactory.getLogger(PooledMqttClientFactory.class);
-    private final ClientIdGenerator clientIdGenerator = ClientIdGenerator.getInstance();
+    //TODO: Inject if possible
+    private final ClientIdGenerator clientIdGenerator = KapuaLocator.getInstance().getComponent(ClientIdGenerator.class);
 
     private final String serverURI;
 

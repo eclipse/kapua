@@ -40,6 +40,7 @@ import java.security.SecureRandom;
  *
  * @since 1.0
  */
+//TODO: FIXME: promote from static utility to injectable collaborator
 public class AuthenticationUtils {
 
     private static final String CIPHER_ALGORITHM = "AES";
