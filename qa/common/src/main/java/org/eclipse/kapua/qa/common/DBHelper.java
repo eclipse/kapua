@@ -169,7 +169,7 @@ public class DBHelper {
         ResultSet sqlResults = connection.getMetaData().getTables(null, null, "%", types);
 
         while (sqlResults.next()) {
-            String sqlStatement = String.format("DROP TABLE %s", sqlResults.getString("TABLE_NAME").toUpperCase());
+            String sqlStatement = String.format("DROP TABLE %s CASCADE", sqlResults.getString("TABLE_NAME").toUpperCase());
             try (PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
                 preparedStatement.execute();
             }
