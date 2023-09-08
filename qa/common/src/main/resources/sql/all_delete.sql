@@ -11,6 +11,8 @@
  *     Eurotech - initial API and implementation
  *******************************************************************************/
 
+UPDATE act_account SET scope_id = null;
+
 DELETE
 FROM act_account
 WHERE id NOT IN (1);
