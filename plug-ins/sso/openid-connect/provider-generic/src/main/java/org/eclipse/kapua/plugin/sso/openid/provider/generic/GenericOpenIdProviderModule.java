@@ -38,6 +38,6 @@ public class GenericOpenIdProviderModule extends AbstractKapuaModule {
     @ProvidesIntoSet
     @Singleton
     OpenIDService genericOpenIdService(OpenIDSetting openIDSetting, GenericOpenIDSetting genericOpenIDSetting) throws OpenIDException {
-        return new GenericOpenIDService(openIDSetting, genericOpenIDSetting);
+        return new GenericOpenIDService(openIDSetting, genericOpenIDSetting, openIDUtils);
     }
 }

@@ -39,14 +39,13 @@ import java.util.Optional;
 /**
  * Single Sign On utility class.
  */
-//TODO: FIXME: promote from static utility to injectable collaborator
 public final class OpenIDUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(OpenIDUtils.class);
 
     private static final String DEFAULT_SSO_OPENID_CONF_PATH = ".well-known/openid-configuration";
 
-    private OpenIDUtils() {
+    public OpenIDUtils() {
     }
 
     /**
@@ -58,7 +57,7 @@ public final class OpenIDUtils {
      * an empty Optional.
      * @throws OpenIDUriException if an {@link IOException}, a {@link MalformedURLException} or a {@link URISyntaxException} is caught.
      */
-    public static Optional<URI> getConfigUri(String property, String openIdConfPath) throws OpenIDUriException {
+    public Optional<URI> getConfigUri(String property, String openIdConfPath) throws OpenIDUriException {
         final JsonObject jsonObject;
 
         ConfigurationPrinter reqLogger =
@@ -112,7 +111,7 @@ public final class OpenIDUtils {
      * @throws OpenIDIllegalArgumentException if it cannot retrieve the OpenID configuration path or if the generated OpenID Connect discovery endpoint is a
      *                                        malformed URL
      */
-    public static String getOpenIdConfPath(final URI issuer) throws OpenIDIllegalArgumentException {
+    public String getOpenIdConfPath(final URI issuer) throws OpenIDIllegalArgumentException {
         return getOpenIdConfPath(issuer.toString());
     }
 
@@ -124,7 +123,7 @@ public final class OpenIDUtils {
      * @throws OpenIDIllegalArgumentException if it cannot retrieve the OpenID configuration path or if the generated OpenID Connect discovery endpoint is a
      *                                        malformed URL
      */
-    public static String getOpenIdConfPath(String issuer) throws OpenIDIllegalArgumentException {
+    public String getOpenIdConfPath(String issuer) throws OpenIDIllegalArgumentException {
         String openIDConfPathSuffix = KapuaLocator.getInstance().getComponent(OpenIDSetting.class).getString(OpenIDSettingKeys.SSO_OPENID_CONF_PATH, DEFAULT_SSO_OPENID_CONF_PATH);
         if (Strings.isNullOrEmpty(openIDConfPathSuffix)) {
             throw new OpenIDIllegalArgumentException(OpenIDSettingKeys.SSO_OPENID_CONF_PATH.key(), openIDConfPathSuffix);

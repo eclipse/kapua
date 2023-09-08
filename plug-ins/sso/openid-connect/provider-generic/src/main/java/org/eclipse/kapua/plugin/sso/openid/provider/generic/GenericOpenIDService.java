@@ -38,6 +38,7 @@ public class GenericOpenIDService extends AbstractOpenIDService {
     private static final String TOKEN_WELL_KNOWN_KEY = "token_endpoint";
 
     private final GenericOpenIDSetting genericSettings;
+    private final OpenIDUtils openIDUtils;
 
     @Override
     public String getId() {
@@ -45,15 +46,16 @@ public class GenericOpenIDService extends AbstractOpenIDService {
     }
 
     @Inject
-    public GenericOpenIDService(final OpenIDSetting ssoSettings, final GenericOpenIDSetting genericSettings) {
+    public GenericOpenIDService(final OpenIDSetting ssoSettings, final GenericOpenIDSetting genericSettings, OpenIDUtils openIDUtils) {
         super(ssoSettings);
         this.genericSettings = genericSettings;
+        this.openIDUtils = openIDUtils;
     }
 
     @Override
     protected String getAuthUri() throws OpenIDException {
         try {
-            final Optional<URI> uri = OpenIDUtils.getConfigUri(AUTH_WELL_KNOWN_KEY, getOpenIdConfPath());
+            final Optional<URI> uri = openIDUtils.getConfigUri(AUTH_WELL_KNOWN_KEY, getOpenIdConfPath());
             return uri.orElseThrow(() -> new OpenIDIllegalUriException(AUTH_WELL_KNOWN_KEY, null)).toString();
         } catch (OpenIDException se) {
             String authUri = genericSettings.getString(GenericOpenIDSettingKeys.SSO_OPENID_SERVER_ENDPOINT_AUTH);
@@ -67,7 +69,7 @@ public class GenericOpenIDService extends AbstractOpenIDService {
     @Override
     protected String getTokenUri() throws OpenIDException {
         try {
-            final Optional<URI> uri = OpenIDUtils.getConfigUri(TOKEN_WELL_KNOWN_KEY, getOpenIdConfPath());
+            final Optional<URI> uri = openIDUtils.getConfigUri(TOKEN_WELL_KNOWN_KEY, getOpenIdConfPath());
             return uri.orElseThrow(() -> new OpenIDIllegalUriException(TOKEN_WELL_KNOWN_KEY, null)).toString();
         } catch (OpenIDException se) {
             String tokenUri = genericSettings.getString(GenericOpenIDSettingKeys.SSO_OPENID_SERVER_ENDPOINT_TOKEN);
@@ -81,7 +83,7 @@ public class GenericOpenIDService extends AbstractOpenIDService {
     @Override
     protected String getUserInfoUri() throws OpenIDException {
         try {
-            final Optional<URI> uri = OpenIDUtils.getConfigUri(USERINFO_WELL_KNOWN_KEY, getOpenIdConfPath());
+            final Optional<URI> uri = openIDUtils.getConfigUri(USERINFO_WELL_KNOWN_KEY, getOpenIdConfPath());
             return uri.orElseThrow(() -> new OpenIDIllegalUriException(USERINFO_WELL_KNOWN_KEY, null)).toString();
         } catch (OpenIDException se) {
             String tokenUri = genericSettings.getString(GenericOpenIDSettingKeys.SSO_OPENID_SERVER_ENDPOINT_USERINFO);
@@ -95,7 +97,7 @@ public class GenericOpenIDService extends AbstractOpenIDService {
     @Override
     protected String getLogoutUri() throws OpenIDException {
         try {
-            final Optional<URI> uri = OpenIDUtils.getConfigUri(LOGOUT_WELL_KNOWN_KEY, getOpenIdConfPath());
+            final Optional<URI> uri = openIDUtils.getConfigUri(LOGOUT_WELL_KNOWN_KEY, getOpenIdConfPath());
             return uri.orElseThrow(() -> new OpenIDIllegalUriException(LOGOUT_WELL_KNOWN_KEY, null)).toString();
         } catch (OpenIDException se) {
             String logoutUri = genericSettings.getString(GenericOpenIDSettingKeys.SSO_OPENID_SERVER_ENDPOINT_LOGOUT);
@@ -117,6 +119,6 @@ public class GenericOpenIDService extends AbstractOpenIDService {
         if (Strings.isNullOrEmpty(issuerUri)) {
             throw new OpenIDIllegalUriException(GenericOpenIDSettingKeys.SSO_OPENID_JWT_ISSUER_ALLOWED.key(), issuerUri);
         }
-        return OpenIDUtils.getOpenIdConfPath(issuerUri);
+        return openIDUtils.getOpenIdConfPath(issuerUri);
     }
 }

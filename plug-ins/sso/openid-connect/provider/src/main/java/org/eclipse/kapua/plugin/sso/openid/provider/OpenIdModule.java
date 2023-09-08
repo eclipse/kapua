@@ -31,6 +31,7 @@ public class OpenIdModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(OpenIDSetting.class).toInstance(new OpenIDSetting());
+        bind(OpenIDUtils.class).toInstance(new OpenIDUtils());
     }
 
     @ProvidesIntoSet

@@ -47,17 +47,16 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
     private static final String JWKS_URI_WELL_KNOWN_KEY = "jwks_uri";
     private Map<URI, Processor> processors = new HashMap<>();
     private Duration timeout;  // the JwtProcessor expiration time.
+    private final OpenIDUtils openIDUtils;
     protected final OpenIDSetting openIDSetting;
 
     /**
      * Constructs and AbstractJwtProcessor with the given expiration time.
-     *
-     * @throws OpenIDJwtException if the concrete implementation of {@link #getJwtExpectedIssuers()
-     *                            getJwtExpectedIssuers} method throws such exception.
      */
-    public AbstractJwtProcessor(OpenIDSetting openIDSetting) throws OpenIDException {
+    public AbstractJwtProcessor(OpenIDSetting openIDSetting, OpenIDUtils openIDUtils) {
         this.openIDSetting = openIDSetting;
         this.timeout = Duration.ofHours(openIDSetting.getInt(OpenIDSettingKeys.SSO_OPENID_JWT_PROCESSOR_TIMEOUT, 1));
+        this.openIDUtils = openIDUtils;
     }
 
     /**
@@ -171,7 +170,7 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
 
             // create new instance
 
-            final Optional<URI> uri = OpenIDUtils.getConfigUri(JWKS_URI_WELL_KNOWN_KEY, OpenIDUtils.getOpenIdConfPath(issuer));
+            final Optional<URI> uri = openIDUtils.getConfigUri(JWKS_URI_WELL_KNOWN_KEY, openIDUtils.getOpenIdConfPath(issuer));
             if (!uri.isPresent()) {
                 return Optional.empty();
             }
