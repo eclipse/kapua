@@ -58,6 +58,8 @@ public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.
      */
     void setName(String name);
 
+    void setServiceName(String serviceName);
+
     /**
      * Gets the {@link Domain} name.
      *
@@ -66,6 +68,8 @@ public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.
      */
     @XmlElement(name = "name")
     String getName();
+
+    String getServiceName();
 
     /**
      * Sets the set of {@link Actions} available in this {@link Domain}.<br>
