@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.device.management.snapshot.message.internal;
 
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
@@ -31,7 +32,7 @@ public class SnapshotResponsePayload extends KapuaResponsePayloadImpl implements
 
     private static final long serialVersionUID = -5650474443429208877L;
 
-    private final String charEncoding = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     /**
      * Gets the {@link DeviceSnapshots} from the {@link #getBody()}.

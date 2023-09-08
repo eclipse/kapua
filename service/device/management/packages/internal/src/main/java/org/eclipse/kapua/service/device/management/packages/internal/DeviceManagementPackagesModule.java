@@ -19,6 +19,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
+import org.eclipse.kapua.service.device.management.packages.internal.setting.PackageManagementServiceSetting;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
@@ -26,11 +27,13 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 public class DeviceManagementPackagesModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(DevicePackageFactory.class).to(DevicePackageFactoryImpl.class);
+        bind(DevicePackageFactory.class).to(DevicePackageFactoryImpl.class).in(Singleton.class);
+        bind(PackageManagementServiceSetting.class).in(Singleton.class);
     }
 
     @Provides
@@ -44,7 +47,8 @@ public class DeviceManagementPackagesModule extends AbstractKapuaModule {
             DeviceManagementOperationRegistryService deviceManagementOperationRegistryService,
             DeviceManagementOperationFactory deviceManagementOperationFactory,
             DevicePackageFactory devicePackageFactory,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            PackageManagementServiceSetting packageManagementServiceSetting
     ) {
         return new DevicePackageManagementServiceImpl(
                 jpaTxManagerFactory.create("kapua-device_management_operation_registry"),

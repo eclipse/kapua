@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authentication.shiro;
 import com.google.inject.Provides;
 import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
@@ -62,6 +63,7 @@ import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMappe
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidator;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidatorImpl;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.registration.RegistrationService;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
@@ -73,6 +75,8 @@ import org.eclipse.kapua.service.authentication.shiro.realm.UserPassCredentialsH
 import org.eclipse.kapua.service.authentication.shiro.registration.RegistrationServiceImpl;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaCryptoSetting;
+import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 import org.eclipse.kapua.service.authentication.token.AccessTokenRepository;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
@@ -85,6 +89,8 @@ import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.storage.TxContext;
 
 import javax.inject.Singleton;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Map;
 import java.util.Optional;
 
@@ -100,7 +106,20 @@ public class AuthenticationModule extends AbstractKapuaModule {
         bind(AccessTokenFactory.class).to(AccessTokenFactoryImpl.class).in(Singleton.class);
         bind(RegistrationService.class).to(RegistrationServiceImpl.class).in(Singleton.class);
         bind(MfaAuthenticator.class).to(MfaAuthenticatorImpl.class).in(Singleton.class);
+        bind(KapuaCryptoSetting.class).in(Singleton.class);
         bind(CacheMetric.class).in(Singleton.class);
+    }
+
+    @Provides
+    @Singleton
+    AuthenticationUtils authenticationUtils(KapuaCryptoSetting kapuaCryptoSetting) {
+        final SecureRandom random;
+        try {
+            random = SecureRandom.getInstance("SHA1PRNG");
+        } catch (NoSuchAlgorithmException e) {
+            throw new KapuaRuntimeException(KapuaAuthenticationErrorCodes.CREDENTIAL_CRYPT_ERROR, e);
+        }
+        return new AuthenticationUtils(random, kapuaCryptoSetting);
     }
 
     @ProvidesIntoSet

@@ -58,20 +58,21 @@ public class CertificateServiceImpl implements CertificateService {
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final CertificateFactory certificateFactory;
+    private final KapuaCertificateSetting kapuaCertificateSetting;
     private String certificate;
     private String privateKey;
     private KapuaTocd emptyTocd;
 
     @Inject
-    public CertificateServiceImpl(AuthorizationService authorizationService, PermissionFactory permissionFactory, CertificateFactory certificateFactory) throws KapuaException {
+    public CertificateServiceImpl(AuthorizationService authorizationService, PermissionFactory permissionFactory, CertificateFactory certificateFactory,
+                                  KapuaCertificateSetting kapuaCertificateSetting) throws KapuaException {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.certificateFactory = certificateFactory;
+        this.kapuaCertificateSetting = kapuaCertificateSetting;
         KapuaSecurityUtils.doPrivileged(() -> {
-            KapuaCertificateSetting setting = KapuaCertificateSetting.getInstance();
-
-            String privateKeyPath = setting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_PRIVATE_KEY);
-            String certificatePath = setting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_CERTIFICATE);
+            String privateKeyPath = kapuaCertificateSetting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_PRIVATE_KEY);
+            String certificatePath = kapuaCertificateSetting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_CERTIFICATE);
 
             if (Strings.isNullOrEmpty(privateKeyPath) && Strings.isNullOrEmpty(certificatePath)) {
                 LOG.error("No private key and certificate path specified.\nPlease set authentication.session.jwt.private.key and authentication.session.jwt.certificate system properties.");
@@ -111,14 +112,12 @@ public class CertificateServiceImpl implements CertificateService {
         keyUsageSetting.setAllowed(true);
         keyUsageSetting.setKapuaAllowed(true);
 
-        KapuaCertificateSetting setting = KapuaCertificateSetting.getInstance();
-
         Certificate kapuaCertificate = new CertificateImpl(KapuaId.ONE);
         kapuaCertificate.setPrivateKey(privateKey);
         kapuaCertificate.setCertificate(certificate);
         kapuaCertificate.getKeyUsageSettings().add(keyUsageSetting);
         kapuaCertificate.setCertificateUsages(certificateUsages);
-        kapuaCertificate.setPassword(setting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_PRIVATE_KEY_PASSWORD));
+        kapuaCertificate.setPassword(kapuaCertificateSetting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_PRIVATE_KEY_PASSWORD));
 
         CertificateListResult result = certificateFactory.newListResult();
         result.addItem(kapuaCertificate);

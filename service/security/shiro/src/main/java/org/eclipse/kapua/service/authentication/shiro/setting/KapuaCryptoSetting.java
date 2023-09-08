@@ -21,12 +21,9 @@ import javax.inject.Inject;
  *
  * @since 1.0
  */
-//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class KapuaCryptoSetting extends AbstractKapuaSetting<KapuaCryptoSettingKeys> {
 
     private static final String CRYPTO_CONFIG_RESOURCE = "kapua-crypto-setting.properties";
-
-    private static final KapuaCryptoSetting INSTANCE = new KapuaCryptoSetting();
 
     /**
      * Construct a new crypto setting reading settings from {@link KapuaCryptoSetting#CRYPTO_CONFIG_RESOURCE}
@@ -36,12 +33,4 @@ public class KapuaCryptoSetting extends AbstractKapuaSetting<KapuaCryptoSettingK
         super(CRYPTO_CONFIG_RESOURCE);
     }
 
-    /**
-     * Return the crypto setting instance (singleton)
-     *
-     * @return
-     */
-    public static KapuaCryptoSetting getInstance() {
-        return INSTANCE;
-    }
 }

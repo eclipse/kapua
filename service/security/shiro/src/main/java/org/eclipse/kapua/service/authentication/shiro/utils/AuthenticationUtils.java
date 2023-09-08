@@ -40,23 +40,17 @@ import java.security.SecureRandom;
  *
  * @since 1.0
  */
-//TODO: FIXME: promote from static utility to injectable collaborator
 public class AuthenticationUtils {
 
     private static final String CIPHER_ALGORITHM = "AES";
     //thread safe
     //consider using ThreadLocalRandom for performance reason. But it's not immediate to understand which option is the best one.
-    private static SecureRandom random;
+    private final SecureRandom random;
+    private final KapuaCryptoSetting kapuaCryptoSetting;
 
-    private AuthenticationUtils() {
-    }
-
-    static {
-        try {
-            random = SecureRandom.getInstance("SHA1PRNG");
-        } catch (NoSuchAlgorithmException e) {
-            throw new KapuaRuntimeException(KapuaAuthenticationErrorCodes.CREDENTIAL_CRYPT_ERROR, e);
-        }
+    public AuthenticationUtils(SecureRandom random, KapuaCryptoSetting kapuaCryptoSetting) {
+        this.random = random;
+        this.kapuaCryptoSetting = kapuaCryptoSetting;
     }
 
     /**
@@ -66,7 +60,7 @@ public class AuthenticationUtils {
      * @return the encrypted credential
      * @throws KapuaException when something goes wrong
      */
-    public static String cryptCredential(CryptAlgorithm algorithm, String plainValue)
+    public String cryptCredential(CryptAlgorithm algorithm, String plainValue)
             throws KapuaException {
         // Argument validator
         ArgumentValidator.notEmptyOrNull(plainValue, "plainValue");
@@ -86,10 +80,9 @@ public class AuthenticationUtils {
         return cryptedValue;
     }
 
-    public static String doSha(String plainValue) {
-        KapuaCryptoSetting settings = KapuaCryptoSetting.getInstance();
-        int saltLength = settings.getInt(KapuaCryptoSettingKeys.CRYPTO_SHA_SALT_LENGTH);
-        String shaAlgorithm = settings.getString(KapuaCryptoSettingKeys.CRYPTO_SHA_ALGORITHM);
+    public String doSha(String plainValue) {
+        int saltLength = kapuaCryptoSetting.getInt(KapuaCryptoSettingKeys.CRYPTO_SHA_SALT_LENGTH);
+        String shaAlgorithm = kapuaCryptoSetting.getString(KapuaCryptoSettingKeys.CRYPTO_SHA_ALGORITHM);
         byte[] bSalt = new byte[saltLength];
         random.nextBytes(bSalt);
         String salt = Base64.encodeToString(bSalt);
@@ -106,9 +99,8 @@ public class AuthenticationUtils {
         return salt + ":" + hashedValue;
     }
 
-    private static String doBCrypt(String plainValue) {
-        KapuaCryptoSetting settings = KapuaCryptoSetting.getInstance();
-        int logRound = settings.getInt(KapuaCryptoSettingKeys.CRYPTO_BCRYPT_LOG_ROUNDS);
+    private String doBCrypt(String plainValue) {
+        int logRound = kapuaCryptoSetting.getInt(KapuaCryptoSettingKeys.CRYPTO_BCRYPT_LOG_ROUNDS);
         String salt = BCrypt.gensalt(logRound, random);
         return BCrypt.hashpw(plainValue, salt);
     }
@@ -121,7 +113,7 @@ public class AuthenticationUtils {
      * @deprecated Since 2.0.0. Please make use of {@link CryptoUtil#encryptAes(String)}.
      */
     @Deprecated
-    public static String encryptAes(String value) {
+    public String encryptAes(String value) {
         try {
             Key key = generateKey();
             Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
@@ -143,7 +135,7 @@ public class AuthenticationUtils {
      * @deprecated Since 2.0.0. Please make use of {@link CryptoUtil#decryptAes(String)}.
      */
     @Deprecated
-    public static String decryptAes(String encryptedValue) {
+    public String decryptAes(String encryptedValue) {
         try {
             Key key = generateKey();
             Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
@@ -165,12 +157,9 @@ public class AuthenticationUtils {
      * @deprecated Since 2.0.0. Please make use of {@link CryptoUtil}
      */
     @Deprecated
-    private static Key generateKey() {
-
+    private Key generateKey() {
         // Retrieve Cipher Settings
-        KapuaCryptoSetting settings = KapuaCryptoSetting.getInstance();
-        byte[] cipherSecretKey = settings.getString(KapuaCryptoSettingKeys.CIPHER_KEY).getBytes();
-
+        byte[] cipherSecretKey = kapuaCryptoSetting.getString(KapuaCryptoSettingKeys.CIPHER_KEY).getBytes();
         return new SecretKeySpec(cipherSecretKey, CIPHER_ALGORITHM);
     }
 }

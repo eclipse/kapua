@@ -14,6 +14,8 @@ package org.eclipse.kapua.service.user.internal.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
+import javax.inject.Inject;
+
 /**
  * Class that offers access to user settings
  *
@@ -28,23 +30,10 @@ public class KapuaUserSetting extends AbstractKapuaSetting<KapuaUserSettingKeys>
     private static final String USER_SETTING_RESOURCE = "kapua-user-setting.properties";
 
     /**
-     * Singleton instance of this {@link Class}.
-     */
-    private static final KapuaUserSetting INSTANCE = new KapuaUserSetting();
-
-    /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link KapuaUserSettingKeys#USER_KEY} value.
      */
-    private KapuaUserSetting() {
+    @Inject
+    public KapuaUserSetting() {
         super(USER_SETTING_RESOURCE);
-    }
-
-    /**
-     * Gets a singleton instance of {@link KapuaUserSetting}.
-     *
-     * @return A singleton instance of JmsClientSetting.
-     */
-    public static KapuaUserSetting getInstance() {
-        return INSTANCE;
     }
 }

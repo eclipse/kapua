@@ -53,8 +53,9 @@ import javax.inject.Singleton;
 public class UserModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(UserFactory.class).to(UserFactoryImpl.class);
+        bind(UserFactory.class).to(UserFactoryImpl.class).in(Singleton.class);
         bind(UserCacheFactory.class).toInstance(new UserCacheFactory());
+        bind(KapuaUserSetting.class).in(Singleton.class);
     }
 
     @Provides
@@ -97,11 +98,12 @@ public class UserModule extends AbstractKapuaModule {
                                            KapuaJpaTxManagerFactory txManagerFactory,
                                            EventStoreFactory eventStoreFactory,
                                            EventStoreRecordRepository eventStoreRecordRepository,
-                                           ServiceEventBus serviceEventBus
+                                           ServiceEventBus serviceEventBus,
+                                           KapuaUserSetting kapuaUserSetting
     ) throws ServiceEventBusException {
         return new UserServiceModule(
                 userService,
-                KapuaUserSetting.getInstance(),
+                kapuaUserSetting,
                 new ServiceEventHouseKeeperFactoryImpl(
                         new EventStoreServiceImpl(
                                 authorizationService,

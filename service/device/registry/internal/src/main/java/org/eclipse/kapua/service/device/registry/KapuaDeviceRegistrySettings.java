@@ -20,12 +20,9 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  *
  * @since 1.0.0
  */
-//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class KapuaDeviceRegistrySettings extends AbstractKapuaSetting<KapuaDeviceRegistrySettingKeys> {
 
     private static final String DEVICE_REGISTRY_SETTING_RESOURCE = "kapua-device-registry-setting.properties";
-
-    private static final KapuaDeviceRegistrySettings INSTANCE = new KapuaDeviceRegistrySettings();
 
     /**
      * Constructor.
@@ -34,16 +31,6 @@ public class KapuaDeviceRegistrySettings extends AbstractKapuaSetting<KapuaDevic
      */
     private KapuaDeviceRegistrySettings() {
         super(DEVICE_REGISTRY_SETTING_RESOURCE);
-    }
-
-    /**
-     * Gets the {@link KapuaDeviceRegistrySettings} singleton instance.
-     *
-     * @return The {@link KapuaDeviceRegistrySettings} instance.
-     * @since 1.0.0
-     */
-    public static KapuaDeviceRegistrySettings getInstance() {
-        return INSTANCE;
     }
 
 }

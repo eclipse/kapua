@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.mqtt;
 
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
@@ -38,7 +39,7 @@ import java.util.List;
  */
 public class TranslatorRequestKuraMqtt extends Translator<KuraRequestMessage, MqttMessage> {
 
-    private static final String REPLY_PART = DeviceCallSettings.getInstance().getString(DeviceCallSettingKeys.DESTINATION_REPLY_PART);
+    private static final String REPLY_PART = KapuaLocator.getInstance().getComponent(DeviceCallSettings.class).getString(DeviceCallSettingKeys.DESTINATION_REPLY_PART);
 
     @Override
     public MqttMessage translate(KuraRequestMessage kuraRequestMessage) throws TranslateException {

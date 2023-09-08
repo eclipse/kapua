@@ -107,20 +107,21 @@ import java.util.Set;
 public class AuthorizationModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(AuthorizationService.class).to(AuthorizationServiceImpl.class);
-        bind(RoleFactory.class).to(RoleFactoryImpl.class);
+        bind(AuthorizationService.class).to(AuthorizationServiceImpl.class).in(Singleton.class);
+        bind(RoleFactory.class).to(RoleFactoryImpl.class).in(Singleton.class);
 
-        bind(DomainFactory.class).to(DomainFactoryImpl.class);
+        bind(DomainFactory.class).to(DomainFactoryImpl.class).in(Singleton.class);
 
-        bind(PermissionFactory.class).to(PermissionFactoryImpl.class);
+        bind(PermissionFactory.class).to(PermissionFactoryImpl.class).in(Singleton.class);
 
-        bind(AccessInfoFactory.class).to(AccessInfoFactoryImpl.class);
-        bind(AccessPermissionFactory.class).to(AccessPermissionFactoryImpl.class);
-        bind(AccessRoleFactory.class).to(AccessRoleFactoryImpl.class);
+        bind(AccessInfoFactory.class).to(AccessInfoFactoryImpl.class).in(Singleton.class);
+        bind(AccessPermissionFactory.class).to(AccessPermissionFactoryImpl.class).in(Singleton.class);
+        bind(AccessRoleFactory.class).to(AccessRoleFactoryImpl.class).in(Singleton.class);
 
-        bind(RolePermissionFactory.class).to(RolePermissionFactoryImpl.class);
+        bind(RolePermissionFactory.class).to(RolePermissionFactoryImpl.class).in(Singleton.class);
 
-        bind(GroupFactory.class).to(GroupFactoryImpl.class);
+        bind(GroupFactory.class).to(GroupFactoryImpl.class).in(Singleton.class);
+        bind(KapuaAuthorizationSetting.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet
@@ -153,14 +154,15 @@ public class AuthorizationModule extends AbstractKapuaModule {
                                              KapuaJpaTxManagerFactory txManagerFactory,
                                              EventStoreFactory eventStoreFactory,
                                              EventStoreRecordRepository eventStoreRecordRepository,
-                                             ServiceEventBus serviceEventBus
+                                             ServiceEventBus serviceEventBus,
+                                             KapuaAuthorizationSetting kapuaAuthorizationSetting
     ) throws ServiceEventBusException {
         return new AuthorizationServiceModule(
                 accessInfoService,
                 roleService,
                 domainRegistryService,
                 groupService,
-                KapuaAuthorizationSetting.getInstance(),
+                kapuaAuthorizationSetting,
                 new ServiceEventHouseKeeperFactoryImpl(
                         new EventStoreServiceImpl(
                                 authorizationService,

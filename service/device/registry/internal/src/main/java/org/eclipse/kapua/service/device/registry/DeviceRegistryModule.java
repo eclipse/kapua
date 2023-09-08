@@ -51,7 +51,6 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionServ
 import org.eclipse.kapua.service.device.registry.connection.internal.CachingDeviceConnectionRepository;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionFactoryImpl;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImplJpaRepository;
-import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionServiceImpl;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionFactory;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionRepository;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService;
@@ -93,13 +92,12 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(DeviceRegistryCacheFactory.class).toInstance(new DeviceRegistryCacheFactory());
-        bind(DeviceFactory.class).to(DeviceFactoryImpl.class);
-        bind(DeviceConnectionFactory.class).to(DeviceConnectionFactoryImpl.class);
-        bind(DeviceConnectionOptionFactory.class).to(DeviceConnectionOptionFactoryImpl.class);
-        bind(DeviceEventFactory.class).to(DeviceEventFactoryImpl.class);
-        bind(DeviceLifeCycleService.class).to(DeviceLifeCycleServiceImpl.class);
-        bind(DeviceConnectionService.class).to(DeviceConnectionServiceImpl.class);
-        bind(DeviceRegistryService.class).to(DeviceRegistryServiceImpl.class);
+        bind(DeviceFactory.class).to(DeviceFactoryImpl.class).in(Singleton.class);
+        bind(DeviceConnectionFactory.class).to(DeviceConnectionFactoryImpl.class).in(Singleton.class);
+        bind(DeviceConnectionOptionFactory.class).to(DeviceConnectionOptionFactoryImpl.class).in(Singleton.class);
+        bind(DeviceEventFactory.class).to(DeviceEventFactoryImpl.class).in(Singleton.class);
+        bind(DeviceLifeCycleService.class).to(DeviceLifeCycleServiceImpl.class).in(Singleton.class);
+        bind(KapuaDeviceRegistrySettings.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet
@@ -123,19 +121,21 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     }
 
     @ProvidesIntoSet
-    protected ServiceModule deviceServiceModule(DeviceConnectionService deviceConnectionService,
-                                                DeviceRegistryService deviceRegistryService,
-                                                AuthorizationService authorizationService,
-                                                PermissionFactory permissionFactory,
-                                                KapuaJpaTxManagerFactory jpaTxManagerFactory,
-                                                EventStoreFactory eventStoreFactory,
-                                                EventStoreRecordRepository eventStoreRecordRepository,
-                                                ServiceEventBus serviceEventBus
+    ServiceModule deviceRegistryModule(DeviceConnectionService deviceConnectionService,
+                                       DeviceRegistryService deviceRegistryService,
+                                       AuthorizationService authorizationService,
+                                       PermissionFactory permissionFactory,
+                                       KapuaJpaTxManagerFactory txManagerFactory,
+                                       EventStoreFactory eventStoreFactory,
+                                       EventStoreRecordRepository eventStoreRecordRepository,
+                                       ServiceEventBus serviceEventBus,
+                                       KapuaDeviceRegistrySettings kapuaDeviceRegistrySettings,
+                                       KapuaJpaTxManagerFactory jpaTxManagerFactory
     ) throws ServiceEventBusException {
         return new DeviceServiceModule(
                 deviceConnectionService,
                 deviceRegistryService,
-                KapuaDeviceRegistrySettings.getInstance(),
+                kapuaDeviceRegistrySettings,
                 new ServiceEventHouseKeeperFactoryImpl(
                         new EventStoreServiceImpl(
                                 authorizationService,
@@ -148,12 +148,6 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                         serviceEventBus
                 ),
                 serviceEventBus);
-    }
-
-    @Provides
-    @Singleton
-    public KapuaDeviceRegistrySettings deviceRegistrySettings() {
-        return KapuaDeviceRegistrySettings.getInstance();
     }
 
     @Provides

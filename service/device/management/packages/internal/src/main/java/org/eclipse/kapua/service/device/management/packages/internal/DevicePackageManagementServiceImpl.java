@@ -85,7 +85,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
     private static final Logger LOG = LoggerFactory.getLogger(DevicePackageManagementServiceImpl.class);
 
-    private final PackageManagementServiceSetting packageManagementServiceSetting = PackageManagementServiceSetting.getInstance();
+    private final PackageManagementServiceSetting packageManagementServiceSetting;
 
     private final DeviceManagementOperationRegistryService deviceManagementOperationRegistryService;
     private final DeviceManagementOperationFactory deviceManagementOperationFactory;
@@ -104,7 +104,8 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
             DeviceRegistryService deviceRegistryService,
             DeviceManagementOperationRegistryService deviceManagementOperationRegistryService,
             DeviceManagementOperationFactory deviceManagementOperationFactory,
-            DevicePackageFactory devicePackageFactory) {
+            DevicePackageFactory devicePackageFactory,
+            PackageManagementServiceSetting packageManagementServiceSetting) {
         super(txManager,
                 authorizationService,
                 permissionFactory,
@@ -114,6 +115,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         this.deviceManagementOperationRegistryService = deviceManagementOperationRegistryService;
         this.deviceManagementOperationFactory = deviceManagementOperationFactory;
         this.devicePackageFactory = devicePackageFactory;
+        this.packageManagementServiceSetting = packageManagementServiceSetting;
     }
     // Installed
 

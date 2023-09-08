@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.device.management.asset.message.internal;
 
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
@@ -31,7 +32,7 @@ public class AssetResponsePayload extends KapuaResponsePayloadImpl implements Ka
 
     private static final long serialVersionUID = -9087980446970521618L;
 
-    private final String charEncoding = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     /**
      * Gets the {@link DeviceAssets} from the {@link #getBody()}.

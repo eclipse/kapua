@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.device.management.inventory.internal.message;
 
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
@@ -35,7 +36,7 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
 
     private static final long serialVersionUID = 4380715272822080425L;
 
-    private final String charEncoding = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     /**
      * Gets the {@link DeviceInventory} from the {@link #getBody()}.

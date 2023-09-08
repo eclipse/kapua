@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.device.management.bundle.message.internal;
 
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
@@ -32,7 +33,7 @@ public class BundleResponsePayload extends KapuaResponsePayloadImpl implements K
 
     private static final long serialVersionUID = 4380715272822080425L;
 
-    private final String charEncoding = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     /**
      * Gets the {@link DeviceBundles} from the {@link #getBody()}.

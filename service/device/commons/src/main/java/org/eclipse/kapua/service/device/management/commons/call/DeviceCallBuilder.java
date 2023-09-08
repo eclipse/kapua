@@ -70,7 +70,7 @@ public class DeviceCallBuilder<C extends KapuaRequestChannel, P extends KapuaReq
 
     private final TranslatorHub translatorHub = KapuaLocator.getInstance().getComponent(TranslatorHub.class);
 
-    private final Long defaultTimeout = DeviceManagementSetting.getInstance().getLong(DeviceManagementSettingKey.REQUEST_TIMEOUT);
+    private final Long defaultTimeout = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getLong(DeviceManagementSettingKey.REQUEST_TIMEOUT);
 
     private RQ requestMessage;
     private Long timeout;

@@ -16,34 +16,24 @@ import org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting;
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
 
+import javax.inject.Inject;
+
 /**
  * {@link DeviceConfigurationManagementService} {@link AbstractBaseKapuaSetting}s
  *
  * @since 2.0.0
  */
-//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class DeviceConfigurationManagementSettings extends AbstractKapuaSetting<DeviceConfigurationManagementSettingsKeys> {
 
     private static final String DEVICE_CONFIGURATION_MANAGEMENT_SETTING_RESOURCE = "device-configuration-management-setting.properties";
-
-    private static final DeviceConfigurationManagementSettings INSTANCE = new DeviceConfigurationManagementSettings();
 
     /**
      * Constructor.
      *
      * @since 2.0.0
      */
-    private DeviceConfigurationManagementSettings() {
+    @Inject
+    public DeviceConfigurationManagementSettings() {
         super(DEVICE_CONFIGURATION_MANAGEMENT_SETTING_RESOURCE);
-    }
-
-    /**
-     * Gets the instance of {@link DeviceConfigurationManagementSettings}.
-     *
-     * @return The instance of {@link DeviceConfigurationManagementSettings}.
-     * @since 2.0.0
-     */
-    public static DeviceConfigurationManagementSettings getInstance() {
-        return INSTANCE;
     }
 }

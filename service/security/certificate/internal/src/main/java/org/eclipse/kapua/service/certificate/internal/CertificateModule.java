@@ -20,12 +20,16 @@ import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.domain.DomainEntry;
 import org.eclipse.kapua.service.certificate.CertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificateService;
+import org.eclipse.kapua.service.certificate.internal.setting.KapuaCertificateSetting;
+
+import javax.inject.Singleton;
 
 public class CertificateModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(CertificateFactory.class).to(CertificateFactoryImpl.class);
-        bind(CertificateService.class).to(CertificateServiceImpl.class);
+        bind(CertificateFactory.class).to(CertificateFactoryImpl.class).in(Singleton.class);
+        bind(CertificateService.class).to(CertificateServiceImpl.class).in(Singleton.class);
+        bind(KapuaCertificateSetting.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet

@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.device.management.configuration.message.internal;
 
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
@@ -38,8 +39,9 @@ public class ConfigurationResponsePayload extends KapuaResponsePayloadImpl imple
 
     private static final Logger LOG = LoggerFactory.getLogger(ConfigurationResponsePayload.class);
 
-    private final String payloadToDisplayStringMode = DeviceConfigurationManagementSettings.getInstance().getString(DeviceConfigurationManagementSettingsKeys.PAYLOAD_TO_DISPLAY_STRING_MODE, "NONE");
-    private final String charEncoding = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    //TODO: FIXME: REMOVE: A collaborator in a data class? Behaviour should not be part of a data class!
+    private final String payloadToDisplayStringMode = KapuaLocator.getInstance().getComponent(DeviceConfigurationManagementSettings.class).getString(DeviceConfigurationManagementSettingsKeys.PAYLOAD_TO_DISPLAY_STRING_MODE, "NONE");
+    private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     /**
      * Gets the {@link DeviceConfiguration}from the {@link #getBody()}.
