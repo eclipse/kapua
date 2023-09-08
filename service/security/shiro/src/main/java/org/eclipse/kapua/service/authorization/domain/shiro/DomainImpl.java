@@ -44,6 +44,10 @@ public class DomainImpl extends AbstractKapuaEntity implements Domain {
     @Column(name = "name", nullable = false, updatable = false)
     private String name;
 
+    @Basic
+    @Column(name = "serviceName", nullable = false, updatable = false)
+    private String serviceName;
+
     @ElementCollection
     @CollectionTable(name = "athz_domain_actions", joinColumns = @JoinColumn(name = "domain_id", referencedColumnName = "id"))
     @Column(name = "action", nullable = false)
@@ -93,8 +97,18 @@ public class DomainImpl extends AbstractKapuaEntity implements Domain {
     }
 
     @Override
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getServiceName() {
+        return this.serviceName;
     }
 
     @Override
