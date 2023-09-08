@@ -34,6 +34,8 @@ public interface DomainCreator extends KapuaEntityCreator<Domain> { // org.eclip
 
     String getName();
 
+    String getServiceName();
+
     Set<Actions> getActions();
 
     boolean getGroupable();
@@ -45,6 +47,8 @@ public interface DomainCreator extends KapuaEntityCreator<Domain> { // org.eclip
      * @since 1.0.0
      */
     void setName(String name);
+
+    void setServiceName(String serviceName);
 
     /**
      * Sets the set of {@link Actions} available in the {@link Domain}.<br>

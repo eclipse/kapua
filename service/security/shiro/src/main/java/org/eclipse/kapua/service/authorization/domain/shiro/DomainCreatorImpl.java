@@ -30,6 +30,8 @@ public class DomainCreatorImpl extends AbstractKapuaEntityCreator<Domain> implem
     private static final long serialVersionUID = -4676187845961673421L;
 
     private String name;
+
+    private String serviceName;
     private Set<Actions> actions;
     private boolean groupable;
 
@@ -50,9 +52,18 @@ public class DomainCreatorImpl extends AbstractKapuaEntityCreator<Domain> implem
         this.name = name;
     }
 
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getServiceName() {
+        return serviceName;
     }
 
     @Override

@@ -20,8 +20,18 @@ import java.util.Set;
 public class CucDomain {
 
     private String name;
+    private String serviceName;
     private String actions;
     private Set<Actions> actionSet;
+
+    public CucDomain(String name, String serviceName, String actions) {
+        this.name = name;
+        this.serviceName = serviceName;
+        if (this.serviceName == null) {
+            this.serviceName= "test";
+        }
+        this.actions = actions;
+    }
 
     public void doParse() {
         if (this.actions != null) {
@@ -56,6 +66,18 @@ public class CucDomain {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public void setActionSet(Set<Actions> actionSet) {
+        this.actionSet = actionSet;
     }
 
     public String getActions() {
