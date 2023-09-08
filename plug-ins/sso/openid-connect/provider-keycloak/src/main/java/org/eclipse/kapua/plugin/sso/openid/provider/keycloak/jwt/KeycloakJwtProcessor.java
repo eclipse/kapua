@@ -15,6 +15,7 @@ package org.eclipse.kapua.plugin.sso.openid.provider.keycloak.jwt;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDIllegalArgumentException;
+import org.eclipse.kapua.plugin.sso.openid.provider.OpenIDUtils;
 import org.eclipse.kapua.plugin.sso.openid.provider.jwt.AbstractJwtProcessor;
 import org.eclipse.kapua.plugin.sso.openid.provider.keycloak.KeycloakOpenIDUtils;
 import org.eclipse.kapua.plugin.sso.openid.provider.setting.OpenIDSetting;
@@ -32,8 +33,8 @@ public class KeycloakJwtProcessor extends AbstractJwtProcessor {
     private final KeycloakOpenIDUtils keycloakOpenIDUtils;
 
     @Inject
-    public KeycloakJwtProcessor(OpenIDSetting openIDSetting, KeycloakOpenIDUtils keycloakOpenIDUtils) throws OpenIDException {
-        super(openIDSetting);
+    public KeycloakJwtProcessor(OpenIDSetting openIDSetting, KeycloakOpenIDUtils keycloakOpenIDUtils, OpenIDUtils openIDUtils) throws OpenIDException {
+        super(openIDSetting, openIDUtils);
         this.keycloakOpenIDUtils = keycloakOpenIDUtils;
     }
 

@@ -76,7 +76,7 @@ public class DatastoreModule extends AbstractKapuaModule {
         bind(MessageStoreFactory.class).to(MessageStoreFactoryImpl.class);
         bind(MessageRepository.class).to(MessageElasticsearchRepository.class).in(Singleton.class);
         bind(MessageStoreFacade.class).to(MessageStoreFacadeImpl.class).in(Singleton.class);
-
+        bind(MetricsDatastore.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet
@@ -126,13 +126,15 @@ public class DatastoreModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             @Named("MessageStoreServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
             KapuaJpaTxManagerFactory jpaTxManagerFactory,
-            MessageStoreFacade messageStoreFacade) {
+            MessageStoreFacade messageStoreFacade,
+            MetricsDatastore metricsDatastore) {
         return new MessageStoreServiceImpl(
                 jpaTxManagerFactory.create("kapua-datastore"),
                 permissionFactory,
                 authorizationService,
                 serviceConfigurationManager,
-                messageStoreFacade);
+                messageStoreFacade,
+                metricsDatastore);
     }
 
     @Provides

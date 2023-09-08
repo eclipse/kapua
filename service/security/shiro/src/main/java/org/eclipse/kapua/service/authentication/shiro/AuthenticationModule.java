@@ -190,8 +190,9 @@ public class AuthenticationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    CredentialMapper credentialMapper(CredentialFactory credentialFactory, KapuaAuthenticationSetting kapuaAuthenticationSetting) {
-        return new CredentialMapperImpl(credentialFactory, kapuaAuthenticationSetting);
+    CredentialMapper credentialMapper(CredentialFactory credentialFactory, KapuaAuthenticationSetting kapuaAuthenticationSetting,
+                                      AuthenticationUtils authenticationUtils) {
+        return new CredentialMapperImpl(credentialFactory, kapuaAuthenticationSetting, authenticationUtils);
     }
 
     @Provides
@@ -222,7 +223,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             UserService userService,
             KapuaJpaTxManagerFactory jpaTxManagerFactory,
-            KapuaAuthenticationSetting kapuaAuthenticationSetting) {
+            KapuaAuthenticationSetting kapuaAuthenticationSetting,
+            AuthenticationUtils authenticationUtils) {
         int trustKeyDuration = kapuaAuthenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TRUST_KEY_DURATION);
 
         return new MfaOptionServiceImpl(
@@ -235,7 +237,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
                 scratchCodeFactory,
                 authorizationService,
                 permissionFactory,
-                userService
+                userService,
+                authenticationUtils
         );
     }
 
@@ -246,13 +249,15 @@ public class AuthenticationModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             ScratchCodeRepository scratchCodeRepository,
             ScratchCodeFactory scratchCodeFactory,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            AuthenticationUtils authenticationUtils) {
         return new ScratchCodeServiceImpl(
                 authorizationService,
                 permissionFactory,
                 jpaTxManagerFactory.create("kapua-authentication"),
                 scratchCodeRepository,
-                scratchCodeFactory);
+                scratchCodeFactory,
+                authenticationUtils);
     }
 
     @Provides

@@ -15,6 +15,7 @@ package org.eclipse.kapua.plugin.sso.openid.provider.generic.jwt;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDIllegalArgumentException;
+import org.eclipse.kapua.plugin.sso.openid.provider.OpenIDUtils;
 import org.eclipse.kapua.plugin.sso.openid.provider.generic.setting.GenericOpenIDSetting;
 import org.eclipse.kapua.plugin.sso.openid.provider.generic.setting.GenericOpenIDSettingKeys;
 import org.eclipse.kapua.plugin.sso.openid.provider.jwt.AbstractJwtProcessor;
@@ -36,8 +37,8 @@ public class GenericJwtProcessor extends AbstractJwtProcessor {
     }
 
     @Inject
-    public GenericJwtProcessor(OpenIDSetting openIDSetting, GenericOpenIDSetting genericOpenIDSetting) throws OpenIDException {
-        super(openIDSetting);
+    public GenericJwtProcessor(OpenIDSetting openIDSetting, GenericOpenIDSetting genericOpenIDSetting, OpenIDUtils openIDUtils) throws OpenIDException {
+        super(openIDSetting, openIDUtils);
         this.genericOpenIDSetting = genericOpenIDSetting;
     }
 

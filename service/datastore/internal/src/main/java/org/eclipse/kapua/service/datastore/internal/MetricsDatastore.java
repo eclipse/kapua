@@ -16,7 +16,8 @@ import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
-import org.eclipse.kapua.locator.KapuaLocator;
+
+import javax.inject.Inject;
 
 public class MetricsDatastore {
 
@@ -39,17 +40,8 @@ public class MetricsDatastore {
     private final Counter processedConfigurationError;
     private final Counter processedGenericError;
 
-    private static MetricsDatastore instance;
-
-    //TODO: FIXME: singletons should not be handled manually, we have DI for that
-    public synchronized static MetricsDatastore getInstance() {
-        if (instance == null) {
-            instance = new MetricsDatastore(KapuaLocator.getInstance().getComponent(MetricsService.class));
-        }
-        return instance;
-    }
-
-    private MetricsDatastore(MetricsService metricsService) {
+    @Inject
+    public MetricsDatastore(MetricsService metricsService) {
         alreadyInTheDatastore = metricsService.getCounter(CONSUMER_TELEMETRY, STORE, DUPLICATED_STORE);
 
         // data message

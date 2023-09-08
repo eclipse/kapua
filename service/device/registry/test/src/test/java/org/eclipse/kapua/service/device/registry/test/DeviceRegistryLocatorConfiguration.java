@@ -161,8 +161,8 @@ public class DeviceRegistryLocatorConfiguration {
                 bind(DeviceEventFactory.class).toInstance(new DeviceEventFactoryImpl());
                 bind(KapuaMessageFactory.class).toInstance(new KapuaMessageFactoryImpl());
 
-                final DeviceValidation deviceValidation = new DeviceValidationImpl(KapuaDeviceRegistrySettings.getInstance().getInt(KapuaDeviceRegistrySettingKeys.DEVICE_LIFECYCLE_BIRTH_VAR_FIELDS_LENGTH_MAX),
-                        KapuaDeviceRegistrySettings.getInstance().getInt(KapuaDeviceRegistrySettingKeys.DEVICE_LIFECYCLE_BIRTH_EXTENDED_PROPERTIES_LENGTH_MAX),
+                final DeviceValidation deviceValidation = new DeviceValidationImpl(new KapuaDeviceRegistrySettings().getInt(KapuaDeviceRegistrySettingKeys.DEVICE_LIFECYCLE_BIRTH_VAR_FIELDS_LENGTH_MAX),
+                        new KapuaDeviceRegistrySettings().getInt(KapuaDeviceRegistrySettingKeys.DEVICE_LIFECYCLE_BIRTH_EXTENDED_PROPERTIES_LENGTH_MAX),
                         mockedAuthorization,
                         permissionFactory,
                         Mockito.mock(GroupService.class),

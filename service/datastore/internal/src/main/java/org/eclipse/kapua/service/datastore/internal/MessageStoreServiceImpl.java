@@ -58,7 +58,6 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
 
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceImpl.class);
 
-    //TODO inject!!!
     private MetricsDatastore metrics;
     protected AccountService accountService;
     protected AuthorizationService authorizationService;
@@ -74,12 +73,13 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             ServiceConfigurationManager serviceConfigurationManager,
-            MessageStoreFacade messageStoreFacade
+            MessageStoreFacade messageStoreFacade,
+            MetricsDatastore metricsDatastore
     ) {
         super(txManager, serviceConfigurationManager, Domains.DATASTORE, authorizationService, permissionFactory);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
-        this.metrics = MetricsDatastore.getInstance();
+        this.metrics = metricsDatastore;
         this.messageStoreFacade = messageStoreFacade;
     }
 

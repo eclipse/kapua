@@ -59,7 +59,8 @@ public class DeviceManagementPackagesModule extends AbstractKapuaModule {
                 deviceRegistryService,
                 deviceManagementOperationRegistryService,
                 deviceManagementOperationFactory,
-                devicePackageFactory
+                devicePackageFactory,
+                packageManagementServiceSetting
         );
     }
 }

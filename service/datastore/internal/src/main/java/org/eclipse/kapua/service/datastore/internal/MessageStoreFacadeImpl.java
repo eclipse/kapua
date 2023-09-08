@@ -96,7 +96,8 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
             MessageRepository messageRepository,
             MetricInfoRepository metricInfoRepository,
             ChannelInfoRepository channelInfoRepository,
-            ClientInfoRepository clientInfoRepository) {
+            ClientInfoRepository clientInfoRepository,
+            MetricsDatastore metricsDatastore) {
         super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.clientInfoRegistryFacade = clientInfoRegistryFacade;
@@ -106,7 +107,7 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
         this.metricInfoRepository = metricInfoRepository;
         this.channelInfoRepository = channelInfoRepository;
         this.clientInfoRepository = clientInfoRepository;
-        this.metrics = MetricsDatastore.getInstance();
+        this.metrics = metricsDatastore;
     }
 
     /**

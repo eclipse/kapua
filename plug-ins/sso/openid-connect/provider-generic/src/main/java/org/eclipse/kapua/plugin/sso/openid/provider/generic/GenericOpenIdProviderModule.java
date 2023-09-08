@@ -19,6 +19,7 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.plugin.sso.openid.JwtProcessor;
 import org.eclipse.kapua.plugin.sso.openid.OpenIDService;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
+import org.eclipse.kapua.plugin.sso.openid.provider.OpenIDUtils;
 import org.eclipse.kapua.plugin.sso.openid.provider.generic.jwt.GenericJwtProcessor;
 import org.eclipse.kapua.plugin.sso.openid.provider.generic.setting.GenericOpenIDSetting;
 import org.eclipse.kapua.plugin.sso.openid.provider.setting.OpenIDSetting;
@@ -31,13 +32,13 @@ public class GenericOpenIdProviderModule extends AbstractKapuaModule {
 
     @ProvidesIntoSet
     @Singleton
-    JwtProcessor genericJwtProcessor(OpenIDSetting openIDSetting, GenericOpenIDSetting genericOpenIDSetting) throws OpenIDException {
-        return new GenericJwtProcessor(openIDSetting, genericOpenIDSetting);
+    JwtProcessor genericJwtProcessor(OpenIDSetting openIDSetting, GenericOpenIDSetting genericOpenIDSetting, OpenIDUtils openIDUtils) throws OpenIDException {
+        return new GenericJwtProcessor(openIDSetting, genericOpenIDSetting, openIDUtils);
     }
 
     @ProvidesIntoSet
     @Singleton
-    OpenIDService genericOpenIdService(OpenIDSetting openIDSetting, GenericOpenIDSetting genericOpenIDSetting) throws OpenIDException {
+    OpenIDService genericOpenIdService(OpenIDSetting openIDSetting, GenericOpenIDSetting genericOpenIDSetting, OpenIDUtils openIDUtils) throws OpenIDException {
         return new GenericOpenIDService(openIDSetting, genericOpenIDSetting, openIDUtils);
     }
 }

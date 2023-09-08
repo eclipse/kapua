@@ -23,13 +23,16 @@ import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 
 public class CredentialMapperImpl implements CredentialMapper {
     public CredentialMapperImpl(CredentialFactory credentialFactory,
-                                KapuaAuthenticationSetting setting) {
+                                KapuaAuthenticationSetting setting,
+                                AuthenticationUtils authenticationUtils) {
         this.credentialFactory = credentialFactory;
         this.setting = setting;
+        this.authenticationUtils = authenticationUtils;
     }
 
     private final CredentialFactory credentialFactory;
     private final KapuaAuthenticationSetting setting;
+    private final AuthenticationUtils authenticationUtils;
 
     @Override
     public Credential map(CredentialCreator credentialCreator) throws KapuaException {
@@ -56,7 +59,7 @@ public class CredentialMapperImpl implements CredentialMapper {
 
     // Private methods
     private String cryptPassword(String credentialPlainKey) throws KapuaException {
-        return AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey);
+        return authenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey);
     }
 
     private String cryptApiKey(String credentialPlainKey) throws KapuaException {
@@ -65,7 +68,7 @@ public class CredentialMapperImpl implements CredentialMapper {
 
         String hashedValue = credentialPlainKey.substring(0, preLength); // Add the pre in clear text
         hashedValue += preSeparator; // Add separator
-        hashedValue += AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey.substring(preLength, credentialPlainKey.length())); // Bcrypt the rest
+        hashedValue += authenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey.substring(preLength, credentialPlainKey.length())); // Bcrypt the rest
 
         return hashedValue;
     }

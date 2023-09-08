@@ -15,6 +15,8 @@ package org.eclipse.kapua.service.device.registry;
 import org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting;
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
+import javax.inject.Inject;
+
 /**
  * {@link AbstractBaseKapuaSetting} for `kapua-device-registry-internal` module.
  *
@@ -29,7 +31,8 @@ public class KapuaDeviceRegistrySettings extends AbstractKapuaSetting<KapuaDevic
      *
      * @since 1.0.0
      */
-    private KapuaDeviceRegistrySettings() {
+    @Inject
+    public KapuaDeviceRegistrySettings() {
         super(DEVICE_REGISTRY_SETTING_RESOURCE);
     }
 

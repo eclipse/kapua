@@ -14,6 +14,7 @@ package org.eclipse.kapua.consumer.telemetry;
 
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.camel.application.MetricsCamel;
+import org.eclipse.kapua.service.datastore.internal.MetricsDatastore;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,5 +29,10 @@ public class SpringBridge {
     @Bean
     MetricsTelemetry metricsTelemetry() {
         return KapuaLocator.getInstance().getComponent(MetricsTelemetry.class);
+    }
+
+    @Bean
+    MetricsDatastore metricsDatastore() {
+        return KapuaLocator.getInstance().getComponent(MetricsDatastore.class);
     }
 }
