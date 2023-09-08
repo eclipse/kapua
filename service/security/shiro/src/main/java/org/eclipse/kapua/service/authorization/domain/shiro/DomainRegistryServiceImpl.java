@@ -70,11 +70,13 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
         ArgumentValidator.notNull(domainCreator, "domainCreator");
         ArgumentValidator.notEmptyOrNull(domainCreator.getName(), "domainCreator.name");
         ArgumentValidator.notNull(domainCreator.getActions(), "domainCreator.actions");
+        ArgumentValidator.notEmptyOrNull(domainCreator.getServiceName(), "domainCreator.serviceName");
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.write, null));
         Domain domain = new DomainImpl();
 
         domain.setName(domainCreator.getName());
+        domain.setServiceName(domainCreator.getServiceName());
         domain.setGroupable(domainCreator.getGroupable());
 
         if (domainCreator.getActions() != null) {
