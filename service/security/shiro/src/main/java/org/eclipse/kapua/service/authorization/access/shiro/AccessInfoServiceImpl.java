@@ -67,6 +67,7 @@ public class AccessInfoServiceImpl implements AccessInfoService {
     private final AccessInfoFactory accessInfoFactory;
     private final AccessPermissionRepository accessPermissionRepository;
     private final AccessPermissionFactory accessPermissionFactory;
+    private final PermissionValidator permissionValidator;
 
     public AccessInfoServiceImpl(AuthorizationService authorizationService,
                                  PermissionFactory permissionFactory,
@@ -77,7 +78,8 @@ public class AccessInfoServiceImpl implements AccessInfoService {
                                  AccessInfoRepository accessInfoRepository,
                                  AccessInfoFactory accessInfoFactory,
                                  AccessPermissionRepository accessPermissionRepository,
-                                 AccessPermissionFactory accessPermissionFactory) {
+                                 AccessPermissionFactory accessPermissionFactory,
+                                 PermissionValidator permissionValidator) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.txManager = txManager;
@@ -88,6 +90,7 @@ public class AccessInfoServiceImpl implements AccessInfoService {
         this.accessInfoFactory = accessInfoFactory;
         this.accessPermissionRepository = accessPermissionRepository;
         this.accessPermissionFactory = accessPermissionFactory;
+        this.permissionValidator = permissionValidator;
     }
 
     @Override
@@ -105,7 +108,7 @@ public class AccessInfoServiceImpl implements AccessInfoService {
             }
         }
 
-        PermissionValidator.validatePermissions(accessInfoCreator.getPermissions());
+        permissionValidator.validatePermissions(accessInfoCreator.getPermissions());
         return txManager.execute(tx -> {
             if (accessInfoCreator.getRoleIds() != null) {
                 for (KapuaId roleId : accessInfoCreator.getRoleIds()) {

@@ -71,6 +71,7 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
     private final ClientInfoRegistryFacade clientInfoRegistryFacade;
     private final DatastorePredicateFactory datastorePredicateFactory;
     private final MessageRepository messageRepository;
+    private final DatastoreSettings datastoreSettings;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -85,7 +86,9 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             DatastorePredicateFactory datastorePredicateFactory,
-            ClientInfoRegistryFacade clientInfoRegistryFacade, MessageRepository messageRepository) {
+            ClientInfoRegistryFacade clientInfoRegistryFacade,
+            MessageRepository messageRepository,
+            DatastoreSettings datastoreSettings) {
         this.storablePredicateFactory = storablePredicateFactory;
         this.accountService = accountService;
         this.authorizationService = authorizationService;
@@ -93,6 +96,7 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
         this.datastorePredicateFactory = datastorePredicateFactory;
         this.clientInfoRegistryFacade = clientInfoRegistryFacade;
         this.messageRepository = messageRepository;
+        this.datastoreSettings = datastoreSettings;
     }
 
     @Override
@@ -255,7 +259,7 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
 
     @Override
     public boolean isServiceEnabled(KapuaId scopeId) {
-        return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
+        return !datastoreSettings.getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
     }
 
 }

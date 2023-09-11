@@ -52,24 +52,50 @@
     </bean>
 
     <!--  -->
-    <bean id="adminAuthenticationLogic" class="org.eclipse.kapua.service.authentication.authentication.AdminAuthenticationLogic"/>
-    <bean id="userAuthenticationLogic" class="org.eclipse.kapua.service.authentication.authentication.UserAuthenticationLogic"/>
+    <bean id="adminAuthenticationLogic" class="org.eclipse.kapua.service.authentication.authentication.AdminAuthenticationLogic">
+        <constructor-arg name="aclCreator" ref="aclCreator"/>
+        <constructor-arg name="authenticationMetric" ref="authenticationMetric"/>
+        <constructor-arg name="deviceConnectionOptionFactory" ref="deviceConnectionOptionFactory"/>
+        <constructor-arg name="deviceConnectionOptionService" ref="deviceConnectionOptionService"/>
+        <constructor-arg name="authorizationService" ref="authorizationService"/>
+        <constructor-arg name="deviceConnectionFactory" ref="deviceConnectionFactory"/>
+        <constructor-arg name="permissionFactory" ref="permissionFactory"/>
+        <constructor-arg name="deviceConnectionService" ref="deviceConnectionService"/>
+    </bean>
+    <bean id="userAuthenticationLogic" class="org.eclipse.kapua.service.authentication.authentication.UserAuthenticationLogic">
+        <constructor-arg name="aclCreator" ref="aclCreator"/>
+        <constructor-arg name="authenticationMetric" ref="authenticationMetric"/>
+        <constructor-arg name="deviceConnectionOptionFactory" ref="deviceConnectionOptionFactory"/>
+        <constructor-arg name="deviceConnectionOptionService" ref="deviceConnectionOptionService"/>
+        <constructor-arg name="authorizationService" ref="authorizationService"/>
+        <constructor-arg name="deviceConnectionFactory" ref="deviceConnectionFactory"/>
+        <constructor-arg name="permissionFactory" ref="permissionFactory"/>
+        <constructor-arg name="deviceConnectionService" ref="deviceConnectionService"/>
+    </bean>
 
     <!-- session filers (to bind Kapua and Shiro thread context) -->
     <bean id="kapuaCamelFilter" class="org.eclipse.kapua.service.camel.converter.KapuaCamelFilter"/>
 
     <bean id="errorMessageListener" class="org.eclipse.kapua.service.camel.listener.error.ErrorMessageListener">
-        <constructor-arg ref="metricsCamel"/>
+        <constructor-arg name="metricsCamel" ref="metricsCamel"/>
     </bean>
 
-    <bean id="defaultAuthenticator" class="org.eclipse.kapua.service.authentication.authentication.DefaultAuthenticator"/>
+    <bean id="defaultAuthenticator" class="org.eclipse.kapua.service.authentication.authentication.DefaultAuthenticator">
+        <constructor-arg name="adminAuthenticationLogic" ref="adminAuthenticationLogic"/>
+        <constructor-arg name="userAuthenticationLogic" ref="userAuthenticationLogic"/>
+        <constructor-arg name="deviceRegistryService" ref="deviceRegistryService"/>
+        <constructor-arg name="authenticationMetric" ref="authenticationMetric"/>
+        <constructor-arg name="serviceAuthenticationSetting" ref="serviceAuthenticationSetting"/>
+        <constructor-arg name="systemSetting" ref="systemSetting"/>
+        <constructor-arg name="serviceEventBus" ref="serviceEventBus"/>
+    </bean>
     <bean id="authenticationServiceBackEndCall" class="org.eclipse.kapua.service.authentication.AuthenticationServiceBackEndCall"/>
     <bean id="authenticationServiceConverter" class="org.eclipse.kapua.service.authentication.AuthenticationServiceConverter">
-        <constructor-arg ref="metricsAuthentication"/>
+        <constructor-arg name="metricsAuthentication" ref="metricsAuthentication"/>
     </bean>
     <bean id="authenticationServiceListener" class="org.eclipse.kapua.service.authentication.AuthenticationServiceListener">
-        <constructor-arg ref="authenticationServiceBackEndCall"/>
-        <constructor-arg ref="metricsAuthentication"/>
+        <constructor-arg name="authenticationServiceBackEndCall" ref="authenticationServiceBackEndCall"/>
+        <constructor-arg name="metricsAuthentication" ref="metricsAuthentication"/>
     </bean>
 
     <bean id="jaxbContextLoader" class="org.eclipse.kapua.service.camel.xml.ServiceJAXBContextLoader"

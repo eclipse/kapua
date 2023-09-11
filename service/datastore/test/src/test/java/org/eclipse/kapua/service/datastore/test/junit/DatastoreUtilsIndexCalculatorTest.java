@@ -20,6 +20,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,6 +43,7 @@ public class DatastoreUtilsIndexCalculatorTest {
     private static final Logger LOG = LoggerFactory.getLogger(DatastoreUtilsIndexCalculatorTest.class);
 
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm Z");
+    private DatastoreUtils datastoreUtils = new DatastoreUtils(new DatastoreSettings());
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -105,38 +107,38 @@ public class DatastoreUtilsIndexCalculatorTest {
 
     @Test
     public void dataIndexNameByScopeId() {
-        Assert.assertEquals("1-data-message-*", DatastoreUtils.getDataIndexName(KapuaId.ONE));
+        Assert.assertEquals("1-data-message-*", datastoreUtils.getDataIndexName(KapuaId.ONE));
     }
 
     @Test
     public void dataIndexNameByScopeIdAndTimestamp() throws KapuaException, ParseException {
 
         // Index by Week
-        String weekIndexName = DatastoreUtils.getDataIndexName(KapuaId.ONE, sdf.parse("02/01/2017 13:12 +0100").getTime(), DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
+        String weekIndexName = datastoreUtils.getDataIndexName(KapuaId.ONE, sdf.parse("02/01/2017 13:12 +0100").getTime(), datastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
         Assert.assertEquals("1-data-message-2017-01", weekIndexName);
 
         // Index by Day
-        String dayIndexName = DatastoreUtils.getDataIndexName(KapuaId.ONE, sdf.parse("02/01/2017 13:12 +0100").getTime(), DatastoreUtils.INDEXING_WINDOW_OPTION_DAY);
+        String dayIndexName = datastoreUtils.getDataIndexName(KapuaId.ONE, sdf.parse("02/01/2017 13:12 +0100").getTime(), datastoreUtils.INDEXING_WINDOW_OPTION_DAY);
         Assert.assertEquals("1-data-message-2017-01-02", dayIndexName);
 
         // Index by Hour
-        String hourIndexName = DatastoreUtils.getDataIndexName(KapuaId.ONE, sdf.parse("02/01/2017 13:12 +0100").getTime(), DatastoreUtils.INDEXING_WINDOW_OPTION_HOUR);
+        String hourIndexName = datastoreUtils.getDataIndexName(KapuaId.ONE, sdf.parse("02/01/2017 13:12 +0100").getTime(), datastoreUtils.INDEXING_WINDOW_OPTION_HOUR);
         Assert.assertEquals("1-data-message-2017-01-02-12", hourIndexName);     // Index Hour is UTC!
     }
 
     @Test
     public void channelIndexNameByScopeId() {
-        Assert.assertEquals("1-data-channel", DatastoreUtils.getChannelIndexName(KapuaId.ONE));
+        Assert.assertEquals("1-data-channel", datastoreUtils.getChannelIndexName(KapuaId.ONE));
     }
 
     @Test
     public void clientIndexNameByScopeId() {
-        Assert.assertEquals("1-data-client", DatastoreUtils.getClientIndexName(KapuaId.ONE));
+        Assert.assertEquals("1-data-client", datastoreUtils.getClientIndexName(KapuaId.ONE));
     }
 
     @Test
     public void metricIndexNameByScopeId() {
-        Assert.assertEquals("1-data-metric", DatastoreUtils.getMetricIndexName(KapuaId.ONE));
+        Assert.assertEquals("1-data-metric", datastoreUtils.getMetricIndexName(KapuaId.ONE));
     }
 
     private void performTest(Date startDate, Date endDate, String[] expectedIndexes) throws DatastoreException {
@@ -157,7 +159,7 @@ public class DatastoreUtilsIndexCalculatorTest {
                 calEndDate != null ? calEndDate.get(Calendar.WEEK_OF_YEAR) : "Infinity",
                 calEndDate != null ? calEndDate.get(Calendar.DAY_OF_WEEK) : "Infinity");
 
-        String[] index = DatastoreUtils.convertToDataIndexes(getDataIndexesByAccount(KapuaEid.ONE), startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null);
+        String[] index = datastoreUtils.convertToDataIndexes(getDataIndexesByAccount(KapuaEid.ONE), startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null);
         compareResult(expectedIndexes, index);
     }
 
@@ -179,7 +181,7 @@ public class DatastoreUtilsIndexCalculatorTest {
                 calEndDate != null ? calEndDate.get(Calendar.WEEK_OF_YEAR) : "Infinity",
                 calEndDate != null ? calEndDate.get(Calendar.DAY_OF_WEEK) : "Infinity");
 
-        String[] index = DatastoreUtils.convertToDataIndexes(new String[]{null, null}, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null);
+        String[] index = datastoreUtils.convertToDataIndexes(new String[]{null, null}, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null);
         compareResult(null, index);
     }
 

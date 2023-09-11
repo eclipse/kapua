@@ -17,6 +17,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.ClientInfoFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
@@ -29,22 +30,28 @@ import javax.inject.Inject;
 
 public class ClientInfoElasticsearchRepository extends DatastoreElasticSearchRepositoryBase<ClientInfo, ClientInfoListResult, ClientInfoQuery> implements ClientInfoRepository {
 
+    private final DatastoreUtils datastoreUtils;
+
     @Inject
     protected ClientInfoElasticsearchRepository(
             ElasticsearchClientProvider elasticsearchClientProviderInstance,
             ClientInfoFactory clientInfoFactory,
-            StorablePredicateFactory storablePredicateFactory) {
+            StorablePredicateFactory storablePredicateFactory,
+            DatastoreSettings datastoreSettings,
+            DatastoreUtils datastoreUtils) {
         super(elasticsearchClientProviderInstance,
                 ClientInfoSchema.CLIENT_TYPE_NAME,
                 ClientInfo.class,
                 clientInfoFactory,
                 storablePredicateFactory,
-                DatastoreCacheManager.getInstance().getClientsCache());
+                DatastoreCacheManager.getInstance().getClientsCache(),
+                datastoreSettings);
+        this.datastoreUtils = datastoreUtils;
     }
 
     @Override
     protected String indexResolver(KapuaId scopeId) {
-        return DatastoreUtils.getClientIndexName(scopeId);
+        return datastoreUtils.getClientIndexName(scopeId);
     }
 
     @Override

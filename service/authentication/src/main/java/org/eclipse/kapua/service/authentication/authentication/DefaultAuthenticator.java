@@ -26,7 +26,6 @@ import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.setting.ServiceAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.setting.ServiceAuthenticationSettingKey;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -54,35 +53,37 @@ public class DefaultAuthenticator implements Authenticator {
         DISCONNECT
     }
 
-    private DeviceRegistryService deviceRegistryService;
+    private final DeviceRegistryService deviceRegistryService;
     private final AuthMetric authenticationMetric;
+    protected final AdminAuthenticationLogic adminAuthenticationLogic;
+    protected final UserAuthenticationLogic userAuthenticationLogic;
     private boolean raiseLifecycleEvents;
     private String lifecycleEventAddress;
-
-    //TODO: FIXME: declare AuthenticationLogic interface and add parameters to help injector to inject the right instance
-    @Inject
-    protected AdminAuthenticationLogic adminAuthenticationLogic;
-    @Inject
-    protected UserAuthenticationLogic userAuthenticationLogic;
-
-    //TODO: FIXME: inject this instance
     private ServiceEventBus serviceEventBus;
 
     protected String adminUserName;
 
     /**
      * Default constructor
-     *
-     * @throws KapuaException
      */
-    public DefaultAuthenticator() throws KapuaException {
-        deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
-        adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
-        authenticationMetric = KapuaLocator.getInstance().getComponent(AuthMetric.class);
-        raiseLifecycleEvents = ServiceAuthenticationSetting.getInstance().getBoolean(ServiceAuthenticationSettingKey.SERVICE_AUTHENTICATION_ENABLE_LIFECYCLE_EVENTS, false);
+    @Inject
+    public DefaultAuthenticator(
+            DeviceRegistryService deviceRegistryService,
+            AuthMetric authenticationMetric,
+            AdminAuthenticationLogic adminAuthenticationLogic,
+            UserAuthenticationLogic userAuthenticationLogic,
+            SystemSetting systemSetting,
+            ServiceAuthenticationSetting serviceAuthenticationSetting,
+            ServiceEventBus serviceEventBus) {
+        this.deviceRegistryService = deviceRegistryService;
+        this.authenticationMetric = authenticationMetric;
+        this.adminAuthenticationLogic = adminAuthenticationLogic;
+        this.userAuthenticationLogic = userAuthenticationLogic;
+        adminUserName = systemSetting.getString(SystemSettingKey.SYS_ADMIN_USERNAME);
+        raiseLifecycleEvents = serviceAuthenticationSetting.getBoolean(ServiceAuthenticationSettingKey.SERVICE_AUTHENTICATION_ENABLE_LIFECYCLE_EVENTS, false);
         if (raiseLifecycleEvents) {
-            lifecycleEventAddress = ServiceAuthenticationSetting.getInstance().getString(ServiceAuthenticationSettingKey.SERVICE_AUTHENTICATION_LIFECYCLE_EVENTS_ADDRESS);
-            serviceEventBus = KapuaLocator.getInstance().getComponent(ServiceEventBus.class);
+            lifecycleEventAddress = serviceAuthenticationSetting.getString(ServiceAuthenticationSettingKey.SERVICE_AUTHENTICATION_LIFECYCLE_EVENTS_ADDRESS);
+            this.serviceEventBus = serviceEventBus;
         } else {
             logger.info("Skipping AuthenticationService event bus initialization since the raise of connect/disconnect event is disabled!");
         }

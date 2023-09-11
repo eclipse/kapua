@@ -28,11 +28,13 @@ import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
  */
 public class MetricPredicateImpl extends RangePredicateImpl implements MetricPredicate {
 
+    private final DatastoreUtils datastoreUtils;
     private String name;
     private Class<?> type;
 
-    public <V extends Comparable<V>> MetricPredicateImpl(String metricName, Class<V> type, V minValue, V maxValue) {
+    public <V extends Comparable<V>> MetricPredicateImpl(String metricName, Class<V> type, V minValue, V maxValue, DatastoreUtils datastoreUtils) {
         super(MessageField.METRICS, minValue, maxValue);
+        this.datastoreUtils = datastoreUtils;
 
         setName(metricName);
         setType(type);
@@ -86,9 +88,9 @@ public class MetricPredicateImpl extends RangePredicateImpl implements MetricPre
         termNode.set(
                 getField().field()
                         .concat(".")
-                        .concat(DatastoreUtils.normalizeMetricName(getName()))
+                        .concat(datastoreUtils.normalizeMetricName(getName()))
                         .concat(".")
-                        .concat(DatastoreUtils.getClientMetricFromAcronym(getType().getSimpleName().toLowerCase())),
+                        .concat(datastoreUtils.getClientMetricFromAcronym(getType().getSimpleName().toLowerCase())),
                 valuesNode);
 
         ObjectNode rootNode = MappingUtils.newObjectNode();

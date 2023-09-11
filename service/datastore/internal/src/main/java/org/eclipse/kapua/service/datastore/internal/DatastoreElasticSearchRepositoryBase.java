@@ -36,19 +36,29 @@ public abstract class DatastoreElasticSearchRepositoryBase<
         extends ElasticsearchRepository<T, L, Q>
         implements StorableRepository<T, L, Q> {
 
+    protected final DatastoreSettings datastoreSettings;
+
     protected DatastoreElasticSearchRepositoryBase(
             ElasticsearchClientProvider elasticsearchClientProviderInstance,
             String type,
             Class<T> clazz,
             StorableFactory<T, L, Q> storableFactory,
             StorablePredicateFactory storablePredicateFactory,
-            LocalCache<String, Boolean> indexesCache) {
+            LocalCache<String, Boolean> indexesCache,
+            DatastoreSettings datastoreSettings) {
         super(elasticsearchClientProviderInstance, type, clazz, storableFactory, storablePredicateFactory,
                 indexesCache);
+        this.datastoreSettings = datastoreSettings;
     }
 
-    protected DatastoreElasticSearchRepositoryBase(ElasticsearchClientProvider elasticsearchClientProviderInstance, String type, Class<T> clazz, StorableFactory<T, L, Q> storableFactory, StorablePredicateFactory storablePredicateFactory) {
+    protected DatastoreElasticSearchRepositoryBase(
+            ElasticsearchClientProvider elasticsearchClientProviderInstance,
+            String type,
+            Class<T> clazz,
+            StorableFactory<T, L, Q> storableFactory,
+            StorablePredicateFactory storablePredicateFactory, DatastoreSettings datastoreSettings) {
         super(elasticsearchClientProviderInstance, type, clazz, storableFactory, storablePredicateFactory);
+        this.datastoreSettings = datastoreSettings;
     }
 
     /**
@@ -59,9 +69,9 @@ public abstract class DatastoreElasticSearchRepositoryBase<
      */
     @Override
     protected ObjectNode getMappingSchema(String idxName) throws MappingException {
-        String idxRefreshInterval = String.format("%ss", DatastoreSettings.getInstance().getLong(DatastoreSettingsKey.INDEX_REFRESH_INTERVAL));
-        Integer idxShardNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.INDEX_SHARD_NUMBER, 1);
-        Integer idxReplicaNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.INDEX_REPLICA_NUMBER, 0);
+        String idxRefreshInterval = String.format("%ss", datastoreSettings.getLong(DatastoreSettingsKey.INDEX_REFRESH_INTERVAL));
+        Integer idxShardNumber = datastoreSettings.getInt(DatastoreSettingsKey.INDEX_SHARD_NUMBER, 1);
+        Integer idxReplicaNumber = datastoreSettings.getInt(DatastoreSettingsKey.INDEX_REPLICA_NUMBER, 0);
 
         ObjectNode rootNode = MappingUtils.newObjectNode();
         ObjectNode settingsNode = MappingUtils.newObjectNode();

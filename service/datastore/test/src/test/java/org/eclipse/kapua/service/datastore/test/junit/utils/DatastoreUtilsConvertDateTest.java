@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.datastore.test.junit.utils;
 import org.assertj.core.api.Assertions;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -25,26 +26,27 @@ import java.util.Date;
 
 @Category(JUnitTests.class)
 public class DatastoreUtilsConvertDateTest {
+    private DatastoreUtils datastoreUtils = new DatastoreUtils(new DatastoreSettings());
 
     @Test(expected = java.lang.IllegalArgumentException.class)
     public void convertNullString() {
-        DatastoreUtils.convertToCorrectType(DatastoreUtils.CLIENT_METRIC_TYPE_DATE_ACRONYM, null);
+        datastoreUtils.convertToCorrectType(DatastoreUtils.CLIENT_METRIC_TYPE_DATE_ACRONYM, null);
     }
 
     @Test
     public void convertValidString() {
-        Assertions.assertThat(DatastoreUtils.convertToCorrectType(DatastoreUtils.CLIENT_METRIC_TYPE_DATE_ACRONYM, "2017-01-02T12:34:56.123Z"))
+        Assertions.assertThat(datastoreUtils.convertToCorrectType(DatastoreUtils.CLIENT_METRIC_TYPE_DATE_ACRONYM, "2017-01-02T12:34:56.123Z"))
                 .isInstanceOf(Date.class)
                 .isEqualTo(Date.from(ZonedDateTime.of(2017, 1, 2, 12, 34, 56, 123_000_000, ZoneOffset.UTC).toInstant()));
     }
 
     @Test(expected = java.time.format.DateTimeParseException.class)
     public void convertWrongString() {
-        DatastoreUtils.convertToCorrectType(DatastoreUtils.CLIENT_METRIC_TYPE_DATE_ACRONYM, "01-02-2017T12:34:56.123Z");
+        datastoreUtils.convertToCorrectType(DatastoreUtils.CLIENT_METRIC_TYPE_DATE_ACRONYM, "01-02-2017T12:34:56.123Z");
     }
 
     @Test(expected = java.time.format.DateTimeParseException.class)
     public void convertEmptyString() {
-        DatastoreUtils.convertToCorrectType(DatastoreUtils.CLIENT_METRIC_TYPE_DATE_ACRONYM, "");
+        datastoreUtils.convertToCorrectType(DatastoreUtils.CLIENT_METRIC_TYPE_DATE_ACRONYM, "");
     }
 }

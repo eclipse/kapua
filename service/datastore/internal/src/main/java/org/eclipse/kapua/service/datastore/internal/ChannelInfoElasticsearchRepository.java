@@ -17,6 +17,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.ChannelInfoFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
@@ -29,17 +30,23 @@ import javax.inject.Inject;
 
 public class ChannelInfoElasticsearchRepository extends DatastoreElasticSearchRepositoryBase<ChannelInfo, ChannelInfoListResult, ChannelInfoQuery> implements ChannelInfoRepository {
 
+    private final DatastoreUtils datastoreUtils;
+
     @Inject
     protected ChannelInfoElasticsearchRepository(
             ElasticsearchClientProvider elasticsearchClientProviderInstance,
             ChannelInfoFactory channelInfoFactory,
-            StorablePredicateFactory storablePredicateFactory) {
+            StorablePredicateFactory storablePredicateFactory,
+            DatastoreSettings datastoreSettings,
+            DatastoreUtils datastoreUtils) {
         super(elasticsearchClientProviderInstance,
                 ChannelInfoSchema.CHANNEL_TYPE_NAME,
                 ChannelInfo.class,
                 channelInfoFactory,
                 storablePredicateFactory,
-                DatastoreCacheManager.getInstance().getChannelsCache());
+                DatastoreCacheManager.getInstance().getChannelsCache(),
+                datastoreSettings);
+        this.datastoreUtils = datastoreUtils;
     }
 
     @Override
@@ -49,7 +56,7 @@ public class ChannelInfoElasticsearchRepository extends DatastoreElasticSearchRe
 
     @Override
     protected String indexResolver(KapuaId scopeId) {
-        return DatastoreUtils.getChannelIndexName(scopeId);
+        return datastoreUtils.getChannelIndexName(scopeId);
     }
 
     @Override

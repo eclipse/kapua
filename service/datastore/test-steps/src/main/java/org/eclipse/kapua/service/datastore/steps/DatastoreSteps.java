@@ -433,7 +433,7 @@ public class DatastoreSteps extends TestBase {
         String indexName = "";
 
         primeException();
-        indexName = DatastoreUtils.getDataIndexName(SYS_SCOPE_ID, instant.toEpochMilli(), window);
+        indexName = KapuaLocator.getInstance().getComponent(DatastoreUtils.class).getDataIndexName(SYS_SCOPE_ID, instant.toEpochMilli(), window);
 
         Assert.assertEquals(name, indexName);
     }
@@ -1580,7 +1580,7 @@ public class DatastoreSteps extends TestBase {
     public void deleteIndexesBetweenDates(String fromDate, String toDate) throws Exception {
         primeException();
         try {
-            String[] indexes = DatastoreUtils.convertToDataIndexes(getDataIndexesByAccount(getCurrentScopeId()), KapuaDateUtils.parseDate(fromDate).toInstant(),
+            String[] indexes = KapuaLocator.getInstance().getComponent(DatastoreUtils.class).convertToDataIndexes(getDataIndexesByAccount(getCurrentScopeId()), KapuaDateUtils.parseDate(fromDate).toInstant(),
                     KapuaDateUtils.parseDate(toDate).toInstant());
             elasticsearchClient.deleteIndexes(indexes);
         } catch (Exception ex) {

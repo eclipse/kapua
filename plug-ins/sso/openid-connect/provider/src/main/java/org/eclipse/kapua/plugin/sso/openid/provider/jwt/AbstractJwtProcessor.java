@@ -47,7 +47,7 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
     private static final String JWKS_URI_WELL_KNOWN_KEY = "jwks_uri";
     private Map<URI, Processor> processors = new HashMap<>();
     private Duration timeout;  // the JwtProcessor expiration time.
-    private final OpenIDUtils openIDUtils;
+    protected final OpenIDUtils openIDUtils;
     protected final OpenIDSetting openIDSetting;
 
     /**

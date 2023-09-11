@@ -17,6 +17,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.MetricInfoFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
@@ -29,17 +30,23 @@ import javax.inject.Inject;
 
 public class MetricInfoRepositoryImpl extends DatastoreElasticSearchRepositoryBase<MetricInfo, MetricInfoListResult, MetricInfoQuery> implements MetricInfoRepository {
 
+    private final DatastoreUtils datastoreUtils;
+
     @Inject
     protected MetricInfoRepositoryImpl(
             ElasticsearchClientProvider elasticsearchClientProviderInstance,
             MetricInfoFactory metricInfoFactory,
-            StorablePredicateFactory storablePredicateFactory) {
+            StorablePredicateFactory storablePredicateFactory,
+            DatastoreSettings datastoreSettings,
+            DatastoreUtils datastoreUtils) {
         super(elasticsearchClientProviderInstance,
                 MetricInfoSchema.METRIC_TYPE_NAME,
                 MetricInfo.class,
                 metricInfoFactory,
                 storablePredicateFactory,
-                DatastoreCacheManager.getInstance().getMetricsCache());
+                DatastoreCacheManager.getInstance().getMetricsCache(),
+                datastoreSettings);
+        this.datastoreUtils = datastoreUtils;
     }
 
     @Override
@@ -49,7 +56,7 @@ public class MetricInfoRepositoryImpl extends DatastoreElasticSearchRepositoryBa
 
     @Override
     protected String indexResolver(KapuaId scopeId) {
-        return DatastoreUtils.getMetricIndexName(scopeId);
+        return datastoreUtils.getMetricIndexName(scopeId);
     }
 
     @Override

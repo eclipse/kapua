@@ -44,16 +44,22 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MessageElasticsearchRepository extends DatastoreElasticSearchRepositoryBase<DatastoreMessage, MessageListResult, MessageQuery> implements MessageRepository {
+    private final DatastoreUtils datastoreUtils;
+
     @Inject
     public MessageElasticsearchRepository(
             ElasticsearchClientProvider elasticsearchClientProviderInstance,
             MessageStoreFactory messageStoreFactory,
-            StorablePredicateFactory storablePredicateFactory) {
+            StorablePredicateFactory storablePredicateFactory,
+            DatastoreSettings datastoreSettings,
+            DatastoreUtils datastoreUtils) {
         super(elasticsearchClientProviderInstance,
                 MessageSchema.MESSAGE_TYPE_NAME,
                 DatastoreMessage.class,
                 messageStoreFactory,
-                storablePredicateFactory);
+                storablePredicateFactory,
+                datastoreSettings);
+        this.datastoreUtils = datastoreUtils;
     }
 
     private final LocalCache<String, Map<String, Metric>> metricsByIndex = DatastoreCacheManager.getInstance().getMetadataCache();
@@ -74,12 +80,12 @@ public class MessageElasticsearchRepository extends DatastoreElasticSearchReposi
 
     @Override
     protected String indexResolver(KapuaId scopeId) {
-        return DatastoreUtils.getDataIndexName(scopeId);
+        return datastoreUtils.getDataIndexName(scopeId);
     }
 
     protected String indexResolver(KapuaId scopeId, Long time) {
-        final String indexingWindowOption = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEXING_WINDOW_OPTION, DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
-        return DatastoreUtils.getDataIndexName(scopeId, time, indexingWindowOption);
+        final String indexingWindowOption = datastoreSettings.getString(DatastoreSettingsKey.INDEXING_WINDOW_OPTION, DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
+        return datastoreUtils.getDataIndexName(scopeId, time, indexingWindowOption);
     }
 
     /**
@@ -181,7 +187,7 @@ public class MessageElasticsearchRepository extends DatastoreElasticSearchReposi
                     break;
             }
 
-            metricMappingPropertiesNode.set(DatastoreUtils.getClientMetricFromAcronym(metric.getType()), valueMappingNode);
+            metricMappingPropertiesNode.set(datastoreUtils.getClientMetricFromAcronym(metric.getType()), valueMappingNode);
             metricMapping.set(SchemaKeys.FIELD_NAME_PROPERTIES, metricMappingPropertiesNode);
             metricsPropertiesNode.set(metric.getName(), metricMapping);
         }

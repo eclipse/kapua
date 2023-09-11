@@ -81,6 +81,7 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
     private final ChannelInfoRepository channelInfoRepository;
     private final ClientInfoRepository clientInfoRepository;
     private final MetricsDatastore metrics;
+    private final DatastoreUtils datastoreUtils;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -97,7 +98,7 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
             MetricInfoRepository metricInfoRepository,
             ChannelInfoRepository channelInfoRepository,
             ClientInfoRepository clientInfoRepository,
-            MetricsDatastore metricsDatastore) {
+            MetricsDatastore metricsDatastore, DatastoreUtils datastoreUtils) {
         super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.clientInfoRegistryFacade = clientInfoRegistryFacade;
@@ -108,6 +109,7 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
         this.channelInfoRepository = channelInfoRepository;
         this.clientInfoRepository = clientInfoRepository;
         this.metrics = metricsDatastore;
+        this.datastoreUtils = datastoreUtils;
     }
 
     /**
@@ -166,12 +168,12 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
         if (message.getPayload() != null && message.getPayload().getMetrics() != null && !message.getPayload().getMetrics().isEmpty()) {
             Map<String, Object> messageMetrics = message.getPayload().getMetrics();
             for (Map.Entry<String, Object> messageMetric : messageMetrics.entrySet()) {
-                String metricName = DatastoreUtils.normalizeMetricName(messageMetric.getKey());
-                String clientMetricType = DatastoreUtils.getClientMetricFromType(messageMetric.getValue().getClass());
+                String metricName = datastoreUtils.normalizeMetricName(messageMetric.getKey());
+                String clientMetricType = datastoreUtils.getClientMetricFromType(messageMetric.getValue().getClass());
                 Metric metric = new Metric(metricName, clientMetricType);
 
                 // each metric is potentially a dynamic field so report it a new mapping
-                String mappedName = DatastoreUtils.getMetricValueQualifier(metricName, clientMetricType);
+                String mappedName = datastoreUtils.getMetricValueQualifier(metricName, clientMetricType);
                 metrics.put(mappedName, metric);
             }
         }

@@ -14,12 +14,13 @@ package org.eclipse.kapua.service.datastore.internal.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
+import javax.inject.Inject;
+
 /**
  * Datastore {@link AbstractKapuaSetting}.
  *
  * @since 1.0.0
  */
-//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class DatastoreSettings extends AbstractKapuaSetting<DatastoreSettingsKey> {
 
     /**
@@ -30,28 +31,13 @@ public class DatastoreSettings extends AbstractKapuaSetting<DatastoreSettingsKey
     private static final String DATASTORE_CONFIG_RESOURCE = "kapua-datastore-settings.properties";
 
     /**
-     * Singleton instance of this {@link Class}.
-     *
-     * @since 1.0.0
-     */
-    private static final DatastoreSettings INSTANCE = new DatastoreSettings();
-
-    /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link DatastoreSettings#DATASTORE_CONFIG_RESOURCE} value.
      *
      * @since 1.0.0
      */
-    private DatastoreSettings() {
+    @Inject
+    public DatastoreSettings() {
         super(DATASTORE_CONFIG_RESOURCE);
     }
 
-    /**
-     * Gets a singleton instance of {@link DatastoreSettings}.
-     *
-     * @return A singleton instance of {@link DatastoreSettings}.
-     * @since 1.0.0
-     */
-    public static DatastoreSettings getInstance() {
-        return INSTANCE;
-    }
 }

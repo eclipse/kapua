@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.authorization.permission.shiro;
 import com.google.common.collect.Sets;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
@@ -23,26 +22,28 @@ import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionAttributes;
 
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
-//TODO: FIXME: promote from static utility to injectable collaborator
 public class PermissionValidator {
 
-    private static final DomainRegistryService DOMAIN_SERVICE = KapuaLocator.getInstance().getService(DomainRegistryService.class);
-    private static final DomainFactory DOMAIN_FACTORY = KapuaLocator.getInstance().getFactory(DomainFactory.class);
+    private final DomainRegistryService domainService;
+    private final DomainFactory domainFactory;
 
-    private PermissionValidator() {
+    @Inject
+    public PermissionValidator(DomainRegistryService domainService, DomainFactory domainFactory) {
+        this.domainService = domainService;
+        this.domainFactory = domainFactory;
     }
 
-    public static void validatePermission(@NotNull Permission permission) throws KapuaException {
+    public void validatePermission(@NotNull Permission permission) throws KapuaException {
         validatePermissions(Sets.newHashSet(permission));
     }
 
-    public static void validatePermissions(@NotNull Set<Permission> permissions) throws KapuaException {
-
+    public void validatePermissions(@NotNull Set<Permission> permissions) throws KapuaException {
         if (!permissions.isEmpty()) {
-            DomainListResult domains = DOMAIN_SERVICE.query(DOMAIN_FACTORY.newQuery(null));
+            DomainListResult domains = domainService.query(domainFactory.newQuery(null));
 
             for (Permission p : permissions) {
                 if (p.getDomain() != null) {

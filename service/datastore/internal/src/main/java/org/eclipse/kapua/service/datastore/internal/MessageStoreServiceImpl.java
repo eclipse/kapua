@@ -63,8 +63,8 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
     protected AuthorizationService authorizationService;
     protected PermissionFactory permissionFactory;
 
-    protected final Integer maxLimitValue = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.MAX_LIMIT_VALUE);
-    protected final Integer maxEntriesOnDelete = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.CONFIG_MAX_ENTRIES_ON_DELETE);
+    protected final Integer maxLimitValue;
+    protected final Integer maxEntriesOnDelete;
     protected final MessageStoreFacade messageStoreFacade;
 
     @Inject
@@ -74,13 +74,16 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
             AuthorizationService authorizationService,
             ServiceConfigurationManager serviceConfigurationManager,
             MessageStoreFacade messageStoreFacade,
-            MetricsDatastore metricsDatastore
+            MetricsDatastore metricsDatastore,
+            DatastoreSettings datastoreSettings
     ) {
         super(txManager, serviceConfigurationManager, Domains.DATASTORE, authorizationService, permissionFactory);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         this.metrics = metricsDatastore;
         this.messageStoreFacade = messageStoreFacade;
+        maxLimitValue = datastoreSettings.getInt(DatastoreSettingsKey.MAX_LIMIT_VALUE);
+        maxEntriesOnDelete = datastoreSettings.getInt(DatastoreSettingsKey.CONFIG_MAX_ENTRIES_ON_DELETE);
     }
 
     @Override

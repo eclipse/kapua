@@ -21,7 +21,6 @@ import javax.inject.Inject;
  *
  * @since 1.0
  */
-//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class KapuaUserSetting extends AbstractKapuaSetting<KapuaUserSettingKeys> {
 
     /**

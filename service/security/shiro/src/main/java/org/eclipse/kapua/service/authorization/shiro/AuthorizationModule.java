@@ -82,6 +82,7 @@ import org.eclipse.kapua.service.authorization.group.shiro.GroupImplJpaRepositor
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
+import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValidator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionRepository;
@@ -122,6 +123,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
 
         bind(GroupFactory.class).to(GroupFactoryImpl.class).in(Singleton.class);
         bind(KapuaAuthorizationSetting.class).in(Singleton.class);
+        bind(PermissionValidator.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet
@@ -221,13 +223,15 @@ public class AuthorizationModule extends AbstractKapuaModule {
                                                 AuthorizationService authorizationService,
                                                 RoleRepository roleRepository,
                                                 RolePermissionRepository rolePermissionRepository,
-                                                KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+                                                KapuaJpaTxManagerFactory jpaTxManagerFactory,
+                                                PermissionValidator permissionValidator) {
         return new RolePermissionServiceImpl(
                 authorizationService,
                 permissionFactory,
                 jpaTxManagerFactory.create("kapua-authorization"),
                 roleRepository,
-                rolePermissionRepository
+                rolePermissionRepository,
+                permissionValidator
         );
     }
 
@@ -239,7 +243,8 @@ public class AuthorizationModule extends AbstractKapuaModule {
                             @Named("RoleServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
                             RoleRepository roleRepository,
                             RolePermissionRepository rolePermissionRepository,
-                            KapuaJpaTxManagerFactory jpaTxManagerFactory
+                            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+                            PermissionValidator permissionValidator
     ) {
         return new RoleServiceImpl(
                 permissionFactory,
@@ -248,7 +253,8 @@ public class AuthorizationModule extends AbstractKapuaModule {
                 serviceConfigurationManager,
                 jpaTxManagerFactory.create("kapua-authorization"),
                 roleRepository,
-                rolePermissionRepository
+                rolePermissionRepository,
+                permissionValidator
         );
     }
 
@@ -346,7 +352,8 @@ public class AuthorizationModule extends AbstractKapuaModule {
             AccessInfoFactory accessInfoFactory,
             AccessPermissionRepository accessPermissionRepository,
             AccessPermissionFactory accessPermissionFactory,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            PermissionValidator permissionValidator) {
         return new AccessInfoServiceImpl(authorizationService,
                 permissionFactory,
                 jpaTxManagerFactory.create("kapua-authorization"),
@@ -356,7 +363,8 @@ public class AuthorizationModule extends AbstractKapuaModule {
                 accessInfoRepository,
                 accessInfoFactory,
                 accessPermissionRepository,
-                accessPermissionFactory);
+                accessPermissionFactory,
+                permissionValidator);
     }
 
     @Provides
@@ -375,12 +383,14 @@ public class AuthorizationModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AccessPermissionRepository accessPermissionRepository,
             AccessInfoRepository accessInfoRepository,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            PermissionValidator permissionValidator) {
         return new AccessPermissionServiceImpl(authorizationService,
                 permissionFactory,
                 jpaTxManagerFactory.create("kapua-authorization"),
                 accessPermissionRepository,
-                accessInfoRepository);
+                accessInfoRepository,
+                permissionValidator);
     }
 
 

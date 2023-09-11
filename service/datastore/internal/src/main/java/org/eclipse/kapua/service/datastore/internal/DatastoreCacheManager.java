@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.commons.cache.LocalCache;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
@@ -28,18 +29,17 @@ import java.util.Map;
 //TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class DatastoreCacheManager {
 
-    private static final DatastoreCacheManager INSTANCE = new DatastoreCacheManager();
+    private static final DatastoreCacheManager INSTANCE = new DatastoreCacheManager(KapuaLocator.getInstance().getComponent(DatastoreSettings.class));
 
     private final LocalCache<String, Map<String, Metric>> schemaCache;
     private final LocalCache<String, Boolean> channelsCache;
     private final LocalCache<String, Boolean> metricsCache;
     private final LocalCache<String, Boolean> clientsCache;
 
-    private DatastoreCacheManager() {
-        DatastoreSettings config = DatastoreSettings.getInstance();
-        int expireAfter = config.getInt(DatastoreSettingsKey.CONFIG_CACHE_LOCAL_EXPIRE_AFTER);
-        int sizeMax = config.getInt(DatastoreSettingsKey.CONFIG_CACHE_LOCAL_SIZE_MAXIMUM);
-        int sizeMaxMetadata = config.getInt(DatastoreSettingsKey.CONFIG_CACHE_METADATA_LOCAL_SIZE_MAXIMUM);
+    private DatastoreCacheManager(DatastoreSettings datastoreSettings) {
+        int expireAfter = datastoreSettings.getInt(DatastoreSettingsKey.CONFIG_CACHE_LOCAL_EXPIRE_AFTER);
+        int sizeMax = datastoreSettings.getInt(DatastoreSettingsKey.CONFIG_CACHE_LOCAL_SIZE_MAXIMUM);
+        int sizeMaxMetadata = datastoreSettings.getInt(DatastoreSettingsKey.CONFIG_CACHE_METADATA_LOCAL_SIZE_MAXIMUM);
 
         // TODO set expiration to happen frequently because the reset cache method will not get
         // called from service clients any more

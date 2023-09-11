@@ -70,6 +70,7 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
     private final MetricInfoRegistryFacade metricInfoRegistryFacade;
     private final DatastorePredicateFactory datastorePredicateFactory;
     private final MessageRepository messageRepository;
+    private final DatastoreSettings datastoreSettings;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -80,13 +81,16 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             DatastorePredicateFactory datastorePredicateFactory,
-            MetricInfoRegistryFacade metricInfoRegistryFacade, MessageRepository messageRepository) {
+            MetricInfoRegistryFacade metricInfoRegistryFacade,
+            MessageRepository messageRepository,
+            DatastoreSettings datastoreSettings) {
         this.storablePredicateFactory = storablePredicateFactory;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.datastorePredicateFactory = datastorePredicateFactory;
         this.metricInfoRegistryFacade = metricInfoRegistryFacade;
         this.messageRepository = messageRepository;
+        this.datastoreSettings = datastoreSettings;
     }
 
     @Override
@@ -252,7 +256,7 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
 
     @Override
     public boolean isServiceEnabled(KapuaId scopeId) {
-        return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
+        return !datastoreSettings.getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
     }
 
 }
