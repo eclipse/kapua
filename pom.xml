@@ -47,7 +47,7 @@
         <console.maven.toolchain.jdk.version>8</console.maven.toolchain.jdk.version>
 
         <!-- Dependencies versions -->
-        <camel.version>3.11.0</camel.version> <!-- latest 3.11.0 -->
+        <camel.version>3.21.0</camel.version> <!-- latest 3.11.0 -->
         <spring.version>5.3.23</spring.version> <!-- latest 5.3.8 -->
         <spring-security.version>5.7.5</spring-security.version> <!-- latest 5.5.1 -->
         <spring-boot.version>2.5.14</spring-boot.version> <!-- latest 2.5.2 --> <!-- 2.3.x is not fully supported by camel (will be on camel 3.4) -->
@@ -121,10 +121,7 @@
         <opencsv.version>3.7</opencsv.version>
         <paho.version>1.2.1</paho.version>
         <protobuf.version>3.23.2</protobuf.version>
-        <qpid-jms-client.version>0.59.0</qpid-jms-client.version>
-        <qpid-amqp-1-0-client-jms.version>0.32</qpid-amqp-1-0-client-jms.version>
-        <qpid-proton.version>0.31.0</qpid-proton.version>
-        <qpid-geronimo-jms.version>1.0-alpha-2</qpid-geronimo-jms.version>
+        <qpid-jms-client.version>1.7.0</qpid-jms-client.version>
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
         <reflections.version>0.9.12</reflections.version>
         <scada-utils.version>0.4.0</scada-utils.version>
@@ -1623,19 +1620,9 @@
                 <version>${joda.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-jms_2.0_spec</artifactId>
-                <version>${qpid-geronimo-jms.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.qpid</groupId>
                 <artifactId>qpid-jms-client</artifactId>
                 <version>${qpid-jms-client.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.qpid</groupId>
-                <artifactId>proton-j</artifactId>
-                <version>${qpid-proton.version}</version>
             </dependency>
             <dependency>
                 <!-- Apache shiro security framework -->
@@ -2520,22 +2507,27 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.camel</groupId>
-                <artifactId>camel-jms</artifactId>
-                <version>${camel.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-amqp</artifactId>
-                <version>${camel.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-spring</artifactId>
-                <version>${camel.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.camel</groupId>
                 <artifactId>spi-annotations</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel.springboot</groupId>
+                <artifactId>camel-jms-starter</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel.springboot</groupId>
+                <artifactId>camel-amqp-starter</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel.springboot</groupId>
+                <artifactId>camel-spring-starter</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel.springboot</groupId>
+                <artifactId>camel-spring-boot-xml-starter</artifactId>
                 <version>${camel.version}</version>
             </dependency>
 
@@ -2597,11 +2589,6 @@
             </dependency>
 
             <!-- Spring boot -->
-            <dependency>
-                <groupId>org.apache.camel.springboot</groupId>
-                <artifactId>camel-spring-boot</artifactId>
-                <version>${camel.version}</version> <!-- use the same version as your Camel core version -->
-            </dependency>
             <dependency>
                 <groupId>org.apache.camel.springboot</groupId>
                 <artifactId>camel-spring-boot-starter</artifactId>
