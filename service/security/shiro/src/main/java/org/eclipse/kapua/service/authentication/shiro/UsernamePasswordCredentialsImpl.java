@@ -15,8 +15,10 @@ package org.eclipse.kapua.service.authentication.shiro;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
+import org.eclipse.kapua.service.authentication.shiro.realm.KapuaAuthenticationToken;
 
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 /**
  * {@link UsernamePasswordCredentials} implementation.
@@ -25,7 +27,7 @@ import javax.validation.constraints.NotNull;
  *
  * @since 1.0.0
  */
-public class UsernamePasswordCredentialsImpl implements UsernamePasswordCredentials, AuthenticationToken {
+public class UsernamePasswordCredentialsImpl implements UsernamePasswordCredentials, KapuaAuthenticationToken {
 
     private static final long serialVersionUID = -7549848672967689716L;
 
@@ -134,5 +136,10 @@ public class UsernamePasswordCredentialsImpl implements UsernamePasswordCredenti
                         (UsernamePasswordCredentialsImpl) usernamePasswordCredentials :
                         new UsernamePasswordCredentialsImpl(usernamePasswordCredentials))
                 : null;
+    }
+
+    @Override
+    public Optional<String> getOpenIdToken() {
+        return Optional.empty();
     }
 }

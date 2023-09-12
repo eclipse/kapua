@@ -15,8 +15,10 @@ package org.eclipse.kapua.service.authentication.shiro;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
+import org.eclipse.kapua.service.authentication.shiro.realm.KapuaAuthenticationToken;
 
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 /**
  * {@link ApiKeyCredentials} implementation.
@@ -25,7 +27,7 @@ import javax.validation.constraints.NotNull;
  *
  * @since 1.0.0
  */
-public class ApiKeyCredentialsImpl implements ApiKeyCredentials, AuthenticationToken {
+public class ApiKeyCredentialsImpl implements ApiKeyCredentials, KapuaAuthenticationToken {
 
     private static final long serialVersionUID = -5920944517814926028L;
 
@@ -86,4 +88,8 @@ public class ApiKeyCredentialsImpl implements ApiKeyCredentials, AuthenticationT
                 : null;
     }
 
+    @Override
+    public Optional<String> getOpenIdToken() {
+        return Optional.empty();
+    }
 }

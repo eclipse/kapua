@@ -12,36 +12,26 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
-import com.google.common.base.Strings;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.shiro.authc.AuthenticationToken;
+import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
-import org.eclipse.kapua.service.authentication.LoginCredentials;
-import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
 
-import java.util.Optional;
-
 /**
- * {@link JwtCredentials} {@link LoginCredentialsHandler} implementation.
+ * {@link JwtCredentials} {@link CredentialsHandler} implementation.
  *
  * @since 2.0.0
  */
-public class JwtCredentialsHandler implements LoginCredentialsHandler {
+public class JwtCredentialsHandler implements CredentialsHandler {
 
     @Override
-    public boolean canProcess(LoginCredentials loginCredentials) {
-        return loginCredentials instanceof JwtCredentials;
+    public boolean canProcess(AuthenticationCredentials authenticationCredentials) {
+        return authenticationCredentials instanceof JwtCredentials;
     }
 
     @Override
-    public ImmutablePair<AuthenticationToken, Optional<String>> mapToShiro(LoginCredentials loginCredentials) throws KapuaAuthenticationException {
-        JwtCredentialsImpl jwtCredentials = JwtCredentialsImpl.parse((JwtCredentials) loginCredentials);
-        final String openIDidToken = Optional.ofNullable(jwtCredentials.getIdToken())
-                .filter(token -> !Strings.isNullOrEmpty(token))
-                .orElseThrow(() -> new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS));
-
-        return ImmutablePair.of(jwtCredentials, Optional.of(openIDidToken));
+    public KapuaAuthenticationToken mapToShiro(AuthenticationCredentials authenticationCredentials) throws KapuaAuthenticationException {
+        JwtCredentialsImpl jwtCredentials = JwtCredentialsImpl.parse((JwtCredentials) authenticationCredentials);
+        return jwtCredentials;
     }
 }

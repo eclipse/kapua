@@ -61,9 +61,8 @@ import org.eclipse.kapua.service.authentication.registration.RegistrationService
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
 import org.eclipse.kapua.service.authentication.shiro.realm.AccessTokenCredentialsHandler;
 import org.eclipse.kapua.service.authentication.shiro.realm.ApiKeyCredentialsHandler;
+import org.eclipse.kapua.service.authentication.shiro.realm.CredentialsHandler;
 import org.eclipse.kapua.service.authentication.shiro.realm.JwtCredentialsHandler;
-import org.eclipse.kapua.service.authentication.shiro.realm.LoginCredentialsHandler;
-import org.eclipse.kapua.service.authentication.shiro.realm.SessionCredentialsHandler;
 import org.eclipse.kapua.service.authentication.shiro.realm.UserPassCredentialsHandler;
 import org.eclipse.kapua.service.authentication.shiro.registration.RegistrationServiceImpl;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
@@ -122,22 +121,22 @@ public class AuthenticationModule extends AbstractKapuaModule {
     }
 
     @ProvidesIntoSet
-    public LoginCredentialsHandler usernamePasswordCredentialsHandler() {
+    public CredentialsHandler usernamePasswordCredentialsHandler() {
         return new UserPassCredentialsHandler();
     }
 
     @ProvidesIntoSet
-    public LoginCredentialsHandler apiKeyCredentialsHandler() {
+    public CredentialsHandler apiKeyCredentialsHandler() {
         return new ApiKeyCredentialsHandler();
     }
 
     @ProvidesIntoSet
-    public LoginCredentialsHandler jwtCredentialsHandler() {
+    public CredentialsHandler jwtCredentialsHandler() {
         return new JwtCredentialsHandler();
     }
 
     @ProvidesIntoSet
-    public SessionCredentialsHandler accessTokenCredentialsHandler() {
+    public CredentialsHandler accessTokenCredentialsHandler() {
         return new AccessTokenCredentialsHandler();
     }
 

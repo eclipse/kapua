@@ -13,37 +13,33 @@
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
 import com.google.common.base.Strings;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.eclipse.kapua.service.authentication.LoginCredentials;
+import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.shiro.UsernamePasswordCredentialsImpl;
 
-import java.util.Optional;
-
 /**
- * {@link UsernamePasswordCredentials} {@link LoginCredentialsHandler} implementation.
+ * {@link UsernamePasswordCredentials} {@link CredentialsHandler} implementation.
  *
  * @since 2.0.0
  */
-public class UserPassCredentialsHandler implements LoginCredentialsHandler {
+public class UserPassCredentialsHandler implements CredentialsHandler {
 
     @Override
-    public boolean canProcess(LoginCredentials loginCredentials) {
-        return loginCredentials instanceof UsernamePasswordCredentials;
+    public boolean canProcess(AuthenticationCredentials authenticationCredentials) {
+        return authenticationCredentials instanceof UsernamePasswordCredentials;
     }
 
     @Override
-    public ImmutablePair<AuthenticationToken, Optional<String>> mapToShiro(LoginCredentials loginCredentials) throws KapuaAuthenticationException {
-        UsernamePasswordCredentialsImpl usernamePasswordCredentials = UsernamePasswordCredentialsImpl.parse((UsernamePasswordCredentials) loginCredentials);
+    public KapuaAuthenticationToken mapToShiro(AuthenticationCredentials authenticationCredentials) throws KapuaAuthenticationException {
+        UsernamePasswordCredentialsImpl usernamePasswordCredentials = UsernamePasswordCredentialsImpl.parse((UsernamePasswordCredentials) authenticationCredentials);
 
         if (Strings.isNullOrEmpty(usernamePasswordCredentials.getUsername()) ||
                 Strings.isNullOrEmpty(usernamePasswordCredentials.getPassword())) {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
         }
 
-        return ImmutablePair.of(usernamePasswordCredentials, Optional.empty());
+        return usernamePasswordCredentials;
     }
 }
