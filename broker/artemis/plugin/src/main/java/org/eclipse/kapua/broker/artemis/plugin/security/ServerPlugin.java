@@ -74,6 +74,23 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         DESTROY
     }
 
+    public static enum MessageType {
+
+        ActiveMq("AMQ"),
+        Control("CTR"),
+        Telemetry("TEL");
+
+        private String asUrl;
+
+        MessageType(String asUrl) {
+            this.asUrl = asUrl;
+        }
+
+        public String getAsUrl() {
+            return asUrl;
+        }
+    }
+
     /**
      * publish message size threshold for printing message information
      */
@@ -193,6 +210,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         message.putStringProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_NAME, sessionContext.getConnectorName());
         message.putStringProperty(MessageConstants.HEADER_KAPUA_SESSION, Base64.getEncoder().encodeToString(SerializationUtils.serialize(sessionContext.getKapuaSession())));
         message.putLongProperty(MessageConstants.HEADER_KAPUA_RECEIVED_TIMESTAMP, KapuaDateUtils.getKapuaSysDate().getEpochSecond());
+        message.putStringProperty(MessageConstants.HEADER_KAPUA_MESSAGE_TYPE, getMessgeType(address));
         if (!sessionContext.isInternal()) {
             if (isLwt(address)) {
                 //handle the missing message case
@@ -222,6 +240,21 @@ public class ServerPlugin implements ActiveMQServerPlugin {
 
     private boolean isLwt(String originalTopic) {
         return originalTopic != null && originalTopic.endsWith(MISSING_TOPIC_SUFFIX);
+    }
+
+    private String getMessgeType(String address) {
+        if (address!=null) {
+            if (address.startsWith("active")) {
+                return MessageType.ActiveMq.getAsUrl();
+            }
+            else if (address.startsWith("$")) {
+                return MessageType.Control.getAsUrl();
+            }
+            else {
+                return MessageType.Telemetry.getAsUrl();
+            }
+        }
+        return "N/A";
     }
 
     /**
