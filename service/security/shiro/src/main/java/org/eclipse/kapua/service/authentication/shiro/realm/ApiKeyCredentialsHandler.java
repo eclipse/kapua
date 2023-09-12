@@ -13,36 +13,32 @@
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
 import com.google.common.base.Strings;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.shiro.authc.AuthenticationToken;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
-import org.eclipse.kapua.service.authentication.LoginCredentials;
+import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.shiro.ApiKeyCredentialsImpl;
 
-import java.util.Optional;
-
 /**
- * {@link ApiKeyCredentials} {@link LoginCredentialsHandler} implementation.
+ * {@link ApiKeyCredentials} {@link CredentialsHandler} implementation.
  *
  * @since 2.0.0
  */
-public class ApiKeyCredentialsHandler implements LoginCredentialsHandler {
+public class ApiKeyCredentialsHandler implements CredentialsHandler {
 
     @Override
-    public boolean canProcess(LoginCredentials loginCredentials) {
-        return loginCredentials instanceof ApiKeyCredentials;
+    public boolean canProcess(AuthenticationCredentials credentials) {
+        return credentials instanceof ApiKeyCredentials;
     }
 
     @Override
-    public ImmutablePair<AuthenticationToken, Optional<String>> mapToShiro(LoginCredentials loginCredentials) throws KapuaAuthenticationException {
-        ApiKeyCredentialsImpl apiKeyCredentials = ApiKeyCredentialsImpl.parse((ApiKeyCredentials) loginCredentials);
+    public KapuaAuthenticationToken mapToShiro(AuthenticationCredentials credentials) throws KapuaAuthenticationException {
+        ApiKeyCredentialsImpl apiKeyCredentials = ApiKeyCredentialsImpl.parse((ApiKeyCredentials) credentials);
 
         if (Strings.isNullOrEmpty(apiKeyCredentials.getApiKey())) {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
         }
 
-        return ImmutablePair.of(apiKeyCredentials, Optional.empty());
+        return apiKeyCredentials;
     }
 }

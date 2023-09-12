@@ -12,15 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
-import org.eclipse.kapua.service.authentication.SessionCredentials;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 
-/**
- * {@link SessionCredentials} {@link CredentialsHandler} definition.
- * <p>
- * It maps a {@link SessionCredentials} to a specific implementation.
- *
- * @since 2.0.0
- */
-public interface SessionCredentialsHandler extends CredentialsHandler<SessionCredentials> {
+import java.util.Optional;
 
+public interface KapuaAuthenticationToken extends AuthenticationToken {
+    Optional<String> getOpenIdToken() throws KapuaAuthenticationException;
 }

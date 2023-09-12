@@ -12,11 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
+import com.google.common.base.Strings;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
+import org.eclipse.kapua.service.authentication.shiro.realm.KapuaAuthenticationToken;
 
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 /**
  * {@link JwtCredentials} implementation.
@@ -25,7 +30,7 @@ import javax.validation.constraints.NotNull;
  *
  * @since 1.0.0
  */
-public class JwtCredentialsImpl implements JwtCredentials, AuthenticationToken {
+public class JwtCredentialsImpl implements JwtCredentials, KapuaAuthenticationToken {
 
     private static final long serialVersionUID = -5920944517814926028L;
 
@@ -98,5 +103,13 @@ public class JwtCredentialsImpl implements JwtCredentials, AuthenticationToken {
                         (JwtCredentialsImpl) jwtCredentials :
                         new JwtCredentialsImpl(jwtCredentials))
                 : null;
+    }
+
+    @Override
+    public Optional<String> getOpenIdToken() throws KapuaAuthenticationException {
+        final String openIDidToken = Optional.ofNullable(this.getIdToken())
+                .filter(token -> !Strings.isNullOrEmpty(token))
+                .orElseThrow(() -> new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS));
+        return Optional.of(openIDidToken);
     }
 }
