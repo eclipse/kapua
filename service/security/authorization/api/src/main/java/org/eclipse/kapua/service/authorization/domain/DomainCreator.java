@@ -48,6 +48,12 @@ public interface DomainCreator extends KapuaEntityCreator<Domain> { // org.eclip
      */
     void setName(String name);
 
+    /**
+     * Sets the {@link Domain} service name.
+     *
+     * @param serviceName The {@link Domain} name.
+     * @since 1.0.0
+     */
     void setServiceName(String serviceName);
 
     /**
