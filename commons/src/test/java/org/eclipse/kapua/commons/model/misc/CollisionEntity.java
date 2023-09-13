@@ -23,6 +23,7 @@ import javax.persistence.Table;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
 
 @Entity(name = "CollisionEntity")
 @Table(name = "collision_entity_test")
@@ -60,7 +61,8 @@ public class CollisionEntity extends AbstractKapuaNamedEntity {
     @Override
     protected void prePersistsAction() {
         setId(new KapuaEid(collisionIdGenerator.generate()));
-
+        setScopeId(KapuaId.ONE);
+        setName("foo");
         setCreatedBy(new KapuaEid(BigInteger.ONE));
         setCreatedOn(new Date());
     }

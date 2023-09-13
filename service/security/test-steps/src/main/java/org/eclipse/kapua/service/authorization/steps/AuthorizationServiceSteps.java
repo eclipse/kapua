@@ -611,6 +611,7 @@ public class AuthorizationServiceSteps extends TestBase {
             if (tmpDom.getActionSet() != null) {
                 domainCreator.setActions(tmpDom.getActionSet());
             }
+            domainCreator.setServiceName(tmpDom.getServiceName());
             stepData.put(DOMAIN_CREATOR, domainCreator);
             try {
                 domain = domainRegistryService.create(domainCreator);
@@ -721,6 +722,7 @@ public class AuthorizationServiceSteps extends TestBase {
     public void checkDomainComparison() throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
             DomainCreator tmpCreator = domainFactory.newCreator("name_1");
+            tmpCreator.setServiceName("test");
             HashSet<Actions> tmpAct = new HashSet<>();
             tmpAct.add(Actions.read);
             tmpAct.add(Actions.write);

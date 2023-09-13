@@ -27,6 +27,9 @@ public class CucDomain {
     public CucDomain(String name, String serviceName, String actions) {
         this.name = name;
         this.serviceName = serviceName;
+        if (this.serviceName == null) {
+            this.serviceName= "test";
+        }
         this.actions = actions;
     }
 
@@ -63,6 +66,14 @@ public class CucDomain {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     public void setActionSet(Set<Actions> actionSet) {
