@@ -57,8 +57,8 @@ Scenario: Init Security Context for all scenarios
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name        | actions             | serviceName |
+      | test        | read,write, execute | test        |
     And The permissions "read, write, execute"
     When I create the access info entity
     Then No exception was thrown
@@ -82,8 +82,8 @@ Scenario: Init Security Context for all scenarios
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name        | actions             | serviceName |
+      | test        | read,write, execute | test        |
     And The permissions "read, write, execute"
     And The role "test_role_1"
     When I create the access info entity
@@ -110,8 +110,8 @@ Scenario: Init Security Context for all scenarios
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name        | actions             | serviceName |
+      | test        | read,write, execute | test        |
     And The permissions "read, write, execute"
     And An invalid role ID
     Given I expect the exception "KapuaAuthorizationException" with the text "Error: Role not found in the scope"
@@ -213,8 +213,8 @@ Scenario: Init Security Context for all scenarios
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name        | actions             | serviceName |
+      | test        | read,write, execute | test        |
     And The permissions "read, write, execute"
     And The role "test_role_1"
     And I create the access info entity
@@ -359,8 +359,8 @@ Scenario: Init Security Context for all scenarios
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name        | actions             | serviceName |
+      | test        | read,write, execute | test        |
     Given Scope with ID 10
     When I configure the user service for the account with the id 10
       | type    | name                       | value |
@@ -402,8 +402,8 @@ Scenario: Init Security Context for all scenarios
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name        | actions             | serviceName |
+      | test        | read,write, execute | test        |
     When I create the access info entity
     And The permissions "read, write, execute"
     And I create the permissions
@@ -424,8 +424,8 @@ Scenario: Init Security Context for all scenarios
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name        | actions             | serviceName |
+      | test        | read,write, execute | test        |
     When I create the access info entity
     And The permissions "read, write, execute"
     And I create the permissions
@@ -450,8 +450,8 @@ Scenario: Init Security Context for all scenarios
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name        | actions             | serviceName |
+      | test        | read,write, execute | test        |
     When I create the access info entity
     And The permission "read"
     And I create the permission
@@ -476,8 +476,8 @@ Scenario: Init Security Context for all scenarios
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name        | actions             | serviceName |
+      | test        | read,write, execute | test        |
     When I create the access info entity
     Then No exception was thrown
     Given The permissions "read, write, execute"
@@ -501,8 +501,8 @@ Scenario: Init Security Context for all scenarios
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name        | actions             | serviceName |
+      | test        | read,write, execute | test        |
     When I create the access info entity
     And The permissions "read, write, execute"
     And The role "test_role_1"
@@ -524,8 +524,8 @@ Scenario: Init Security Context for all scenarios
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name        | actions             | serviceName |
+      | test        | read,write, execute | test        |
     When I create the access info entity
     And The permissions "read, write, execute"
     And The role "test_role_1"
@@ -547,8 +547,8 @@ Scenario: Init Security Context for all scenarios
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name        | actions             | serviceName |
+      | test        | read,write, execute | test        |
     When I create the access info entity
     And The permissions "read, write, execute"
     And The role "test_role_1"
@@ -569,8 +569,8 @@ Scenario: Init Security Context for all scenarios
       | boolean | infiniteChildEntities      | true  |
       | integer | maxNumberChildEntities     | 5     |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name        | actions             | serviceName |
+      | test        | read,write, execute | test        |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
@@ -631,8 +631,8 @@ Scenario: Init Security Context for all scenarios
       | boolean | infiniteChildEntities      | true  |
       | integer | maxNumberChildEntities     | 5     |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name        | actions             | serviceName |
+      | test        | read,write, execute | test        |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
@@ -668,8 +668,8 @@ Scenario: Init Security Context for all scenarios
       | boolean | infiniteChildEntities      | true  |
       | integer | maxNumberChildEntities     | 5     |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name        | actions             | serviceName |
+      | test        | read,write, execute | test        |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
@@ -693,8 +693,8 @@ Scenario: Init Security Context for all scenarios
       | boolean | infiniteChildEntities      | true  |
       | integer | maxNumberChildEntities     | 5     |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name        | actions             | serviceName |
+      | test        | read,write, execute | test        |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |

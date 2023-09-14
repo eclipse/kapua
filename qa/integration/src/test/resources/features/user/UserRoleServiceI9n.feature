@@ -50,8 +50,8 @@ Feature: User role service integration tests
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities | 5     |
     And I create the domain
-      | name | actions             |
-      | test | read,write, execute |
+      | name | actions             | serviceName |
+      | test | read,write, execute | test        |
     And The permissions "read, write, execute"
     And I create the access info entity
     And I create the roles
@@ -441,8 +441,8 @@ Feature: User role service integration tests
     And I logout
     Then I login as user with name "user1" and password "User@10031995"
     And I create the domain
-      | name | actions             |
-      | test | read,write, execute |
+      | name | actions             | serviceName |
+      | test | read,write, execute | test        |
     And The permissions "read, write, execute"
     And I create the permissions
     Then No exception was thrown
