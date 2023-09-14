@@ -29,8 +29,8 @@ Scenario: Regular role creation
     | boolean | infiniteChildEntities      | true  |    1    |
     | integer | maxNumberChildEntities     | 5     |    1    |
     And I create the domain
-    | name        | actions             |
-    | test        | read,write, execute |
+    | name        | actions             | serviceName |
+    | test        | read,write, execute | test        |
     Given I create the following role
     | scopeId | name      | actions              |
     | 1       | test_role | write, read, connect |
@@ -51,8 +51,8 @@ Scenario: Nameless role entry
     | boolean | infiniteChildEntities      | true  |    1    |
     | integer | maxNumberChildEntities     | 5     |    1    |
     And I create the domain
-    | name        | actions             |
-    | test        | read,write, execute |
+    | name        | actions             | serviceName |
+    | test        | read,write, execute | test        |
     Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create the following role
     | scopeId | actions              |
@@ -69,8 +69,8 @@ Scenario: Duplicate role names
     | boolean | infiniteChildEntities      | true  |    1    |
     | integer | maxNumberChildEntities     | 5     |    1    |
     And I create the domain
-    | name        | actions             |
-    | test        | read,write, execute |
+    | name        | actions             | serviceName |
+    | test        | read,write, execute | test        |
     Given I expect the exception "KapuaDuplicateNameException" with the text "An entity with the same name test_role already exists."
     When I create the following role
     | scopeId | name      | actions                 |
@@ -102,8 +102,8 @@ Scenario: Find role by ID
     | boolean | infiniteChildEntities      | true  |    1    |
     | integer | maxNumberChildEntities     | 5     |    1    |
     And I create the domain
-    | name        | actions             |
-    | test        | read,write, execute |
+    | name        | actions             | serviceName |
+    | test        | read,write, execute | test        |
     Given I create the following role
     | scopeId | name      | actions              |
     | 1       | test_role | write, read, connect |
@@ -120,8 +120,8 @@ Scenario: Search the role database for a random ID
     | boolean | infiniteChildEntities      | true  |    1    |
     | integer | maxNumberChildEntities     | 5     |    1    |
     And I create the domain
-    | name        | actions             |
-    | test        | read,write, execute |
+    | name        | actions             | serviceName |
+    | test        | read,write, execute | test        |
     Given I create the following role
     | scopeId | name      | actions              |
     | 1       | test_role | write, read, connect |
@@ -137,8 +137,8 @@ Scenario: Delete an existing role
     | boolean | infiniteChildEntities      | true  |    1    |
     | integer | maxNumberChildEntities     | 5     |    1    |
     And I create the domain
-    | name        | actions             |
-    | test        | read,write, execute |
+    | name        | actions             | serviceName |
+    | test        | read,write, execute | test        |
     Given I create the following role
     | scopeId | name      | actions              |
     | 1       | test_role | write, read, connect |
@@ -158,8 +158,8 @@ Scenario: Delete a non existing role entry
     | boolean | infiniteChildEntities      | true  |    1    |
     | integer | maxNumberChildEntities     | 5     |    1    |
     And I create the domain
-    | name        | actions             |
-    | test        | read,write, execute |
+    | name        | actions             | serviceName |
+    | test        | read,write, execute | test        |
     Given I create the following role
     | scopeId | name      | actions              |
     | 1       | test_role | write, read, connect |
@@ -179,8 +179,8 @@ Scenario: Update existing role name
     | boolean | infiniteChildEntities      | true  |    1    |
     | integer | maxNumberChildEntities     | 5     |    1    |
     And I create the domain
-    | name        | actions             |
-    | test        | read,write, execute |
+    | name        | actions             | serviceName |
+    | test        | read,write, execute | test        |
     Given I create the following role
     | scopeId | name      | actions              |
     | 1       | test_role | write, read, connect |
@@ -198,8 +198,8 @@ Scenario: Modify a role that was deleted
     | boolean | infiniteChildEntities      | true  |    1    |
     | integer | maxNumberChildEntities     | 5     |    1    |
     And I create the domain
-    | name        | actions             |
-    | test        | read,write, execute |
+    | name        | actions             | serviceName |
+    | test        | read,write, execute | test        |
     Given I create the following role
     | scopeId | name      | actions              |
     | 1       | test_role | write, read, connect |
@@ -215,8 +215,8 @@ Scenario: Count roles in specific scopes
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I create the domain
-    | name        | actions             |
-    | test        | read,write, execute |
+    | name        | actions             | serviceName |
+    | test        | read,write, execute | test        |
     When I configure the role service
     | type    | name                       | value | scopeId | parentId |
     | boolean | infiniteChildEntities      | true  |    2    |       1  |
@@ -262,8 +262,8 @@ Scenario: Count roles in specific scopes
     | boolean | infiniteChildEntities      | true  |    1    |
     | integer | maxNumberChildEntities     | 5     |    1    |
     And I create the domain
-    | name        | actions             |
-    | test        | read,write, execute |
+    | name        | actions             | serviceName |
+    | test        | read,write, execute | test        |
     Given I create the following role
     | scopeId | name      | actions              |
     | 1       | test_role | write, read, connect |
@@ -281,8 +281,8 @@ Scenario: Empty query results are supported
     | boolean | infiniteChildEntities      | true  |    1    |
     | integer | maxNumberChildEntities     | 5     |    1    |
     And I create the domain
-    | name        | actions             |
-    | test        | read,write, execute |
+    | name        | actions             | serviceName |
+    | test        | read,write, execute | test        |
     Given I create the following role
     | scopeId | name      | actions              |
     | 1       | test_role | write, read, connect |
@@ -298,8 +298,8 @@ Scenario: Create some regular role permissions
     | boolean | infiniteChildEntities      | true  |    1    |
     | integer | maxNumberChildEntities     | 5     |    1    |
     And I create the domain
-    | name        | actions             |
-    | test        | read,write, execute |
+    | name        | actions             | serviceName |
+    | test        | read,write, execute | test        |
     Given I create the following role
     | scopeId | name      |
     | 1       | test_role |
@@ -321,8 +321,8 @@ Scenario: Delete role permissions
     | boolean | infiniteChildEntities      | true  |    1    |
     | integer | maxNumberChildEntities     | 5     |    1    |
     And I create the domain
-    | name        | actions             |
-    | test        | read,write, execute |
+    | name        | actions             | serviceName |
+    | test        | read,write, execute | test        |
     Given I create the following role
     | scopeId | name      |
     | 1       | test_role |
@@ -344,8 +344,8 @@ Scenario: Delete nonexisting role permission
     | boolean | infiniteChildEntities      | true  |    1    |
     | integer | maxNumberChildEntities     | 5     |    1    |
     And I create the domain
-    | name        | actions             |
-    | test        | read,write, execute |
+    | name        | actions             | serviceName |
+    | test        | read,write, execute | test        |
     Given I create the following role
     | scopeId | name      |
     | 1       | test_role |
@@ -371,8 +371,8 @@ Scenario: Count role permissions in specific scopes
     | boolean | infiniteChildEntities      | true  |    1    |
     | integer | maxNumberChildEntities     | 5     |    1    |
     And I create the domain
-    | name        | actions             |
-    | test        | read,write, execute |
+    | name        | actions             | serviceName |
+    | test        | read,write, execute | test        |
     Given I create the following role
     | scopeId | name        |
     | 2       | test_role_2 |

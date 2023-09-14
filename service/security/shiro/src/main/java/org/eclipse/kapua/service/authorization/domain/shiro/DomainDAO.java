@@ -43,6 +43,7 @@ public class DomainDAO extends ServiceDAO {
         Domain domain = new DomainImpl();
 
         domain.setName(creator.getName());
+        domain.setServiceName(creator.getServiceName());
         domain.setGroupable(creator.getGroupable());
 
         if (creator.getActions() != null) {
