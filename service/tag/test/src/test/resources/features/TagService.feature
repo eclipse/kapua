@@ -34,9 +34,10 @@ Feature: Tag Service
   Scenario: Creating Non-unique Tag Without Description
   Create a tag with non-unique name without description. Kapua should return Exception.
 
-    Given A tag with name "Tag123" is created
-    When Tag with name "Tag123" is searched
-    Then I expect the exception "KapuaDuplicateNameException" with the text "An entity with the same name Tag123 already exists."
+    Given I expect the exception "KapuaDuplicateNameException" with the text "An entity with the same name Tag123 already exists."
+    When I create tag with name "Tag123"
+    And I create tag with name "Tag123"
+    Then An exception was thrown
 
   Scenario: Creating Tag With Short Name Without Description
   Create a tag with short name without description. Kapua should not return any errors.

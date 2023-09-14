@@ -373,14 +373,13 @@ Feature: Broker ACL tests
 #      And clients are disconnected
 #      And Mqtt Device is stoped
 
-  Scenario: D13 Device subscribe on ACL_CTRL_ACC_NOTIFY is not allowed
+  Scenario: D13 Device subscribe on ACL_CTRL_ACC_NOTIFY is allowed
     Normal user with device manage profile subscribes to $EDC/{0}/+/+/NOTIFY/{1}/#
-    Subscribe is not allowed.
+    Subscribe is allowed.
     Given Mqtt Device is started
       And device account and user are created
     Given I expect the exception "MqttException" with the text "*"
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
-#    Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped
 #

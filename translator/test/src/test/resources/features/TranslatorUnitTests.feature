@@ -258,7 +258,7 @@ Feature: Translator Service
   Invalid channel exception should be thrown.
 
     Given I create jms message with empty payload "" and valid topic "kapua-sys"
-    Then I expect the exception "InvalidChannelException" with the text " Invalid channel: kapua-sys"
+    Given I expect the exception "InvalidChannelException" with the text " Invalid channel: kapua-sys"
     When I try to translate jms message to kura data message
     And An exception was thrown
 
@@ -268,7 +268,7 @@ Feature: Translator Service
   Invalid message exception should be thrown
 
     Given I create jms message with valid payload "response.code" and valid topic "kapua-sys/rpione3/DEPLOY-V2/GET/packages"
-    Then I expect the exception "InvalidMessageException" with the text "Invalid message: null"
+    Given I expect the exception "InvalidMessageException" with the text "Invalid message: null"
     When I try to translate invalid jms message to kura data message
     And An exception was thrown
 
@@ -306,7 +306,7 @@ Feature: Translator Service
   Invalid payload exception should be thrown.
 
     Given I create kura data message with channel with scope "kapua-sys", client id "rpione3" and null payload
-    Then I expect the exception "InvalidPayloadException" with the text "Invalid payload: null"
+    Given I expect the exception "InvalidPayloadException" with the text "Invalid payload: null"
     When I try to translate kura data message to jms message
     And An exception was thrown
 
@@ -315,7 +315,7 @@ Feature: Translator Service
   Invalid channel exception should be thrown.
 
     Given I create kura data message with null channel and payload without body and with metrics
-    Then I expect the exception "InvalidChannelException" with the text "Invalid channel: null"
+    Given I expect the exception "InvalidChannelException" with the text "Invalid channel: null"
     When I try to translate kura data message to jms message
     And An exception was thrown
 
@@ -324,8 +324,9 @@ Feature: Translator Service
   Invalid message exception should be thrown.
 
     Given I create kura data message with channel with scope "kapua-sys", client id "rpione3" and payload with body and metrics
-    Then I expect the exception "InvalidMessageException" with the text "Invalid message: null"
+    Given I expect the exception "InvalidMessageException" with the text "Invalid message: null"
     When I try to translate invalid kura data message to jms message
+    Then An exception was thrown
 
 @teardown
   Scenario: Reset Security Context for all scenarios

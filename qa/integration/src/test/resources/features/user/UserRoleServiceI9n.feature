@@ -476,6 +476,7 @@ Feature: User role service integration tests
     And The device "test-device-1"
     And I expect the exception "SubjectUnauthorizedException" with the text "Required permission: datastore:read:"
     And I search for data message with id "fake-id"
+    Then An exception was thrown
     And I logout
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select the domain "datastore"
