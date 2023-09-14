@@ -33,8 +33,8 @@ Scenario: Init Security Context for all scenarios
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given I create the domain
-      | name        | actions    |
-      | test_name_1 | read,write |
+      | name        | actions    | serviceName |
+      | test_name_1 | read,write | test        |
     Then A domain was created
     And The domain matches the creator
 
@@ -45,8 +45,8 @@ Scenario: Init Security Context for all scenarios
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create the domain
-      | actions    |
-      | read,write |
+      | actions    | serviceName |
+      | read,write | test        |
     Then An exception was thrown
 
   Scenario: Domain with null actions
@@ -56,8 +56,8 @@ Scenario: Init Security Context for all scenarios
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create the domain
-      | name        |
-      | test_name_1 |
+      | name        | serviceName |
+      | test_name_1 | test        |
     Then An exception was thrown
 
   Scenario: Domains with duplicate names
@@ -66,14 +66,14 @@ Scenario: Init Security Context for all scenarios
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given I create the domain
-      | name        | actions    |
-      | test_name_1 | read,write |
+      | name        | actions    | serviceName |
+      | test_name_1 | read,write | test        |
     Then A domain was created
     And The domain matches the creator
     Given I expect the exception "KapuaException" with the text "Error during Persistence Operation"
     When I create the domain
-      | name        | actions    |
-      | test_name_1 | read,write |
+      | name        | actions    | serviceName |
+      | test_name_1 | read,write | test        |
     Then An exception was thrown
 
   Scenario: Find the last created domain entry
@@ -81,8 +81,8 @@ Scenario: Init Security Context for all scenarios
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given I create the domain
-      | name        | actions      |
-      | test_name_2 | read,execute |
+      | name        | actions      | serviceName |
+      | test_name_2 | read,execute | test        |
     When I search for the last created domain
     Then The domain matches the creator
 
@@ -98,8 +98,8 @@ Scenario: Init Security Context for all scenarios
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given I create the domain
-      | name        | actions      |
-      | test_name_2 | read,execute |
+      | name        | actions      | serviceName |
+      | test_name_2 | read,execute | test        |
     When I search for the last created domain
     Then The domain matches the creator
     When I delete the last created domain
@@ -122,10 +122,10 @@ Scenario: Init Security Context for all scenarios
     When I count the domain entries in the database
     Then This is the initial count
     Given I create the domains
-      | name        | actions      |
-      | test_name_1 | read,write   |
-      | test_name_2 | read,execute |
-      | test_name_3 | write,delete |
+      | name        | actions      | serviceName |
+      | test_name_1 | read,write   | test        |
+      | test_name_2 | read,execute | test        |
+      | test_name_3 | write,delete | test        |
     When I count the domain entries in the database
     Then 3 more domains were created
 
@@ -134,10 +134,10 @@ Scenario: Init Security Context for all scenarios
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given I create the domains
-      | name        | actions      |
-      | test_name_1 | read,write   |
-      | test_name_2 | read,execute |
-      | test_name_3 | write,delete |
+      | name        | actions      | serviceName |
+      | test_name_1 | read,write   | test        |
+      | test_name_2 | read,execute | test        |
+      | test_name_3 | write,delete | test        |
     When I query for domains with the name "test_name_2"
     Then I count 1
 

@@ -21,7 +21,8 @@ import cucumber.api.CucumberOptions;
 
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(
-        features = { "classpath:features/authorization/AccessInfoService.feature",
+        features = {
+                "classpath:features/authorization/AccessInfoService.feature",
                      "classpath:features/authorization/DomainService.feature",
                      "classpath:features/authorization/GroupService.feature",
                      "classpath:features/authorization/MiscAuthorization.feature",
