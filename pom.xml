@@ -63,7 +63,7 @@
         <commons-configuration.version>1.9</commons-configuration.version>
         <commons-configuration2.version>2.9.0</commons-configuration2.version>
         <commons-compress.version>1.22</commons-compress.version>
-        <commons-fileupload.versison>1.4</commons-fileupload.versison>
+        <commons-fileupload.versison>1.5</commons-fileupload.versison>
         <commons-imaging.version>1.0-alpha3</commons-imaging.version>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang.version>3.4</commons-lang.version>
@@ -1390,6 +1390,11 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>${commons-fileupload.versison}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-imaging</artifactId>
                 <version>${commons-imaging.version}</version>
@@ -2505,7 +2510,7 @@
                 <artifactId>camel-core</artifactId>
                 <version>${camel.version}</version>
             </dependency>
-                <dependency>
+            <dependency>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-jms</artifactId>
                 <version>${camel.version}</version>
