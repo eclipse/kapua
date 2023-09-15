@@ -105,7 +105,7 @@
         <scada-utils.version>0.4.0</scada-utils.version>
         <shiro.version>1.12.0</shiro.version>
         <slf4j.version>1.7.33</slf4j.version>
-        <snakeyaml.version>1.33</snakeyaml.version>
+        <snakeyaml.version>2.2</snakeyaml.version>
         <spotify.version>8.15.1</spotify.version>
         <spring.version>4.3.30.RELEASE</spring.version>
         <spring-security.version>4.2.20.RELEASE</spring-security.version>
