@@ -19,13 +19,22 @@ import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.event.ServiceEventBusListener;
+import org.eclipse.kapua.locator.guice.OverridingModule;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
+@OverridingModule
 public class TestModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
 
+    }
+
+    @Provides
+    @Named(value = "metricModuleName")
+    String metricModuleName() {
+        return "test";
     }
 
     @Provides

@@ -18,6 +18,7 @@ import com.google.inject.ConfigurationException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.google.inject.util.Modules;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.core.ServiceModuleJaxbClassConfig;
@@ -146,6 +147,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
         // Instantiate Kapua modules
         List<AbstractKapuaModule> kapuaModules = new ArrayList<>();
         List<Class<? extends AbstractKapuaModule>> excludedKapuaModules = new ArrayList<>();
+        List<AbstractKapuaModule> overridingModules = new ArrayList<>();
         for (Class<? extends AbstractKapuaModule> moduleClazz : kapuaModuleClasses) {
             final boolean parameterlessConstructorExist = Arrays.stream(moduleClazz.getDeclaredConstructors()).anyMatch(c -> c.getParameterTypes().length == 0);
             if (!parameterlessConstructorExist) {
@@ -156,14 +158,29 @@ public class GuiceLocatorImpl extends KapuaLocator {
                 excludedKapuaModules.add(moduleClazz);
                 continue;
             }
+            if (moduleClazz.getAnnotation(OverridingModule.class) != null) {
+                overridingModules.add(moduleClazz.newInstance());
+                continue;
+            }
 
-            kapuaModules.add(moduleClazz.newInstance());
+            final AbstractKapuaModule kapuaModule = moduleClazz.newInstance();
+            kapuaModules.add(kapuaModule);
         }
-
         // KapuaModule will be removed as soon as bindings will be moved to local modules
         kapuaModules.add(new KapuaModule(locatorConfigName));
         // Print loaded stuff
-        printLoadedKapuaModuleConfiguration(locatorConfigURL, locatorConfig, kapuaModules, excludedKapuaModules);
+        printLoadedKapuaModuleConfiguration(locatorConfigURL, locatorConfig, kapuaModules, overridingModules, excludedKapuaModules);
+        // Create injector
+        try {
+            if (overridingModules.isEmpty()) {
+                injector = Guice.createInjector(kapuaModules);
+            } else {
+                injector = Guice.createInjector(Modules.override(kapuaModules).with(overridingModules));
+            }
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
+
         // Scan XmlSerializable
         Set<Class<?>> xmlSerializableClasses = reflections.getTypesAnnotatedWith(XmlRootElement.class);
         List<Class<?>> loadedXmlSerializables = new ArrayList<>();
@@ -179,13 +196,6 @@ public class GuiceLocatorImpl extends KapuaLocator {
         ServiceModuleJaxbClassConfig.setSerializables(loadedXmlSerializables);
         // Print loaded stuff
         printLoadedXmlSerializableConfiguration(locatorConfigURL, locatorConfig, loadedXmlSerializables, excludedXmlSerializables);
-        // Create injector
-        try {
-
-            injector = Guice.createInjector(kapuaModules);
-        } catch (Throwable t) {
-            throw new RuntimeException(t);
-        }
     }
 
     /**
@@ -213,7 +223,12 @@ public class GuiceLocatorImpl extends KapuaLocator {
      * @param kapuaModules    The laaded {@link KapuaModule}s
      * @since 2.0.0
      */
-    private void printLoadedKapuaModuleConfiguration(@NotNull URL resourceNameURL, @NotNull LocatorConfig locatorConfig, @NotNull List<AbstractKapuaModule> kapuaModules, @NotNull List<Class<? extends AbstractKapuaModule>> excludedKapuaModules) {
+    private void printLoadedKapuaModuleConfiguration(
+            @NotNull URL resourceNameURL,
+            @NotNull LocatorConfig locatorConfig,
+            @NotNull List<AbstractKapuaModule> kapuaModules,
+            @NotNull List<AbstractKapuaModule> overridingModules,
+            @NotNull List<Class<? extends AbstractKapuaModule>> excludedKapuaModules) {
         ConfigurationPrinter configurationPrinter =
                 ConfigurationPrinter
                         .create()
@@ -235,7 +250,16 @@ public class GuiceLocatorImpl extends KapuaLocator {
             configurationPrinter.addSimpleParameter("None");
         }
         configurationPrinter.closeSection();
-
+        // Loaded modules
+        configurationPrinter.openSection("Overriding Kapua Modules");
+        if (!overridingModules.isEmpty()) {
+            for (AbstractKapuaModule kapuaModule : overridingModules.stream().sorted(Comparator.comparing(a -> a.getClass().getName())).collect(Collectors.toList())) {
+                configurationPrinter.addSimpleParameter(kapuaModule.getClass().getName());
+            }
+        } else {
+            configurationPrinter.addSimpleParameter("None");
+        }
+        configurationPrinter.closeSection();
         // Loaded modules
         configurationPrinter.openSection("Excluded Kapua Modules");
         if (!excludedKapuaModules.isEmpty()) {
