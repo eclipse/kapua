@@ -335,9 +335,9 @@ Feature: Account Credential Service Integration Tests
     Then I logout
     Given I expect the exception "KapuaAuthenticationException" with the text "*"
     When I login as user with name "user1" and password "wrongpassword"
-    Given I expect the exception "KapuaAuthenticationException" with the text "*"
+    Then An exception was thrown
     When I login as user with name "user1" and password "wrongpassword"
-    Given I expect the exception "KapuaAuthenticationException" with the text "*"
+    Then An exception was thrown
     When I login as user with name "user1" and password "ToManySecrets123#"
     Then An exception was thrown
     Then I wait 5 seconds
@@ -372,8 +372,9 @@ Feature: Account Credential Service Integration Tests
     Then I logout
     Given I expect the exception "KapuaAuthenticationException" with the text "*"
     When I login as user with name "user1" and password "wrongpassword"
-    Given I expect the exception "KapuaAuthenticationException" with the text "*"
+    Then An exception was thrown
     When I login as user with name "user1" and password "wrongpassword"
+    Then An exception was thrown
     When I login as user with name "user1" and password "ToManySecrets123#"
     Then No exception was thrown
     And I logout

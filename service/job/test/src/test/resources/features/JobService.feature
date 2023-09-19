@@ -110,7 +110,7 @@ Feature: Job service CRUD tests
   Kapua should return an error.
 
     Given I prepare a job with name "" and description ""
-    Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided for the argument jobCreator.name"
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided for the argument jobCreator.name"
     When I create a new job entity from the existing creator
     And An exception was thrown
 
@@ -183,7 +183,7 @@ Feature: Job service CRUD tests
   Kapua should not return any errors.
 
     Given I prepare a job with name "JjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjobNjob" and description "description"
-    Then I expect the exception "KapuaIllegalArgumentException" with the text " An illegal value was provided for the argument jobCreator.name: Value over than allowed max length. Max length is: 255."
+    Given I expect the exception "KapuaIllegalArgumentException" with the text " An illegal value was provided for the argument jobCreator.name: Value over than allowed max length. Max length is: 255."
     When I create a new job entity from the existing creator
     And An exception was thrown
 
@@ -192,7 +192,7 @@ Feature: Job service CRUD tests
   Kapua should return an error. Name is mandatory.
 
     Given I prepare a job with name "" and description "description"
-    Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided for the argument jobCreator.name"
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided for the argument jobCreator.name"
     When I create a new job entity from the existing creator
     And An exception was thrown
 
@@ -247,7 +247,7 @@ Feature: Job service CRUD tests
     When I create a new job entity from the existing creator
     Then I prepare a job with name "jobName1" and description "jobDescription"
     And I create a new job entity from the existing creator
-    Then I expect the exception "KapuaDuplicateNameException" with the text "An entity with the same name jobName already exists."
+    Given I expect the exception "KapuaDuplicateNameException" with the text "An entity with the same name jobName already exists."
     When I change name of job from "jobName1" to "jobName"
     And An exception was thrown
 
@@ -288,7 +288,7 @@ Feature: Job service CRUD tests
   Kapua should return an error.
 
     Given I prepare a job with name "JjobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejobNamejob" and description ""
-    Then I expect the exception "KapuaIllegalArgumentException" with the text "Value over than allowed max length. Max length is: 255."
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "Value over than allowed max length. Max length is: 255."
     When I create a new job entity from the existing creator
     And An exception was thrown
 

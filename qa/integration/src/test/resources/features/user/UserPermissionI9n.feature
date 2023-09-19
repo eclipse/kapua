@@ -113,7 +113,7 @@ Feature: User Permission tests
     And I delete the last permission added to the new User
     And I logout
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I search for user with name "kapua-a"
     And An exception was thrown
     And I logout
@@ -150,7 +150,7 @@ Feature: User Permission tests
     And I delete the last permission added to the new User
     And I logout
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I search for user with name "kapua-a"
     Then An exception was thrown
     And I logout
@@ -465,7 +465,7 @@ Feature: User Permission tests
     And I delete the last permission added to the new User
     And I logout
     When I login as user with name "kapua-b" and password "ToManySecrets123#"
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I search for user with name "kapua-b"
     And An exception was thrown
     And I logout
@@ -930,19 +930,19 @@ Feature: User Permission tests
       | subAccount0 | 1       |
     And I logout
     When I login as user with name "user0" and password "ToManySecrets123#"
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     When I search for the account with the remembered account Id
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     When I modify the account "subAccount0"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     When I delete account "subAccount0"
     And An exception was thrown
     And I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     When I modify the account "kapua-sys"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     When I delete account "kapua-sys"
     And An exception was thrown
     And I logout
@@ -969,19 +969,19 @@ Feature: User Permission tests
       | subAccount0 | 1       |
     And I logout
     When I login as user with name "user0" and password "ToManySecrets123#"
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     When I search for the account with the remembered account Id
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     When I modify the account "subAccount0"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     When I delete account "subAccount0"
     And An exception was thrown
     And I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     When I modify the account "kapua-sys"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     When I delete account "kapua-sys"
     And An exception was thrown
     And I logout
@@ -1079,17 +1079,17 @@ Feature: User Permission tests
       | subAccount0 | 1       |
     And I logout
     When I login as user with name "user0" and password "ToManySecrets123#"
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     When I search for the account with the remembered account Id
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     When I modify the account "subAccount0"
     And An exception was thrown
     When I delete account "subAccount0"
     And I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     When I modify the account "kapua-sys"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     When I delete account "kapua-sys"
     And An exception was thrown
     And I logout
@@ -1122,7 +1122,7 @@ Feature: User Permission tests
     And I modify the account "subAccount0"
     And I delete account "subAccount0"
     And I modify the account "kapua-sys"
-    Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I delete account "kapua-sys"
     And An exception was thrown
     And I logout
@@ -1162,16 +1162,16 @@ Feature: User Permission tests
     When I login as user with name "user1" and password "ToManySecrets123#"
     Then I search for the account with the remembered account Id
     And Account "subAccount1" has 0 children
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I modify the account "subAccount0"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I delete account "subAccount0"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I modify the account "kapua-sys"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     When I delete account "kapua-sys"
     And An exception was thrown
     Then Account
@@ -1213,19 +1213,19 @@ Feature: User Permission tests
       | account | write  |
     And I logout
     When I login as user with name "user1" and password "ToManySecrets123#"
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And Account "subAccount1" has 0 children
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I modify the account "subAccount0"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I delete account "subAccount0"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I modify the account "subAccount1"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I delete account "subAccount1"
     And An exception was thrown
     Then Account
@@ -1271,19 +1271,19 @@ Feature: User Permission tests
       | subAccount10 |
     And I logout
     When I login as user with name "user1" and password "ToManySecrets123#"
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And Account "subAccount1" has 1 children
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I modify the account "subAccount0"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I delete account "subAccount0"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I modify the account "subAccount1"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I delete account "subAccount1"
     And An exception was thrown
     And I delete account "subAccount10"
@@ -1326,13 +1326,13 @@ Feature: User Permission tests
     When I login as user with name "user1" and password "ToManySecrets123#"
     And Account "subAccount01" has 0 children
     And I modify the account "subAccount01"
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I delete account "subAccount01"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I modify the account "subAccount1"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I delete account "subAccount1"
     And An exception was thrown
     And I logout
@@ -1380,13 +1380,13 @@ Feature: User Permission tests
       | account | read   |
     And I logout
     When I login as user with name "user1" and password "ToManySecrets123#"
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I search for user with name "user0"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I modify the account "subAccount0"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I delete account "subAccount0"
     And An exception was thrown
     And I logout
@@ -1446,22 +1446,22 @@ Feature: User Permission tests
       | 1       | test_role |
     Then I logout
     When I login as user with name "user1" and password "ToManySecrets123#"
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I search for user with name "user1"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I query for devices with Client Id "test_device"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I find a job with name "test_job"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And Tag with name "test_tag" is searched
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I search for the group with name "test_group"
     And An exception was thrown
-    Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
     And I find a role with name "test_role"
     And An exception was thrown
     And I logout

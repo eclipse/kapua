@@ -129,7 +129,7 @@ Feature: Trigger service tests
     And I create a job with the name "job0"
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
-    Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
     And I logout
@@ -162,7 +162,7 @@ Feature: Trigger service tests
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "" is created
     And The trigger is set to start on "12-12-2020" at "10:10"
-    Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
     And I logout
@@ -200,7 +200,7 @@ Feature: Trigger service tests
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "" is created
     And The trigger is set to end on "12-12-2020" at "10:10"
-    Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
     And I logout
@@ -343,7 +343,7 @@ Feature: Trigger service tests
     And A regular trigger creator with the name "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" is created
     And The trigger is set to start today at "10:00"
     And I set retry interval to 1
-    Then I expect the exception "KapuaIllegalArgumentException" with the text " Value over than allowed max length. Max length is: 255."
+    Given I expect the exception "KapuaIllegalArgumentException" with the text " Value over than allowed max length. Max length is: 255."
     And I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
     And I logout
@@ -376,7 +376,7 @@ Feature: Trigger service tests
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
-    Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
     And I logout
@@ -413,7 +413,7 @@ Feature: Trigger service tests
     And A regular trigger creator with the name "" is created
     And The trigger is set to start on "12-12-2020" at "10:10"
     And I set retry interval to 1
-    Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
     And I logout
@@ -454,7 +454,7 @@ Feature: Trigger service tests
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "" is created
     And The trigger is set to end on "12-12-2020" at "10:10"
-    Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
     And I logout
@@ -598,7 +598,7 @@ Feature: Trigger service tests
     When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
     Then I set cron expression to "0 15 10 * * ?"
-    Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
     And I logout
@@ -635,7 +635,7 @@ Feature: Trigger service tests
     And A regular trigger creator with the name "" is created
     And The trigger is set to start on "12-12-2020" at "10:10"
     Then I set cron expression to "0 15 15 * * ?"
-    Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
     And I logout
@@ -676,7 +676,7 @@ Feature: Trigger service tests
     When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "" is created
     And The trigger is set to end on "12-12-2020" at "10:10"
-    Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
     And I logout
