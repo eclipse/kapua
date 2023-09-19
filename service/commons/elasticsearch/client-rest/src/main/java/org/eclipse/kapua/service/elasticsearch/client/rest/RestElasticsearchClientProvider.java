@@ -58,7 +58,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
@@ -270,70 +269,70 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
 
         boolean sslEnabled = clientConfiguration.getSslConfiguration().isEnabled();
         LOG.info("ES Rest Client - SSL Layer: {}", (sslEnabled ? "Enabled" : "Disabled "));
+        List<HttpHost> hosts;
+        try {
+            hosts = InetAddressParser
+                    .parseAddresses(clientConfiguration.getNodes())
+                    .stream()
+                    .filter(inetSocketAddress -> {
+                        LOG.warn("Null Inet Socket Address! Skipping...");
+                        return inetSocketAddress != null;
+                    })
+                    .map(inetSocketAddress -> {
+                                LOG.info("Inet Socket Address: {}", inetSocketAddress);
+                                return new HttpHost(
+                                        inetSocketAddress.getAddress(),
+                                        inetSocketAddress.getHostName(),
+                                        inetSocketAddress.getPort(),
+                                        (sslEnabled ? "https" : "http"));
+                            }
+                    )
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new ClientInitializationException(e, "Error while parsing node addresses!");
+        }
+
+        // Init internal Elasticsearch client
+        RestClientBuilder restClientBuilder = RestClient.builder(hosts.toArray(new HttpHost[0]));
+        SSLContext sslContext = null;
         if (sslEnabled) {
-            List<HttpHost> hosts = new ArrayList<>();
             try {
-                InetAddressParser
-                        .parseAddresses(clientConfiguration.getNodes())
-                        .stream()
-                        .map(inetSocketAddress -> {
-                                    LOG.info("Inet Socket Addess: {}", inetSocketAddress);
-                                    return new HttpHost(
-                                            inetSocketAddress.getAddress(),
-                                            inetSocketAddress.getHostName(),
-                                            inetSocketAddress.getPort(),
-                                            (sslEnabled ? "https" : "http"));
-                                }
-                        )
-                        .collect(Collectors.toCollection(() -> hosts));
+                SSLContextBuilder sslBuilder = SSLContexts.custom();
+                initKeyStore(sslBuilder);
+                initTrustStore(sslBuilder);
 
-            } catch (Exception e) {
-                throw new ClientInitializationException(e, "Error while parsing node addresses!");
+                sslContext = sslBuilder.build();
+            } catch (NoSuchAlgorithmException | KeyManagementException e) {
+                throw new ClientInitializationException(e, "Failed to build SSLContext");
             }
+        }
 
-            // Init internal Elasticsearch client
-            RestClientBuilder restClientBuilder = RestClient.builder(hosts.toArray(new HttpHost[0]));
-            SSLContext sslContext = null;
-            if (sslEnabled) {
-                try {
-                    SSLContextBuilder sslBuilder = SSLContexts.custom();
-                    initKeyStore(sslBuilder);
-                    initTrustStore(sslBuilder);
+        String username = getClientConfiguration().getUsername();
+        String password = getClientConfiguration().getPassword();
+        CredentialsProvider credentialsProvider = null;
+        if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
+            credentialsProvider = new BasicCredentialsProvider();
+            credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
+        }
 
-                    sslContext = sslBuilder.build();
-                } catch (NoSuchAlgorithmException | KeyManagementException e) {
-                    throw new ClientInitializationException(e, "Failed to build SSLContext");
-                }
-            }
-
-            String username = getClientConfiguration().getUsername();
-            String password = getClientConfiguration().getPassword();
-            CredentialsProvider credentialsProvider = null;
-            if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
-                credentialsProvider = new BasicCredentialsProvider();
-                credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
-            }
-
-            //issue #
-            final SSLContext finalSslContext = sslContext;
-            final CredentialsProvider finalCredentialsProvider = credentialsProvider;
-            restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> customizeHttpClient(httpClientBuilder, finalSslContext, finalCredentialsProvider));
+        //issue #
+        final SSLContext finalSslContext = sslContext;
+        final CredentialsProvider finalCredentialsProvider = credentialsProvider;
+        restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> customizeHttpClient(httpClientBuilder, finalSslContext, finalCredentialsProvider));
 //        restClientBuilder.setFailureListener(new RestElasticsearchFailureListener());
 
-            RestClient restClient = restClientBuilder.build();
+        RestClient restClient = restClientBuilder.build();
 
-            // Init Kapua Elasticsearch Client
-            restElasticsearchClient = new RestElasticsearchClient(metrics);
-            restElasticsearchClient
-                    .withClientConfiguration(clientConfiguration)
-                    .withModelContext(modelContext)
-                    .withModelConverter(modelConverter)
-                    .withClient(restClient)
-                    .init();
+        // Init Kapua Elasticsearch Client
+        restElasticsearchClient = new RestElasticsearchClient(metrics);
+        restElasticsearchClient
+                .withClientConfiguration(clientConfiguration)
+                .withModelContext(modelContext)
+                .withModelConverter(modelConverter)
+                .withClient(restClient)
+                .init();
 
-            return restClient;
-        }
-        return null;
+        return restClient;
     }
 
     private HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder, SSLContext sslContext, CredentialsProvider credentialsProvider) {
