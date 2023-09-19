@@ -81,5 +81,5 @@ public interface ElasticsearchClientProvider<C extends ElasticsearchClient> exte
      * @throws ClientUnavailableException if the client has not being initialized.
      * @since 1.0.0
      */
-    C getElasticsearchClient() throws ClientUnavailableException;
+    C getElasticsearchClient() throws ClientUnavailableException, ClientProviderInitException;
 }

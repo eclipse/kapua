@@ -113,8 +113,7 @@ public class DatastoreModule extends AbstractKapuaModule {
             elasticsearchClientProvider
                     .withClientConfiguration(esClientConfiguration)
                     .withModelContext(new ModelContextImpl(storableIdFactory, datastoreUtils))
-                    .withModelConverter(new QueryConverterImpl())
-                    .init();
+                    .withModelConverter(new QueryConverterImpl());
         } catch (Exception e) {
             throw new DatastoreInternalError(e, "Cannot instantiate Elasticsearch Client");
         }

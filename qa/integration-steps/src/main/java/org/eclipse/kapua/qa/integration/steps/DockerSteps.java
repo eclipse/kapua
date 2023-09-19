@@ -674,16 +674,16 @@ public class DockerSteps {
      * @param brokerAddr
      * @param brokerIp
      * @param clusterName
-     * @param mqttPort                mqtt port on docker
-     * @param mqttHostPort            mqtt port on docker host
-     * @param mqttsPort               mqtts port on docker
-     * @param mqttsHostPort           mqtts port on docker host
-     * @param webPort                 web port on docker
-     * @param webHostPort             web port on docker host
-     * @param debugPort               debug port on docker
-     * @param debugHostPort           debug port on docker host
-     * @param brokerInternalDebugPort
-     * @param dockerImage             full name of image (e.g. "kapua/kapua-broker:" + version)
+     * @param mqttPort      mqtt port on docker
+     * @param mqttHostPort  mqtt port on docker host
+     * @param mqttsPort     mqtts port on docker
+     * @param mqttsHostPort mqtts port on docker host
+     * @param webPort       web port on docker
+     * @param webHostPort   web port on docker host
+     * @param debugPort     debug port on docker
+     * @param debugHostPort debug port on docker host
+     *                      //     * @param brokerInternalDebugPort
+     * @param dockerImage   full name of image (e.g. "kapua/kapua-broker:" + version)
      * @return Container configuration for specific boroker instance
      */
     private ContainerConfig getBrokerContainerConfig(String brokerIp,

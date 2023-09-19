@@ -88,6 +88,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     private ScheduledExecutorService reconnectExecutorTask;
 
     private MetricsEsClient metrics;
+    private boolean initialized;
 
     public RestElasticsearchClientProvider() {
         metrics = KapuaLocator.getInstance().getComponent(MetricsEsClient.class);
@@ -95,6 +96,9 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
 
     @Override
     public RestElasticsearchClientProvider init() throws ClientProviderInitException {
+        if (initialized) {
+            return this;
+        }
         synchronized (RestElasticsearchClientProvider.class) {
             if (elasticsearchClientConfiguration == null) {
                 throw new ClientProviderInitException("Client configuration not defined");
@@ -176,7 +180,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
                     LOG.info(">>> Initializing Elasticsearch REST client... Connecting... Error: {}", e.getMessage(), e);
                 }
             }, getClientReconnectConfiguration().getReconnectDelay(), getClientReconnectConfiguration().getReconnectDelay(), TimeUnit.MILLISECONDS);
-
+            initialized = true;
             return this;
         }
     }
@@ -274,9 +278,25 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
             hosts = InetAddressParser
                     .parseAddresses(clientConfiguration.getNodes())
                     .stream()
+                    .peek(inetSocketAddress -> LOG.info("Evaluating address: {}", inetSocketAddress))
                     .filter(inetSocketAddress -> {
-                        LOG.warn("Null Inet Socket Address! Skipping...");
-                        return inetSocketAddress != null;
+                        if (inetSocketAddress == null) {
+                            LOG.warn("Null Inet Socket Address! Skipping...");
+                            return false;
+                        }
+                        return true;
+                    }).filter(inetSocketAddress -> {
+                        if (inetSocketAddress.getAddress() == null) {
+                            LOG.warn("Invalid Inet Socket Address! Skipping...");
+                            return false;
+                        }
+                        return true;
+                    }).filter(inetSocketAddress -> {
+                        if (inetSocketAddress.getHostName() == null) {
+                            LOG.warn("Invalid Inet Socket hostname! Skipping...");
+                            return false;
+                        }
+                        return true;
                     })
                     .map(inetSocketAddress -> {
                                 LOG.info("Inet Socket Address: {}", inetSocketAddress);
@@ -392,7 +412,8 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     }
 
     @Override
-    public RestElasticsearchClient getElasticsearchClient() throws ClientUnavailableException {
+    public RestElasticsearchClient getElasticsearchClient() throws ClientUnavailableException, ClientProviderInitException {
+        this.init();
         if (restElasticsearchClient == null) {
             throw new ClientUnavailableException("Client not initialized");
         }
