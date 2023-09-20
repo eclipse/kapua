@@ -27,6 +27,7 @@ import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.shiro.ApiKeyCredentialsImpl;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ public class ApiKeyAuthenticatingRealm extends KapuaAuthenticatingRealm {
     // Get Services
     private final UserService userService = KapuaLocator.getInstance().getService(UserService.class);
     private final CredentialService credentialService = KapuaLocator.getInstance().getService(CredentialService.class);
+    private final KapuaAuthenticationSetting kapuaAuthenticationSetting = KapuaLocator.getInstance().getComponent(KapuaAuthenticationSetting.class);
 
     /**
      * Realm name.
@@ -59,7 +61,7 @@ public class ApiKeyAuthenticatingRealm extends KapuaAuthenticatingRealm {
     public ApiKeyAuthenticatingRealm() {
         setName(REALM_NAME);
 
-        CredentialsMatcher credentialsMather = new ApiKeyCredentialsMatcher();
+        CredentialsMatcher credentialsMather = new ApiKeyCredentialsMatcher(kapuaAuthenticationSetting);
         setCredentialsMatcher(credentialsMather);
     }
 

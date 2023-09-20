@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.authentication.shiro.realm;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
@@ -23,13 +22,20 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticatio
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import javax.inject.Inject;
+
 /**
  * {@link UsernamePasswordCredentials} credential matcher implementation
  *
  * @since 1.0
  */
 public class ApiKeyCredentialsMatcher implements CredentialsMatcher {
-    private final KapuaAuthenticationSetting kapuaAuthenticationSetting = KapuaLocator.getInstance().getComponent(KapuaAuthenticationSetting.class);
+    private final KapuaAuthenticationSetting kapuaAuthenticationSetting;
+
+    @Inject
+    public ApiKeyCredentialsMatcher(KapuaAuthenticationSetting kapuaAuthenticationSetting) {
+        this.kapuaAuthenticationSetting = kapuaAuthenticationSetting;
+    }
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
