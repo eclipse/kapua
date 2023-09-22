@@ -74,7 +74,7 @@ public class AclCreator {
         }
         ael.add(createAuthorizationEntry(Action.writeAdmin, formatAcl(aclCtrlAccReply, accountName), aclDestinationsLog));
         // Write notify to any client Id and any application and operation
-        ael.add(createAuthorizationEntry(Action.write, formatAclFull(aclCtrlAccNotify, accountName, clientId), aclDestinationsLog));
+        ael.add(createAuthorizationEntry(Action.writeAdmin, formatAclFull(aclCtrlAccNotify, accountName, clientId), aclDestinationsLog));
         return ael;
     }
 
