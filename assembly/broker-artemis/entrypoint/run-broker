@@ -23,17 +23,16 @@ cd /opt/artemis/
 
 /opt/artemis/bin/artemis create \
     --allow-anonymous \
+    --aio \
     --autocreate \
     --cluster-password password \
     --cluster-user user \
-    --clustered false \
-    --data ./data/kapua --default-port 1883 \
-    --disable-persistence false \
+    --data ./data/kapua \
+    --default-port 1883 \
     --home /opt/artemis \
-    --host ${BINDING_IP} \
+    --host ${BINDING_IP:-0.0.0.0} \
     --name kapua \
     --password password \
-    --allow-anonymous \
     --user user \
     --verbose kapua
 
