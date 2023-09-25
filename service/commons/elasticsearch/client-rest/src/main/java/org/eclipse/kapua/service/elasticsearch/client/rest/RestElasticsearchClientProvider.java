@@ -14,6 +14,7 @@
 package org.eclipse.kapua.service.elasticsearch.client.rest;
 
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
@@ -29,7 +30,6 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.ModelContext;
 import org.eclipse.kapua.service.elasticsearch.client.QueryConverter;
@@ -90,8 +90,9 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     private MetricsEsClient metrics;
     private boolean initialized;
 
-    public RestElasticsearchClientProvider() {
-        metrics = KapuaLocator.getInstance().getComponent(MetricsEsClient.class);
+    @Inject
+    public RestElasticsearchClientProvider(MetricsEsClient metricsEsClient) {
+        this.metrics = metricsEsClient;
     }
 
     @Override

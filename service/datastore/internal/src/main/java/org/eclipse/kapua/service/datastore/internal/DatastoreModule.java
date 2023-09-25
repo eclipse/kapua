@@ -100,17 +100,10 @@ public class DatastoreModule extends AbstractKapuaModule {
     }
 
 
-    @Provides
-    @Singleton
-    ElasticsearchClientProvider elasticsearchClientProvider(StorableIdFactory storableIdFactory, DatastoreUtils datastoreUtils) {
-        ElasticsearchClientProvider<?> elasticsearchClientProvider;
+    @Inject
+    void configureElasticsearchClientProvider(ElasticsearchClientProvider elasticsearchClientProvider, StorableIdFactory storableIdFactory, DatastoreUtils datastoreUtils) {
         try {
             ElasticsearchClientConfiguration esClientConfiguration = DatastoreElasticsearchClientConfiguration.getInstance();
-
-            Class<ElasticsearchClientProvider<?>> providerClass = (Class<ElasticsearchClientProvider<?>>) Class.forName(esClientConfiguration.getProviderClassName());
-            Constructor<?> constructor = providerClass.getConstructor();
-            elasticsearchClientProvider = (ElasticsearchClientProvider<?>) constructor.newInstance();
-
             elasticsearchClientProvider
                     .withClientConfiguration(esClientConfiguration)
                     .withModelContext(new ModelContextImpl(storableIdFactory, datastoreUtils))
@@ -118,8 +111,6 @@ public class DatastoreModule extends AbstractKapuaModule {
         } catch (Exception e) {
             throw new DatastoreInternalError(e, "Cannot instantiate Elasticsearch Client");
         }
-
-        return elasticsearchClientProvider;
     }
 
     @Provides

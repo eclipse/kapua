@@ -12,7 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.rest;
 
+import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 
 import javax.inject.Singleton;
 
@@ -20,5 +22,11 @@ public class EsClientModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(MetricsEsClient.class).in(Singleton.class);
+    }
+
+    @Provides
+    @Singleton
+    ElasticsearchClientProvider elasticsearchClientProvider(MetricsEsClient metricsEsClient) {
+        return new RestElasticsearchClientProvider(metricsEsClient);
     }
 }
