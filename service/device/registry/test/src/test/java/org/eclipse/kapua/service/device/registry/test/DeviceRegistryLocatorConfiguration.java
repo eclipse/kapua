@@ -30,9 +30,11 @@ import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.metric.MetricsServiceImpl;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
+import org.eclipse.kapua.commons.service.internal.cache.KapuaCacheManager;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.internal.KapuaMessageFactoryImpl;
@@ -122,7 +124,11 @@ public class DeviceRegistryLocatorConfiguration {
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
                 // Inject actual Device registry service related services
-                final DeviceRegistryCacheFactory deviceRegistryCacheFactory = new DeviceRegistryCacheFactory();
+                //TODO: FIXME: PRIORITY: build test instance
+                final CommonsMetric commonsMetric = null;
+                final KapuaCacheManager cacheManager = null;
+
+                final DeviceRegistryCacheFactory deviceRegistryCacheFactory = new DeviceRegistryCacheFactory(cacheManager, commonsMetric);
                 bind(DeviceRegistryCacheFactory.class).toInstance(deviceRegistryCacheFactory);
 
                 final Map<String, DeviceConnectionCredentialAdapter> availableDeviceConnectionAdapters = new HashMap<>();

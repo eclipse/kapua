@@ -13,8 +13,6 @@
 package org.eclipse.kapua.client.security;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.client.security.amqpclient.Client;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
@@ -22,13 +20,10 @@ import org.eclipse.kapua.client.security.bean.EntityRequest;
 import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.bean.Request;
 import org.eclipse.kapua.client.security.bean.ResponseContainer;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jms.JMSException;
-import java.util.UUID;
 
 /**
  * Security service. Implementation through AMQP messaging layer.
@@ -37,28 +32,14 @@ public class ServiceClientMessagingImpl implements ServiceClient {
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceClientMessagingImpl.class);
 
-    public static final String REQUEST_QUEUE = "$SYS/SVC/auth/request";
-    public static final String RESPONSE_QUEUE_PATTERN = "$SYS/SVC/auth/response/%s_%s";
-
     private static final int TIMEOUT = 5000;
     private final MessageListener messageListener;
 
     private Client client;
 
-    public ServiceClientMessagingImpl(MessageListener messageListener, String clusterName, String requester) {
+    public ServiceClientMessagingImpl(MessageListener messageListener, Client client) {
         this.messageListener = messageListener;
-        //TODO change configuration (use service event broker for now)
-        String clientId = "svc-ath-" + UUID.randomUUID().toString();
-        String host = SystemSetting.getInstance().getString(SystemSettingKey.SERVICE_BUS_HOST, "events-broker");
-        int port = SystemSetting.getInstance().getInt(SystemSettingKey.SERVICE_BUS_PORT, 5672);
-        String username = SystemSetting.getInstance().getString(SystemSettingKey.SERVICE_BUS_USERNAME, "username");
-        String password = SystemSetting.getInstance().getString(SystemSettingKey.SERVICE_BUS_PASSWORD, "password");
-        try {
-            client = new Client(username, password, host, port, clientId,
-                    REQUEST_QUEUE, String.format(RESPONSE_QUEUE_PATTERN, clusterName, requester), messageListener);
-        } catch (JMSException e) {
-            throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, (Object[]) null);
-        }
+        this.client = client;
     }
 
     @Override

@@ -72,10 +72,9 @@ public class SimpleRegistrationProcessorProvider implements RegistrationProcesso
         this.permissionFactory = permissionFactory;
     }
 
-
     @Override
     public Set<? extends RegistrationProcessor> createAll() {
-        final Optional<Settings> result = SimpleRegistrationProcessor.Settings.loadSimpleSettings(simpleSetting);
+        final Optional<Settings> result = SimpleRegistrationProcessor.Settings.loadSimpleSettings(userService, simpleSetting);
         return result
                 .map(settings -> new SimpleRegistrationProcessor(
                         accountService,

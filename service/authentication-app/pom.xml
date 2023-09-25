@@ -44,6 +44,14 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-registration-simple</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-registry-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-keystore-internal</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>aopalliance</groupId>

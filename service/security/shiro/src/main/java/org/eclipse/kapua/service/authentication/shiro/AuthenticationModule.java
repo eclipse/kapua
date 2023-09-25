@@ -16,7 +16,6 @@ import com.google.inject.Provides;
 import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
@@ -24,6 +23,7 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachin
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactoryImpl;
+import org.eclipse.kapua.commons.jpa.EntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.model.domains.Domains;
@@ -312,11 +312,12 @@ public class AuthenticationModule extends AbstractKapuaModule {
     public CredentialServiceConfigurationManager credentialServiceConfigurationManager(
             RootUserTester rootUserTester,
             KapuaJpaRepositoryConfiguration jpaRepoConfig,
-            KapuaAuthenticationSetting kapuaAuthenticationSetting) {
+            KapuaAuthenticationSetting kapuaAuthenticationSetting,
+            EntityCacheFactory entityCacheFactory) {
         final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
                 new CachingServiceConfigRepository(
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
-                        new AbstractKapuaConfigurableServiceCache().createCache()
+                        entityCacheFactory.createCache("AbstractKapuaConfigurableServiceCacheId")
                 ),
                 rootUserTester,
                 kapuaAuthenticationSetting);

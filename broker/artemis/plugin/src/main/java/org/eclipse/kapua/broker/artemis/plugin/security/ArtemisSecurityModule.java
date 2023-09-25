@@ -96,8 +96,8 @@ public class ArtemisSecurityModule extends AbstractKapuaModule {
         return brokerHostResolver.getBrokerHost();
     }
 
-    public static final String REQUEST_QUEUE = "auth_request";
-    public static final String RESPONSE_QUEUE_PATTERN = "auth_response_%s_%s";
+    public static final String REQUEST_QUEUE = "$SYS/SVC/auth/request";
+    public static final String RESPONSE_QUEUE_PATTERN = "$SYS/SVC/auth/response/%s_%s";
 
     @Singleton
     @Provides
@@ -111,7 +111,7 @@ public class ArtemisSecurityModule extends AbstractKapuaModule {
 
     public Client buildClient(SystemSetting systemSetting, String clusterName, String brokerHost, MessageListener messageListener) {
         //TODO change configuration (use service event broker for now)
-        String clientId = "auth-" + UUID.randomUUID().toString();
+        String clientId = "svc-ath-" + UUID.randomUUID().toString();
         String host = systemSetting.getString(SystemSettingKey.SERVICE_BUS_HOST, "events-broker");
         int port = systemSetting.getInt(SystemSettingKey.SERVICE_BUS_PORT, 5672);
         String username = systemSetting.getString(SystemSettingKey.SERVICE_BUS_USERNAME, "username");

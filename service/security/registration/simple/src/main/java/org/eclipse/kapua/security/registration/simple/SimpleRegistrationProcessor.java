@@ -17,7 +17,6 @@ import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.security.registration.RegistrationProcessor;
@@ -80,7 +79,7 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
 
         private int maximumNumberOfDevices;
 
-        public Settings(KapuaId rootAccount) {
+        private Settings(KapuaId rootAccount) {
             this.rootAccount = rootAccount;
         }
 
@@ -112,11 +111,11 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
             return maximumNumberOfDevices;
         }
 
-        public static Optional<SimpleRegistrationProcessor.Settings> loadSimpleSettings(AbstractKapuaSetting<SimpleSettingKeys> settings) {
+        public static Optional<SimpleRegistrationProcessor.Settings> loadSimpleSettings(UserService userService, AbstractKapuaSetting<SimpleSettingKeys> settings) {
             try {
                 String accountName = settings.getString(SimpleSettingKeys.SIMPLE_ROOT_ACCOUNT);
                 if (accountName != null && !accountName.isEmpty()) {
-                    return loadFrom(accountName).map(rootAccount -> applySimpleSettings(rootAccount, settings));
+                    return loadFrom(userService, accountName).map(rootAccount -> applySimpleSettings(rootAccount, settings));
                 }
                 return Optional.empty();
             } catch (KapuaException e) {
@@ -124,8 +123,8 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
             }
         }
 
-        private static Optional<KapuaId> loadFrom(String accountName) throws KapuaException {
-            User user = KapuaSecurityUtils.doPrivileged(() -> KapuaLocator.getInstance().getService(UserService.class).findByName(accountName));
+        private static Optional<KapuaId> loadFrom(UserService userService, String accountName) throws KapuaException {
+            User user = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(accountName));
 
             if (user != null) {
                 return Optional.of(user).map(User::getScopeId);
