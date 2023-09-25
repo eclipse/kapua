@@ -17,7 +17,6 @@ import com.google.common.base.Strings;
 import org.eclipse.kapua.commons.crypto.exception.AesDecryptionException;
 import org.eclipse.kapua.commons.crypto.exception.AesEncryptionException;
 import org.eclipse.kapua.commons.crypto.exception.AlgorihmNotAvailableRuntimeException;
-import org.eclipse.kapua.commons.crypto.exception.DefaultSecretKeyDetectedRuntimeException;
 import org.eclipse.kapua.commons.crypto.exception.InvalidSecretKeyRuntimeException;
 import org.eclipse.kapua.commons.crypto.setting.CryptoSettingKeys;
 import org.eclipse.kapua.commons.crypto.setting.CryptoSettings;
@@ -61,11 +60,12 @@ public class CryptoUtilImpl implements CryptoUtil {
             defaultSecretKey = cryptSecretKey;
         }
 
-        if (("changeMePlease!!".equals(defaultSecretKey) ||
-                "rv;ipse329183!@#".equals(defaultSecretKey)) &&
-                cryptoSettings.getBoolean(CryptoSettingKeys.CRYPTO_SECRET_ENFORCE_CHANGE)) {
-            throw new DefaultSecretKeyDetectedRuntimeException(defaultSecretKey);
-        }
+        //TODO: FIXME: Is failing here really necessary? Or should this just be a warning?
+//        if (("changeMePlease!!".equals(defaultSecretKey) ||
+//                "rv;ipse329183!@#".equals(defaultSecretKey)) &&
+//                cryptoSettings.getBoolean(CryptoSettingKeys.CRYPTO_SECRET_ENFORCE_CHANGE)) {
+//            throw new DefaultSecretKeyDetectedRuntimeException(defaultSecretKey);
+//        }
 
         Key aesKey = new SecretKeySpec(defaultSecretKey.getBytes(), AES_ALGORITHM);
 

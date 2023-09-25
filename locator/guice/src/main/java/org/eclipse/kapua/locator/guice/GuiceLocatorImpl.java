@@ -18,6 +18,7 @@ import com.google.inject.ConfigurationException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.google.inject.Stage;
 import com.google.inject.util.Modules;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
@@ -172,11 +173,8 @@ public class GuiceLocatorImpl extends KapuaLocator {
         printLoadedKapuaModuleConfiguration(locatorConfigURL, locatorConfig, kapuaModules, overridingModules, excludedKapuaModules);
         // Create injector
         try {
-            if (overridingModules.isEmpty()) {
-                injector = Guice.createInjector(kapuaModules);
-            } else {
-                injector = Guice.createInjector(Modules.override(kapuaModules).with(overridingModules));
-            }
+            injector = Guice.createInjector(Stage.PRODUCTION, Modules.override(kapuaModules).with(overridingModules));
+//            injector = Guice.createInjector(Modules.override(kapuaModules).with(overridingModules));
         } catch (Throwable t) {
             throw new RuntimeException(t);
         }
