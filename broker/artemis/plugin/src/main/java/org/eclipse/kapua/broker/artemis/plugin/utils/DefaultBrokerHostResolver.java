@@ -12,12 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.artemis.plugin.utils;
 
+import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
-import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,12 +29,13 @@ public class DefaultBrokerHostResolver implements BrokerHostResolver {
     protected static final Logger logger = LoggerFactory.getLogger(DefaultBrokerHostResolver.class);
 
     private static final String CANNOT_FIND_IP_ERROR_MSG = "Cannot resolve the broker host. Please check the configuration!";
-    private String brokerHost;
+    private final String brokerHost;
 
-    public DefaultBrokerHostResolver() throws KapuaException {
-        brokerHost = KapuaLocator.getInstance().getComponent(BrokerSetting.class).getString(BrokerSettingKey.BROKER_HOST);
-        logger.info("Loaded broker host: {}", brokerHost);
-        if (StringUtils.isEmpty(brokerHost)) {
+    @Inject
+    public DefaultBrokerHostResolver(String brokerHost) throws KapuaException {
+        this.brokerHost = brokerHost;
+        logger.info("Loaded broker host: {}", this.brokerHost);
+        if (StringUtils.isEmpty(this.brokerHost)) {
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, CANNOT_FIND_IP_ERROR_MSG);
         }
     }
