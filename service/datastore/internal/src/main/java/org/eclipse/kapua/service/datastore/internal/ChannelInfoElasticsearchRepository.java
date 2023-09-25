@@ -38,13 +38,14 @@ public class ChannelInfoElasticsearchRepository extends DatastoreElasticSearchRe
             ChannelInfoFactory channelInfoFactory,
             StorablePredicateFactory storablePredicateFactory,
             DatastoreSettings datastoreSettings,
-            DatastoreUtils datastoreUtils) {
+            DatastoreUtils datastoreUtils,
+            DatastoreCacheManager datastoreCacheManager) {
         super(elasticsearchClientProviderInstance,
                 ChannelInfoSchema.CHANNEL_TYPE_NAME,
                 ChannelInfo.class,
                 channelInfoFactory,
                 storablePredicateFactory,
-                DatastoreCacheManager.getInstance().getChannelsCache(),
+                datastoreCacheManager.getChannelsCache(),
                 datastoreSettings);
         this.datastoreUtils = datastoreUtils;
     }

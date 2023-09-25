@@ -45,6 +45,7 @@ import java.util.stream.Collectors;
 
 public class MessageElasticsearchRepository extends DatastoreElasticSearchRepositoryBase<DatastoreMessage, MessageListResult, MessageQuery> implements MessageRepository {
     private final DatastoreUtils datastoreUtils;
+    private final LocalCache<String, Map<String, Metric>> metricsByIndex;
 
     @Inject
     public MessageElasticsearchRepository(
@@ -52,7 +53,8 @@ public class MessageElasticsearchRepository extends DatastoreElasticSearchReposi
             MessageStoreFactory messageStoreFactory,
             StorablePredicateFactory storablePredicateFactory,
             DatastoreSettings datastoreSettings,
-            DatastoreUtils datastoreUtils) {
+            DatastoreUtils datastoreUtils,
+            DatastoreCacheManager datastoreCacheManager) {
         super(elasticsearchClientProviderInstance,
                 MessageSchema.MESSAGE_TYPE_NAME,
                 DatastoreMessage.class,
@@ -60,9 +62,8 @@ public class MessageElasticsearchRepository extends DatastoreElasticSearchReposi
                 storablePredicateFactory,
                 datastoreSettings);
         this.datastoreUtils = datastoreUtils;
+        metricsByIndex = datastoreCacheManager.getMetadataCache();
     }
-
-    private final LocalCache<String, Map<String, Metric>> metricsByIndex = DatastoreCacheManager.getInstance().getMetadataCache();
 
     @Override
     protected JsonNode getIndexSchema() {

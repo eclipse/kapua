@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.user.internal;
 
 import com.google.inject.Provides;
 import com.google.inject.multibindings.ProvidesIntoSet;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
@@ -27,14 +26,15 @@ import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactoryImpl;
+import org.eclipse.kapua.commons.jpa.EntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.jpa.NamedCacheFactory;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
-import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.domain.Actions;
@@ -54,7 +54,6 @@ public class UserModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(UserFactory.class).to(UserFactoryImpl.class).in(Singleton.class);
-        bind(UserCacheFactory.class).toInstance(new UserCacheFactory());
         bind(KapuaUserSetting.class).in(Singleton.class);
     }
 
@@ -125,13 +124,14 @@ public class UserModule extends AbstractKapuaModule {
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
             UserRepository userRepository,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig
+            KapuaJpaRepositoryConfiguration jpaRepoConfig,
+            EntityCacheFactory entityCacheFactory
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(UserService.class.getName(),
                         new CachingServiceConfigRepository(
                                 new ServiceConfigImplJpaRepository(jpaRepoConfig),
-                                new AbstractKapuaConfigurableServiceCache().createCache()
+                                entityCacheFactory.createCache("AbstractKapuaConfigurableServiceCacheId")
                         ),
                         rootUserTester,
                         accountChildrenFinder,
@@ -143,10 +143,10 @@ public class UserModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    UserRepository userRepository(UserCacheFactory userCacheFactory, KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+    UserRepository userRepository(NamedCacheFactory namedCacheFactory, KapuaJpaRepositoryConfiguration jpaRepoConfig) {
         return new UserCachedRepository(
                 new UserImplJpaRepository(jpaRepoConfig),
-                (NamedEntityCache) userCacheFactory.createCache()
+                namedCacheFactory.createCache("UserId", "UserName")
         );
     }
 }

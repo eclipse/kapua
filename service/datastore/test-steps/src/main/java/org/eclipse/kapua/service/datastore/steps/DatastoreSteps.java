@@ -150,6 +150,7 @@ public class DatastoreSteps extends TestBase {
     private static final String NO_MESSAGES_TO_COMPARE_TO = "No messages to compare to!";
     private static final String NUMBER_OF_CLIENTS_DOES_NOT_MATCH = "The number of clients does not match!";
     private static final String CLIENT_ID_NOT_FOUND = "The client id [%s] is not found in the info list!";
+    private DatastoreCacheManager datastoreCacheManager;
 
     @Then("Number of received data messages is different than {int}")
     public void numberOfReceivedDataMessagesIsDifferentThan(int numberOfMessages) {
@@ -306,6 +307,7 @@ public class DatastoreSteps extends TestBase {
         messageFactory = locator.getFactory(KapuaMessageFactory.class);
         dataMessageFactory = locator.getFactory(KapuaDataMessageFactory.class);
         messageStoreFacade = locator.getComponent(MessageStoreFacade.class);
+        datastoreCacheManager = locator.getComponent(DatastoreCacheManager.class);
     }
 
     // *************************************
@@ -342,17 +344,17 @@ public class DatastoreSteps extends TestBase {
     @When("I refresh all indices")
     public void refreshIndeces() throws Throwable {
         messageStoreFacade.refreshAllIndexes();
-        DatastoreCacheManager.getInstance().getMetricsCache().invalidateAll();
-        DatastoreCacheManager.getInstance().getChannelsCache().invalidateAll();
-        DatastoreCacheManager.getInstance().getClientsCache().invalidateAll();
+        datastoreCacheManager.getMetricsCache().invalidateAll();
+        datastoreCacheManager.getChannelsCache().invalidateAll();
+        datastoreCacheManager.getClientsCache().invalidateAll();
     }
 
     @When("I clear all the database caches")
     public void clearDatabaseCaches() {
-        DatastoreCacheManager.getInstance().getChannelsCache().invalidateAll();
-        DatastoreCacheManager.getInstance().getClientsCache().invalidateAll();
-        DatastoreCacheManager.getInstance().getMetricsCache().invalidateAll();
-        DatastoreCacheManager.getInstance().getMetadataCache().invalidateAll();
+        datastoreCacheManager.getChannelsCache().invalidateAll();
+        datastoreCacheManager.getClientsCache().invalidateAll();
+        datastoreCacheManager.getMetricsCache().invalidateAll();
+        datastoreCacheManager.getMetadataCache().invalidateAll();
     }
 
     @Given("I have a mock data application named {string}")

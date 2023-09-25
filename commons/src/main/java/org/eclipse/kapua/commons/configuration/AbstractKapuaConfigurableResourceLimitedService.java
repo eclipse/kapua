@@ -16,8 +16,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.exception.ServiceConfigurationLimitExceededException;
 import org.eclipse.kapua.commons.configuration.exception.ServiceConfigurationParentLimitExceededException;
-import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.CacheFactory;
+import org.eclipse.kapua.commons.jpa.EntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -109,14 +109,14 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
      * @param abstractCacheFactory The {@link CacheFactory} that handles caching of the entities
      * @since 1.2.0
-     * @deprecated Since 2.0.0. Please use {@link #AbstractKapuaConfigurableResourceLimitedService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, KapuaEntityFactory, PermissionFactory, AuthorizationService, AccountChildrenFinder, RootUserTester)} This constructor may be removed in a next release
+     * @deprecated Since 2.0.0. Please use {@link #AbstractKapuaConfigurableResourceLimitedService(String, Domain, EntityManagerFactory, EntityCacheFactory, KapuaEntityFactory, PermissionFactory, AuthorizationService, AccountChildrenFinder, RootUserTester)} This constructor may be removed in a next release
      */
     @Deprecated
     protected AbstractKapuaConfigurableResourceLimitedService(
             String pid,
             Domain domain,
             EntityManagerFactory entityManagerFactory,
-            AbstractEntityCacheFactory abstractCacheFactory,
+            EntityCacheFactory abstractCacheFactory,
             Class<S> serviceClass,
             Class<F> factoryClass) {
         super(pid, domain, entityManagerFactory, abstractCacheFactory, null, null, null);
@@ -145,7 +145,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
     protected AbstractKapuaConfigurableResourceLimitedService(String pid,
                                                               Domain domain,
                                                               EntityManagerFactory entityManagerFactory,
-                                                              AbstractEntityCacheFactory abstractCacheFactory,
+                                                              EntityCacheFactory abstractCacheFactory,
                                                               F factory,
                                                               PermissionFactory permissionFactory,
                                                               AuthorizationService authorizationService,

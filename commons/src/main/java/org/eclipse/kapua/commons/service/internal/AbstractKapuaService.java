@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal;
 
-import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
+import org.eclipse.kapua.commons.jpa.EntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
@@ -46,7 +46,7 @@ public abstract class AbstractKapuaService implements KapuaService {
      *
      * @param entityManagerFactory The {@link EntityManagerFactory}.
      * @since 1.0.0
-     * @deprecated Since 1.2.0. Please make use of {@link #AbstractKapuaService(EntityManagerFactory, AbstractEntityCacheFactory)}. This constructor will be removed in a next release (may be).
+     * @deprecated Since 1.2.0. Please make use of {@link #AbstractKapuaService(EntityManagerFactory, EntityCacheFactory)}. This constructor will be removed in a next release (may be).
      */
     @Deprecated
     protected AbstractKapuaService(@NotNull EntityManagerFactory entityManagerFactory) {
@@ -57,15 +57,15 @@ public abstract class AbstractKapuaService implements KapuaService {
      * Constructor.
      *
      * @param entityManagerFactory The {@link EntityManagerFactory}.
-     * @param abstractCacheFactory The {@link AbstractEntityCacheFactory}.
+     * @param abstractCacheFactory The {@link EntityCacheFactory}.
      * @since 1.2.0
      */
-    protected AbstractKapuaService(@NotNull EntityManagerFactory entityManagerFactory, AbstractEntityCacheFactory abstractCacheFactory) {
+    protected AbstractKapuaService(@NotNull EntityManagerFactory entityManagerFactory, EntityCacheFactory entityCacheFactory) {
         this.entityManagerFactory = entityManagerFactory;
         this.entityManagerSession = new EntityManagerSession(entityManagerFactory);
 
-        if (abstractCacheFactory != null) {
-            this.entityCache = abstractCacheFactory.createCache();
+        if (entityCacheFactory != null) {
+            this.entityCache = entityCacheFactory.createCache("Deprecated");
         } else {
             this.entityCache = null;
         }

@@ -43,6 +43,7 @@ public class ClientInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
     private final StorableIdFactory storableIdFactory;
     private final StorablePredicateFactory storablePredicateFactory;
     private final ClientInfoRepository repository;
+    private final DatastoreCacheManager datastoreCacheManager;
     private final Object metadataUpdateSync = new Object();
 
     private static final String QUERY = "query";
@@ -59,11 +60,13 @@ public class ClientInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
             ConfigurationProvider configProvider,
             StorableIdFactory storableIdFactory,
             StorablePredicateFactory storablePredicateFactory,
-            ClientInfoRepository clientInfoRepository) {
+            ClientInfoRepository clientInfoRepository,
+            DatastoreCacheManager datastoreCacheManager) {
         super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
         this.repository = clientInfoRepository;
+        this.datastoreCacheManager = datastoreCacheManager;
     }
 
     /**
@@ -87,20 +90,20 @@ public class ClientInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
         StorableId storableId = storableIdFactory.newStorableId(clientInfoId);
 
         // Store channel. Look up channel in the cache, and cache it if it doesn't exist
-        if (!DatastoreCacheManager.getInstance().getClientsCache().get(clientInfo.getClientId())) {
+        if (!datastoreCacheManager.getClientsCache().get(clientInfo.getClientId())) {
             // The code is safe even without the synchronized block
             // Synchronize in order to let the first thread complete its update
             // then the others of the same type will find the cache updated and
             // skip the update.
             synchronized (metadataUpdateSync) {
-                if (!DatastoreCacheManager.getInstance().getClientsCache().get(clientInfo.getClientId())) {
+                if (!datastoreCacheManager.getClientsCache().get(clientInfo.getClientId())) {
                     // fix #REPLACE_ISSUE_NUMBER
                     ClientInfo storedField = repository.find(clientInfo.getScopeId(), storableId);
                     if (storedField == null) {
                         repository.upsert(clientInfoId, clientInfo);
                     }
                     // Update cache if client update is completed successfully
-                    DatastoreCacheManager.getInstance().getClientsCache().put(clientInfo.getClientId(), true);
+                    datastoreCacheManager.getClientsCache().put(clientInfo.getClientId(), true);
                 }
             }
         }

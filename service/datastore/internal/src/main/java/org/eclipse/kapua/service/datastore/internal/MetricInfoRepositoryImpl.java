@@ -38,13 +38,14 @@ public class MetricInfoRepositoryImpl extends DatastoreElasticSearchRepositoryBa
             MetricInfoFactory metricInfoFactory,
             StorablePredicateFactory storablePredicateFactory,
             DatastoreSettings datastoreSettings,
-            DatastoreUtils datastoreUtils) {
+            DatastoreUtils datastoreUtils,
+            DatastoreCacheManager datastoreCacheManager) {
         super(elasticsearchClientProviderInstance,
                 MetricInfoSchema.METRIC_TYPE_NAME,
                 MetricInfo.class,
                 metricInfoFactory,
                 storablePredicateFactory,
-                DatastoreCacheManager.getInstance().getMetricsCache(),
+                datastoreCacheManager.getMetricsCache(),
                 datastoreSettings);
         this.datastoreUtils = datastoreUtils;
     }

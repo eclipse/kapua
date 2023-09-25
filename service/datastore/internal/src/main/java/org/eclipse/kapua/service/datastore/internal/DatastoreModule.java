@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.datastore.internal;
 
 import com.google.inject.Provides;
 import com.google.inject.multibindings.ProvidesIntoSet;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
@@ -22,6 +21,7 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.EntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.model.domains.Domains;
@@ -80,6 +80,7 @@ public class DatastoreModule extends AbstractKapuaModule {
         bind(MessageStoreFacade.class).to(MessageStoreFacadeImpl.class).in(Singleton.class);
         bind(MetricsDatastore.class).in(Singleton.class);
         bind(DatastoreUtils.class).in(Singleton.class);
+        bind(DatastoreCacheManager.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet
@@ -147,13 +148,14 @@ public class DatastoreModule extends AbstractKapuaModule {
     ServiceConfigurationManager messageStoreServiceConfigurationManager(
             RootUserTester rootUserTester,
             KapuaJpaRepositoryConfiguration jpaRepoConfig,
-            DatastoreSettings datastoreSettings
+            DatastoreSettings datastoreSettings,
+            EntityCacheFactory entityCacheFactory
     ) {
         return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerImpl(
                 MessageStoreService.class.getName(),
                 new CachingServiceConfigRepository(
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
-                        new AbstractKapuaConfigurableServiceCache().createCache()
+                        entityCacheFactory.createCache("AbstractKapuaConfigurableServiceCacheId")
                 ),
                 rootUserTester
         ) {

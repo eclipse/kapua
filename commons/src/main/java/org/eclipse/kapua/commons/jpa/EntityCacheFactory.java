@@ -12,24 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
+import com.google.inject.Inject;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
-import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
+import org.eclipse.kapua.commons.service.internal.cache.KapuaCacheManager;
 
-public abstract class AbstractNamedEntityCacheFactory extends AbstractEntityCacheFactory {
+public class EntityCacheFactory implements CacheFactory {
 
-    private String nameCacheName;
+    protected final KapuaCacheManager cacheManager;
+    protected final CommonsMetric commonsMetric;
 
-    public AbstractNamedEntityCacheFactory(String idCacheName, String nameCacheName) {
-        super(idCacheName);
-        this.nameCacheName = nameCacheName;
-    }
-
-    public String getEntityNameCacheName() {
-        return nameCacheName;
+    @Inject
+    public EntityCacheFactory(KapuaCacheManager cacheManager, CommonsMetric commonsMetric) {
+        this.cacheManager = cacheManager;
+        this.commonsMetric = commonsMetric;
     }
 
     @Override
-    public EntityCache createCache() {
-        return new NamedEntityCache(getEntityIdCacheName(), getEntityNameCacheName());
+    public EntityCache createCache(String idCacheName) {
+        return new EntityCache(cacheManager, commonsMetric, idCacheName);
     }
 }

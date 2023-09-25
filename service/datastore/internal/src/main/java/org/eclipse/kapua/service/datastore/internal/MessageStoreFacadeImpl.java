@@ -82,6 +82,7 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
     private final ClientInfoRepository clientInfoRepository;
     private final MetricsDatastore metrics;
     private final DatastoreUtils datastoreUtils;
+    private final DatastoreCacheManager datastoreCacheManager;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -98,7 +99,9 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
             MetricInfoRepository metricInfoRepository,
             ChannelInfoRepository channelInfoRepository,
             ClientInfoRepository clientInfoRepository,
-            MetricsDatastore metricsDatastore, DatastoreUtils datastoreUtils) {
+            MetricsDatastore metricsDatastore,
+            DatastoreUtils datastoreUtils,
+            DatastoreCacheManager datastoreCacheManager) {
         super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.clientInfoRegistryFacade = clientInfoRegistryFacade;
@@ -110,6 +113,7 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
         this.clientInfoRepository = clientInfoRepository;
         this.metrics = metricsDatastore;
         this.datastoreUtils = datastoreUtils;
+        this.datastoreCacheManager = datastoreCacheManager;
     }
 
     /**
@@ -393,7 +397,7 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
             MetricInfoListResult metrics = metricInfoRepository.query(metricQuery);
 
             totalHits = metrics.getTotalCount();
-            LocalCache<String, Boolean> metricsCache = DatastoreCacheManager.getInstance().getMetricsCache();
+            LocalCache<String, Boolean> metricsCache = datastoreCacheManager.getMetricsCache();
             long toBeProcessed = totalHits > pageSize ? pageSize : totalHits;
 
             for (int i = 0; i < toBeProcessed; i++) {
@@ -424,7 +428,7 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
             final ChannelInfoListResult channels = channelInfoRepository.query(channelQuery);
 
             totalHits = channels.getTotalCount();
-            LocalCache<String, Boolean> channelsCache = DatastoreCacheManager.getInstance().getChannelsCache();
+            LocalCache<String, Boolean> channelsCache = datastoreCacheManager.getChannelsCache();
             long toBeProcessed = totalHits > pageSize ? pageSize : totalHits;
 
             for (int i = 0; i < toBeProcessed; i++) {
@@ -455,7 +459,7 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
             while (totalHits > 0) {
                 ClientInfoListResult clients = clientInfoRepository.query(clientInfoQuery);
                 totalHits = clients.getTotalCount();
-                LocalCache<String, Boolean> clientsCache = DatastoreCacheManager.getInstance().getClientsCache();
+                LocalCache<String, Boolean> clientsCache = datastoreCacheManager.getClientsCache();
                 long toBeProcessed = totalHits > pageSize ? pageSize : totalHits;
 
                 for (int i = 0; i < toBeProcessed; i++) {

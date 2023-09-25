@@ -10,30 +10,26 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.access.shiro;
+package org.eclipse.kapua.commons.jpa;
 
 import com.google.inject.Inject;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.service.internal.cache.KapuaCacheManager;
+import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 
-/**
- * Cache factory for the {@link AccessInfoImpl}
- */
-public class AccessInfoCacheFactory {
+public class NamedEntityCacheFactory implements NamedCacheFactory {
+
     protected final KapuaCacheManager cacheManager;
     protected final CommonsMetric commonsMetric;
 
     @Inject
-    public AccessInfoCacheFactory(KapuaCacheManager cacheManager, CommonsMetric commonsMetric) {
+    public NamedEntityCacheFactory(KapuaCacheManager cacheManager, CommonsMetric commonsMetric) {
         this.cacheManager = cacheManager;
         this.commonsMetric = commonsMetric;
     }
 
-
-    /**
-     * @return an {@link AccessInfoCache}
-     */
-    public AccessInfoCache createCache() {
-        return new AccessInfoCache(cacheManager, commonsMetric, "AccessInfoId", "AccessInfoUserIdId");
+    @Override
+    public NamedEntityCache createCache(String idCacheName, String nameCacheName) {
+        return new NamedEntityCache(this.cacheManager, this.commonsMetric, idCacheName, nameCacheName);
     }
 }

@@ -49,6 +49,7 @@ public class MetricInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
     private final StorableIdFactory storableIdFactory;
     private final StorablePredicateFactory storablePredicateFactory;
     private final MetricInfoRepository repository;
+    private final DatastoreCacheManager datastoreCacheManager;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -65,11 +66,13 @@ public class MetricInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
     public MetricInfoRegistryFacadeImpl(ConfigurationProvider configProvider,
                                         StorableIdFactory storableIdFactory,
                                         StorablePredicateFactory storablePredicateFactory,
-                                        MetricInfoRepository metricInfoRepository) {
+                                        MetricInfoRepository metricInfoRepository,
+                                        DatastoreCacheManager datastoreCacheManager) {
         super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
         this.repository = metricInfoRepository;
+        this.datastoreCacheManager = datastoreCacheManager;
     }
 
     /**
@@ -92,14 +95,14 @@ public class MetricInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
         StorableId storableId = storableIdFactory.newStorableId(metricInfoId);
 
         // Store channel. Look up channel in the cache, and cache it if it doesn't exist
-        if (!DatastoreCacheManager.getInstance().getMetricsCache().get(metricInfoId)) {
+        if (!datastoreCacheManager.getMetricsCache().get(metricInfoId)) {
             // fix #REPLACE_ISSUE_NUMBER
             MetricInfo storedField = doFind(metricInfo.getScopeId(), storableId);
             if (storedField == null) {
                 repository.upsert(metricInfoId, metricInfo);
             }
             // Update cache if metric update is completed successfully
-            DatastoreCacheManager.getInstance().getMetricsCache().put(metricInfoId, true);
+            datastoreCacheManager.getMetricsCache().put(metricInfoId, true);
         }
         return storableId;
     }
@@ -125,11 +128,11 @@ public class MetricInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
         for (MetricInfo metricInfo : metricInfos) {
             String metricInfoId = MetricInfoField.getOrDeriveId(metricInfo.getId(), metricInfo);
             // fix #REPLACE_ISSUE_NUMBER
-            if (!DatastoreCacheManager.getInstance().getMetricsCache().get(metricInfoId)) {
+            if (!datastoreCacheManager.getMetricsCache().get(metricInfoId)) {
                 StorableId storableId = storableIdFactory.newStorableId(metricInfoId);
                 MetricInfo storedField = doFind(metricInfo.getScopeId(), storableId);
                 if (storedField != null) {
-                    DatastoreCacheManager.getInstance().getMetricsCache().put(metricInfoId, true);
+                    datastoreCacheManager.getMetricsCache().put(metricInfoId, true);
                     continue;
                 }
                 toUpsert.add(metricInfo);
@@ -142,12 +145,12 @@ public class MetricInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
             changedIds = repository.upsert(toUpsert);
             if (changedIds != null) {
                 for (String changedId : changedIds) {
-                    if (changedId == null || DatastoreCacheManager.getInstance().getMetricsCache().get(changedId)) {
+                    if (changedId == null || datastoreCacheManager.getMetricsCache().get(changedId)) {
                         continue;
                     }
 
                     // Update cache if channel metric update is completed successfully
-                    DatastoreCacheManager.getInstance().getMetricsCache().put(changedId, true);
+                    datastoreCacheManager.getMetricsCache().put(changedId, true);
                 }
             }
         }

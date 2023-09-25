@@ -46,6 +46,7 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractDatastoreFacade imple
     private final StorableIdFactory storableIdFactory;
     private final StorablePredicateFactory storablePredicateFactory;
     private final ChannelInfoRepository repository;
+    private final DatastoreCacheManager datastoreCacheManager;
     private final Object metadataUpdateSync = new Object();
 
     private static final String QUERY = "query";
@@ -62,11 +63,13 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractDatastoreFacade imple
             ConfigurationProvider configProvider,
             StorableIdFactory storableIdFactory,
             StorablePredicateFactory storablePredicateFactory,
-            ChannelInfoRepository channelInfoRepository) {
+            ChannelInfoRepository channelInfoRepository,
+            DatastoreCacheManager datastoreCacheManager) {
         super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
         this.repository = channelInfoRepository;
+        this.datastoreCacheManager = datastoreCacheManager;
     }
 
     /**
@@ -90,19 +93,19 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractDatastoreFacade imple
         StorableId storableId = storableIdFactory.newStorableId(channelInfoId);
 
         // Store channel. Look up channel in the cache, and cache it if it doesn't exist
-        if (!DatastoreCacheManager.getInstance().getChannelsCache().get(channelInfoId)) {
+        if (!datastoreCacheManager.getChannelsCache().get(channelInfoId)) {
             // The code is safe even without the synchronized block
             // Synchronize in order to let the first thread complete its
             // update then the others of the same type will find the cache
             // updated and skip the update.
             synchronized (metadataUpdateSync) {
-                if (!DatastoreCacheManager.getInstance().getChannelsCache().get(channelInfoId)) {
+                if (!datastoreCacheManager.getChannelsCache().get(channelInfoId)) {
                     ChannelInfo storedField = doFind(channelInfo.getScopeId(), storableId);
                     if (storedField == null) {
                         repository.upsert(channelInfoId, channelInfo);
                     }
                     // Update cache if channel update is completed successfully
-                    DatastoreCacheManager.getInstance().getChannelsCache().put(channelInfoId, true);
+                    datastoreCacheManager.getChannelsCache().put(channelInfoId, true);
                 }
             }
         }

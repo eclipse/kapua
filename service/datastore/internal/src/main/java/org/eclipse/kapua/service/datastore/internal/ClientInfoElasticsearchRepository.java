@@ -38,13 +38,14 @@ public class ClientInfoElasticsearchRepository extends DatastoreElasticSearchRep
             ClientInfoFactory clientInfoFactory,
             StorablePredicateFactory storablePredicateFactory,
             DatastoreSettings datastoreSettings,
-            DatastoreUtils datastoreUtils) {
+            DatastoreUtils datastoreUtils,
+            DatastoreCacheManager datastoreCacheManager) {
         super(elasticsearchClientProviderInstance,
                 ClientInfoSchema.CLIENT_TYPE_NAME,
                 ClientInfo.class,
                 clientInfoFactory,
                 storablePredicateFactory,
-                DatastoreCacheManager.getInstance().getClientsCache(),
+                datastoreCacheManager.getClientsCache(),
                 datastoreSettings);
         this.datastoreUtils = datastoreUtils;
     }

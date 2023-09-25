@@ -13,7 +13,6 @@
 package org.eclipse.kapua.commons.service.internal.cache;
 
 import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -40,10 +39,10 @@ public class EntityCache {
      *
      * @param idCacheName
      */
-    public EntityCache(String idCacheName) {
-        idCache = KapuaCacheManager.getCache(idCacheName);
-        listsCache = KapuaCacheManager.getCache(idCacheName + "_list");
-        commonsMetric = KapuaLocator.getInstance().getComponent(CommonsMetric.class);
+    public EntityCache(KapuaCacheManager cacheManager, CommonsMetric commonsMetric, String idCacheName) {
+        this.idCache = cacheManager.getCache(idCacheName);
+        this.listsCache = cacheManager.getCache(idCacheName + "_list");
+        this.commonsMetric = commonsMetric;
     }
 
     public KapuaEntity get(KapuaId scopeId, KapuaId kapuaId) {

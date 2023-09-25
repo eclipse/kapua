@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.account.internal;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.multibindings.ProvidesIntoSet;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
@@ -27,9 +26,11 @@ import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactoryImpl;
+import org.eclipse.kapua.commons.jpa.EntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.jpa.NamedCacheFactory;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
@@ -131,14 +132,15 @@ public class AccountModule extends AbstractKapuaModule implements Module {
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder,
             AccountRepository accountRepository,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig
+            KapuaJpaRepositoryConfiguration jpaRepoConfig,
+            EntityCacheFactory entityCacheFactory
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
                         AccountService.class.getName(),
                         new CachingServiceConfigRepository(
                                 new ServiceConfigImplJpaRepository(jpaRepoConfig),
-                                new AbstractKapuaConfigurableServiceCache().createCache()
+                                entityCacheFactory.createCache("AbstractKapuaConfigurableServiceCacheId")
                         ),
                         rootUserTester,
                         accountChildrenFinder,
@@ -150,9 +152,9 @@ public class AccountModule extends AbstractKapuaModule implements Module {
 
     @Provides
     @Singleton
-    AccountRepository accountRepository(AccountCacheFactory accountCacheFactory, KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+    AccountRepository accountRepository(NamedCacheFactory namedCacheFactory, KapuaJpaRepositoryConfiguration jpaRepoConfig) {
         final AccountImplJpaRepository wrapped = new AccountImplJpaRepository(jpaRepoConfig);
-        final NamedEntityCache cache = (NamedEntityCache) accountCacheFactory.createCache();
+        final NamedEntityCache cache = namedCacheFactory.createCache("AccountId", "AccountName");
         return new CachingAccountRepository(wrapped, cache);
     }
 }

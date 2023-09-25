@@ -33,7 +33,7 @@ public class KapuaCacheManagerTest {
 
     @Test
     public void kapuaCacheManagerTest() throws Exception {
-        Constructor<KapuaCacheManager> kapuaCacheManager = KapuaCacheManager.class.getDeclaredConstructor();
+        Constructor<StaticKapuaCacheManager> kapuaCacheManager = StaticKapuaCacheManager.class.getDeclaredConstructor();
         kapuaCacheManager.setAccessible(true);
         kapuaCacheManager.newInstance();
     }
@@ -43,11 +43,11 @@ public class KapuaCacheManagerTest {
         String cacheName = "cacheName";
         NullPointerException nullPointerException = new NullPointerException();
 
-        Assert.assertNotNull("Null not expected.", KapuaCacheManager.getCache(cacheName));
-        Assert.assertThat("Cache object expected.", KapuaCacheManager.getCache(cacheName), IsInstanceOf.instanceOf(Cache.class));
+        Assert.assertNotNull("Null not expected.", StaticKapuaCacheManager.getCache(cacheName));
+        Assert.assertThat("Cache object expected.", StaticKapuaCacheManager.getCache(cacheName), IsInstanceOf.instanceOf(Cache.class));
 
         try {
-            KapuaCacheManager.getCache(null);
+            StaticKapuaCacheManager.getCache(null);
         } catch (Exception e) {
             Assert.assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
         }
@@ -55,6 +55,6 @@ public class KapuaCacheManagerTest {
 
     @Test
     public void invalidateAllTest() {
-        KapuaCacheManager.invalidateAll();
+        StaticKapuaCacheManager.invalidateAll();
     }
 }
