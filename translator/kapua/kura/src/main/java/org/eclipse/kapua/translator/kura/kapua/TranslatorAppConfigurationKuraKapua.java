@@ -27,6 +27,7 @@ import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraPasswo
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceComponentConfigurationImpl;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationImpl;
@@ -36,6 +37,7 @@ import org.eclipse.kapua.service.device.management.configuration.message.interna
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,8 +48,9 @@ import java.util.Map;
  */
 public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<ConfigurationResponseChannel, ConfigurationResponsePayload, ConfigurationResponseMessage> {
 
-    public TranslatorAppConfigurationKuraKapua() {
-        super(ConfigurationResponseMessage.class, ConfigurationResponsePayload.class);
+    @Inject
+    public TranslatorAppConfigurationKuraKapua(DeviceManagementSetting deviceManagementSetting) {
+        super(deviceManagementSetting, ConfigurationResponseMessage.class, ConfigurationResponsePayload.class);
     }
 
     @Override

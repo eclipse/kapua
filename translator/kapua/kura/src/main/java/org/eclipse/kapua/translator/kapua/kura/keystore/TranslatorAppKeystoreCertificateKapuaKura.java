@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura.keystore;
 
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.model.keystore.KuraKeystoreCertificate;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
@@ -34,11 +33,12 @@ import javax.inject.Inject;
  */
 public class TranslatorAppKeystoreCertificateKapuaKura extends AbstractTranslatorAppKeystoreKapuaKura<KeystoreCertificateRequestMessage> {
 
-    private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private final String charEncoding;
 
     @Inject
-    public TranslatorAppKeystoreCertificateKapuaKura(DeviceKeystoreManagementFactory deviceKeystoreManagementFactory) {
+    public TranslatorAppKeystoreCertificateKapuaKura(DeviceManagementSetting deviceManagementSetting, DeviceKeystoreManagementFactory deviceKeystoreManagementFactory) {
         super(deviceKeystoreManagementFactory);
+        charEncoding = deviceManagementSetting.getString(DeviceManagementSettingKey.CHAR_ENCODING);
     }
 
     @Override

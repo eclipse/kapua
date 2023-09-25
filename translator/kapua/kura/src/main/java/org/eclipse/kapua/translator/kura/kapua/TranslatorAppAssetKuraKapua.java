@@ -30,6 +30,7 @@ import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponseChannel;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponseMessage;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponsePayload;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
@@ -43,11 +44,12 @@ import java.util.Date;
  */
 public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<AssetResponseChannel, AssetResponsePayload, AssetResponseMessage> {
 
-    @Inject
-    private DeviceAssetFactory deviceAssetFactory;
+    private final DeviceAssetFactory deviceAssetFactory;
 
-    public TranslatorAppAssetKuraKapua() {
-        super(AssetResponseMessage.class, AssetResponsePayload.class);
+    @Inject
+    public TranslatorAppAssetKuraKapua(DeviceManagementSetting deviceManagementSetting, DeviceAssetFactory deviceAssetFactory) {
+        super(deviceManagementSetting, AssetResponseMessage.class, AssetResponsePayload.class);
+        this.deviceAssetFactory = deviceAssetFactory;
     }
 
     @Override

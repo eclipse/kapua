@@ -24,6 +24,7 @@ import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponseChannel;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponseMessage;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponsePayload;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
@@ -38,11 +39,12 @@ import java.util.List;
  */
 public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<BundleResponseChannel, BundleResponsePayload, BundleResponseMessage> {
 
-    @Inject
-    private DeviceBundleFactory deviceBundleFactory;
+    private final DeviceBundleFactory deviceBundleFactory;
 
-    public TranslatorAppBundleKuraKapua() {
-        super(BundleResponseMessage.class, BundleResponsePayload.class);
+    @Inject
+    public TranslatorAppBundleKuraKapua(DeviceManagementSetting deviceManagementSetting, DeviceBundleFactory deviceBundleFactory) {
+        super(deviceManagementSetting, BundleResponseMessage.class, BundleResponsePayload.class);
+        this.deviceBundleFactory = deviceBundleFactory;
     }
 
     @Override

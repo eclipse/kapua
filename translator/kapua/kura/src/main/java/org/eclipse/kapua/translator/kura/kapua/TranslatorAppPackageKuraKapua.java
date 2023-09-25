@@ -22,6 +22,7 @@ import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraRespo
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseCode;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageResponseChannel;
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageResponseMessage;
@@ -47,11 +48,12 @@ import java.util.Map;
  */
 public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<PackageResponseChannel, PackageResponsePayload, PackageResponseMessage> {
 
-    @Inject
-    private DevicePackageFactory devicePackageFactory;
+    private final DevicePackageFactory devicePackageFactory;
 
-    public TranslatorAppPackageKuraKapua() {
-        super(PackageResponseMessage.class, PackageResponsePayload.class);
+    @Inject
+    public TranslatorAppPackageKuraKapua(DeviceManagementSetting deviceManagementSetting, DevicePackageFactory devicePackageFactory) {
+        super(deviceManagementSetting, PackageResponseMessage.class, PackageResponsePayload.class);
+        this.devicePackageFactory = devicePackageFactory;
     }
 
     @Override

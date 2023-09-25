@@ -16,7 +16,6 @@ package org.eclipse.kapua.translator.kura.kapua;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMetrics;
@@ -47,8 +46,8 @@ import java.io.UnsupportedEncodingException;
 public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends KapuaResponseChannel, TO_P extends KapuaResponsePayload, TO_M extends KapuaResponseMessage<TO_C, TO_P>>
         extends AbstractTranslatorResponseKuraKapua<TO_C, TO_P, TO_M> {
 
-    private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
-    private final boolean showStacktrace = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getBoolean(DeviceManagementSettingKey.SHOW_STACKTRACE, false);
+    private final String charEncoding;
+    private final boolean showStacktrace;
 
     @Inject
     private ObjectMapper jsonMapper;
@@ -65,9 +64,11 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
      * @param payloadClazz The {@link Class} of the {@link KapuaResponsePayload}. It must have a 0-arguments constructor.
      * @since 1.0.0
      */
-    public AbstractSimpleTranslatorResponseKuraKapua(Class<TO_M> messageClazz, Class<TO_P> payloadClazz) {
+    public AbstractSimpleTranslatorResponseKuraKapua(DeviceManagementSetting deviceManagementSetting, Class<TO_M> messageClazz, Class<TO_P> payloadClazz) {
         this.messageClazz = messageClazz;
         this.payloadClazz = payloadClazz;
+        charEncoding = deviceManagementSetting.getString(DeviceManagementSettingKey.CHAR_ENCODING);
+        showStacktrace = deviceManagementSetting.getBoolean(DeviceManagementSettingKey.SHOW_STACKTRACE, false);
     }
 
     @Override

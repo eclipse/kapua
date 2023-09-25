@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.mqtt;
 
-import org.eclipse.kapua.locator.KapuaLocator;
+import com.google.inject.Inject;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
@@ -39,7 +39,12 @@ import java.util.List;
  */
 public class TranslatorRequestKuraMqtt extends Translator<KuraRequestMessage, MqttMessage> {
 
-    private static final String REPLY_PART = KapuaLocator.getInstance().getComponent(DeviceCallSettings.class).getString(DeviceCallSettingKeys.DESTINATION_REPLY_PART);
+    private final String replyPart;
+
+    @Inject
+    public TranslatorRequestKuraMqtt(DeviceCallSettings deviceCallSettings) {
+        replyPart = deviceCallSettings.getString(DeviceCallSettingKeys.DESTINATION_REPLY_PART);
+    }
 
     @Override
     public MqttMessage translate(KuraRequestMessage kuraRequestMessage) throws TranslateException {
@@ -111,7 +116,7 @@ public class TranslatorRequestKuraMqtt extends Translator<KuraRequestMessage, Mq
             topicTokens.add(kuraRequestChannel.getScope());
             topicTokens.add(kuraRequestChannel.getRequesterClientId());
             topicTokens.add(kuraRequestChannel.getAppId());
-            topicTokens.add(REPLY_PART);
+            topicTokens.add(replyPart);
             topicTokens.add(kuraRequestChannel.getRequestId());
 
             return new MqttTopic(topicTokens.toArray(new String[0]));

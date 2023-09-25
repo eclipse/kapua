@@ -18,6 +18,7 @@ import org.eclipse.kapua.service.device.call.kura.model.keystore.KuraKeystoreCSR
 import org.eclipse.kapua.service.device.call.kura.model.keystore.KuraKeystoreItem;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
 import org.eclipse.kapua.service.device.management.keystore.internal.message.response.KeystoreResponseChannel;
 import org.eclipse.kapua.service.device.management.keystore.internal.message.response.KeystoreResponseMessage;
@@ -48,17 +49,19 @@ public abstract class AbstractTranslatorAppKeystoreKuraKapua<M extends KeystoreR
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTranslatorAppKeystoreKuraKapua.class);
 
-    @Inject
-    private DeviceKeystoreManagementFactory deviceKeystoreManagementFactory;
+    private final DeviceKeystoreManagementFactory deviceKeystoreManagementFactory;
 
     /**
      * Constructor.
      *
-     * @param responseMessageClass The type of the {@link KeystoreResponseMessage}.
+     * @param deviceKeystoreManagementFactory
+     * @param responseMessageClass            The type of the {@link KeystoreResponseMessage}.
      * @since 1.5.0
      */
-    public AbstractTranslatorAppKeystoreKuraKapua(Class<M> responseMessageClass) {
-        super(responseMessageClass, KeystoreResponsePayload.class);
+    @Inject
+    public AbstractTranslatorAppKeystoreKuraKapua(DeviceManagementSetting deviceManagementSetting, DeviceKeystoreManagementFactory deviceKeystoreManagementFactory, Class<M> responseMessageClass) {
+        super(deviceManagementSetting, responseMessageClass, KeystoreResponsePayload.class);
+        this.deviceKeystoreManagementFactory = deviceKeystoreManagementFactory;
     }
 
     @Override

@@ -13,7 +13,6 @@
 package org.eclipse.kapua.translator.kapua.kura.inventory;
 
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.InventoryMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.containers.KuraInventoryContainer;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
@@ -41,12 +40,13 @@ import javax.inject.Inject;
  */
 public class TranslatorAppInventoryContainerExecKapuaKura extends AbstractTranslatorKapuaKura<InventoryRequestChannel, InventoryRequestPayload, InventoryContainerExecRequestMessage> {
 
-    private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private final String charEncoding;
     private final DeviceInventoryManagementFactory deviceInventoryManagementFactory;
 
     @Inject
-    public TranslatorAppInventoryContainerExecKapuaKura(DeviceInventoryManagementFactory deviceInventoryManagementFactory) {
+    public TranslatorAppInventoryContainerExecKapuaKura(DeviceManagementSetting deviceManagementSetting, DeviceInventoryManagementFactory deviceInventoryManagementFactory) {
         this.deviceInventoryManagementFactory = deviceInventoryManagementFactory;
+        this.charEncoding = deviceManagementSetting.getString(DeviceManagementSettingKey.CHAR_ENCODING);
     }
 
     @Override

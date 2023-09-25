@@ -14,6 +14,7 @@ package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.request.GenericRequestFactory;
 import org.eclipse.kapua.service.device.management.request.internal.GenericAppProperties;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseChannel;
@@ -33,11 +34,12 @@ import javax.inject.Inject;
  */
 public class TranslatorAppResponseKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<GenericResponseChannel, GenericResponsePayload, GenericResponseMessage> {
 
-    @Inject
-    private GenericRequestFactory genericRequestFactory;
+    private final GenericRequestFactory genericRequestFactory;
 
-    public TranslatorAppResponseKuraKapua() {
-        super(GenericResponseMessage.class, GenericResponsePayload.class);
+    @Inject
+    public TranslatorAppResponseKuraKapua(DeviceManagementSetting deviceManagementSetting, GenericRequestFactory genericRequestFactory) {
+        super(deviceManagementSetting, GenericResponseMessage.class, GenericResponsePayload.class);
+        this.genericRequestFactory = genericRequestFactory;
     }
 
     @Override

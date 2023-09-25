@@ -20,6 +20,7 @@ import org.eclipse.kapua.service.device.call.kura.model.inventory.packages.KuraI
 import org.eclipse.kapua.service.device.call.kura.model.inventory.system.KuraInventorySystemPackages;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
 import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryResponseChannel;
 import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryResponseMessage;
@@ -51,17 +52,19 @@ import javax.inject.Inject;
 public class AbstractTranslatorAppInventoryKuraKapua<M extends InventoryResponseMessage> extends AbstractSimpleTranslatorResponseKuraKapua<InventoryResponseChannel, InventoryResponsePayload, M> {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTranslatorAppInventoryKuraKapua.class);
-    @Inject
-    private DeviceInventoryManagementFactory deviceInventoryFactory;
+    private final DeviceInventoryManagementFactory deviceInventoryFactory;
 
     /**
      * Constructor.
      *
-     * @param responseMessageClass The type of the {@link InventoryResponseMessage}.
+     * @param deviceInventoryFactory
+     * @param responseMessageClass   The type of the {@link InventoryResponseMessage}.
      * @since 1.5.0
      */
-    public AbstractTranslatorAppInventoryKuraKapua(Class<M> responseMessageClass) {
-        super(responseMessageClass, InventoryResponsePayload.class);
+    @Inject
+    public AbstractTranslatorAppInventoryKuraKapua(DeviceManagementSetting deviceManagementSetting, DeviceInventoryManagementFactory deviceInventoryFactory, Class<M> responseMessageClass) {
+        super(deviceManagementSetting, responseMessageClass, InventoryResponsePayload.class);
+        this.deviceInventoryFactory = deviceInventoryFactory;
     }
 
     @Override

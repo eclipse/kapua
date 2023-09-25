@@ -18,6 +18,7 @@ import org.eclipse.kapua.service.device.call.kura.model.snapshot.SnapshotMetrics
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
@@ -38,11 +39,12 @@ import java.util.List;
  */
 public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<SnapshotResponseChannel, SnapshotResponsePayload, SnapshotResponseMessage> {
 
-    @Inject
-    private DeviceSnapshotFactory deviceSnapshotFactory;
+    private final DeviceSnapshotFactory deviceSnapshotFactory;
 
-    public TranslatorAppSnapshotKuraKapua() {
-        super(SnapshotResponseMessage.class, SnapshotResponsePayload.class);
+    @Inject
+    public TranslatorAppSnapshotKuraKapua(DeviceManagementSetting deviceManagementSetting, DeviceSnapshotFactory deviceSnapshotFactory) {
+        super(deviceManagementSetting, SnapshotResponseMessage.class, SnapshotResponsePayload.class);
+        this.deviceSnapshotFactory = deviceSnapshotFactory;
     }
 
     @Override
