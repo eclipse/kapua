@@ -30,6 +30,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 /**
  * Singleton for managing database creation and deletion inside Gherkin scenarios.
@@ -99,7 +100,7 @@ public class DBHelper {
      */
     public void deleteAll() {
         KapuaConfigurableServiceSchemaUtilsWithResources.scriptSession(FULL_SCHEMA_PATH, DELETE_SCRIPT);
-        cacheManager.invalidateAll();
+        Optional.ofNullable(cacheManager).ifPresent(cm -> cm.invalidateAll());
     }
 
     public void dropAll() throws SQLException {
@@ -117,7 +118,7 @@ public class DBHelper {
         } else {
             logger.warn("================================> invoked drop all on closed connection!");
         }
-        cacheManager.invalidateAll();
+        Optional.ofNullable(cacheManager).ifPresent(cm -> cm.invalidateAll());
     }
 
 }

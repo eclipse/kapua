@@ -40,16 +40,9 @@ import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoFactory;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
-import org.eclipse.kapua.service.datastore.exception.DatastoreInternalError;
-import org.eclipse.kapua.service.datastore.internal.client.DatastoreElasticsearchClientConfiguration;
-import org.eclipse.kapua.service.datastore.internal.converter.ModelContextImpl;
-import org.eclipse.kapua.service.datastore.internal.converter.QueryConverterImpl;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
-import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
-import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
-import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
 import org.eclipse.kapua.storage.TxContext;
 
 import javax.inject.Named;
@@ -97,20 +90,6 @@ public class DatastoreModule extends AbstractKapuaModule {
     ) {
         final ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(jpaTxManagerFactory.create("kapua-datastore"), serviceConfigurationManager, accountService);
         return configurationProvider;
-    }
-
-
-    @Inject
-    void configureElasticsearchClientProvider(ElasticsearchClientProvider elasticsearchClientProvider, StorableIdFactory storableIdFactory, DatastoreUtils datastoreUtils) {
-        try {
-            ElasticsearchClientConfiguration esClientConfiguration = DatastoreElasticsearchClientConfiguration.getInstance();
-            elasticsearchClientProvider
-                    .withClientConfiguration(esClientConfiguration)
-                    .withModelContext(new ModelContextImpl(storableIdFactory, datastoreUtils))
-                    .withModelConverter(new QueryConverterImpl());
-        } catch (Exception e) {
-            throw new DatastoreInternalError(e, "Cannot instantiate Elasticsearch Client");
-        }
     }
 
     @Provides
