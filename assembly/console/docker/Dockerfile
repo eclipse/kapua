@@ -32,6 +32,7 @@ ENV JOB_ENGINE_BASE_ADDR http://job-engine:8080/v1
 ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
                -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
                -Dcommons.db.connection.port=\${SQL_DB_PORT} \
+               -Dlocator.guice.stage=PRODUCTION \
                -Dbroker.host=\${BROKER_ADDR} \
                -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} \
                -Ddatastore.elasticsearch.provider=\${DATASTORE_CLIENT} \

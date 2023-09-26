@@ -43,8 +43,10 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * {@link Guice} {@link KapuaLocator} implementation.
@@ -57,6 +59,16 @@ public class GuiceLocatorImpl extends KapuaLocator {
 
     // Default service resource file from which the managed services are read
     private static final String SERVICE_RESOURCE = "locator.xml";
+
+    /**
+     * {@link KapuaLocator} implementation classname specified via "System property" constants
+     */
+    public static final String LOCATOR_GUICE_STAGE_SYSTEM_PROPERTY = "locator.guice.stage";
+
+    /**
+     * {@link KapuaLocator} implementation classname specified via "Environment property" constants
+     */
+    public static final String LOCATOR_GUICE_STAGE_ENVIRONMENT_PROPERTY = "LOCATOR_GUICE_STAGE";
 
     private Injector injector;
 
@@ -170,11 +182,11 @@ public class GuiceLocatorImpl extends KapuaLocator {
         // KapuaModule will be removed as soon as bindings will be moved to local modules
         kapuaModules.add(new KapuaModule(locatorConfigName));
         // Print loaded stuff
-        printLoadedKapuaModuleConfiguration(locatorConfigURL, locatorConfig, kapuaModules, overridingModules, excludedKapuaModules);
+        final Stage stage = getStage();
+        printLoadedKapuaModuleConfiguration(locatorConfigURL, locatorConfig, kapuaModules, overridingModules, excludedKapuaModules, stage);
         // Create injector
         try {
-            injector = Guice.createInjector(Stage.PRODUCTION, Modules.override(kapuaModules).with(overridingModules));
-//            injector = Guice.createInjector(Modules.override(kapuaModules).with(overridingModules));
+            injector = Guice.createInjector(stage, Modules.override(kapuaModules).with(overridingModules));
         } catch (Throwable t) {
             throw new RuntimeException(t);
         }
@@ -194,6 +206,25 @@ public class GuiceLocatorImpl extends KapuaLocator {
         ServiceModuleJaxbClassConfig.setSerializables(loadedXmlSerializables);
         // Print loaded stuff
         printLoadedXmlSerializableConfiguration(locatorConfigURL, locatorConfig, loadedXmlSerializables, excludedXmlSerializables);
+    }
+
+    /**
+     * Get the Guice Locator stage  {@link GuiceLocatorImpl#LOCATOR_GUICE_STAGE_SYSTEM_PROPERTY} system property or falling back to the
+     * {@link GuiceLocatorImpl#LOCATOR_GUICE_STAGE_ENVIRONMENT_PROPERTY} environment variable.
+     *
+     * @return
+     */
+    private Stage getStage() {
+        return Stream.of(
+                        Optional.ofNullable(System.getProperty(LOCATOR_GUICE_STAGE_SYSTEM_PROPERTY)),
+                        Optional.ofNullable(System.getenv(LOCATOR_GUICE_STAGE_ENVIRONMENT_PROPERTY))
+                )
+                .filter(maybeProperty -> maybeProperty.isPresent())
+                .map(maybeProperty -> maybeProperty.get())
+                .filter(property -> !property.isEmpty())
+                .findFirst()
+                .map(property -> Stage.valueOf(property))
+                .orElse(Stage.DEVELOPMENT);
     }
 
     /**
@@ -219,6 +250,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
      * @param resourceNameURL The {@link KapuaLocator} configuration resource name.
      * @param locatorConfig   The loaded {@link LocatorConfig}.
      * @param kapuaModules    The laaded {@link KapuaModule}s
+     * @param stage
      * @since 2.0.0
      */
     private void printLoadedKapuaModuleConfiguration(
@@ -226,14 +258,15 @@ public class GuiceLocatorImpl extends KapuaLocator {
             @NotNull LocatorConfig locatorConfig,
             @NotNull List<AbstractKapuaModule> kapuaModules,
             @NotNull List<AbstractKapuaModule> overridingModules,
-            @NotNull List<Class<? extends AbstractKapuaModule>> excludedKapuaModules) {
+            @NotNull List<Class<? extends AbstractKapuaModule>> excludedKapuaModules, Stage stage) {
         ConfigurationPrinter configurationPrinter =
                 ConfigurationPrinter
                         .create()
                         .withLogger(LOG)
                         .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
                         .withTitle("Kapua Locator Configuration")
-                        .addParameter("Resource Name", resourceNameURL.getPath());
+                        .addParameter("Resource Name", resourceNameURL.getPath())
+                        .addParameter("Stage", stage);
 
         // Packages
         addIncludedExcludedPackageConfig(configurationPrinter, locatorConfig);
