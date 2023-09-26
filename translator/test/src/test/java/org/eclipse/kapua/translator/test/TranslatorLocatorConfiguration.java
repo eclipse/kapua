@@ -24,8 +24,11 @@ import org.eclipse.kapua.commons.crypto.CryptoUtil;
 import org.eclipse.kapua.commons.crypto.CryptoUtilImpl;
 import org.eclipse.kapua.commons.crypto.setting.CryptoSettings;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.metric.MetricsServiceImpl;
+import org.eclipse.kapua.commons.service.internal.cache.CacheManagerProvider;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
@@ -38,6 +41,7 @@ import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
@@ -72,6 +76,12 @@ public class TranslatorLocatorConfiguration {
 
             @Override
             protected void configure() {
+                bind(CommonsMetric.class).toInstance(Mockito.mock(CommonsMetric.class));
+                bind(SystemSetting.class).toInstance(SystemSetting.getInstance());
+                bind(DomainRegistryService.class).toInstance(Mockito.mock(DomainRegistryService.class));
+                final CacheManagerProvider cacheManagerProvider;
+                cacheManagerProvider = new CacheManagerProvider(Mockito.mock(CommonsMetric.class), SystemSetting.getInstance());
+                bind(javax.cache.CacheManager.class).toInstance(cacheManagerProvider.get());
                 bind(MfaAuthenticator.class).toInstance(new MfaAuthenticatorImpl(new KapuaAuthenticationSetting()));
                 bind(CryptoUtil.class).toInstance(new CryptoUtilImpl(new CryptoSettings()));
                 bind(String.class).annotatedWith(Names.named("metricModuleName")).toInstance("tests");

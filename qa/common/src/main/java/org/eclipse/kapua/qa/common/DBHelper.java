@@ -38,7 +38,7 @@ import java.sql.SQLException;
 public class DBHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(DBHelper.class);
-    private final KapuaCacheManager cacheManager = KapuaLocator.getInstance().getComponent(KapuaCacheManager.class);
+    private KapuaCacheManager cacheManager;
     /**
      * Path to root of full DB scripts.
      */
@@ -53,6 +53,7 @@ public class DBHelper {
 
     public void init() {
         logger.warn("########################### Called DBHelper ###########################");
+        cacheManager = KapuaLocator.getInstance().getComponent(KapuaCacheManager.class);
         SystemSetting config = SystemSetting.getInstance();
         String dbUsername = config.getString(SystemSettingKey.DB_USERNAME);
         String dbPassword = config.getString(SystemSettingKey.DB_PASSWORD);

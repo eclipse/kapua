@@ -74,8 +74,13 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
 
     public static final String REALM_NAME = "kapuaAuthorizingRealm";
 
+    private final DomainRegistryService domainService;
+    private final AccountService accountService;
+
     public KapuaAuthorizingRealm() throws KapuaException {
         setName(REALM_NAME);
+        domainService = KapuaLocator.getInstance().getComponent(DomainRegistryService.class);
+        accountService = KapuaLocator.getInstance().getComponent(AccountService.class);
     }
 
     /**
@@ -192,9 +197,6 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
         // Return authorization info
         return info;
     }
-
-    private final DomainRegistryService domainService = KapuaLocator.getInstance().getComponent(DomainRegistryService.class);
-    private final AccountService accountService = KapuaLocator.getInstance().getComponent(AccountService.class);
 
     private Permission mapPermission(PermissionImpl permission) {
         return new MyWildcardPermission(permission.getDomain(), permission.getAction(), permission.getTargetScopeId(), permission.getGroupId(), permission.getForwardable());

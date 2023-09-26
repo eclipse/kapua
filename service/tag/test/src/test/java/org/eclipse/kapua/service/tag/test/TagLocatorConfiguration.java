@@ -30,10 +30,13 @@ import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.metric.MetricsServiceImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
+import org.eclipse.kapua.commons.service.internal.cache.CacheManagerProvider;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.internal.KapuaMessageFactoryImpl;
@@ -48,6 +51,7 @@ import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.GroupQueryHelper;
+import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -106,6 +110,12 @@ public class TagLocatorConfiguration {
                 bind(String.class).annotatedWith(Names.named("metricModuleName")).toInstance("tests");
                 bind(MetricsService.class).to(MetricsServiceImpl.class).in(Singleton.class);
 
+                bind(CommonsMetric.class).toInstance(Mockito.mock(CommonsMetric.class));
+                bind(SystemSetting.class).toInstance(SystemSetting.getInstance());
+                bind(DomainRegistryService.class).toInstance(Mockito.mock(DomainRegistryService.class));
+                final CacheManagerProvider cacheManagerProvider;
+                cacheManagerProvider = new CacheManagerProvider(Mockito.mock(CommonsMetric.class), SystemSetting.getInstance());
+                bind(javax.cache.CacheManager.class).toInstance(cacheManagerProvider.get());
                 // Inject mocked Authorization Service method checkPermission
                 AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
                 bind(KapuaJpaRepositoryConfiguration.class).toInstance(new KapuaJpaRepositoryConfiguration());
