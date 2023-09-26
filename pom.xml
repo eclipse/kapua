@@ -64,7 +64,7 @@
         <httpcomponents-asyncclient.version>4.1.5</httpcomponents-asyncclient.version>
         <httpcomponents-client.version>4.5.13</httpcomponents-client.version>
         <httpcomponents-core.version>4.4.15</httpcomponents-core.version>
-        <jackson.version>2.13.4</jackson.version>
+        <jackson.version>2.15.2</jackson.version>
         <javassist.version>3.26.0-GA</javassist.version>
         <javax-annotation-api.version>1.2</javax-annotation-api.version>
         <javax-batch-api.version>1.0.1</javax-batch-api.version>
@@ -1959,9 +1959,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <!-- This '.2' is due to the fact that they released some patches for 2.13.4 only for this artifact.
-                In future releases it is likely to be aligned with all others artifact versions -->
-                <version>${jackson.version}.2</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
