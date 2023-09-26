@@ -156,7 +156,7 @@ public class KapuaLiquibaseClient {
                         contexts.add("!fixTimestamps");
                     }
 
-                    File[] releaseDirs = changelogDir.listFiles(file -> file.isDirectory());
+                    File[] releaseDirs = changelogDir.listFiles(file -> file.isDirectory() && file.getName().contains("."));
                     Arrays.sort(releaseDirs);
 
                     // Iterate over the files and subdirectories
