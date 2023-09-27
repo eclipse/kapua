@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.service.internal.cache.CacheManagerProvider;
 import org.eclipse.kapua.commons.service.internal.cache.KapuaCacheManager;
@@ -41,6 +42,10 @@ public class AccessInfoCacheTest {
         kapuaEntity = Mockito.mock(AccessInfo.class);
         System.setProperty(org.eclipse.kapua.locator.KapuaLocator.LOCATOR_CLASS_NAME_SYSTEM_PROPERTY, MockitoLocator.class.getName());
         commonsMetric = Mockito.mock(CommonsMetric.class);
+        Mockito.when(commonsMetric.getRegisteredCache()).thenReturn(new Counter());
+        Mockito.when(commonsMetric.getCacheError()).thenReturn(new Counter());
+        Mockito.when(commonsMetric.getCacheHit()).thenReturn(new Counter());
+        Mockito.when(commonsMetric.getCacheMiss()).thenReturn(new Counter());
         final CacheManagerProvider cacheManagerProvider = new CacheManagerProvider(commonsMetric, SystemSetting.getInstance());
         kapuaCacheManager = new KapuaCacheManager(cacheManagerProvider.get(), commonsMetric, SystemSetting.getInstance());
     }

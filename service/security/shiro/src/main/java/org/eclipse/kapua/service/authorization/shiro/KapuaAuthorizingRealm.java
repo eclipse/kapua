@@ -63,7 +63,7 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
     public KapuaAuthorizingRealm() throws KapuaException {
         setName(REALM_NAME);
 
-        permissionMapper = KapuaLocator.getInstance().getComponent(PermissionMapper.class);
+        permissionMapper = KapuaLocator.getInstance().getComponent(PermissionMapperImpl.class);
     }
 
     /**

@@ -121,7 +121,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
         bind(GroupFactory.class).to(GroupFactoryImpl.class).in(Singleton.class);
         bind(KapuaAuthorizationSetting.class).in(Singleton.class);
         bind(PermissionValidator.class).in(Singleton.class);
-        bind(PermissionMapper.class).in(Singleton.class);
+        bind(PermissionMapper.class).to(PermissionMapperImpl.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet

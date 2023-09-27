@@ -57,7 +57,7 @@ public abstract class AbstractKapuaService implements KapuaService {
      * Constructor.
      *
      * @param entityManagerFactory The {@link EntityManagerFactory}.
-     * @param abstractCacheFactory The {@link EntityCacheFactory}.
+     * @param entityCacheFactory   The {@link EntityCacheFactory}.
      * @since 1.2.0
      */
     protected AbstractKapuaService(@NotNull EntityManagerFactory entityManagerFactory, EntityCacheFactory entityCacheFactory) {
@@ -88,7 +88,7 @@ public abstract class AbstractKapuaService implements KapuaService {
      * @param address  The {@link ServiceEventBus} address to subscribe to.
      * @param clazz    The {@link KapuaService} owner of the {@link ServiceEventBusListener}.
      * @throws ServiceEventBusException If any error occurs during subscription to the address.
-     * @since 1.0.0
+     * @since 1.0.0kapua-sew
      */
     protected void registerEventListener(@NotNull ServiceEventBusListener listener, @NotNull String address, @NotNull Class<? extends KapuaService> clazz) throws ServiceEventBusException {
         serviceEventBus.subscribe(address, clazz.getName(), listener);

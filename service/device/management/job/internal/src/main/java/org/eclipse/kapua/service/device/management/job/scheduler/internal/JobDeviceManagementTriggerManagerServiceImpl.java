@@ -66,7 +66,6 @@ public class JobDeviceManagementTriggerManagerServiceImpl implements JobDeviceMa
     private final TriggerDefinitionService triggerDefinitionService;
     private final TriggerService triggerService;
     private final TriggerFactory triggerFactory;
-    private final TriggerDefinition triggerDefinition;
 
     @Inject
     public JobDeviceManagementTriggerManagerServiceImpl(
@@ -88,24 +87,8 @@ public class JobDeviceManagementTriggerManagerServiceImpl implements JobDeviceMa
         this.triggerDefinitionService = triggerDefinitionService;
         this.triggerService = triggerService;
         this.triggerFactory = triggerFactory;
-        /**
-         * Looks fot the "Device Connect" {@link TriggerDefinition} to have access to its {@link TriggerDefinition#getId()}
-         *
-         * @since 1.1.0
-         */
-        TriggerDefinition deviceConnectTrigger;
-        try {
-            deviceConnectTrigger = KapuaSecurityUtils.doPrivileged(() -> triggerDefinitionService.findByName("Device Connect"));
-            if (deviceConnectTrigger == null) {
-                throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, "Device Connect");
-            }
-        } catch (Exception e) {
-            LOG.error("Error while searching the Trigger Definition named 'Device Connect'", e);
-            throw new ExceptionInInitializerError(e);
-        }
-
-        triggerDefinition = deviceConnectTrigger;
     }
+
 
     @Override
     public void processOnConnect(KapuaId scopeId, KapuaId deviceId) throws ProcessOnConnectException {
@@ -139,7 +122,7 @@ public class JobDeviceManagementTriggerManagerServiceImpl implements JobDeviceMa
 
                 triggerQuery.setPredicate(
                         triggerQuery.andPredicate(
-                                triggerQuery.attributePredicate(TriggerAttributes.TRIGGER_DEFINITION_ID, triggerDefinition.getId()),
+                                triggerQuery.attributePredicate(TriggerAttributes.TRIGGER_DEFINITION_ID, getTriggerDefinition().getId()),
                                 triggerQuery.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName()),
                                 triggerQuery.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_VALUE, jt.getJobId().toCompactId()),
                                 triggerQuery.attributePredicate(TriggerAttributes.STARTS_ON, now, AttributePredicate.Operator.LESS_THAN),
@@ -166,5 +149,24 @@ public class JobDeviceManagementTriggerManagerServiceImpl implements JobDeviceMa
         } catch (Exception e) {
             throw new ProcessOnConnectException(e, scopeId, deviceId);
         }
+    }
+
+    private TriggerDefinition getTriggerDefinition() {
+        /**
+         * Looks fot the "Device Connect" {@link TriggerDefinition} to have access to its {@link TriggerDefinition#getId()}
+         *
+         * @since 1.1.0
+         */
+        TriggerDefinition deviceConnectTrigger;
+        try {
+            deviceConnectTrigger = KapuaSecurityUtils.doPrivileged(() -> triggerDefinitionService.findByName("Device Connect"));
+            if (deviceConnectTrigger == null) {
+                throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, "Device Connect");
+            }
+        } catch (Exception e) {
+            LOG.error("Error while searching the Trigger Definition named 'Device Connect'", e);
+            throw new ExceptionInInitializerError(e);
+        }
+        return deviceConnectTrigger;
     }
 }
