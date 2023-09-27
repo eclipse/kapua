@@ -231,36 +231,36 @@ public class KapuaLiquibaseClient {
 
         LOG.info("\tEXECUTING LIQUIBASE SCRIPTS FOR VERSION: {}", changelogDir.getName());
         // Find and execute all master scripts
-        LOG.info("Executing pre master files...");
+        LOG.info("Executing pre changelog files...");
         executeChangelogs(connection, schema, preChangelogs, contexts);
-        LOG.info("Executing pre master files... DONE!");
+        LOG.info("Executing pre changelog files... DONE!");
 
-        LOG.info("Executing master files...");
+        LOG.info("Executing changelog files...");
         executeChangelogs(connection, schema, changelogs, contexts);
-        LOG.info("Executing master files... DONE!");
+        LOG.info("Executing changelog files... DONE!");
 
-        LOG.info("Executing post master files...");
+        LOG.info("Executing post changelog files...");
         executeChangelogs(connection, schema, postChangelogs, contexts);
-        LOG.info("Executing post master files... DONE!");
+        LOG.info("Executing post changelog files... DONE!");
     }
 
-    protected static void executeChangelogs(Connection connection, String schema, List<File> masterChangelogs, List<String> contexts) throws LiquibaseException {
-        LOG.info("\tMaster Liquibase files found: {}", masterChangelogs.size());
+    protected static void executeChangelogs(Connection connection, String schema, List<File> changeLogs, List<String> contexts) throws LiquibaseException {
+        LOG.info("\tLiquibase files found: {}", changeLogs.size());
 
-        LOG.trace("\tSorting master Liquibase files found.");
-        masterChangelogs.sort(Comparator.comparing(File::getAbsolutePath));
+        LOG.trace("\tSorting Liquibase files found.");
+        changeLogs.sort(Comparator.comparing(File::getAbsolutePath));
 
         String ctx = contexts.isEmpty() ? null : String.join(",", contexts);
-        for (File masterChangelog : masterChangelogs) {
-            LOG.info("\t\tExecuting liquibase script: {}...", masterChangelog.getAbsolutePath());
+        for (File changelog : changeLogs) {
+            LOG.info("\t\tExecuting liquibase script: {}...", changelog.getAbsolutePath());
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             if (!Strings.isNullOrEmpty(schema)) {
                 database.setDefaultSchemaName(schema);
             }
-            Liquibase liquibase = new Liquibase(masterChangelog.getAbsolutePath(), new FileSystemResourceAccessor(), database);
+            Liquibase liquibase = new Liquibase(changelog.getAbsolutePath(), new FileSystemResourceAccessor(), database);
             liquibase.update(ctx);
 
-            LOG.debug("\t\tExecuting liquibase script: {}... DONE!", masterChangelog.getAbsolutePath());
+            LOG.debug("\t\tExecuting liquibase script: {}... DONE!", changelog.getAbsolutePath());
         }
     }
 
