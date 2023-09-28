@@ -17,6 +17,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/changelog-job-1.6.0.xml">
+<include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
     <include relativeToChangelogFile="true" file="job_job_step_properties-secret.xml"/>
     <include relativeToChangelogFile="true" file="job_job_step_definition_properties-secret.xml"/>

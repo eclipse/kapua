@@ -17,6 +17,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/changelog-event-store-1.2.0.xml">
+<include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
     <include relativeToChangelogFile="true" file="./sys-event-store-timestamp.xml"/>
     <include relativeToChangelogFile="true" file="./sys-housekeeper-timestamp.xml"/>

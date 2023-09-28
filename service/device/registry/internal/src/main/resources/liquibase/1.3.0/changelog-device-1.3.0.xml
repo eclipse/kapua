@@ -17,6 +17,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/changelog-device-1.3.0.xml">
+<include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
     <include relativeToChangelogFile="true" file="./device_event-index_received_on.xml"/>
     <include relativeToChangelogFile="true" file="./device-match-indexes.xml"/>
