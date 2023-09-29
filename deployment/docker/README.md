@@ -109,6 +109,9 @@ export KAPUA_KEY=$(cat /path/to/private.key)
 export KAPUA_KEY_PASSWORD=private_key_password
 ``` 
 
+Please notice that these variables must be exported from the shell as shown above. Declare them in a `env` file or
+setting them in the `docker-compose` file does not work because the command substitution does not happen in these cases.
+
 ##### Providing a Keystore
 
 Otherwise, two environment variables can be used to provide an already existing keystore and its password:
