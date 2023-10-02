@@ -71,10 +71,16 @@ public class KapuaCacheManager {
             synchronized (cacheMap) {
                 cache = cacheMap.get(cacheName);
                 if (cache == null) {
-                    cache = cacheManager.createCache(cacheName, initConfig());
+                    final Cache<Serializable, Serializable> fromManager = cacheManager.getCache(cacheName);
+                    if (fromManager != null) {
+                        cache = fromManager;
+                        LOGGER.info("Retrived cache from manager: {}", cache);
+                    } else {
+                        cache = cacheManager.createCache(cacheName, initConfig());
+                        commonsMetric.getRegisteredCache().inc();
+                        LOGGER.info("Created cache: {} - Expiry Policy: {} - TTL: {}", cacheName, expiryPolicy, ttl);
+                    }
                     cacheMap.put(cacheName, cache);
-                    commonsMetric.getRegisteredCache().inc();
-                    LOGGER.info("Created cache: {} - Expiry Policy: {} - TTL: {}", cacheName, expiryPolicy, ttl);
                 }
             }
         }

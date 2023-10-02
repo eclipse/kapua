@@ -12,13 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.app.web;
 
-import com.google.common.base.MoreObjects;
-import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
-import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.commons.rest.errors.ExceptionConfigurationProvider;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.app.web.jaxb.JobEngineJAXBContextProvider;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -68,33 +64,6 @@ public class JobEngineApplication extends ResourceConfig {
 
             @Override
             public void onStartup(Container container) {
-
-                if (SYSTEM_SETTING.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
-                    try {
-                        String dbUsername = SYSTEM_SETTING.getString(SystemSettingKey.DB_USERNAME);
-                        String dbPassword = SYSTEM_SETTING.getString(SystemSettingKey.DB_PASSWORD);
-                        String schema = MoreObjects.firstNonNull(
-                                SYSTEM_SETTING.getString(SystemSettingKey.DB_SCHEMA_ENV),
-                                SYSTEM_SETTING.getString(SystemSettingKey.DB_SCHEMA)
-                        );
-
-                        // Loading JDBC Driver
-                        String jdbcDriver = SYSTEM_SETTING.getString(SystemSettingKey.DB_JDBC_DRIVER);
-                        try {
-                            Class.forName(jdbcDriver);
-                        } catch (ClassNotFoundException e) {
-                            LOG.warn("Could not find jdbc driver: {}. Subsequent DB operation failures may occur...", SYSTEM_SETTING.getString(SystemSettingKey.DB_JDBC_DRIVER));
-                        }
-
-                        // Starting Liquibase Client
-                        new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, schema).update();
-                    } catch (Exception e) {
-                        throw new ExceptionInInitializerError(e);
-                    }
-                } else {
-                    LOG.warn("Not updating database schema");
-                }
-
                 ServiceLocator serviceLocator = container.getApplicationHandler().getInjectionManager().getInstance(ServiceLocator.class);
                 JobEngineJAXBContextProvider provider = serviceLocator.createAndInitialize(JobEngineJAXBContextProvider.class);
                 XmlUtil.setContextProvider(provider);

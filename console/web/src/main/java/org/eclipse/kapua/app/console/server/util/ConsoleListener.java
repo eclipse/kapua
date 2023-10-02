@@ -12,15 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server.util;
 
-import com.google.common.base.MoreObjects;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.ConsoleJAXBContextProvider;
 import org.eclipse.kapua.commons.core.ServiceModuleBundle;
-import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
-import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
+import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -53,32 +50,8 @@ public class ConsoleListener implements ServletContextListener {
             LOG.error("Initialize Console JABContext Provider... ERROR! Error: {}", e.getMessage(), e);
             throw new ExceptionInInitializerError(e);
         }
-
-        if (SYSTEM_SETTING.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
-            try {
-                String dbUsername = SYSTEM_SETTING.getString(SystemSettingKey.DB_USERNAME);
-                String dbPassword = SYSTEM_SETTING.getString(SystemSettingKey.DB_PASSWORD);
-                String schema = MoreObjects.firstNonNull(
-                        SYSTEM_SETTING.getString(SystemSettingKey.DB_SCHEMA_ENV),
-                        SYSTEM_SETTING.getString(SystemSettingKey.DB_SCHEMA)
-                );
-
-                // Loading JDBC Driver
-                String jdbcDriver = SYSTEM_SETTING.getString(SystemSettingKey.DB_JDBC_DRIVER);
-                try {
-                    Class.forName(jdbcDriver);
-                } catch (ClassNotFoundException e) {
-                    LOG.warn("Could not find jdbc driver: {}. Subsequent DB operation failures may occur...", SYSTEM_SETTING.getString(SystemSettingKey.DB_JDBC_DRIVER));
-                }
-
-                // Starting Liquibase Client
-                new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, schema).update();
-            } catch (Exception e) {
-                throw new ExceptionInInitializerError(e);
-            }
-            KapuaLocator.getInstance().getService(DataPopulatorRunner.class).runPopulators();
-        }
-
+        new DatabaseCheckUpdate();
+        KapuaLocator.getInstance().getService(DataPopulatorRunner.class).runPopulators();
         // Start Quartz scheduler
         try {
             LOG.info("Starting Quartz scheduler...");

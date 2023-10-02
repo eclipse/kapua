@@ -12,13 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.web;
 
-import com.google.common.base.MoreObjects;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.ServiceModuleBundle;
-import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
-import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,30 +36,6 @@ public class RestApiListener implements ServletContextListener {
     @Override
     public void contextInitialized(final ServletContextEvent event) {
         LOG.warn("Initialized, systemSettings:{}, moduleBundle: {}", systemSetting, moduleBundle);
-
-        if (systemSetting.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
-            try {
-                String dbUsername = systemSetting.getString(SystemSettingKey.DB_USERNAME);
-                String dbPassword = systemSetting.getString(SystemSettingKey.DB_PASSWORD);
-                String schema = MoreObjects.firstNonNull(
-                        systemSetting.getString(SystemSettingKey.DB_SCHEMA_ENV),
-                        systemSetting.getString(SystemSettingKey.DB_SCHEMA)
-                );
-
-                // Loading JDBC Driver
-                String jdbcDriver = systemSetting.getString(SystemSettingKey.DB_JDBC_DRIVER);
-                try {
-                    Class.forName(jdbcDriver);
-                } catch (ClassNotFoundException e) {
-                    LOG.warn("Could not find jdbc driver: {}. Subsequent DB operation failures may occur...", systemSetting.getString(SystemSettingKey.DB_JDBC_DRIVER));
-                }
-
-                // Starting Liquibase Client
-                new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, schema).update();
-            } catch (Exception e) {
-                throw new ExceptionInInitializerError(e);
-            }
-        }
 
         // Start service modules
         try {

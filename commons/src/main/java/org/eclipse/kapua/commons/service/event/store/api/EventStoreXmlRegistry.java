@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.event.store.api;
 
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.commons.service.event.store.internal.EventStoreFactoryImpl;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
 @XmlRegistry
 public class EventStoreXmlRegistry {
 
-    private final EventStoreFactory kapuaEventFactory = KapuaLocator.getInstance().getFactory(EventStoreFactory.class);
+    private final EventStoreFactory kapuaEventFactory = new EventStoreFactoryImpl();
 
     /**
      * Creates a new kapuaEvent instance

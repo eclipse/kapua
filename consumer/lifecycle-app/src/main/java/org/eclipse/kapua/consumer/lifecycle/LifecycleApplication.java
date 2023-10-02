@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.lifecycle;
 
+import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.camel.setting.ServiceSettingKey;
-import org.eclipse.kapua.service.client.DatabaseCheckUpdate;
 import org.eclipse.kapua.service.security.SecurityUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

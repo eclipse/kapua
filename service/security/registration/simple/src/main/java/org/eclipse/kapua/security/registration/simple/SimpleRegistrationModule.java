@@ -14,6 +14,7 @@ package org.eclipse.kapua.security.registration.simple;
 
 import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.security.registration.RegistrationProcessorProvider;
 import org.eclipse.kapua.security.registration.simple.setting.SimpleSetting;
 import org.eclipse.kapua.service.account.AccountFactory;
@@ -48,7 +49,9 @@ public class SimpleRegistrationModule extends AbstractKapuaModule {
             UserFactory userFactory,
             AccessInfoService accessInfoService,
             AccessInfoFactory accessInfoFactory,
-            PermissionFactory permissionFactory) {
+            PermissionFactory permissionFactory,
+            //Liquibase must start before this
+            DatabaseCheckUpdate databaseCheckUpdate) {
         return new SimpleRegistrationProcessorProvider(simpleSetting,
                 accountService,
                 accountFactory,

@@ -14,13 +14,14 @@ package org.eclipse.kapua.job.engine.app.web;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 
 import javax.inject.Named;
 
 public class AppModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-
+        bind(DatabaseCheckUpdate.class).asEagerSingleton();
     }
 
     @Provides
