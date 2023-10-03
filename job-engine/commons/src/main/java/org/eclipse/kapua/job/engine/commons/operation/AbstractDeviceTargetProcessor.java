@@ -22,9 +22,11 @@ import org.eclipse.kapua.service.job.targets.JobTarget;
 public abstract class AbstractDeviceTargetProcessor extends AbstractTargetProcessor {
     protected static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     protected static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+
+
     @Override
     protected String getTargetDisplayName(JobTarget jobTarget) throws KapuaException {
-        Device device = KapuaSecurityUtils.doPrivileged(() -> DEVICE_REGISTRY_SERVICE.find(jobTarget.getScopeId(), jobTarget.getJobTargetId()));;
+        Device device = KapuaSecurityUtils.doPrivileged(() -> DEVICE_REGISTRY_SERVICE.find(jobTarget.getScopeId(), jobTarget.getJobTargetId()));
         if (device == null) {
             return "N/A";
         }
