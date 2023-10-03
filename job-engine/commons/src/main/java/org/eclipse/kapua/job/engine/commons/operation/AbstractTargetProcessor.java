@@ -59,14 +59,28 @@ public abstract class AbstractTargetProcessor implements TargetProcessor {
 
             jobLogger.info("Processing target:{} (id:{}) - DONE!", getTargetDisplayName(jobTarget), jobTarget.getId().toCompactId());
         } catch (Exception e) {
-            jobLogger.error(e, "Processing target:{} (id:{}) - Error!", getTargetDisplayName(jobTarget), jobTarget.getId().toCompactId());
-
+            logErrorToJobLogger(stepContextWrapper.getKapuaStepName(), jobLogger, jobTarget, e);
             jobTarget.setStatus(getFailedStatus(jobTarget));
             wrappedJobTarget.setProcessingException(e);
         }
 
         return wrappedJobTarget;
     }
+
+
+    /**
+     * Prints an error message into the given job logger
+     *
+     * @param stepName  The name of the step that fails
+     * @param jobLogger The {@link JobLogger} where to print the error message
+     * @param jobTarget The {@link JobTarget} that was being processed
+     * @param e         The exception that occurred
+     * @throws KapuaException
+     */
+    protected void logErrorToJobLogger(String stepName, JobLogger jobLogger, JobTarget jobTarget, Exception e) throws KapuaException {
+        jobLogger.error(e, "Executing {} on device: {} (id: {}) - ", stepName, getTargetDisplayName(jobTarget), jobTarget.getId().toCompactId());
+    }
+
 
     protected abstract String getTargetDisplayName(JobTarget jobTarget) throws KapuaException;
 
