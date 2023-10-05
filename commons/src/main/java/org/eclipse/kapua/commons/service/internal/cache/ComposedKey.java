@@ -59,4 +59,11 @@ public class ComposedKey implements Serializable {
         return key;
     }
 
+    @Override
+    public String toString() {
+        return "ComposedKey{" +
+                "scopeId=" + scopeId +
+                ", key=" + key +
+                '}';
+    }
 }

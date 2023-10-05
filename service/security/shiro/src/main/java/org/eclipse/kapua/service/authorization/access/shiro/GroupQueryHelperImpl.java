@@ -115,7 +115,7 @@ public class GroupQueryHelperImpl implements GroupQueryHelper {
                     Role role = roleRepository.find(txContext, ar.getScopeId(), roleId)
                             .orElseThrow(() -> new KapuaEntityNotFoundException(Role.TYPE, roleId));
 
-                    RolePermissionListResult rolePermissions = rolePermissionRepository.findByRoleId(txContext, role.getScopeId(), role.getId());
+                    RolePermissionListResult rolePermissions = rolePermissionRepository.findByRoleId(txContext, role.getScopeId(), roleId);
 
                     for (RolePermission rp : rolePermissions.getItems()) {
                         if (checkGroupPermission(domain, groupPermissions, rp.getPermission())) {

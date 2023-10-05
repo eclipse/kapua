@@ -194,6 +194,6 @@ public class EntityCache {
     protected void cacheErrorLogger(String operation, String cacheName, Serializable keyId, Throwable t) {
         commonsMetric.getCacheError().inc();
         LOGGER.warn("Cache error while performing {} on {} for key {} : {}", operation, cacheName, keyId, t.getLocalizedMessage());
-        LOGGER.debug("Cache exception", t);
+        LOGGER.error("Cache exception", t);
     }
 }
