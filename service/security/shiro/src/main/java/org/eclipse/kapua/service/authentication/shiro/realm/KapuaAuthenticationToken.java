@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2023, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -13,10 +13,21 @@
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
 import org.apache.shiro.authc.AuthenticationToken;
-import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 
 import java.util.Optional;
 
+/**
+ * Kapua {@link AuthenticationToken} definition.
+ *
+ * @since 2.0.0
+ */
 public interface KapuaAuthenticationToken extends AuthenticationToken {
-    Optional<String> getOpenIdToken() throws KapuaAuthenticationException;
+
+    /**
+     * Gets the {@link Optional} OpenID Connect <a href="https://auth0.com/blog/id-token-access-token-what-is-the-difference/#What-Is-an-ID-Token">idToken</a>.
+     *
+     * @return The {@link Optional} OpenID Connect <a href="https://auth0.com/blog/id-token-access-token-what-is-the-difference/#What-Is-an-ID-Token">idToken</a>.
+     * @since 2.0.0
+     */
+    Optional<String> getOpenIdToken();
 }

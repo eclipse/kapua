@@ -12,8 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
 
@@ -31,7 +33,15 @@ public class JwtCredentialsHandler implements CredentialsHandler {
 
     @Override
     public KapuaAuthenticationToken mapToShiro(AuthenticationCredentials authenticationCredentials) throws KapuaAuthenticationException {
-        JwtCredentialsImpl jwtCredentials = JwtCredentialsImpl.parse((JwtCredentials) authenticationCredentials);
+
+        JwtCredentialsImpl jwtCredentials = authenticationCredentials instanceof JwtCredentialsImpl ?
+                (JwtCredentialsImpl) authenticationCredentials :
+                new JwtCredentialsImpl((JwtCredentials) authenticationCredentials);
+
+        if (Strings.isNullOrEmpty(jwtCredentials.getIdToken())) {
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
+        }
+
         return jwtCredentials;
     }
 }

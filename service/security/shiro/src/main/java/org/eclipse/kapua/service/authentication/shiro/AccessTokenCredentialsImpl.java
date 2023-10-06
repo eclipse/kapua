@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
-import org.apache.shiro.authc.AuthenticationToken;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.shiro.realm.KapuaAuthenticationToken;
 
@@ -22,7 +21,7 @@ import java.util.Optional;
 /**
  * {@link AccessTokenCredentials} implementation.
  * <p>
- * This implements also {@link AuthenticationToken} to allow usage in Apache Shiro.
+ * This implements also {@link KapuaAuthenticationToken} to allow usage in Apache Shiro.
  *
  * @since 1.0.0
  */

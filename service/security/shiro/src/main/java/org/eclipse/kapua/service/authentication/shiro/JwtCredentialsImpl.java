@@ -12,12 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
-import com.google.common.base.Strings;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
-import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
-import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.shiro.realm.KapuaAuthenticationToken;
 
 import javax.validation.constraints.NotNull;
@@ -26,7 +21,7 @@ import java.util.Optional;
 /**
  * {@link JwtCredentials} implementation.
  * <p>
- * This implements also {@link AuthenticationToken} to allow usage in Apache Shiro.
+ * This implements also {@link KapuaAuthenticationToken} to allow usage in Apache Shiro.
  *
  * @since 1.0.0
  */
@@ -90,26 +85,8 @@ public class JwtCredentialsImpl implements JwtCredentials, KapuaAuthenticationTo
         return getAccessToken();
     }
 
-    /**
-     * Parses a {@link JwtCredentials} into a {@link JwtCredentialsImpl}.
-     *
-     * @param jwtCredentials The {@link JwtCredentials} to parse.
-     * @return A instance of {@link JwtCredentialsImpl}.
-     * @since 1.5.0
-     */
-    public static JwtCredentialsImpl parse(@Nullable JwtCredentials jwtCredentials) {
-        return jwtCredentials != null ?
-                (jwtCredentials instanceof JwtCredentialsImpl ?
-                        (JwtCredentialsImpl) jwtCredentials :
-                        new JwtCredentialsImpl(jwtCredentials))
-                : null;
-    }
-
     @Override
-    public Optional<String> getOpenIdToken() throws KapuaAuthenticationException {
-        final String openIDidToken = Optional.ofNullable(this.getIdToken())
-                .filter(token -> !Strings.isNullOrEmpty(token))
-                .orElseThrow(() -> new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS));
-        return Optional.of(openIDidToken);
+    public Optional<String> getOpenIdToken() {
+        return Optional.of(getIdToken());
     }
 }

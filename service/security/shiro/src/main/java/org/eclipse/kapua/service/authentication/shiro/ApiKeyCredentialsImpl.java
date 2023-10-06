@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
-import org.apache.shiro.authc.AuthenticationToken;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.shiro.realm.KapuaAuthenticationToken;
 
@@ -23,7 +21,7 @@ import java.util.Optional;
 /**
  * {@link ApiKeyCredentials} implementation.
  * <p>
- * This implements also {@link AuthenticationToken} to allow usage in Apache Shiro.
+ * This implements also {@link KapuaAuthenticationToken} to allow usage in Apache Shiro.
  *
  * @since 1.0.0
  */
@@ -71,21 +69,6 @@ public class ApiKeyCredentialsImpl implements ApiKeyCredentials, KapuaAuthentica
     @Override
     public Object getCredentials() {
         return getApiKey();
-    }
-
-    /**
-     * Parses a {@link ApiKeyCredentials} into a {@link ApiKeyCredentialsImpl}.
-     *
-     * @param apiKeyCredentials The {@link ApiKeyCredentials} to parse.
-     * @return A instance of {@link ApiKeyCredentialsImpl}.
-     * @since 1.5.0
-     */
-    public static ApiKeyCredentialsImpl parse(@Nullable ApiKeyCredentials apiKeyCredentials) {
-        return apiKeyCredentials != null ?
-                (apiKeyCredentials instanceof ApiKeyCredentialsImpl ?
-                        (ApiKeyCredentialsImpl) apiKeyCredentials :
-                        new ApiKeyCredentialsImpl(apiKeyCredentials))
-                : null;
     }
 
     @Override

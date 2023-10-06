@@ -33,7 +33,10 @@ public class UserPassCredentialsHandler implements CredentialsHandler {
 
     @Override
     public KapuaAuthenticationToken mapToShiro(AuthenticationCredentials authenticationCredentials) throws KapuaAuthenticationException {
-        UsernamePasswordCredentialsImpl usernamePasswordCredentials = UsernamePasswordCredentialsImpl.parse((UsernamePasswordCredentials) authenticationCredentials);
+
+        UsernamePasswordCredentialsImpl usernamePasswordCredentials = authenticationCredentials instanceof UsernamePasswordCredentialsImpl ?
+                (UsernamePasswordCredentialsImpl) authenticationCredentials :
+                new UsernamePasswordCredentialsImpl((UsernamePasswordCredentials) authenticationCredentials);
 
         if (Strings.isNullOrEmpty(usernamePasswordCredentials.getUsername()) ||
                 Strings.isNullOrEmpty(usernamePasswordCredentials.getPassword())) {

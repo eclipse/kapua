@@ -50,14 +50,14 @@ public interface RefreshTokenCredentials extends LoginCredentials {
     /**
      * Gets the AccessToken#getRefreshToken()} to authenticate.
      *
-     * @return The AccessToken#getRefreshToken()} to authenticate.
+     * @return The {@link AccessToken#getRefreshToken()} to authenticate.
      * @since 1.0.0
      */
     @XmlElement(name = "refreshToken")
     String getRefreshToken();
 
     /**
-     * Set the AccessToken#getRefreshToken()} to authenticate.
+     * Set the {@link AccessToken#getRefreshToken()} to authenticate.
      *
      * @param refreshToken The AccessToken#getRefreshToken()} to authenticate.
      * @since 1.0.0

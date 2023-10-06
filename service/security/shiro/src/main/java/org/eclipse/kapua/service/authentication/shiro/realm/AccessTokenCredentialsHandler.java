@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
-import jdk.internal.joptsimple.internal.Strings;
+import com.google.common.base.Strings;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
@@ -33,13 +33,15 @@ public class AccessTokenCredentialsHandler implements CredentialsHandler {
 
     @Override
     public KapuaAuthenticationToken mapToShiro(AuthenticationCredentials authenticationCredentials) throws KapuaAuthenticationException {
-        final AccessTokenCredentialsImpl accessTokenCredentials = authenticationCredentials instanceof AccessTokenCredentialsImpl ?
+
+        AccessTokenCredentialsImpl accessTokenCredentials = authenticationCredentials instanceof AccessTokenCredentialsImpl ?
                 (AccessTokenCredentialsImpl) authenticationCredentials :
                 new AccessTokenCredentialsImpl((AccessTokenCredentials) authenticationCredentials);
 
         if (Strings.isNullOrEmpty(accessTokenCredentials.getTokenId())) {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_SESSION_CREDENTIALS);
         }
+
         return accessTokenCredentials;
     }
 }

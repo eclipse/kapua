@@ -38,14 +38,18 @@
         <!-- Required service interfaces -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-user-api</artifactId>
+            <artifactId>kapua-account-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-account-api</artifactId>
+            <artifactId>kapua-user-api</artifactId>
         </dependency>
 
         <!-- Internal dependencies -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-account-internal</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-commons</artifactId>
@@ -65,10 +69,6 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-user-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-account-internal</artifactId>
         </dependency>
 
         <!--  -->
@@ -114,11 +114,13 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-locator-guice</artifactId>
@@ -129,6 +131,7 @@
             <artifactId>kapua-qa-markers</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>

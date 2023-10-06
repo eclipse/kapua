@@ -32,8 +32,11 @@ public class ApiKeyCredentialsHandler implements CredentialsHandler {
     }
 
     @Override
-    public KapuaAuthenticationToken mapToShiro(AuthenticationCredentials credentials) throws KapuaAuthenticationException {
-        ApiKeyCredentialsImpl apiKeyCredentials = ApiKeyCredentialsImpl.parse((ApiKeyCredentials) credentials);
+    public KapuaAuthenticationToken mapToShiro(AuthenticationCredentials authenticationCredentials) throws KapuaAuthenticationException {
+
+        ApiKeyCredentialsImpl apiKeyCredentials = authenticationCredentials instanceof ApiKeyCredentialsImpl ?
+                (ApiKeyCredentialsImpl) authenticationCredentials :
+                new ApiKeyCredentialsImpl((ApiKeyCredentials) authenticationCredentials);
 
         if (Strings.isNullOrEmpty(apiKeyCredentials.getApiKey())) {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);

@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
-import org.apache.shiro.authc.AuthenticationToken;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.shiro.realm.KapuaAuthenticationToken;
@@ -23,7 +22,7 @@ import java.util.Optional;
 /**
  * {@link UsernamePasswordCredentials} implementation.
  * <p>
- * This implements also {@link AuthenticationToken} to allow usage in Apache Shiro.
+ * This implements also {@link KapuaAuthenticationToken} to allow usage in Apache Shiro.
  *
  * @since 1.0.0
  */
