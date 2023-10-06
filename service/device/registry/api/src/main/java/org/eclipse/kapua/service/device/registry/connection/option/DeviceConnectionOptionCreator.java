@@ -50,4 +50,20 @@ public interface DeviceConnectionOptionCreator extends KapuaUpdatableEntityCreat
      * @param reservedUserId
      */
     void setReservedUserId(KapuaId reservedUserId);
+
+    /**
+     * Gets the allowed authentication type.
+     *
+     * @return The allowed authentication type.
+     * @since 2.0.0
+     */
+    String getAuthenticationType();
+
+    /**
+     * Sets the allowed authentication type.
+     *
+     * @param authenticationType The allowed authentication type.
+     * @since 2.0.0
+     */
+    void setAuthenticationType(String authenticationType);
 }

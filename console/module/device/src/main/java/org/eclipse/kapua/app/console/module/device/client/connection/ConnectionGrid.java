@@ -169,6 +169,11 @@ public class ConnectionGrid extends EntityGrid<GwtDeviceConnection> {
         column.setSortable(false);
         configs.add(column);
 
+        column = new ColumnConfig("authenticationType", 120);
+        column.setHeader("Authentication Type");
+        column.setSortable(false);
+        configs.add(column);
+
         column = new ColumnConfig("clientIp", 120);
         column.setHeader(CONNECTION_MSGS.connectionTableClientIp());
         column.setWidth(150);

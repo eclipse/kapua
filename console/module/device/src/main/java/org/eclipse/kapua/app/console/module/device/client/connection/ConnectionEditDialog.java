@@ -44,6 +44,8 @@ import org.eclipse.kapua.app.console.module.user.shared.model.permission.UserSes
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
 
+import java.util.Set;
+
 public class ConnectionEditDialog extends EntityAddEditDialog {
 
     private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
@@ -53,9 +55,13 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
     private GwtDeviceConnection selectedDeviceConnection;
     // Security Options fields
     private SimpleComboBox<String> couplingModeCombo;
+
     private ComboBox<GwtUser> reservedUserCombo;
     private CheckBox allowUserChangeCheckbox;
     private LabelField lastUserField;
+    private SimpleComboBox<String> authenticationTypeCombo;
+
+    private LabelField lastAuthenticationTypeLabel;
 
     private static final GwtUser NO_USER;
 
@@ -74,7 +80,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
     @Override
     public void createBody() {
         submitButton.disable();
-        FormPanel groupFormPanel = new FormPanel(FORM_LABEL_WIDTH);
+        FormPanel groupFormPanel = new FormPanel(FORM_LABEL_WIDTH + 10);
         FormLayout layoutSecurityOptions = new FormLayout();
         layoutSecurityOptions.setLabelWidth(Constants.LABEL_WIDTH_DEVICE_FORM);
 
@@ -168,7 +174,49 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
             reservedUserCombo.setValue(selectedUser);
         }
 
+        // Authentication type
+        authenticationTypeCombo = new SimpleComboBox<String>();
+        authenticationTypeCombo.setName("authenticationTypeCombo");
+        authenticationTypeCombo.setEditable(false);
+        authenticationTypeCombo.setTypeAhead(false);
+        authenticationTypeCombo.setAllowBlank(false);
+        authenticationTypeCombo.setFieldLabel("Authentication Type");
+        authenticationTypeCombo.setToolTip("The authentication type of the Device Connection");
+        authenticationTypeCombo.setTriggerAction(TriggerAction.ALL);
+
+        GWT_CONNECTION_OPTION_SERVICE.getAvailableAuthenticationTypes(new AsyncCallback<Set<String>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                FailureHandler.handle(caught);
+                authenticationTypeCombo.setEmptyText("Error while loading available Authentication Types");
+            }
+
+            @Override
+            public void onSuccess(Set<String> availableAuthenticationTypes) {
+                for (String authenticationType : availableAuthenticationTypes) {
+                    authenticationTypeCombo.add(authenticationType);
+                }
+
+                setAuthenticationType();
+            }
+        });
+
+        groupFormPanel.add(authenticationTypeCombo);
+
+        // Last Authentication type
+        lastAuthenticationTypeLabel = new LabelField();
+        lastAuthenticationTypeLabel.setName("lastAuthenticationType");
+        lastAuthenticationTypeLabel.setLabelSeparator(":");
+        lastAuthenticationTypeLabel.setFieldLabel("Last Authentication Type");
+        lastAuthenticationTypeLabel.setToolTip("Last used authentication type by this Device Connection");
+        lastAuthenticationTypeLabel.setWidth(225);
+        lastAuthenticationTypeLabel.setReadOnly(true);
+
+        groupFormPanel.add(lastAuthenticationTypeLabel);
+
+        // Add Panel to main panel
         bodyPanel.add(groupFormPanel);
+
         populateEditDialog(selectedDeviceConnection);
     }
 
@@ -179,6 +227,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         selectedDeviceConnectionOption.setAllowUserChange(allowUserChangeCheckbox.getValue());
         selectedDeviceConnectionOption.setConnectionUserCouplingMode(couplingModeCombo.getValue() != null ? couplingModeCombo.getValue().getValue() : null);
         selectedDeviceConnectionOption.setReservedUserId(reservedUserCombo.getValue() != null ? reservedUserCombo.getValue().getId() : null);
+        selectedDeviceConnectionOption.setAuthenticationType(authenticationTypeCombo.getSimpleValue());
 
         GWT_CONNECTION_OPTION_SERVICE.update(xsrfToken, selectedDeviceConnectionOption, new AsyncCallback<GwtDeviceConnectionOption>() {
 
@@ -250,7 +299,16 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         }
         couplingModeCombo.setSimpleValue(gwtConnectionUserCouplingMode != null ? gwtConnectionUserCouplingMode.getLabel() : "N/A");
         allowUserChangeCheckbox.setValue(gwtDeviceConnection.getAllowUserChange());
+        authenticationTypeCombo.setSimpleValue(gwtDeviceConnection.getAuthenticationType());
+        lastAuthenticationTypeLabel.setValue(gwtDeviceConnection.getLastAuthenticationType() != null ? gwtDeviceConnection.getLastAuthenticationType() : "N/A");
+
         formPanel.clearDirtyFields();
+    }
+
+    private void setAuthenticationType() {
+        if (selectedDeviceConnection != null) {
+            authenticationTypeCombo.setSimpleValue(selectedDeviceConnection.getAuthenticationType());
+        }
     }
 
     private void setReservedUser() {

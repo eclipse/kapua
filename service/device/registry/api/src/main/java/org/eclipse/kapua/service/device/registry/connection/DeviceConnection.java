@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection;
 
+import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -25,24 +26,13 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * Device connection entity definition.
+ * {@link DeviceConnection} {@link KapuaEntity} definition.
  *
  * @since 1.0.0
  */
 @XmlRootElement(name = "deviceConnection")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
-        "status",
-        "clientId",
-        "userId",
-        "allowUserChange",
-        "userCouplingMode",
-        "reservedUserId",
-        "protocol",
-        "clientIp",
-        "serverIp" }, //
-        factoryClass = DeviceConnectionXmlRegistry.class, //
-        factoryMethod = "newDeviceConnection")
+@XmlType(factoryClass = DeviceConnectionXmlRegistry.class, factoryMethod = "newDeviceConnection")
 public interface DeviceConnection extends KapuaUpdatableEntity {
 
     String TYPE = "deviceConnection";
@@ -143,6 +133,38 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
      * @param reservedUserId
      */
     void setReservedUserId(KapuaId reservedUserId);
+
+    /**
+     * Gets the allowed authentication type.
+     *
+     * @return The allowed authentication type.
+     * @since 2.0.0
+     */
+    String getAuthenticationType();
+
+    /**
+     * Sets the allowed authentication type.
+     *
+     * @param authenticationType The allowed authentication type.
+     * @since 2.0.0
+     */
+    void setAuthenticationType(String authenticationType);
+
+    /**
+     * Gets the last used authentication type.
+     *
+     * @return The last used authentication type.
+     * @since 2.0.0
+     */
+    String getLastAuthenticationType();
+
+    /**
+     * Sets the last used authentication type.
+     *
+     * @param lastAuthenticationType The last used authentication type.
+     * @since 2.0.0
+     */
+    void setLastAuthenticationType(String lastAuthenticationType);
 
     /**
      * Get the device protocol

@@ -39,3 +39,24 @@ paths:
           $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
         500:
           $ref: '../openapi.yaml#/components/responses/kapuaError'
+  /{scopeId}/deviceconnections/_availableAuth:
+    get:
+      tags:
+        - Device Connection
+      summary: Get all available Device Connection authentication adapters
+      operationId: connectionAvailableAuth
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+      responses:
+        200:
+          description: The list of available Device Connection authentication adapters
+          content:
+            application/json:
+              schema:
+                $ref: './deviceConnection.yaml#/components/schemas/connectionAuthAdapters'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

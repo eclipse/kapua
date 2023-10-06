@@ -22,15 +22,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 
 /**
  * Authentication application container main class
- *
  */
 @ImportResource({"classpath:spring/applicationContext.xml"})
 @PropertySource(value = "classpath:spring/application.properties")
+@Import(SpringBridge.class)
 @SpringBootApplication
 public class AuthenticationApplication {
 

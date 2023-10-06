@@ -15,30 +15,33 @@ package org.eclipse.kapua.app.api.core.model;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Set;
 
 /**
- * @since 1.0.0
+ * @since 2.0.0
  */
-@XmlRootElement(name = "countResult")
-@XmlAccessorType(XmlAccessType.PROPERTY)
-public class CountResult {
+@XmlRootElement(name = "setResult")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class SetResult {
 
-    private long count;
+    @XmlElementWrapper(name = "items")
+    @XmlElement(name = "item")
+    private Set<String> items;
 
-    protected CountResult() {
+    public SetResult() {
     }
 
-    public CountResult(long count) {
-        this.count = count;
+    public SetResult(Set<String> items) {
+        this.items = items;
     }
 
-    @XmlElement(name = "count")
-    public long getCount() {
-        return count;
+    public Set<String> getItems() {
+        return items;
     }
 
-    public void setCount(long count) {
-        this.count = count;
+    public void setItems(Set<String> items) {
+        this.items = items;
     }
 }

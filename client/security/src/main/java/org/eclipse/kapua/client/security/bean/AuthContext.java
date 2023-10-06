@@ -12,11 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security.bean;
 
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+
 import java.security.cert.Certificate;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.eclipse.kapua.model.id.KapuaId;
 
 public class AuthContext {
 
@@ -34,15 +35,19 @@ public class AuthContext {
     private String transportProtocol;
     private Certificate[] clientCertificates;
     private boolean sslEnabled;
-
+    private String authenticationType;
     private String exceptionClass;
     private String errorCode;
 
     private boolean admin;
     private boolean missing;
-    //stealing link flag
+    /**
+     * Stealing link flag
+     */
     private boolean stealingLink;
-    //device connection illegal state flag
+    /**
+     * Device connection illegal state flag
+     */
     private boolean illegalState;
     private String kapuaConnectionId;
 
@@ -74,10 +79,7 @@ public class AuthContext {
         brokerHost = authRequest.getBrokerHost();
         transportProtocol = authRequest.getTransportProtocol();
         clientCertificates = authRequest.getCertificates();
-
-        if(authRequest.getSslEnabled() != null) {
-            sslEnabled = authRequest.getSslEnabled();
-        }
+        sslEnabled = authRequest.getSslEnabled() != null && authRequest.getSslEnabled();
         exceptionClass = authRequest.getExceptionClass();
         errorCode = authRequest.getErrorCode();
         stealingLink = authRequest.isStealingLink();
@@ -135,6 +137,26 @@ public class AuthContext {
 
     public boolean getSslEnabled() {
         return sslEnabled;
+    }
+
+    /**
+     * Gets the {@link DeviceConnection#getAuthenticationType()} used when connecting.
+     *
+     * @return The {@link DeviceConnection#getAuthenticationType()} used when connecting.
+     * @since 2.0.0
+     */
+    public String getAuthenticationType() {
+        return authenticationType;
+    }
+
+    /**
+     * Sets the {@link DeviceConnection#getAuthenticationType()} used to connection.
+     *
+     * @param authenticationType The {@link DeviceConnection#getAuthenticationType()} used to connection.
+     * @since 2.0.0
+     */
+    public void setAuthenticationType(String authenticationType) {
+        this.authenticationType = authenticationType;
     }
 
     public String getTransportProtocol() {
@@ -203,16 +225,13 @@ public class AuthContext {
 
     public <T> T getProperty(String key, T defaultValue) {
         try {
-            @SuppressWarnings("unchecked")
-            T value = (T)property.get(key);
-            if (value==null) {
+            T value = (T) property.get(key);
+            if (value == null) {
                 return defaultValue;
-            }
-            else {
+            } else {
                 return value;
             }
-        }
-        catch (ClassCastException e) {
+        } catch (ClassCastException e) {
             return defaultValue;
         }
     }

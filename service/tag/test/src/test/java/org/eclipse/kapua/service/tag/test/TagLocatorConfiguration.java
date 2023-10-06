@@ -68,6 +68,8 @@ import org.eclipse.kapua.service.tag.internal.TagServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
+import java.util.Collections;
+
 @Singleton
 public class TagLocatorConfiguration {
 
@@ -136,7 +138,9 @@ public class TagLocatorConfiguration {
                         permissionFactory,
                         new DeviceConnectionFactoryImpl(),
                         new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-device"),
-                        new DeviceConnectionImplJpaRepository(jpaRepoConfig)));
+                        new DeviceConnectionImplJpaRepository(jpaRepoConfig),
+                        new KapuaMetatypeFactoryImpl(),
+                        Collections.emptyMap()));
                 bind(DeviceConnectionFactory.class).to(DeviceConnectionFactoryImpl.class);
 
                 bind(DeviceRepository.class).toInstance(new DeviceImplJpaRepository(jpaRepoConfig));

@@ -18,6 +18,8 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnectionOption;
 
+import java.util.Set;
+
 /**
  * The client side stub for the RPC service.
  */
@@ -25,5 +27,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDe
 public interface GwtDeviceConnectionOptionService extends RemoteService {
 
     public GwtDeviceConnectionOption update(GwtXSRFToken gwtXsrfToken, GwtDeviceConnectionOption gwtDeviceConnectionOption) throws GwtKapuaException;
+
+    Set<String> getAvailableAuthenticationTypes();
 
 }

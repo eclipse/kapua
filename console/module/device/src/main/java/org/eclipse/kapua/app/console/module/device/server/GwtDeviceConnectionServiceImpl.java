@@ -56,7 +56,6 @@ import java.util.concurrent.Callable;
  * The server side implementation of the RPC service.
  */
 public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet implements GwtDeviceConnectionService {
-
     private static final long serialVersionUID = 3314502846487119577L;
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
@@ -196,6 +195,8 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
                 deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair(CONNECTION_USER_COUPLING_MODE_INFO, "connectionReservedUser", reservedUser != null ? reservedUser.getName() : null));
                 deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair(CONNECTION_USER_COUPLING_MODE_INFO, "allowUserChange", deviceConnection.getAllowUserChange()));
             }
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair(CONNECTION_INFO, "connectionAuthenticationType", deviceConnection.getAuthenticationType()));
+            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair(CONNECTION_INFO, "connectionLastAuthenticationType", deviceConnection.getLastAuthenticationType()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair(CONNECTION_INFO, "connectionFirstEstablishedOn", deviceConnection.getCreatedOn()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair(CONNECTION_INFO, "connectionFirstEstablishedBy", createdUser != null ? createdUser.getName() : null));
 

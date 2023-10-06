@@ -15,10 +15,11 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
+import org.eclipse.kapua.app.api.core.model.SetResult;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
@@ -47,6 +48,7 @@ public class DeviceConnections extends AbstractKapuaResource {
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final DeviceConnectionFactory deviceConnectionFactory = locator.getFactory(DeviceConnectionFactory.class);
     private final DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
+
 
     /**
      * Gets the {@link DeviceConnection} list in the scope.
@@ -159,4 +161,10 @@ public class DeviceConnections extends AbstractKapuaResource {
         }
     }
 
+    @GET
+    @Path("_availableAuth")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public SetResult getAvailableAuthAdapter() {
+        return new SetResult(deviceConnectionService.getAvailableAuthTypes());
+    }
 }

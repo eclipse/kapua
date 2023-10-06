@@ -173,6 +173,8 @@ public class KapuaGwtDeviceModelConverter {
             gwtDeviceConnection.setConnectionUserCouplingMode(gwtConnectionUserCouplingMode != null ? gwtConnectionUserCouplingMode.getLabel() : "");
         }
         gwtDeviceConnection.setAllowUserChange(deviceConnection.getAllowUserChange());
+        gwtDeviceConnection.setAuthenticationType(deviceConnection.getAuthenticationType());
+        gwtDeviceConnection.setLastAuthenticationType(deviceConnection.getLastAuthenticationType());
         // Return converted entity
         return gwtDeviceConnection;
     }
@@ -225,6 +227,7 @@ public class KapuaGwtDeviceModelConverter {
             gwtDeviceConnectionOption.setConnectionUserCouplingMode(gwtConnectionUserCouplingMode != null ? gwtConnectionUserCouplingMode.getLabel() : "");
         }
         gwtDeviceConnectionOption.setAllowUserChange(deviceConnectionOption.getAllowUserChange());
+        gwtDeviceConnectionOption.setAuthenticationType(deviceConnectionOption.getAuthenticationType());
         // Return converted entity
         return gwtDeviceConnectionOption;
     }

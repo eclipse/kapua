@@ -20,9 +20,9 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCrea
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 
 /**
- * Device connection creator service implementation.
+ * {@link DeviceConnectionCreator} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class DeviceConnectionCreatorImpl extends AbstractKapuaUpdatableEntityCreator<DeviceConnection> implements DeviceConnectionCreator {
 
@@ -34,6 +34,8 @@ public class DeviceConnectionCreatorImpl extends AbstractKapuaUpdatableEntityCre
     private ConnectionUserCouplingMode userCouplingMode;
     private KapuaId reservedUserId;
     private boolean allowUserChange;
+    private String authenticationType;
+    private String lastAuthenticationType;
     private String protocol;
     private String clientIp;
     private String serverIp;
@@ -105,6 +107,26 @@ public class DeviceConnectionCreatorImpl extends AbstractKapuaUpdatableEntityCre
     @Override
     public void setAllowUserChange(boolean allowUserChange) {
         this.allowUserChange = allowUserChange;
+    }
+
+    @Override
+    public String getAuthenticationType() {
+        return authenticationType;
+    }
+
+    @Override
+    public void setAuthenticationType(String authenticationType) {
+        this.authenticationType = authenticationType;
+    }
+
+    @Override
+    public String getLastAuthenticationType() {
+        return lastAuthenticationType;
+    }
+
+    @Override
+    public void setLastAuthenticationType(String lastAuthenticationType) {
+        this.lastAuthenticationType = lastAuthenticationType;
     }
 
     @Override

@@ -70,6 +70,14 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
     private KapuaEid reservedUserId;
 
     @Basic
+    @Column(name = "authentication_type", nullable = false)
+    private String authenticationType;
+
+    @Basic
+    @Column(name = "last_authentication_type")
+    private String lastAuthenticationType;
+
+    @Basic
     @Column(name = "protocol", nullable = false)
     private String protocol;
 
@@ -82,7 +90,7 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
     private String serverIp;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @since 1.0.0
      */
@@ -91,9 +99,9 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link DeviceConnection#getScopeId()}.
      * @since 1.0.0
      */
     public DeviceConnectionImpl(KapuaId scopeId) {
@@ -103,7 +111,7 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
     /**
      * Clone constructor.
      *
-     * @param deviceConnection
+     * @param deviceConnection The {@link DeviceConnection} to clone.
      * @throws KapuaException
      * @since 1.0.0
      */
@@ -116,6 +124,8 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
         setAllowUserChange(deviceConnection.getAllowUserChange());
         setUserCouplingMode(deviceConnection.getUserCouplingMode());
         setReservedUserId(deviceConnection.getReservedUserId());
+        setAuthenticationType(deviceConnection.getAuthenticationType());
+        setLastAuthenticationType(deviceConnection.getLastAuthenticationType());
         setProtocol(deviceConnection.getProtocol());
         setClientIp(deviceConnection.getClientIp());
         setServerIp(deviceConnection.getServerIp());
@@ -179,6 +189,26 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
     @Override
     public void setReservedUserId(KapuaId reservedUserId) {
         this.reservedUserId = KapuaEid.parseKapuaId(reservedUserId);
+    }
+
+    @Override
+    public String getAuthenticationType() {
+        return authenticationType;
+    }
+
+    @Override
+    public void setAuthenticationType(String authenticationType) {
+        this.authenticationType = authenticationType;
+    }
+
+    @Override
+    public String getLastAuthenticationType() {
+        return lastAuthenticationType;
+    }
+
+    @Override
+    public void setLastAuthenticationType(String lastAuthenticationType) {
+        this.lastAuthenticationType = lastAuthenticationType;
     }
 
     @Override

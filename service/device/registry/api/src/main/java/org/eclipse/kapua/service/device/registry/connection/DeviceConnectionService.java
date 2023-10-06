@@ -19,6 +19,8 @@ import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
+import java.util.Set;
+
 /**
  * {@link DeviceConnection} {@link KapuaEntityService} definition.
  *
@@ -29,15 +31,16 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
         KapuaConfigurableService {
 
     /**
-     * Find the connection by client identifier
+     * Finds the {@link DeviceConnection} by its {@link DeviceConnection#getClientId()}.
      *
-     * @param scopeId
-     * @param clientId
-     * @return
+     * @param scopeId  The {@link DeviceConnection#getScopeId()}.
+     * @param clientId The {@link DeviceConnection#getClientId()}.
+     * @return The {@link DeviceConnection} found or {@code null} if not found.
      * @throws KapuaException
      * @since 1.0.0
      */
     DeviceConnection findByClientId(KapuaId scopeId, String clientId) throws KapuaException;
+
 
     /**
      * Returns the {@link DeviceConnectionListResult} with elements matching the provided query.
@@ -74,4 +77,12 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
      */
     @Deprecated
     void disconnect(KapuaId scopeId, String clientId) throws KapuaException;
+
+    /**
+     * Gets the available {@link DeviceConnection#getAuthenticationType()}s.
+     *
+     * @return The available {@link DeviceConnection#getAuthenticationType()}s.
+     * @since 2.0.0
+     */
+    Set<String> getAvailableAuthTypes();
 }

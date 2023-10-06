@@ -16,6 +16,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
@@ -33,10 +34,13 @@ import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
+import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.GroupQueryHelper;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.device.authentication.UserPassDeviceConnectionCredentialAdapter;
+import org.eclipse.kapua.service.device.authentication.api.DeviceConnectionCredentialAdapter;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
@@ -59,6 +63,9 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceI
 import org.eclipse.kapua.storage.TxManager;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Singleton
 public class DeviceRegistryLocatorConfiguration {
@@ -83,7 +90,11 @@ public class DeviceRegistryLocatorConfiguration {
                 } catch (KapuaException e) {
                     // skip
                 }
+
+                final CredentialsFactory credentialsFactory = Mockito.mock(CredentialsFactory.class);
+
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
+                bind(CredentialsFactory.class).toInstance(credentialsFactory);
                 bind(KapuaJpaRepositoryConfiguration.class).toInstance(new KapuaJpaRepositoryConfiguration());
                 bind(AccountChildrenFinder.class).toInstance(Mockito.mock(AccountChildrenFinder.class));
                 bind(AccountFactory.class).toInstance(Mockito.mock(AccountFactory.class));
@@ -97,6 +108,13 @@ public class DeviceRegistryLocatorConfiguration {
                 final DeviceRegistryCacheFactory deviceRegistryCacheFactory = new DeviceRegistryCacheFactory();
                 bind(DeviceRegistryCacheFactory.class).toInstance(deviceRegistryCacheFactory);
 
+                final Map<String, DeviceConnectionCredentialAdapter> availableDeviceConnectionAdapters = new HashMap<>();
+                availableDeviceConnectionAdapters.put("USER_PASS", new UserPassDeviceConnectionCredentialAdapter(credentialsFactory));
+
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("DeviceConnectionServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
+
                 bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 final TxManager txManager = new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-device");
@@ -106,7 +124,9 @@ public class DeviceRegistryLocatorConfiguration {
                         permissionFactory,
                         new DeviceConnectionFactoryImpl(),
                         txManager,
-                        new DeviceConnectionImplJpaRepository(jpaRepoConfig)));
+                        new DeviceConnectionImplJpaRepository(jpaRepoConfig),
+                        new KapuaMetatypeFactoryImpl(),
+                        availableDeviceConnectionAdapters));
                 bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
 
                 bind(DeviceRepository.class).toInstance(new DeviceImplJpaRepository(jpaRepoConfig));

@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
+import com.codahale.metrics.Timer.Context;
+import com.google.common.base.Strings;
 import org.apache.shiro.util.ThreadContext;
-
-import javax.inject.Inject;
-
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -23,27 +23,33 @@ import org.eclipse.kapua.client.security.AuthErrorCodes;
 import org.eclipse.kapua.client.security.KapuaIllegalDeviceStateException;
 import org.eclipse.kapua.client.security.ServiceClient.EntityType;
 import org.eclipse.kapua.client.security.ServiceClient.ResultCode;
-import org.eclipse.kapua.client.security.bean.EntityRequest;
-import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.bean.AuthContext;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
+import org.eclipse.kapua.client.security.bean.EntityRequest;
+import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.metric.AuthMetric;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.authentication.Authenticator;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.device.authentication.api.DeviceConnectionCredentialAdapter;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Timer.Context;
+import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
+import java.util.Map;
 
 public class AuthenticationServiceBackEndCall {
 
@@ -57,43 +63,84 @@ public class AuthenticationServiceBackEndCall {
     private KapuaLocator locator;
     private AuthenticationService authenticationService;
     private AccountService accountService;
+    private DeviceConnectionService deviceConnectionService;
     private CredentialsFactory credentialFactory;
+    private KapuaIdFactory kapuaIdFactory;
     private UserService userService;
+
+    @Inject
+    private Map<String, DeviceConnectionCredentialAdapter> deviceConnectionAuthHandlers;
 
     public AuthenticationServiceBackEndCall() {
         locator = KapuaLocator.getInstance();
         authenticationService = locator.getService(AuthenticationService.class);
         accountService = locator.getService(AccountService.class);
+        deviceConnectionService = locator.getService(DeviceConnectionService.class);
         credentialFactory = locator.getFactory(CredentialsFactory.class);
+        kapuaIdFactory = locator.getFactory(KapuaIdFactory.class);
         userService = locator.getService(UserService.class);
     }
 
     public AuthResponse brokerConnect(AuthRequest authRequest) {
         try {
-            logger.info("Login for user: {} - clientId: {}", authRequest.getUsername(), authRequest.getClientId());
+            logger.info("Login for clientId {} - user: {} - password: {} - client certificates: {}",
+                    authRequest.getClientId(),
+                    authRequest.getUsername(),
+                    Strings.isNullOrEmpty(authRequest.getPassword()) ? "yes" : "no",
+                    authRequest.getCertificates() != null ? "yes" : "no");
+
             ThreadContext.unbindSubject();
-            UsernamePasswordCredentials credentials = credentialFactory.newUsernamePasswordCredentials(
-                authRequest.getUsername(), 
-                authRequest.getPassword());
-            AccessToken accessToken = authenticationService.login(credentials);
-            Account account = KapuaSecurityUtils.doPrivileged(()-> accountService.find(accessToken.getScopeId()));
+
+            // User retrieval
+            User user = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(authRequest.getUsername()));
+            if (user == null) {
+                throw new KapuaEntityNotFoundException(User.TYPE, authRequest.getUsername());
+            }
+
+            // Device connection retrieval
+            DeviceConnection deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(user.getScopeId(), authRequest.getClientId()));
+
+            // Authentication type selection
+            String deviceConnectionAuthType;
+            if (deviceConnection != null) {
+                // From the DeviceConnection
+                deviceConnectionAuthType = deviceConnection.getAuthenticationType();
+            } else {
+                // Or the default from DeviceConnectionService ServiceConfiguration
+                Map<String, Object> deviceConnectionServiceConfigValues = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.getConfigValues(user.getScopeId()));
+                deviceConnectionAuthType = (String) deviceConnectionServiceConfigValues.get("deviceConnectionAuthenticationType");
+            }
+
+            // Convert AuthRequest to LoginCredentials
+            DeviceConnectionCredentialAdapter deviceConnectionCredentialAdapter = deviceConnectionAuthHandlers.get(deviceConnectionAuthType);
+            if (deviceConnectionCredentialAdapter == null) {
+                throw new UnsupportedOperationException("No DeviceConnectionCredentialAdapter has been found for the given DeviceConnection.authenticationType: " + deviceConnectionAuthType);
+            }
+
+            LoginCredentials authenticationCredentials = deviceConnectionCredentialAdapter.mapToCredential(authRequest);
+
+            // Login
+            AccessToken accessToken = authenticationService.login(authenticationCredentials);
+
+            // Build response
+            Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(accessToken.getScopeId()));
             AuthResponse authResponse = buildLoginResponseAuthorized(authRequest, accessToken, account);
             AuthContext authContext = new AuthContext(authRequest, authResponse);
+            authContext.setAuthenticationType(deviceConnectionAuthType);
             authResponse.setAcls(authenticator.connect(authContext));
             authResponse.update(authContext);
             return authResponse;
         } catch (Exception e) {
-            //this is not a proper error since the login throws exception if the user is not allowed to connect
-            //so the error is logged but no metric is incremented
+            // This is not a proper error since the login throws exception if the user is not allowed to connect
+            // so the error is logged but no metric is incremented
             logger.error("Login error: {}", e.getMessage(), e);
             return buildLoginResponseNotAuthorized(authRequest, e);
-        }
-        finally {
+        } finally {
             Context timeShiroLogout = authenticationMetric.getExtConnectorTime().getLogoutOnLogin().time();
             try {
                 authenticationService.logout();
             } catch (Exception e) {
-                //error while cleaning up the logged user
+                // Error while cleaning up the logged user
                 authenticationMetric.getFailure().getLogoutFailureOnLogin().inc();
                 logger.error("Logout error: {}", e.getMessage(), e);
             }
@@ -108,7 +155,7 @@ public class AuthenticationServiceBackEndCall {
             authenticator.disconnect(new AuthContext(authRequest));
             return buildLogoutResponseAuthorized(authRequest);
         } catch (Exception e) {
-            //this is an error since the disconnect shouldn't throws exception
+            // This is an error since the disconnect shouldn't throws exception
             authenticationMetric.getFailure().getDisconnectFailure().inc();
             logger.error("Login error: {}", e.getMessage(), e);
             return buildLogoutResponseNotAuthorized(authRequest, e);
@@ -119,35 +166,33 @@ public class AuthenticationServiceBackEndCall {
         logger.info("Get entity {} for name: {}", entityRequest.getEntity(), entityRequest.getName());
         if (EntityType.account.name().equals(entityRequest.getEntity())) {
             try {
-                Account account = KapuaSecurityUtils.doPrivileged(()-> accountService.findByName(entityRequest.getName()));
+                Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.findByName(entityRequest.getName()));
                 return buildGetEntityResponse(entityRequest, account);
             } catch (Exception e) {
                 return buildGetEntityResponseError(entityRequest, e);
             }
-        }
-        else if (EntityType.user.name().equals(entityRequest.getEntity())) {
+        } else if (EntityType.user.name().equals(entityRequest.getEntity())) {
             try {
-                User user = KapuaSecurityUtils.doPrivileged(()-> userService.findByName(entityRequest.getName()));
+                User user = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(entityRequest.getName()));
                 return buildGetEntityResponse(entityRequest, user);
             } catch (Exception e) {
                 return buildGetEntityResponseError(entityRequest, e);
             }
-        }
-        else {
+        } else {
             return buildGetEntityResponseError(entityRequest, new KapuaIllegalArgumentException("action", entityRequest.getAction()));
         }
     }
 
     private AuthResponse buildLoginResponseAuthorized(AuthRequest authRequest, AccessToken accessToken, Account account) {
         AuthResponse authResponse = buildAuthResponse(authRequest, ResultCode.authorized);
-        //if authorized should be not null, anyway do a check
-        if (accessToken!=null) {
+        // If authorized should be not null, anyway do a check
+        if (accessToken != null) {
             authResponse.setScopeId(accessToken.getScopeId().toCompactId());
             authResponse.setUserId(accessToken.getUserId().toCompactId());
             authResponse.setAccessTokenId(accessToken.getTokenId());
         }
-        //if authorized should be not null, anyway do a check
-        if (account!=null) {
+        // If authorized should be not null, anyway do a check
+        if (account != null) {
             authResponse.setAccountName(account.getName());
         }
         return authResponse;
@@ -180,7 +225,7 @@ public class AuthenticationServiceBackEndCall {
         authResponse.setClientId(authRequest.getClientId());
         authResponse.setClientIp(authRequest.getClientIp());
         authResponse.setConnectionId(authRequest.getConnectionId());
-        if (exception!=null) {
+        if (exception != null) {
             updateError(authResponse, exception);
         }
         return authResponse;
@@ -189,8 +234,8 @@ public class AuthenticationServiceBackEndCall {
     private EntityResponse buildGetEntityResponse(EntityRequest entityRequest, KapuaEntity entity) {
         EntityResponse entityResponse = buildGetEntityResponseCommon(entityRequest, ResultCode.authorized);
         entityResponse.setClusterName(entityRequest.getClusterName());
-        entityResponse.setId(entity.getId()!=null ? entity.getId().toCompactId() : null);
-        entityResponse.setScopeId(entity.getScopeId()!=null ? entity.getScopeId().toCompactId() : null);
+        entityResponse.setId(entity.getId() != null ? entity.getId().toCompactId() : null);
+        entityResponse.setScopeId(entity.getScopeId() != null ? entity.getScopeId().toCompactId() : null);
         return entityResponse;
     }
 
@@ -213,22 +258,19 @@ public class AuthenticationServiceBackEndCall {
         return entityResponse;
     }
 
-    private void updateError(AuthResponse authResponse, Exception exception) {
-        //Exception must be not null!
+    private void updateError(AuthResponse authResponse, @NotNull Exception exception) {
         authResponse.setExceptionClass(exception.getClass().getName());
         String errorCode = KapuaAuthenticationErrorCodes.AUTHENTICATION_ERROR.name();
         if (exception instanceof KapuaAuthenticationException) {
-            KapuaAuthenticationErrorCodes authErrorCode = (KapuaAuthenticationErrorCodes)((KapuaAuthenticationException) exception).getCode();
-            if (authErrorCode!=null) {
+            KapuaAuthenticationErrorCodes authErrorCode = (KapuaAuthenticationErrorCodes) ((KapuaAuthenticationException) exception).getCode();
+            if (authErrorCode != null) {
                 errorCode = authErrorCode.name();
             }
-        }
-        else if (exception instanceof KapuaIllegalAccessException) {
+        } else if (exception instanceof KapuaIllegalAccessException) {
             errorCode = KapuaErrorCodes.ILLEGAL_ACCESS.name();
-        }
-        else if (exception instanceof KapuaIllegalDeviceStateException) {
-            AuthErrorCodes authErrorCode = (AuthErrorCodes)((KapuaIllegalDeviceStateException) exception).getCode();
-            if (authErrorCode!=null) {
+        } else if (exception instanceof KapuaIllegalDeviceStateException) {
+            AuthErrorCodes authErrorCode = (AuthErrorCodes) ((KapuaIllegalDeviceStateException) exception).getCode();
+            if (authErrorCode != null) {
                 errorCode = authErrorCode.name();
             }
         }

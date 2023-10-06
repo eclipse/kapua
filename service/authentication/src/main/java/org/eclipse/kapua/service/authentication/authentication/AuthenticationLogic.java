@@ -43,11 +43,10 @@ import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnect
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
-
-import javax.inject.Inject;
 
 /**
  * Authentication logic definition
@@ -277,6 +276,9 @@ public abstract class AuthenticationLogic {
         deviceConnectionCreator.setUserId(KapuaEid.parseCompactId(authContext.getUserId()));
         deviceConnectionCreator.setUserCouplingMode(ConnectionUserCouplingMode.INHERITED);
         deviceConnectionCreator.setAllowUserChange(false);
+        deviceConnectionCreator.setAuthenticationType(authContext.getAuthenticationType());
+        deviceConnectionCreator.setLastAuthenticationType(authContext.getAuthenticationType());
+
         return KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.create(deviceConnectionCreator));
     }
 
@@ -296,6 +298,8 @@ public abstract class AuthenticationLogic {
         deviceConnection.setServerIp(authContext.getBrokerHost());
         deviceConnection.setUserId(KapuaEid.parseCompactId(authContext.getUserId()));
         deviceConnection.setAllowUserChange(false);
+        deviceConnection.setAuthenticationType(authContext.getAuthenticationType());
+        deviceConnection.setLastAuthenticationType(authContext.getAuthenticationType());
         // TODO implement the banned status
         // if (DeviceStatus.DISABLED.equals(device.getStatus())) {
         // throw new KapuaIllegalAccessException("clientId - This client ID is disabled and cannot connect");
@@ -306,7 +310,7 @@ public abstract class AuthenticationLogic {
     protected DeviceConnection getDeviceConnection(AuthContext authContext) {
         try {
             return KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(
-                KapuaEid.parseCompactId(authContext.getScopeId()), authContext.getClientId()));
+                    KapuaEid.parseCompactId(authContext.getScopeId()), authContext.getClientId()));
         } catch (Exception e) {
             throw new ShiroException("Error while looking for device connection on updating the device status!", e);
         }
@@ -317,12 +321,10 @@ public abstract class AuthenticationLogic {
         if (authContext.getBrokerHost() == null) {
             logger.warn("Broker Ip or host name is not correctly set! Please check the configuration!");
             authenticationMetric.getFailure().getBrokerHostFailure().inc();
-        }
-        else if (deviceConnection == null){
-            logger.warn("Cannot find device connection for device: {}/{}", authContext.getScopeId() , authContext.getClientId());
+        } else if (deviceConnection == null) {
+            logger.warn("Cannot find device connection for device: {}/{}", authContext.getScopeId(), authContext.getClientId());
             authenticationMetric.getFailure().getFindDeviceConnectionFailure().inc();
-        }
-        else {
+        } else {
             ownedByTheCurrentNode = authContext.getBrokerHost().equals(deviceConnection.getServerIp());
         }
         return ownedByTheCurrentNode;
