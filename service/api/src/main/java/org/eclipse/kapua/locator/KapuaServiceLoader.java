@@ -18,6 +18,7 @@ import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
 
 import javax.validation.constraints.NotNull;
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -62,4 +63,13 @@ public interface KapuaServiceLoader {
      * @since 2.0.0
      */
     <T> T getComponent(Class<T> componentClass);
+
+    /**
+     * Returns an implementing instance the requested component.
+     *
+     * @param type The type of the collaborator to retrieve.
+     * @return The requested component implementation.
+     * @since 2.0.0
+     */
+    <T> T getComponent(Type type);
 }

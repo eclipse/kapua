@@ -18,6 +18,7 @@ import org.eclipse.kapua.KapuaRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Type;
 import java.util.ServiceLoader;
 
 /**
@@ -118,5 +119,10 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
 
         logger.debug("No service locator class resolved. Falling back to default.");
         return null;
+    }
+
+    @Override
+    public <T> T getComponent(Type type) {
+        return instance.getComponent(type);
     }
 }

@@ -19,6 +19,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Stage;
+import com.google.inject.TypeLiteral;
 import com.google.inject.util.Modules;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
@@ -36,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -123,6 +125,11 @@ public class GuiceLocatorImpl extends KapuaLocator {
         } catch (ConfigurationException e) {
             throw new KapuaRuntimeException(KapuaLocatorErrorCodes.COMPONENT_UNAVAILABLE, componentClass);
         }
+    }
+
+    @Override
+    public <T> T getComponent(Type type) {
+        return (T) injector.getInstance(Key.get(TypeLiteral.get(type)));
     }
 
     @Override
