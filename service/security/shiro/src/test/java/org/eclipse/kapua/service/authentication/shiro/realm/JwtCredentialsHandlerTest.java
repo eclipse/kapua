@@ -1,0 +1,86 @@
+/*******************************************************************************
+ * Copyright (c) 2023, 2022 Eurotech and/or its affiliates and others
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.kapua.service.authentication.shiro.realm;
+
+import org.eclipse.kapua.service.authentication.JwtCredentials;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
+import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
+import org.eclipse.kapua.service.authentication.shiro.realm.model.JwtCredentialsAnotherImpl;
+import org.eclipse.kapua.service.authentication.shiro.realm.model.NotProcessableCredentials;
+import org.eclipse.kapua.service.authentication.shiro.realm.model.NotProcessableCredentialsImpl;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+public class JwtCredentialsHandlerTest {
+
+    JwtCredentialsHandler instance;
+
+    @Before
+    public void setUp() {
+        instance = new JwtCredentialsHandler();
+    }
+
+    @Test
+    public void jwtCredentialsImplCanProcessNullTest() {
+        Assert.assertFalse(instance.canProcess(null));
+    }
+
+    @Test
+    public void jwtCredentialsImplCanProcessImplTest() throws KapuaAuthenticationException {
+        JwtCredentials jwtCredentialsImpl = new JwtCredentialsImpl("aJwt", "anIdToken");
+        JwtCredentials jwtCredentialsAnother = new JwtCredentialsAnotherImpl("aJwt", "anIdToken");
+        NotProcessableCredentials notProcessableCredentials = new NotProcessableCredentialsImpl();
+
+        Assert.assertTrue(instance.canProcess(jwtCredentialsImpl));
+        Assert.assertTrue(instance.canProcess(jwtCredentialsAnother));
+        Assert.assertFalse(instance.canProcess(notProcessableCredentials));
+    }
+
+    @Test
+    public void jwtCredentialsImplMapToShiroImplTest() throws KapuaAuthenticationException {
+        JwtCredentialsImpl first = new JwtCredentialsImpl("aJwt", "anIdToken");
+
+        JwtCredentialsImpl second = (JwtCredentialsImpl) instance.mapToShiro(first);
+
+        Assert.assertNotNull(second);
+        Assert.assertEquals(first, second);
+        Assert.assertEquals(first.getAccessToken(), second.getAccessToken());
+        Assert.assertEquals(first.getIdToken(), second.getIdToken());
+    }
+
+    @Test
+    public void jwtCredentialsImplMapToShiroAnotherTest() throws KapuaAuthenticationException {
+        JwtCredentials first = new JwtCredentialsAnotherImpl("aJwt", "anIdToken");
+
+        JwtCredentialsImpl second = (JwtCredentialsImpl) instance.mapToShiro(first);
+
+        Assert.assertNotNull(second);
+        Assert.assertEquals(first.getAccessToken(), second.getAccessToken());
+        Assert.assertEquals(first.getIdToken(), second.getIdToken());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void jwtCredentialsImplMapToShiroNullTest() throws KapuaAuthenticationException {
+        instance.mapToShiro(null);
+    }
+
+    @Test(expected = KapuaAuthenticationException.class)
+    public void jwtCredentialsImplMapToShiroEmptyTest() throws KapuaAuthenticationException {
+        JwtCredentialsImpl first = new JwtCredentialsImpl(null, null);
+
+        Assert.assertNotNull(first);
+
+        instance.mapToShiro(first);
+    }
+}

@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authentication.shiro;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
+import org.eclipse.kapua.service.authentication.shiro.realm.model.AccessTokenCredentialsAnotherImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -39,7 +40,7 @@ public class AccessTokenCredentialsImplTest {
 
     @Test
     public void accessTokenCredentialsImplCloneConstructorAnotherTest() {
-        AccessTokenCredentials first = new AccessTokenCredentialAnother("anAccessToken");
+        AccessTokenCredentials first = new AccessTokenCredentialsAnotherImpl("anAccessToken");
 
         AccessTokenCredentialsImpl second = new AccessTokenCredentialsImpl(first);
 

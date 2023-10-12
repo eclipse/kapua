@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authentication.shiro;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
+import org.eclipse.kapua.service.authentication.shiro.realm.model.UsernamePasswordCredentialsAnotherImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,12 +56,11 @@ public class UsernamePasswordCredentialsImplTest {
         Assert.assertEquals("UsernamePasswordCredential.password", first.getPassword(), second.getPassword());
         Assert.assertEquals("UsernamePasswordCredential.trustKey", first.getTrustKey(), second.getTrustKey());
         Assert.assertEquals("UsernamePasswordCredential.authenticationCode", first.getAuthenticationCode(), second.getAuthenticationCode());
-
     }
 
     @Test
     public void usernamePasswordCredentialsImplCloneConstructorAnotherTest() {
-        UsernamePasswordCredentials first = new UsernamePasswordCredentialsAnother("aUsername", "aPassword");
+        UsernamePasswordCredentials first = new UsernamePasswordCredentialsAnotherImpl("aUsername", "aPassword");
         first.setTrustKey("aTrustKey");
         first.setAuthenticationCode("aAuthCode");
 
@@ -100,7 +100,7 @@ public class UsernamePasswordCredentialsImplTest {
 
     @Test
     public void usernamePasswordCredentiaslImplParseAnotherTest() {
-        UsernamePasswordCredentials first = new UsernamePasswordCredentialsAnother("aUsername", "aPassword");
+        UsernamePasswordCredentials first = new UsernamePasswordCredentialsAnotherImpl("aUsername", "aPassword");
         first.setTrustKey("aTrustKey");
         first.setAuthenticationCode("aAuthCode");
 
@@ -160,69 +160,5 @@ public class UsernamePasswordCredentialsImplTest {
             usernamePasswordCredentialsImpl.setTrustKey(trustKey);
             Assert.assertEquals("Expected and actual values should be the same.", trustKey, usernamePasswordCredentialsImpl.getTrustKey());
         }
-    }
-}
-
-class UsernamePasswordCredentialsAnother implements UsernamePasswordCredentials {
-
-    private String username;
-    private String password;
-    private String authenticationCode;
-    private String trustKey;
-    private boolean trustMe;
-
-    public UsernamePasswordCredentialsAnother(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public String getAuthenticationCode() {
-        return authenticationCode;
-    }
-
-    @Override
-    public void setAuthenticationCode(String authenticationCode) {
-        this.authenticationCode = authenticationCode;
-    }
-
-    @Override
-    public String getTrustKey() {
-        return trustKey;
-    }
-
-    @Override
-    public void setTrustKey(String trustKey) {
-        this.trustKey = trustKey;
-    }
-
-    @Override
-    public boolean getTrustMe() {
-        return trustMe;
-    }
-
-    @Override
-    public void setTrustMe(boolean trustMe) {
-        this.trustMe = trustMe;
     }
 }

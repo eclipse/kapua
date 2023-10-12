@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2023, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,15 +10,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.shiro;
+package org.eclipse.kapua.service.authentication.shiro.realm.model;
 
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 
-public class AccessTokenCredentialAnother implements AccessTokenCredentials {
+public class AccessTokenCredentialsAnotherImpl implements AccessTokenCredentials {
     private String tokenId;
 
-    public AccessTokenCredentialAnother(String tokenId) {
-        this.tokenId = tokenId;
+    public AccessTokenCredentialsAnotherImpl(String tokenId) {
+        setTokenId(tokenId);
     }
 
     @Override
