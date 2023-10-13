@@ -36,6 +36,7 @@ public class MessageConstants {
     public static final String HEADER_KAPUA_BROKER_CONTEXT = "KAPUA_BROKER_CONTEXT";
     public static final String HEADER_KAPUA_PROCESSING_EXCEPTION = "KAPUA_PROCESSING_EXCEPTION";
     public static final String HEADER_KAPUA_MESSAGE_TYPE = "KAPUA_MESSAGE_TYPE";
+    public static final String HEADER_KAPUA_PROCESS_RESULT = "KAPUA_PROCESS_RESULT";
 
     public static final String HEADER_CAMEL_JMS_HEADER_TIMESTAMP = "JMSTimestamp";
     public static final String HEADER_CAMEL_JMS_HEADER_DESTINATION = "JMSDestination";
