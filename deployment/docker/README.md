@@ -219,16 +219,18 @@ This option is not available on Windows OS at the moment.
 
 ### Enabling SSL
 
-To enable SSL in the Jetty (Console and REST API) and Broker containers, set the `KAPUA_SSL_ENABLE` environment
-variable to `true`, and other variables according to the desired behavior, **before** running the `docker-deploy.sh`
-script:
+Kapua can be deployed with an SSL enabled. To enable it, provide the `--ssl` option.
 
-```bash
-export KAPUA_SSL_ENABLE=true
-```
+SSL will be enabled for the following services
 
-Additionally, the SSL can be configured in two ways: providing a certificate, a private key and an optional CA chain, or
-providing a keystore.
+| Application/Service | Endpoint          |
+|---------------------|-------------------|
+| Message Broker      | To be implemented |
+| Admin WEB Console   | localhost:8443    |
+| REST API endpoint   | localhost:8444    |
+
+The `--ssl` options configures a self-signed keypair created on the fly.
+If you want to provide your certificates, follow the instruction below.
 
 ##### Providing certificates and private key
 
