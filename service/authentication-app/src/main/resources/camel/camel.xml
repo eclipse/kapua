@@ -14,16 +14,6 @@
 <routes xmlns="http://camel.apache.org/schema/spring">
     <route errorHandlerRef="authRouteMessageErrorHandler" id="authRoute">
         <from uri="amqp:queue://auth_request?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
-        <!--  handling timeout and communication exceptions in a retry queue -->
-        <onException>
-            <exception>org.eclipse.kapua.KapuaException</exception>
-            <redeliveryPolicy maximumRedeliveries="0" logRetryAttempted="true" retryAttemptedLogLevel="WARN"/>
-            <handled>
-                <constant>true</constant>
-            </handled>
-            <bean ref="kapuaCamelFilter" method="bridgeError"/>
-            <to uri="amqp:queue:notProcessableMessage"/>
-        </onException>
         <pipeline>
             <choice id="main">
                 <when id="doLogin">
@@ -45,8 +35,8 @@
             <toD uri="amqp:queue:auth_response_${header.cluster_name}_${header.requester}"/>
         </pipeline>
     </route>
-    <route id="notProcessableMessage">
-        <from uri="amqp:queue:notProcessableMessage?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=1&amp;maxConcurrentConsumers=2"/>
+    <route id="authDlq">
+        <from uri="amqp:queue:authDlq?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=1&amp;maxConcurrentConsumers=2"/>
         <pipeline>
             <to uri="bean:errorMessageListener?method=processMessage"/>
         </pipeline>

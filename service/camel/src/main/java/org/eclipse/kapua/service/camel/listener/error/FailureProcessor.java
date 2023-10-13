@@ -16,6 +16,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.service.camel.application.MetricsCamel;
+import org.eclipse.kapua.service.client.message.MessageConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,21 @@ public class FailureProcessor implements Processor {
 
     private static final Logger logger = LoggerFactory.getLogger(FailureProcessor.class);
 
+    public static enum MessageProcessResult {
+
+        Error("ERR");
+
+        private String asUrl;
+
+        MessageProcessResult(String asUrl) {
+            this.asUrl = asUrl;
+        }
+
+        public String getAsUrl() {
+            return asUrl;
+        }
+    }
+
     //TODO inject!!!
     private MetricsCamel metrics;
 
@@ -37,6 +53,7 @@ public class FailureProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
+        exchange.getIn().setHeader(MessageConstants.HEADER_KAPUA_PROCESS_RESULT, MessageProcessResult.Error.getAsUrl());
         if (isUnauthenticatedException(exchange)) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Detected unauthenticated error on message processing retry!");

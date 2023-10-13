@@ -117,8 +117,8 @@
         <address-settings>
             <!-- if you define auto-create on certain queues, management has to be auto-create -->
             <address-setting match="activemq.management#">
-                <dead-letter-address>DLQ</dead-letter-address>
-                <expiry-address>ExpiryQueue</expiry-address>
+                <dead-letter-address>dlq</dead-letter-address>
+                <expiry-address>expired</expiry-address>
                 <redelivery-delay>0</redelivery-delay>
                 <!-- with -1 only the global-max-size is in use for limiting -->
                 <max-size-bytes>-1</max-size-bytes>
@@ -132,8 +132,8 @@
             </address-setting>
             <!--default for catch all-->
             <address-setting match="#">
-                <dead-letter-address>DLQ</dead-letter-address>
-                <expiry-address>ExpiryQueue</expiry-address>
+                <dead-letter-address>dlq</dead-letter-address>
+                <expiry-address>expired</expiry-address>
                 <redelivery-delay>0</redelivery-delay>
                 <!-- with -1 only the global-max-size is in use for limiting -->
                 <max-size-bytes>-1</max-size-bytes>
@@ -166,34 +166,19 @@
             </broker-plugin>
         </broker-plugins>
         <addresses>
-            <address name="DLQ">
+            <address name="dlq">
                 <anycast>
-                    <queue name="DLQ"/>
+                    <queue name="dlq"/>
                 </anycast>
             </address>
-            <address name="ExpiryQueue">
+            <address name="authDlq">
                 <anycast>
-                    <queue name="ExpiryQueue"/>
+                    <queue name="authDlq"/>
                 </anycast>
             </address>
-            <address name="notProcessableMessage">
+            <address name="expired">
                 <anycast>
-                    <queue name="notProcessableMessage"/>
-                </anycast>
-            </address>
-            <address name="storeGenericException">
-                <anycast>
-                    <queue name="storeGenericException"/>
-                </anycast>
-            </address>
-            <address name="storeCommunicationException">
-                <anycast>
-                    <queue name="storeCommunicationException"/>
-                </anycast>
-            </address>
-            <address name="storeConfigurationException">
-                <anycast>
-                    <queue name="storeConfigurationException"/>
+                    <queue name="expired"/>
                 </anycast>
             </address>
         </addresses>

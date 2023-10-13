@@ -24,35 +24,8 @@
             <bean ref="kapuaCamelFilter" method="unbindSession"/>
         </pipeline>
     </route>
-    <route errorHandlerRef="messageErrorHandler" id="dataMessageCommunicationErrorRoute">
-        <from uri="amqp:queue://storeCommunicationException?asyncConsumer=true&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
-        <pipeline>
-            <bean ref="kapuaCamelFilter" method="bindSession"/>
-            <bean ref="kapuaDataConverter" method="convertToDataOnException"/>
-            <to uri="bean:dataStorageMessageProcessor?method=processCommunicationErrorMessage"/>
-            <bean ref="kapuaCamelFilter" method="unbindSession"/>
-        </pipeline>
-    </route>
-    <route errorHandlerRef="messageErrorHandler" id="dataMessageConfigurationErrorRoute">
-        <from uri="amqp:queue://storeConfigurationException?asyncConsumer=true&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
-        <pipeline>
-            <bean ref="kapuaCamelFilter" method="bindSession"/>
-            <bean ref="kapuaDataConverter" method="convertToDataOnException"/>
-            <to uri="bean:dataStorageMessageProcessor?method=processConfigurationErrorMessage"/>
-            <bean ref="kapuaCamelFilter" method="unbindSession"/>
-        </pipeline>
-    </route>
-    <route errorHandlerRef="messageErrorHandler" id="dataMessageGenericErrorRoute">
-        <from uri="amqp:queue://storeGenericException?asyncConsumer=true&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
-        <pipeline>
-            <bean ref="kapuaCamelFilter" method="bindSession"/>
-            <bean ref="kapuaDataConverter" method="convertToDataOnException"/>
-            <to uri="bean:dataStorageMessageProcessor?method=processGenericErrorMessage"/>
-            <bean ref="kapuaCamelFilter" method="unbindSession"/>
-        </pipeline>
-    </route>
-    <route id="notProcessableMessage">
-        <from uri="amqp:queue:notProcessableMessage?asyncConsumer=true&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
+    <route id="dlq">
+        <from uri="amqp:queue:dlq?asyncConsumer=true&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
         <pipeline>
             <bean ref="kapuaCamelFilter" method="bindSession"/>
             <to uri="bean:errorMessageListener?method=processMessage"/>

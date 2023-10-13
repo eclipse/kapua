@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 @UriEndpoint(title = "error message processor", syntax = "bean:ecErrorMessageListener", scheme = "bean")
 public class ErrorMessageListener {
 
-    private static final String ERROR_MESSAGE_LOGGER_NAME = "errorMessage";
+    private static final String ERROR_MESSAGE_LOGGER_NAME = "camelRouteDlq";
     private static final Logger ERROR_MESSAGE_LOGGER = LoggerFactory.getLogger(ERROR_MESSAGE_LOGGER_NAME);
     private static final String ERROR_DATE_MESSAGE_PATTERN = "DATE_ERR:%s";
 
