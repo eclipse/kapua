@@ -55,8 +55,14 @@ docker_compose() {
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.db-dev.yml")
     fi
 
-    # SSO Mode
+    # SSL
     if [[ "$4" == true ]]; then
+      echo "SSL enabled!"
+    fi
+    export KAPUA_SSL_ENABLE=$4
+
+    # SSO Mode
+    if [[ "$5" == true ]]; then
       echo "SSO enabled!"
       . "${SCRIPT_DIR}/sso/docker-sso-config.sh"
 
@@ -65,22 +71,23 @@ docker_compose() {
     fi
 
     # Swagger UI
-    if [[ "$5" == false ]]; then
+    if [[ "$6" == false ]]; then
       echo "Swagger disabled!"
     fi
-    export KAPUA_SWAGGER_ENABLE=$5
+    export KAPUA_SWAGGER_ENABLE=$6
 
     docker-compose -f "${SCRIPT_DIR}/../compose/docker-compose.yml" "${COMPOSE_FILES[@]}" up -d
 }
 
 print_usage_deploy() {
-    echo "Usage: $(basename "$0") [-h|--help] [--dev] [--debug] [--jmx] [--logs] [--sso] [--no-swagger]" >&2
+    echo "Usage: $(basename "$0") [-h|--help] [--dev] [--debug] [--jmx] [--logs] [--ssl] [--sso] [--no-swagger]" >&2
 }
 
 DEBUG_MODE=false
 DEV_MODE=false
 OPEN_LOGS=false
 JMX_MODE=false
+SSL_MODE=false
 SSO_MODE=false
 SWAGGER=true
 for option in "$@"; do
@@ -101,6 +108,9 @@ for option in "$@"; do
     --jmx)
       JMX_MODE=true
       ;;
+    --ssl)
+      SSL_MODE=true
+        ;;
     --sso)
       SSO_MODE=true
       ;;
@@ -119,8 +129,13 @@ done
 
 docker_common
 
+# Configure certificates if required
+if [[ ${SSL_MODE} == true ]]; then
+    . "${SCRIPT_DIR}/configure-certificates.sh"
+fi
+
 echo "Deploying Eclipse Kapua version $IMAGE_VERSION..."
-docker_compose ${DEBUG_MODE} ${JMX_MODE} ${DEV_MODE} ${SSO_MODE} ${SWAGGER} || {
+docker_compose ${DEBUG_MODE} ${JMX_MODE} ${DEV_MODE} ${SSL_MODE} ${SSO_MODE} ${SWAGGER} || {
     echo "Deploying Eclipse Kapua... ERROR!"
     exit 1
 }
