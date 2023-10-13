@@ -152,7 +152,7 @@ Following ports will be opened
 
 ### Enabling JMX mode
 
-Containers can be accessed via JMX. For example, you can use it to analyse the JVM using jConsole. 
+Containers can be accessed via JMX. For example, you can use it to analyse the JVM using jConsole.
 To enable it, provide the `--jmx` option.
 
 Example:
@@ -209,9 +209,9 @@ By adding this option Kapua will be deployed with an instance of [Keycloak](http
 
 The Keycloack instance can be accessed at the following endpoints:
 
-| Application/Service | Endpoint       | User  | Password | Notes             |
-|---------------------|----------------|-------|----------|-------------------|
-| Keycloak Console    | localhost:9090 | admin | admin    |                   |
+| Application/Service | Endpoint       | User  | Password | Notes |
+|---------------------|----------------|-------|----------|-------|
+| Keycloak Console    | localhost:9090 | admin | admin    |       |
 
 This option is not available on Windows OS at the moment.
 
@@ -219,12 +219,12 @@ This option is not available on Windows OS at the moment.
 
 ### Enabling SSL
 
-To enable SSL in the Jetty (Console and REST API) and Broker containers, set the `KAPUA_DISABLE_SSL` environment
-variable to `false`, and other variables according to the desired behavior, **before** running the `docker-deploy.sh`
+To enable SSL in the Jetty (Console and REST API) and Broker containers, set the `KAPUA_SSL_ENABLE` environment
+variable to `true`, and other variables according to the desired behavior, **before** running the `docker-deploy.sh`
 script:
 
 ```bash
-export KAPUA_DISABLE_SSL=false
+export KAPUA_SSL_ENABLE=true
 ```
 
 Additionally, the SSL can be configured in two ways: providing a certificate, a private key and an optional CA chain, or

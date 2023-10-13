@@ -39,7 +39,7 @@ services:
       - events-broker
     environment:
       - CRYPTO_SECRET_KEY
-      - KAPUA_DISABLE_SSL
+      - KAPUA_SSL_ENABLE
       - KAPUA_DISABLE_DATASTORE
       - KAPUA_CRT
       - KAPUA_CA
@@ -98,8 +98,8 @@ services:
       - message-broker
     environment:
       - CRYPTO_SECRET_KEY
-      - KAPUA_DISABLE_SSL
       - KAPUA_DISABLE_DATASTORE
+      - KAPUA_SSL_ENABLE
       - KAPUA_CA
       - KAPUA_CRT
       - KAPUA_KEY
@@ -132,8 +132,8 @@ services:
     environment:
       - API_CORS_ORIGINS_ALLOWED
       - CRYPTO_SECRET_KEY
-      - KAPUA_DISABLE_SSL
       - KAPUA_DISABLE_DATASTORE
+      - KAPUA_SSL_ENABLE
       - KAPUA_CA
       - KAPUA_CRT
       - KAPUA_KEY
@@ -153,8 +153,8 @@ services:
       - message-broker
     environment:
       - CRYPTO_SECRET_KEY
-      - KAPUA_DISABLE_SSL
       - KAPUA_DISABLE_DATASTORE
+      - KAPUA_SSL_ENABLE
       - KAPUA_CA
       - KAPUA_CRT
       - KAPUA_KEY
