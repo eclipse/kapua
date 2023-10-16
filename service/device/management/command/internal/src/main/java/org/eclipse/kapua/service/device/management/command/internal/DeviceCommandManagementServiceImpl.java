@@ -111,7 +111,11 @@ public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagement
         try {
             responseMessage = commandDeviceCallBuilder.send();
         } catch (Exception e) {
-            LOG.error("Error while executing DeviceCommand {} with arguments {} for Device {}. Error: {}", commandInput.getCommand(), String.join(" ", commandInput.getArguments()), deviceId, e.getMessage(), e);
+            if (commandInput.getArguments() != null) {
+                LOG.error("Error while executing DeviceCommand {} with arguments {} for Device {}. Error: {}", commandInput.getCommand(), String.join(" ", commandInput.getArguments()), deviceId, e.getMessage(), e);
+            } else {
+                LOG.error("Error while executing DeviceCommand {} for Device {}. Error: {}", commandInput.getCommand(), deviceId, e.getMessage(), e);
+            }
             throw e;
         }
 
