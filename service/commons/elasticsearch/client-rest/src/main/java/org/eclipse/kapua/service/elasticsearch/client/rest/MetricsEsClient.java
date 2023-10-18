@@ -18,7 +18,9 @@ import org.eclipse.kapua.commons.metric.MetricsService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
+@Singleton
 public class MetricsEsClient {
 
     public static final String REST_CLIENT = "rest_client";

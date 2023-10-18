@@ -17,7 +17,9 @@ import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
+@Singleton
 public class AuthLoginMetric {
 
     private static final String CONNECT = "connect";

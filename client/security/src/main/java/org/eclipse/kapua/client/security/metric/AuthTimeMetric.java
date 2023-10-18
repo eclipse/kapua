@@ -18,7 +18,9 @@ import org.eclipse.kapua.commons.metric.MetricsService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
+@Singleton
 public class AuthTimeMetric {
 
     private static final String ADD_CONNECTION = "add_connection";

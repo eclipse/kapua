@@ -19,7 +19,9 @@ import org.eclipse.kapua.commons.metric.MetricsService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
+@Singleton
 public class LoginMetric {
 
     public static final String COMPONENT_LOGIN = "login";

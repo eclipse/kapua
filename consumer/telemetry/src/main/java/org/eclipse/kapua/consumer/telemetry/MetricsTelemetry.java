@@ -17,7 +17,9 @@ import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class MetricsTelemetry {
 
     public static final String CONSUMER_TELEMETRY = "consumer_telemetry";

@@ -21,7 +21,9 @@ import org.eclipse.kapua.commons.metric.MetricsService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
+@Singleton
 public class MetricsSecurityPlugin {
 
     private static final String CONNECTION = "connection";

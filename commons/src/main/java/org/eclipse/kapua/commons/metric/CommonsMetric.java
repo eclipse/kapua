@@ -19,10 +19,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 /**
  * Helper class to handle commons metrics.
  */
+@Singleton
 public class CommonsMetric {
 
     private static final Logger logger = LoggerFactory.getLogger(CommonsMetric.class);

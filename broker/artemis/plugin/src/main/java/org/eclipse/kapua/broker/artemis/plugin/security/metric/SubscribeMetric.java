@@ -19,7 +19,9 @@ import org.eclipse.kapua.commons.metric.MetricsService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
+@Singleton
 public class SubscribeMetric {
 
     public static final String SUBSCRIBE = "subscribe";

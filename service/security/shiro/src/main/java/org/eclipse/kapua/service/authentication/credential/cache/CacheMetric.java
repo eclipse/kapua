@@ -21,7 +21,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
+@Singleton
 public class CacheMetric {
 
     private static final Logger logger = LoggerFactory.getLogger(CacheMetric.class);
