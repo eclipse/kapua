@@ -12,20 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
-import org.apache.shiro.authc.AuthenticationToken;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
+import org.eclipse.kapua.service.authentication.shiro.realm.KapuaAuthenticationToken;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 /**
  * {@link ApiKeyCredentials} implementation.
  * <p>
- * This implements also {@link AuthenticationToken} to allow usage in Shiro.
+ * This implements also {@link KapuaAuthenticationToken} to allow usage in Apache Shiro.
  *
  * @since 1.0.0
  */
-public class ApiKeyCredentialsImpl implements ApiKeyCredentials, AuthenticationToken {
+public class ApiKeyCredentialsImpl implements ApiKeyCredentials, KapuaAuthenticationToken {
 
     private static final long serialVersionUID = -5920944517814926028L;
 
@@ -34,7 +34,7 @@ public class ApiKeyCredentialsImpl implements ApiKeyCredentials, AuthenticationT
     /**
      * Constructor.
      *
-     * @param apiKey The crential key.
+     * @param apiKey The Api Key.
      * @since 1.0.0
      */
     public ApiKeyCredentialsImpl(String apiKey) {
@@ -71,19 +71,8 @@ public class ApiKeyCredentialsImpl implements ApiKeyCredentials, AuthenticationT
         return getApiKey();
     }
 
-    /**
-     * Parses a {@link ApiKeyCredentials} into a {@link ApiKeyCredentialsImpl}.
-     *
-     * @param apiKeyCredentials The {@link ApiKeyCredentials} to parse.
-     * @return A instance of {@link ApiKeyCredentialsImpl}.
-     * @since 1.5.0
-     */
-    public static ApiKeyCredentialsImpl parse(@Nullable ApiKeyCredentials apiKeyCredentials) {
-        return apiKeyCredentials != null ?
-                (apiKeyCredentials instanceof ApiKeyCredentialsImpl ?
-                        (ApiKeyCredentialsImpl) apiKeyCredentials :
-                        new ApiKeyCredentialsImpl(apiKeyCredentials))
-                : null;
+    @Override
+    public Optional<String> getOpenIdToken() {
+        return Optional.empty();
     }
-
 }

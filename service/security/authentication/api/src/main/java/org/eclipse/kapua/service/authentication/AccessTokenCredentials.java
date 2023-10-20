@@ -12,32 +12,36 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
+import org.eclipse.kapua.service.authentication.token.AccessToken;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Username and password {@link AuthenticationCredentials} definition.
+ * {@link AccessToken} {@link AuthenticationCredentials} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "accessTokenCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "tokenId" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newAccessTokenCredentials")
+@XmlType(factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newAccessTokenCredentials")
 public interface AccessTokenCredentials extends SessionCredentials {
 
     /**
-     * Return the token id
+     * Gets the session JWT to authenticate.
      *
-     * @return
+     * @return The session JWT to authenticate.
+     * @since 1.0.0
      */
     String getTokenId();
 
     /**
-     * Set the token id
+     * Sets the session JWT to authenticate.
      *
-     * @param tokenId
+     * @param tokenId The session JWT to authenticate.
+     * @since 1.0.0
      */
     void setTokenId(String tokenId);
 }

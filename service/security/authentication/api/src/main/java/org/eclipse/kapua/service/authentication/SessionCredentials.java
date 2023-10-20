@@ -12,6 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
+/**
+ * Session {@link AuthenticationCredentials}.
+ * <p>
+ * {@link AuthenticationCredentials} tha can be used to continue a session previously started.
+ *
+ * @since 1.0.0
+ */
 public interface SessionCredentials extends AuthenticationCredentials {
 
 }

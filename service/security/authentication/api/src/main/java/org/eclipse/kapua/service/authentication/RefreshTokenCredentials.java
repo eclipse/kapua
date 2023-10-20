@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
+import org.eclipse.kapua.service.authentication.token.AccessToken;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -19,42 +21,46 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Api key {@link LoginCredentials} definition.
+ * {@link AccessToken#getRefreshToken()} {@link LoginCredentials} definition.
  *
  * @since 1.0
  */
 @XmlRootElement(name = "refreshTokenCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "tokenId", "refreshToken" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newRefreshTokenCredentials")
+@XmlType(factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newRefreshTokenCredentials")
 public interface RefreshTokenCredentials extends LoginCredentials {
 
     /**
-     * return the token id
+     * Gets the {@link AccessToken#getTokenId()} to authenticate.
      *
-     * @return
+     * @return AccessToken The {@link AccessToken#getTokenId()} to authenticate.
+     * @since 1.0.0
      */
     @XmlElement(name = "tokenId")
     String getTokenId();
 
     /**
-     * Set the token id
+     * Set the {@link AccessToken#getTokenId()} to authenticate.
      *
-     * @param tokenId
+     * @param tokenId The {@link AccessToken#getTokenId()} to authenticate.
+     * @since 1.0.0
      */
     void setTokenId(String tokenId);
 
     /**
-     * return the refresh token
+     * Gets the AccessToken#getRefreshToken()} to authenticate.
      *
-     * @return
+     * @return The {@link AccessToken#getRefreshToken()} to authenticate.
+     * @since 1.0.0
      */
     @XmlElement(name = "refreshToken")
     String getRefreshToken();
 
     /**
-     * Set the refresh token
+     * Set the {@link AccessToken#getRefreshToken()} to authenticate.
      *
-     * @param refreshToken
+     * @param refreshToken The AccessToken#getRefreshToken()} to authenticate.
+     * @since 1.0.0
      */
     void setRefreshToken(String refreshToken);
 }

@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
@@ -36,10 +35,8 @@ import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.KapuaDelayUtil;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
-import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
-import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
+import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
-import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.SessionCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
@@ -52,6 +49,8 @@ import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.MfaRequiredException;
+import org.eclipse.kapua.service.authentication.shiro.realm.CredentialsHandler;
+import org.eclipse.kapua.service.authentication.shiro.realm.KapuaAuthenticationToken;
 import org.eclipse.kapua.service.authentication.shiro.session.ShiroSessionKeys;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
@@ -101,6 +100,7 @@ import org.slf4j.MDC;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -132,6 +132,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     private final UserService userService;
 
+    private final Set<CredentialsHandler> credentialsHandlers;
+
     @Inject
     public AuthenticationServiceShiroImpl(
             CredentialService credentialService,
@@ -147,7 +149,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             RolePermissionFactory rolePermissionFactory,
             AccessPermissionService accessPermissionService,
             AccessPermissionFactory accessPermissionFactory,
-            UserService userService) {
+            UserService userService,
+            Set<CredentialsHandler> credentialsHandlers) {
         this.credentialService = credentialService;
         this.mfaOptionService = mfaOptionService;
         this.accessTokenService = accessTokenService;
@@ -162,6 +165,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         this.accessPermissionService = accessPermissionService;
         this.accessPermissionFactory = accessPermissionFactory;
         this.userService = userService;
+        this.credentialsHandlers = credentialsHandlers;
     }
 
     @Override
@@ -184,38 +188,10 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
         // Check subject
         checkCurrentSubjectNotAuthenticated();
+
         // Parse login credentials
-        AuthenticationToken shiroAuthenticationToken;
-        String openIDidToken = null;
-        if (loginCredentials instanceof UsernamePasswordCredentials) {
-            UsernamePasswordCredentialsImpl usernamePasswordCredentials = UsernamePasswordCredentialsImpl.parse((UsernamePasswordCredentials) loginCredentials);
+        KapuaAuthenticationToken shiroAuthenticationToken = doMapToShiro(loginCredentials);
 
-            if (Strings.isNullOrEmpty(usernamePasswordCredentials.getUsername()) ||
-                    Strings.isNullOrEmpty(usernamePasswordCredentials.getPassword())) {
-                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
-            }
-
-            shiroAuthenticationToken = usernamePasswordCredentials;
-        } else if (loginCredentials instanceof ApiKeyCredentials) {
-            ApiKeyCredentialsImpl apiKeyCredentials = ApiKeyCredentialsImpl.parse((ApiKeyCredentials) loginCredentials);
-
-            if (Strings.isNullOrEmpty(apiKeyCredentials.getApiKey())) {
-                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
-            }
-
-            shiroAuthenticationToken = apiKeyCredentials;
-        } else if (loginCredentials instanceof JwtCredentials) {
-            JwtCredentialsImpl jwtCredentials = JwtCredentialsImpl.parse((JwtCredentials) loginCredentials);
-            openIDidToken = jwtCredentials.getIdToken();
-
-            if (Strings.isNullOrEmpty(openIDidToken)) {
-                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
-            }
-
-            shiroAuthenticationToken = jwtCredentials;
-        } else {
-            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED);
-        }
         // Login the user
         AccessToken accessToken = null;
         Subject currentUser = null;
@@ -231,6 +207,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             accessToken = createAccessToken(shiroSession);
 
             // Establish session
+            String openIDidToken = shiroAuthenticationToken.getOpenIdToken().orElse(null);
             establishSession(shiroSubject, accessToken, openIDidToken);
 
             // Create trust key if required
@@ -253,19 +230,10 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
         // Check subject
         checkCurrentSubjectNotAuthenticated();
+
         // Parse login credentials
-        AuthenticationToken shiroAuthenticationToken;
-        if (sessionCredentials instanceof AccessTokenCredentials) {
-            AccessTokenCredentialsImpl accessTokenCredentials = AccessTokenCredentialsImpl.parse((AccessTokenCredentials) sessionCredentials);
+        AuthenticationToken shiroAuthenticationToken = doMapToShiro(sessionCredentials);
 
-            if (Strings.isNullOrEmpty(accessTokenCredentials.getTokenId())) {
-                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_SESSION_CREDENTIALS);
-            }
-
-            shiroAuthenticationToken = accessTokenCredentials;
-        } else {
-            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED);
-        }
         // Login the user
         Subject currentUser = null;
         try {
@@ -307,15 +275,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     @Override
     public void verifyCredentials(LoginCredentials loginCredentials) throws KapuaException {
-        // Parse login credentials
-        AuthenticationToken shiroAuthenticationToken;
-        if (loginCredentials instanceof UsernamePasswordCredentials) {
-            UsernamePasswordCredentials usernamePasswordCredentials = (UsernamePasswordCredentials) loginCredentials;
-            shiroAuthenticationToken = new UsernamePasswordCredentialsImpl(usernamePasswordCredentials.getUsername(), usernamePasswordCredentials.getPassword());
-            ((UsernamePasswordCredentials) shiroAuthenticationToken).setAuthenticationCode(usernamePasswordCredentials.getAuthenticationCode());
-        } else {
-            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED);
-        }
+        AuthenticationToken shiroAuthenticationToken = doMapToShiro(loginCredentials);
+
         // Login the user
         Subject verifySubject = null;
         try {
@@ -428,20 +389,25 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     @Override
     public LoginInfo getLoginInfo() throws KapuaException {
         LoginInfo loginInfo = accessTokenFactory.newLoginInfo();
+
         // AccessToken
         AccessToken accessToken = KapuaSecurityUtils.getSession().getAccessToken();
         loginInfo.setAccessToken(accessToken);
+
         // AccessInfo
         AccessInfo accessInfo = KapuaSecurityUtils.doPrivileged(() -> accessInfoService.findByUserId(accessToken.getScopeId(), accessToken.getUserId()));
+
         // AccessRole
         AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(accessToken.getScopeId());
         accessRoleQuery.setPredicate(accessRoleQuery.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfo.getId()));
         AccessRoleListResult accessRoleListResult = KapuaSecurityUtils.doPrivileged(() -> accessRoleService.query(accessRoleQuery));
+
         // RolePermission
         RolePermissionQuery rolePermissionQuery = rolePermissionFactory.newQuery(accessToken.getScopeId());
         rolePermissionQuery.setPredicate(rolePermissionQuery.attributePredicate(RolePermissionAttributes.ROLE_ID, accessRoleListResult.getItems().stream().map(AccessRole::getRoleId).collect(Collectors.toList())));
         RolePermissionListResult rolePermissions = KapuaSecurityUtils.doPrivileged(() -> rolePermissionService.query(rolePermissionQuery));
         loginInfo.setRolePermission(Sets.newHashSet(rolePermissions.getItems()));
+
         // AccessPermission
         AccessPermissionQuery accessPermissionQuery = accessPermissionFactory.newQuery(accessToken.getScopeId());
         accessPermissionQuery.setPredicate(accessPermissionQuery.attributePredicate(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfo.getId()));
@@ -462,7 +428,10 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
         return session.isTrustedMode() || SecurityUtils.getSubject().isAuthenticated();
     }
+
+    //
     // Private Methods
+    //
 
     /**
      * Checks if the Shiro {@link Subject} is authenticated or not.
@@ -479,6 +448,25 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             LOG.info("Thread already authenticated for thread '{}' - '{}' - '{}'", Thread.currentThread().getId(), Thread.currentThread().getName(), currentUser);
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.SUBJECT_ALREADY_LOGGED);
         }
+    }
+
+    /**
+     * Converts am instance of {@link AuthenticationCredentials} to the compatible {@link KapuaAuthenticationToken} to be used in Apache Shiro.
+     *
+     * @param authenticationCredentials The {@link AuthenticationCredentials} to convert
+     * @return The converted {@link KapuaAuthenticationToken}.
+     * @throws KapuaAuthenticationException if the instance of {@link AuthenticationCredentials} cannot be handled or is are invalid.
+     * @since 2.0.0
+     */
+    private KapuaAuthenticationToken doMapToShiro(AuthenticationCredentials authenticationCredentials) throws KapuaAuthenticationException {
+        // Parse login credentials
+        CredentialsHandler credentialsHandler = credentialsHandlers
+                .stream()
+                .filter(ch -> ch.canProcess(authenticationCredentials))
+                .findFirst()
+                .orElseThrow(() -> new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED));
+
+        return credentialsHandler.mapToShiro(authenticationCredentials);
     }
 
     private void handleTokenLoginException(ShiroException se, Subject currentSubject, AuthenticationToken authenticationToken) throws KapuaException {
@@ -604,8 +592,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     }
 
     private String generateJwt(KapuaEid scopeId, KapuaEid userId, Date now, long ttl) {
-
         KapuaAuthenticationSetting settings = KapuaAuthenticationSetting.getInstance();
+
         // Build claims
         JwtClaims claims = new JwtClaims();
 

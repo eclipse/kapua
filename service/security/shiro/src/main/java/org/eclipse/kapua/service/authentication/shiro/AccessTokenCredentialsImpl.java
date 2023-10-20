@@ -12,21 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
-import org.apache.shiro.authc.AuthenticationToken;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
+import org.eclipse.kapua.service.authentication.shiro.realm.KapuaAuthenticationToken;
 
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 /**
  * {@link AccessTokenCredentials} implementation.
  * <p>
- * This implements also {@link AuthenticationToken} to allow usage in Shiro.
+ * This implements also {@link KapuaAuthenticationToken} to allow usage in Apache Shiro.
  *
  * @since 1.0.0
  */
-public class AccessTokenCredentialsImpl implements AccessTokenCredentials, AuthenticationToken {
+public class AccessTokenCredentialsImpl implements AccessTokenCredentials, KapuaAuthenticationToken {
 
     private static final long serialVersionUID = -7549848672967689716L;
 
@@ -35,7 +34,7 @@ public class AccessTokenCredentialsImpl implements AccessTokenCredentials, Authe
     /**
      * Constructor.
      *
-     * @param tokenId The credential TokenId
+     * @param tokenId The credential JWT
      * @since 1.0.0
      */
     public AccessTokenCredentialsImpl(@NotNull String tokenId) {
@@ -72,19 +71,9 @@ public class AccessTokenCredentialsImpl implements AccessTokenCredentials, Authe
         return getTokenId();
     }
 
-    /**
-     * Parses a {@link AccessTokenCredentials} into a {@link AccessTokenCredentialsImpl}.
-     *
-     * @param accessTokenCredentials The {@link AccessTokenCredentials} to parse.
-     * @return A instance of {@link AccessTokenCredentialsImpl}.
-     * @since 1.5.0
-     */
-    public static AccessTokenCredentialsImpl parse(@Nullable AccessTokenCredentials accessTokenCredentials) {
-        return accessTokenCredentials != null ?
-                (accessTokenCredentials instanceof AccessTokenCredentialsImpl ?
-                        (AccessTokenCredentialsImpl) accessTokenCredentials :
-                        new AccessTokenCredentialsImpl(accessTokenCredentials))
-                : null;
+    @Override
+    public Optional<String> getOpenIdToken() {
+        return Optional.empty();
     }
 }
 

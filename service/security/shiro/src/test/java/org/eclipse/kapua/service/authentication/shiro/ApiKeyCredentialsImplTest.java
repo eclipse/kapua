@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authentication.shiro;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
+import org.eclipse.kapua.service.authentication.shiro.realm.model.ApiKeyCredentialsAnotherImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -39,39 +40,9 @@ public class ApiKeyCredentialsImplTest {
 
     @Test
     public void apiKeyCredentialsImplCloneConstructorAnotherTest() {
-        ApiKeyCredentials first = new ApiKwyCredentialsAnother("anApiKey");
+        ApiKeyCredentials first = new ApiKeyCredentialsAnotherImpl("anApiKey");
 
         ApiKeyCredentialsImpl second = new ApiKeyCredentialsImpl(first);
-
-        Assert.assertNotEquals("ApiKeyCredentialImpl", first, second);
-        Assert.assertEquals("ApiKeyCredential.apiKey", first.getApiKey(), second.getApiKey());
-    }
-
-    @Test
-    public void apiKeyCredentialsImplParseNullTest() {
-        ApiKeyCredentialsImpl first = null;
-
-        ApiKeyCredentialsImpl second = ApiKeyCredentialsImpl.parse(null);
-
-        Assert.assertNull("Parsed ApiKeyCredentialsImpl", second);
-        Assert.assertEquals("ApiKeyCredentialImpl", first, second);
-    }
-
-    @Test
-    public void apiKeyCredentialsImplParseImplTest() {
-        ApiKeyCredentialsImpl first = new ApiKeyCredentialsImpl("anApiKey");
-
-        ApiKeyCredentialsImpl second = ApiKeyCredentialsImpl.parse(first);
-
-        Assert.assertEquals("ApiKeyCredentialImpl", first, second);
-        Assert.assertEquals("ApiKeyCredential.apiKey", first.getApiKey(), second.getApiKey());
-    }
-
-    @Test
-    public void apiKeyCredentialsImplParseAnotherTest() {
-        ApiKeyCredentials first = new ApiKwyCredentialsAnother("anApiKey");
-
-        ApiKeyCredentialsImpl second = ApiKeyCredentialsImpl.parse(first);
 
         Assert.assertNotEquals("ApiKeyCredentialImpl", first, second);
         Assert.assertEquals("ApiKeyCredential.apiKey", first.getApiKey(), second.getApiKey());
@@ -100,23 +71,5 @@ public class ApiKeyCredentialsImplTest {
             Assert.assertEquals("Expected and actual values should be the same.", newApiKey, apiKeyCredentialsImpl.getPrincipal());
             Assert.assertEquals("Expected and actual values should be the same.", newApiKey, apiKeyCredentialsImpl.getCredentials());
         }
-    }
-}
-
-class ApiKwyCredentialsAnother implements ApiKeyCredentials {
-    private String apiKey;
-
-    public ApiKwyCredentialsAnother(String apiKey) {
-        this.apiKey = apiKey;
-    }
-
-    @Override
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    @Override
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
     }
 }

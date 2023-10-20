@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authentication.shiro;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
+import org.eclipse.kapua.service.authentication.shiro.realm.model.JwtCredentialsAnotherImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +54,7 @@ public class JwtCredentialsTest {
 
     @Test
     public void jwtCredentialsImplCloneConstructorAnotherTest() {
-        JwtCredentials first = new JwtCredentialsAnother("aJwt", "anIdToken");
+        JwtCredentials first = new JwtCredentialsAnotherImpl("aJwt", "anIdToken");
 
         JwtCredentialsImpl second = new JwtCredentialsImpl(first);
 
@@ -61,39 +62,6 @@ public class JwtCredentialsTest {
         Assert.assertEquals("JwtCredential.accessToken", first.getAccessToken(), second.getAccessToken());
         Assert.assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
     }
-
-    @Test
-    public void jwtCredentialsImplParseNullTest() {
-        JwtCredentialsImpl first = null;
-
-        JwtCredentialsImpl second = JwtCredentialsImpl.parse(null);
-
-        Assert.assertNull("Parsed JwtCredentialsImpl", second);
-        Assert.assertEquals("JwtCredentialImpl", first, second);
-    }
-
-    @Test
-    public void jwtCredentialsImplParseImplTest() {
-        JwtCredentialsImpl first = new JwtCredentialsImpl("aJwt", "anIdToken");
-
-        JwtCredentialsImpl second = JwtCredentialsImpl.parse(first);
-
-        Assert.assertEquals("JwtCredentialImpl", first, second);
-        Assert.assertEquals("JwtCredential.accessToken", first.getAccessToken(), second.getAccessToken());
-        Assert.assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
-    }
-
-    @Test
-    public void jwtCredentialsImplParseAnotherTest() {
-        JwtCredentials first = new JwtCredentialsAnother("aJwt", "anIdToken");
-
-        JwtCredentialsImpl second = JwtCredentialsImpl.parse(first);
-
-        Assert.assertNotEquals("JwtCredentialImpl", first, second);
-        Assert.assertEquals("JwtCredential.accessToken", first.getAccessToken(), second.getAccessToken());
-        Assert.assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
-    }
-
 
     @Test
     public void jwtCredentialsImplTest() {
@@ -124,35 +92,5 @@ public class JwtCredentialsTest {
             jwtCredentialsImpl.setIdToken(newIdToken);
             Assert.assertEquals("Expected and actual values should be the same.", newIdToken, jwtCredentialsImpl.getIdToken());
         }
-    }
-}
-
-class JwtCredentialsAnother implements JwtCredentials {
-    private String accessToken;
-    private String idToken;
-
-    public JwtCredentialsAnother(String accessToken, String idToken) {
-        this.accessToken = accessToken;
-        this.idToken = idToken;
-    }
-
-    @Override
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    @Override
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    @Override
-    public String getIdToken() {
-        return idToken;
-    }
-
-    @Override
-    public void setIdToken(String idToken) {
-        this.idToken = idToken;
     }
 }

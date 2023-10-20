@@ -21,25 +21,27 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Api key {@link LoginCredentials} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "apiKeyCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "apiKey" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newApiKeyCredentials")
+@XmlType(factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newApiKeyCredentials")
 public interface ApiKeyCredentials extends LoginCredentials {
 
     /**
-     * return the api key
+     * Gets the Api Key to authenticate.
      *
-     * @return
+     * @return The Api Key to authenticate.
+     * @since 1.0.0
      */
     @XmlElement(name = "apiKey")
     String getApiKey();
 
     /**
-     * Set the api key
+     * Sets the Api Key to authenticate.
      *
-     * @param apiKey
+     * @param apiKey The Api Key to authenticate.
+     * @since 1.0.0
      */
     void setApiKey(String apiKey);
 }

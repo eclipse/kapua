@@ -12,21 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
-import org.apache.shiro.authc.AuthenticationToken;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import org.eclipse.kapua.service.authentication.JwtCredentials;
+import org.eclipse.kapua.service.authentication.shiro.realm.KapuaAuthenticationToken;
 
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 /**
  * {@link JwtCredentials} implementation.
  * <p>
- * This implements also {@link AuthenticationToken} to allow usage in Shiro.
+ * This implements also {@link KapuaAuthenticationToken} to allow usage in Apache Shiro.
  *
  * @since 1.0.0
  */
-public class JwtCredentialsImpl implements JwtCredentials, AuthenticationToken {
+public class JwtCredentialsImpl implements JwtCredentials, KapuaAuthenticationToken {
 
     private static final long serialVersionUID = -5920944517814926028L;
 
@@ -86,18 +85,8 @@ public class JwtCredentialsImpl implements JwtCredentials, AuthenticationToken {
         return getAccessToken();
     }
 
-    /**
-     * Parses a {@link JwtCredentials} into a {@link JwtCredentialsImpl}.
-     *
-     * @param jwtCredentials The {@link JwtCredentials} to parse.
-     * @return A instance of {@link JwtCredentialsImpl}.
-     * @since 1.5.0
-     */
-    public static JwtCredentialsImpl parse(@Nullable JwtCredentials jwtCredentials) {
-        return jwtCredentials != null ?
-                (jwtCredentials instanceof JwtCredentialsImpl ?
-                        (JwtCredentialsImpl) jwtCredentials :
-                        new JwtCredentialsImpl(jwtCredentials))
-                : null;
+    @Override
+    public Optional<String> getOpenIdToken() {
+        return Optional.of(getIdToken());
     }
 }
