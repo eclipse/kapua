@@ -58,8 +58,10 @@ docker_compose() {
     # SSL
     if [[ "$4" == true ]]; then
       echo "SSL enabled!"
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.broker-ssl.yml")
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.console-ssl.yml")
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.rest-ssl.yml")
     fi
-    export KAPUA_SSL_ENABLE=$4
 
     # SSO Mode
     if [[ "$5" == true ]]; then
