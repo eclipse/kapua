@@ -111,25 +111,10 @@
         </security-settings>
 
         <address-settings>
-            <!-- if you define auto-create on certain queues, management has to be auto-create -->
-            <address-setting match="activemq.management#">
-                <dead-letter-address>DLQ</dead-letter-address>
-                <expiry-address>ExpiryQueue</expiry-address>
-                <redelivery-delay>0</redelivery-delay>
-                <!-- with -1 only the global-max-size is in use for limiting -->
-                <max-size-bytes>-1</max-size-bytes>
-                <message-counter-history-day-limit>10</message-counter-history-day-limit>
-                <address-full-policy>PAGE</address-full-policy>
-                <auto-create-queues>true</auto-create-queues>
-                <auto-create-addresses>true</auto-create-addresses>
-                <auto-create-jms-queues>true</auto-create-jms-queues>
-                <auto-create-jms-topics>true</auto-create-jms-topics>
-                <default-address-routing-type>ANYCAST</default-address-routing-type>
-            </address-setting>
             <!--default for catch all-->
             <address-setting match="#">
-                <dead-letter-address>DLQ</dead-letter-address>
-                <expiry-address>ExpiryQueue</expiry-address>
+                <dead-letter-address>dlq</dead-letter-address>
+                <expiry-address>expired</expiry-address>
                 <redelivery-delay>0</redelivery-delay>
                 <!-- with -1 only the global-max-size is in use for limiting -->
                 <max-size-bytes>-1</max-size-bytes>
@@ -144,14 +129,14 @@
         </address-settings>
 
         <addresses>
-            <address name="DLQ">
+            <address name="dlq">
                 <anycast>
-                    <queue name="DLQ"/>
+                    <queue name="dlq"/>
                 </anycast>
             </address>
-            <address name="ExpiryQueue">
+            <address name="expired">
                 <anycast>
-                    <queue name="ExpiryQueue"/>
+                    <queue name="expired"/>
                 </anycast>
             </address>
         </addresses>

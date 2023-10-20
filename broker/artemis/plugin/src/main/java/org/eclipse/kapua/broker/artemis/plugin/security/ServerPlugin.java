@@ -76,9 +76,10 @@ public class ServerPlugin implements ActiveMQServerPlugin {
 
     public static enum MessageType {
 
-        ActiveMq("AMQ"),
+        Broker("BRK"),
         Control("CTR"),
-        Telemetry("TEL");
+        Telemetry("TEL"),
+        System("SYS");
 
         private String asUrl;
 
@@ -245,10 +246,15 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     private String getMessgeType(String address) {
         if (address!=null) {
             if (address.startsWith("active")) {
-                return MessageType.ActiveMq.getAsUrl();
+                return MessageType.Broker.getAsUrl();
             }
             else if (address.startsWith("$")) {
-                return MessageType.Control.getAsUrl();
+                if (address.startsWith("$SYS")) {
+                    return MessageType.System.getAsUrl();
+                }
+                else {
+                    return MessageType.Control.getAsUrl();
+                }
             }
             else {
                 return MessageType.Telemetry.getAsUrl();
