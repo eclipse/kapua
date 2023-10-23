@@ -40,8 +40,8 @@ public class ServiceClientMessagingImpl implements ServiceClient {
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceClientMessagingImpl.class);
 
-    public static final String REQUEST_QUEUE = "auth_request";
-    public static final String RESPONSE_QUEUE_PATTERN = "auth_response_%s_%s";
+    public static final String REQUEST_QUEUE = "$SYS/svc/ath/request";
+    public static final String RESPONSE_QUEUE_PATTERN = "$SYS/svc/ath/response/%s_%s";
 
     private static final int TIMEOUT = 5000;
 
@@ -49,7 +49,7 @@ public class ServiceClientMessagingImpl implements ServiceClient {
 
     public ServiceClientMessagingImpl(String clusterName, String requester) {
         //TODO change configuration (use service event broker for now)
-        String clientId = "auth-" + UUID.randomUUID().toString();
+        String clientId = "svc-ath-" + UUID.randomUUID().toString();
         String host = SystemSetting.getInstance().getString(SystemSettingKey.SERVICE_BUS_HOST, "events-broker");
         int port = SystemSetting.getInstance().getInt(SystemSettingKey.SERVICE_BUS_PORT, 5672);
         String username = SystemSetting.getInstance().getString(SystemSettingKey.SERVICE_BUS_USERNAME, "username");

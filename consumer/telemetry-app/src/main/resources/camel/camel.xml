@@ -25,7 +25,7 @@
         </pipeline>
     </route>
     <route id="dlq">
-        <from uri="amqp:queue:$SYS/dlq?selector=KAPUA_MESSAGE_TYPE='SYS'&amp;asyncConsumer=true&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
+        <from uri="amqp:queue:$SYS/dlq/default?selector=KAPUA_MESSAGE_TYPE='SYS'&amp;asyncConsumer=true&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
         <pipeline>
             <bean ref="kapuaCamelFilter" method="bindSession"/>
             <to uri="bean:errorMessageListener?method=processMessage"/>
