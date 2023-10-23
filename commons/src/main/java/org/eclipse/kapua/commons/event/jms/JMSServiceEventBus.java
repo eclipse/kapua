@@ -299,7 +299,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
         synchronized void subscribe(Subscription subscription)
                 throws ServiceEventBusException {
             try {
-                String subscriptionStr = String.format("events.%s", subscription.getAddress());
+                String subscriptionStr = String.format("$SYS/svc/evt/%s", subscription.getAddress());
                 // create a bunch of sessions to allow parallel event processing
                 LOGGER.info("Subscribing to address {} - name {} ...", subscriptionStr, subscription.getName());
                 for (int i = 0; i < CONSUMER_POOL_SIZE; i++) {
@@ -345,7 +345,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
             private MessageProducer jmsProducer;
 
             public Sender(Connection jmsConnection, String address) throws JMSException {
-                address = String.format("events.%s", address);
+                address = String.format("$SYS/svc/evt/%s", address);
                 jmsSession = jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
                 Topic jmsTopic = jmsSession.createTopic(address);
                 jmsProducer = jmsSession.createProducer(jmsTopic);
