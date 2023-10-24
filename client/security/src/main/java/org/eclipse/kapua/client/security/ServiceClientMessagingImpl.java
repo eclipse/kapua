@@ -40,8 +40,8 @@ public class ServiceClientMessagingImpl implements ServiceClient {
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceClientMessagingImpl.class);
 
-    public static final String REQUEST_QUEUE = "$SYS/svc/ath/request";
-    public static final String RESPONSE_QUEUE_PATTERN = "$SYS/svc/ath/response/%s_%s";
+    public static final String REQUEST_QUEUE = "$SYS/SVC/ath/request";
+    public static final String RESPONSE_QUEUE_PATTERN = "$SYS/SVC/ath/response/%s_%s";
 
     private static final int TIMEOUT = 5000;
 

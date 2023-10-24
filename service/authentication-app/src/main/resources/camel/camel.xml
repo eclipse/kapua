@@ -13,7 +13,7 @@
  -->
 <routes xmlns="http://camel.apache.org/schema/spring">
     <route errorHandlerRef="authRouteMessageErrorHandler" id="authRoute">
-        <from uri="amqp:queue:$SYS/svc/ath/request?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
+        <from uri="amqp:queue:$SYS/SVC/ath/request?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
         <pipeline>
             <choice id="main">
                 <when id="doLogin">
@@ -32,17 +32,17 @@
                     <bean ref="authenticationServiceListener" method="getEntity"/>
                 </when>
             </choice>
-            <toD uri="amqp:queue:$SYS/svc/ath/response/${header.cluster_name}_${header.requester}"/>
+            <toD uri="amqp:queue:$SYS/SVC/ath/response/${header.cluster_name}_${header.requester}"/>
         </pipeline>
     </route>
     <route id="authDlq">
-        <from uri="amqp:queue:$SYS/svc/dlq/default?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=1&amp;maxConcurrentConsumers=2"/>
+        <from uri="amqp:queue:$SYS/SVC/dlq/default?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=1&amp;maxConcurrentConsumers=2"/>
         <pipeline>
             <to uri="bean:errorMessageListener?method=processMessage"/>
         </pipeline>
     </route>
     <route id="expired">
-        <from uri="amqp:queue:$SYS/svc/dlq/expired?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=1&amp;maxConcurrentConsumers=2"/>
+        <from uri="amqp:queue:$SYS/SVC/dlq/expired?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=1&amp;maxConcurrentConsumers=2"/>
         <pipeline>
             <to uri="bean:errorMessageListener?method=processMessage"/>
         </pipeline>

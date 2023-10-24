@@ -112,8 +112,8 @@
 
         <address-settings>
             <address-setting match="#">
-                <dead-letter-address>$SYS/svc/dlq/default</dead-letter-address>
-                <expiry-address>$SYS/svc/dlq/expired</expiry-address>
+                <dead-letter-address>$SYS/SVC/dlq/default</dead-letter-address>
+                <expiry-address>$SYS/SVC/dlq/expired</expiry-address>
                 <redelivery-delay>0</redelivery-delay>
                 <!-- with -1 only the global-max-size is in use for limiting -->
                 <max-size-bytes>-1</max-size-bytes>
@@ -128,14 +128,14 @@
         </address-settings>
 
         <addresses>
-            <address name="$SYS/svc/dlq/default">
+            <address name="$SYS/SVC/dlq/default">
                 <anycast>
-                    <queue name="$SYS/svc/dlq/default" />
+                    <queue name="$SYS/SVC/dlq/default" />
                 </anycast>
             </address>
-            <address name="$SYS/svc/dlq/expired">
+            <address name="$SYS/SVC/dlq/expired">
                 <anycast>
-                    <queue name="$SYS/svc/dlq/expired" />
+                    <queue name="$SYS/SVC/dlq/expired" />
                 </anycast>
             </address>
         </addresses>
