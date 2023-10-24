@@ -117,8 +117,8 @@
         <address-settings>
             <!--default for catch all-->
             <address-setting match="#">
-                <dead-letter-address>$SYS/dlq/default</dead-letter-address>
-                <expiry-address>$SYS/dlq/expired</expiry-address>
+                <dead-letter-address>$SYS/MSG/dlq/default</dead-letter-address>
+                <expiry-address>$SYS/MSG/dlq/expired</expiry-address>
                 <redelivery-delay>0</redelivery-delay>
                 <!-- with -1 only the global-max-size is in use for limiting -->
                 <max-size-bytes>-1</max-size-bytes>
@@ -151,14 +151,14 @@
             </broker-plugin>
         </broker-plugins>
         <addresses>
-            <address name="$SYS/dlq/default">
+            <address name="$SYS/MSG/dlq/default">
                 <anycast>
-                    <queue name="$SYS/dlq/default"/>
+                    <queue name="$SYS/MSG/dlq/default"/>
                 </anycast>
             </address>
-            <address name="$SYS/dlq/expired">
+            <address name="$SYS/MSG/dlq/expired">
                 <anycast>
-                    <queue name="$SYS/dlq/expired"/>
+                    <queue name="$SYS/MSG/dlq/expired"/>
                 </anycast>
             </address>
         </addresses>
