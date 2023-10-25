@@ -8,7 +8,7 @@ services:
       - "${KEYCLOAK_PORT_HTTP}:9090"
       - "${KEYCLOAK_PORT_HTTPS}:8443"
     volumes:
-      - "../../target/compose/sso/certs:/etc/x509/https"
+      - "../target/compose/sso/certs:/etc/x509/https"
     environment:
       - KAPUA_CONSOLE_URL
       - KEYCLOAK_ADMIN_USER
