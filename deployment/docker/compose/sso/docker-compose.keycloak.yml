@@ -15,4 +15,7 @@ services:
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=admin
       - KEYCLOAK_HOST_NAME
+      - KEYCLOAK_PORT_HTTPS
+      - KEYCLOAK_CERT_FILE
+      - KEYCLOAK_KEY_FILE
 
