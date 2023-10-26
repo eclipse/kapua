@@ -27,6 +27,7 @@ if [ ! -f /opt/keycloak/first-run ]; then
   echo "    Kapua Console URL: $KAPUA_CONSOLE_URL"
   echo "    Keycloak Realm: $REALM_NAME"
   echo "    Keycloak Admin User: $KEYCLOAK_USER"
+  echo "    Keycloak TLS disabled:  $KEYCLOAK_DISABLE_SSL"
   echo ""
 
   #
@@ -161,6 +162,13 @@ EOF
   echo ""
 fi
 
-echo "Starting Keycloak with TLS in production mode!"
-exec /opt/keycloak/bin/kc.sh start --hostname="$KEYCLOAK_HOST_NAME" --hostname-port="$KEYCLOAK_PORT_HTTPS" --https-certificate-file="$KEYCLOAK_CERT_FILE" --https-certificate-key-file="$KEYCLOAK_KEY_FILE" $@ #hostnameport needed because we redirect the ssl port with the docker proxy
-exit $?
+if [ "$KEYCLOAK_DISABLE_SSL" = "true" ]; then
+  echo "Starting Keycloak without TLS in production mode!"
+  exec /opt/keycloak/bin/kc.sh start --hostname="$KEYCLOAK_HOST_NAME" --hostname-strict-https=false --http-enabled=true --http-port="$KEYCLOAK_PORT_HTTP" $@
+  exit $?
+else
+  echo "Starting Keycloak with TLS in production mode!"
+  exec /opt/keycloak/bin/kc.sh start --hostname="$KEYCLOAK_HOST_NAME" --hostname-port="$KEYCLOAK_PORT_HTTPS" --https-certificate-file="$KEYCLOAK_CERT_FILE" --https-certificate-key-file="$KEYCLOAK_KEY_FILE" $@ #hostnameport needed because we redirect the ssl port with the docker proxy
+  exit $?
+fi
+

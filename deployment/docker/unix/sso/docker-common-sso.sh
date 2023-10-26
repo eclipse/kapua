@@ -28,10 +28,17 @@ export SSO_KEY_FILE="${SSO_KEY_FILE:=tls.key}"
 export SSO_CRT="${SSO_CRT:=${SSO_CRT_DIR}/${SSO_CERT_FILE}}"
 export SSO_KEY="${SSO_KEY:=${SSO_CRT_DIR}/${SSO_KEY_FILE}}"
 
-export KEYCLOAK_HOST_NAME="${KEYCLOAK_HOST_NAME:="localhost"}"
+export KEYCLOAK_HOST_NAME="${KEYCLOAK_HOST_NAME:=${EXTERNAL_IP}}"
 export KAPUA_CONSOLE_URL="${KAPUA_CONSOLE_URL:=http://${EXTERNAL_IP}:8080}"
 
 export KEYCLOAK_IMAGE="${KEYCLOAK_IMAGE:=kapua/kapua-keycloak:${IMAGE_VERSION}}"
-export KEYCLOAK_URL="${KEYCLOAK_URL:=https://${KEYCLOAK_HOST_NAME}:9443}" # Use https://${KEYCLOAK_HOST_NAME}:9443} in order to enable TLS
 export KEYCLOAK_PORT_HTTP=9090
 export KEYCLOAK_PORT_HTTPS=9443
+export KEYCLOAK_DISABLE_SSL=${KEYCLOAK_DISABLE_SSL:=true} #similarly to the console, this flag disables ssl connections
+
+if [ "$KEYCLOAK_DISABLE_SSL" = "true" ]; then
+  export KEYCLOAK_URL="${KEYCLOAK_URL:=http://${KEYCLOAK_HOST_NAME}:${KEYCLOAK_PORT_HTTP}}"
+else
+  export KEYCLOAK_URL="${KEYCLOAK_URL:=https://${KEYCLOAK_HOST_NAME}:${KEYCLOAK_PORT_HTTPS}}"
+fi
+

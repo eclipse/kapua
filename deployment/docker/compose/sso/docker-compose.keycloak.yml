@@ -19,4 +19,5 @@ services:
       - KEYCLOAK_PORT_HTTPS
       - SSO_CERT_FILE
       - SSO_KEY_FILE
+      - KEYCLOAK_DISABLE_SSL
 
