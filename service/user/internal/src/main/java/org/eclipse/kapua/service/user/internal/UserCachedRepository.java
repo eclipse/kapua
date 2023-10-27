@@ -37,4 +37,13 @@ public class UserCachedRepository
         found.ifPresent(entityCache::put);
         return found;
     }
+
+    @Override
+    public Optional<User> findByExternalUsername(TxContext txContext, String externalUsername) {
+        final Optional<User> found = wrapped.findByExternalUsername(txContext, externalUsername);
+        found.ifPresent(entityCache::put);
+        return found;
+    }
+
+
 }
