@@ -303,7 +303,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
         // Validation of the fields
         ArgumentValidator.notEmptyOrNull(externalUsername, "externalUsername");
         // Do the find
-        return checkReadAccess(txManager.execute(tx -> userRepository.findByExternalId(tx, externalUsername)))
+        return checkReadAccess(txManager.execute(tx -> userRepository.findByExternalUsername(tx, externalUsername)))
                 .orElse(null);
     }
 

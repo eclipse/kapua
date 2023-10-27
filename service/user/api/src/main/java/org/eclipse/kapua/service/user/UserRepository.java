@@ -21,4 +21,7 @@ public interface UserRepository extends
         KapuaNamedEntityRepository<User, UserListResult> {
 
     Optional<User> findByExternalId(TxContext txContext, final String externalId);
+
+    Optional<User> findByExternalUsername(TxContext txContext, final String externalUsername);
+
 }

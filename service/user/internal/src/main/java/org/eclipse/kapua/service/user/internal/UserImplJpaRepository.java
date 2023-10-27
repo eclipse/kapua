@@ -34,4 +34,10 @@ public class UserImplJpaRepository
     public Optional<User> findByExternalId(TxContext txContext, String externalId) {
         return doFindByField(txContext, KapuaId.ANY, UserAttributes.EXTERNAL_ID, externalId);
     }
+
+    @Override
+    public Optional<User> findByExternalUsername(TxContext txContext, String externalUsername) {
+        return doFindByField(txContext, KapuaId.ANY, UserAttributes.EXTERNAL_USERNAME, externalUsername);
+    }
+
 }
