@@ -17,3 +17,9 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 export IMAGE_VERSION=${IMAGE_VERSION:=2.0.0-SNAPSHOT}
 export CRYPTO_SECRET_KEY="${CRYPTO_SECRET_KEY:=dockerSecretKey!}"
+
+# Certificates
+export KAPUA_CRT_DIR="${KAPUA_CRT_DIR:=$(mktemp -d)}"
+export KAPUA_CERT_FILE="${KAPUA_CERT_FILE:=cert.pem}"
+export KAPUA_KEY_FILE="${KAPUA_KEY_FILE:=key.pem}"
+export KAPUA_CA_FILE="${KAPUA_CA_FILE:=cert.pem}"

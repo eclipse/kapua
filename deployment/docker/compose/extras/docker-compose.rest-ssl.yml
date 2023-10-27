@@ -1,0 +1,14 @@
+version: '3.1'
+
+services:
+  kapua-api:
+    ports:
+      - "8444:8443"
+    environment:
+      - KAPUA_SSL_ENABLE=true
+      - KAPUA_CA
+      - KAPUA_CRT
+      - KAPUA_KEY
+      - KAPUA_KEY_PASSWORD
+      - KAPUA_KEYSTORE
+      - KAPUA_KEYSTORE_PASSWORD

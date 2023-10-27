@@ -24,9 +24,9 @@ START_ARGS="$START_ARGS -Djetty.base=${JETTY_BASE}"
 
 # Certificate Options
 
-: ${KAPUA_DISABLE_SSL:="true"}
+: ${KAPUA_SSL_ENABLE:="false"}
 
-if [ "${KAPUA_DISABLE_SSL}" == "false" ]; then
+if [ "${KAPUA_SSL_ENABLE}" == "true" ]; then
     # Keystore configuration
     CERTIFICATES_PATH="tls"
     if [ ! -d "${JETTY_BASE}/${CERTIFICATES_PATH}" ]; then

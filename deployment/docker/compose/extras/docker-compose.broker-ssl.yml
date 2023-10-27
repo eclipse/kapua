@@ -1,0 +1,14 @@
+version: '3.1'
+
+services:
+  message-broker:
+    ports:
+      - "8883:8883"
+    environment:
+      - KAPUA_SSL_ENABLE=true
+      - KAPUA_CA
+      - KAPUA_CRT
+      - KAPUA_KEY
+      - KAPUA_KEY_PASSWORD
+      - KAPUA_KEYSTORE
+      - KAPUA_KEYSTORE_PASSWORD
