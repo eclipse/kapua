@@ -54,7 +54,7 @@ values:
 
 Note that these properties, in combination with the ones defined in the previous paragraph, can be set via environment
 variables thanks to the `run-console` bash script included in the Console docker container. Please refer to
-the [assembly module README file](assembly/README.md) for detailed information about those properties.
+the [assembly module README file](https://github.com/eclipse/kapua/blob/develop/assembly/README.md) for detailed information about those properties.
 
 #### Note about 'client id' and 'audience' values
 
@@ -87,18 +87,16 @@ Note that the _auth_ and _token_ endpoints are automatically computed by the Key
 about Keycloak, see the [Keycloak Documentation](http://www.keycloak.org/documentation.html).
 
 Similarly to the 'generic' provider, these properties, in combination with the common properties defined previously, can
-be set via environment variables thanks to the `run-console` bash script included in the Console docker container.
-Please refer to the [assembly module README file](assembly/README.md) for detailed information about these environment
-variables.
+be set via environment variables thanks to the `run-console` bash script included in the Console docker container (see [here](#configuring-kapua-to-use-sso-with-the-keycloak-server) for more detailed information)
 
 ### Enabling users to SSO
 
 In order to enable a user to login through an OpenID provider, the user must first be created on the OpenID Connect
-server (e.g. using Keycloak, on the Keycloak Admin Console). Secondly, the user can be added to Kapua. Such user differs
+server (e.g. using Keycloak, on the Keycloak Admin Console, inside the kapua realm created for this application). Secondly, the user can be added to Kapua. Such user differs
 from a 'normal' one for its type (which is `EXTERNAL`, while a normal user is `INTERNAL`) and for not having any
 credentials (since his credentials are stored in the OpenID Provider).
 
-Currently there are three methods to register an external user in Kapua:
+Currently, there are three methods to register an external user in Kapua:
 using the _SimpleRegistrationProcessor_ , using _REST API_ or using the _console_.
 
 #### Insert the user through the SimpleRegistrationProcessor module
@@ -122,9 +120,11 @@ After getting the session token using an authentication REST API, a user can be 
 provide the following attributes:
 
 - **`scopeId`**: the scope id to which the user will belong in Kapua;
-- **`name`**: represents the name in the OpenID Provider;
+- **`name`**: represents the name of the user in the Kapua platform;
 - **`userType`**: must always be set as **_EXTERNAL_**;
-- **`externalId`**: represents the unique ID on the OpenID Provider.
+- **`externalId`** OR **`externalUsername`**: represents the unique ID/name on the OpenID Provider.
+
+Notice how it's not mandatory to insert the **`externalId`**: the external Username is sufficient for Kapua in order to fetch the correct user upon SSO log-in.
 
 #### Insert the user through the Console
 
@@ -134,10 +134,13 @@ to add a user.
 1. Add the new user through the "Add" button.
 2. The Add dialog allows to choose between an "Internal user" and an "External user"; choose the latter in order to add
    an external one.
-3. Insert the Username and the External Id; all the other fields are optional.
+3. Insert a **`Username`**, represents the name of the user in the Kapua platform and doesn't need to be equal to the keycloak Username.
+4. Insert the **`external Id`** and/or the **`external Username`**; all the other fields are optional.
+
+Notice how it's not mandatory to insert the **`externalId`**: the external Username is sufficient in order to fetch the correct user upon SSO log-in.
 
 An external user can also be modified through the button "Edit"
-(please note that the "Username" and "External Id" fields are not modifiable). Note that the user has no assigned roles.
+(please note that the "Username" field is not modifiable). Note that the user has no assigned roles.
 In order to add a "Role", use the "Assign" button of the "Roles" tab. Note also that the external user has no "
 Credentials" at all, since the credentials are established and stored in the external Provider.
 
@@ -164,61 +167,58 @@ credentials.
 
 We detail here the steps to run an OpenID Keycloak provider. The example described here makes use of a Keycloak Server
 Docker image
-(see [here](https://hub.docker.com/r/jboss/keycloak/) for more details).
+(see [here](https://www.keycloak.org/server/containers) for more details).
 
 ### Installing the Keycloak Server (Docker image)
 
 In order to deploy automatically the Keycloak image, is sufficient to add the `--sso` option to the `docker-deploy.sh`
 script inside the directory of the docker deployment scripts. In such a way the environment is ready to be used without
-the need for further configuration.
+the need for further configuration. If you want to access the keycloak console page, open your browser to _http://<machine-ip-address>:9090/_. DO NOT USE localhost as ip address, because it will conflict with the hostname configured for keycloak.
+with 'machine-ip-address' we mean the ip address of the host machine running docker, so for example the ip in your local network.
 
 However, if you want to use a stand alone Keycloak image, please follow the instruction below in order to configure it.
 
-#### Manual installation of the Keycloak server.
+#### Manual installation of the Keycloak server
 
-In order to download and install the image, run `docker pull jboss/keycloak` on a bash terminal. Then,
-run `docker run -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 9090:8080 jboss/keycloak` to start the docker
+In order to download and install the latest image, run `docker pull quay.io/keycloak/keycloak` on a bash terminal. Then,
+run `docker run -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin -p 9090:8080 quay.io/keycloak/keycloak start-dev` to start the docker
 container, setting up the "_admin_" user (with "_admin_" as password). The Keycloak Server Admin Console will be
-available at the following URL: _http://<Keycloak-IP-address>:9090/_.
+available at the following URL: _http://<Keycloak-IP-address>:9090/_. Notice that this command will start keycloak in developer mode for demo purposes, see [here](https://www.keycloak.org/server/containers for some instructions regarding the production mode.
+For the production mode, you must specify the hostname at startup (with the --host cli parameter, for example). We did not recommend to use 'localhost' for this as this could conflict with Docker containers host-name resolution. To this end, a valid approach would be to set the machine external ip as hostname.
 
-#### SSL configuration
+#### TLS configuration
 
-_Following section needs to be updated_
-
-The Keycloak provider can be configured to use SSL, which is enabled by setting the 9443 port for the `KEYCLOAK_URL`
-in the `docker-common-sso.sh` file. A self-signed certificate and a key are produced through `sso-docker-deploy.sh`
+The Keycloak provider can be configured to use TLS, setting to false the environment variable KEYCLOAK_DISABLE_SSL before calling the `docker-deploy.sh` script. A self-signed certificate and a key are produced through `sso-docker-deploy.sh`
 script and passed via the volume based on the `./certs:/etc/x509/https` directory. The script also installs the
-certificate in the Kapua Console docker image (which is tagged with the 'sso' tag).
+certificate in the Kapua Console docker image (which is tagged with the 'sso' tag). Notice that in this case the keycloak console can be accessed at _http://<machine-external-ip-address>:9443/_.
 
-**WARNING**: This SSL configuration is intended to be used only for testing purposes and should not be used in a
+**WARNING**: This TLS configuration is intended to be used only for testing purposes and should not be used in a
 production environment. If you want to use Keycloak in a production environment and provide your own TLS certificate,
 please refer to the official
-[Keycloak documentation](https://www.keycloak.org/docs/latest/server_installation/#_setting_up_ssl).
+[Keycloak documentation](https://www.keycloak.org/server/enabletls).
 
 ### Manually configuring the Keycloak Server
 
 The Keycloak instance provided with the docker deployment is already configured with a dedicated
-"Kapua" realm and a client when using the script `docker-deploy.sh` with `--sso` option.
+"Kapua" realm and a client for the console when using the script `docker-deploy.sh` with `--sso` option.
 
 However, if you already have a running Keycloak instance, you can follow the instructions below in order to configure it
 manually. Open the Keycloak Admin Console on your preferred browser and follow the steps below in order to configure it.
+Remember that with more recent versions of the keycloak image the UI could have changed, these instructions refer to the image version 21.
 
 1. Create a new realm on Keycloak, call it "_kapua_"
-1. Create a new client for this realm, call it "_console_" (this name represents the "Client ID").
-2. Configure the client "Settings" tab as follows:
+2. Create a new client for this realm, call it "_console_" (this name represents the "Client ID").
+3. Configure the client "Settings" tab as follows:
     - Client Protocol : "_openid-connect_"
     - Access : "_public_"
     - Standard Flow Enabled : _ON_
     - Direct Access Grants Enabled : _ON_
-    - Valid Redirect URIs : _http://localhost:8080/*_  (use your IP address in place of localhost)
-    - Base URL : _http://localhost:8080/_
-3. Under the "Mappers" tab, create a new mapper called "console" with the following parameters:
+    - Valid Redirect URIs : _http://<machine-ip-address>:8080/*_  (machine-ip-address means the ip address of the host machine running docker)
+    - Web origins: _http://<machine-ip-address>:8080/_
+4. Having selected the "_console_" client, under the "Client scopes" tab, select the "console-dedicated" one, then select "configure a new mapper" called "Audience" and use the following parameters:
     - Name : "_console_"
-    - Mapper Type : "_Audience_"
     - Included Custom Audience : "_console_"
     - Add to access token : _ON_
-4. On the "Realm Settings", under the "Tokens" tab, set "Access Token Lifespan" to 10 minutes (the default time is too
-   short)
 
 ### Configuring Kapua to use SSO with the Keycloak Server
 
@@ -226,7 +226,7 @@ The Kapua console docker image is already configured and deployed in docker with
 script `docker-deploy.sh` with `--sso` option.
 
 If you need to configure it manually, the following properties must be passed (as VM options) in order to set up the SSO
-on Kapua using Keycloak (you can login using the default `admin` user with `admin` password):
+on Kapua using Keycloak (you can log in using the default `admin` user with `admin` password):
 
 - `sso.openid.provider=keycloak` : to set Keycloak as OpenID provider
 - `sso.openid.keycloak.realm=kapua` : the Keycloak Realm (we are using the "kapua" realm)
@@ -235,21 +235,24 @@ on Kapua using Keycloak (you can login using the default `admin` user with `admi
 - `sso.openid.client.id=console` : the OpenID Client ID (the one set on Keycloak)
 - `console.sso.openid.home.uri=http://localhost:8080` : the Kapua web console URI
 
-If you need to start the console docker container alone, it is sufficient to provide the following docker environment
+If you need to start the console docker container alone, for example having deployed your keycloak image following [this section](#manual-installation-of-the-keycloak-server), it is sufficient to provide the following docker environment
 variables (these will automatically set up the configuration properties described above):
 
-- `KEYCLOAK_URL=http://<Keycloak-IP-address>:9090` : the Keycloak Server URI
-  (use `https://<Keycloak-IP-address>:9443` in case TLS is enabled - see below for further details)
-- `KAPUA_CONSOLE_URL=http://localhost:8080` : the Kapua web console URI
+- `KEYCLOAK_URL=http://<Keycloak-IP-address>:9090` : sets the `sso.openid.keycloak.uri`; the Keycloak Server URI
+  (use `https://<Keycloak-IP-address>:<https-port>` in case you enabled TLS on the keycloak instance)
+- `KAPUA_CONSOLE_URL=http://<machine-ip-address>:8080` : sets the `sso.openid.client.id` value; the Kapua web console URI
+  (use `http://<machine-ip-address>:8443` in case TLS is enabled in the console)
 
-When using `docker-compose`, these two variables are bound through the `docker-compose.yaml` file. Note that even if the
-Keycloak server is running locally on a docker container, it is recommended to use your machine IP address instead of '
+When using `docker-compose`, these two variables are bound through the `docker-compose.yaml` file. We recommended to use your machine IP address instead of '
 localhost', since this one can be misinterpreted by docker as the 'localhost' of the container in which the Kapua
 component or Keycloak are running (this is automatically done through the `sso-docker-deploy.sh`
 script).
 
-Please refer to the [assembly module README file](assembly/README.md) for detailed information about the Console docker
-container and related environment variables.
+Optionally, you can also set these environment variables: 
+
+- `KEYCLOAK_REALM` : sets the `sso.openid.client.id` value; the keycloak realm (the default value is `kapua`);
+- `KEYCLOAK_CLIENT_ID` : sets the `sso.openid.client.id` value; the client id in the keycloak realm (the default value is `console`);
+- `KAPUA_OPENID_CLIENT_SECRET` : sets the `sso.openid.client.secret` value; the client secret (optional).
 
 ### Setting Up a user on the Keycloak server
 
@@ -259,7 +262,7 @@ assigned by Keycloak must be used as External ID on the Kapua side (see the next
 If you want to add a new user, please follow the instructions below (remember to use the `admin` user with `admin`
 password to log in):
 
-1. From the "Users" tab on the left menu, click on "Add user"
+1. Inside the "kapua" realm, from the "Users" tab on the left menu, click on "Add user"
 2. Configure the user as follows:
     - Username : e.g. "_alice_"
     - Email : e.g. "_alice@heremailprovider.com_"
@@ -267,31 +270,31 @@ password to log in):
 3. Configure the user credentials under the "Credentials" tab
 
 Note that the user must have an email set in the OpenID Provider server, otherwise the creation on Kapua through the
-SimpleRegistrationProcessor will fail. It is also possible to use the "_admin_" or the "_sso-user_" the users to log in
+SimpleRegistrationProcessor will fail. It is also possible to use the "_sso-user_" user to log in
 (remind to add an email address).
 
 ### Setting Up a user on Kapua
 
 To add a new user in Kapua, it is sufficient to add it through the console as described in the
 [Insert the user through the Console](#insert-the-user-through-the-console) section. If you want to use the
-SimpleRegistrationProcessor or the REST API, please follow the examples below.
+SimpleRegistrationProcessor or the REST API, we provide to you the examples below.
 
 Using the SimpleRegistrationProcessor, the user "_alice_" in Keycloak will generate "_alice_"
 and "_alice-broker_" in Kapua, in a dedicated "_alice_" account.
 
-Using the userCreate REST API with the following body (using the _scopeId_ of the desired account and the ID of the
-user "_admin_" in Keycloak as _externalId_):
+As anticipated in [here](#insert-the-user-through-rest-api), using the userCreate REST API with the following body (using the _scopeId_ of the desired account and the ID of the
+user "_alice_" in Keycloak as _externalId_):
 
 ``` 
 {
   "scopeId": "...",
-  "name": "admin",
+  "name": "alice",
   "userType": "EXTERNAL",
   "externalId" : "5726876c-...."
 }
 ```
 
-will create the "_admin_" user without the need of the SimpleRegistrationProcessor.
+will create the "_alice_" user without the need of the SimpleRegistrationProcessor.
 
 ### Keycloak logout endpoint
 
@@ -299,7 +302,7 @@ Logging out from the Keycloak provider is possible through the Keycloak OpenID C
 
 `{sso.openid.keycloak.uri}/realms/{realm_name}/protocol/openid-connect/logout`
 
-In our example the endpoint is the following:
+In our example, assuming TLS is not used, the endpoint is the following:
 
 `http://<Keycloak-IP-address>:9090/realms/kapua/protocol/openid-connect/logout`
 
@@ -323,7 +326,7 @@ can be called at a later time to re-configure Kapua (e.g. when re-installing Kap
 Both scripts (`deploy` and `activate`) require both Kapua and Keycloak URLs. Keycloak requires the Kapua web console URL
 in order to allow requests from this source, while Kapua requires the Keycloak URL in order to forward requests to
 Keycloak. The URLs are being constructed from OpenShift routes, which are configured for both Kapua and Keycloak.
-However this requires that Kapua is set up before Keycloak and that the `activate` script can only be called after
+However, this requires that Kapua is set up before Keycloak and that the `activate` script can only be called after
 the `deploy` script has been successfully run.
 
 Please refer to the [Keycloak Example (Docker based)](#keycloak-example-docker-based) section for the user creation, or
