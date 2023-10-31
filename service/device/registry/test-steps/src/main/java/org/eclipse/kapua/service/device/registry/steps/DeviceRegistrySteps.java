@@ -1084,8 +1084,7 @@ public class DeviceRegistrySteps extends TestBase {
                 connectionCreator.setServerIp(cucConnection.getServerIp());
                 connectionCreator.setProtocol(cucConnection.getProtocol());
                 connectionCreator.setAllowUserChange(false);
-                connectionCreator.setAuthenticationType("USER_PASS");
-
+                connectionCreator.setAuthenticationType(deviceConnectionService.getAvailableAuthTypes().stream().findFirst().orElseThrow(() -> new IllegalStateException("No DeviceConnection authenticationTypes are available for testing")));
                 deviceConnection = deviceConnectionService.create(connectionCreator);
                 deviceConnections.addItem(deviceConnection);
             }
@@ -1958,7 +1957,7 @@ public class DeviceRegistrySteps extends TestBase {
                 tmpCreator.setReservedUserId(tmpConn.getReservedUserId());
                 tmpCreator.setAllowUserChange(tmpConn.getAllowUserChange());
                 tmpCreator.setUserCouplingMode(tmpConn.getUserCouplingMode());
-                tmpCreator.setAuthenticationType("USER_PASS");
+                tmpCreator.setAuthenticationType(deviceConnectionService.getAvailableAuthTypes().stream().findFirst().orElseThrow(() -> new IllegalStateException("No DeviceConnection authenticationTypes are available for testing")));
                 DeviceConnection tmpDevConn = deviceConnectionService.create(tmpCreator);
                 tmpDevConn.setStatus(DeviceConnectionStatus.DISCONNECTED);
                 deviceConnectionService.update(tmpDevConn);
@@ -2216,8 +2215,7 @@ public class DeviceRegistrySteps extends TestBase {
         creator.setServerIp(SERVER_IP);
         creator.setProtocol("tcp");
         creator.setAllowUserChange(false);
-        creator.setAuthenticationType("USER_PASS");
-
+        creator.setAuthenticationType(deviceConnectionService.getAvailableAuthTypes().stream().findFirst().orElseThrow(() -> new IllegalStateException("No DeviceConnection authenticationTypes are available for testing")));
         return creator;
     }
 

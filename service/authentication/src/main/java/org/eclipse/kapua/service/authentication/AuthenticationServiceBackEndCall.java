@@ -17,6 +17,7 @@ import com.google.common.base.Strings;
 import org.apache.shiro.util.ThreadContext;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.client.security.AuthErrorCodes;
@@ -85,23 +86,8 @@ public class AuthenticationServiceBackEndCall {
         try {
             logger.info("Login for clientId {} - user: {} - password: {} - client certificates: {}", authRequest.getClientId(), authRequest.getUsername(), Strings.isNullOrEmpty(authRequest.getPassword()) ? "yes" : "no", authRequest.getCertificates() != null ? "yes" : "no");
             ThreadContext.unbindSubject();
-            User user = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(authRequest.getUsername()));
-            if (user == null) {
-                throw new KapuaEntityNotFoundException(User.TYPE, authRequest.getUsername());
-            }
-            DeviceConnection deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(user.getScopeId(), authRequest.getClientId()));
-            String deviceConnectionAuthType;
-            if (deviceConnection != null) {
-                deviceConnectionAuthType = deviceConnection.getAuthenticationType();
-            } else {
-                Map<String, Object> deviceConnectionServiceConfigValues = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.getConfigValues(user.getScopeId()));
-                deviceConnectionAuthType = (String) deviceConnectionServiceConfigValues.get("deviceConnectionAuthenticationType");
-            }
-            DeviceConnectionCredentialAdapter deviceConnectionCredentialAdapter = deviceConnectionAuthHandlers.get(deviceConnectionAuthType);
-            if (deviceConnectionCredentialAdapter == null) {
-                throw new UnsupportedOperationException("No DeviceConnectionCredentialAdapter has been found for the given DeviceConnection.authenticationType: " + deviceConnectionAuthType);
-            }
-            LoginCredentials authenticationCredentials = deviceConnectionCredentialAdapter.mapToCredential(authRequest);
+            String deviceConnectionAuthType = extractAuthTypeFromAuthRequest(authRequest);
+            LoginCredentials authenticationCredentials = buildLoginCredentialsFromAuthType(authRequest, deviceConnectionAuthType);
             AccessToken accessToken = authenticationService.login(authenticationCredentials);
             Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(accessToken.getScopeId()));
             AuthResponse authResponse = buildLoginResponseAuthorized(authRequest, accessToken, account);
@@ -257,4 +243,42 @@ public class AuthenticationServiceBackEndCall {
         authResponse.setErrorCode(errorCode);
     }
 
+    /**
+     * Extracts the {@link DeviceConnection#getAuthenticationType()} to be used for this connect attempt from the {@link AuthRequest}.
+     *
+     * @param authRequest The {@link AuthRequest} from which to extract data.
+     * @return The resolved  {@link DeviceConnection#getAuthenticationType()}.
+     * @throws KapuaException
+     * @since 2.0.0
+     */
+    private String extractAuthTypeFromAuthRequest(AuthRequest authRequest) throws KapuaException {
+        User user = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(authRequest.getUsername()));
+        if (user == null) {
+            throw new KapuaEntityNotFoundException(User.TYPE, authRequest.getUsername());
+        }
+        DeviceConnection deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(user.getScopeId(), authRequest.getClientId()));
+        if (deviceConnection != null) {
+            return deviceConnection.getAuthenticationType();
+        } else {
+            Map<String, Object> deviceConnectionServiceConfigValues = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.getConfigValues(user.getScopeId()));
+            return (String) deviceConnectionServiceConfigValues.get("deviceConnectionAuthenticationType");
+        }
+    }
+
+    /**
+     * Builds the {@link LoginCredentials} to be used from the resolved {@link DeviceConnection#getAuthenticationType()}.
+     *
+     * @param authRequest              The {@link AuthRequest} with the {@link LoginCredentials} values.
+     * @param deviceConnectionAuthType The resolved {@link DeviceConnection#getAuthenticationType()}.
+     * @return The {@link LoginCredentials} for the given {@link DeviceConnection#getAuthenticationType()}.
+     * @throws KapuaException
+     * @since 2.0.0
+     */
+    private LoginCredentials buildLoginCredentialsFromAuthType(AuthRequest authRequest, String deviceConnectionAuthType) throws KapuaException {
+        DeviceConnectionCredentialAdapter deviceConnectionCredentialAdapter = deviceConnectionAuthHandlers.get(deviceConnectionAuthType);
+        if (deviceConnectionCredentialAdapter == null) {
+            throw new UnsupportedOperationException("No DeviceConnectionCredentialAdapter has been found for the given DeviceConnection.authenticationType: " + deviceConnectionAuthType);
+        }
+        return deviceConnectionCredentialAdapter.mapToCredential(authRequest);
+    }
 }
