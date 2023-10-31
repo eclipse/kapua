@@ -90,9 +90,7 @@ public class DeviceRegistryLocatorConfiguration {
                 } catch (KapuaException e) {
                     // skip
                 }
-
                 final CredentialsFactory credentialsFactory = Mockito.mock(CredentialsFactory.class);
-
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
                 bind(CredentialsFactory.class).toInstance(credentialsFactory);
                 bind(KapuaJpaRepositoryConfiguration.class).toInstance(new KapuaJpaRepositoryConfiguration());
@@ -110,11 +108,9 @@ public class DeviceRegistryLocatorConfiguration {
 
                 final Map<String, DeviceConnectionCredentialAdapter> availableDeviceConnectionAdapters = new HashMap<>();
                 availableDeviceConnectionAdapters.put("USER_PASS", new UserPassDeviceConnectionCredentialAdapter(credentialsFactory));
-
                 bind(ServiceConfigurationManager.class)
                         .annotatedWith(Names.named("DeviceConnectionServiceConfigurationManager"))
                         .toInstance(Mockito.mock(ServiceConfigurationManager.class));
-
                 bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 final TxManager txManager = new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-device");
@@ -125,7 +121,6 @@ public class DeviceRegistryLocatorConfiguration {
                         new DeviceConnectionFactoryImpl(),
                         txManager,
                         new DeviceConnectionImplJpaRepository(jpaRepoConfig),
-                        new KapuaMetatypeFactoryImpl(),
                         availableDeviceConnectionAdapters));
                 bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
 

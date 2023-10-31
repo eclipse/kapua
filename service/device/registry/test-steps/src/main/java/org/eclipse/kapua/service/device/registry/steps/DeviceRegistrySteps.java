@@ -1959,7 +1959,6 @@ public class DeviceRegistrySteps extends TestBase {
                 tmpCreator.setAllowUserChange(tmpConn.getAllowUserChange());
                 tmpCreator.setUserCouplingMode(tmpConn.getUserCouplingMode());
                 tmpCreator.setAuthenticationType("USER_PASS");
-
                 DeviceConnection tmpDevConn = deviceConnectionService.create(tmpCreator);
                 tmpDevConn.setStatus(DeviceConnectionStatus.DISCONNECTED);
                 deviceConnectionService.update(tmpDevConn);

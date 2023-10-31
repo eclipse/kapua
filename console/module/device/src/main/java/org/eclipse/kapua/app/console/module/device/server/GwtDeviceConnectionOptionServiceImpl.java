@@ -70,7 +70,6 @@ public class GwtDeviceConnectionOptionServiceImpl extends KapuaRemoteServiceServ
     public Set<String> getAvailableAuthenticationTypes() {
         KapuaLocator locator = KapuaLocator.getInstance();
         DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
-
         return new HashSet<String>(deviceConnectionService.getAvailableAuthTypes());
     }
 

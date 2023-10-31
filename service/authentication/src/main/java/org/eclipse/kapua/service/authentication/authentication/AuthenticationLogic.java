@@ -278,7 +278,6 @@ public abstract class AuthenticationLogic {
         deviceConnectionCreator.setAllowUserChange(false);
         deviceConnectionCreator.setAuthenticationType(authContext.getAuthenticationType());
         deviceConnectionCreator.setLastAuthenticationType(authContext.getAuthenticationType());
-
         return KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.create(deviceConnectionCreator));
     }
 

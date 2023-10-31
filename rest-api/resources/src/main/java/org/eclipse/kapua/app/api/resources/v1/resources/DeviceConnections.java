@@ -49,7 +49,6 @@ public class DeviceConnections extends AbstractKapuaResource {
     private final DeviceConnectionFactory deviceConnectionFactory = locator.getFactory(DeviceConnectionFactory.class);
     private final DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
 
-
     /**
      * Gets the {@link DeviceConnection} list in the scope.
      *

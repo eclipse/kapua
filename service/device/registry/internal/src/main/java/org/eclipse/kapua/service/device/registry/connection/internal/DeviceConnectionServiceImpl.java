@@ -20,7 +20,6 @@ import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
-import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -58,9 +57,6 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
 
     private final DeviceConnectionFactory entityFactory;
     private final DeviceConnectionRepository repository;
-
-    private final KapuaMetatypeFactory kapuaMetatypeFactory;
-
     private final Map<String, DeviceConnectionCredentialAdapter> availableDeviceConnectionAdapters;
 
     /**
@@ -77,12 +73,10 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
             DeviceConnectionFactory entityFactory,
             TxManager txManager,
             DeviceConnectionRepository repository,
-            KapuaMetatypeFactory kapuaMetatypeFactory,
             Map<String, DeviceConnectionCredentialAdapter> availableDeviceConnectionAdapters) {
         super(txManager, serviceConfigurationManager, DeviceDomains.DEVICE_CONNECTION_DOMAIN, authorizationService, permissionFactory);
         this.entityFactory = entityFactory;
         this.repository = repository;
-        this.kapuaMetatypeFactory = kapuaMetatypeFactory;
         this.availableDeviceConnectionAdapters = availableDeviceConnectionAdapters;
     }
 
@@ -99,21 +93,17 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
         ArgumentValidator.notNull(deviceConnectionCreator.getUserId(), "deviceConnectionCreator.userId");
         ArgumentValidator.notNull(deviceConnectionCreator.getUserCouplingMode(), "deviceConnectionCreator.userCouplingMode");
         ArgumentValidator.notNull(deviceConnectionCreator.getAuthenticationType(), "deviceConnectionCreator.authenticationType");
-
         if (!availableDeviceConnectionAdapters.containsKey(deviceConnectionCreator.getAuthenticationType())) {
             throw new KapuaIllegalArgumentException("deviceConnectionCreator.authenticationType", deviceConnectionCreator.getAuthenticationType());
         }
-
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
-
         return txManager.execute(tx -> {
             //TODO: check whether this is anywhere efficient
             // Check duplicate ClientId
             if (repository.countByClientId(tx, deviceConnectionCreator.getScopeId(), deviceConnectionCreator.getClientId()) > 0) {
                 throw new KapuaDuplicateNameException(deviceConnectionCreator.getClientId());
             }
-
             final DeviceConnection deviceConnection = entityFactory.newEntity(deviceConnectionCreator.getScopeId());
             deviceConnection.setStatus(deviceConnectionCreator.getStatus());
             deviceConnection.setClientId(deviceConnectionCreator.getClientId());
@@ -143,14 +133,11 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
         ArgumentValidator.notNull(deviceConnection.getUserId(), "deviceConnection.userId");
         ArgumentValidator.notNull(deviceConnection.getUserCouplingMode(), "deviceConnection.userCouplingMode");
         ArgumentValidator.notNull(deviceConnection.getAuthenticationType(), "deviceConnection.authenticationType");
-
         if (!availableDeviceConnectionAdapters.containsKey(deviceConnection.getAuthenticationType())) {
             throw new KapuaIllegalArgumentException("deviceConnection.authenticationType", deviceConnection.getAuthenticationType());
         }
-
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
-
         // Do Update
         return txManager.execute(tx -> repository.update(tx, deviceConnection));
     }

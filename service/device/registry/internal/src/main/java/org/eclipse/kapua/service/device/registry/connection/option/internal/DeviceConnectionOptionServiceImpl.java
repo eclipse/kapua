@@ -92,14 +92,10 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
         ArgumentValidator.notNull(deviceConnectionOptions.getId(), "deviceConnection.id");
         ArgumentValidator.notNull(deviceConnectionOptions.getScopeId(), "deviceConnection.scopeId");
         ArgumentValidator.notNull(deviceConnectionOptions.getAuthenticationType(), "deviceConnection.authenticationType");
-
         if (!availableDeviceConnectionAdapters.containsKey(deviceConnectionOptions.getAuthenticationType())) {
             throw new KapuaIllegalArgumentException("deviceConnection.authenticationType", deviceConnectionOptions.getAuthenticationType());
         }
-
-        // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, deviceConnectionOptions.getScopeId()));
-
         return txManager.execute(tx -> {
             if (deviceConnectionOptions.getReservedUserId() != null) {
                 DeviceConnectionQuery query = entityFactory.newQuery(deviceConnectionOptions.getScopeId());

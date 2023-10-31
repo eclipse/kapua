@@ -139,7 +139,6 @@ public class TagLocatorConfiguration {
                         new DeviceConnectionFactoryImpl(),
                         new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-device"),
                         new DeviceConnectionImplJpaRepository(jpaRepoConfig),
-                        new KapuaMetatypeFactoryImpl(),
                         Collections.emptyMap()));
                 bind(DeviceConnectionFactory.class).to(DeviceConnectionFactoryImpl.class);
 

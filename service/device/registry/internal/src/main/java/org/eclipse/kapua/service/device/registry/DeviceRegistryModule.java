@@ -182,7 +182,6 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                 entityFactory,
                 jpaTxManagerFactory.create("kapua-device"),
                 repository,
-                kapuaMetatypeFactory,
                 availableDeviceConnectionAdapters);
     }
 

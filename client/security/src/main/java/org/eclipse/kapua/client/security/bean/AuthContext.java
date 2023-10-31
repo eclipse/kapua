@@ -41,13 +41,9 @@ public class AuthContext {
 
     private boolean admin;
     private boolean missing;
-    /**
-     * Stealing link flag
-     */
+    //stealing link flag
     private boolean stealingLink;
-    /**
-     * Device connection illegal state flag
-     */
+    //device connection illegal state flag
     private boolean illegalState;
     private String kapuaConnectionId;
 

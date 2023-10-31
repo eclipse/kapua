@@ -83,46 +83,26 @@ public class AuthenticationServiceBackEndCall {
 
     public AuthResponse brokerConnect(AuthRequest authRequest) {
         try {
-            logger.info("Login for clientId {} - user: {} - password: {} - client certificates: {}",
-                    authRequest.getClientId(),
-                    authRequest.getUsername(),
-                    Strings.isNullOrEmpty(authRequest.getPassword()) ? "yes" : "no",
-                    authRequest.getCertificates() != null ? "yes" : "no");
-
+            logger.info("Login for clientId {} - user: {} - password: {} - client certificates: {}", authRequest.getClientId(), authRequest.getUsername(), Strings.isNullOrEmpty(authRequest.getPassword()) ? "yes" : "no", authRequest.getCertificates() != null ? "yes" : "no");
             ThreadContext.unbindSubject();
-
-            // User retrieval
             User user = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(authRequest.getUsername()));
             if (user == null) {
                 throw new KapuaEntityNotFoundException(User.TYPE, authRequest.getUsername());
             }
-
-            // Device connection retrieval
             DeviceConnection deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(user.getScopeId(), authRequest.getClientId()));
-
-            // Authentication type selection
             String deviceConnectionAuthType;
             if (deviceConnection != null) {
-                // From the DeviceConnection
                 deviceConnectionAuthType = deviceConnection.getAuthenticationType();
             } else {
-                // Or the default from DeviceConnectionService ServiceConfiguration
                 Map<String, Object> deviceConnectionServiceConfigValues = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.getConfigValues(user.getScopeId()));
                 deviceConnectionAuthType = (String) deviceConnectionServiceConfigValues.get("deviceConnectionAuthenticationType");
             }
-
-            // Convert AuthRequest to LoginCredentials
             DeviceConnectionCredentialAdapter deviceConnectionCredentialAdapter = deviceConnectionAuthHandlers.get(deviceConnectionAuthType);
             if (deviceConnectionCredentialAdapter == null) {
                 throw new UnsupportedOperationException("No DeviceConnectionCredentialAdapter has been found for the given DeviceConnection.authenticationType: " + deviceConnectionAuthType);
             }
-
             LoginCredentials authenticationCredentials = deviceConnectionCredentialAdapter.mapToCredential(authRequest);
-
-            // Login
             AccessToken accessToken = authenticationService.login(authenticationCredentials);
-
-            // Build response
             Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(accessToken.getScopeId()));
             AuthResponse authResponse = buildLoginResponseAuthorized(authRequest, accessToken, account);
             AuthContext authContext = new AuthContext(authRequest, authResponse);
@@ -131,8 +111,8 @@ public class AuthenticationServiceBackEndCall {
             authResponse.update(authContext);
             return authResponse;
         } catch (Exception e) {
-            // This is not a proper error since the login throws exception if the user is not allowed to connect
-            // so the error is logged but no metric is incremented
+            //this is not a proper error since the login throws exception if the user is not allowed to connect
+            //so the error is logged but no metric is incremented
             logger.error("Login error: {}", e.getMessage(), e);
             return buildLoginResponseNotAuthorized(authRequest, e);
         } finally {
@@ -140,7 +120,7 @@ public class AuthenticationServiceBackEndCall {
             try {
                 authenticationService.logout();
             } catch (Exception e) {
-                // Error while cleaning up the logged user
+                //error while cleaning up the logged user
                 authenticationMetric.getFailure().getLogoutFailureOnLogin().inc();
                 logger.error("Logout error: {}", e.getMessage(), e);
             }
@@ -155,7 +135,7 @@ public class AuthenticationServiceBackEndCall {
             authenticator.disconnect(new AuthContext(authRequest));
             return buildLogoutResponseAuthorized(authRequest);
         } catch (Exception e) {
-            // This is an error since the disconnect shouldn't throws exception
+            //this is an error since the disconnect shouldn't throws exception
             authenticationMetric.getFailure().getDisconnectFailure().inc();
             logger.error("Login error: {}", e.getMessage(), e);
             return buildLogoutResponseNotAuthorized(authRequest, e);
@@ -185,13 +165,13 @@ public class AuthenticationServiceBackEndCall {
 
     private AuthResponse buildLoginResponseAuthorized(AuthRequest authRequest, AccessToken accessToken, Account account) {
         AuthResponse authResponse = buildAuthResponse(authRequest, ResultCode.authorized);
-        // If authorized should be not null, anyway do a check
+        //if authorized should be not null, anyway do a check
         if (accessToken != null) {
             authResponse.setScopeId(accessToken.getScopeId().toCompactId());
             authResponse.setUserId(accessToken.getUserId().toCompactId());
             authResponse.setAccessTokenId(accessToken.getTokenId());
         }
-        // If authorized should be not null, anyway do a check
+        //if authorized should be not null, anyway do a check
         if (account != null) {
             authResponse.setAccountName(account.getName());
         }
