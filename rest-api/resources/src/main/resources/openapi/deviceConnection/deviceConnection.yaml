@@ -60,6 +60,12 @@ components:
             reservedUserId:
               allOf:
                 - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            authenticationType:
+              type: string
+              description: The authentication type that must be used when connection
+            lastAuthenticationType:
+              type: string
+              description: The authentication type used when connecting last time
             protocol:
               type: string
             clientIp:
@@ -81,6 +87,8 @@ components:
             userId: Ag
             allowUserChange: false
             userCouplingMode: INHERITED
+            authenticationType: USER_PASS
+            lastAuthenticationType: USER_PASS
             protocol: MQTT
             clientIp: tcp://172.21.0.1:44400
             serverIp: broker
@@ -111,6 +119,8 @@ components:
                 userId: Ag
                 allowUserChange: false
                 userCouplingMode: INHERITED
+                authenticationType: USER_PASS
+                lastAuthenticationType: USER_PASS
                 protocol: MQTT
                 clientIp: tcp://172.21.0.1:44400
                 serverIp: broker
@@ -126,6 +136,9 @@ components:
             reservedUserId:
               allOf:
                 - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            authenticationType:
+              type: string
+              description: The authentication type that must be used when connection
           example:
             type: deviceConnectionOption
             id: Gd1BfeWwh3s
@@ -137,6 +150,7 @@ components:
             optlock: 17
             allowUserChange: false
             userCouplingMode: INHERITED
+            authenticationType: USER_PASS
     userCouplingMode:
       type: string
       enum:
@@ -150,3 +164,9 @@ components:
         - 'DISCONNECTED'
         - 'MISSING'
         - 'NULL'
+    connectionAuthAdapters:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaSetResult'
+      example:
+        items:
+          - USER_PASS

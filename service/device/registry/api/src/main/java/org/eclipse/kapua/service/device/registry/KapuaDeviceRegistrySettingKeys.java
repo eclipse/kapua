@@ -14,6 +14,10 @@ package org.eclipse.kapua.service.device.registry;
 
 import org.eclipse.kapua.commons.setting.SettingKey;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
+import org.eclipse.kapua.model.config.metatype.KapuaTad;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 
 /**
  * {@link SettingKey}s for KapuaDeviceRegistrySettings.
@@ -47,6 +51,13 @@ public enum KapuaDeviceRegistrySettingKeys implements SettingKey {
      * @since 2.0.0
      */
     DEVICE_LIFECYCLE_BIRTH_EXTENDED_PROPERTIES_LENGTH_MAX("device.lifecycle.birth.extended.properties.length.max"),
+
+    /**
+     * Gets the default {@link DeviceConnection#getAuthenticationType()} to set as {@link KapuaTad#getDefault()} in {@link DeviceConnectionService#getConfigMetadata(KapuaId)}.
+     *
+     * @since 2.0.0
+     */
+    DEVICE_CONNECTION_AUTHENTICATION_TYPE_DEFAULT("device.connection.authentication.type.default"),
 
     ;
 

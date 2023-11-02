@@ -31,6 +31,7 @@
         <module>call</module>
         <module>registry</module>
         <module>management</module>
+        <module>authentication</module>
     </modules>
 
 </project>

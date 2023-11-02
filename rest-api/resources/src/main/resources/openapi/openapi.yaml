@@ -256,6 +256,8 @@ paths:
     $ref: './deviceConnection/deviceConnection-scopeId-_count.yaml#/paths/~1{scopeId}~1deviceconnections~1_count'
   /{scopeId}/deviceconnections/_query:
     $ref: './deviceConnection/deviceConnection-scopeId-_query.yaml#/paths/~1{scopeId}~1deviceconnections~1_query'
+  /{scopeId}/deviceconnections/_availableAuth:
+    $ref: './deviceConnection/deviceConnection-scopeId.yaml#/paths/~1{scopeId}~1deviceconnections~1_availableAuth'
   ### Device Event ###
   /{scopeId}/devices/{deviceId}/events:
     $ref: './deviceEvent/deviceEvent-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1events'
@@ -631,6 +633,12 @@ components:
         count:
           type: integer
           description: The total count of the Entities available in the Scope
+    kapuaSetResult:
+      type: object
+      properties:
+        elements:
+          type: array
+          description: A set of values
     ### Schema used in different yaml definitions, placed here for problems with swagger reference resolution ###
     action:
       type: string
@@ -998,6 +1006,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/kapuaCountResult'
+    setResult:
+      description: A set of values
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/kapuaSetResult'
     ### Errors ###
     kapuaError:
       description: An error occurred while performing the request

@@ -77,4 +77,11 @@ public class GwtDeviceConnectionOption extends GwtUpdatableEntityModel implement
         set("allowUserChange", allowUserChange);
     }
 
+    public String getAuthenticationType() {
+        return get("authenticationType");
+    }
+
+    public void setAuthenticationType(String authenticationType) {
+        set("authenticationType", authenticationType);
+    }
 }

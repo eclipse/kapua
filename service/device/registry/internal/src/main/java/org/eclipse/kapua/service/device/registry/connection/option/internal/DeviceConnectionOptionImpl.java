@@ -54,6 +54,15 @@ public class DeviceConnectionOptionImpl extends AbstractKapuaUpdatableEntity imp
     })
     private KapuaEid reservedUserId;
 
+    @Basic
+    @Column(name = "authentication_type", nullable = false)
+    private String authenticationType;
+
+    @Basic
+    @Column(name = "last_authentication_type", nullable = false)
+    private String lastAuthenticationType;
+
+
     /**
      * Constructor.
      *
@@ -117,4 +126,15 @@ public class DeviceConnectionOptionImpl extends AbstractKapuaUpdatableEntity imp
     public void setReservedUserId(KapuaId reservedUserId) {
         this.reservedUserId = KapuaEid.parseKapuaId(reservedUserId);
     }
+
+    @Override
+    public String getAuthenticationType() {
+        return authenticationType;
+    }
+
+    @Override
+    public void setAuthenticationType(String authenticationType) {
+        this.authenticationType = authenticationType;
+    }
+
 }

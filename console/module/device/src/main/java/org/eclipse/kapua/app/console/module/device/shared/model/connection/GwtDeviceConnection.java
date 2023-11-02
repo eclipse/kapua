@@ -135,6 +135,22 @@ public class GwtDeviceConnection extends GwtUpdatableEntityModel implements Seri
         set("connectionUserCouplingMode", connectionUserCouplingMode);
     }
 
+    public String getAuthenticationType() {
+        return get("authenticationType");
+    }
+
+    public void setAuthenticationType(String authenticationType) {
+        set("authenticationType", authenticationType);
+    }
+
+    public String getLastAuthenticationType() {
+        return get("lastAuthenticationType");
+    }
+
+    public void setLastAuthenticationType(String lastAuthenticationType) {
+        set("lastAuthenticationType", lastAuthenticationType);
+    }
+
     public String getReservedUserId() {
         return get("reservedUserId");
     }

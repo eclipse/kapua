@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.api.web;
 
 import org.eclipse.kapua.KapuaSerializable;
 import org.eclipse.kapua.app.api.core.model.CountResult;
+import org.eclipse.kapua.app.api.core.model.SetResult;
 import org.eclipse.kapua.app.api.core.model.StorableEntityId;
 import org.eclipse.kapua.app.api.core.model.data.JsonDatastoreMessage;
 import org.eclipse.kapua.app.api.core.model.data.JsonMessageQuery;
@@ -352,6 +353,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
                     // REST API utility models
                     CountResult.class,
+                    SetResult.class,
 
                     // REST API exception models
                     ThrowableInfo.class,

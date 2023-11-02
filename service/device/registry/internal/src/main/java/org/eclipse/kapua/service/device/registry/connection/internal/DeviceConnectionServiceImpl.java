@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.device.registry.connection.internal;
 import org.apache.commons.lang.NotImplementedException;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -24,6 +25,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.device.authentication.api.DeviceConnectionCredentialAdapter;
 import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.common.DeviceValidationRegex;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
@@ -40,6 +42,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * {@link DeviceConnectionService} implementation.
@@ -50,8 +54,10 @@ import javax.inject.Singleton;
 public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase implements DeviceConnectionService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceConnectionServiceImpl.class);
+
     private final DeviceConnectionFactory entityFactory;
     private final DeviceConnectionRepository repository;
+    private final Map<String, DeviceConnectionCredentialAdapter> availableDeviceConnectionAdapters;
 
     /**
      * Constructor.
@@ -66,10 +72,12 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
             PermissionFactory permissionFactory,
             DeviceConnectionFactory entityFactory,
             TxManager txManager,
-            DeviceConnectionRepository repository) {
+            DeviceConnectionRepository repository,
+            Map<String, DeviceConnectionCredentialAdapter> availableDeviceConnectionAdapters) {
         super(txManager, serviceConfigurationManager, DeviceDomains.DEVICE_CONNECTION_DOMAIN, authorizationService, permissionFactory);
         this.entityFactory = entityFactory;
         this.repository = repository;
+        this.availableDeviceConnectionAdapters = availableDeviceConnectionAdapters;
     }
 
     @Override
@@ -78,28 +86,33 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
         // Argument Validation
         ArgumentValidator.notNull(deviceConnectionCreator, "deviceConnectionCreator");
         ArgumentValidator.notNull(deviceConnectionCreator.getScopeId(), "deviceConnectionCreator.scopeId");
-        ArgumentValidator.notNull(deviceConnectionCreator.getUserId(), "deviceConnectionCreator.userId");
+        ArgumentValidator.notNull(deviceConnectionCreator.getStatus(), "deviceConnectionCreator.status");
         ArgumentValidator.notEmptyOrNull(deviceConnectionCreator.getClientId(), "deviceConnectionCreator.clientId");
         ArgumentValidator.lengthRange(deviceConnectionCreator.getClientId(), 1, 255, "deviceCreator.clientId");
         ArgumentValidator.match(deviceConnectionCreator.getClientId(), DeviceValidationRegex.CLIENT_ID, "deviceCreator.clientId");
-
+        ArgumentValidator.notNull(deviceConnectionCreator.getUserId(), "deviceConnectionCreator.userId");
+        ArgumentValidator.notNull(deviceConnectionCreator.getUserCouplingMode(), "deviceConnectionCreator.userCouplingMode");
+        ArgumentValidator.notNull(deviceConnectionCreator.getAuthenticationType(), "deviceConnectionCreator.authenticationType");
+        if (!availableDeviceConnectionAdapters.containsKey(deviceConnectionCreator.getAuthenticationType())) {
+            throw new KapuaIllegalArgumentException("deviceConnectionCreator.authenticationType", deviceConnectionCreator.getAuthenticationType());
+        }
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
-
         return txManager.execute(tx -> {
             //TODO: check whether this is anywhere efficient
             // Check duplicate ClientId
             if (repository.countByClientId(tx, deviceConnectionCreator.getScopeId(), deviceConnectionCreator.getClientId()) > 0) {
                 throw new KapuaDuplicateNameException(deviceConnectionCreator.getClientId());
             }
-
             final DeviceConnection deviceConnection = entityFactory.newEntity(deviceConnectionCreator.getScopeId());
             deviceConnection.setStatus(deviceConnectionCreator.getStatus());
             deviceConnection.setClientId(deviceConnectionCreator.getClientId());
             deviceConnection.setUserId(deviceConnectionCreator.getUserId());
             deviceConnection.setUserCouplingMode(deviceConnectionCreator.getUserCouplingMode());
-            deviceConnection.setReservedUserId(deviceConnectionCreator.getReservedUserId());
             deviceConnection.setAllowUserChange(deviceConnectionCreator.getAllowUserChange());
+            deviceConnection.setReservedUserId(deviceConnectionCreator.getReservedUserId());
+            deviceConnection.setAuthenticationType(deviceConnectionCreator.getAuthenticationType());
+            deviceConnection.setLastAuthenticationType(deviceConnectionCreator.getLastAuthenticationType());
             deviceConnection.setProtocol(deviceConnectionCreator.getProtocol());
             deviceConnection.setClientIp(deviceConnectionCreator.getClientIp());
             deviceConnection.setServerIp(deviceConnectionCreator.getServerIp());
@@ -116,10 +129,15 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
         ArgumentValidator.notNull(deviceConnection, "deviceConnection");
         ArgumentValidator.notNull(deviceConnection.getId(), "deviceConnection.id");
         ArgumentValidator.notNull(deviceConnection.getScopeId(), "deviceConnection.scopeId");
-
+        ArgumentValidator.notNull(deviceConnection.getStatus(), "deviceConnection.status");
+        ArgumentValidator.notNull(deviceConnection.getUserId(), "deviceConnection.userId");
+        ArgumentValidator.notNull(deviceConnection.getUserCouplingMode(), "deviceConnection.userCouplingMode");
+        ArgumentValidator.notNull(deviceConnection.getAuthenticationType(), "deviceConnection.authenticationType");
+        if (!availableDeviceConnectionAdapters.containsKey(deviceConnection.getAuthenticationType())) {
+            throw new KapuaIllegalArgumentException("deviceConnection.authenticationType", deviceConnection.getAuthenticationType());
+        }
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
-
         // Do Update
         return txManager.execute(tx -> repository.update(tx, deviceConnection));
     }
@@ -203,6 +221,11 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
     public void disconnect(KapuaId scopeId, String clientId)
             throws KapuaException {
         throw new NotImplementedException();
+    }
+
+    @Override
+    public Set<String> getAvailableAuthTypes() {
+        return availableDeviceConnectionAdapters.keySet();
     }
 
     // @ListenServiceEvent(fromAddress="account")

@@ -112,6 +112,38 @@ public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<Dev
     void setAllowUserChange(boolean allowUserChange);
 
     /**
+     * Gets the allowed authentication type.
+     *
+     * @return The allowed authentication type.
+     * @since 2.0.0
+     */
+    String getAuthenticationType();
+
+    /**
+     * Sets the allowed authentication type.
+     *
+     * @param authenticationType The allowed authentication type.
+     * @since 2.0.0
+     */
+    void setAuthenticationType(String authenticationType);
+
+    /**
+     * Gets the last used authentication type.
+     *
+     * @return The last used authentication type.
+     * @since 2.0.0
+     */
+    String getLastAuthenticationType();
+
+    /**
+     * Sets the last used authentication type.
+     *
+     * @param lastAuthenticationType The last used authentication type.
+     * @since 2.0.0
+     */
+    void setLastAuthenticationType(String lastAuthenticationType);
+
+    /**
      * Get the device protocol
      *
      * @return

@@ -30,6 +30,8 @@ public class DeviceConnectionOptionCreatorImpl extends AbstractKapuaUpdatableEnt
     private ConnectionUserCouplingMode userCouplingMode;
     private KapuaId reservedUserId;
 
+    private String authenticationType;
+
     /**
      * Constructor
      *
@@ -39,19 +41,33 @@ public class DeviceConnectionOptionCreatorImpl extends AbstractKapuaUpdatableEnt
         super(scopeId);
     }
 
+    @Override
     public ConnectionUserCouplingMode getUserCouplingMode() {
         return userCouplingMode;
     }
 
+    @Override
     public void setUserCouplingMode(ConnectionUserCouplingMode userCouplingMode) {
         this.userCouplingMode = userCouplingMode;
     }
 
+    @Override
     public KapuaId getReservedUserId() {
         return reservedUserId;
     }
 
+    @Override
     public void setReservedUserId(KapuaId reservedUserId) {
         this.reservedUserId = reservedUserId;
+    }
+
+    @Override
+    public String getAuthenticationType() {
+        return authenticationType;
+    }
+
+    @Override
+    public void setAuthenticationType(String authenticationType) {
+        this.authenticationType = authenticationType;
     }
 }

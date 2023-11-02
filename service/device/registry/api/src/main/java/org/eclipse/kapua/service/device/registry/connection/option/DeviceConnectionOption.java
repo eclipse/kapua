@@ -32,13 +32,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlRootElement(name = "deviceConnectionOption")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
-        "allowUserChange",
-        "userCouplingMode",
-        "reservedUserId",
-}, //
-        factoryClass = DeviceConnectionOptionXmlRegistry.class, //
-        factoryMethod = "newDeviceConnectionOption")
+@XmlType(factoryClass = DeviceConnectionOptionXmlRegistry.class, factoryMethod = "newDeviceConnectionOption")
 public interface DeviceConnectionOption extends KapuaUpdatableEntity {
 
     String TYPE = "deviceConnectionOption";
@@ -93,4 +87,20 @@ public interface DeviceConnectionOption extends KapuaUpdatableEntity {
      * @param reservedUserId
      */
     void setReservedUserId(KapuaId reservedUserId);
+
+    /**
+     * Gets the allowed authentication type.
+     *
+     * @return The allowed authentication type.
+     * @since 2.0.0
+     */
+    String getAuthenticationType();
+
+    /**
+     * Sets the allowed authentication type.
+     *
+     * @param authenticationType The allowed authentication type.
+     * @since 2.0.0
+     */
+    void setAuthenticationType(String authenticationType);
 }

@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.registry.connection.option.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaRuntimeErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -24,6 +25,7 @@ import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.device.authentication.api.DeviceConnectionCredentialAdapter;
 import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionAttributes;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
@@ -39,6 +41,7 @@ import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Map;
 
 /**
  * DeviceConnectionService exposes APIs to retrieve Device connections under a scope.
@@ -55,6 +58,7 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
     private final DeviceConnectionRepository deviceConnectionRepository;
     private final DeviceConnectionFactory entityFactory;
     private final DeviceConnectionOptionRepository repository;
+    private final Map<String, DeviceConnectionCredentialAdapter> availableDeviceConnectionAdapters;
 
     @Inject
     public DeviceConnectionOptionServiceImpl(
@@ -63,13 +67,15 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
             TxManager txManager,
             DeviceConnectionRepository deviceConnectionRepository,
             DeviceConnectionFactory entityFactory,
-            DeviceConnectionOptionRepository repository) {
+            DeviceConnectionOptionRepository repository,
+            Map<String, DeviceConnectionCredentialAdapter> availableDeviceConnectionAdapters) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.txManager = txManager;
         this.deviceConnectionRepository = deviceConnectionRepository;
         this.entityFactory = entityFactory;
         this.repository = repository;
+        this.availableDeviceConnectionAdapters = availableDeviceConnectionAdapters;
     }
 
     @Override
@@ -85,10 +91,11 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
         ArgumentValidator.notNull(deviceConnectionOptions, "deviceConnection");
         ArgumentValidator.notNull(deviceConnectionOptions.getId(), "deviceConnection.id");
         ArgumentValidator.notNull(deviceConnectionOptions.getScopeId(), "deviceConnection.scopeId");
-        // Check Access
-
+        ArgumentValidator.notNull(deviceConnectionOptions.getAuthenticationType(), "deviceConnection.authenticationType");
+        if (!availableDeviceConnectionAdapters.containsKey(deviceConnectionOptions.getAuthenticationType())) {
+            throw new KapuaIllegalArgumentException("deviceConnection.authenticationType", deviceConnectionOptions.getAuthenticationType());
+        }
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, deviceConnectionOptions.getScopeId()));
-
         return txManager.execute(tx -> {
             if (deviceConnectionOptions.getReservedUserId() != null) {
                 DeviceConnectionQuery query = entityFactory.newQuery(deviceConnectionOptions.getScopeId());

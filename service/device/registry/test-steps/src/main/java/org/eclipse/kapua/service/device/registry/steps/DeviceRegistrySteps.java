@@ -1084,7 +1084,7 @@ public class DeviceRegistrySteps extends TestBase {
                 connectionCreator.setServerIp(cucConnection.getServerIp());
                 connectionCreator.setProtocol(cucConnection.getProtocol());
                 connectionCreator.setAllowUserChange(false);
-
+                connectionCreator.setAuthenticationType(deviceConnectionService.getAvailableAuthTypes().stream().findFirst().orElseThrow(() -> new IllegalStateException("No DeviceConnection authenticationTypes are available for testing")));
                 deviceConnection = deviceConnectionService.create(connectionCreator);
                 deviceConnections.addItem(deviceConnection);
             }
@@ -1585,9 +1585,8 @@ public class DeviceRegistrySteps extends TestBase {
             printEvents(deviceEventList, events);
             if (greater) {
                 Assert.assertEquals("Wrong device events count", events, deviceEventList.getSize());
-            }
-            else {
-                Assert.assertTrue("Wrong device events count. Expected greater than " + events + " but found " + deviceEventList.getSize(), events<=deviceEventList.getSize());
+            } else {
+                Assert.assertTrue("Wrong device events count. Expected greater than " + events + " but found " + deviceEventList.getSize(), events <= deviceEventList.getSize());
             }
         }
         return greater ? events <= deviceEventList.getSize() : events == deviceEventList.getSize();
@@ -1941,7 +1940,7 @@ public class DeviceRegistrySteps extends TestBase {
     public void setDeviceConnectionCouplingMode(String name, String mode) throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
             Account account = accountService.findByName(name);
-            Map<String, Object> valueMap = new HashMap<>();
+            Map<String, Object> valueMap = deviceConnectionService.getConfigValues(account.getId());
             valueMap.put("deviceConnectionUserCouplingDefaultMode", mode);
             deviceConnectionService.setConfigValues(account.getId(), account.getScopeId(), valueMap);
         });
@@ -1958,6 +1957,7 @@ public class DeviceRegistrySteps extends TestBase {
                 tmpCreator.setReservedUserId(tmpConn.getReservedUserId());
                 tmpCreator.setAllowUserChange(tmpConn.getAllowUserChange());
                 tmpCreator.setUserCouplingMode(tmpConn.getUserCouplingMode());
+                tmpCreator.setAuthenticationType(deviceConnectionService.getAvailableAuthTypes().stream().findFirst().orElseThrow(() -> new IllegalStateException("No DeviceConnection authenticationTypes are available for testing")));
                 DeviceConnection tmpDevConn = deviceConnectionService.create(tmpCreator);
                 tmpDevConn.setStatus(DeviceConnectionStatus.DISCONNECTED);
                 deviceConnectionService.update(tmpDevConn);
@@ -2026,24 +2026,21 @@ public class DeviceRegistrySteps extends TestBase {
             Device device = deviceRegistryService.findByClientId(accountId, clientId);
             if (timeoutOccurred) {
                 Assert.assertNotNull(device);
-            }
-            else if (device==null) {
+            } else if (device == null) {
                 return false;
             }
             DeviceConnection deviceConnection = deviceConnectionService.findByClientId(accountId, clientId);
             if (timeoutOccurred) {
                 Assert.assertNotNull("Device connection cannot be null!", deviceConnection);
                 Assert.assertEquals("Bad connection status!", connectionStatus, deviceConnection.getStatus().name());
-                if (connectionUserId!=null) {
+                if (connectionUserId != null) {
                     Assert.assertEquals("Bad connection user Id!", connectionUserId, deviceConnection.getUserId());
                 }
-            }
-            else {
-                if (connectionUserId!=null) {
-                    return deviceConnection!=null && connectionStatus.equals(deviceConnection.getStatus().name()) && connectionUserId.equals(deviceConnection.getUserId());
-                }
-                else {
-                    return deviceConnection!=null && connectionStatus.equals(deviceConnection.getStatus().name());
+            } else {
+                if (connectionUserId != null) {
+                    return deviceConnection != null && connectionStatus.equals(deviceConnection.getStatus().name()) && connectionUserId.equals(deviceConnection.getUserId());
+                } else {
+                    return deviceConnection != null && connectionStatus.equals(deviceConnection.getStatus().name());
                 }
             }
             stepData.put(DEVICE_CONNECTION, deviceConnection);
@@ -2218,6 +2215,7 @@ public class DeviceRegistrySteps extends TestBase {
         creator.setServerIp(SERVER_IP);
         creator.setProtocol("tcp");
         creator.setAllowUserChange(false);
+        creator.setAuthenticationType(deviceConnectionService.getAvailableAuthTypes().stream().findFirst().orElseThrow(() -> new IllegalStateException("No DeviceConnection authenticationTypes are available for testing")));
         return creator;
     }
 

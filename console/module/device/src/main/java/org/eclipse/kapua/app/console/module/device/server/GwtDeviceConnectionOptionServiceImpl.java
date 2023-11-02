@@ -23,12 +23,17 @@ import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceMod
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOption;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class GwtDeviceConnectionOptionServiceImpl extends KapuaRemoteServiceServlet implements GwtDeviceConnectionOptionService {
 
     private static final long serialVersionUID = 7323313459749361320L;
+
 
     @Override
     public GwtDeviceConnectionOption update(GwtXSRFToken gwtXsrfToken, GwtDeviceConnectionOption gwtDeviceConnectionOption) throws GwtKapuaException {
@@ -49,6 +54,7 @@ public class GwtDeviceConnectionOptionServiceImpl extends KapuaRemoteServiceServ
             if (gwtDeviceConnectionOption.getConnectionUserCouplingModeEnum() != null) {
                 deviceConnectionOption.setUserCouplingMode(ConnectionUserCouplingMode.valueOf(gwtDeviceConnectionOption.getConnectionUserCouplingModeEnum().name()));
             }
+            deviceConnectionOption.setAuthenticationType(gwtDeviceConnectionOption.getAuthenticationType());
 
             return KapuaGwtDeviceModelConverter.convertDeviceConnectionOption(deviceConnectionOptionService.update(deviceConnectionOption));
 
@@ -57,6 +63,14 @@ public class GwtDeviceConnectionOptionServiceImpl extends KapuaRemoteServiceServ
         }
         // Return result
         return gwtDeviceConnectionOption;
+    }
+
+
+    @Override
+    public Set<String> getAvailableAuthenticationTypes() {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
+        return new HashSet<String>(deviceConnectionService.getAvailableAuthTypes());
     }
 
 }

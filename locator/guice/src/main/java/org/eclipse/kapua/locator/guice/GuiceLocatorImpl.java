@@ -73,6 +73,16 @@ public class GuiceLocatorImpl extends KapuaLocator {
         }
     }
 
+    /**
+     * Gets the {@link Injector} instance.
+     *
+     * @return The {@link Injector} instance.
+     * @since 2.0.0
+     */
+    public Injector getInjector() {
+        return injector;
+    }
+
     @Override
     public <S extends KapuaService> S getService(Class<S> serviceClass) {
         try {
