@@ -80,7 +80,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
 
     protected ServerContext serverContext;
     //to avoid deadlock this field will be initialized by the first internal login call
-    protected KapuaId adminScopeId;
+    protected AccountInfo adminAccountInfo;
     private final LocalCache<String, KapuaId> usernameScopeIdCache;
 
     public SecurityPlugin() {
@@ -152,7 +152,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                 username, connectionInfo.getClientId(), connectionInfo.getClientIp(), remotingConnection.getID(),
                 remotingConnection.getTransportConnection().getRemoteAddress(), remotingConnection.getTransportConnection().isOpen());
             //TODO double check why the client id is null once coming from AMQP connection (the Kapua connection factory with custom client id generation is called)
-            KapuaPrincipal kapuaPrincipal = buildInternalKapuaPrincipal(getAdminScopeId(), username, connectionInfo.getClientId());
+            KapuaPrincipal kapuaPrincipal = buildInternalKapuaPrincipal(getAdminAccountInfo().getId(), username, connectionInfo.getClientId());
             //auto generate client id if null. It shouldn't be null but in some case the one from JMS connection is.
             String clientId = connectionInfo.getClientId();
             //set a random client id value if not set by the client
@@ -162,10 +162,10 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                 logger.info("Updated empty client id to: {}", clientId);
             }
             //update client id with account|clientId (see pattern)
-            String fullClientId = Utils.getFullClientId(getAdminScopeId(), clientId);
+            String fullClientId = Utils.getFullClientId(getAdminAccountInfo().getId(), clientId);
             remotingConnection.setClientID(fullClientId);
             Subject subject = buildInternalSubject(kapuaPrincipal);
-            SessionContext sessionContext = new SessionContext(kapuaPrincipal, connectionInfo,
+            SessionContext sessionContext = new SessionContext(kapuaPrincipal, getAdminAccountInfo().getName(), connectionInfo,
                 serverContext.getBrokerIdentity().getBrokerId(), serverContext.getBrokerIdentity().getBrokerHost(),
                 true, false);
             serverContext.getSecurityContext().setSessionContext(sessionContext, null);
@@ -196,7 +196,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             AuthResponse authResponse = serverContext.getAuthServiceClient().brokerConnect(authRequest);
             validateAuthResponse(authResponse);
             KapuaPrincipal principal = new KapuaPrincipalImpl(authResponse);
-            SessionContext sessionContext = new SessionContext(principal, connectionInfo, authResponse.getKapuaConnectionId(),
+            SessionContext sessionContext = new SessionContext(principal, authResponse.getAccountName(), connectionInfo, authResponse.getKapuaConnectionId(),
                 serverContext.getBrokerIdentity().getBrokerId(), serverContext.getBrokerIdentity().getBrokerHost(),
                 authResponse.isAdmin(), authResponse.isMissing());
 
@@ -358,11 +358,11 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         return subject;
     }
 
-    private KapuaId getAdminScopeId() throws JsonProcessingException, JMSException, InterruptedException {
-        if (adminScopeId==null) {
-            adminScopeId = getAdminScopeIdNoCache();
+    private AccountInfo getAdminAccountInfo() throws JsonProcessingException, JMSException, InterruptedException {
+        if (adminAccountInfo==null) {
+            adminAccountInfo = getAdminAccountInfoNoCache();
         }
-        return adminScopeId;
+        return adminAccountInfo;
     }
 
     private KapuaId getScopeId(String username) throws JsonProcessingException, JMSException, InterruptedException {
@@ -375,7 +375,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         return scopeId;
     }
 
-    private KapuaId getAdminScopeIdNoCache() throws JsonProcessingException, JMSException, InterruptedException {
+    private AccountInfo getAdminAccountInfoNoCache() throws JsonProcessingException, JMSException, InterruptedException {
         EntityRequest accountRequest = new EntityRequest(
             serverContext.getClusterName(),
             serverContext.getBrokerIdentity().getBrokerHost(),
@@ -384,7 +384,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_ACCOUNT));
         EntityResponse accountResponse = serverContext.getAuthServiceClient().getEntity(accountRequest);
         if (accountResponse != null) {
-            return KapuaEid.parseCompactId(accountResponse.getId());
+            return new AccountInfo(KapuaEid.parseCompactId(accountResponse.getId()), accountResponse.getName());
         }
         throw new SecurityException("User not authorized!");
     }
@@ -406,10 +406,29 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             EntityType.user.name(),
             username);
         EntityResponse userResponse = serverContext.getAuthServiceClient().getEntity(userRequest);
-        if (userResponse != null) {
+        if (userResponse != null && userResponse.getScopeId()!=null) {
             return KapuaEid.parseCompactId(userResponse.getScopeId());
         }
         throw new SecurityException("User not authorized!");
     }
 
+}
+
+class AccountInfo {
+
+    private KapuaId id;
+    private String name;
+
+    public AccountInfo(KapuaId id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public KapuaId getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
