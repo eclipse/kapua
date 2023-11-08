@@ -30,9 +30,9 @@ Example response with time:
     [INFO] Final Memory: 48M/728M
     [INFO] ------------------------------------------------------------------------    
 
-##Without dockerized Kapua
+## Without dockerized Kapua
 By default tests are run with embedded servers providing kapua infrastructure services, such as
-database, event-broker, message broker, elaticsearch.
+database, event-broker, message broker, elasticsearch.
 
 So to run those use default profile and run:
 
