@@ -27,7 +27,7 @@ if [ ! -f /opt/keycloak/first-run ]; then
   echo "    Kapua Console URL: $KAPUA_CONSOLE_URL"
   echo "    Keycloak Realm: $REALM_NAME"
   echo "    Keycloak Admin User: $KEYCLOAK_USER"
-  echo "    Keycloak TLS disabled:  $KEYCLOAK_DISABLE_SSL"
+  echo "    Keycloak TLS enabled:  $KEYCLOAK_SSL_ENABLE"
   echo ""
 
   #
@@ -162,7 +162,7 @@ EOF
   echo ""
 fi
 
-if [ "$KEYCLOAK_DISABLE_SSL" = "true" ]; then
+if [ "$KEYCLOAK_SSL_ENABLE" = "false" ]; then
   echo "Starting Keycloak without TLS in production mode!"
   exec /opt/keycloak/bin/kc.sh start --hostname="$KEYCLOAK_HOST_NAME" --hostname-strict-https=false --http-enabled=true --http-port="$KEYCLOAK_PORT_HTTP" $@
   exit $?
