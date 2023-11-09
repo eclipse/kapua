@@ -34,7 +34,12 @@ export KAPUA_CONSOLE_URL="${KAPUA_CONSOLE_URL:=http://${EXTERNAL_IP}:8080}"
 export KEYCLOAK_IMAGE="${KEYCLOAK_IMAGE:=kapua/kapua-keycloak:${IMAGE_VERSION}}"
 export KEYCLOAK_PORT_HTTP=9090
 export KEYCLOAK_PORT_HTTPS=9443
-export KEYCLOAK_SSL_ENABLE=${KEYCLOAK_SSL_ENABLE:=false} #similarly to the console, this flag disables ssl connections
+
+if [[ "$1" == true ]]; then #--ssl deployment
+  export KEYCLOAK_SSL_ENABLE=true
+else
+  export KEYCLOAK_SSL_ENABLE=${KEYCLOAK_SSL_ENABLE:=false} # --ssl deployment not set, but one can always deploy keycloak with SSL with this env. var
+fi
 
 if [ "$KEYCLOAK_SSL_ENABLE" = "false" ]; then
   export KEYCLOAK_URL="${KEYCLOAK_URL:=http://${KEYCLOAK_HOST_NAME}:${KEYCLOAK_PORT_HTTP}}"

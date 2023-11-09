@@ -66,7 +66,7 @@ docker_compose() {
     # SSO Mode
     if [[ "$5" == true ]]; then
       echo "SSO enabled!"
-      . "${SCRIPT_DIR}/sso/docker-sso-config.sh"
+      . "${SCRIPT_DIR}/sso/docker-sso-config.sh" "$4"
 
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/sso/docker-compose.console-sso.yml")
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/sso/docker-compose.keycloak.yml")

@@ -15,7 +15,7 @@
 
 SCRIPT_DIR_SSO_COFIG="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-. "${SCRIPT_DIR_SSO_COFIG}/docker-common-sso.sh"
+. "${SCRIPT_DIR_SSO_COFIG}/docker-common-sso.sh" "$1" # the first argument is the SSL enabler set via the --ssl deployment
 
 #
 # Build the Keycloak image if missing
