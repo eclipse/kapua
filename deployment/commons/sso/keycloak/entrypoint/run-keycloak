@@ -15,22 +15,25 @@
 
 set -e
 
+KEYCLOAK_CERT_FILE="etc/x509/https/${SSO_CERT_FILE}"
+KEYCLOAK_KEY_FILE="etc/x509/https/${SSO_KEY_FILE}"
+
 if [ ! -f /opt/keycloak/first-run ]; then
   REALM_NAME="kapua"
-  KC_PORT="9090"
-  KC_URL="http://localhost:$KC_PORT"
+  KC_URL="http://localhost:$KEYCLOAK_PORT_HTTP"
   KC=/opt/keycloak/bin/kcadm.sh
 
   echo "Kapua Keycloak Configuration:"
   echo "    Kapua Console URL: $KAPUA_CONSOLE_URL"
   echo "    Keycloak Realm: $REALM_NAME"
   echo "    Keycloak Admin User: $KEYCLOAK_USER"
+  echo "    Keycloak TLS enabled:  $KEYCLOAK_SSL_ENABLE"
   echo ""
 
   #
   # Start and wait Keycloak
-  echo "Starting Keycloak..."
-  KEYCLOAK_ADMIN=$KEYCLOAK_USER KEYCLOAK_ADMIN_PASSWORD=$KEYCLOAK_PASSWORD /opt/keycloak/bin/kc.sh start --http-port=$KC_PORT &
+  echo "Starting Keycloak without TLS for first configuration..."
+  KEYCLOAK_ADMIN=$KEYCLOAK_USER KEYCLOAK_ADMIN_PASSWORD=$KEYCLOAK_PASSWORD /opt/keycloak/bin/kc.sh start --hostname="$KEYCLOAK_HOST_NAME" --hostname-strict-https=false --http-enabled=true --http-port="$KEYCLOAK_PORT_HTTP" &
 
   while ! curl -sf $KC_URL > /dev/null; do
     echo "Waiting for keycloak to come up..."
@@ -159,6 +162,13 @@ EOF
   echo ""
 fi
 
-echo "Starting Keycloak!"
-exec /opt/keycloak/bin/kc.sh start --http-port=$KC_PORT $@
-exit $?
+if [ "$KEYCLOAK_SSL_ENABLE" = "false" ]; then
+  echo "Starting Keycloak without TLS in production mode!"
+  exec /opt/keycloak/bin/kc.sh start --hostname="$KEYCLOAK_HOST_NAME" --hostname-strict-https=false --http-enabled=true --http-port="$KEYCLOAK_PORT_HTTP" $@
+  exit $?
+else
+  echo "Starting Keycloak with TLS in production mode!"
+  exec /opt/keycloak/bin/kc.sh start --hostname="$KEYCLOAK_HOST_NAME" --hostname-port="$KEYCLOAK_PORT_HTTPS" --https-certificate-file="$KEYCLOAK_CERT_FILE" --https-certificate-key-file="$KEYCLOAK_KEY_FILE" $@ #hostnameport needed because we redirect the ssl port with the docker proxy
+  exit $?
+fi
+
