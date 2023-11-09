@@ -29,7 +29,6 @@ export SSO_CRT="${SSO_CRT:=${SSO_CRT_DIR}/${SSO_CERT_FILE}}"
 export SSO_KEY="${SSO_KEY:=${SSO_CRT_DIR}/${SSO_KEY_FILE}}"
 
 export KEYCLOAK_HOST_NAME="${KEYCLOAK_HOST_NAME:=${EXTERNAL_IP}}"
-export KAPUA_CONSOLE_URL="${KAPUA_CONSOLE_URL:=http://${EXTERNAL_IP}:8080}"
 
 export KEYCLOAK_IMAGE="${KEYCLOAK_IMAGE:=kapua/kapua-keycloak:${IMAGE_VERSION}}"
 export KEYCLOAK_PORT_HTTP=9090
@@ -37,8 +36,10 @@ export KEYCLOAK_PORT_HTTPS=9443
 
 if [[ "$1" == true ]]; then #--ssl deployment
   export KEYCLOAK_SSL_ENABLE=true
+  export KAPUA_CONSOLE_URL="${KAPUA_CONSOLE_URL:=https://${EXTERNAL_IP}:8443}"
 else
-  export KEYCLOAK_SSL_ENABLE=${KEYCLOAK_SSL_ENABLE:=false} # --ssl deployment not set, but one can always deploy keycloak with SSL with this env. var
+  export KEYCLOAK_SSL_ENABLE=${KEYCLOAK_SSL_ENABLE:=false} # --ssl deployment not set, but one can always deploy keycloak with SSL with this env. var, so I set the env variable for keycloak compose file
+  export KAPUA_CONSOLE_URL="${KAPUA_CONSOLE_URL:=http://${EXTERNAL_IP}:8080}"
 fi
 
 if [ "$KEYCLOAK_SSL_ENABLE" = "false" ]; then
