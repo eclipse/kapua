@@ -188,8 +188,11 @@ For the production mode, you must specify the hostname at startup (with the --ho
 
 #### TLS configuration
 
-The Keycloak provider can be configured to use TLS, setting to false the environment variable KEYCLOAK_DISABLE_SSL before calling the `docker-deploy.sh` script. A self-signed certificate and a key are produced through `sso-docker-deploy.sh`
-script and passed via the volume based on the `./certs:/etc/x509/https` directory. The script also installs the
+The Keycloak provider can be configured to use TLS, this can be accomplished in 2 ways:
+1. Deploying Kapua with `docker-deploy.sh` script using the --ssl option (along with the --sso option, obviously). In this way all different services that can set on top of the TLS layer will enable it.
+2. Setting the environment variable KEYCLOAK_SSL_ENABLE before calling the `docker-deploy.sh` script (it is false by default). In this way you configure TLS for Keycloak but not for the other services.
+
+With this configuration, a self-signed certificate and a key are produced through `sso-docker-deploy.sh` script and passed via the volume based on the `./certs:/etc/x509/https` directory. The script also installs the
 certificate in the Kapua Console docker image (which is tagged with the 'sso' tag). Notice that in this case the keycloak console can be accessed at _http://<machine-external-ip-address>:9443/_.
 
 **WARNING**: This TLS configuration is intended to be used only for testing purposes and should not be used in a
@@ -243,7 +246,7 @@ variables (these will automatically set up the configuration properties describe
 - `KAPUA_CONSOLE_URL=http://<machine-ip-address>:8080` : sets the `sso.openid.client.id` value; the Kapua web console URI
   (use `http://<machine-ip-address>:8443` in case TLS is enabled in the console)
 
-When using `docker-compose`, these two variables are bound through the `docker-compose.yaml` file. We recommended to use your machine IP address instead of '
+When using `docker-compose`, these two variables are bound through the `docker-compose.console-sso.yaml` file. We recommended to use your machine IP address instead of '
 localhost', since this one can be misinterpreted by docker as the 'localhost' of the container in which the Kapua
 component or Keycloak are running (this is automatically done through the `sso-docker-deploy.sh`
 script).
