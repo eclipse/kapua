@@ -83,11 +83,7 @@ public class DeviceConnectionServiceConfigurationManager extends ServiceConfigur
         KapuaTocd deviceConnectionServiceConfigDefinition = super.getConfigMetadata(txContext, scopeId, excludeDisabled);
 
         // Find the 'deviceConnectionAuthenticationType' KapuaTad
-        Optional<KapuaTad> authenticationTypeConfigDefinition = deviceConnectionServiceConfigDefinition
-                .getAD()
-                .stream()
-                .filter(kapuaTad -> "deviceConnectionAuthenticationType".equals(kapuaTad.getId()))
-                .findFirst();
+        Optional<KapuaTad> authenticationTypeConfigDefinition = findAuthenticationTypeTad(deviceConnectionServiceConfigDefinition);
 
         // Add the KapuaToption to the KapuaTad
         authenticationTypeConfigDefinition.ifPresent(tad -> {
@@ -110,5 +106,20 @@ public class DeviceConnectionServiceConfigurationManager extends ServiceConfigur
         });
 
         return deviceConnectionServiceConfigDefinition;
+    }
+
+    /**
+     * Looks for the {@link KapuaTad} with 'deviceConnectionAuthenticationType' {@link KapuaTad#getId()}.
+     *
+     * @param deviceConnectionServiceConfigDefinition The {@link DeviceConnectionService} {@link KapuaTad}.
+     * @return The {@link Optional} {@link KapuaTad}
+     * @since 2.0.0
+     */
+    protected Optional<KapuaTad> findAuthenticationTypeTad(KapuaTocd deviceConnectionServiceConfigDefinition) {
+        return deviceConnectionServiceConfigDefinition
+                .getAD()
+                .stream()
+                .filter(kapuaTad -> "deviceConnectionAuthenticationType".equals(kapuaTad.getId()))
+                .findFirst();
     }
 }
