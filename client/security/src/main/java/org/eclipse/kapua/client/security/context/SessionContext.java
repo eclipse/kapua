@@ -50,14 +50,18 @@ public class SessionContext {
 
     private Map<String, Object> properties = new HashMap<>();
 
-    public SessionContext(KapuaPrincipal principal, ConnectionInfo connectionInfo, String kapuaConnectionId, String brokerId, String brokerHost, boolean admin, boolean missing) {
-        this(principal, connectionInfo, brokerId, brokerHost, admin, missing);
+    public SessionContext(KapuaPrincipal principal, String accountName, ConnectionInfo connectionInfo, String kapuaConnectionId, String brokerId, String brokerHost, boolean admin, boolean missing) {
+        this(principal, accountName, connectionInfo, brokerId, brokerHost, admin, missing);
         this.kapuaConnectionId = KapuaEid.parseCompactId(kapuaConnectionId);
     }
 
-    public SessionContext(KapuaPrincipal principal, ConnectionInfo connectionInfo, String brokerId, String brokerHost, boolean admin, boolean missing) {
+    public SessionContext(KapuaPrincipal principal, String accountName, ConnectionInfo connectionInfo, String brokerId, String brokerHost, boolean admin, boolean missing) {
         this.principal = principal;
-        username = principal.getName();
+        //after the fix from this commit 824cccbb1e5b4347c0b0a583b4050a630dceb4c7
+        //fix(authentication): fix KapuaPrincipal name
+        //principal.getName() returns username + "@" + clientId;
+        username = extractUsername(principal);
+        this.accountName = accountName;
         kapuaSession = new KapuaSession(principal);
         this.scopeId = principal.getAccountId();
         this.userId = principal.getUserId();
@@ -174,4 +178,11 @@ public class SessionContext {
         return value!=null ? value : defaultValue;
     }
 
+    private String extractUsername(KapuaPrincipal principal) {
+        int index = principal.getName().indexOf("@");
+        if (index>-1) {
+            return principal.getName().substring(0, index);
+        }
+        throw new SecurityException("Bad principal name: " + principal.getName());
+    }
 }

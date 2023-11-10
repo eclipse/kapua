@@ -17,6 +17,7 @@ import com.codahale.metrics.Timer.Context;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.client.security.bean.AuthAcl;
 import org.eclipse.kapua.client.security.bean.AuthContext;
+import org.eclipse.kapua.client.security.metric.AuthLoginMetric;
 import org.eclipse.kapua.client.security.metric.AuthMetric;
 import org.eclipse.kapua.commons.event.ServiceEventBusManager;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -100,28 +101,12 @@ public class DefaultAuthenticator implements Authenticator {
             throw new SecurityException("Device is disabled");
         }
         if (isAdminUser(authContext)) {
-            authenticationMetric.getAdminLogin().getAttempt().inc();
-            if (authContext.isStealingLink()) {
-                authenticationMetric.getAdminLogin().getStealingLinkConnect().inc();
-                logger.warn("Detected Stealing link for clientId: {} - account: {} - current connectionId: {} - IP: {}",
-                        authContext.getClientId(),
-                        authContext.getAccountName(),
-                        authContext.getConnectionId(),
-                        authContext.getClientIp());
-            }
+            updateMetricAndCheckForStealingLink(authContext, authenticationMetric.getAdminLogin());
             authorizationEntries = adminAuthenticationLogic.connect(authContext);
             authenticationMetric.getAdminLogin().getConnected().inc();
         }
         else {
-            authenticationMetric.getUserLogin().getAttempt().inc();
-            if (authContext.isStealingLink()) {
-                authenticationMetric.getUserLogin().getStealingLinkConnect().inc();
-                logger.warn("Detected Stealing link for clientId: {} - account: {} - current connectionId: {} - IP: {}",
-                        authContext.getClientId(),
-                        authContext.getAccountName(),
-                        authContext.getConnectionId(),
-                        authContext.getClientIp());
-            }
+            updateMetricAndCheckForStealingLink(authContext, authenticationMetric.getUserLogin());
             authorizationEntries = userAuthenticationLogic.connect(authContext);
             authenticationMetric.getUserLogin().getConnected().inc();
             Context loginRaiseLifecycleEventTimeContext = authenticationMetric.getExtConnectorTime().getRaiseLifecycleEvent().time();
@@ -144,28 +129,32 @@ public class DefaultAuthenticator implements Authenticator {
             adminAuthenticationLogic.disconnect(authContext);
         }
         else {
-            authenticationMetric.getUserLogin().getDisconnected().inc();
-            String error = authContext.getExceptionClass();
-            logger.info("Disconnecting client: connection id: {} - error: {} - isStealingLink {} - isIllegalState: {}",
-                    authContext.getConnectionId(), error, authContext.isStealingLink(), authContext.isIllegalState());
-            if (authContext.isStealingLink()) {
-                authenticationMetric.getUserLogin().getStealingLinkDisconnect().inc();
-                logger.info("Stealing link: skip device connection status update. Client id: {} - Connection id: {}",
-                        authContext.getClientId(),
-                        authContext.getConnectionId());
-            }
-            else if (authContext.isIllegalState()) {
-                authenticationMetric.getUserLogin().getIllegalStateDisconnect().inc();
-                logger.info("Illegal device connection status: skip device connection status update. Client id: {} - Connection id: {}",
-                        authContext.getClientId(),
-                        authContext.getConnectionId());
-            }
-            if (userAuthenticationLogic.disconnect(authContext)) {
-                logger.info("raising disconnect lifecycle event for clientIs: {}", authContext.getClientId());
-                Context loginRaiseLifecycleEventTimeContext = authenticationMetric.getExtConnectorTime().getRaiseLifecycleEvent().time();
-                raiseLifecycleEvent(authContext, DeviceConnectionStatus.DISCONNECTED);
-                loginRaiseLifecycleEventTimeContext.stop();
-            }
+            disconnectUser(authContext, authenticationMetric.getUserLogin());
+        }
+    }
+
+    protected void disconnectUser(AuthContext authContext, AuthLoginMetric loginMetric) throws ServiceEventBusException {
+        loginMetric.getDisconnected().inc();
+        String error = authContext.getExceptionClass();
+        logger.info("Disconnecting client: connection id: {} - error: {} - isStealingLink {} - isIllegalState: {}",
+            authContext.getConnectionId(), error, authContext.isStealingLink(), authContext.isIllegalState());
+        if (authContext.isStealingLink()) {
+            loginMetric.getStealingLinkDisconnect().inc();
+            logger.info("Stealing link: skip device connection status update. Client id: {} - Connection id: {}",
+                authContext.getClientId(),
+                authContext.getConnectionId());
+        }
+        else if (authContext.isIllegalState()) {
+            loginMetric.getIllegalStateDisconnect().inc();
+            logger.info("Illegal device connection status: skip device connection status update. Client id: {} - Connection id: {}",
+                authContext.getClientId(),
+                authContext.getConnectionId());
+        }
+        if (userAuthenticationLogic.disconnect(authContext)) {
+            logger.info("raising disconnect lifecycle event for clientIs: {}", authContext.getClientId());
+            Context loginRaiseLifecycleEventTimeContext = authenticationMetric.getExtConnectorTime().getRaiseLifecycleEvent().time();
+            raiseLifecycleEvent(authContext, DeviceConnectionStatus.DISCONNECTED);
+            loginRaiseLifecycleEventTimeContext.stop();
         }
     }
 
@@ -182,6 +171,18 @@ public class DefaultAuthenticator implements Authenticator {
         else {
             logger.info("Skipping event raising for clientId {} (username: {} - clientIp: {}) since userId ({}) and/or scopeId ({}) are null",
                 authContext.getClientId(), authContext.getUsername(), authContext.getClientIp(), authContext.getUserId(), authContext.getScopeId());
+        }
+    }
+
+    protected void updateMetricAndCheckForStealingLink(AuthContext authContext, AuthLoginMetric loginMetric) {
+        loginMetric.getAttempt().inc();
+        if (authContext.isStealingLink()) {
+            loginMetric.getStealingLinkConnect().inc();
+            logger.warn("Detected Stealing link for clientId: {} - account: {} - current connectionId: {} - IP: {}",
+                    authContext.getClientId(),
+                    authContext.getAccountName(),
+                    authContext.getConnectionId(),
+                    authContext.getClientIp());
         }
     }
 
