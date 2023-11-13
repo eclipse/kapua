@@ -35,7 +35,7 @@
             cardinality="0"
             required="true"
             allowSelfEdit="true"
-            description="Default device connection authentication type. The selected strategy to use when a new device connection performs a login">
+            description="Default device authentication type. The type of authentication to apply by default when a new device performs a connection. Allowed value is USER_PASS (username and password). Check the device is configured to support the desired authentication type.">
             <!-- 'options' and 'default' value are programmatically defined by the DeviceConnectionServiceConfigurationManager.getConfigMetadata-->
         </AD>
 
