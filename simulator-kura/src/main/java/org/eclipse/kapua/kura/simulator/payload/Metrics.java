@@ -12,6 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.payload;
 
+import com.google.protobuf.ByteString;
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
+import org.eclipse.kapua.kura.simulator.generator.Payload;
+import org.eclipse.kapua.kura.simulator.generator.Position;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto.KuraPayload;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto.KuraPayload.KuraMetric;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto.KuraPayload.KuraMetric.ValueType;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto.KuraPayload.KuraPosition;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,17 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
-
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.commons.lang3.reflect.MethodUtils;
-import org.eclipse.kapua.kura.simulator.generator.Payload;
-import org.eclipse.kapua.kura.simulator.generator.Position;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.KuraMetric;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.KuraMetric.ValueType;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.KuraPosition;
-
-import com.google.protobuf.ByteString;
 
 public final class Metrics {
 

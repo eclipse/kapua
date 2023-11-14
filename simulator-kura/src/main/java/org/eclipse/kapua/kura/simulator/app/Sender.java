@@ -12,18 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.app;
 
+import com.google.protobuf.ByteString;
+import org.eclipse.kapua.kura.simulator.Transport;
+import org.eclipse.kapua.kura.simulator.payload.Metrics;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto.KuraPayload;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto.KuraPayload.Builder;
+import org.eclipse.kapua.kura.simulator.topic.Topic;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
-
-import org.eclipse.kapua.kura.simulator.Transport;
-import org.eclipse.kapua.kura.simulator.payload.Metrics;
-import org.eclipse.kapua.kura.simulator.topic.Topic;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.Builder;
-
-import com.google.protobuf.ByteString;
 
 public interface Sender {
 
