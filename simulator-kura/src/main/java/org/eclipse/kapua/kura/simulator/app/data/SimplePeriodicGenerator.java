@@ -12,19 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.app.data;
 
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-
 import org.eclipse.kapua.kura.simulator.app.ApplicationContext;
 import org.eclipse.kapua.kura.simulator.app.Sender;
 import org.eclipse.kapua.kura.simulator.generator.Generator;
 import org.eclipse.kapua.kura.simulator.generator.GeneratorScheduler;
 import org.eclipse.kapua.kura.simulator.generator.Payload;
 import org.eclipse.kapua.kura.simulator.payload.Metrics;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.Builder;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto.KuraPayload.Builder;
+
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 public class SimplePeriodicGenerator extends AbstractSingleTopicPeriodicGenerator {
 

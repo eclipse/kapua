@@ -28,4 +28,7 @@
 
     <!-- Ignore the about.html file -->
     <suppress checks="FileTabCharacter" files="about\.html"/>
+
+    <!-- Ignore protobuf compiled files -->
+    <suppress checks=".*" files="KuraPayloadProto\.java"/>
 </suppressions>

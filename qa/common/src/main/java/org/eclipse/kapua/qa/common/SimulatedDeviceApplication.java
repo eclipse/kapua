@@ -12,19 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common;
 
-import java.time.Instant;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
-
 import org.eclipse.kapua.kura.simulator.app.Application;
 import org.eclipse.kapua.kura.simulator.app.ApplicationContext;
 import org.eclipse.kapua.kura.simulator.app.Descriptor;
 import org.eclipse.kapua.kura.simulator.app.Handler;
 import org.eclipse.kapua.kura.simulator.payload.Metrics;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto.KuraPayload;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto.KuraPayload.Builder;
 import org.eclipse.kapua.kura.simulator.topic.Topic;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.Builder;
+
+import java.time.Instant;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class SimulatedDeviceApplication implements Application {
 
