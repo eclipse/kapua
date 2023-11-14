@@ -633,12 +633,13 @@ components:
         count:
           type: integer
           description: The total count of the Entities available in the Scope
-    kapuaSetResult:
+    setResult:
       type: object
       properties:
-        elements:
+        items:
           type: array
-          description: A set of values
+          items:
+            type: string
     ### Schema used in different yaml definitions, placed here for problems with swagger reference resolution ###
     action:
       type: string
@@ -1011,7 +1012,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/kapuaSetResult'
+            $ref: '#/components/schemas/setResult'
     ### Errors ###
     kapuaError:
       description: An error occurred while performing the request
