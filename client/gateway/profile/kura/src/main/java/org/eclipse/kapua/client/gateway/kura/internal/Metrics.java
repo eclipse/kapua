@@ -12,17 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.kura.internal;
 
+import com.google.protobuf.ByteString;
+import org.eclipse.kapua.client.gateway.kura.proto.KuraPayloadProto.KuraPayload;
+import org.eclipse.kapua.client.gateway.kura.proto.KuraPayloadProto.KuraPayload.KuraMetric;
+import org.eclipse.kapua.client.gateway.kura.proto.KuraPayloadProto.KuraPayload.KuraMetric.ValueType;
+
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
-
-import org.eclipse.kapua.gateway.client.kura.payload.KuraPayloadProto.KuraPayload;
-import org.eclipse.kapua.gateway.client.kura.payload.KuraPayloadProto.KuraPayload.KuraMetric;
-import org.eclipse.kapua.gateway.client.kura.payload.KuraPayloadProto.KuraPayload.KuraMetric.ValueType;
-
-import com.google.protobuf.ByteString;
 
 public final class Metrics {
 
