@@ -166,7 +166,7 @@ components:
         - 'NULL'
     connectionAuthAdapters:
       allOf:
-        - $ref: '../openapi.yaml#/components/schemas/kapuaSetResult'
+        - $ref: '../openapi.yaml#/components/schemas/setResult'
       example:
         items:
           - USER_PASS
