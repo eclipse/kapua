@@ -12,24 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.main.simulation;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.kapua.kura.simulator.app.Application;
 import org.eclipse.kapua.kura.simulator.app.ApplicationContext;
 import org.eclipse.kapua.kura.simulator.app.Handler;
 import org.eclipse.kapua.kura.simulator.app.Sender;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto.KuraPayload.Builder;
 import org.eclipse.kapua.kura.simulator.simulation.Configuration;
 import org.eclipse.kapua.kura.simulator.simulation.Configuration.MetricsMapping;
 import org.eclipse.kapua.kura.simulator.simulation.Configuration.Topic;
 import org.eclipse.kapua.kura.simulator.simulation.Configurations;
 import org.eclipse.kapua.kura.simulator.simulation.Simulation;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.Builder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @Category(JUnitTests.class)
 public class AppTest {

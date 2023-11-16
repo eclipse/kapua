@@ -12,13 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.app.data;
 
-import java.time.Instant;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
-
 import org.eclipse.kapua.kura.simulator.app.ApplicationContext;
 import org.eclipse.kapua.kura.simulator.app.Handler;
 import org.eclipse.kapua.kura.simulator.app.Sender;
@@ -26,9 +19,16 @@ import org.eclipse.kapua.kura.simulator.generator.Generator;
 import org.eclipse.kapua.kura.simulator.generator.GeneratorScheduler;
 import org.eclipse.kapua.kura.simulator.generator.Payload;
 import org.eclipse.kapua.kura.simulator.payload.Metrics;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto.KuraPayload;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto.KuraPayload.Builder;
 import org.eclipse.kapua.kura.simulator.simulation.Configuration.MetricsMapping;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.Builder;
+
+import java.time.Instant;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
 
 public class PeriodicGenerator implements Handler {
 
