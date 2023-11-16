@@ -12,17 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.kura;
 
+import org.eclipse.kapua.client.gateway.BinaryPayloadCodec;
+import org.eclipse.kapua.client.gateway.Payload;
+import org.eclipse.kapua.client.gateway.kura.internal.Metrics;
+import org.eclipse.kapua.client.gateway.kura.proto.KuraPayloadProto;
+import org.eclipse.kapua.client.gateway.kura.proto.KuraPayloadProto.KuraPayload;
+import org.eclipse.kapua.client.gateway.spi.util.Buffers;
+
 import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
-
-import org.eclipse.kapua.client.gateway.BinaryPayloadCodec;
-import org.eclipse.kapua.client.gateway.Payload;
-import org.eclipse.kapua.client.gateway.kura.internal.Metrics;
-import org.eclipse.kapua.client.gateway.spi.util.Buffers;
-import org.eclipse.kapua.gateway.client.kura.payload.KuraPayloadProto;
-import org.eclipse.kapua.gateway.client.kura.payload.KuraPayloadProto.KuraPayload;
 
 public class KuraBinaryPayloadCodec implements BinaryPayloadCodec {
 

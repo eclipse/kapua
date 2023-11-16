@@ -13,10 +13,10 @@
 package org.eclipse.kapua.service.device.registry.steps;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import org.eclipse.kapua.kura.simulator.proto.KuraPayloadProto;
 import org.eclipse.kapua.qa.common.Suppressed;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;

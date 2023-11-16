@@ -13,7 +13,7 @@
 package org.eclipse.kapua.client.gateway.kura.internal;
 
 import com.google.protobuf.ByteString;
-import org.eclipse.kapua.gateway.client.kura.payload.KuraPayloadProto;
+import org.eclipse.kapua.client.gateway.kura.proto.KuraPayloadProto;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;
@@ -23,10 +23,10 @@ import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
 import java.nio.ByteBuffer;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 
