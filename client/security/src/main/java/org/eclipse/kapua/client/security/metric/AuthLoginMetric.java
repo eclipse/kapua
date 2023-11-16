@@ -33,9 +33,8 @@ public class AuthLoginMetric {
     private Counter stealingLinkDisconnect;
     private Counter illegalStateDisconnect;
 
-    public AuthLoginMetric(MetricsService metricsService, String type,
-                           @Named("metricModuleName")
-                           String metricModuleName) {
+    public AuthLoginMetric(@Named("metricModuleName")
+    String metricModuleName, MetricsService metricsService, String type) {
         connected = metricsService.getCounter(metricModuleName, type, CONNECT);
         attempt = metricsService.getCounter(metricModuleName, type, MetricsLabel.ATTEMPT);
         disconnected = metricsService.getCounter(metricModuleName, type, AuthMetric.DISCONNECT);

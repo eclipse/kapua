@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security;
 
+import org.eclipse.kapua.client.security.metric.AuthLoginMetricFactory;
 import org.eclipse.kapua.client.security.metric.AuthMetric;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 
@@ -23,5 +24,6 @@ public class ClientSecurityModule extends AbstractKapuaModule {
         bind(MetricsClientSecurity.class).in(Singleton.class);
         bind(MessageListener.class).in(Singleton.class);
         bind(AuthMetric.class).in(Singleton.class);
+        bind(AuthLoginMetricFactory.class).in(Singleton.class);
     }
 }

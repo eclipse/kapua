@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.lifecycle;
 
-import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.camel.setting.ServiceSettingKey;
@@ -43,8 +42,6 @@ public class LifecycleApplication {
     public static void main(String[] args) {
         //statically set parameters
         System.setProperty(ServiceSettingKey.JAXB_CONTEXT_CLASS_NAME.key(), LifecycleJAXBContextProvider.class.getName());
-        //TODO find a proper way to initialize database
-        DatabaseCheckUpdate databaseCheckUpdate = new DatabaseCheckUpdate();
         //org.springframework.context.ApplicationContext is not needed now so don't keep the SpringApplication.run return
         SpringApplication.run(LifecycleApplication.class, args);
         KapuaLocator.getInstance().getService(DataPopulatorRunner.class).runPopulators();

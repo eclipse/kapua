@@ -14,6 +14,9 @@ package org.eclipse.kapua.consumer.telemetry;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
+import org.eclipse.kapua.service.camel.xml.ServiceJAXBContextLoader;
+import org.eclipse.kapua.service.camel.xml.ServiceJAXBContextLoaderProvider;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -21,6 +24,8 @@ import javax.inject.Singleton;
 public class AppModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
+        bind(ServiceJAXBContextLoader.class).toProvider(ServiceJAXBContextLoaderProvider.class).asEagerSingleton();
+        bind(DatabaseCheckUpdate.class).asEagerSingleton();
         bind(MetricsTelemetry.class).in(Singleton.class);
     }
 

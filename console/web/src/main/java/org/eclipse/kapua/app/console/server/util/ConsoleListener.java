@@ -15,9 +15,15 @@ package org.eclipse.kapua.app.console.server.util;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.ConsoleJAXBContextProvider;
 import org.eclipse.kapua.commons.core.ServiceModuleBundle;
+<<<<<<< HEAD
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
+||||||| parent of d6ede90e91 (:fix: cleaner database initialization)
+import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+=======
+>>>>>>> d6ede90e91 (:fix: cleaner database initialization)
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -35,8 +41,6 @@ public class ConsoleListener implements ServletContextListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConsoleListener.class);
 
-    private static final SystemSetting SYSTEM_SETTING = SystemSetting.getInstance();
-
     private ServiceModuleBundle moduleBundle;
 
     @Override
@@ -50,8 +54,13 @@ public class ConsoleListener implements ServletContextListener {
             LOG.error("Initialize Console JABContext Provider... ERROR! Error: {}", e.getMessage(), e);
             throw new ExceptionInInitializerError(e);
         }
+<<<<<<< HEAD
         new DatabaseCheckUpdate();
         KapuaLocator.getInstance().getService(DataPopulatorRunner.class).runPopulators();
+||||||| parent of d6ede90e91 (:fix: cleaner database initialization)
+        new DatabaseCheckUpdate();
+=======
+>>>>>>> d6ede90e91 (:fix: cleaner database initialization)
         // Start Quartz scheduler
         try {
             LOG.info("Starting Quartz scheduler...");

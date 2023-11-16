@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.lifecycle;
 
+import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.camel.application.MetricsCamel;
 import org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceManagementTriggerManagerService;
@@ -21,6 +22,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SpringBridge {
+
+    @Bean
+    DatabaseCheckUpdate databaseCheckUpdate() {
+        return KapuaLocator.getInstance().getComponent(DatabaseCheckUpdate.class);
+    }
 
     @Bean
     MetricsCamel metricsCamel() {

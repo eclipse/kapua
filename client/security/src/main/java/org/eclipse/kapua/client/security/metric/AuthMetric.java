@@ -40,8 +40,8 @@ public class AuthMetric {
     public AuthMetric(MetricsService metricsService,
                       @Named("metricModuleName")
                       String metricModuleName) {
-        adminLogin = new AuthLoginMetric(metricsService, ADMIN, metricModuleName);
-        userLogin = new AuthLoginMetric(metricsService, USER, metricModuleName);
+        adminLogin = new AuthLoginMetric(metricModuleName, metricsService, ADMIN);
+        userLogin = new AuthLoginMetric(metricModuleName, metricsService, USER);
         extConnectorTime = new AuthTimeMetric(metricsService, metricModuleName);
         failure = new AuthFailureMetric(metricsService, metricModuleName);
         removeConnection = metricsService.getTimer(metricModuleName, AuthMetric.USER, REMOVE_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);

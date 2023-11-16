@@ -63,12 +63,6 @@
         <constructor-arg name="metricsCamel" ref="metricsCamel"/>
     </bean>
 
-    <bean id="jaxbContextLoader" class="org.eclipse.kapua.service.camel.xml.ServiceJAXBContextLoader"
-          init-method="init"/>
-
-    <bean id="databaseCheckUpdate" class="org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate"
-          depends-on="jaxbContextLoader"/>
-
     <!-- starts event bus and other components with a lifecycle -->
     <bean id="application" class="org.eclipse.kapua.service.camel.application.KapuaApplication"
           init-method="init"

@@ -71,11 +71,11 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
     private static final int MAX_RETRY = 3;
     private static final double MAX_WAIT = 500d;
 
-    private final ObjectMapper jsonMapper;
-    private final DeviceEventService deviceEventService;
-    private final DeviceEventFactory deviceEventFactory;
-    private final DeviceRegistryService deviceRegistryService;
-    private final DeviceFactory deviceFactory;
+    protected final ObjectMapper jsonMapper;
+    protected final DeviceEventService deviceEventService;
+    protected final DeviceEventFactory deviceEventFactory;
+    protected final DeviceRegistryService deviceRegistryService;
+    protected final DeviceFactory deviceFactory;
 
     @Inject
     public DeviceLifeCycleServiceImpl(

@@ -28,7 +28,7 @@ import org.eclipse.kapua.commons.liquibase.settings.LiquibaseClientSettings;
 import org.eclipse.kapua.commons.util.SemanticVersion;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
+import org.reflections.scanners.Scanners;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -192,7 +192,7 @@ public class KapuaLiquibaseClient {
         boolean createdTmp = changelogTempDirectory.mkdirs();
         LOG.trace("{} Tmp dir: {}", createdTmp ? "Created" : "Using", changelogTempDirectory.getAbsolutePath());
 
-        Reflections reflections = new Reflections("liquibase", new ResourcesScanner());
+        Reflections reflections = new Reflections("liquibase", Scanners.Resources);
         Set<String> changeLogs = reflections.getResources(Pattern.compile(".*\\.xml|.*\\.sql"));
         for (String script : changeLogs) {
             URL scriptUrl = KapuaLiquibaseClient.class.getResource("/" + script);

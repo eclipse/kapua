@@ -21,7 +21,6 @@ import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
-import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.core.ServiceModule;
@@ -53,6 +52,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionServ
 import org.eclipse.kapua.service.device.registry.connection.internal.CachingDeviceConnectionRepository;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionFactoryImpl;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImplJpaRepository;
+import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionServiceConfigurationManager;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionServiceImpl;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionFactory;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionRepository;
@@ -272,14 +272,21 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     ServiceConfigurationManager deviceConnectionServiceConfigurationManager(
             RootUserTester rootUserTester,
             KapuaJpaRepositoryConfiguration jpaRepoConfig,
-            EntityCacheFactory entityCacheFactory) {
-        return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerImpl(
-                DeviceConnectionService.class.getName(),
-                new CachingServiceConfigRepository(
-                        new ServiceConfigImplJpaRepository(jpaRepoConfig),
-                        entityCacheFactory.createCache("AbstractKapuaConfigurableServiceCacheId")
-                ),
-                rootUserTester));
+            Map<String, DeviceConnectionCredentialAdapter> availableDeviceConnectionAdapters,
+            KapuaMetatypeFactory kapuaMetatypeFactory,
+            EntityCacheFactory entityCacheFactory,
+            KapuaDeviceRegistrySettings kapuaDeviceRegistrySettings) {
+        return new ServiceConfigurationManagerCachingWrapper(
+                new DeviceConnectionServiceConfigurationManager(
+                        new CachingServiceConfigRepository(
+                                new ServiceConfigImplJpaRepository(jpaRepoConfig),
+                                entityCacheFactory.createCache("AbstractKapuaConfigurableServiceCacheId")
+                        ),
+                        rootUserTester,
+                        availableDeviceConnectionAdapters,
+                        kapuaMetatypeFactory,
+                        kapuaDeviceRegistrySettings)
+        );
     }
 
     @Provides
