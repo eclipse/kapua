@@ -444,7 +444,7 @@ components:
       schema:
         allOf:
           - $ref: '#/components/schemas/kapuaId'
-          - default: _
+        default: _
       required: true
     limit:
       name: limit
