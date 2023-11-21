@@ -149,6 +149,9 @@
             <broker-plugin class-name="org.eclipse.kapua.broker.artemis.plugin.security.ServerPlugin">
                 <property key="version" value="1.0" />
             </broker-plugin>
+            <broker-plugin class-name="org.eclipse.kapua.broker.artemis.plugin.security.AddressLogger">
+                <property key="version" value="1.0" />
+            </broker-plugin>
         </broker-plugins>
         <addresses>
             <address name="$SYS/MSG/dlq/default">
