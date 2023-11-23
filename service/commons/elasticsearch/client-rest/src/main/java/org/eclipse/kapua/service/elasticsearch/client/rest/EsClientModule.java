@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.elasticsearch.client.rest;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.service.datastore.exception.DatastoreInternalError;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreElasticsearchClientConfiguration;
 import org.eclipse.kapua.service.datastore.internal.converter.ModelContextImpl;
 import org.eclipse.kapua.service.datastore.internal.converter.QueryConverterImpl;
@@ -34,14 +33,10 @@ public class EsClientModule extends AbstractKapuaModule {
     @Provides
     @Singleton
     ElasticsearchClientProvider elasticsearchClientProvider(MetricsEsClient metricsEsClient, StorableIdFactory storableIdFactory, DatastoreUtils datastoreUtils) {
-        try {
-            ElasticsearchClientConfiguration esClientConfiguration = DatastoreElasticsearchClientConfiguration.getInstance();
-            return new RestElasticsearchClientProvider(metricsEsClient)
-                    .withClientConfiguration(esClientConfiguration)
-                    .withModelContext(new ModelContextImpl(storableIdFactory, datastoreUtils))
-                    .withModelConverter(new QueryConverterImpl());
-        } catch (Exception e) {
-            throw new DatastoreInternalError(e, "Cannot instantiate Elasticsearch Client");
-        }
+        ElasticsearchClientConfiguration esClientConfiguration = DatastoreElasticsearchClientConfiguration.getInstance();
+        return new RestElasticsearchClientProvider(metricsEsClient)
+                .withClientConfiguration(esClientConfiguration)
+                .withModelContext(new ModelContextImpl(storableIdFactory, datastoreUtils))
+                .withModelConverter(new QueryConverterImpl());
     }
 }

@@ -128,15 +128,11 @@ public class ArtemisSecurityModule extends AbstractKapuaModule {
     @Provides
     BrokerIdResolver brokerIdResolver(BrokerSetting brokerSettings) throws KapuaException {
         return new DefaultBrokerIdResolver();
-        //TODO: FIXME: no, use override if you have to change this
-//        return ReflectionUtil.newInstance(brokerSettings.getString(BrokerSettingKey.BROKER_ID_RESOLVER_CLASS_NAME), DefaultBrokerIdResolver.class);
     }
 
     @Singleton
     @Provides
     BrokerHostResolver brokerHostResolver(BrokerSetting brokerSettings) throws KapuaException {
         return new DefaultBrokerHostResolver(brokerSettings.getString(BrokerSettingKey.BROKER_HOST));
-        //TODO: FIXME: no, use override if you have to change this
-//        return ReflectionUtil.newInstance(brokerSettings.getString(BrokerSettingKey.BROKER_HOST_RESOLVER_CLASS_NAME), DefaultBrokerHostResolver.class);
     }
 }

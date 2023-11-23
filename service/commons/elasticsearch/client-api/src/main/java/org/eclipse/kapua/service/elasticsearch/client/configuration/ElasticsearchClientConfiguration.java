@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.elasticsearch.client.configuration;
 
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
-import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,27 +53,6 @@ public class ElasticsearchClientConfiguration {
      */
     public void setModuleName(String moduleName) {
         this.moduleName = moduleName;
-    }
-
-    /**
-     * Gets the {@link ElasticsearchClientProvider} implementing {@link Class#getName()}.
-     *
-     * @return The {@link ElasticsearchClientProvider} implementing {@link Class#getName()}.
-     */
-    public String getProviderClassName() {
-        return providerClassName;
-    }
-
-    /**
-     * Sets the {@link ElasticsearchClientProvider} implementing {@link Class#getName()}.
-     *
-     * @param providerClassName The {@link ElasticsearchClientProvider} implementing {@link Class#getName()}.
-     * @return This {@link ElasticsearchClientConfiguration} to chain method invocation.
-     * @since 1.3.0
-     */
-    public ElasticsearchClientConfiguration setProviderClassName(String providerClassName) {
-        this.providerClassName = providerClassName;
-        return this;
     }
 
     /**
