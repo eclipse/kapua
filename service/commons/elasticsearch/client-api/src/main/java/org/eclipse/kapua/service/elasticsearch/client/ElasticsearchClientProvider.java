@@ -23,7 +23,7 @@ import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailabl
  * @param <C> {@link ElasticsearchClient} type.
  * @since 1.0.0
  */
-public interface ElasticsearchClientProvider<C extends ElasticsearchClient> extends AutoCloseable {
+public interface ElasticsearchClientProvider<C extends ElasticsearchClient> {
 
     /**
      * Initializes the {@link ElasticsearchClientProvider}.
@@ -43,7 +43,6 @@ public interface ElasticsearchClientProvider<C extends ElasticsearchClient> exte
      * @throws ClientClosingException in case of error while closing the client.
      * @since 1.0.0
      */
-    @Override
     void close() throws ClientClosingException;
 
     /**
