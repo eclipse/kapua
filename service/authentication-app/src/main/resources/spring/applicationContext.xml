@@ -92,17 +92,13 @@
     <bean id="authenticationServiceBackEndCall" class="org.eclipse.kapua.service.authentication.AuthenticationServiceBackEndCall"/>
     <bean id="authenticationServiceConverter" class="org.eclipse.kapua.service.authentication.AuthenticationServiceConverter">
         <constructor-arg name="metricsAuthentication" ref="metricsAuthentication"/>
+        <constructor-arg name="metricsCamel" ref="metricsCamel"/>
+        <constructor-arg name="translatorHub" ref="translatorHub"/>
     </bean>
     <bean id="authenticationServiceListener" class="org.eclipse.kapua.service.authentication.AuthenticationServiceListener">
         <constructor-arg name="authenticationServiceBackEndCall" ref="authenticationServiceBackEndCall"/>
         <constructor-arg name="metricsAuthentication" ref="metricsAuthentication"/>
     </bean>
-
-    <bean id="jaxbContextLoader" class="org.eclipse.kapua.service.camel.xml.ServiceJAXBContextLoader"
-          init-method="init"/>
-
-    <bean id="databaseCheckUpdate" class="org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate"
-          depends-on="jaxbContextLoader"/>
 
     <!-- starts event bus and other components with a lifecycle -->
     <bean id="application" class="org.eclipse.kapua.service.camel.application.KapuaApplication"

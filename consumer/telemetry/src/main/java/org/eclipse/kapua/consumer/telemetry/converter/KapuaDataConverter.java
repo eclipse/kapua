@@ -17,9 +17,11 @@ import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.consumer.telemetry.MetricsTelemetry;
+import org.eclipse.kapua.service.camel.application.MetricsCamel;
 import org.eclipse.kapua.service.camel.converter.AbstractKapuaConverter;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.client.message.MessageType;
+import org.eclipse.kapua.translator.TranslatorHub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +40,8 @@ public class KapuaDataConverter extends AbstractKapuaConverter {
     private final MetricsTelemetry metrics;
 
     @Inject
-    public KapuaDataConverter(MetricsTelemetry metricsTelemetry) {
+    public KapuaDataConverter(TranslatorHub translatorHub, MetricsCamel metricsCamel, MetricsTelemetry metricsTelemetry) {
+        super(translatorHub, metricsCamel);
         this.metrics = metricsTelemetry;
     }
 

@@ -16,6 +16,7 @@ import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import com.google.inject.util.Types;
 import org.eclipse.kapua.client.security.metric.AuthMetric;
+import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -30,6 +31,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFact
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionFactory;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService;
+import org.eclipse.kapua.translator.TranslatorHub;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -42,6 +44,12 @@ import java.util.Map;
  */
 @Configuration
 public class SpringBridge {
+
+    @Bean
+    DatabaseCheckUpdate databaseCheckUpdate() {
+        return KapuaLocator.getInstance().getComponent(DatabaseCheckUpdate.class);
+    }
+
     @Bean
     MetricsCamel metricsCamel() {
         return KapuaLocator.getInstance().getComponent(MetricsCamel.class);
@@ -116,5 +124,10 @@ public class SpringBridge {
     @Bean
     ServiceEventBus serviceEventBus() {
         return KapuaLocator.getInstance().getComponent(ServiceEventBus.class);
+    }
+
+    @Bean
+    TranslatorHub translatorHub() {
+        return KapuaLocator.getInstance().getComponent(TranslatorHub.class);
     }
 }

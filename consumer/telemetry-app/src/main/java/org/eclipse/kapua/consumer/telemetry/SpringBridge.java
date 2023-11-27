@@ -16,6 +16,7 @@ import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.camel.application.MetricsCamel;
 import org.eclipse.kapua.service.datastore.internal.MetricsDatastore;
+import org.eclipse.kapua.translator.TranslatorHub;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -39,5 +40,10 @@ public class SpringBridge {
     @Bean
     MetricsDatastore metricsDatastore() {
         return KapuaLocator.getInstance().getComponent(MetricsDatastore.class);
+    }
+
+    @Bean
+    TranslatorHub translatorHub() {
+        return KapuaLocator.getInstance().getComponent(TranslatorHub.class);
     }
 }

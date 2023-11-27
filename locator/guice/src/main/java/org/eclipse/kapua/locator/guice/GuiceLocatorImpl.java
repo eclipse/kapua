@@ -145,6 +145,13 @@ public class GuiceLocatorImpl extends KapuaLocator {
         return servicesList;
     }
 
+    public static interface LocatorConfigurationExtractor {
+        Collection<String> getIncludedPackageNames();
+
+        Collection<String> getExcludedPkgNames();
+
+    }
+
     /**
      * Initializes the {@link KapuaLocator} with the given resource name configuration.
      *

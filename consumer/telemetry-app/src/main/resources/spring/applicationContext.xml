@@ -55,6 +55,8 @@
 
     <bean id="kapuaDataConverter" class="org.eclipse.kapua.consumer.telemetry.converter.KapuaDataConverter">
         <constructor-arg name="metricsTelemetry" ref="metricsTelemetry"/>
+        <constructor-arg name="metricsCamel" ref="metricsCamel"/>
+        <constructor-arg name="translatorHub" ref="translatorHub"/>
     </bean>
     <bean id="dataStorageMessageProcessor" class="org.eclipse.kapua.consumer.telemetry.listener.DataStorageMessageProcessor">
         <constructor-arg name="metricsDatastore" ref="metricsDatastore"/>

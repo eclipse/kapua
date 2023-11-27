@@ -16,9 +16,11 @@ import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.consumer.lifecycle.MetricsLifecycle;
+import org.eclipse.kapua.service.camel.application.MetricsCamel;
 import org.eclipse.kapua.service.camel.converter.AbstractKapuaConverter;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.client.message.MessageType;
+import org.eclipse.kapua.translator.TranslatorHub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +38,8 @@ public class DeviceManagementNotificationConverter extends AbstractKapuaConverte
     private final MetricsLifecycle metrics;
 
     @Inject
-    public DeviceManagementNotificationConverter(MetricsLifecycle metricsLifecycle) {
+    public DeviceManagementNotificationConverter(TranslatorHub translatorHub, MetricsCamel metricsCamel, MetricsLifecycle metricsLifecycle) {
+        super(translatorHub, metricsCamel);
         this.metrics = metricsLifecycle;
     }
 

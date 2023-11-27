@@ -26,7 +26,6 @@ public class AuthenticationModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(ServiceAuthenticationSetting.class).in(Singleton.class);
-
     }
 
     @ProvidesIntoSet

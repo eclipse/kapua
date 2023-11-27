@@ -55,9 +55,13 @@
 
     <bean id="deviceManagementNotificationConverter" class="org.eclipse.kapua.consumer.lifecycle.converter.DeviceManagementNotificationConverter">
         <constructor-arg name="metricsLifecycle" ref="metricsLifecycle"/>
+        <constructor-arg name="metricsCamel" ref="metricsCamel"/>
+        <constructor-arg name="translatorHub" ref="translatorHub"/>
     </bean>
     <bean id="kapuaLifeCycleConverter" class="org.eclipse.kapua.consumer.lifecycle.converter.KapuaLifeCycleConverter">
         <constructor-arg name="metricsLifecycle" ref="metricsLifecycle"/>
+        <constructor-arg name="metricsCamel" ref="metricsCamel"/>
+        <constructor-arg name="translatorHub" ref="translatorHub"/>
     </bean>
     <bean id="deviceMessageListener" class="org.eclipse.kapua.consumer.lifecycle.listener.DeviceMessageListener">
         <constructor-arg name="deviceLifeCycleService" ref="deviceLifeCycleService"/>

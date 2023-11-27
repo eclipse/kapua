@@ -17,6 +17,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.camel.application.MetricsCamel;
 import org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceManagementTriggerManagerService;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
+import org.eclipse.kapua.translator.TranslatorHub;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,6 +37,11 @@ public class SpringBridge {
     @Bean
     MetricsLifecycle metricsLifecycle() {
         return KapuaLocator.getInstance().getComponent(MetricsLifecycle.class);
+    }
+
+    @Bean
+    TranslatorHub translatorHub() {
+        return KapuaLocator.getInstance().getComponent(TranslatorHub.class);
     }
 
     @Bean

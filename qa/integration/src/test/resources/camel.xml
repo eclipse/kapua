@@ -54,7 +54,11 @@
     <!-- Converter -->
     <bean id="kapuaDataConverter" class="org.eclipse.kapua.broker.core.converter.KapuaDataConverter"/>
     <bean id="deviceManagementNotificationConverter" class="org.eclipse.kapua.broker.core.converter.DeviceManagementNotificationConverter"/>
-    <bean id="kapuaLifeCycleConverter" class="org.eclipse.kapua.broker.core.converter.KapuaLifeCycleConverter"/>
+    <bean id="kapuaLifeCycleConverter" class="org.eclipse.kapua.consumer.lifecycle.converter.KapuaLifeCycleConverter">
+        <constructor-arg name="metricsCamel" ref="metricsCamel"/>
+        <constructor-arg name="metricsLifecycle" ref="metricsLifecycle"/>
+        <constructor-arg name="translatorHub" ref="translatorHub"/>
+    </bean>
 
     <!-- Consumer -->
     <!-- ASSISTANTS -->

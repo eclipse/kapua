@@ -19,7 +19,6 @@ import org.apache.camel.support.DefaultMessage;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.camel.application.MetricsCamel;
@@ -51,12 +50,13 @@ public abstract class AbstractKapuaConverter {
 
     public static final Logger logger = LoggerFactory.getLogger(AbstractKapuaConverter.class);
 
-    private final TranslatorHub translatorHub = KapuaLocator.getInstance().getComponent(TranslatorHub.class);
-    @Inject
-    private MetricsCamel metricsCamel;
+    private final TranslatorHub translatorHub;
+    private final MetricsCamel metricsCamel;
 
     @Inject
-    protected AbstractKapuaConverter() {
+    protected AbstractKapuaConverter(TranslatorHub translatorHub, MetricsCamel metricsCamel) {
+        this.translatorHub = translatorHub;
+        this.metricsCamel = metricsCamel;
     }
 
     /**
