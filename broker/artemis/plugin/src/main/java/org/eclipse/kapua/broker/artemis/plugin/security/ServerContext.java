@@ -36,11 +36,12 @@ public class ServerContext {
             ServiceClient authServiceClient,
             @Named("clusterName") String clusterName,
             BrokerIdentity brokerIdentity,
-            SecurityContext securityContext) {
+            SecurityContext securityContext,
+            AddressAccessTracker accessTracker) {
         this.clusterName = clusterName;
         this.brokerIdentity = brokerIdentity;
         this.securityContext = securityContext;
-        this.addressAccessTracker = new AddressAccessTracker();
+        this.addressAccessTracker = accessTracker;
         this.authServiceClient = authServiceClient;
     }
 

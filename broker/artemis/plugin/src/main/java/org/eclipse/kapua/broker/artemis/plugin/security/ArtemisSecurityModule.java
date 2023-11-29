@@ -48,6 +48,7 @@ public class ArtemisSecurityModule extends AbstractKapuaModule {
         bind(MetricsSecurityPlugin.class).in(Singleton.class);
         bind(PluginUtility.class).in(Singleton.class);
         bind(RunWithLock.class).in(Singleton.class);
+        bind(AddressAccessTracker.class).in(Singleton.class);
     }
 
     @Provides
