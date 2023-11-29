@@ -16,7 +16,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3 # Cache local Maven repository to reuse dependencies
         with:
           path: ~/.m2/repository
@@ -35,7 +34,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -58,7 +56,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -81,7 +78,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -104,7 +100,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -127,7 +122,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -150,7 +144,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -173,7 +166,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -196,7 +188,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -219,7 +210,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -242,7 +232,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -265,7 +254,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -288,7 +276,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -311,7 +298,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -334,7 +320,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -357,7 +342,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -380,7 +364,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -403,7 +386,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -426,7 +408,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -449,7 +430,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -472,7 +452,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -495,7 +474,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
