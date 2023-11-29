@@ -79,8 +79,7 @@ public class KapuaModule extends AbstractKapuaModule {
             }
 
             // Read configurations from resource files
-            URL locatorConfigURL = locatorConfigurations.get(0);
-            LocatorConfig locatorConfig = LocatorConfig.fromURL(locatorConfigURL);
+            final LocatorConfig locatorConfig = new LocatorConfigurationExtractorImpl(locatorConfigurations.get(0)).fetchLocatorConfig();
 
             // Packages are supposed to contain service implementations
             Collection<String> packageNames = locatorConfig.getIncludedPackageNames();

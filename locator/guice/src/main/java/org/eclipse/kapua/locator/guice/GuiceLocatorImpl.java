@@ -24,7 +24,6 @@ import com.google.inject.util.Modules;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.core.ServiceModuleJaxbClassConfig;
-import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
@@ -38,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.lang.reflect.Type;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -145,13 +143,6 @@ public class GuiceLocatorImpl extends KapuaLocator {
         return servicesList;
     }
 
-    public static interface LocatorConfigurationExtractor {
-        Collection<String> getIncludedPackageNames();
-
-        Collection<String> getExcludedPkgNames();
-
-    }
-
     /**
      * Initializes the {@link KapuaLocator} with the given resource name configuration.
      *
@@ -161,12 +152,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
      */
     private void init(String locatorConfigName) throws Exception {
         // Read configurations from locator file
-        URL locatorConfigURL = ResourceUtils.getResource(locatorConfigName);
-        if (locatorConfigURL == null) {
-            throw new Exception("Locator configuration cannot be found: " + locatorConfigName);
-        }
-
-        LocatorConfig locatorConfig = LocatorConfig.fromURL(locatorConfigURL);
+        final LocatorConfig locatorConfig = new LocatorConfigurationExtractorImpl(locatorConfigName).fetchLocatorConfig();
         // Scan packages listed in to find KapuaModules
         Collection<String> packageNames = locatorConfig.getIncludedPackageNames();
         Reflections reflections = new Reflections(new ConfigurationBuilder().forPackages(packageNames.toArray(new String[packageNames.size()])));
@@ -197,7 +183,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
         kapuaModules.add(new KapuaModule(locatorConfigName));
         // Print loaded stuff
         final Stage stage = getStage();
-        printLoadedKapuaModuleConfiguration(locatorConfigURL, locatorConfig, kapuaModules, overridingModules, excludedKapuaModules, stage);
+        printLoadedKapuaModuleConfiguration(locatorConfigName, locatorConfig, kapuaModules, overridingModules, excludedKapuaModules, stage);
         // Create injector
         try {
             injector = Guice.createInjector(stage, Modules.override(kapuaModules).with(overridingModules));
@@ -219,7 +205,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
         }
         ServiceModuleJaxbClassConfig.setSerializables(loadedXmlSerializables);
         // Print loaded stuff
-        printLoadedXmlSerializableConfiguration(locatorConfigURL, locatorConfig, loadedXmlSerializables, excludedXmlSerializables);
+        printLoadedXmlSerializableConfiguration(locatorConfigName, locatorConfig, loadedXmlSerializables, excludedXmlSerializables);
     }
 
     /**
@@ -261,14 +247,14 @@ public class GuiceLocatorImpl extends KapuaLocator {
     /**
      * Prints the configuration of the loaded {@link KapuaModule}s.
      *
-     * @param resourceNameURL The {@link KapuaLocator} configuration resource name.
-     * @param locatorConfig   The loaded {@link LocatorConfig}.
-     * @param kapuaModules    The laaded {@link KapuaModule}s
+     * @param resourceName  The {@link KapuaLocator} configuration resource name.
+     * @param locatorConfig The loaded {@link LocatorConfig}.
+     * @param kapuaModules  The laaded {@link KapuaModule}s
      * @param stage
      * @since 2.0.0
      */
     private void printLoadedKapuaModuleConfiguration(
-            @NotNull URL resourceNameURL,
+            @NotNull String resourceName,
             @NotNull LocatorConfig locatorConfig,
             @NotNull List<AbstractKapuaModule> kapuaModules,
             @NotNull List<AbstractKapuaModule> overridingModules,
@@ -279,7 +265,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
                         .withLogger(LOG)
                         .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
                         .withTitle("Kapua Locator Configuration")
-                        .addParameter("Resource Name", resourceNameURL.getPath())
+                        .addParameter("Resource Name", resourceName)
                         .addParameter("Stage", stage);
 
         // Packages
@@ -323,19 +309,19 @@ public class GuiceLocatorImpl extends KapuaLocator {
     /**
      * Prints the configuration of the loaded {@link KapuaModule}s.
      *
-     * @param resourceNameURL       The {@link KapuaLocator} configuration resource name.
+     * @param resourceName          The {@link KapuaLocator} configuration resource name.
      * @param locatorConfig         The loaded {@link LocatorConfig}.
      * @param loadedXmlSerializable The laaded {@link KapuaModule}s
      * @since 2.0.0
      */
-    private void printLoadedXmlSerializableConfiguration(@NotNull URL resourceNameURL, @NotNull LocatorConfig locatorConfig, @NotNull List<Class<?>> loadedXmlSerializable, @NotNull List<Class<?>> excludedXmlSerializable) {
+    private void printLoadedXmlSerializableConfiguration(@NotNull String resourceName, @NotNull LocatorConfig locatorConfig, @NotNull List<Class<?>> loadedXmlSerializable, @NotNull List<Class<?>> excludedXmlSerializable) {
         ConfigurationPrinter configurationPrinter =
                 ConfigurationPrinter
                         .create()
                         .withLogger(LOG)
                         .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
                         .withTitle("Kapua XmlSerializable Configuration")
-                        .addParameter("Resource Name", resourceNameURL.getPath());
+                        .addParameter("Resource Name", resourceName);
 
         // Packages
         addIncludedExcludedPackageConfig(configurationPrinter, locatorConfig);

@@ -33,14 +33,6 @@ public class KapuaLocatorInjector {
         this.kapuaLocator = kapuaLocator;
     }
 
-    public static List<Field> getAllFields(List<Field> fields, Class<?> type) {
-        fields.addAll(Arrays.asList(type.getDeclaredFields()));
-        if (type.getSuperclass() != null) {
-            getAllFields(fields, type.getSuperclass());
-        }
-        return fields;
-    }
-
     public void injectKapuaReferences(Object artifact) {
         if (artifact == null) {
             logger.trace("Null artifact, bailing out");
@@ -77,5 +69,13 @@ public class KapuaLocatorInjector {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public static List<Field> getAllFields(List<Field> fields, Class<?> type) {
+        fields.addAll(Arrays.asList(type.getDeclaredFields()));
+        if (type.getSuperclass() != null) {
+            getAllFields(fields, type.getSuperclass());
+        }
+        return fields;
     }
 }
