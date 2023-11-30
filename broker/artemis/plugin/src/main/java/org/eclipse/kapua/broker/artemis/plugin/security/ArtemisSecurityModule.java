@@ -14,17 +14,11 @@ package org.eclipse.kapua.broker.artemis.plugin.security;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.broker.artemis.plugin.security.context.SecurityContext;
 import org.eclipse.kapua.broker.artemis.plugin.security.metric.LoginMetric;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
-import org.eclipse.kapua.broker.artemis.plugin.utils.BrokerHostResolver;
-import org.eclipse.kapua.broker.artemis.plugin.utils.BrokerIdResolver;
-import org.eclipse.kapua.broker.artemis.plugin.utils.BrokerIdentity;
-import org.eclipse.kapua.broker.artemis.plugin.utils.DefaultBrokerHostResolver;
-import org.eclipse.kapua.broker.artemis.plugin.utils.DefaultBrokerIdResolver;
 import org.eclipse.kapua.client.security.MessageListener;
 import org.eclipse.kapua.client.security.ServiceClient;
 import org.eclipse.kapua.client.security.ServiceClientMessagingImpl;
@@ -42,8 +36,6 @@ import java.util.UUID;
 public class ArtemisSecurityModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(BrokerSetting.class).in(Singleton.class);
-        bind(BrokerIdentity.class).in(Singleton.class);
         bind(ServerContext.class).in(Singleton.class);
         bind(MetricsSecurityPlugin.class).in(Singleton.class);
         bind(PluginUtility.class).in(Singleton.class);
@@ -76,27 +68,6 @@ public class ArtemisSecurityModule extends AbstractKapuaModule {
         );
     }
 
-    @Provides
-    @Singleton
-    @Named("clusterName")
-    String clusterName(SystemSetting systemSetting) {
-        return systemSetting.getString(SystemSettingKey.CLUSTER_NAME);
-    }
-
-    @Provides
-    @Singleton
-    @Named("metricModuleName")
-    String metricModuleName() {
-        return "broker-telemetry";
-    }
-
-    @Provides
-    @Singleton
-    @Named("brokerHost")
-    String brokerHost(BrokerHostResolver brokerHostResolver) {
-        return brokerHostResolver.getBrokerHost();
-    }
-
     public static final String REQUEST_QUEUE = "$SYS/SVC/auth/request";
     public static final String RESPONSE_QUEUE_PATTERN = "$SYS/SVC/auth/response/%s_%s";
 
@@ -125,15 +96,4 @@ public class ArtemisSecurityModule extends AbstractKapuaModule {
         }
     }
 
-    @Singleton
-    @Provides
-    BrokerIdResolver brokerIdResolver(BrokerSetting brokerSettings) throws KapuaException {
-        return new DefaultBrokerIdResolver();
-    }
-
-    @Singleton
-    @Provides
-    BrokerHostResolver brokerHostResolver(BrokerSetting brokerSettings) throws KapuaException {
-        return new DefaultBrokerHostResolver(brokerSettings.getString(BrokerSettingKey.BROKER_HOST));
-    }
 }

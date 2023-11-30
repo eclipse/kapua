@@ -41,7 +41,6 @@ import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.context.SessionContext;
 import org.eclipse.kapua.client.security.context.Utils;
 import org.eclipse.kapua.commons.core.ServiceModuleBundle;
-import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
@@ -117,8 +116,6 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     protected DeviceConnectionEventListenerService deviceConnectionEventListenerService;
 
     public ServerPlugin() {
-        //TODO find a proper way to initialize database
-        DatabaseCheckUpdate databaseCheckUpdate = new DatabaseCheckUpdate();
         final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
         loginMetric = kapuaLocator.getComponent(LoginMetric.class);
         publishMetric = kapuaLocator.getComponent(PublishMetric.class);

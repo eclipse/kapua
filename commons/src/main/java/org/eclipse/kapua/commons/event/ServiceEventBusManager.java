@@ -20,7 +20,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
  * Service event bus manager. It handles the service event bus life cycle
  *
  * @since 1.0
- * @deprecated since 2.0.0 - over-engineering, rendered redundant by DI
+ * @deprecated since 2.0.0 - over-engineering, rendered redundant by DI, absorbed in ServiceModuleBundle
  */
 @Deprecated
 public class ServiceEventBusManager {
