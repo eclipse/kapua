@@ -30,28 +30,12 @@ public class JobServiceSettings extends AbstractKapuaSetting<JobServiceSettingKe
     private static final String JOB_SERVICE_SETTING_RESOURCE = "job-service-settings.properties";
 
     /**
-     * Singleton instance.
-     *
-     * @since 2.0.0
-     */
-    private static final JobServiceSettings INSTANCE = new JobServiceSettings();
-
-    /**
      * Constructor.
      *
      * @since 2.0.0
      */
-    private JobServiceSettings() {
+    public JobServiceSettings() {
         super(JOB_SERVICE_SETTING_RESOURCE);
     }
 
-    /**
-     * Gets a singleton instance of {@link JobServiceSettings}.
-     *
-     * @return A singleton instance of {@link JobServiceSettings}.
-     * @since 2.0.0
-     */
-    public static JobServiceSettings getInstance() {
-        return INSTANCE;
-    }
 }

@@ -93,7 +93,7 @@ public class JobStepServiceImpl implements JobStepService {
         this.jobStepDefinitionRepository = jobStepDefinitionRepository;
     }
 
-    private final JobServiceSettings jobServiceSettings = JobServiceSettings.getInstance();
+    private final JobServiceSettings jobServiceSettings = new JobServiceSettings();
     /**
      * The maximum length that a {@link JobStepProperty#getPropertyValue()} is allowed to have
      *

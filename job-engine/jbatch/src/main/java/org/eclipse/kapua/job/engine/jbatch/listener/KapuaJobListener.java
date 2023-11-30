@@ -90,6 +90,8 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
     private JobContext jobContext;
     @Inject
     private QueuedJobExecutionCheckTaskFactory queuedJobExecutionCheckTaskFactory;
+    @Inject
+    private JbatchDriver jbatchDriver;
 
     /**
      * Before starting the actual {@link org.eclipse.kapua.service.job.Job} processing, create the {@link JobExecution} to track progress and
@@ -180,7 +182,7 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
                     throw e;
                 }
 
-                KapuaSecurityUtils.doPrivileged(() -> JbatchDriver.stopJob(jobExecution.getScopeId(), jobExecution.getJobId(), jobExecution.getId()));
+                KapuaSecurityUtils.doPrivileged(() -> jbatchDriver.stopJob(jobExecution.getScopeId(), jobExecution.getJobId(), jobExecution.getId()));
                 jobLogger.warn("Another execution is running! Stopping and enqueuing this execution... DONE! EnqueuedJob id : {}", queuedJobExecution.getJobId());
 
             } else {

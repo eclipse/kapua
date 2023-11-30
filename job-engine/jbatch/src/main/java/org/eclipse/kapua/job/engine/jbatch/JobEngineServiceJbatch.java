@@ -73,6 +73,8 @@ public class JobEngineServiceJbatch implements JobEngineService {
     private JobTargetService jobTargetService;
     @Inject
     private JobTargetFactory jobTargetFactory;
+    @Inject
+    private JbatchDriver jbatchDriver;
     private static final String JOB_EXECUTION_ID = "jobExecutionId";
 
     @Override
@@ -120,7 +122,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         }
         // Start the job
         try {
-            JbatchDriver.startJob(scopeId, jobId, jobStartOptions);
+            jbatchDriver.startJob(scopeId, jobId, jobStartOptions);
         } catch (Exception e) {
             throw new JobStartingException(e, scopeId, jobId);
         }
@@ -170,12 +172,12 @@ public class JobEngineServiceJbatch implements JobEngineService {
             throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
         }
         // Check job running
-        if (!JbatchDriver.isRunningJob(scopeId, jobId)) {
+        if (!jbatchDriver.isRunningJob(scopeId, jobId)) {
             throw new JobNotRunningException(scopeId, jobId);
         }
         // Stop the job
         try {
-            JbatchDriver.stopJob(scopeId, jobId, null);
+            jbatchDriver.stopJob(scopeId, jobId, null);
         } catch (Exception e) {
             throw new JobStoppingException(e, scopeId, jobId);
         }
@@ -205,7 +207,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         }
         // Stop the JobExecution
         try {
-            JbatchDriver.stopJob(scopeId, jobId, jobExecutionId);
+            jbatchDriver.stopJob(scopeId, jobId, jobExecutionId);
         } catch (Exception e) {
             throw new JobStoppingException(e, scopeId, jobId, jobExecutionId);
         }
@@ -237,7 +239,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         }
         // Resume the JobExecution
         try {
-            JbatchDriver.resumeJob(scopeId, jobId, jobExecutionId);
+            jbatchDriver.resumeJob(scopeId, jobId, jobExecutionId);
         } catch (Exception e) {
             throw new JobResumingException(e, scopeId, jobId, jobExecutionId);
         }
@@ -256,12 +258,12 @@ public class JobEngineServiceJbatch implements JobEngineService {
             throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
         }
         // Check job not running
-        if (JbatchDriver.isRunningJob(scopeId, jobId)) {
+        if (jbatchDriver.isRunningJob(scopeId, jobId)) {
             throw new JobRunningException(scopeId, jobId);
         }
 
         try {
-            JbatchDriver.cleanJobData(scopeId, jobId);
+            jbatchDriver.cleanJobData(scopeId, jobId);
         } catch (Exception ex) {
             throw new CleanJobDataException(ex, scopeId, jobId);
         }
@@ -287,7 +289,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         }
         // Do check running
         try {
-            return JbatchDriver.isRunningJob(scopeId, jobId);
+            return jbatchDriver.isRunningJob(scopeId, jobId);
         } catch (Exception e) {
             throw new JobCheckRunningException(e, scopeId, jobId);
         }
