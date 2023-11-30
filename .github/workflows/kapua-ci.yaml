@@ -20,8 +20,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - run: mvn -v
       - run: mvn -B ${BUILD_OPTS} -DskipTests clean install
       - run: bash <(curl -s https://codecov.io/bash)
@@ -38,8 +36,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -60,8 +56,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -82,8 +76,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -104,8 +96,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -126,8 +116,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -148,8 +136,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -170,8 +156,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -192,8 +176,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -214,8 +196,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -236,8 +216,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -258,8 +236,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -280,8 +256,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -302,8 +276,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -324,8 +296,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -346,8 +316,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -368,8 +336,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -390,8 +356,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -412,8 +376,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -434,8 +396,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -456,8 +416,6 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -478,7 +436,5 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - run: mvn -B -DskipTests install javadoc:jar
       - run: bash <(curl -s https://codecov.io/bash)
