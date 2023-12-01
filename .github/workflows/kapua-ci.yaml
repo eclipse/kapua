@@ -16,13 +16,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3 # Cache local Maven repository to reuse dependencies
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - run: mvn -v
       - run: mvn -B ${BUILD_OPTS} -DskipTests clean install
       - run: bash <(curl -s https://codecov.io/bash)
@@ -35,13 +32,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -58,13 +52,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -81,13 +72,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -104,13 +92,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -127,13 +112,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -150,13 +132,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -173,13 +152,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -196,13 +172,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -219,13 +192,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -242,13 +212,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -265,13 +232,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -288,13 +252,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -311,13 +272,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -334,13 +292,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -357,13 +312,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -380,13 +332,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -403,13 +352,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -426,13 +372,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -449,13 +392,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -472,13 +412,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
@@ -495,12 +432,9 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-          cache: 'maven'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - run: mvn -B -DskipTests install javadoc:jar
       - run: bash <(curl -s https://codecov.io/bash)
