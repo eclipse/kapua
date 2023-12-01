@@ -25,6 +25,7 @@ public class ResultList<T> {
 
     private final List<T> result;
     private final long totalCount;
+    private boolean totalHitsExceedsCount; //true iff in ES there are actually more than 10k hits
 
     /**
      * Constructor.
@@ -46,6 +47,14 @@ public class ResultList<T> {
      */
     public void add(T object) {
         result.add(object);
+    }
+
+    public void setTotalHitsExceedsCount(boolean value) {
+        this.totalHitsExceedsCount=value;
+    }
+
+    public boolean getTotalHitsExceedsCount() {
+        return this.totalHitsExceedsCount;
     }
 
     /**

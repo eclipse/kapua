@@ -49,10 +49,13 @@ public abstract class AbstractRegistryFacade {
         return DatastoreClientFactory.getElasticsearchClient();
     }
 
-    protected <T extends Storable> void setLimitExceed(StorableQuery query, StorableListResult<T> list) {
+    protected <T extends Storable> void setLimitExceed(StorableQuery query, boolean hitsExceedsTotalCount, StorableListResult<T> list) {
         int offset = query.getOffset() != null ? query.getOffset() : 0;
-        if (query.getLimit() != null && list.getTotalCount() > offset + query.getLimit()) {
-            list.setLimitExceeded(true);
+        if (query.getLimit() != null) {
+            if (hitsExceedsTotalCount || //pre-condition: there are more than 10k documents in ES && query limit is <= 10k
+                    list.getTotalCount() > offset + query.getLimit()) {
+                list.setLimitExceeded(true);
+            }
         }
     }
 }
