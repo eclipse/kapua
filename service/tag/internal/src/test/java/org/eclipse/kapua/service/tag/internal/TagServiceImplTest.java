@@ -18,7 +18,6 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdImpl;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -27,7 +26,6 @@ import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagRepository;
 import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
-import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +35,7 @@ import org.mockito.Mockito;
 import java.math.BigInteger;
 import java.util.function.BiConsumer;
 
-@Category(JUnitTests.class)
+@org.junit.jupiter.api.Tag("org.eclipse.kapua.qa.markers.junit.JUnitTests")
 public class TagServiceImplTest {
 
     private static final MockSettings FAIL_ON_UNPREDICTED_METHOD_CALL = Mockito.withSettings()
