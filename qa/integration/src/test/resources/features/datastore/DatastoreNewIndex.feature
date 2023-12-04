@@ -61,7 +61,7 @@ Feature: Datastore tests
 
     Given Server with host "127.0.0.1" on port "9200"
     And I login as user with name "kapua-sys" and password "kapua-password"
-    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
+    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP", messageUniquenessCheck "FULL"
     And System property "datastore.index.window" with value "day"
     When I delete all indices
     And I select account "kapua-sys"
@@ -80,7 +80,7 @@ Feature: Datastore tests
 
     Given Server with host "127.0.0.1" on port "9200"
     And I login as user with name "kapua-sys" and password "kapua-password"
-    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
+    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP", messageUniquenessCheck "FULL"
     And System property "datastore.index.window" with value "hour"
     When I delete all indices
     And I select account "kapua-sys"
@@ -98,7 +98,7 @@ Feature: Datastore tests
 
     Given Server with host "127.0.0.1" on port "9200"
     And I login as user with name "kapua-sys" and password "kapua-password"
-    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
+    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP", messageUniquenessCheck "FULL"
     And System property "datastore.index.window" with value "week"
     When I delete all indices
     And I select account "kapua-sys"
@@ -119,7 +119,7 @@ Feature: Datastore tests
 
     Given Server with host "127.0.0.1" on port "9200"
     And I login as user with name "kapua-sys" and password "kapua-password"
-    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
+    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP", messageUniquenessCheck "FULL"
     And System property "datastore.index.window" with value "day"
     When I delete all indices
     And I select account "kapua-sys"
@@ -140,7 +140,7 @@ Feature: Datastore tests
 
     Given Server with host "127.0.0.1" on port "9200"
     And I login as user with name "kapua-sys" and password "kapua-password"
-    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
+    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP", messageUniquenessCheck "FULL"
     And System property "datastore.index.window" with value "hour"
     When I delete all indices
     And I select account "kapua-sys"
@@ -160,7 +160,7 @@ Feature: Datastore tests
 
     Given Server with host "127.0.0.1" on port "9200"
     And I login as user with name "kapua-sys" and password "kapua-password"
-    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
+    Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP", messageUniquenessCheck "FULL"
     And System property "datastore.index.window" with value "week"
     And I configure account service
       | type    | name                   | value |
