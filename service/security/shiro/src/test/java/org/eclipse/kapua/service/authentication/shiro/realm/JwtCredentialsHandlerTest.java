@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
@@ -21,7 +22,9 @@ import org.eclipse.kapua.service.authentication.shiro.realm.model.NotProcessable
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class JwtCredentialsHandlerTest {
 
     JwtCredentialsHandler instance;
