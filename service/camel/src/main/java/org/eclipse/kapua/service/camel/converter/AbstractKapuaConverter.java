@@ -50,8 +50,8 @@ public abstract class AbstractKapuaConverter {
 
     public static final Logger logger = LoggerFactory.getLogger(AbstractKapuaConverter.class);
 
-    private final TranslatorHub translatorHub;
-    private final MetricsCamel metricsCamel;
+    protected final TranslatorHub translatorHub;
+    protected final MetricsCamel metricsCamel;
 
     @Inject
     protected AbstractKapuaConverter(TranslatorHub translatorHub, MetricsCamel metricsCamel) {
