@@ -1560,13 +1560,14 @@ public class DatastoreSteps extends TestBase {
         checkListOrder(metLst, getNamedMetricOrdering());
     }
 
-    @Given("Dataservice config enabled {string}, dataTTL {int}, rxByteLimit {int}, dataIndexBy {string}")
-    public void configureDatastoreService(String enabled, int dataTTL, int rxByteLimit, String dataIndexBy) throws Exception {
-        Map<String, Object> settings = new HashMap<>();
+    @Given("Dataservice config enabled {string}, dataTTL {int}, rxByteLimit {int}, dataIndexBy {string}, messageUniquenessCheck {string}")
+    public void configureDatastoreService(String enabled, int dataTTL, int rxByteLimit, String dataIndexBy, String messageUniquenessCheck) throws Exception {
+        Map<String, Object> settings = messageStoreService.getConfigValues(KapuaId.ONE);
         settings.put("enabled", enabled.equalsIgnoreCase("TRUE"));
         settings.put("dataTTL", dataTTL);
         settings.put("rxByteLimit", rxByteLimit);
         settings.put("dataIndexBy", dataIndexBy);
+        settings.put("messageUniquenessCheck", messageUniquenessCheck);
         messageStoreService.setConfigValues(KapuaId.ONE, null, settings);
     }
 
