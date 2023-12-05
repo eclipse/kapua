@@ -20,6 +20,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Stage;
 import com.google.inject.TypeLiteral;
+import com.google.inject.name.Names;
 import com.google.inject.util.Modules;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
@@ -123,6 +124,12 @@ public class GuiceLocatorImpl extends KapuaLocator {
         } catch (ConfigurationException e) {
             throw new KapuaRuntimeException(KapuaLocatorErrorCodes.COMPONENT_UNAVAILABLE, componentClass);
         }
+    }
+
+    @Override
+    public <T> T getComponent(Class<T> type, String named) {
+        return (T) injector.getInstance(Key.get(TypeLiteral.get(type), Names.named(named)));
+
     }
 
     @Override

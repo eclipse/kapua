@@ -122,6 +122,11 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
     }
 
     @Override
+    public <T> T getComponent(Class<T> type, String named) {
+        return instance.getComponent(type, named);
+    }
+
+    @Override
     public <T> T getComponent(Type type) {
         return instance.getComponent(type);
     }

@@ -90,4 +90,9 @@ public class MockitoLocator extends KapuaLocator {
         }
         return Mockito.mock(componentClass);
     }
+
+    @Override
+    public <T> T getComponent(Class<T> componentClass, String named) {
+        return null;
+    }
 }

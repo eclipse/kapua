@@ -14,6 +14,8 @@ package org.eclipse.kapua.qa.common;
 
 import com.google.inject.ConfigurationException;
 import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
@@ -83,6 +85,11 @@ public class MockedLocator extends KapuaLocator {
     @Override
     public <T> T getComponent(Class<T> componentClass) {
         return guiceInjector.getInstance(componentClass);
+    }
+
+    @Override
+    public <T> T getComponent(Class<T> componentClass, String named) {
+        return guiceInjector.getInstance(Key.get(componentClass, Names.named(named)));
     }
 
     @Override
