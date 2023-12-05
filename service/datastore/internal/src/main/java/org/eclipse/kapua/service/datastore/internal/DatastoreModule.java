@@ -40,9 +40,17 @@ import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoFactory;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
+import org.eclipse.kapua.service.datastore.internal.client.DatastoreElasticsearchClientConfiguration;
+import org.eclipse.kapua.service.datastore.internal.converter.ModelContextImpl;
+import org.eclipse.kapua.service.datastore.internal.converter.QueryConverterImpl;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
+import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
+import org.eclipse.kapua.service.elasticsearch.client.rest.MetricsEsClient;
+import org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider;
+import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
 import org.eclipse.kapua.storage.TxContext;
 
 import javax.inject.Named;
@@ -79,6 +87,16 @@ public class DatastoreModule extends AbstractKapuaModule {
     @ProvidesIntoSet
     public Domain dataStoreDomain() {
         return new DomainEntry(Domains.DATASTORE, "org.eclipse.kapua.service.datastore.DatastoreService", false, Actions.read, Actions.delete, Actions.write);
+    }
+
+    @Provides
+    @Singleton
+    ElasticsearchClientProvider elasticsearchClientProvider(MetricsEsClient metricsEsClient, StorableIdFactory storableIdFactory, DatastoreUtils datastoreUtils) {
+        ElasticsearchClientConfiguration esClientConfiguration = DatastoreElasticsearchClientConfiguration.getInstance();
+        return new RestElasticsearchClientProvider(metricsEsClient)
+                .withClientConfiguration(esClientConfiguration)
+                .withModelContext(new ModelContextImpl(storableIdFactory, datastoreUtils))
+                .withModelConverter(new QueryConverterImpl());
     }
 
     @Provides
