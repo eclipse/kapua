@@ -12,6 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Base64;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import javax.imageio.ImageIO;
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -54,24 +68,9 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserType;
-import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.imageio.ImageIO;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 /**
  * {@link MfaOptionService} implementation.
@@ -131,7 +130,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         if (!expectedUser.equals(mfaOptionCreator.getUserId())) {
             throw new SelfManagedOnlyException();
         }
-        String fullKey = mfaAuthenticator.generateKey();
+        final String fullKey = mfaAuthenticator.generateKey();
 
         final MfaOption option = txManager.execute(tx -> {
             // Check that the user is an internal user (external users cannot have the MFA enabled)
@@ -151,10 +150,9 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             }
 
             // Do create
-            final MfaOptionCreatorImpl optionCreator = new MfaOptionCreatorImpl(mfaOptionCreator.getScopeId(), mfaOptionCreator.getUserId(), fullKey);
             MfaOption toCreate = new MfaOptionImpl(mfaOptionCreator.getScopeId());
             toCreate.setUserId(mfaOptionCreator.getUserId());
-            toCreate.setMfaSecretKey(mfaOptionCreator.getMfaSecretKey());
+            toCreate.setMfaSecretKey(fullKey);
             final MfaOption mfaOption = mfaOptionRepository.create(tx, toCreate);
 
             // generating base64 QR code image
@@ -168,13 +166,10 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             return mfaOption;
         });
 
-        final ScratchCodeListResult scratchCodes = txManager.execute(tx -> {
-
-            // generating scratch codes
-            final ScratchCodeCreator scratchCodeCreator = scratchCodeFactory.newCreator(mfaOptionCreator.getScopeId(), option.getId(), null);
-            final ScratchCodeListResult scratchCodeListResult = createAllScratchCodes(tx, scratchCodeCreator);
-            return scratchCodeListResult;
-        });
+        // generating scratch codes
+        final ScratchCodeCreator scratchCodeCreator = scratchCodeFactory.newCreator(mfaOptionCreator.getScopeId(), option.getId(), null);
+        final ScratchCodeListResult scratchCodeListResult = createAllScratchCodes(scratchCodeCreator);
+        final ScratchCodeListResult scratchCodes = scratchCodeListResult;
         option.setScratchCodes(scratchCodes.getItems());
 
         // Do post persist magic on key value (note that this is the only place in which the key is returned in plain-text)
@@ -191,7 +186,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
      * @return
      * @throws KapuaException
      */
-    public ScratchCodeListResult createAllScratchCodes(TxContext tx, ScratchCodeCreator scratchCodeCreator) throws KapuaException {
+    public ScratchCodeListResult createAllScratchCodes(ScratchCodeCreator scratchCodeCreator) throws KapuaException {
         // Argument Validation
         ArgumentValidator.notNull(scratchCodeCreator, "scratchCodeCreator");
         ArgumentValidator.notNull(scratchCodeCreator.getScopeId(), "scratchCodeCreator.scopeId");
@@ -200,7 +195,8 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         List<String> codes = mfaAuthenticator.generateCodes();
         ScratchCodeListResult scratchCodeListResult = new ScratchCodeListResultImpl();
         // Check existing ScratchCodes
-        ScratchCodeListResult existingScratchCodeListResult = scratchCodeRepository.findByMfaOptionId(tx, scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaOptionId());
+        ScratchCodeListResult existingScratchCodeListResult = txManager.execute(tx ->
+            scratchCodeRepository.findByMfaOptionId(tx, scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaOptionId()));
         if (!existingScratchCodeListResult.isEmpty()) {
             throw new KapuaExistingScratchCodesException();
         }
@@ -212,7 +208,11 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             // Create code
             ScratchCodeImpl codeImpl = new ScratchCodeImpl(scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaOptionId(), encryptedCode);
 
-            ScratchCode scratchCode = scratchCodeRepository.create(tx, codeImpl);
+            ScratchCode scratchCode = txManager.execute(tx -> scratchCodeRepository.create(tx, codeImpl));
+
+            // setting back the non-encrypted code, so it can be read from the user only one time after creation
+            scratchCode.setCode(code);
+
             scratchCodeListResult.addItem(scratchCode);
         }
 
