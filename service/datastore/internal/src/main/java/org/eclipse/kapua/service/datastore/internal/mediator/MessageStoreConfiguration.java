@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.datastore.internal.mediator;
 
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.service.datastore.internal.model.DataIndexBy;
+import org.eclipse.kapua.service.datastore.internal.model.MessageUniquenessCheck;
 import org.eclipse.kapua.service.datastore.internal.model.metric.MetricsIndexBy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +71,12 @@ public class MessageStoreConfiguration {
     public static final String CONFIGURATION_METRICS_INDEX_BY_KEY = "metricsIndexBy";
 
     /**
+     * Message Uniqueness Check key (available options are in MessageUniquenessCheck enumeration).<br>
+     * <b>The key must be aligned with the key used in org.eclipse.kapua.service.datastore.MessageStoreService.xml meta data configuration file).</b>
+     */
+    public static final String CONFIGURATION_MESSAGE_UNIQUENESS_CHECK = "messageUniquenessCheck";
+
+    /**
      * Defines a value in service plan as unlimited resource
      */
     public static final int UNLIMITED = -1;
@@ -87,6 +94,7 @@ public class MessageStoreConfiguration {
     private long rxByteLimit = 1000000;
     private DataIndexBy dataIndexBy = DataIndexBy.SERVER_TIMESTAMP;
     private MetricsIndexBy metricsIndexBy = MetricsIndexBy.TIMESTAMP;
+    private MessageUniquenessCheck messageUniquenessCheck;
 
     private Map<String, Object> values;
 
@@ -119,6 +127,9 @@ public class MessageStoreConfiguration {
             }
             if (this.values.get(CONFIGURATION_METRICS_INDEX_BY_KEY) != null) {
                 setMetricsIndexBy(MetricsIndexBy.valueOf((String) this.values.get(CONFIGURATION_METRICS_INDEX_BY_KEY)));
+            }
+            if (this.values.get(CONFIGURATION_MESSAGE_UNIQUENESS_CHECK) != null) {
+                setMessageUniquenessCheck(MessageUniquenessCheck.valueOf((String) this.values.get(CONFIGURATION_MESSAGE_UNIQUENESS_CHECK)));
             }
         }
     }
@@ -231,4 +242,20 @@ public class MessageStoreConfiguration {
     public void setMetricsIndexBy(MetricsIndexBy metricsIndexBy) {
         this.metricsIndexBy = metricsIndexBy;
     }
+
+    /**
+     * Get the message uniqueness check parameter ({@link MessageStoreConfiguration#CONFIGURATION_MESSAGE_UNIQUENESS_CHECK}
+     * @return
+     */
+    public MessageUniquenessCheck getMessageUniquenessCheck() {
+        return messageUniquenessCheck;
+    }
+
+    /**
+     * Set the message uniqueness check parameter ({@link MessageStoreConfiguration#CONFIGURATION_MESSAGE_UNIQUENESS_CHECK}
+     */
+    public void setMessageUniquenessCheck(MessageUniquenessCheck messageUniquenessCheck) {
+        this.messageUniquenessCheck = messageUniquenessCheck;
+    }
+
 }

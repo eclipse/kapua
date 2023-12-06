@@ -34,6 +34,7 @@ import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
 import org.eclipse.kapua.service.datastore.internal.model.DataIndexBy;
 import org.eclipse.kapua.service.datastore.internal.model.DatastoreMessageImpl;
 import org.eclipse.kapua.service.datastore.internal.model.MessageListResultImpl;
+import org.eclipse.kapua.service.datastore.internal.model.MessageUniquenessCheck;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
@@ -148,8 +149,10 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
         String indexName = schemaMetadata.getDataIndexName();
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
 
-        if (!newInsert) {
-            DatastoreMessage datastoreMessage = find(message.getScopeId(), STORABLE_ID_FACTORY.newStorableId(messageId), StorableFetchStyle.SOURCE_SELECT);
+        if (!newInsert && !MessageUniquenessCheck.NONE.equals(accountServicePlan.getMessageUniquenessCheck())) {
+            DatastoreMessage datastoreMessage = MessageUniquenessCheck.FULL.equals(accountServicePlan.getMessageUniquenessCheck()) ?
+                find(message.getScopeId(), STORABLE_ID_FACTORY.newStorableId(messageId), StorableFetchStyle.SOURCE_SELECT) :
+                find(message.getScopeId(), indexName, STORABLE_ID_FACTORY.newStorableId(messageId), StorableFetchStyle.SOURCE_SELECT);
             if (datastoreMessage != null) {
                 LOG.debug("Message with datatstore id '{}' already found", messageId);
                 metrics.getAlreadyInTheDatastore().inc();
@@ -243,7 +246,23 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
      * @throws QueryMappingException
      * @throws ClientException
      */
-    public DatastoreMessage find(KapuaId scopeId, StorableId id, StorableFetchStyle fetchStyle)
+    public DatastoreMessage find(KapuaId scopeId, StorableId id, StorableFetchStyle fetchStyle) throws KapuaIllegalArgumentException, ClientException {
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        return find(scopeId, SchemaUtil.getDataIndexName(scopeId), id, fetchStyle);
+    }
+
+    /**
+     * Find message by identifier
+     *
+     * @param scopeId
+     * @param id
+     * @param fetchStyle
+     * @return
+     * @throws KapuaIllegalArgumentException
+     * @throws QueryMappingException
+     * @throws ClientException
+     */
+    public DatastoreMessage find(KapuaId scopeId, String indexName, StorableId id, StorableFetchStyle fetchStyle)
             throws KapuaIllegalArgumentException, ClientException {
 
         ArgumentValidator.notNull(scopeId, SCOPE_ID);
@@ -257,7 +276,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
         idsPredicate.addId(id);
         idsQuery.setPredicate(idsPredicate);
 
-        String indexName = SchemaUtil.getDataIndexName(scopeId);
+//        String indexName = SchemaUtil.getDataIndexName(scopeId);
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
         return getElasticsearchClient().find(typeDescriptor, idsQuery, DatastoreMessage.class);
     }
