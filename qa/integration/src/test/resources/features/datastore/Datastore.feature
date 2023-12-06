@@ -1401,6 +1401,20 @@ Feature: Datastore tests
     Then The message list "MessageInfo" have limitExceed value false
     And I delete all indices
 
+  Scenario: Create 10k messages and more, test if limitExceeded parameter is right when doing queries
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    When I store 10000 messages in bulk mode to the index "1-data-message-2023-1"
+    And I refresh all indices
+    When I query for the current account messages with limit 10000 and offset 0 and store them as "MessageInfo"
+    Then The message list "MessageInfo" have limitExceed value false
+    When I store 1 messages in bulk mode to the index "1-data-message-2023-1"
+    And I refresh all indices
+    When I query for the current account messages with limit 10000 and offset 0 and store them as "MessageInfo"
+    Then The message list "MessageInfo" have limitExceed value true
+    And I delete all indices
+
   @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment
