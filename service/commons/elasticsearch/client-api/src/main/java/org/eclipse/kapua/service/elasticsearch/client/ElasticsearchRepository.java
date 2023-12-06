@@ -93,6 +93,10 @@ public abstract class ElasticsearchRepository<
 
     @Override
     public T find(KapuaId scopeId, StorableId id) {
+        return doFind(scopeId, indexResolver(scopeId), id);
+    }
+
+    protected T doFind(KapuaId scopeId, String indexName, StorableId id) {
         try {
             final Q idsQuery = storableFactory.newQuery(scopeId);
             idsQuery.setLimit(1);
@@ -101,7 +105,6 @@ public abstract class ElasticsearchRepository<
             idsPredicate.addId(id);
             idsQuery.setPredicate(idsPredicate);
 
-            final String indexName = indexResolver(scopeId);
             synchIndex(indexName);
             final T res;
             res = (T) elasticsearchClientProviderInstance.getElasticsearchClient().<T>find(getDescriptor(indexName), idsQuery, clazz);

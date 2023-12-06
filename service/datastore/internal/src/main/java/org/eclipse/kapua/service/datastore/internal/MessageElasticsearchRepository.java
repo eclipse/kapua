@@ -89,6 +89,11 @@ public class MessageElasticsearchRepository extends DatastoreElasticSearchReposi
         return datastoreUtils.getDataIndexName(scopeId, time, indexingWindowOption);
     }
 
+    @Override
+    public DatastoreMessage find(KapuaId scopeId, StorableId storableId, long time) {
+        return this.doFind(scopeId, indexResolver(scopeId, time), storableId);
+    }
+
     /**
      * Store a message
      *

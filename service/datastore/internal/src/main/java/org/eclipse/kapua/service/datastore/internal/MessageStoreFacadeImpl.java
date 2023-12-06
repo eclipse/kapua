@@ -155,8 +155,8 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
 
         if (!newInsert && !MessageUniquenessCheck.NONE.equals(accountServicePlan.getMessageUniquenessCheck())) {
             DatastoreMessage datastoreMessage = MessageUniquenessCheck.FULL.equals(accountServicePlan.getMessageUniquenessCheck()) ?
-                    messageRepository.find(message.getScopeId(), DatastoreUtils.getDataIndexName(message.getScopeId()), storableIdFactory.newStorableId(messageId)) :
-                    messageRepository.find(message.getScopeId(), schemaMetadata.getDataIndexName(), storableIdFactory.newStorableId(messageId));
+                    messageRepository.find(message.getScopeId(), storableIdFactory.newStorableId(messageId)) :
+                    messageRepository.find(message.getScopeId(), storableIdFactory.newStorableId(messageId), message.getCapturedOn().getTime());
             if (datastoreMessage != null) {
                 LOG.debug("Message with datastore id '{}' already found", messageId);
                 metrics.getAlreadyInTheDatastore().inc();
@@ -240,7 +240,7 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
         }
 
         // get the index by finding the object by id
-        DatastoreMessage messageToBeDeleted = messageRepository.find(scopeId, DatastoreUtils.getDataIndexName(scopeId), id);
+        DatastoreMessage messageToBeDeleted = messageRepository.find(scopeId, id);
         if (messageToBeDeleted != null) {
             messageRepository.delete(scopeId, id, messageToBeDeleted.getTimestamp().getTime());
         } else {
@@ -266,7 +266,7 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
     public DatastoreMessage find(KapuaId scopeId, StorableId id) throws KapuaIllegalArgumentException, ClientException {
         ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(id, "id");
-        return messageRepository.find(scopeId, DatastoreUtils.getDataIndexName(scopeId), id);
+        return messageRepository.find(scopeId, id);
     }
 
     @Override

@@ -29,4 +29,5 @@ public interface MessageRepository extends StorableRepository<DatastoreMessage, 
 
     void delete(KapuaId scopeId, StorableId id, long time);
 
+    DatastoreMessage find(KapuaId scopeId, StorableId storableId, long time);
 }
