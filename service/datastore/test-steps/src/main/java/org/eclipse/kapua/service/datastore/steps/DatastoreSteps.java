@@ -97,6 +97,7 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.model.IndexRequest;
+import org.eclipse.kapua.service.elasticsearch.client.rest.ElasticsearchResourcePaths;
 import org.eclipse.kapua.service.storable.model.StorableListResult;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
@@ -106,11 +107,14 @@ import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
+import org.elasticsearch.client.Request;
+import org.elasticsearch.client.RestClient;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
@@ -785,7 +789,21 @@ public class DatastoreSteps extends TestBase {
         stepData.put(idListKey, tmpList);
     }
 
-    @Given("^I set the database to device timestamp indexing$")
+    //with this method I insert in bulk mode an hard-coded message, in order to speed up the insertion process
+    @When("^I store (\\d+) messages in bulk mode to the index \"(.*)\"$")
+    public void bulkInsert(int nMessages, String index) throws IOException {
+        StringBuilder body = new StringBuilder();
+        for (int i=0; i<nMessages; i++) {
+            body.append("{ \"index\":{}}\n");
+            body.append("{\"device_id\":\"6782593496741240747\",\"channel_parts\":[\"genericMetric\"],\"scope_id\":\"1\",\"channel\":\"genericMetric\",\"received_on\":\"2018-10-01T16:43:04.115Z\",\"ip_address\":\"127.0.0.1\",\"metrics\":{\"metric\":{\"int\":2}},\"sent_on\":null,\"body\":null,\"captured_on\":null,\"client_id\":\"samSulekBulkingHeavy\",\"timestamp\":\"2018-10-01T13:48:36.946Z\",\"sort\":[1701784116946]}\n");
+        }
+        Request request = new Request("POST", index + ElasticsearchResourcePaths.getBulkPath());
+        request.setJsonEntity(body.toString());
+        RestClient cl = (RestClient)elasticsearchClient.getClient();
+        cl.performRequest(request);
+    }
+
+    @Given("I set the database to device timestamp indexing")
     public void setDatabaseToDeviceTimestampIndexing() throws KapuaException {
 
         Account account = (Account) stepData.get(LAST_ACCOUNT);
