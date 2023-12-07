@@ -27,6 +27,26 @@ jobs:
       - run: docker images -a  # used as log (should show only github environment standard docker images; if kapua images are present, something is wrong)
       - run: mvn -B ${BUILD_OPTS} -DskipTests clean install
       - run: bash <(curl -s https://codecov.io/bash)
+  build-Console:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v3 # Checks out a copy of the repository on the ubuntu-latest machine
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: |
+            11
+            8
+      - name: Cache Maven repository #retrieve maven artifacts for the console building
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
+      - run: mvn -v
+      - run: mvn clean install -f console/pom.xml -Pdev -DskipTests && mvn clean install -Pdocker,console -DskipTests -pl :kapua-assembly-java-base,:kapua-assembly-jetty-base,:kapua-assembly-console
+      - run: bash <(curl -s https://codecov.io/bash)
   test-brokerAcl:
     needs: build
     runs-on: ubuntu-latest
