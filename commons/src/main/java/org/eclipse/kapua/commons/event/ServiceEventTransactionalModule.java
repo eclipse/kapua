@@ -12,21 +12,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 public abstract class ServiceEventTransactionalModule implements ServiceModule {
 
@@ -54,10 +56,21 @@ public abstract class ServiceEventTransactionalModule implements ServiceModule {
             ServiceEventClientConfiguration[] serviceEventClientConfigurations,
             String internalAddress,
             ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory) {
-        this.serviceEventClientConfigurations = serviceEventClientConfigurations;
+
+        // generate a unique client id
+        this(serviceEventClientConfigurations, internalAddress, UUID.randomUUID().toString(), serviceEventTransactionalHousekeeperFactory);
+    }
+
+    public ServiceEventTransactionalModule(
+            ServiceEventClientConfiguration[] serviceEventClientConfigurations,
+            String internalAddress,
+            String uniqueClientId,
+            ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory) {
+        this.serviceEventClientConfigurations = appendClientId(uniqueClientId, serviceEventClientConfigurations);
         this.internalAddress = internalAddress;
         this.houseKeeperFactory = serviceEventTransactionalHousekeeperFactory;
     }
+
 
     @Override
     public void start() throws KapuaException {
@@ -136,4 +149,18 @@ public abstract class ServiceEventTransactionalModule implements ServiceModule {
         LOGGER.info("Stopping service event module... DONE");
     }
 
+    protected ServiceEventClientConfiguration[] appendClientId(String clientId, ServiceEventClientConfiguration[] configs) {
+        return Arrays.stream(configs).map(config -> {
+            if (config.getEventListener() == null) {
+                // config for @RaiseServiceEvent
+                LOGGER.debug("Adding config for @RaiseServiceEvent - address: {}, name: {}, listener: {}", config.getAddress(), config.getClientName(), config.getEventListener());
+                return config;
+            } else {
+                // config for @ListenServiceEvent
+                String subscriberName = config.getClientName() + (clientId == null ? "" : "_" + clientId);
+                LOGGER.debug("Adding config for @ListenServiceEvent - address: {}, name: {}, listener: {}", config.getAddress(), subscriberName, config.getEventListener());
+                return new ServiceEventClientConfiguration(config.getAddress(), subscriberName, config.getEventListener());
+            }
+        }).toArray(ServiceEventClientConfiguration[]::new);
+    }
 }
