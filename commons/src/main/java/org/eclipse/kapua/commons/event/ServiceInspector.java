@@ -115,8 +115,6 @@ public class ServiceInspector {
         Method matchingMethod = null;
 
         if (methods.length > 0) {
-            List<Class<?>> methodParamTypes = Arrays.asList(method.getParameterTypes());
-
             for (Method candidate : methods) {
                 if (!candidate.getName().equals(method.getName())) {
                     continue;
@@ -124,10 +122,7 @@ public class ServiceInspector {
                 if (!candidate.getReturnType().equals(method.getReturnType())) {
                     continue;
                 }
-
-                List<Class<?>> candidateParamTypes = Arrays.asList(method.getParameterTypes());
-
-                if (candidateParamTypes.size() != methodParamTypes.size() || !candidateParamTypes.containsAll(methodParamTypes)) {
+                if(!Arrays.equals(method.getParameterTypes(), candidate.getParameterTypes())) {
                     continue;
                 }
 
