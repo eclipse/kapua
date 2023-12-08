@@ -12,17 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag.test;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
-import com.google.inject.name.Names;
-import io.cucumber.java.Before;
+import java.util.Collections;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
@@ -68,7 +65,13 @@ import org.eclipse.kapua.service.tag.internal.TagServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
-import java.util.Collections;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import com.google.inject.name.Names;
+
+import io.cucumber.java.Before;
 
 @Singleton
 public class TagLocatorConfiguration {
@@ -118,6 +121,7 @@ public class TagLocatorConfiguration {
 
                 // Inject actual Device service related services
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
+                final EventStorer eventStorer = new EventStorerImpl(new EventStoreRecordImplJpaRepository(jpaRepoConfig));
                 bind(TagRepository.class).toInstance(new TagImplJpaRepository(jpaRepoConfig));
                 bind(DeviceRegistryService.class).toInstance(
                         new DeviceRegistryServiceImpl(
@@ -128,7 +132,7 @@ public class TagLocatorConfiguration {
                                 new DeviceImplJpaRepository(jpaRepoConfig),
                                 new DeviceFactoryImpl(),
                                 Mockito.mock(GroupQueryHelper.class),
-                                new EventStorerImpl(new EventStoreRecordImplJpaRepository(jpaRepoConfig)))
+                                eventStorer)
                 );
                 bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
 
@@ -139,7 +143,8 @@ public class TagLocatorConfiguration {
                         new DeviceConnectionFactoryImpl(),
                         new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-device"),
                         new DeviceConnectionImplJpaRepository(jpaRepoConfig),
-                        Collections.emptyMap()));
+                        Collections.emptyMap(),
+                        eventStorer));
                 bind(DeviceConnectionFactory.class).to(DeviceConnectionFactoryImpl.class);
 
                 bind(DeviceRepository.class).toInstance(new DeviceImplJpaRepository(jpaRepoConfig));

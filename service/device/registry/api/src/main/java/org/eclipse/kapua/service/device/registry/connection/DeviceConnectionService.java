@@ -70,13 +70,23 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
      * Register a device message when a client disconnects from the broker
      *
      * @param scopeId  The {@link DeviceConnection#getScopeId()}.
-     * @param clientId TThe {@link DeviceConnection#getClientId()}.
+     * @param clientId The {@link DeviceConnection#getClientId()}.
      * @throws KapuaException In case of errors.
      * @since 1.0.0
      * @deprecated Since 1.6.0. It has never been implemented.
      */
     @Deprecated
     void disconnect(KapuaId scopeId, String clientId) throws KapuaException;
+
+    /**
+     * Disconnect the specified {@link DeviceConnection} from the broker
+     *
+     * @param scopeId  The {@link DeviceConnection#getScopeId()}.
+     * @param id The {@link DeviceConnection#getId()}.
+     * @throws KapuaException In case of errors.
+     * @since 2.0.0
+     */
+    void disconnect(KapuaId scopeId, KapuaId deviceConnectionId) throws KapuaException;
 
     /**
      * Gets the available {@link DeviceConnection#getAuthenticationType()}s.

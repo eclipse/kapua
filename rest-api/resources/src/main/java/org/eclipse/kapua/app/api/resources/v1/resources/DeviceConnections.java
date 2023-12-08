@@ -41,6 +41,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("{scopeId}/deviceconnections")
 public class DeviceConnections extends AbstractKapuaResource {
@@ -165,5 +166,24 @@ public class DeviceConnections extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public SetResult getAvailableAuthAdapter() {
         return new SetResult(deviceConnectionService.getAvailableAuthTypes());
+    }
+
+    /**
+     * Request that the DeviceConnection specified by the "deviceConnectionId" is disconnected from the broker.
+     *
+     * @param scopeId            The {@link ScopeId} of the requested {@link DeviceConnection}.
+     * @param deviceConnectionId The id of the requested DeviceConnection.
+     * @return HTTP 200 if operation has completed successfully.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 2.0.0
+     */
+    @POST
+    @Path("{deviceConnectionId}/_disconnect")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response disconnect(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("deviceConnectionId") EntityId deviceConnectionId) throws KapuaException {
+        deviceConnectionService.disconnect(scopeId, deviceConnectionId);
+        return returnNoContent();
     }
 }

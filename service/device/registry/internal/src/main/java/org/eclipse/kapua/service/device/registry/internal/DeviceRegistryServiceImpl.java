@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
@@ -59,10 +60,10 @@ public class DeviceRegistryServiceImpl
 
     @Inject
     public DeviceRegistryServiceImpl(
-            ServiceConfigurationManager serviceConfigurationManager,
+            @Named("DeviceRegistryServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            TxManager txManager,
+            @Named("DeviceRegistryTransactionManager") TxManager txManager,
             DeviceRepository deviceRepository,
             DeviceFactory entityFactory,
             GroupQueryHelper groupQueryHelper,
