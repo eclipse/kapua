@@ -243,15 +243,18 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
 
         long totalCount = 0;
         ArrayNode resultsNode = null;
+        String totalRelation = null;
+
         Request request = new Request(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.search(typeDescriptor));
         request.setJsonEntity(json);
         Response queryResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), typeDescriptor.getIndex(), "QUERY");
 
         if (isRequestSuccessful(queryResponse)) {
             JsonNode responseNode = readResponseAsJsonNode(queryResponse);
-
             JsonNode hitsNode = responseNode.path(ElasticsearchKeywords.KEY_HITS);
+
             totalCount = hitsNode.path(ElasticsearchKeywords.KEY_TOTAL).path(ElasticsearchKeywords.KEY_VALUE).asLong();
+            totalRelation = hitsNode.path(ElasticsearchKeywords.KEY_TOTAL).path(ElasticsearchKeywords.KEY_RELATION).asText();
             if (totalCount > Integer.MAX_VALUE) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_HITS_MAX_VALUE_EXCEEDED);
             }
@@ -262,6 +265,9 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         }
 
         ResultList<T> resultList = new ResultList<>(totalCount);
+        if (totalRelation != null) {
+            resultList.setTotalHitsExceedsCount(!totalRelation.equals("eq"));
+        }
         Object queryFetchStyle = getModelConverter().getFetchStyle(query);
         if (resultsNode != null && !resultsNode.isEmpty()) {
             for (JsonNode result : resultsNode) {

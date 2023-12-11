@@ -28,6 +28,7 @@ import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
@@ -188,8 +189,9 @@ public class ClientInfoRegistryFacade extends AbstractRegistryFacade {
 
         String indexName = SchemaUtil.getClientIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-        ClientInfoListResultImpl result = new ClientInfoListResultImpl(getElasticsearchClient().query(typeDescriptor, query, ClientInfo.class));
-        setLimitExceed(query, result);
+        ResultList<ClientInfo> rl = getElasticsearchClient().query(typeDescriptor, query, ClientInfo.class);
+        ClientInfoListResult result = new ClientInfoListResultImpl(rl);
+        setLimitExceed(query, rl.getTotalHitsExceedsCount(), result);
         return result;
     }
 

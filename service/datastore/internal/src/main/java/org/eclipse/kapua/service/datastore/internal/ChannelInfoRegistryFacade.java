@@ -28,6 +28,7 @@ import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
@@ -193,8 +194,9 @@ public class ChannelInfoRegistryFacade extends AbstractRegistryFacade {
 
         String indexName = SchemaUtil.getChannelIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
-        ChannelInfoListResult result = new ChannelInfoListResultImpl(getElasticsearchClient().query(typeDescriptor, query, ChannelInfo.class));
-        setLimitExceed(query, result);
+        ResultList<ChannelInfo> rl = getElasticsearchClient().query(typeDescriptor, query, ChannelInfo.class);
+        ChannelInfoListResult result = new ChannelInfoListResultImpl(rl);
+        setLimitExceed(query, rl.getTotalHitsExceedsCount(), result);
         return result;
     }
 
