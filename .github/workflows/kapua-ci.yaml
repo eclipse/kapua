@@ -32,7 +32,7 @@ jobs:
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - run: mvn -v
       - run: docker images -a  # used as log (should show only github environment standard docker images; if kapua images are present, something is wrong)
-      - run: mvn -B ${BUILD_OPTS} -DskipTests clean install
+      - run: mvn -B ${BUILD_OPTS} -DskipTests clean install -T 1C
   test-brokerAcl:
     needs: build
     runs-on: ubuntu-latest
