@@ -64,6 +64,7 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
     private static final Logger LOG = LoggerFactory.getLogger(ChannelInfoRegistryServiceImpl.class);
 
     private final DatastorePredicateFactory datastorePredicateFactory;
+    private Integer MAX_RESULT_WINDOW_VALUE;
     private final AccountService accountService;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
@@ -95,6 +96,7 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
         this.messageRepository = messageStoreService;
         this.channelInfoRegistryFacade = channelInfoRegistryFacade;
         this.datastoreSettings = datastoreSettings;
+        this.MAX_RESULT_WINDOW_VALUE = datastoreSettings.getInt(DatastoreSettingsKey.MAX_RESULT_WINDOW_VALUE);
     }
 
     @Override
@@ -136,6 +138,12 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
         checkDataAccess(query.getScopeId(), Actions.read);
+        if (query.getLimit() != null && query.getOffset() != null) {
+            ArgumentValidator.notNegative(query.getLimit(), "limit");
+            ArgumentValidator.notNegative(query.getOffset(), "offset");
+            ArgumentValidator.numRange(query.getLimit() + query.getOffset(), 0, MAX_RESULT_WINDOW_VALUE, "limit + offset");
+        }
+
         try {
             ChannelInfoListResult result = channelInfoRegistryFacade.query(query);
             if (result != null && query.getFetchAttributes().contains(ChannelInfoField.TIMESTAMP.field())) {
