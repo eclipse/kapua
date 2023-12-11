@@ -345,14 +345,6 @@ jobs:
           node-version: 16
       - name: Install Swagger CLI # Installs Swagger CLI to bundle OpenAPI files
         run: 'npm install -g @apidevtools/swagger-cli'
-      - uses: actions/cache@v4 # Cache local Maven repository to reuse dependencies
-        with:
-          path: ~/.m2/repository
-          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-      - uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - run: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' verify
       - name: Code coverage results upload
         uses: codecov/codecov-action@v4
@@ -372,10 +364,6 @@ jobs:
       - name: Install Swagger CLI # Installs Swagger CLI to bundle OpenAPI files
         run: 'npm install -g @apidevtools/swagger-cli'
       - uses: actions/cache@v4 # Cache local Maven repository to reuse dependencies
-        with:
-          path: ~/.m2/repository
-          key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
