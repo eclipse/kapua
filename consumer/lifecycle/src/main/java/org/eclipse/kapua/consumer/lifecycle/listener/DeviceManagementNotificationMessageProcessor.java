@@ -13,7 +13,6 @@
 package org.eclipse.kapua.consumer.lifecycle.listener;
 
 import com.google.common.base.MoreObjects;
-import org.apache.camel.Exchange;
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.consumer.lifecycle.MetricsLifecycle;
@@ -80,22 +79,6 @@ public class DeviceManagementNotificationMessageProcessor {
             LOG.error("Error while processing Device Management Operation Notification message!", e);
             throw e;
         }
-    }
-
-    public void processCommunicationErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
-        LOG.info("Message datastoreId: '{}' - Message Id: '{}'", message.getDatastoreId(), message.getMessage().getId());
-        processMessage(message);
-        metrics.getQueueCommunicationError().dec();
-    }
-
-    public void processConfigurationErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
-        LOG.info("Message datastoreId: '{}' - Message Id '{}'", message.getDatastoreId(), message.getMessage().getId());
-        metrics.getQueueConfigurationError().dec();
-    }
-
-    public void processGenericErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
-        LOG.info("Message datastoreId: '{}' - Message Id '{}'", message.getDatastoreId(), message.getMessage().getId());
-        metrics.getQueueGenericError().dec();
     }
 
 }
