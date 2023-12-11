@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.telemetry.listener;
 
-import org.apache.camel.Exchange;
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -73,22 +72,6 @@ public class DataStorageMessageProcessor {
         } else {
             LOG.debug("This message did not matched W1/A1. Channel was: {}", message.getMessage().getChannel());
         }
-    }
-
-    public void processCommunicationErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
-        LOG.info("Message datastoreId: '{}' - Message Id: '{}'", message.getDatastoreId(), message.getMessage().getId());
-        processMessage(message);
-        metrics.getProcessedCommunicationError().dec();
-    }
-
-    public void processConfigurationErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
-        LOG.info("Message datastoreId: '{}' - Message Id '{}'", message.getDatastoreId(), message.getMessage().getId());
-        metrics.getProcessedConfigurationError().dec();
-    }
-
-    public void processGenericErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {
-        LOG.info("Message datastoreId: '{}' - Message Id '{}'", message.getDatastoreId(), message.getMessage().getId());
-        metrics.getProcessedGenericError().dec();
     }
 
 }
