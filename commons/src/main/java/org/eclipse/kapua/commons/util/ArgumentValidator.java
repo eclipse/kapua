@@ -210,6 +210,22 @@ public class ArgumentValidator {
     }
 
     /**
+     * Throws an KapuaIllegalArgumentException if the value for the specified argument is higher (&gt;) than the maxValue given
+     *
+     * @param value
+     * @param maxValue
+     * @param argumentName
+     * @throws KapuaIllegalArgumentException
+     */
+    public static void numLessThenOrEqual(long value, long maxValue, String argumentName)
+            throws KapuaIllegalArgumentException {
+
+        if (value > maxValue) {
+            throw new KapuaIllegalArgumentException(argumentName, "Value over than allowed max value. Max value is " + maxValue);
+        }
+    }
+
+    /**
      * Throws a {@link KapuaIllegalArgumentException} if the {@link String} given has {@link String#length()} less than the #minLength given or greater than the #maxLength given.
      *
      * @param value        The {@link String} to check

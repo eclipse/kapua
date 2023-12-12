@@ -140,9 +140,10 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
         if (query.getLimit() != null && query.getOffset() != null) {
             ArgumentValidator.notNegative(query.getLimit(), "limit");
             ArgumentValidator.notNegative(query.getOffset(), "offset");
-            ArgumentValidator.numRange(query.getLimit() + query.getOffset(), 0, MAX_RESULT_WINDOW_VALUE, "limit + offset");
+            ArgumentValidator.numLessThenOrEqual(query.getLimit() + query.getOffset(), MAX_RESULT_WINDOW_VALUE, "limit + offset");
         }
         checkAccess(query.getScopeId(), Actions.read);
+
         try {
             ClientInfoListResult result = clientInfoRegistryFacade.query(query);
             if (result != null && query.getFetchAttributes().contains(ClientInfoField.TIMESTAMP.field())) {
