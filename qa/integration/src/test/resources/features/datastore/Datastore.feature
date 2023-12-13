@@ -1401,6 +1401,32 @@ Feature: Datastore tests
     Then The message list "MessageInfo" have limitExceed value false
     And I delete all indices
 
+  Scenario: Create some messages, query all messages with not allowed offset and limit values
+  Check if value of limitExceed is false.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-client-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
+      | clientId      | topic               | count | startDate                | endDate                  |
+      | test-client-1 | delete/by/date/test | 2     | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "*"
+    When I query for the current account messages with limit -1 and offset 3 and store them as "MessageInfo"
+    Then An exception was thrown
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "*"
+    When I query for the current account messages with limit 5 and offset -3 and store them as "MessageInfo"
+    Then An exception was thrown
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "*"
+    When I query for the current account messages with limit 9999 and offset 3 and store them as "MessageInfo"
+    Then An exception was thrown
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "*"
+    When I query for the current account messages with limit 3 and offset 9999 and store them as "MessageInfo"
+    Then An exception was thrown
+    And I delete all indices
+
   Scenario: Create 10k messages and more, test if limitExceeded parameter is right when doing queries
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
