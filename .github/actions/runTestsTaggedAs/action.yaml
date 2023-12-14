@@ -35,7 +35,7 @@ runs:
         key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
     - name: Docker images creation
       if: ${{ inputs.needs-docker-images == 'true' }}
-      run: mvn clean install -pl ${APP_PROJECTS} && mvn clean install -Pdocker --f assembly/pom.xml
+      run: mvn clean install -pl ${APP_PROJECTS} && mvn clean install -Pdocker -f assembly/pom.xml -pl '!:kapua-assembly-api' #api container not used in the tests at all se we don't need to build it here
       shell: bash
     - name: Dns look-up containers needed for tests - message-broker
       if: ${{ inputs.needs-docker-images == 'true' }}
