@@ -89,13 +89,43 @@
                 <include>org.eclipse.persistence:org.eclipse.persistence.extension</include>
                 <include>org.eclipse.persistence:javax.persistence</include>
 
-                <include>${pom.groupId}:kapua-commons</include>
-                <include>${pom.groupId}:kapua-client-security</include>
+                <!-- additional kapua-locator dependencies -->
+                <include>aopalliance:aopalliance</include>
+                <include>com.google.guava:failureaccess</include>
+                <include>com.google.guava:guava</include>
+                <include>com.google.guava:listenablefuture</include>
+                <include>com.google.inject.extensions:guice-multibindings</include>
+                <include>com.google.inject:guice</include>
+                <include>com.warrenstrange:googleauth</include>
+                <include>javax.cache:cache-api</include>
+                <include>javax.inject:javax.inject</include>
+                <include>org.apache.shiro:shiro-core</include>
+                <include>org.bitbucket.b_c:jose4j</include>
+                <include>org.javassist:javassist</include>
+
+                <include>${pom.groupId}:kapua-account-api</include>
+                <include>${pom.groupId}:kapua-account-internal</include>
                 <include>${pom.groupId}:kapua-broker-artemis-plugin</include>
+                <include>${pom.groupId}:kapua-client-security</include>
                 <include>${pom.groupId}:kapua-commons</include>
+                <include>${pom.groupId}:kapua-device-api</include>
+                <include>${pom.groupId}:kapua-device-authentication</include>
+                <include>${pom.groupId}:kapua-device-registry-api</include>
+                <include>${pom.groupId}:kapua-device-registry-internal</include>
+                <include>${pom.groupId}:kapua-locator-guice</include>
+                <include>${pom.groupId}:kapua-message-api</include>
+                <include>${pom.groupId}:kapua-message-internal</include>
+                <include>${pom.groupId}:kapua-openid-api</include>
                 <include>${pom.groupId}:kapua-service-api</include>
-                <include>${pom.groupId}:kapua-service-client</include>
                 <include>${pom.groupId}:kapua-security-authentication-api</include>
+                <include>${pom.groupId}:kapua-security-authorization-api</include>
+                <include>${pom.groupId}:kapua-security-certificate-api</include>
+                <include>${pom.groupId}:kapua-security-certificate-internal</include>
+                <include>${pom.groupId}:kapua-security-shiro</include>
+                <include>${pom.groupId}:kapua-service-client</include>
+                <include>${pom.groupId}:kapua-tag-api</include>
+                <include>${pom.groupId}:kapua-user-api</include>
+                <include>${pom.groupId}:kapua-user-internal</include>
             </includes>
         </dependencySet>
     </dependencySets>
