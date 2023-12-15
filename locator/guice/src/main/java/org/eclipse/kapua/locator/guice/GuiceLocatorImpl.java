@@ -31,7 +31,9 @@ import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
 import org.reflections.Reflections;
+import org.reflections.scanners.Scanners;
 import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -162,7 +164,11 @@ public class GuiceLocatorImpl extends KapuaLocator {
         final LocatorConfig locatorConfig = new LocatorConfigurationExtractorImpl(locatorConfigName).fetchLocatorConfig();
         // Scan packages listed in to find KapuaModules
         Collection<String> packageNames = locatorConfig.getIncludedPackageNames();
-        Reflections reflections = new Reflections(new ConfigurationBuilder().forPackages(packageNames.toArray(new String[packageNames.size()])));
+        Reflections reflections = new Reflections(new ConfigurationBuilder()
+                .forPackages(packageNames.toArray(new String[packageNames.size()]))
+                .filterInputsBy(FilterBuilder.parsePackages(packageNames.stream().map(s -> "+" + s).collect(Collectors.joining(", "))))
+                .setScanners(Scanners.SubTypes)
+        );
         Set<Class<? extends AbstractKapuaModule>> kapuaModuleClasses = reflections.getSubTypesOf(AbstractKapuaModule.class);
         // Instantiate Kapua modules
         List<AbstractKapuaModule> kapuaModules = new ArrayList<>();
