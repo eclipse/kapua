@@ -50,6 +50,15 @@ Feature: Device Broker Integration
     And I connect the pool called "stealing"
     Then Only 1 client of the pool called "stealing" is still connected within 10 seconds
 
+  Scenario: Test the forced disconnection of a connected device
+
+    Given Service event bus is started
+    And Client with name "client-disc-1" with client id "client-disc-1" user "kapua-broker" password "kapua-password" is connected
+    Then Device status is "CONNECTED" within 5 seconds for client id "client-disc-1"
+    When I Force Disconnect connection with client id "client-disc-1"
+    Then Device status is "DISCONNECTED" within 10 seconds for client id "client-disc-1"
+    And Client named "client-disc-1" is not connected
+
 #TODO
 #disable for now. Wait for further investigation.
   Scenario: Test the stealing link handling with 2 clients with same client id but different account (they should be able to connect both)

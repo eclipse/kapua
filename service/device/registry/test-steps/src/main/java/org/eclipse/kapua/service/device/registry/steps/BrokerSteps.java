@@ -13,15 +13,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.steps;
 
-import com.google.inject.Singleton;
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
-import io.cucumber.java.Scenario;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
+import org.eclipse.kapua.commons.core.ServiceModuleBundle;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
@@ -48,20 +51,25 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.google.inject.Singleton;
+
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 /**
  * Steps used in integration scenarios with running MQTT broker and process of
@@ -149,7 +157,7 @@ public class BrokerSteps extends TestBase {
     }
 
     @After(value = "@setup")
-    public void setServices() {
+    public void setServices() throws Exception {
         KapuaLocator locator = KapuaLocator.getInstance();
 
         devicePackageManagementService = locator.getService(DevicePackageManagementService.class);
@@ -160,6 +168,9 @@ public class BrokerSteps extends TestBase {
         deviceCommandFactory = locator.getFactory(DeviceCommandFactory.class);
         deviceConnectionService = locator.getService(DeviceConnectionService.class);
         deviceAssetManagementService = locator.getService(DeviceAssetManagementService.class);
+
+        // Setup service events
+        locator.getService(ServiceModuleBundle.class).startup();
     }
 
     @Before(value = "@env_docker or @env_docker_base or @env_none", order = 10)
@@ -465,6 +476,7 @@ public class BrokerSteps extends TestBase {
             clientOpts.setUserName(user);
             clientOpts.setPassword(password.toCharArray());
             mqttClient.connect(clientOpts);
+            mqttClient.setCallback(new TestClientCallback(clientId));
         } catch (MqttException e) {
             verifyException(e);
         }
@@ -513,6 +525,34 @@ public class BrokerSteps extends TestBase {
             // Exception eaten on purpose.
             // Disconnect is for sanity only.
         }
+    }
+
+    @When("I Force Disconnect connection with client id {string}")
+    public void disconnectConnectionWithClientId(String clientId) throws Exception {
+        DeviceConnection deviceConnection = deviceConnectionService.findByClientId(SYS_SCOPE_ID, clientId);
+        Assert.assertNotNull(deviceConnection);
+        logger.info("Found device connection for clientId {} - scope: {}, id: {}", clientId, deviceConnection.getScopeId(), deviceConnection.getId());
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+            deviceConnectionService.disconnect(deviceConnection.getScopeId(), deviceConnection.getId());
+        });
+
+    }
+
+    @Then("Device(s) status is {string} within {int} second(s) for client id {string}")
+    public void deviceStatusIs(String expectedStatus, int timeout, String clientId) throws Exception {
+        String currentStatus = null;
+        while(!expectedStatus.equals(currentStatus) && timeout-->0) {
+            Thread.sleep(1000);
+
+            logger.info("Device(s) status countdown check: {}", timeout);
+            DeviceConnection deviceConnection = deviceConnectionService.findByClientId(SYS_SCOPE_ID, clientId);
+            Assert.assertNotNull("Found deviceConnection for clientId " + clientId, deviceConnection);
+            logger.info("Device: {} - connection status: {}", deviceConnection.getClientId(), deviceConnection.getStatus());
+            currentStatus = deviceConnection.getStatus().toString();
+        }
+        Assert.assertEquals("Unexpected device status", expectedStatus, currentStatus);
+        logger.info("Device(s) status check: {} DONE", timeout);
     }
 
     @Then("Device(s) status is {string} within {int} second(s)")
@@ -593,5 +633,29 @@ public class BrokerSteps extends TestBase {
             }
         }
         kuraDevices.clear();
+    }
+
+    class TestClientCallback implements MqttCallback {
+
+        String clientId;
+
+        public TestClientCallback(String clientId) {
+            this.clientId = clientId;
+        }
+
+        @Override
+        public void connectionLost(Throwable cause) {
+            logger.info("Client {} lost connection: {}", clientId, cause.getMessage());
+        }
+
+        @Override
+        public void messageArrived(String topic, MqttMessage message) throws Exception {
+            logger.info("Message arrived for client {}: {}", clientId, topic);
+        }
+
+        @Override
+        public void deliveryComplete(IMqttDeliveryToken token) {
+        }
+
     }
 }

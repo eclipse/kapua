@@ -38,6 +38,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 
+import org.eclipse.kapua.commons.event.ServiceEventBusManager;
 import org.eclipse.kapua.qa.common.BasicSteps;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
@@ -236,6 +237,11 @@ public class DockerSteps {
     public void startBaseDockerEnvironment() throws Exception {
         stopBaseDockerEnvironment();
         startBaseDockerEnvironmentInternal();
+    }
+
+    @Given("Service event bus is started")
+    public void startEventBus() throws Exception {
+        ServiceEventBusManager.start();
     }
 
     private void startBaseDockerEnvironmentInternal() throws Exception {
