@@ -16,7 +16,6 @@ import com.codahale.metrics.Counter;
 import com.codahale.metrics.ExponentiallyDecayingReservoir;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
-import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSetting;
@@ -70,10 +69,6 @@ public class MockitoLocator extends KapuaLocator {
 
             }
 
-            @Override
-            public MetricRegistry getMetricRegistry() {
-                return new MetricRegistry();
-            }
         };
         if (MetricsService.class.equals(componentClass)) {
             return (T) metricsService;

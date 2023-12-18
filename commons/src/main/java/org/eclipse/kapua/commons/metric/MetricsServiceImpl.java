@@ -18,7 +18,6 @@ import com.codahale.metrics.Histogram;
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.JmxReporter.Builder;
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.SharedMetricRegistries;
 import com.codahale.metrics.Timer;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -56,14 +55,8 @@ public class MetricsServiceImpl implements MetricsService {
      * Default metric service constructor
      */
     @Inject
-    public MetricsServiceImpl() {
-        try {
-            metricRegistry = SharedMetricRegistries.getDefault();
-            logger.info("Default Metric Registry loaded");
-        } catch (IllegalStateException e) {
-            metricRegistry = new MetricRegistry();
-            logger.warn("Unable to load Default Metric Registry - creating a new one");
-        }
+    public MetricsServiceImpl(MetricRegistry metricRegistry) {
+        this.metricRegistry = metricRegistry;
 
         if (isJmxEnabled()) {
             enableJmxSupport();
@@ -81,11 +74,6 @@ public class MetricsServiceImpl implements MetricsService {
          * As Kapua services don't have any proper lifecycle management we can only
          * start the reporter but never stop it.
          */
-    }
-
-    @Override
-    public MetricRegistry getMetricRegistry() {
-        return metricRegistry;
     }
 
     @Override
