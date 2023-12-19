@@ -1387,10 +1387,15 @@ public class DatastoreSteps extends TestBase {
     }
 
     @When("I count for data message(s)")
-    public void countForDataMessage() throws KapuaException {
-        MessageQuery messageQuery = (MessageQuery) stepData.get(MESSAGE_QUERY);
-        long count = messageStoreService.count(messageQuery);
-        stepData.put(MESSAGE_COUNT_RESULT, count);
+    public void countForDataMessage() throws Exception {
+        primeException();
+        try {
+            MessageQuery messageQuery = (MessageQuery) stepData.get(MESSAGE_QUERY);
+            long count = messageStoreService.count(messageQuery);
+            stepData.put(MESSAGE_COUNT_RESULT, count);
+        } catch (KapuaException e) {
+            verifyException(e);
+        }
     }
 
     @Then("I get message count {int}")
