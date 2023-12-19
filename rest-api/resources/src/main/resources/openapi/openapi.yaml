@@ -250,6 +250,8 @@ paths:
     $ref: './deviceConnection/deviceConnection-scopeId.yaml#/paths/~1{scopeId}~1deviceconnections'
   /{scopeId}/deviceconnections/{connectionId}:
     $ref: './deviceConnection/deviceConnection-scopeId-connectionId.yaml#/paths/~1{scopeId}~1deviceconnections~1{connectionId}'
+  /{scopeId}/deviceconnections/{connectionId}/_disconnect:
+    $ref: './deviceConnection/deviceConnection-scopeId-connectionId-_disconnect.yaml#/paths/~1{scopeId}~1deviceconnections~1{connectionId}~1_disconnect'
   /{scopeId}/deviceconnections/{connectionId}/options:
     $ref: './deviceConnection/deviceConnection-scopeId-connectionId-options.yaml#/paths/~1{scopeId}~1deviceconnections~1{connectionId}~1options'
   /{scopeId}/deviceconnections/_count:

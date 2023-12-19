@@ -1,0 +1,38 @@
+openapi: 3.0.3
+
+info:
+  title: Eclipse Kapua REST API - Connection
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/deviceconnections/{connectionId}/_disconnect:
+    post:
+      tags:
+        - Device Connection
+      summary: Request that the specified Connection is disconnected from the broker
+      operationId: connectionDisconnect
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './deviceConnection.yaml#/components/parameters/connectionId'
+      responses:
+        204:
+          description: The disconnection request was sent to the broker
+          content:
+            application/json:
+              schema:
+                $ref: './deviceConnection.yaml#/components/schemas/connectionOptions'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

@@ -358,12 +358,17 @@ public class ServerPlugin implements ActiveMQServerPlugin {
 
             String fullClientId = Utils.getFullClientId(deviceConnection.getScopeId(), deviceConnection.getClientId());
             SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextByClientId(fullClientId);
+            if(sessionContext == null) {
+                logger.info("Did not find any connections to disconnect for clientId: {}", fullClientId);
+                return;
+            }
+
             BrokerEvent disconnectEvent = new BrokerEvent(EventType.disconnectClientByConnectionId, sessionContext, sessionContext);
 
             logger.info("Submitting broker event to disconnect clientId: {}, connectionId: {}", fullClientId, sessionContext.getConnectionId());
             BrokerEventHandler.getInstance().enqueueEvent(disconnectEvent);
         } catch (Exception e) {
-            logger.warn("Error processing event: {}", e.getMessage());
+            logger.warn("Error processing event: {}", e);
         }
     }
 
