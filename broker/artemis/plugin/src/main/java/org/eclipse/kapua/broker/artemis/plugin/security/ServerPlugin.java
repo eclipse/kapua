@@ -30,7 +30,7 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.eclipse.kapua.broker.artemis.plugin.security.connector.AcceptorHandler;
 import org.eclipse.kapua.broker.artemis.plugin.security.event.BrokerEvent;
 import org.eclipse.kapua.broker.artemis.plugin.security.event.BrokerEvent.EventType;
-import org.eclipse.kapua.broker.artemis.plugin.security.event.BrokerEventHanldler;
+import org.eclipse.kapua.broker.artemis.plugin.security.event.BrokerEventHandler;
 import org.eclipse.kapua.broker.artemis.plugin.security.metric.LoginMetric;
 import org.eclipse.kapua.broker.artemis.plugin.security.metric.PublishMetric;
 import org.eclipse.kapua.broker.artemis.plugin.security.metric.SubscribeMetric;
@@ -110,7 +110,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     private PublishMetric publishMetric;
     private SubscribeMetric subscribeMetric;
 
-    protected BrokerEventHanldler brokerEventHanldler;
+    protected BrokerEventHandler brokerEventHanldler;
     protected AcceptorHandler acceptorHandler;
     protected String version;
     protected ServerContext serverContext;
@@ -127,7 +127,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         //TODO find a proper way to initialize database
         DatabaseCheckUpdate databaseCheckUpdate = new DatabaseCheckUpdate();
         serverContext = ServerContext.getInstance();
-        brokerEventHanldler = BrokerEventHanldler.getInstance();
+        brokerEventHanldler = BrokerEventHandler.getInstance();
         brokerEventHanldler.registerConsumer((brokerEvent) -> disconnectClient(brokerEvent));
         brokerEventHanldler.start();
 
@@ -361,7 +361,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             BrokerEvent disconnectEvent = new BrokerEvent(EventType.disconnectClientByConnectionId, sessionContext, sessionContext);
 
             logger.info("Submitting broker event to disconnect clientId: {}, connectionId: {}", fullClientId, sessionContext.getConnectionId());
-            BrokerEventHanldler.getInstance().enqueueEvent(disconnectEvent);
+            BrokerEventHandler.getInstance().enqueueEvent(disconnectEvent);
         } catch (Exception e) {
             logger.warn("Error processing event: {}", e.getMessage());
         }

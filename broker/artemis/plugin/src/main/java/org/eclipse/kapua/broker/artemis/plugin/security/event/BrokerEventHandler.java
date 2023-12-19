@@ -14,19 +14,19 @@ package org.eclipse.kapua.broker.artemis.plugin.security.event;
 
 import org.eclipse.kapua.commons.localevent.EventHandler;
 
-public class BrokerEventHanldler extends EventHandler<BrokerEvent> {
+public class BrokerEventHandler extends EventHandler<BrokerEvent> {
 
-    private static BrokerEventHanldler instance;
+    private static BrokerEventHandler instance;
 
-    public static synchronized BrokerEventHanldler getInstance() {
+    public static synchronized BrokerEventHandler getInstance() {
         if (instance==null) {
-            instance = new BrokerEventHanldler();
+            instance = new BrokerEventHandler();
         }
         return instance;
     }
 
-    private BrokerEventHanldler() {
-        super(BrokerEventHanldler.class.getName(), 10, 10);
+    private BrokerEventHandler() {
+        super(BrokerEventHandler.class.getName(), 10, 10);
     }
 
 }
