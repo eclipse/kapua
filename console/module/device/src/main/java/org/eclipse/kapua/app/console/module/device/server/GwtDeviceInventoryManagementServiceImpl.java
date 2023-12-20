@@ -35,6 +35,7 @@ import org.eclipse.kapua.service.device.management.inventory.model.bundle.Device
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainer;
 import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainerAction;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainerState;
 import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainers;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
@@ -154,6 +155,7 @@ public class GwtDeviceInventoryManagementServiceImpl extends KapuaRemoteServiceS
                 gwtInventoryContainer.setName(inventoryContainer.getName());
                 gwtInventoryContainer.setVersion(inventoryContainer.getVersion());
                 gwtInventoryContainer.setType(inventoryContainer.getContainerType());
+                gwtInventoryContainer.setState(inventoryContainer.getState().name());
 
                 gwtInventoryContainers.add(gwtInventoryContainer);
             }
@@ -176,6 +178,7 @@ public class GwtDeviceInventoryManagementServiceImpl extends KapuaRemoteServiceS
             deviceInventoryContainer.setName(gwtInventoryContainer.getName());
             deviceInventoryContainer.setVersion(gwtInventoryContainer.getVersion());
             deviceInventoryContainer.setContainerType(gwtInventoryContainer.getType());
+            deviceInventoryContainer.setState(DeviceInventoryContainerState.valueOf(gwtInventoryContainer.getState()));
 
             DEVICE_INVENTORY_MANAGEMENT_SERVICE.execContainer(
                     scopeId,
