@@ -74,6 +74,7 @@ import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientLimitsExceededException;
 import org.eclipse.kapua.service.storable.model.query.SortDirection;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
@@ -251,6 +252,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     }
 
+    //TODO : is this method even called somewhere in the code or could we deprecate it?
     @Override
     public PagingLoadResult<GwtTopic> findTopicsList(PagingLoadConfig config, GwtDataChannelInfoQuery query) throws GwtKapuaException {
         List<GwtTopic> channelInfoList = new ArrayList<GwtTopic>();
@@ -268,7 +270,13 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 }
                 channelInfoQuery.setLimit(-1);
                 channelInfoQuery.setOffset(0);
-                totalLength = (int) channelInfoService.count(channelInfoQuery);
+                try {
+                    totalLength = (int) channelInfoService.count(channelInfoQuery);
+                } catch (KapuaException e) {
+                    if (e.getCause() != null && (e.getCause() instanceof ClientLimitsExceededException)) { //case in which there are more than 10k results in datastore but ES cannot count them precisely
+                        totalLength = 10000;
+                    }
+                }
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
@@ -492,11 +500,12 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         messages = getMessagesList(query, headers);
         try {
             totalLength = (int) messageService.count(query);
-            if (totalLength > 10000) {
-                totalLength = 10000;
-            }
         } catch (KapuaException e) {
-            KapuaExceptionHandler.handle(e);
+            if (e.getCause() != null && (e.getCause() instanceof ClientLimitsExceededException) ) { //case in which there are more than 10k results in datastore but ES cannot count them precisely
+                totalLength = 10000;
+            } else {
+                KapuaExceptionHandler.handle(e);
+            }
         }
         return new BasePagingLoadResult<GwtMessage>(messages, loadConfig.getOffset(), totalLength);
     }
