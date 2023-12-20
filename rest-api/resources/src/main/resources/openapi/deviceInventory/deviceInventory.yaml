@@ -49,6 +49,7 @@ components:
       properties:
         id:
           type: string
+          description: This is the ID of the bundle. Even if type is String, it must be a number!
         name:
           type: string
         version:
