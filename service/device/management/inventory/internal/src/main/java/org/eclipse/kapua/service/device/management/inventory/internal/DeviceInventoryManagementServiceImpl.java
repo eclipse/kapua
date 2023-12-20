@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.device.management.inventory.internal;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
@@ -157,8 +158,11 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
         ArgumentValidator.notNull(deviceInventoryBundle, "deviceInventoryBundle");
+        ArgumentValidator.notNull(deviceInventoryBundle.getId(), "deviceInventoryBundle.id");
         ArgumentValidator.notNull(deviceInventoryBundle.getName(), "deviceInventoryBundle.name");
         ArgumentValidator.notNull(deviceInventoryBundleAction, "deviceInventoryBundleAction");
+
+        performAdditionalValidationOnDeviceInventoryBundleId(deviceInventoryBundle.getId());
 
         //
         // Check Access
@@ -304,4 +308,28 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         // Check response
         return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceInventoryPackages());
     }
+
+
+    /**
+     * Performs an additional check on {@link DeviceInventoryBundle#getId()} to verify that it can be converted to a {@link Integer}.
+     * <p>
+     * This check is required because initially the property was created as a {@link String} even if in Kura it is a {@link Integer}.
+     * See Kura documentation on Device Inventory Bundle <a href="https://eclipse.github.io/kura/docs-release-5.4/administration/system-component-inventory/">here</a>
+     * <p>
+     * We cannot change the type of {@link DeviceInventoryBundle#getId()} from {@link String} to {@link Integer} because it would be an API breaking change.
+     * We can add a validation to improve the error returned in case a non-integer value is provided, since the current error returned is {@link NumberFormatException} (at line
+     * TranslatorAppInventoryBundleExecKapuaKura:74).
+     *
+     * @param deviceInventoryBundleId The {@link DeviceInventoryBundle#getId()} to check
+     * @throws KapuaIllegalArgumentException If {@link DeviceInventoryBundle#getId()} cannot be converted to a {@link Integer}.
+     * @since 2.0.0
+     */
+    private void performAdditionalValidationOnDeviceInventoryBundleId(String deviceInventoryBundleId) throws KapuaIllegalArgumentException {
+        try {
+            Integer.parseInt(deviceInventoryBundleId);
+        } catch (NumberFormatException nfe) {
+            throw new KapuaIllegalArgumentException("deviceInventoryBundle.id", deviceInventoryBundleId);
+        }
+    }
+
 }
