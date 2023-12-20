@@ -330,8 +330,6 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         ArgumentValidator.notNull(deviceInventoryContainer, "deviceInventoryContainer");
         ArgumentValidator.notNull(deviceInventoryContainer.getName(), "deviceInventoryContainer.name");
         ArgumentValidator.notNull(deviceInventoryContainer.getVersion(), "deviceInventoryContainer.version");
-        ArgumentValidator.notNull(deviceInventoryContainer.getContainerType(), "deviceInventoryContainer.type");
-        ArgumentValidator.notNull(deviceInventoryContainer.getState(), "deviceInventoryContainer.state");
         ArgumentValidator.notNull(deviceInventoryContainerAction, "deviceInventoryContainerAction");
 
         //
