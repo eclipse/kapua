@@ -140,11 +140,13 @@ public class AbstractTranslatorAppInventoryKuraKapua<M extends InventoryResponse
             deviceInventoryContainer.setVersion(kuraInventoryContainer.getVersion());
             deviceInventoryContainer.setContainerType(kuraInventoryContainer.getType());
 
-            try {
-                deviceInventoryContainer.setState(DeviceInventoryContainerState.valueOf(kuraInventoryContainer.getState()));
-            } catch (IllegalArgumentException iae) {
-                LOG.warn("Unrecognised KuraInventoryContainer.state '{}' received. Defaulting to UNKNOWN state for DeviceInventoryContainer {}", kuraInventoryContainer.getState(), deviceInventoryContainer.getName(), iae);
-                deviceInventoryContainer.setState(DeviceInventoryContainerState.UNKNOWN);
+            if (deviceInventoryContainer.getState() != null) {
+                try {
+                    deviceInventoryContainer.setState(DeviceInventoryContainerState.valueOf(kuraInventoryContainer.getState()));
+                } catch (IllegalArgumentException iae) {
+                    LOG.warn("Unrecognised KuraInventoryContainer.state '{}' received. Defaulting to UNKNOWN state for DeviceInventoryContainer {}", kuraInventoryContainer.getState(), deviceInventoryContainer.getName(), iae);
+                    deviceInventoryContainer.setState(DeviceInventoryContainerState.UNKNOWN);
+                }
             }
 
             deviceInventoryContainers.addInventoryContainer(deviceInventoryContainer);
