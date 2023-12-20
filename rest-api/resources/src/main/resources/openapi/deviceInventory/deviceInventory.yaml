@@ -11,7 +11,7 @@ info:
     name: Eclipse Public License 2.0
     url: https://www.eclipse.org/legal/epl-2.0
 
-paths: { }
+paths: {}
 
 components:
   schemas:
@@ -81,6 +81,13 @@ components:
             name: org.eclipse.equinox.cm
             version: 1.4.400.v20200422-1833
             status: RESOLVED
+    deviceInventoryContainerState:
+      type: string
+      enum:
+        - ACTIVE
+        - INSTALLED
+        - UNINSTALLED
+        - UNKNOWN
     deviceInventoryContainer:
       type: object
       properties:
@@ -90,10 +97,13 @@ components:
           type: string
         containerType:
           type: string
+        state:
+          $ref: '#/components/schemas/deviceInventoryContainerState'
       example:
         name: docker_container_1
         version: nginx:latest
         containerType: DOCKER
+        state: ACTIVE
     deviceInventoryContainers:
       type: object
       properties:
@@ -107,9 +117,11 @@ components:
           - name: docker_container_1
             version: nginx:latest
             containerType: DOCKER
+            state: ACTIVE
           - name: docker_container_2
             version: haproxy:latest
             containerType: DOCKER
+            state: INSTALLED
     deviceInventorySystemPackage:
       type: object
       properties:

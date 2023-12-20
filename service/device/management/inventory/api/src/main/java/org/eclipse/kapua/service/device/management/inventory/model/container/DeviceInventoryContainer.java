@@ -80,4 +80,21 @@ public interface DeviceInventoryContainer {
      * @since 2.0.0
      */
     void setContainerType(String containerType);
+
+    /**
+     * Gets the {@link DeviceInventoryContainerState}.
+     *
+     * @return The {@link DeviceInventoryContainerState}.
+     * @since 2.0.0
+     */
+    DeviceInventoryContainerState getState();
+
+    /**
+     * Sets the {@link DeviceInventoryContainerState}.
+     *
+     * @param state The {@link DeviceInventoryContainerState}.
+     * @since 2.0.0
+     */
+    void setState(DeviceInventoryContainerState state);
+
 }
