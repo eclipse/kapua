@@ -28,6 +28,7 @@ import org.eclipse.kapua.service.device.management.inventory.internal.message.In
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainer;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainerState;
 import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainers;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
@@ -39,6 +40,8 @@ import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.kura.kapua.AbstractSimpleTranslatorResponseKuraKapua;
 import org.eclipse.kapua.translator.kura.kapua.TranslatorKuraKapuaUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link Translator} {@code abstract} implementation from {@link KuraResponseMessage} to {@link InventoryResponseMessage}
@@ -46,6 +49,8 @@ import org.eclipse.kapua.translator.kura.kapua.TranslatorKuraKapuaUtils;
  * @since 1.5.0
  */
 public class AbstractTranslatorAppInventoryKuraKapua<M extends InventoryResponseMessage> extends AbstractSimpleTranslatorResponseKuraKapua<InventoryResponseChannel, InventoryResponsePayload, M> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractTranslatorAppInventoryKuraKapua.class);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -134,6 +139,15 @@ public class AbstractTranslatorAppInventoryKuraKapua<M extends InventoryResponse
             deviceInventoryContainer.setName(kuraInventoryContainer.getName());
             deviceInventoryContainer.setVersion(kuraInventoryContainer.getVersion());
             deviceInventoryContainer.setContainerType(kuraInventoryContainer.getType());
+
+            if (deviceInventoryContainer.getState() != null) {
+                try {
+                    deviceInventoryContainer.setState(DeviceInventoryContainerState.valueOf(kuraInventoryContainer.getState()));
+                } catch (IllegalArgumentException iae) {
+                    LOG.warn("Unrecognised KuraInventoryContainer.state '{}' received. Defaulting to UNKNOWN state for DeviceInventoryContainer {}", kuraInventoryContainer.getState(), deviceInventoryContainer.getName(), iae);
+                    deviceInventoryContainer.setState(DeviceInventoryContainerState.UNKNOWN);
+                }
+            }
 
             deviceInventoryContainers.addInventoryContainer(deviceInventoryContainer);
         });

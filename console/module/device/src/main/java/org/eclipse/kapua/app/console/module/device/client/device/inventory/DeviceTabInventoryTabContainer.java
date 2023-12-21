@@ -114,6 +114,12 @@ public class DeviceTabInventoryTabContainer extends TabItem {
         column.setWidth(80);
         configs.add(column);
 
+        column = new ColumnConfig();
+        column.setId("state");
+        column.setHeader("State");
+        column.setWidth(80);
+        configs.add(column);
+
         ColumnModel columnModel = new ColumnModel(configs);
 
         RpcProxy<ListLoadResult<GwtInventoryContainer>> proxy = new RpcProxy<ListLoadResult<GwtInventoryContainer>>() {

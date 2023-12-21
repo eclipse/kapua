@@ -74,6 +74,9 @@ public class TranslatorAppInventoryContainerExecKapuaKura extends AbstractTransl
                 kuraInventoryContainer.setName(deviceInventoryContainer.getName());
                 kuraInventoryContainer.setVersion(deviceInventoryContainer.getVersion());
                 kuraInventoryContainer.setType(deviceInventoryContainer.getContainerType());
+                if (deviceInventoryContainer.getState() != null) {
+                    kuraInventoryContainer.setState(deviceInventoryContainer.getState().name());
+                }
 
                 kuraRequestPayload.setBody(getJsonMapper().writeValueAsString(kuraInventoryContainer).getBytes(CHAR_ENCODING));
             }

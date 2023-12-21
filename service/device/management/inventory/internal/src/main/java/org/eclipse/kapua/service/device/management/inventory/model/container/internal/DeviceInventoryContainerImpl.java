@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.device.management.inventory.model.container.internal;
 
 import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainer;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainerState;
 
 /**
  * {@link DeviceInventoryContainer} implementation.
@@ -24,6 +25,8 @@ public class DeviceInventoryContainerImpl implements DeviceInventoryContainer {
     private String name;
     private String version;
     private String containerType;
+
+    private DeviceInventoryContainerState state;
 
     /**
      * Constructor.
@@ -61,5 +64,15 @@ public class DeviceInventoryContainerImpl implements DeviceInventoryContainer {
     @Override
     public void setContainerType(String containerType) {
         this.containerType = containerType;
+    }
+
+
+    public DeviceInventoryContainerState getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(DeviceInventoryContainerState state) {
+        this.state = state;
     }
 }

@@ -8,52 +8,62 @@
     {
       "name": "consumer-telemetry",
       "version": "kapua/kapua-consumer-telemetry:latest",
-      "type": "DOCKER"
+      "type": "DOCKER",
+      "state": "ACTIVE"
     },
     {
       "name": "job-engine",
       "version": "kapua/kapua-job-engine:latest",
-      "type": "DOCKER"
+      "type": "DOCKER",
+      "state": "ACTIVE"
     },
     {
       "name": "kapua-console",
       "version": "kapua/kapua-console:latest",
-      "type": "DOCKER"
+      "type": "DOCKER",
+      "state": "ACTIVE"
     },
     {
       "name": "kapua-api",
       "version": "kapua/kapua-api:latest",
-      "type": "DOCKER"
+      "type": "DOCKER",
+      "state": "ACTIVE"
     },
     {
       "name": "message-broker",
       "version": "kapua/kapua-broker:latest",
-      "type": "DOCKER"
+      "type": "DOCKER",
+      "state": "ACTIVE"
     },
     {
       "name": "es",
       "version": "docker.elastic.co/elasticsearch/elasticsearch:7.8.1",
-      "type": "DOCKER"
+      "type": "DOCKER",
+      "state": "ACTIVE"
     },
     {
       "name": "db",
       "version": "kapua/kapua-sql:latest",
-      "type": "DOCKER"
+      "type": "DOCKER",
+      "state": "ACTIVE"
     },
     {
       "name": "events-broker",
       "version": "kapua/kapua-events-broker:latest",
-      "type": "DOCKER"
+      "type": "DOCKER",
+      "state": "UNKNOWN"
     },
     {
       "name": "clever_heisenberg",
       "version": "kura_alpine:",
-      "type": "DOCKER"
+      "type": "DOCKER",
+      "state": "UNINSTALLED"
     },
     {
       "name": "kura",
       "version": "eclipse/kura:latest",
-      "type": "DOCKER"
+      "type": "DOCKER",
+      "state": "INSTALLED"
     }
   ]
 }

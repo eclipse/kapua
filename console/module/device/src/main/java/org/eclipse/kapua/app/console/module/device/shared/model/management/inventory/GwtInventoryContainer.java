@@ -16,6 +16,22 @@ import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
 
 public class GwtInventoryContainer extends KapuaBaseModel {
 
+    public enum GwtInventoryContainerState {
+        UNKNOWN,
+        INSTALLED,
+        UNINSTALLED,
+        ACTIVE
+    }
+
+    @Override
+    public <X> X get(String property) {
+        if ("stateEnum".equals(property)) {
+            return (X) (GwtInventoryContainer.GwtInventoryContainerState.valueOf(getState()));
+        } else {
+            return super.get(property);
+        }
+    }
+
     private static final long serialVersionUID = -4434969168565872354L;
 
     public void setName(String name) {
@@ -41,4 +57,17 @@ public class GwtInventoryContainer extends KapuaBaseModel {
     public String getType() {
         return get("type");
     }
+
+    public String getState() {
+        return get("state");
+    }
+
+    public GwtInventoryContainerState getStateEnum() {
+        return get("stateEnum");
+    }
+
+    public void setState(String state) {
+        set("state", state);
+    }
+
 }

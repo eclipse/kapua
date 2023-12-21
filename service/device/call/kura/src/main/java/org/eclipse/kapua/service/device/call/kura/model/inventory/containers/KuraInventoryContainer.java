@@ -32,6 +32,9 @@ public class KuraInventoryContainer {
     @JsonProperty("type")
     public String type;
 
+    @JsonProperty("state")
+    public String state;
+
     /**
      * Gets the name.
      *
@@ -73,9 +76,9 @@ public class KuraInventoryContainer {
     }
 
     /**
-     * Gets the state.
+     * Gets the type.
      *
-     * @return The state.
+     * @return The type.
      * @since 2.0.0
      */
     public String getType() {
@@ -83,13 +86,32 @@ public class KuraInventoryContainer {
     }
 
     /**
-     * Sets the state.
+     * Sets the type.
      *
-     * @param type The state.
+     * @param type The type.
      * @since 2.0.0
      */
     public void setType(String type) {
         this.type = type;
     }
 
+    /**
+     * Gets the state
+     *
+     * @return The state
+     * @since 2.0.0
+     */
+    public String getState() {
+        return state;
+    }
+
+    /**
+     * Sets the state
+     *
+     * @param state The state
+     * @since 2.0.0
+     */
+    public void setState(String state) {
+        this.state = state;
+    }
 }
