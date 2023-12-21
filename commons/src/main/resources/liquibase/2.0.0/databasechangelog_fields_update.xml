@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019, 2022 Eurotech and/or its affiliates and others
+
+    This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="KapuaDB/databasechangelog_fields_update.xml">
+
+    <!-- This changesets maintains aligned the schema of the "databasechangelog" table between different liquibase versions, upgrading the important fields that could cause problems in liquibase updates -->
+    <!-- This is needed because liquibase doesn't automatically update schema when the specification of "databasechangelog" table changes (as happened, for example, between the 3.0.5 version and 3.6.7) -->
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
+
+    <changeSet id="databasechangelog_removePrimaryKeyConstraint" author="eurotech"> <!-- recent versions removed primary key constraint between <id, author, filename> fields, see https://forum.liquibase.org/t/length-of-id-column-for-databasechangeloglog/1274 regarding old limit on 63 chars. Maybe this changeset could be deleted but maintained to avoid problems-->
+        <preConditions onFail="MARK_RAN">
+            <primaryKeyExists tableName="databasechangelog" primaryKeyName="pk_databasechangelog"/>
+        </preConditions>
+        <dropPrimaryKey tableName="databasechangelog" constraintName="pk_databasechangelog"/>
+    </changeSet>
+
+    <changeSet id="databasechangelog_fields-update-id" author="eurotech">
+        <modifyDataType
+                columnName="id"
+                newDataType="varchar(255)"
+                tableName="databasechangelog"/>
+    </changeSet>
+
+    <changeSet id="databasechangelog_fields-update-id-notnull" author="eurotech" dbms="mariadb"> <!--this changeset is needed because for mysql/mariadb you loose not null constraint with previous changeset -->
+    <addNotNullConstraint
+            columnName="id"
+            columnDataType="varchar(255)"
+            tableName="databasechangelog"/>
+    </changeSet>
+
+    <changeSet id="databasechangelog_fields-update-filename" author="eurotech">
+        <modifyDataType
+                columnName="filename"
+                newDataType="varchar(255)"
+                tableName="databasechangelog"/>
+    </changeSet>
+
+    <changeSet id="databasechangelog_fields-update-filename-notnull" author="eurotech" dbms="mariadb"> <!--this changeset is needed because for mysql/mariadb you loose not null constraint with previous changeset -->
+        <addNotNullConstraint
+                columnName="filename"
+                columnDataType="varchar(255)"
+                tableName="databasechangelog"/>
+    </changeSet>
+
+</databaseChangeLog>
