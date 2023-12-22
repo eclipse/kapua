@@ -26,23 +26,22 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                version:
-                  type: string
-                reboot:
-                  type: boolean
-                rebootDelay:
-                  type: integer
-              required:
-                - name
-                - version
-            example:
-              name: org.eclipse.kura.demo.heater
-              version: 1.0.500
-        required: true
+              $ref: './devicePackage.yaml#/components/schemas/devicePackageUninstallRequest'
+            examples:
+              basic:
+                summary: Basic
+                description: A request with only required properties
+                value:
+                  name: org.eclipse.kura.demo.heater
+                  version: 1.0.500
+              complete:
+                summary: Complete
+                description: A request with all properties
+                value:
+                  name: org.eclipse.kura.demo.heater
+                  version: 1.0.500
+                  reboot: false
+                  rebootDelay: 0
       responses:
         204:
           description: |
