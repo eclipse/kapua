@@ -69,6 +69,12 @@ components:
               bundleInfo:
                 - name: org.eclipse.kura.demo.heater
                   version: 1.0.300
+    devicePackageDownloadRequestFileType:
+      type: string
+      description: The type of the URI resoruce content
+      enum:
+        - DEPLOYMENT_PACKAGE
+        - EXECUTABLE_SCRIPT
     devicePackageDownloadRequest:
       type: object
       properties:
@@ -91,8 +97,7 @@ components:
           type: string
           description: The MD5 has to check resource integrity after download
         fileType:
-          type: string
-          description: The file type of the download (to be fixed when fixing the type of this property)
+          $ref: '#/components/schemas/devicePackageDownloadRequestFileType'
         install:
           type: boolean
           description: Whether to install or not the package after download
