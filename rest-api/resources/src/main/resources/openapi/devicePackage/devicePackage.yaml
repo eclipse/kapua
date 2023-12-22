@@ -71,7 +71,7 @@ components:
                   version: 1.0.300
     devicePackageDownloadRequestFileType:
       type: string
-      description: The type of the URI resoruce content
+      description: The type of the URI resource content
       enum:
         - DEPLOYMENT_PACKAGE
         - EXECUTABLE_SCRIPT
