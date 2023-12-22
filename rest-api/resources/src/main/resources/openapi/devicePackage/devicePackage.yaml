@@ -15,16 +15,28 @@ paths: {}
 
 components:
   schemas:
+    bundleInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The bundle name
+        version:
+          type: string
+          description: the bundle version
     devicePackage:
       type: object
       description: A Device Package
       properties:
         name:
           type: string
+          description: The name of the package
         version:
           type: string
+          description: The version of the package
         bundleInfos:
           type: object
+          description: The bundles of this package
           properties:
             bundleInfo:
               type: array
@@ -32,6 +44,7 @@ components:
                 $ref: '#/components/schemas/bundleInfo'
         installDate:
           type: string
+          description: The installation date of the package
           format: 'date-time'
       example:
         name: org.eclipse.kura.demo.heater
@@ -61,39 +74,59 @@ components:
       properties:
         uri:
           type: string
+          description: The URI to download the resource
         name:
           type: string
+          description: The name of the downloaded package
         version:
           type: string
+          description: The version of the downloaded package
         username:
           type: string
+          description: The username to use in the HTTP basic authentication when accessing the URI resource
         password:
           type: string
+          description: The password to use in the HTTP basic authentication when accessing the URI resource
         fileHash:
           type: string
+          description: The MD5 has to check resource integrity after download
         fileType:
           type: string
+          description: The file type of the download (to be fixed when fixing the type of this property)
         install:
           type: boolean
+          description: Whether to install or not the package after download
         reboot:
           type: boolean
+          description: Whether to reboot the device after installation of the package
         rebootDelay:
           type: integer
+          description: The delay in milliseconds to delay the reboot after installation
         advancedOptions:
           type: object
           properties:
             restart:
               type: boolean
+              description: Whether or not to resume the partial download of the URI resource. The resource is identified by name and version provided
             blockSize:
               type: integer
+              description: The block size in kBi to use while downloading the URI resource
             blockDelay:
               type: integer
+              description: The delay in ms to delay each block download of the URI resource
             blockTimeout:
               type: integer
+              description: The delay timeout to download each block of the URI resource
             notifyBlockSize:
               type: integer
+              description: The amount of kBi to download before sending a new Operation Notification to the platform
             installVerifyURI:
               type: string
+              description: The URI to download the script that can verify that the package installation has successfully completed.
+      required:
+        - uri
+        - name
+        - version
       example:
         uri: https://download.eclipse.org/kura/releases/4.1.0/org.eclipse.kura.demo.heater_1.0.500.dp
         name: heater
@@ -112,10 +145,3 @@ components:
           blockTimeout: 5000
           notifyBlockSize: 256
           installVerifyURI: https://download.eclipse.org/kura/releases/4.1.0/org.eclipse.kura.demo.heater_1.0.500.verifier.sh
-    bundleInfo:
-      type: object
-      properties:
-        name:
-          type: string
-        version:
-          type: string

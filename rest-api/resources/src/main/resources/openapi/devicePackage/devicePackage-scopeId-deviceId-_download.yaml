@@ -35,8 +35,6 @@ paths:
                   uri: https://download.eclipse.org/kura/releases/4.1.0/org.eclipse.kura.demo.heater_1.0.500.dp
                   name: heater
                   version: 1.0.500
-                  install: true
-                  reboot: false
               complete:
                 summary: Complete
                 description: A request with all available options used
