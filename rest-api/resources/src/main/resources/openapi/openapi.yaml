@@ -843,8 +843,12 @@ components:
       $ref: './devicePackage/devicePackage.yaml#/components/schemas/devicePackage'
     devicePackages:
       $ref: './devicePackage/devicePackage.yaml#/components/schemas/devicePackages'
+    devicePackageDownloadRequestFileType:
+      $ref: './devicePackage/devicePackage.yaml#/components/schemas/devicePackageDownloadRequestFileType'
     devicePackageDownloadRequest:
       $ref: './devicePackage/devicePackage.yaml#/components/schemas/devicePackageDownloadRequest'
+    devicePackageUninstallRequest:
+      $ref: './devicePackage/devicePackage.yaml#/components/schemas/devicePackageUninstallRequest'
     ### Device Request Entities ###
     requestInput:
       $ref: './deviceRequest/deviceRequest.yaml#/components/schemas/requestInput'
