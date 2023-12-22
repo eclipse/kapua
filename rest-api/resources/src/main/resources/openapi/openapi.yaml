@@ -797,6 +797,12 @@ components:
       $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventoryBundle'
     deviceInventoryBundles:
       $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventoryBundles'
+    deviceInventoryContainerState:
+      $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventoryContainerState'
+    deviceInventoryContainer:
+      $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventoryContainer'
+    deviceInventoryContainers:
+      $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventoryContainers'
     deviceInventoryPackage:
       $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventorySystemPackage'
     deviceInventoryPackages:
