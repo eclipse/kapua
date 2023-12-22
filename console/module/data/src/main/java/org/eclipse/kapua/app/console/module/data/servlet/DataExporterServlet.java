@@ -18,16 +18,15 @@ import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
+import org.eclipse.kapua.app.console.module.data.shared.util.KapuaGwtDataModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
-import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientLimitsExceededException;
 import org.eclipse.kapua.service.storable.model.query.SortDirection;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
@@ -135,14 +134,7 @@ public class DataExporterServlet extends HttpServlet {
             query.setPredicate(predicate);
             MessageListResult result;
             long totalCount = 0;
-
-            try {
-                totalCount = MESSAGE_STORE_SERVICE.count(query);
-            } catch (DatastoreException e) {
-                if (e.getCause() != null && (e.getCause() instanceof ClientLimitsExceededException) ) { //case in which there are more than 10k results in datastore but ES cannot count them precisely
-                    totalCount = 10000;
-                }
-            }
+            totalCount = KapuaGwtDataModelConverter.countEsDataCap10k(MESSAGE_STORE_SERVICE, query);
 
             long totalOffset = 0;
             query.setLimit(250);

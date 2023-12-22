@@ -74,7 +74,6 @@ import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientLimitsExceededException;
 import org.eclipse.kapua.service.storable.model.query.SortDirection;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
@@ -270,13 +269,8 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 }
                 channelInfoQuery.setLimit(-1);
                 channelInfoQuery.setOffset(0);
-                try {
-                    totalLength = (int) channelInfoService.count(channelInfoQuery);
-                } catch (KapuaException e) {
-                    if (e.getCause() != null && (e.getCause() instanceof ClientLimitsExceededException)) { //case in which there are more than 10k results in datastore but ES cannot count them precisely
-                        totalLength = 10000;
-                    }
-                }
+
+                totalLength = (int) KapuaGwtDataModelConverter.countEsDataCap10k(channelInfoService, channelInfoQuery);
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
@@ -499,13 +493,9 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
         messages = getMessagesList(query, headers);
         try {
-            totalLength = (int) messageService.count(query);
+            totalLength = (int) KapuaGwtDataModelConverter.countEsDataCap10k(messageService, query);
         } catch (KapuaException e) {
-            if (e.getCause() != null && (e.getCause() instanceof ClientLimitsExceededException) ) { //case in which there are more than 10k results in datastore but ES cannot count them precisely
-                totalLength = 10000;
-            } else {
-                KapuaExceptionHandler.handle(e);
-            }
+            KapuaExceptionHandler.handle(e);
         }
         return new BasePagingLoadResult<GwtMessage>(messages, loadConfig.getOffset(), totalLength);
     }
