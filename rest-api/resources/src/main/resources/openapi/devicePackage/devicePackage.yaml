@@ -145,3 +145,26 @@ components:
           blockTimeout: 5000
           notifyBlockSize: 256
           installVerifyURI: https://download.eclipse.org/kura/releases/4.1.0/org.eclipse.kura.demo.heater_1.0.500.verifier.sh
+    devicePackageUninstallRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The package name to uninstall
+        version:
+          type: string
+          description: The package verson to uninstall
+        reboot:
+          type: boolean
+          description: Whether to reboot the device after uninstall of the package
+        rebootDelay:
+          type: integer
+          description: The delay in milliseconds to delay the reboot after uninstallation
+      required:
+        - name
+        - version
+      example:
+        name: org.eclipse.kura.demo.heater
+        version: 1.0.500
+        reboot: false
+        rebootDelay: 0
