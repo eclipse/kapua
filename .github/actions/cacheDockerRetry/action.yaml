@@ -1,0 +1,55 @@
+name: 'Cache Docker Retry'
+description: 'Retries the caching retrieval of docker images. This is a wrapper of the docker cache gitAction that retries the action with a delay in each retry. This is useful because sometimes concurrent usage of this gitAction causes too many requests error and so it is needed to retry it'
+inputs:
+  key:
+    description: An explicit key for restoring and saving the cache
+    required: true
+    default: docker-layer-caching-${{ github.workflow }}-{hash}
+  restore-keys:
+    description: An ordered list of keys to use for restoring the cache if no cache hit occurred for key
+    required: false
+    default: docker-layer-caching-${{ github.workflow }}-
+#outputs:
+runs:
+  using: "composite"
+  steps:
+    - name: Docker images caching - try 1
+      id: dock1
+      continue-on-error: true
+      uses: jpribyl/action-docker-layer-caching@v0.1.1
+      with:
+        key: ${{ inputs.key }}
+        restore-keys: ${{ inputs.restore-keys }}
+        skip-save: true
+    - name: retry-sleep-1
+      if: ${{ always() && steps.dock1.outcome == 'failure' }} # the first status check function call (always) is needed for how status check functions works in GitHub actions (see https://docs.github.com/en/actions/learn-github-actions/expressions#status-check-functions)
+      run: sleep 30 #TODO could implement a sleep different for each job. For example something like {JOBIDNUMBER * OFFSETseconds}
+      shell: bash
+    - name: Docker images caching - try 2
+      if: ${{ always() && steps.dock1.outcome == 'failure' }} #NOTE : this failure test could be replaced (or augmented) by a counting of kapua images in the environment. TODO if this check don't work on failure of previous cache retrieval
+      id: dock2
+      continue-on-error: true
+      uses: jpribyl/action-docker-layer-caching@v0.1.1
+      with:
+        key: ${{ inputs.key }}
+        restore-keys: ${{ inputs.restore-keys }}
+        skip-save: true
+    - name: retry-sleep-2
+      if: ${{ always() && steps.dock2.outcome == 'failure' }}
+      run: sleep 60
+      shell: bash
+    - name: Docker images caching - try 3
+      if: ${{ always() && steps.dock2.outcome == 'failure' }}
+      continue-on-error: true
+      id: dock3
+      uses: jpribyl/action-docker-layer-caching@v0.1.1
+      with:
+        key: ${{ inputs.key }}
+        restore-keys: ${{ inputs.restore-keys }}
+        skip-save: true
+    - name: build docker images #worst-case scenario fall-back, when cache cannot be retrieved
+      if: ${{ always() && steps.dock3.outcome == 'failure' }}
+      continue-on-error: true
+      id: buildDock
+      run: mvn clean install -pl ${APP_PROJECTS} && mvn clean install -Pdocker --f assembly/pom.xml
+      shell: bash
