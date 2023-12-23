@@ -18,10 +18,15 @@ runs:
         distribution: 'zulu'
         java-version: 11
     - name: Cache Maven repository
-      uses: actions/cache@v3
+      id: cacheMavenArtifacts
+      uses: actions/cache/restore@v3 #use restore action in order to skip post-action that saves cache
       with:
         path: ~/.m2/repository
         key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
+    - name: Maven artifacts creation #if for some reason there was a cache miss then create the maven artifacts
+      if: steps.cacheMavenArtifacts.outputs.cache-hit != 'true'
+      run: mvn -B ${BUILD_OPTS} -DskipTests clean install
+      shell: bash
     - name: Docker images creation
       if: ${{ inputs.needs-docker-images == 'true' }}
       run: mvn clean install -pl ${APP_PROJECTS} && mvn clean install -Pdocker --f assembly/pom.xml
