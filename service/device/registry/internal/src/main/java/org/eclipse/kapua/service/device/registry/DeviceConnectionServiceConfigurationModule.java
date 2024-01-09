@@ -44,7 +44,7 @@ public class DeviceConnectionServiceConfigurationModule extends AbstractKapuaMod
     @Provides
     @Singleton
     @Named("DeviceConnectionServiceConfigurationManager")
-    ServiceConfigurationManager deviceConnectionServiceConfigurationManager(
+    protected ServiceConfigurationManager deviceConnectionServiceConfigurationManager(
             RootUserTester rootUserTester,
             KapuaJpaRepositoryConfiguration jpaRepoConfig,
             Map<String, DeviceConnectionCredentialAdapter> availableDeviceConnectionAdapters,

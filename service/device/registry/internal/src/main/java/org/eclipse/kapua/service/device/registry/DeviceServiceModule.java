@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactory;
 import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class DeviceServiceModule extends ServiceEventTransactionalModule {
 
@@ -28,7 +28,7 @@ public class DeviceServiceModule extends ServiceEventTransactionalModule {
                                KapuaDeviceRegistrySettings deviceRegistrySettings,
                                ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory) {
         super(Arrays.asList(ServiceInspector.getEventBusClients(deviceRegistryService, DeviceRegistryService.class),
-                                ServiceInspector.getEventBusClients(deviceConnectionService, DeviceRegistryService.class)
+                                ServiceInspector.getEventBusClients(deviceConnectionService, DeviceConnectionService.class)
                         )
                         .stream()
                         .flatMap(l -> l.stream())

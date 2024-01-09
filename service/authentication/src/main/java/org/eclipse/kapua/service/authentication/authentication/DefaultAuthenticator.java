@@ -111,7 +111,7 @@ public class DefaultAuthenticator implements Authenticator {
             authenticationMetric.getUserLogin().getConnected().inc();
             Context loginRaiseLifecycleEventTimeContext = authenticationMetric.getExtConnectorTime().getRaiseLifecycleEvent().time();
             if (raiseLifecycleEvents) {
-                logger.info("raising connect lifecycle event for clientIs: {}", authContext.getClientId());
+                logger.info("raising connect lifecycle event for clientId: {}", authContext.getClientId());
                 raiseLifecycleEvent(authContext, DeviceConnectionStatus.CONNECTED);
             }
             loginRaiseLifecycleEventTimeContext.stop();
@@ -151,7 +151,7 @@ public class DefaultAuthenticator implements Authenticator {
                 authContext.getConnectionId());
         }
         if (userAuthenticationLogic.disconnect(authContext)) {
-            logger.info("raising disconnect lifecycle event for clientIs: {}", authContext.getClientId());
+            logger.info("raising disconnect lifecycle event for clientId: {}", authContext.getClientId());
             Context loginRaiseLifecycleEventTimeContext = authenticationMetric.getExtConnectorTime().getRaiseLifecycleEvent().time();
             raiseLifecycleEvent(authContext, DeviceConnectionStatus.DISCONNECTED);
             loginRaiseLifecycleEventTimeContext.stop();
@@ -163,7 +163,7 @@ public class DefaultAuthenticator implements Authenticator {
     }
 
     protected void raiseLifecycleEvent(AuthContext authContext, DeviceConnectionStatus deviceConnectionStatus) throws ServiceEventBusException {
-        logger.debug("raising lifecycle events: clientIs: {} - connection status: {}", authContext.getClientId(), deviceConnectionStatus);
+        logger.debug("raising lifecycle events: clientId: {} - connection status: {}", authContext.getClientId(), deviceConnectionStatus);
         //internal connections with not registered user/account shouldn't raise connect/disconnect events
         if (authContext.getUserId()!=null && authContext.getScopeId()!=null) {
             serviceEventBus.publish(lifecycleEventAddress, getServiceEvent(authContext, deviceConnectionStatus));

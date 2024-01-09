@@ -30,10 +30,10 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.eclipse.kapua.broker.artemis.plugin.security.connector.AcceptorHandler;
 import org.eclipse.kapua.broker.artemis.plugin.security.event.BrokerEvent;
 import org.eclipse.kapua.broker.artemis.plugin.security.event.BrokerEvent.EventType;
+import org.eclipse.kapua.broker.artemis.plugin.security.event.BrokerEventHandler;
 import org.eclipse.kapua.broker.artemis.plugin.security.metric.LoginMetric;
 import org.eclipse.kapua.broker.artemis.plugin.security.metric.PublishMetric;
 import org.eclipse.kapua.broker.artemis.plugin.security.metric.SubscribeMetric;
-import org.eclipse.kapua.broker.artemis.plugin.security.event.BrokerEventHanldler;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
 import org.eclipse.kapua.client.security.AuthErrorCodes;
@@ -42,15 +42,22 @@ import org.eclipse.kapua.client.security.ServiceClient.SecurityAction;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.context.SessionContext;
 import org.eclipse.kapua.client.security.context.Utils;
+import org.eclipse.kapua.commons.core.ServiceModuleBundle;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.client.DatabaseCheckUpdate;
 import org.eclipse.kapua.service.client.message.MessageConstants;
+import org.eclipse.kapua.service.device.connection.listener.DeviceConnectionEventListenerService;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +74,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
 
     private static final int DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD = 100000;
     private static final String MISSING_TOPIC_SUFFIX = "MQTT.LWT";
+    private static final String DISCONNECT_EVENT_OPERATION = "disconnect";
 
     enum Failure {
         CLOSED,
@@ -102,10 +110,12 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     private PublishMetric publishMetric;
     private SubscribeMetric subscribeMetric;
 
-    protected BrokerEventHanldler brokerEventHanldler;
+    protected BrokerEventHandler brokerEventHanldler;
     protected AcceptorHandler acceptorHandler;
     protected String version;
     protected ServerContext serverContext;
+
+    protected DeviceConnectionEventListenerService deviceConnectionEventListenerService;
 
     public ServerPlugin() {
         //TODO find which is the right plugin to use to set this parameter (ServerPlugin or SecurityPlugin???)
@@ -117,9 +127,11 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         //TODO find a proper way to initialize database
         DatabaseCheckUpdate databaseCheckUpdate = new DatabaseCheckUpdate();
         serverContext = ServerContext.getInstance();
-        brokerEventHanldler = BrokerEventHanldler.getInstance();
+        brokerEventHanldler = BrokerEventHandler.getInstance();
         brokerEventHanldler.registerConsumer((brokerEvent) -> disconnectClient(brokerEvent));
         brokerEventHanldler.start();
+
+        deviceConnectionEventListenerService = KapuaLocator.getInstance().getService(DeviceConnectionEventListenerService.class);
     }
 
     @Override
@@ -132,6 +144,15 @@ public class ServerPlugin implements ActiveMQServerPlugin {
                 BrokerSetting.getInstance().getMap(String.class, BrokerSettingKey.ACCEPTORS));
             //init acceptors
             acceptorHandler.syncAcceptors();
+
+            deviceConnectionEventListenerService.addReceiver(serviceEvent -> processDeviceConnectionEvent(serviceEvent));
+
+            // Setup service events
+            ServiceModuleBundle app = KapuaLocator.getInstance().getService(ServiceModuleBundle.class);
+            app.startup();
+
+            // Setup JAXB Context
+            XmlUtil.setContextProvider(new BrokerJAXBContextProvider());
         } catch (Exception e) {
             logger.error("Error while initializing {} plugin: {}", this.getClass().getName(), e.getMessage(), e);
         }
@@ -318,6 +339,37 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             }
             return removed;
         }).mapToInt(Integer::new).sum();
+    }
+
+    protected void processDeviceConnectionEvent(ServiceEvent event) {
+        logger.debug("Received event: {}", event);
+
+        if(!DISCONNECT_EVENT_OPERATION.equals(event.getOperation())) {
+            logger.debug("Ignoring event with operation: {}", event.getOperation());
+            return;
+        }
+
+        try {
+            DeviceConnection deviceConnection = KapuaLocator.getInstance().getService(DeviceConnectionService.class).find(event.getEntityScopeId(), event.getEntityId());
+            if(deviceConnection == null) {
+                logger.warn("DeviceConnection not found - scopeId: {}, id: {} - ", event.getEntityScopeId(), event.getEntityId());
+                return;
+            }
+
+            String fullClientId = Utils.getFullClientId(deviceConnection.getScopeId(), deviceConnection.getClientId());
+            SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextByClientId(fullClientId);
+            if(sessionContext == null) {
+                logger.info("Did not find any connections to disconnect for clientId: {}", fullClientId);
+                return;
+            }
+
+            BrokerEvent disconnectEvent = new BrokerEvent(EventType.disconnectClientByConnectionId, sessionContext, sessionContext);
+
+            logger.info("Submitting broker event to disconnect clientId: {}, connectionId: {}", fullClientId, sessionContext.getConnectionId());
+            BrokerEventHandler.getInstance().enqueueEvent(disconnectEvent);
+        } catch (Exception e) {
+            logger.warn("Error processing event: {}", e);
+        }
     }
 
     @Override

@@ -12,8 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
-import com.codahale.metrics.Timer.Context;
-import com.google.common.base.Strings;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
+
 import org.apache.shiro.util.ThreadContext;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
@@ -48,9 +51,8 @@ import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.validation.constraints.NotNull;
-import java.util.Map;
+import com.codahale.metrics.Timer.Context;
+import com.google.common.base.Strings;
 
 public class AuthenticationServiceBackEndCall {
 
@@ -84,7 +86,7 @@ public class AuthenticationServiceBackEndCall {
 
     public AuthResponse brokerConnect(AuthRequest authRequest) {
         try {
-            logger.info("Login for clientId {} - user: {} - password: {} - client certificates: {}", authRequest.getClientId(), authRequest.getUsername(), Strings.isNullOrEmpty(authRequest.getPassword()) ? "yes" : "no", authRequest.getCertificates() != null ? "yes" : "no");
+            logger.info("Login for clientId {} - user: {} - password: {} - client certificates: {}", authRequest.getClientId(), authRequest.getUsername(), Strings.isNullOrEmpty(authRequest.getPassword()) ? "no" : "yes", authRequest.getCertificates() != null ? "yes" : "no");
             ThreadContext.unbindSubject();
             String deviceConnectionAuthType = extractAuthTypeFromAuthRequest(authRequest);
             LoginCredentials authenticationCredentials = buildLoginCredentialsFromAuthType(authRequest, deviceConnectionAuthType);

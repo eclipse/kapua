@@ -38,6 +38,8 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 
+import org.eclipse.kapua.commons.core.ServiceModuleBundle;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.common.BasicSteps;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
@@ -236,6 +238,12 @@ public class DockerSteps {
     public void startBaseDockerEnvironment() throws Exception {
         stopBaseDockerEnvironment();
         startBaseDockerEnvironmentInternal();
+    }
+
+    @Given("Service events are setup")
+    public void startEventBus() throws Exception {
+        ServiceModuleBundle serviceModuleBundle = KapuaLocator.getInstance().getService(ServiceModuleBundle.class);
+        serviceModuleBundle.startup();
     }
 
     private void startBaseDockerEnvironmentInternal() throws Exception {

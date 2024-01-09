@@ -23,6 +23,7 @@ import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
@@ -114,6 +115,7 @@ public class DeviceRegistryLocatorConfiguration {
                 bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 final TxManager txManager = new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-device");
+                final EventStorer eventStorer = new EventStorerImpl(new EventStoreRecordImplJpaRepository(jpaRepoConfig));
                 bind(DeviceConnectionService.class).toInstance(new DeviceConnectionServiceImpl(
                         Mockito.mock(ServiceConfigurationManager.class),
                         mockedAuthorization,
@@ -121,7 +123,8 @@ public class DeviceRegistryLocatorConfiguration {
                         new DeviceConnectionFactoryImpl(),
                         txManager,
                         new DeviceConnectionImplJpaRepository(jpaRepoConfig),
-                        availableDeviceConnectionAdapters));
+                        availableDeviceConnectionAdapters,
+                        eventStorer));
                 bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
 
                 bind(DeviceRepository.class).toInstance(new DeviceImplJpaRepository(jpaRepoConfig));
@@ -145,7 +148,7 @@ public class DeviceRegistryLocatorConfiguration {
                         new DeviceImplJpaRepository(jpaRepoConfig),
                         new DeviceFactoryImpl(),
                         Mockito.mock(GroupQueryHelper.class),
-                        new EventStorerImpl(new EventStoreRecordImplJpaRepository(jpaRepoConfig)))
+                        eventStorer)
                 );
             }
         };
