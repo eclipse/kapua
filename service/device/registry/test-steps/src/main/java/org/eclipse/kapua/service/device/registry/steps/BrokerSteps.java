@@ -23,7 +23,6 @@ import javax.inject.Inject;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
-import org.eclipse.kapua.commons.core.ServiceModuleBundle;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.common.StepData;
@@ -168,9 +167,6 @@ public class BrokerSteps extends TestBase {
         deviceCommandFactory = locator.getFactory(DeviceCommandFactory.class);
         deviceConnectionService = locator.getService(DeviceConnectionService.class);
         deviceAssetManagementService = locator.getService(DeviceAssetManagementService.class);
-
-        // Setup service events
-        locator.getService(ServiceModuleBundle.class).startup();
     }
 
     @Before(value = "@env_docker or @env_docker_base or @env_none", order = 10)

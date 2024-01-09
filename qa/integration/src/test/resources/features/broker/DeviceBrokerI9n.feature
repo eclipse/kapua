@@ -52,7 +52,7 @@ Feature: Device Broker Integration
 
   Scenario: Test the forced disconnection of a connected device
 
-    Given Service event bus is started
+    Given Service events are setup
     And Client with name "client-disc-1" with client id "client-disc-1" user "kapua-broker" password "kapua-password" is connected
     Then Device status is "CONNECTED" within 5 seconds for client id "client-disc-1"
     When I Force Disconnect connection with client id "client-disc-1"
