@@ -26,7 +26,7 @@ import org.eclipse.kapua.KapuaSerializable;
  *
  * @since 1.0
  */
-@XmlRootElement(name = "configurations")
+@XmlRootElement(name = "serviceConfigurations")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = ServiceConfigurationXmlRegistry.class, factoryMethod = "newConfiguration")
 public interface ServiceConfiguration extends KapuaSerializable {
