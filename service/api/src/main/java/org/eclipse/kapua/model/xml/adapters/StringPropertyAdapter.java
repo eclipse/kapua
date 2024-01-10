@@ -10,19 +10,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.configuration;
+package org.eclipse.kapua.model.xml.adapters;
 
-import org.eclipse.kapua.model.xml.XmlPropertiesAdapted;
+public class StringPropertyAdapter extends XmlPropertyAdapter<String> {
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+    public StringPropertyAdapter() {
+        super(String.class);
+    }
 
-/**
- * A container for XmlConfigPropertyAdapted organized into an array.
- *
- * @since 1.0
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-public class DeviceXmlConfigPropertiesAdapted extends XmlPropertiesAdapted<DeviceXmlConfigPropertyAdapted.ConfigPropertyType, DeviceXmlConfigPropertyAdapted> {
-
+    @Override
+    public String unmarshallValue(String property) {
+        return property;
+    }
 }

@@ -10,12 +10,12 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.configuration;
-
-import org.eclipse.kapua.model.xml.XmlPropertiesAdapted;
+package org.eclipse.kapua.model.xml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import java.util.Collection;
 
 /**
  * A container for XmlConfigPropertyAdapted organized into an array.
@@ -23,6 +23,32 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * @since 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DeviceXmlConfigPropertiesAdapted extends XmlPropertiesAdapted<DeviceXmlConfigPropertyAdapted.ConfigPropertyType, DeviceXmlConfigPropertyAdapted> {
+public abstract class XmlPropertiesAdapted<T extends Enum<T>, V extends XmlPropertyAdapted<T>> {
 
+    @XmlElement(name = "property")
+    private Collection<V> properties;
+
+    /**
+     * Constructor
+     */
+    public XmlPropertiesAdapted() {
+    }
+
+    /**
+     * Get the adapted properties as array
+     *
+     * @return
+     */
+    public Collection<V> getProperties() {
+        return properties;
+    }
+
+    /**
+     * Set the adapted properties from the array
+     *
+     * @param properties
+     */
+    public void setProperties(Collection<V> properties) {
+        this.properties = properties;
+    }
 }

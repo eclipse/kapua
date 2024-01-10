@@ -10,19 +10,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.configuration;
+package org.eclipse.kapua.model.xml.adapters;
 
-import org.eclipse.kapua.model.xml.XmlPropertiesAdapted;
+public class BooleanPropertyAdapter extends XmlPropertyAdapter<Boolean> {
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+    public BooleanPropertyAdapter() {
+        super(Boolean.class);
+    }
 
-/**
- * A container for XmlConfigPropertyAdapted organized into an array.
- *
- * @since 1.0
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-public class DeviceXmlConfigPropertiesAdapted extends XmlPropertiesAdapted<DeviceXmlConfigPropertyAdapted.ConfigPropertyType, DeviceXmlConfigPropertyAdapted> {
-
+    @Override
+    public Boolean unmarshallValue(String value) {
+        return Boolean.parseBoolean(value);
+    }
 }

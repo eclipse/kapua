@@ -17,6 +17,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 @Category(JUnitTests.class)
 public class ServiceXmlConfigPropertiesAdaptedTest {
@@ -41,7 +44,7 @@ public class ServiceXmlConfigPropertiesAdaptedTest {
         for (String name : names) {
             for (String[] value : stringValues) {
                 for (ServiceXmlConfigPropertyAdapted.ConfigPropertyType type : configPropertyType) {
-                    ServiceXmlConfigPropertyAdapted[] properties = {null, new ServiceXmlConfigPropertyAdapted(), new ServiceXmlConfigPropertyAdapted(name, type, value)};
+                    List<ServiceXmlConfigPropertyAdapted> properties = Arrays.asList(null, new ServiceXmlConfigPropertyAdapted(), new ServiceXmlConfigPropertyAdapted(name, type, value));
                     serviceXmlConfigPropertiesAdapted.setProperties(properties);
                     Assert.assertEquals("Expected and actual values should be the same.", properties, serviceXmlConfigPropertiesAdapted.getProperties());
 
