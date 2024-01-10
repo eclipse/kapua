@@ -71,6 +71,8 @@ If($dev) {
     Write-Host "Dev mode enabled!"
     $compose_files+="-f"
     $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.db-dev.yml)
+    $compose_files+="-f"
+    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.es-dev.yml)
 }
 
 docker-compose -f $(Join-Path $script_dir .. compose docker-compose.yml) $compose_files up -d

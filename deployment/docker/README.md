@@ -109,7 +109,9 @@ export IMAGE_VERSION=1.0.0-M5
 
 ### Enabling development mode
 
-`kapua-sql` container can optionally enable its web admin console. To enable it, provide the `--dev` option.
+Development mode deploys some development components to help development and debugging.
+
+To enable it, provide the `--dev` option.
 
 Example:
 
@@ -117,12 +119,33 @@ Example:
 ./docker-deploy.sh --dev
 ```
 
-With this mode, you can access a web browser on http://localhost:8181/ to see the H2 web admin console, that has to be configured with the settings previously shown in the "Accessing components" subsection.
-We propose an image to simplify this configuration phase:
+Following ports/components will be available:
 
-![WebBrowserH2Sett](kapua-webBrowserH2Settings.png "WebBrowser H2 settings")
+| Application/Service   | Endpoint        |
+|-----------------------|-----------------|
+| H2 Web Admin console  | localhost:8181  |
+| Elasticsearch Browser | localhost:55000 |
 
-It is to be noted that as an alternative of the web console you can, of course, use whatever database tool you like, for example "dbeaver" https://dbeaver.io/
+#### Notes
+
+##### H2 Web Admin Console
+
+The parameters to connect to H2 DB instance are the following
+
+| Parameter      | Value                                |
+|----------------|--------------------------------------|
+| Saved Settings | Generic H2 (Server)                  |
+| Driver Class   | org.h2.Driver                        |
+| Driver Class   | org.h2.Driver                        |
+| JDBC URL       | jdbc:h2:tcp://localhost:3306/kapuadb |
+| User Name      | kapua                                |
+| Password       | kapua                                |
+
+It is to be noted that as an alternative of the web console you can, of course, use whatever database tool you like, for example DBeaver https://dbeaver.io/
+
+#### Elasticsearch Browser
+
+Deployed component is already configured to connect to Elasticsearch instance.
 
 ---
 
