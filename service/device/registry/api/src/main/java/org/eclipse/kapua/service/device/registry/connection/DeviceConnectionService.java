@@ -81,8 +81,8 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
     /**
      * Disconnect the specified {@link DeviceConnection} from the broker
      *
-     * @param scopeId  The {@link DeviceConnection#getScopeId()}.
-     * @param id The {@link DeviceConnection#getId()}.
+     * @param scopeId            The {@link DeviceConnection#getScopeId()}.
+     * @param deviceConnectionId The {@link DeviceConnection#getId()}.
      * @throws KapuaException In case of errors.
      * @since 2.0.0
      */
