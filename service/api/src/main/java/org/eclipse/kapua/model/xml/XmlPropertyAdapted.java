@@ -12,90 +12,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.xml;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
+public interface XmlPropertyAdapted<T extends Enum<T>> {
 
-public abstract class XmlPropertyAdapted<T extends Enum<T>> {
-    /**
-     * The name of the property.
-     */
-    @XmlAttribute(name = "name")
-    private String name;
+    String getName();
 
-    /**
-     * Whether the property value is an array.
-     */
-    @XmlAttribute(name = "array")
-    private boolean array;
+    void setName(String name);
 
-    /**
-     * Whether the property value is encrypted.
-     */
-    @XmlAttribute(name = "encrypted")
-    private boolean encrypted;
+    boolean getArray();
 
-    /**
-     * The property type.
-     */
-    @XmlAttribute(name = "type")
-    private T type;
+    void setArray(boolean array);
 
-    /**
-     * The property value(s).
-     */
-    @XmlElement(name = "value")
-    private String[] values;
+    T getType();
 
-    public XmlPropertyAdapted() {
-    }
+    void setType(T type);
 
-    public XmlPropertyAdapted(String name,
-                              T type,
-                              String[] values) {
-        super();
+    boolean isEncrypted();
 
-        this.type = type;
-        this.values = values;
-        this.encrypted = false;
-    }
+    void setEncrypted(boolean encrypted);
 
-    public String getName() {
-        return name;
-    }
+    String[] getValues();
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean getArray() {
-        return array;
-    }
-
-    public void setArray(boolean array) {
-        this.array = array;
-    }
-
-    public T getType() {
-        return type;
-    }
-
-    public void setType(T type) {
-        this.type = type;
-    }
-
-    public boolean isEncrypted() {
-        return encrypted;
-    }
-
-    public void setEncrypted(boolean encrypted) {
-        this.encrypted = encrypted;
-    }
-
-    public String[] getValues() {
-        return values;
-    }
-
-    public void setValues(String[] values) {
-        this.values = values;
-    }
+    void setValues(String[] values);
 }

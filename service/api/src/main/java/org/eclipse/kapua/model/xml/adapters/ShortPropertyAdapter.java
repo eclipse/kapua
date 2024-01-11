@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.xml.adapters;
 
-public class ShortPropertyAdapter extends XmlPropertyAdapter<Short> {
+public class ShortPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Short> {
 
     public ShortPropertyAdapter() {
         super(Short.class);

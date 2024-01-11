@@ -12,10 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.config;
 
-import org.eclipse.kapua.model.xml.XmlPropertiesAdapted;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  * A container for XmlConfigPropertyAdapted organized into an array.
@@ -23,5 +22,32 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * @since 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ServiceXmlConfigPropertiesAdapted extends XmlPropertiesAdapted<ServiceXmlConfigPropertyAdapted.ConfigPropertyType, ServiceXmlConfigPropertyAdapted> {
+public class ServiceXmlConfigPropertiesAdapted {
+
+    @XmlElement(name = "property")
+    private ServiceXmlConfigPropertyAdapted[] properties;
+
+    /**
+     * Constructor
+     */
+    public ServiceXmlConfigPropertiesAdapted() {
+    }
+
+    /**
+     * Get the adapted properties as array
+     *
+     * @return
+     */
+    public ServiceXmlConfigPropertyAdapted[] getProperties() {
+        return properties;
+    }
+
+    /**
+     * Set the adapted properties from the array
+     *
+     * @param properties
+     */
+    public void setProperties(ServiceXmlConfigPropertyAdapted[] properties) {
+        this.properties = properties;
+    }
 }

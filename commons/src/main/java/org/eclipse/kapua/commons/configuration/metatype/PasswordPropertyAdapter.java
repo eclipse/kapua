@@ -14,12 +14,12 @@ package org.eclipse.kapua.commons.configuration.metatype;
 
 import org.eclipse.kapua.commons.crypto.CryptoUtil;
 import org.eclipse.kapua.model.xml.XmlPropertyAdapted;
-import org.eclipse.kapua.model.xml.adapters.XmlPropertyAdapter;
+import org.eclipse.kapua.model.xml.adapters.ClassBasedXmlPropertyAdapterBase;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class PasswordPropertyAdapter extends XmlPropertyAdapter<Password> {
+public class PasswordPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Password> {
     private final CryptoUtil cryptoUtil;
 
     public PasswordPropertyAdapter(CryptoUtil cryptoUtil) {

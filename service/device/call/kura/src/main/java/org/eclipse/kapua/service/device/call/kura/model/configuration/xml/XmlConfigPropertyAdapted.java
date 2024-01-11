@@ -16,6 +16,8 @@ import org.eclipse.kapua.model.xml.XmlPropertyAdapted;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
@@ -28,7 +30,7 @@ import javax.xml.bind.annotation.XmlEnumValue;
  * @since 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class XmlConfigPropertyAdapted extends XmlPropertyAdapted<XmlConfigPropertyAdapted.ConfigPropertyType> {
+public class XmlConfigPropertyAdapted implements XmlPropertyAdapted<XmlConfigPropertyAdapted.ConfigPropertyType> {
 
     @XmlEnum
     public enum ConfigPropertyType {
@@ -48,7 +50,84 @@ public class XmlConfigPropertyAdapted extends XmlPropertyAdapted<XmlConfigProper
     public XmlConfigPropertyAdapted() {
     }
 
-    public XmlConfigPropertyAdapted(String name, ConfigPropertyType type, String[] values) {
-        super(name, type, values);
+    public XmlConfigPropertyAdapted(String name,
+                                    ConfigPropertyType type,
+                                    String... values) {
+        super();
+        this.name = name;
+        this.type = type;
+        this.encrypted = false;
+        this.array = values != null && values.length > 1;
+        this.values = values;
+    }
+
+    /**
+     * The name of the property.
+     */
+    @XmlAttribute(name = "name")
+    private String name;
+
+    /**
+     * Whether the property value is an array.
+     */
+    @XmlAttribute(name = "array")
+    private boolean array;
+
+    /**
+     * Whether the property value is encrypted.
+     */
+    @XmlAttribute(name = "encrypted")
+    private boolean encrypted;
+
+    /**
+     * The property type.
+     */
+    @XmlAttribute(name = "type")
+    private ConfigPropertyType type;
+
+    /**
+     * The property value(s).
+     */
+    @XmlElement(name = "value")
+    private String[] values;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean getArray() {
+        return array;
+    }
+
+    public void setArray(boolean array) {
+        this.array = array;
+    }
+
+    public ConfigPropertyType getType() {
+        return type;
+    }
+
+    public void setType(ConfigPropertyType type) {
+        this.type = type;
+    }
+
+    public boolean isEncrypted() {
+        return encrypted;
+    }
+
+    public void setEncrypted(boolean encrypted) {
+        this.encrypted = encrypted;
+    }
+
+    public String[] getValues() {
+        return values;
+    }
+
+    public void setValues(String[] values) {
+        this.values = values;
     }
 }

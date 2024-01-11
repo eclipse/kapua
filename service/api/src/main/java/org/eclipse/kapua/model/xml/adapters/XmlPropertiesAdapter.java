@@ -12,77 +12,68 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.xml.adapters;
 
-import org.eclipse.kapua.model.xml.XmlPropertiesAdapted;
 import org.eclipse.kapua.model.xml.XmlPropertyAdapted;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
-public class XmlPropertiesAdapter<T extends Enum<T>, V extends XmlPropertyAdapted<T>> extends XmlAdapter<XmlPropertiesAdapted<T, V>, Map<String, Object>> {
-    private final Supplier<XmlPropertiesAdapted<T, V>> adaptedPropertiesSupplier;
-    private final Supplier<V> adaptedPropertySupplier;
+public class XmlPropertiesAdapter<T extends Enum<T>, V extends XmlPropertyAdapted<T>> extends XmlAdapter<V[], Map<String, Object>> {
+    private final Class<V> propertyClass;
+    private final Supplier<V> adaptedPropertyFactory;
     private final Map<T, XmlPropertyAdapter> xmlPropertyAdapters;
 
-    public XmlPropertiesAdapter(Supplier<XmlPropertiesAdapted<T, V>> adaptedPropertiesSupplier, Supplier<V> adaptedPropertySupplier, Map<T, XmlPropertyAdapter> xmlPropertyAdapters) {
-        this.adaptedPropertiesSupplier = adaptedPropertiesSupplier;
-        this.adaptedPropertySupplier = adaptedPropertySupplier;
+    public XmlPropertiesAdapter(Class<V> propertyClass, Supplier<V> adaptedPropertyFactory, Map<T, XmlPropertyAdapter> xmlPropertyAdapters) {
+        this.propertyClass = propertyClass;
+        this.adaptedPropertyFactory = adaptedPropertyFactory;
         this.xmlPropertyAdapters = xmlPropertyAdapters;
     }
 
     @Override
-    public Map<String, Object> unmarshal(XmlPropertiesAdapted<T, V> adaptedPropsAdapted) {
-        Collection<V> adaptedProps = adaptedPropsAdapted.getProperties();
-        if (adaptedProps == null) {
-            return new HashMap<>();
-        }
-
-        Map<String, Object> properties = new HashMap<>();
-        for (V adaptedProp : adaptedProps) {
-            String propName = adaptedProp.getName();
-            T type = adaptedProp.getType();
-            if (type != null) {
-                final XmlPropertyAdapter xmlPropertyAdapter = xmlPropertyAdapters.get(adaptedProp.getType());
-                final Object propValue = xmlPropertyAdapter.unmarshallValues(adaptedProp);
-                properties.put(propName, propValue);
-            }
-        }
-        return properties;
+    public Map<String, Object> unmarshal(V[] properties) {
+        return Optional.ofNullable(properties)
+                .map(Arrays::asList)
+                .orElse(Collections.emptyList())
+                .stream()
+                .filter(adaptedProp -> adaptedProp.getType() != null)
+                .filter(adaptedProp -> xmlPropertyAdapters.containsKey((adaptedProp.getType())))
+                .collect(Collectors.toMap(
+                        adaptedProp -> adaptedProp.getName(),
+                        adaptedProp -> {
+                            final XmlPropertyAdapter xmlPropertyAdapter = xmlPropertyAdapters.get(adaptedProp.getType());
+                            return xmlPropertyAdapter.unmarshallValues(adaptedProp);
+                        }));
     }
 
     @Override
-    public XmlPropertiesAdapted<T, V> marshal(Map<String, Object> props) {
-        List<V> adaptedValues = new ArrayList<>();
-        if (props != null) {
-            props.forEach((name, value) -> {
-                if (value == null) {
-                    return;
-                }
-                V adaptedValue = adaptedPropertySupplier.get();
-                adaptedValue.setName(name);
-                final Optional<Map.Entry<T, XmlPropertyAdapter>> maybeAdapter = xmlPropertyAdapters
-                        .entrySet()
-                        .stream()
-                        .filter(pa -> pa.getValue().canMarshall(value.getClass()))
-                        .findFirst();
-                if (maybeAdapter.isPresent() == false) {
-                    //throw?
-                    return;
-                }
-                final Map.Entry<T, XmlPropertyAdapter> typeToAdapter = maybeAdapter.get();
-                adaptedValue.setType(typeToAdapter.getKey());
-                typeToAdapter.getValue().marshallValues(adaptedValue, value);
-                adaptedValues.add(adaptedValue);
-            });
-        }
-
-        XmlPropertiesAdapted<T, V> result = adaptedPropertiesSupplier.get();
-        result.setProperties(adaptedValues);
-        return result;
+    public V[] marshal(Map<String, Object> props) {
+        final List<V> adaptedProperties = Optional.ofNullable(props)
+                .orElse(Collections.emptyMap())
+                .entrySet()
+                .stream()
+                .filter(nameAndValue -> nameAndValue.getValue() != null)
+                .map(nameAndValue -> {
+                    final Object value = nameAndValue.getValue();
+                    final V resEntry = adaptedPropertyFactory.get();
+                    resEntry.setName(nameAndValue.getKey());
+                    xmlPropertyAdapters
+                            .entrySet()
+                            .stream()
+                            .filter(pa -> pa.getValue().canMarshall(value.getClass()))
+                            .findFirst()
+                            .ifPresent(typeToAdapter -> {
+                                resEntry.setType(typeToAdapter.getKey());
+                                typeToAdapter.getValue().marshallValues(resEntry, value);
+                            });
+                    return resEntry;
+                })
+                .collect(Collectors.toList());
+        return adaptedProperties.toArray((V[]) Array.newInstance(propertyClass, adaptedProperties.size()));
     }
 }

@@ -25,28 +25,44 @@ import org.eclipse.kapua.model.xml.adapters.XmlPropertiesAdapter;
 import org.eclipse.kapua.model.xml.adapters.XmlPropertyAdapter;
 import org.eclipse.kapua.service.config.ServiceXmlConfigPropertyAdapted.ConfigPropertyType;
 
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Xml configuration properties adapter. It marshal and unmarshal configuration properties in a proper way.
  *
  * @since 1.0
  */
-public class ServiceXmlConfigPropertiesAdapter extends XmlPropertiesAdapter<ConfigPropertyType, ServiceXmlConfigPropertyAdapted> {
+public class ServiceXmlConfigPropertiesAdapter
+        extends XmlAdapter<ServiceXmlConfigPropertiesAdapted, Map<String, Object>> {
+
+    private XmlPropertiesAdapter<ConfigPropertyType, ServiceXmlConfigPropertyAdapted> adapter = new XmlPropertiesAdapter<>(ServiceXmlConfigPropertyAdapted.class, () -> new ServiceXmlConfigPropertyAdapted(), new HashMap<ConfigPropertyType, XmlPropertyAdapter>() {
+        {
+            put(ConfigPropertyType.stringType, new StringPropertyAdapter());
+            put(ConfigPropertyType.longType, new LongPropertyAdapter());
+            put(ConfigPropertyType.doubleType, new DoublePropertyAdapter());
+            put(ConfigPropertyType.floatType, new FloatPropertyAdapter());
+            put(ConfigPropertyType.integerType, new IntegerPropertyAdapter());
+            put(ConfigPropertyType.byteType, new BytePropertyAdapter());
+            put(ConfigPropertyType.charType, new CharPropertyAdapter());
+            put(ConfigPropertyType.booleanType, new BooleanPropertyAdapter());
+            put(ConfigPropertyType.shortType, new ShortPropertyAdapter());
+        }
+    });
 
     public ServiceXmlConfigPropertiesAdapter() {
-        super(() -> new ServiceXmlConfigPropertiesAdapted(), () -> new ServiceXmlConfigPropertyAdapted(), new HashMap<ConfigPropertyType, XmlPropertyAdapter>() {
-            {
-                put(ConfigPropertyType.stringType, new StringPropertyAdapter());
-                put(ConfigPropertyType.longType, new LongPropertyAdapter());
-                put(ConfigPropertyType.doubleType, new DoublePropertyAdapter());
-                put(ConfigPropertyType.floatType, new FloatPropertyAdapter());
-                put(ConfigPropertyType.integerType, new IntegerPropertyAdapter());
-                put(ConfigPropertyType.byteType, new BytePropertyAdapter());
-                put(ConfigPropertyType.charType, new CharPropertyAdapter());
-                put(ConfigPropertyType.booleanType, new BooleanPropertyAdapter());
-                put(ConfigPropertyType.shortType, new ShortPropertyAdapter());
-            }
-        });
+    }
+
+    @Override
+    public Map<String, Object> unmarshal(ServiceXmlConfigPropertiesAdapted v) throws Exception {
+        return adapter.unmarshal(v.getProperties());
+    }
+
+    @Override
+    public ServiceXmlConfigPropertiesAdapted marshal(Map<String, Object> v) throws Exception {
+        final ServiceXmlConfigPropertiesAdapted res = new ServiceXmlConfigPropertiesAdapted();
+        res.setProperties(adapter.marshal(v));
+        return res;
     }
 }

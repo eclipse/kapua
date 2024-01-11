@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.xml.adapters;
 
-public class BytePropertyAdapter extends XmlPropertyAdapter<Byte> {
+public class BytePropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Byte> {
 
     public BytePropertyAdapter() {
         super(Byte.class);

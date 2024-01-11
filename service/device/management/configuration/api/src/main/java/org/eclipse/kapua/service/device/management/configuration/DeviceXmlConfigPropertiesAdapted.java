@@ -12,10 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration;
 
-import org.eclipse.kapua.model.xml.XmlPropertiesAdapted;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  * A container for XmlConfigPropertyAdapted organized into an array.
@@ -23,6 +22,32 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * @since 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DeviceXmlConfigPropertiesAdapted extends XmlPropertiesAdapted<DeviceXmlConfigPropertyAdapted.ConfigPropertyType, DeviceXmlConfigPropertyAdapted> {
+public class DeviceXmlConfigPropertiesAdapted {
 
+    @XmlElement(name = "property")
+    private DeviceXmlConfigPropertyAdapted[] properties;
+
+    /**
+     * Constructor
+     */
+    public DeviceXmlConfigPropertiesAdapted() {
+    }
+
+    /**
+     * Get the adapted properties as array
+     *
+     * @return
+     */
+    public DeviceXmlConfigPropertyAdapted[] getProperties() {
+        return properties;
+    }
+
+    /**
+     * Set the adapted properties from the array
+     *
+     * @param properties
+     */
+    public void setProperties(DeviceXmlConfigPropertyAdapted[] properties) {
+        this.properties = properties;
+    }
 }

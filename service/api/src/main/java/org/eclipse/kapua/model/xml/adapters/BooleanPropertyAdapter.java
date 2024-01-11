@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.xml.adapters;
 
-public class BooleanPropertyAdapter extends XmlPropertyAdapter<Boolean> {
+public class BooleanPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Boolean> {
 
     public BooleanPropertyAdapter() {
         super(Boolean.class);

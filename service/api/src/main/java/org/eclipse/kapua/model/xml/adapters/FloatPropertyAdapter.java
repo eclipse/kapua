@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.xml.adapters;
 
-public class FloatPropertyAdapter extends XmlPropertyAdapter<Float> {
+public class FloatPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Float> {
 
     public FloatPropertyAdapter() {
         super(Float.class);

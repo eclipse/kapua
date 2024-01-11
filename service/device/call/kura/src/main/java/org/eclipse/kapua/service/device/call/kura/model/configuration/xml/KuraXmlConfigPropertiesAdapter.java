@@ -28,28 +28,44 @@ import org.eclipse.kapua.model.xml.adapters.XmlPropertiesAdapter;
 import org.eclipse.kapua.model.xml.adapters.XmlPropertyAdapter;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.xml.XmlConfigPropertyAdapted.ConfigPropertyType;
 
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Xml Kura configuration properties adapter. It marshal and unmarshal configuration properties in a proper way.
  *
  * @since 1.0
  */
-public class KuraXmlConfigPropertiesAdapter extends XmlPropertiesAdapter<XmlConfigPropertyAdapted.ConfigPropertyType, XmlConfigPropertyAdapted> {
+public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigPropertiesAdapted, Map<String, Object>> {
+
+    private XmlPropertiesAdapter<XmlConfigPropertyAdapted.ConfigPropertyType, XmlConfigPropertyAdapted> adapter = new XmlPropertiesAdapter<>(XmlConfigPropertyAdapted.class, () -> new XmlConfigPropertyAdapted(), new HashMap<ConfigPropertyType, XmlPropertyAdapter>() {
+        {
+            put(ConfigPropertyType.stringType, new StringPropertyAdapter());
+            put(ConfigPropertyType.longType, new LongPropertyAdapter());
+            put(ConfigPropertyType.doubleType, new DoublePropertyAdapter());
+            put(ConfigPropertyType.floatType, new FloatPropertyAdapter());
+            put(ConfigPropertyType.integerType, new IntegerPropertyAdapter());
+            put(ConfigPropertyType.byteType, new BytePropertyAdapter());
+            put(ConfigPropertyType.charType, new CharPropertyAdapter());
+            put(ConfigPropertyType.booleanType, new BooleanPropertyAdapter());
+            put(ConfigPropertyType.shortType, new ShortPropertyAdapter());
+            put(ConfigPropertyType.passwordType, new PasswordPropertyAdapter(KapuaLocator.getInstance().getComponent(CryptoUtil.class)));
+        }
+    });
+
     public KuraXmlConfigPropertiesAdapter() {
-        super(() -> new KuraXmlConfigPropertiesAdapted(), () -> new XmlConfigPropertyAdapted(), new HashMap<ConfigPropertyType, XmlPropertyAdapter>() {
-            {
-                put(ConfigPropertyType.stringType, new StringPropertyAdapter());
-                put(ConfigPropertyType.longType, new LongPropertyAdapter());
-                put(ConfigPropertyType.doubleType, new DoublePropertyAdapter());
-                put(ConfigPropertyType.floatType, new FloatPropertyAdapter());
-                put(ConfigPropertyType.integerType, new IntegerPropertyAdapter());
-                put(ConfigPropertyType.byteType, new BytePropertyAdapter());
-                put(ConfigPropertyType.charType, new CharPropertyAdapter());
-                put(ConfigPropertyType.booleanType, new BooleanPropertyAdapter());
-                put(ConfigPropertyType.shortType, new ShortPropertyAdapter());
-                put(ConfigPropertyType.passwordType, new PasswordPropertyAdapter(KapuaLocator.getInstance().getComponent(CryptoUtil.class)));
-            }
-        });
+    }
+
+    @Override
+    public Map<String, Object> unmarshal(KuraXmlConfigPropertiesAdapted v) throws Exception {
+        return adapter.unmarshal(v.getProperties());
+    }
+
+    @Override
+    public KuraXmlConfigPropertiesAdapted marshal(Map<String, Object> v) throws Exception {
+        final KuraXmlConfigPropertiesAdapted res = new KuraXmlConfigPropertiesAdapted();
+        res.setProperties(adapter.marshal(v));
+        return res;
     }
 }

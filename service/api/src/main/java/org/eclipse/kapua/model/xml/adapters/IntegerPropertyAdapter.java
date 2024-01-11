@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.xml.adapters;
 
-public class IntegerPropertyAdapter extends XmlPropertyAdapter<Integer> {
+public class IntegerPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Integer> {
 
     public IntegerPropertyAdapter() {
         super(Integer.class);

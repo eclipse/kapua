@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.xml.adapters;
 
-public class StringPropertyAdapter extends XmlPropertyAdapter<String> {
+public class StringPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<String> {
 
     public StringPropertyAdapter() {
         super(String.class);

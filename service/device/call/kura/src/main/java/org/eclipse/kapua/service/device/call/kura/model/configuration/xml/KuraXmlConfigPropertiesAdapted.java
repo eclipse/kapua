@@ -12,10 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.model.configuration.xml;
 
-import org.eclipse.kapua.model.xml.XmlPropertiesAdapted;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  * A container for XmlConfigPropertyAdapted organized into an array.
@@ -23,5 +22,32 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * @since 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class KuraXmlConfigPropertiesAdapted extends XmlPropertiesAdapted<XmlConfigPropertyAdapted.ConfigPropertyType, XmlConfigPropertyAdapted> {
+public class KuraXmlConfigPropertiesAdapted {
+
+    @XmlElement(name = "property")
+    private XmlConfigPropertyAdapted[] properties;
+
+    /**
+     * Constructor
+     */
+    public KuraXmlConfigPropertiesAdapted() {
+    }
+
+    /**
+     * Get the adapted configuration properties array
+     *
+     * @return
+     */
+    public XmlConfigPropertyAdapted[] getProperties() {
+        return properties;
+    }
+
+    /**
+     * Set the adapted configuration properties array
+     *
+     * @param properties
+     */
+    public void setProperties(XmlConfigPropertyAdapted[] properties) {
+        this.properties = properties;
+    }
 }

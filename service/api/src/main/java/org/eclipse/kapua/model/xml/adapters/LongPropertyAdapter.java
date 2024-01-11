@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.xml.adapters;
 
-public class LongPropertyAdapter extends XmlPropertyAdapter<Long> {
+public class LongPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Long> {
 
     public LongPropertyAdapter() {
         super(Long.class);

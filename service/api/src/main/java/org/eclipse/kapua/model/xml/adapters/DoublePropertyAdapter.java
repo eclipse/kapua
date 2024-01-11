@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.xml.adapters;
 
-public class DoublePropertyAdapter extends XmlPropertyAdapter<Double> {
+public class DoublePropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Double> {
 
     public DoublePropertyAdapter() {
         super(Double.class);
