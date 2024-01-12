@@ -26,6 +26,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
@@ -244,6 +245,7 @@ public class DeviceAssetsPanel extends LayoutContainer {
             for (GwtDeviceAssetChannel channel : asset.getChannels()) {
                 field = paintChannel(channel);
                 field.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.write()));
+
                 actionFieldSet.add(field, formData);
             }
             if (asset.getDescription() != null) {
@@ -261,34 +263,40 @@ public class DeviceAssetsPanel extends LayoutContainer {
 
     private Field<?> paintChannel(GwtDeviceAssetChannel channel) {
         Field<?> field;
-        switch (channel.getTypeEnum()) {
-            case LONG:
-            case DOUBLE:
-            case FLOAT:
-            case INT:
-            case INTEGER:
-                field = paintNumberChannel(channel);
-                break;
-            case BOOLEAN:
-                field = paintBooleanChannel(channel);
-                break;
-            case STRING:
-            default:
-                field = paintTextChannel(channel);
-                break;
+
+        if (!channel.hasError()) {
+            switch (channel.getTypeEnum()) {
+                case LONG:
+                case DOUBLE:
+                case FLOAT:
+                case INT:
+                case INTEGER:
+                    field = paintNumberChannel(channel);
+                    break;
+                case BOOLEAN:
+                    field = paintBooleanChannel(channel);
+                    break;
+                case STRING:
+                default:
+                    field = paintTextChannel(channel);
+                    break;
+            }
+        } else {
+            field = paintErrorChannel(channel);
         }
+
         field.setName(channel.getName());
         field.setItemId(channel.getName());
         field.setReadOnly(channel.getModeEnum().equals(GwtDeviceAssetChannelMode.READ));
+
         return field;
     }
 
     private Field<?> paintTextChannel(GwtDeviceAssetChannel channel) {
 
         TextField<String> field = new TextField<String>();
-        field.setName(channel.getName());
         field.setAllowBlank(true);
-        field.setFieldLabel(channel.getName() + " (" + channel.getType() + " - " + channel.getMode() + ")");
+        field.setFieldLabel(createFieldLabelFromChannel(channel));
         field.setLabelStyle(CssLiterals.WORD_BREAK_BREAK_ALL);
         field.addPlugin(dirtyPlugin);
 
@@ -301,9 +309,8 @@ public class DeviceAssetsPanel extends LayoutContainer {
 
     private Field<?> paintNumberChannel(GwtDeviceAssetChannel channel) {
         NumberField field = new NumberField();
-        field.setName(channel.getName());
         field.setAllowBlank(true);
-        field.setFieldLabel(channel.getName() + " (" + channel.getType() + " - " + channel.getMode() + ")");
+        field.setFieldLabel(createFieldLabelFromChannel(channel));
         field.setLabelStyle(CssLiterals.WORD_BREAK_BREAK_ALL);
         field.addPlugin(dirtyPlugin);
         field.setMaxValue(MAX_SAFE_INTEGER);
@@ -356,9 +363,7 @@ public class DeviceAssetsPanel extends LayoutContainer {
         radioFalse.setItemId("false");
 
         RadioGroup radioGroup = new RadioGroup();
-        radioGroup.setName(channel.getName());
-        radioGroup.setItemId(channel.getName());
-        radioGroup.setFieldLabel(channel.getName() + " (" + channel.getType() + " - " + channel.getMode() + ")");
+        radioGroup.setFieldLabel(createFieldLabelFromChannel(channel));
         radioGroup.setLabelStyle(CssLiterals.WORD_BREAK_BREAK_ALL);
         radioGroup.add(radioTrue);
         radioGroup.add(radioFalse);
@@ -383,4 +388,30 @@ public class DeviceAssetsPanel extends LayoutContainer {
         return radioGroup;
     }
 
+    /**
+     * Paints a {@link GwtDeviceAssetChannel} which when on error while reading the values form it.
+     *
+     * @param channel The {@link GwtDeviceAssetChannel} that when on error.
+     * @return A {@link LabelField} with the {@link GwtDeviceAssetChannel#getError()}
+     * @since 2.0.0
+     */
+    private LabelField paintErrorChannel(GwtDeviceAssetChannel channel) {
+        LabelField labelField = new LabelField();
+        labelField.setFieldLabel(createFieldLabelFromChannel(channel));
+        labelField.setText(channel.getError());
+        labelField.setLabelStyle(CssLiterals.WORD_BREAK_BREAK_ALL);
+
+        return labelField;
+    }
+
+    /**
+     * Creates the {@link Field#getFieldLabel()} from the given {@link GwtDeviceAssetChannel}
+     *
+     * @param deviceAssetChannel The {@link GwtDeviceAssetChannel} from which to extract data.
+     * @return A formatted {@link String} with the laberl for the {@link Field}.
+     * @since 2.0.0
+     */
+    private String createFieldLabelFromChannel(GwtDeviceAssetChannel deviceAssetChannel) {
+        return deviceAssetChannel.getName() + " (" + deviceAssetChannel.getType() + " - " + deviceAssetChannel.getMode() + ")";
+    }
 }
