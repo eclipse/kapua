@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.job.internal;
 
 import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
@@ -25,7 +26,11 @@ import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.job.engine.JobEngineService;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
+import org.eclipse.kapua.model.domain.DomainEntry;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobFactory;
@@ -40,6 +45,11 @@ public class JobModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(JobFactory.class).to(JobFactoryImpl.class);
+    }
+
+    @ProvidesIntoSet
+    public Domain jobdomain() {
+        return new DomainEntry(Domains.JOB, false, Actions.read, Actions.delete, Actions.write, Actions.execute);
     }
 
     @Provides

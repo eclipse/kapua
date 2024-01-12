@@ -14,13 +14,13 @@ package org.eclipse.kapua.service.authentication.token.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.authentication.AuthenticationDomains;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenAttributes;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
@@ -77,7 +77,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         ArgumentValidator.notNull(accessTokenCreator.getExpiresOn(), "accessTokenCreator.expiresOn");
 
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.write, accessTokenCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_TOKEN, Actions.write, accessTokenCreator.getScopeId()));
 
         // Do create
         AccessToken at = accessTokenFactory.newEntity(accessTokenCreator.getScopeId());
@@ -98,7 +98,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         ArgumentValidator.notNull(accessToken.getUserId(), "accessToken.userId");
         ArgumentValidator.notNull(accessToken.getExpiresOn(), "accessToken.expiresOn");
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.write, accessToken.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_TOKEN, Actions.write, accessToken.getScopeId()));
         return txManager.execute(tx -> {
             // Check existence
             if (!accessTokenRepository.find(tx, accessToken.getScopeId(), accessToken.getId()).isPresent()) {
@@ -115,7 +115,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(accessTokenId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_TOKEN, Actions.read, scopeId));
         // Do find
         return txManager.execute(tx -> accessTokenRepository.find(tx, scopeId, accessTokenId))
                 .orElse(null);
@@ -126,7 +126,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_TOKEN, Actions.read, query.getScopeId()));
         // Do query
         return txManager.execute(tx -> accessTokenRepository.query(tx, query));
     }
@@ -136,7 +136,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_TOKEN, Actions.read, query.getScopeId()));
         // Do count
         return txManager.execute(tx -> accessTokenRepository.count(tx, query));
     }
@@ -147,7 +147,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(accessTokenId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_TOKEN, Actions.delete, scopeId));
         // Check existence
         txManager.execute(tx -> {
             if (!accessTokenRepository.find(tx, scopeId, accessTokenId).isPresent()) {
@@ -164,7 +164,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(userId, "userId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_TOKEN, Actions.read, scopeId));
         // Build query
         AccessTokenQuery query = new AccessTokenQueryImpl(scopeId);
         query.setPredicate(query.attributePredicate(AccessTokenAttributes.USER_ID, userId));
@@ -180,7 +180,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         Optional<AccessToken> accessToken = txManager.execute(tx -> accessTokenRepository.findByTokenId(tx, tokenId));
         // Check Access
         if (accessToken.isPresent()) {
-            authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, accessToken.get().getScopeId()));
+            authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_TOKEN, Actions.read, accessToken.get().getScopeId()));
         }
 
         return accessToken
@@ -193,7 +193,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(accessTokenId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_TOKEN, Actions.write, scopeId));
         // Do find
         txManager.execute(tx ->
                 accessTokenRepository.find(tx, scopeId, accessTokenId)

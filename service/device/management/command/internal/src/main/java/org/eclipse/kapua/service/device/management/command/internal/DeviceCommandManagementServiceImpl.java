@@ -13,12 +13,12 @@
 package org.eclipse.kapua.service.device.management.command.internal;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
@@ -73,7 +73,7 @@ public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagement
         ArgumentValidator.notNull(commandInput, "commandInput");
         ArgumentValidator.notNull(commandInput.getTimeout(), "commandInput.timeout");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.execute, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.execute, scopeId));
         // Prepare the request
         CommandRequestChannel commandRequestChannel = new CommandRequestChannel();
         commandRequestChannel.setAppName(CommandAppProperties.APP_NAME);

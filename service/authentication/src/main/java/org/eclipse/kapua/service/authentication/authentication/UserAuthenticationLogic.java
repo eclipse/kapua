@@ -18,6 +18,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.client.security.bean.AuthAcl;
 import org.eclipse.kapua.client.security.bean.AuthContext;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.domain.Actions;
@@ -45,7 +46,7 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
 
         Context timeUserTotalFindDevice = authenticationMetric.getExtConnectorTime().getUserFindDevice().time();
         DeviceConnection deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(
-            KapuaEid.parseCompactId(authContext.getScopeId()), authContext.getClientId()));
+                KapuaEid.parseCompactId(authContext.getScopeId()), authContext.getClientId()));
         timeUserTotalFindDevice.stop();
 
         // enforce the user-device bound
@@ -54,8 +55,8 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
         enforceDeviceConnectionUserBound(KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.getConfigValues(scopeId)), deviceConnection, scopeId, userId);
 
         Context timeUserTotalUpdateDevice = authenticationMetric.getExtConnectorTime().getUserUpdateDevice().time();
-        deviceConnection = deviceConnection!=null ? updateDeviceConnection(authContext, deviceConnection) : createDeviceConnection(authContext);
-        if (deviceConnection!=null && deviceConnection.getId()!=null) {
+        deviceConnection = deviceConnection != null ? updateDeviceConnection(authContext, deviceConnection) : createDeviceConnection(authContext);
+        if (deviceConnection != null && deviceConnection.getId() != null) {
             authContext.setKapuaConnectionId(deviceConnection.getId());
         }
         timeUserTotalUpdateDevice.stop();
@@ -74,12 +75,11 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
             // update device connection (if the disconnection wasn't caused by a stealing link)
             DeviceConnection deviceConnection = getDeviceConnection(authContext);
             deviceOwnedByTheCurrentNode = isDeviceOwnedByTheCurrentNode(authContext, deviceConnection);
-            if(deviceOwnedByTheCurrentNode) {
+            if (deviceOwnedByTheCurrentNode) {
                 //update status only if the old status wasn't missing
                 if (DeviceConnectionStatus.MISSING.equals(deviceConnection.getStatus())) {
                     logger.warn("Skipping device status update for device {} since last status was MISSING!", deviceConnection.getClientId());
-                }
-                else {
+                } else {
                     deviceConnection.setStatus(!authContext.isMissing() ? DeviceConnectionStatus.DISCONNECTED : DeviceConnectionStatus.MISSING);
                     try {
                         KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.update(deviceConnection));
@@ -104,15 +104,15 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
     protected UserPermissions updatePermissions(AuthContext authContext) throws KapuaException {
         List<Permission> permissions = new ArrayList<>();
         KapuaId scopeId = KapuaEid.parseCompactId(authContext.getScopeId());
-        permissions.add(permissionFactory.newPermission(BROKER_DOMAIN, Actions.connect, scopeId));
-        permissions.add(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
-        permissions.add(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
-        permissions.add(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.read, scopeId));
-        permissions.add(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.write, scopeId));
+        permissions.add(permissionFactory.newPermission(Domains.BROKER, Actions.connect, scopeId));
+        permissions.add(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.read, scopeId));
+        permissions.add(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.write, scopeId));
+        permissions.add(permissionFactory.newPermission(Domains.DATASTORE, Actions.read, scopeId));
+        permissions.add(permissionFactory.newPermission(Domains.DATASTORE, Actions.write, scopeId));
         UserPermissions userPermissions = new UserPermissions(authorizationService.isPermitted(permissions));
 
         if (!userPermissions.isBrokerConnect()) {
-            throw new KapuaIllegalAccessException(permissionFactory.newPermission(BROKER_DOMAIN, Actions.connect, scopeId).toString());
+            throw new KapuaIllegalAccessException(permissionFactory.newPermission(Domains.BROKER, Actions.connect, scopeId).toString());
         }
         return userPermissions;
     }

@@ -15,7 +15,6 @@ package org.eclipse.kapua.commons.configuration;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
-import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -42,14 +41,14 @@ public class KapuaConfigurableServiceBase
 
     protected final TxManager txManager;
     protected final ServiceConfigurationManager serviceConfigurationManager;
-    private final Domain domain;
+    private final String domain;
     protected final AuthorizationService authorizationService;
     protected final PermissionFactory permissionFactory;
 
     public KapuaConfigurableServiceBase(
             TxManager txManager,
             ServiceConfigurationManager serviceConfigurationManager,
-            Domain authorizationDomain,
+            String authorizationDomain,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory) {
         this.txManager = txManager;

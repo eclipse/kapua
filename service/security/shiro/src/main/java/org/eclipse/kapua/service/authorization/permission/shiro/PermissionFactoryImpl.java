@@ -25,6 +25,10 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class PermissionFactoryImpl implements PermissionFactory {
+    @Override
+    public Permission newPermission(String domain, Actions action, KapuaId targetScopeId, KapuaId groupId, boolean forwardable) {
+        return new PermissionImpl(domain, action, targetScopeId, groupId, forwardable);
+    }
 
     @Override
     public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId, boolean forwardable) {

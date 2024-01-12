@@ -17,6 +17,7 @@ import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -28,7 +29,6 @@ import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.exception.CannotModifyJobStepsException;
 import org.eclipse.kapua.service.job.execution.JobExecutionAttributes;
 import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
@@ -120,7 +120,7 @@ public class JobStepServiceImpl implements JobStepService {
             ArgumentValidator.numRange(jobStepCreator.getDescription().length(), 0, 8192, "jobStepCreator.description");
         }
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobStepCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, jobStepCreator.getScopeId()));
 
         return txManager.execute(tx -> {
             // Check job step definition
@@ -206,7 +206,7 @@ public class JobStepServiceImpl implements JobStepService {
             ArgumentValidator.numRange(jobStep.getDescription().length(), 0, 8192, "jobStep.description");
         }
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobStep.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, jobStep.getScopeId()));
 
         return txManager.execute(tx -> {
             // Check existence
@@ -273,7 +273,7 @@ public class JobStepServiceImpl implements JobStepService {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobStepId, "jobStepId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, scopeId));
         // Do find
         return txManager.execute(tx -> jobStepRepository.find(tx, scopeId, jobStepId))
                 .orElse(null);
@@ -284,7 +284,7 @@ public class JobStepServiceImpl implements JobStepService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
         // Do query
         return txManager.execute(tx -> jobStepRepository.query(tx, query));
     }
@@ -294,7 +294,7 @@ public class JobStepServiceImpl implements JobStepService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
         // Do query
         return txManager.execute(tx -> jobStepRepository.count(tx, query));
     }
@@ -305,7 +305,7 @@ public class JobStepServiceImpl implements JobStepService {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobStepId, "jobStepId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.delete, scopeId));
 
         txManager.execute(tx -> {
             // Check existence
@@ -350,7 +350,7 @@ public class JobStepServiceImpl implements JobStepService {
     public int getJobStepPropertyMaxLength() throws KapuaException {
         //
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, KapuaId.ANY));
 
         //
         // Return the value

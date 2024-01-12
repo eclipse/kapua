@@ -32,6 +32,7 @@ import org.eclipse.kapua.app.console.module.user.shared.model.GwtUserQuery;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.module.user.shared.util.GwtKapuaUserModelConverter;
 import org.eclipse.kapua.app.console.module.user.shared.util.KapuaGwtUserModelConverter;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -51,13 +52,11 @@ import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceDomain;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionDomain;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
@@ -305,7 +304,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 }
 
                 DeviceConnection deviceConnection = null;
-                if (deviceListQuery(scopeId) != null && AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new DeviceConnectionDomain(), Actions.read, scopeId))) {
+                if (deviceListQuery(scopeId) != null && AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(Domains.DEVICE_CONNECTION, Actions.read, scopeId))) {
                     for (Device device : deviceListQuery(scopeId).getItems()) {
                         if (device.getConnectionId() != null) {
                             deviceConnection = DEVICE_CONNECTION_SERVICE.find(scopeId, device.getConnectionId());
@@ -416,7 +415,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
      */
     private DeviceListResult deviceListQuery(KapuaId scopeId) throws KapuaException {
         DeviceListResult devicesList = null;
-        if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new DeviceDomain(), Actions.read, scopeId))) {
+        if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(Domains.DEVICE, Actions.read, scopeId))) {
             DeviceQuery deviceQuery = DEVICE_FACTORY.newQuery(scopeId);
             devicesList = DEVICE_SERVICE.query(deviceQuery);
         }

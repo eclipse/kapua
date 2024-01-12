@@ -19,7 +19,6 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.model.domain.Actions;
-import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
@@ -78,7 +77,7 @@ public class GroupQueryHelperImpl implements GroupQueryHelper {
     }
 
     @Override
-    public void handleKapuaQueryGroupPredicate(KapuaQuery query, Domain domain, String groupPredicateName) throws KapuaException {
+    public void handleKapuaQueryGroupPredicate(KapuaQuery query, String domain, String groupPredicateName) throws KapuaException {
         final KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
         if (accessInfoFactory != null) {
             if (kapuaSession != null && !kapuaSession.isTrustedMode()) {
@@ -92,7 +91,7 @@ public class GroupQueryHelperImpl implements GroupQueryHelper {
         }
     }
 
-    private void handleKapuaQueryGroupPredicate(TxContext txContext, KapuaSession kapuaSession, KapuaQuery query, Domain domain, String groupPredicateName) throws KapuaException {
+    private void handleKapuaQueryGroupPredicate(TxContext txContext, KapuaSession kapuaSession, KapuaQuery query, String domain, String groupPredicateName) throws KapuaException {
         try {
             KapuaId userId = kapuaSession.getUserId();
 
@@ -147,8 +146,8 @@ public class GroupQueryHelperImpl implements GroupQueryHelper {
         }
     }
 
-    private static boolean checkGroupPermission(@NonNull Domain domain, @NonNull List<Permission> groupPermissions, @NonNull Permission permission) {
-        if ((permission.getDomain() == null || domain.getName().equals(permission.getDomain())) &&
+    private static boolean checkGroupPermission(@NonNull String domain, @NonNull List<Permission> groupPermissions, @NonNull Permission permission) {
+        if ((permission.getDomain() == null || domain.equals(permission.getDomain())) &&
                 (permission.getAction() == null || Actions.read.equals(permission.getAction()))) {
             if (permission.getGroupId() == null) {
                 groupPermissions.clear();

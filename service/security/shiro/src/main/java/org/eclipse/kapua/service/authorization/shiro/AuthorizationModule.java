@@ -28,11 +28,15 @@ import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactoryImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.event.ServiceEventBusException;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
+import org.eclipse.kapua.model.domain.DomainEntry;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
@@ -113,6 +117,25 @@ public class AuthorizationModule extends AbstractKapuaModule {
         bind(RolePermissionFactory.class).to(RolePermissionFactoryImpl.class);
 
         bind(GroupFactory.class).to(GroupFactoryImpl.class);
+    }
+
+    @ProvidesIntoSet
+    public Domain accessInfoDomain() {
+        return new DomainEntry(Domains.ACCESS_INFO, false, Actions.read, Actions.delete, Actions.write);
+    }
+
+    @ProvidesIntoSet
+    public Domain domainDomain() {
+        return new DomainEntry(Domains.DOMAIN, false, Actions.read, Actions.delete, Actions.write);
+    }
+
+    @ProvidesIntoSet
+    public Domain groupDomain() {
+        return new DomainEntry(Domains.GROUP, false, Actions.read, Actions.delete, Actions.write);
+    }
+
+    public Domain roleDomain() {
+        return new DomainEntry(Domains.ROLE, false, Actions.read, Actions.delete, Actions.write);
     }
 
     @ProvidesIntoSet

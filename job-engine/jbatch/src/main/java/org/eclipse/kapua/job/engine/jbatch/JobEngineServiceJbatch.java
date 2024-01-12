@@ -15,6 +15,7 @@ package org.eclipse.kapua.job.engine.jbatch;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
@@ -36,7 +37,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
-import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.job.execution.JobExecution;
 import org.eclipse.kapua.service.job.execution.JobExecutionService;
@@ -86,7 +86,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         ArgumentValidator.notNull(jobStartOptions, "jobStartOptions");
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.execute, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(Domains.JOB, Actions.execute, scopeId));
         // Check Job Existence
         Job job = JOB_SERVICE.find(scopeId, jobId);
         if (job == null) {
@@ -131,7 +131,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(Domains.JOB, Actions.read, scopeId));
 
         return internalIsRunning(scopeId, jobId);
     }
@@ -141,7 +141,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         // Argument Validation
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(Domains.JOB, Actions.read, scopeId));
 
         Map<KapuaId, Boolean> isRunningMap = new HashMap<>();
         jobIds.forEach(jobId -> {
@@ -162,7 +162,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.execute, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(Domains.JOB, Actions.execute, scopeId));
         // Check existence
         Job job = JOB_SERVICE.find(scopeId, jobId);
         if (job == null) {
@@ -187,7 +187,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         ArgumentValidator.notNull(jobExecutionId, JOB_EXECUTION_ID);
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.execute, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(Domains.JOB, Actions.execute, scopeId));
         // Check existence
         Job job = JOB_SERVICE.find(scopeId, jobId);
         if (job == null) {
@@ -218,7 +218,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         ArgumentValidator.notNull(jobExecutionId, JOB_EXECUTION_ID);
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.execute, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(Domains.JOB, Actions.execute, scopeId));
         // Check existence
         Job job = JOB_SERVICE.find(scopeId, jobId);
         if (job == null) {
@@ -248,7 +248,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, null));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(Domains.JOB, Actions.delete, null));
         // Check existence
         Job job = JOB_SERVICE.find(scopeId, jobId);
         if (job == null) {

@@ -14,12 +14,12 @@
 package org.eclipse.kapua.service.device.management.bundle.internal;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestChannel;
@@ -73,7 +73,7 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementT
         ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.read, scopeId));
         // Prepare the request
         BundleRequestChannel bundleRequestChannel = new BundleRequestChannel();
         bundleRequestChannel.setAppName(DeviceBundleAppProperties.APP_NAME);
@@ -120,7 +120,7 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementT
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
         ArgumentValidator.notEmptyOrNull(bundleId, "bundleId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.execute, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.execute, scopeId));
         // Prepare the request
         BundleRequestChannel bundleRequestChannel = new BundleRequestChannel();
         bundleRequestChannel.setAppName(DeviceBundleAppProperties.APP_NAME);
@@ -168,7 +168,7 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementT
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
         ArgumentValidator.notEmptyOrNull(bundleId, "bundleId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.execute, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.execute, scopeId));
         // Prepare the request
         BundleRequestChannel bundleRequestChannel = new BundleRequestChannel();
         bundleRequestChannel.setAppName(DeviceBundleAppProperties.APP_NAME);

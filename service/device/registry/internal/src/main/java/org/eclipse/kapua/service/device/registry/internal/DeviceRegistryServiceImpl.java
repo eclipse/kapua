@@ -17,6 +17,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EventStorer;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -27,7 +28,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
-import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
@@ -68,7 +68,7 @@ public class DeviceRegistryServiceImpl
             DeviceFactory entityFactory,
             GroupQueryHelper groupQueryHelper,
             EventStorer eventStorer) {
-        super(txManager, serviceConfigurationManager, DeviceDomains.DEVICE_DOMAIN, authorizationService, permissionFactory);
+        super(txManager, serviceConfigurationManager, Domains.DEVICE, authorizationService, permissionFactory);
         this.deviceRepository = deviceRepository;
         this.entityFactory = entityFactory;
         this.groupQueryHelper = groupQueryHelper;
@@ -160,7 +160,7 @@ public class DeviceRegistryServiceImpl
 
         // Do query
         return txManager.execute(tx -> {
-            groupQueryHelper.handleKapuaQueryGroupPredicate(query, DeviceDomains.DEVICE_DOMAIN, DeviceAttributes.GROUP_ID);
+            groupQueryHelper.handleKapuaQueryGroupPredicate(query, Domains.DEVICE, DeviceAttributes.GROUP_ID);
             return deviceRepository.query(tx, query);
         });
     }
@@ -171,7 +171,7 @@ public class DeviceRegistryServiceImpl
 
         // Do count
         return txManager.execute(tx -> {
-            groupQueryHelper.handleKapuaQueryGroupPredicate(query, DeviceDomains.DEVICE_DOMAIN, DeviceAttributes.GROUP_ID);
+            groupQueryHelper.handleKapuaQueryGroupPredicate(query, Domains.DEVICE, DeviceAttributes.GROUP_ID);
             return deviceRepository.count(tx, query);
         });
     }

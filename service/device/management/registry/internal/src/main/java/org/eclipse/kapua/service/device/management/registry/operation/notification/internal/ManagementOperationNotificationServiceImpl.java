@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.management.registry.operation.notificat
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -22,7 +23,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRepository;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementRegistryDomains;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationCreator;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory;
@@ -71,7 +71,7 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
         ArgumentValidator.notNull(creator.getProgress(), "managementOperationNotificationCreator.progress");
         ArgumentValidator.notNegative(creator.getProgress(), "managementOperationNotificationCreator.progress");
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT_REGISTRY, Actions.write, null));
 
         return txManager.execute(tx -> {
             // Check operation existence
@@ -97,7 +97,7 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(entityId, "managementOperationNotificationId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT_REGISTRY, Actions.read, scopeId));
         // Do find
         return txManager.execute(tx -> repository.find(tx, scopeId, entityId))
                 .orElse(null);
@@ -108,7 +108,7 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT_REGISTRY, Actions.read, query.getScopeId()));
         // Do query
         return txManager.execute(tx -> repository.query(tx, query));
     }
@@ -118,7 +118,7 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT_REGISTRY, Actions.read, query.getScopeId()));
         // Do count
         return txManager.execute(tx -> repository.count(tx, query));
     }
@@ -130,7 +130,7 @@ public class ManagementOperationNotificationServiceImpl implements ManagementOpe
         ArgumentValidator.notNull(entityId, "managementOperationNotificationId");
 
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.delete, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT_REGISTRY, Actions.delete, null));
 
         // Do delete
         txManager.execute(tx -> repository.delete(tx, scopeId, entityId));

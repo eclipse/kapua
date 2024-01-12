@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.management.job.internal;
 
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -30,7 +31,6 @@ import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperat
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationQuery;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationRepository;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationService;
-import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Inject;
@@ -77,7 +77,7 @@ public class JobDeviceManagementOperationServiceImpl
         ArgumentValidator.notNull(jobDeviceManagementOperationCreator.getJobId(), "jobDeviceManagementOperationCreator.jobId");
         ArgumentValidator.notNull(jobDeviceManagementOperationCreator.getDeviceManagementOperationId(), "jobDeviceManagementOperationCreator.deviceManagementOperationId");
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, null));
         // Check duplicate
         JobDeviceManagementOperationQuery query = new JobDeviceManagementOperationQueryImpl(jobDeviceManagementOperationCreator.getScopeId());
         query.setPredicate(
@@ -112,7 +112,7 @@ public class JobDeviceManagementOperationServiceImpl
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobDeviceManagementOperationId, "jobDeviceManagementOperationId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, scopeId));
         // Do find
         return txManager.execute(tx -> repository.find(tx, scopeId, jobDeviceManagementOperationId))
                 .orElse(null);
@@ -123,7 +123,7 @@ public class JobDeviceManagementOperationServiceImpl
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
         // Do query
         return txManager.execute(tx -> repository.query(tx, query));
     }
@@ -133,7 +133,7 @@ public class JobDeviceManagementOperationServiceImpl
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
         // Do query
         return txManager.execute(tx -> repository.count(tx, query));
     }
@@ -145,7 +145,7 @@ public class JobDeviceManagementOperationServiceImpl
         ArgumentValidator.notNull(jobDeviceManagementOperationId, "jobDeviceManagementOperationId");
 
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.delete, scopeId));
 
         // Do delete
         txManager.execute(tx -> repository.delete(tx, scopeId, jobDeviceManagementOperationId));

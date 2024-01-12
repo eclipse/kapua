@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.tag.internal;
 
 import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
@@ -25,6 +26,10 @@ import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.model.domains.Domains;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
+import org.eclipse.kapua.model.domain.DomainEntry;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.tag.TagFactory;
@@ -53,6 +58,11 @@ public class TagModule extends AbstractKapuaModule {
                 jpaTxManagerFactory.create("kapua-tag"),
                 tagRepository,
                 tagFactory);
+    }
+
+    @ProvidesIntoSet
+    public Domain tagDomain() {
+        return new DomainEntry(Domains.TAG, false, Actions.read, Actions.delete, Actions.write);
     }
 
     @Provides

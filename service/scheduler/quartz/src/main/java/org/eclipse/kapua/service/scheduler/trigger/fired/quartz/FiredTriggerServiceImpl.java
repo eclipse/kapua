@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.scheduler.trigger.fired.quartz;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
@@ -21,7 +22,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerRepository;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTrigger;
@@ -74,7 +74,7 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
         ArgumentValidator.notNull(firedTriggerCreator.getStatus(), "firedTriggerCreator.status");
 
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, null));
 
         return txManager.execute(tx -> {
             // Check existence of Trigger
@@ -97,7 +97,7 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
         // Argument Validation
         ArgumentValidator.notNull(firedTriggerId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, scopeId));
         // Do find
         return txManager.execute(tx -> firedTriggerRepository.find(tx, scopeId, firedTriggerId))
                 .orElse(null);
@@ -108,7 +108,7 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
         // Do query
         return txManager.execute(tx -> firedTriggerRepository.query(tx, query));
     }
@@ -118,7 +118,7 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
         // Do query
         return txManager.execute(tx -> firedTriggerRepository.count(tx, query));
     }
@@ -129,7 +129,7 @@ public class FiredTriggerServiceImpl implements FiredTriggerService {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(firedTriggerId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.delete, null));
         // Do delete
         txManager.execute(tx -> firedTriggerRepository.delete(tx, scopeId, firedTriggerId));
 

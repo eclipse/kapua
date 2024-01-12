@@ -12,7 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.registry.manager.internal;
 
+import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.model.domains.Domains;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
+import org.eclipse.kapua.model.domain.DomainEntry;
 import org.eclipse.kapua.service.device.management.registry.manager.DeviceManagementRegistryManagerService;
 
 public class DeviceManagementRegistryModule extends AbstractKapuaModule {
@@ -20,4 +25,10 @@ public class DeviceManagementRegistryModule extends AbstractKapuaModule {
     protected void configureModule() {
         bind(DeviceManagementRegistryManagerService.class).to(DeviceManagementRegistryManagerServiceImpl.class);
     }
+
+    @ProvidesIntoSet
+    public Domain deviceManagementRegistryDomain() {
+        return new DomainEntry(Domains.DEVICE_MANAGEMENT_REGISTRY, false, Actions.execute, Actions.read, Actions.write);
+    }
+
 }

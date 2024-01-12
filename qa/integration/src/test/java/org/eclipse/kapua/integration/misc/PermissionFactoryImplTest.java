@@ -21,8 +21,8 @@ import org.junit.experimental.categories.Category;
 public class PermissionFactoryImplTest {
 
     @Test
-    public void newPermissionTest(){
-        PermissionFactoryImpl permissionFactoryImpl=new PermissionFactoryImpl();
-        System.out.println(permissionFactoryImpl.newPermission(null,null,null,null,true));
+    public void newPermissionTest() {
+        PermissionFactoryImpl permissionFactoryImpl = new PermissionFactoryImpl();
+        System.out.println(permissionFactoryImpl.newPermission((String) null, null, null, null, true));
     }
 }

@@ -15,12 +15,12 @@ package org.eclipse.kapua.service.authorization.access.shiro;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoRepository;
@@ -78,7 +78,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
         ArgumentValidator.notNull(accessRoleCreator.getAccessInfoId(), "accessRoleCreator.accessInfoId");
         ArgumentValidator.notNull(accessRoleCreator.getRoleId(), "accessRoleCreator.roleId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.write, accessRoleCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_INFO, Actions.write, accessRoleCreator.getScopeId()));
 
         return txManager.execute(tx -> {
             // Check that AccessInfo exists
@@ -116,7 +116,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(accessRoleId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_INFO, Actions.read, scopeId));
         // Do find
         return txManager.execute(tx -> accessRoleRepository.find(tx, scopeId, accessRoleId))
                 .orElse(null);
@@ -129,7 +129,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
         ArgumentValidator.notNull(accessInfoId, "accessInfoId");
 
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_INFO, Actions.read, scopeId));
 
         // Check cache
         return txManager.execute(tx -> accessRoleRepository.findByAccessInfoId(tx, scopeId, accessInfoId));
@@ -140,7 +140,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_INFO, Actions.read, query.getScopeId()));
         // Do query
         return txManager.execute(tx -> accessRoleRepository.query(tx, query));
     }
@@ -150,7 +150,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_INFO, Actions.read, query.getScopeId()));
         // Do count
         return txManager.execute(tx -> accessRoleRepository.count(tx, query));
     }
@@ -162,7 +162,7 @@ public class AccessRoleServiceImpl implements AccessRoleService {
         ArgumentValidator.notNull(accessRoleId, KapuaEntityAttributes.ENTITY_ID);
 
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_INFO, Actions.delete, scopeId));
         // Do delete
         txManager.execute(tx -> accessRoleRepository.delete(tx, scopeId, accessRoleId));
     }

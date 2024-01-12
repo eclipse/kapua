@@ -13,9 +13,14 @@
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
 import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.model.domains.Domains;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
+import org.eclipse.kapua.model.domain.DomainEntry;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
@@ -30,6 +35,11 @@ public class SchedulerQuartzModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(TriggerFactory.class).to(TriggerFactoryImpl.class);
+    }
+
+    @ProvidesIntoSet
+    public Domain schedulerDomain() {
+        return new DomainEntry(Domains.SCHEDULER, false, Actions.read, Actions.delete, Actions.write, Actions.execute);
     }
 
     @Provides

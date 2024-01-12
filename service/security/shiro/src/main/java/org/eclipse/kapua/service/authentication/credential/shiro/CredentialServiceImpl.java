@@ -18,6 +18,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -28,7 +29,6 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
-import org.eclipse.kapua.service.authentication.AuthenticationDomains;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialAttributes;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
@@ -78,7 +78,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
             CredentialFactory credentialFactory,
             CredentialMapper credentialMapper,
             PasswordValidator passwordValidator) {
-        super(txManager, serviceConfigurationManager, AuthenticationDomains.CREDENTIAL_DOMAIN, authorizationService, permissionFactory);
+        super(txManager, serviceConfigurationManager, Domains.CREDENTIAL, authorizationService, permissionFactory);
         this.credentialRepository = credentialRepository;
         this.credentialFactory = credentialFactory;
         try {
@@ -123,7 +123,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
                 }
             }
             // Check access
-            authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, credentialCreator.getScopeId()));
+            authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.write, credentialCreator.getScopeId()));
             // Do create
             // Do pre persist magic on key values
             switch (credentialCreator.getCredentialType()) {
@@ -175,7 +175,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
         ArgumentValidator.notNull(credential.getCredentialType(), "credential.credentialType");
 
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, credential.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.write, credential.getScopeId()));
 
         final Credential updatedCredential = txManager.execute(tx -> {
             Credential currentCredential = credentialRepository.find(tx, credential.getScopeId(), credential.getId())
@@ -199,7 +199,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(credentialId, "credentialId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.read, scopeId));
 
         return txManager.execute(tx -> credentialRepository.find(tx, scopeId, credentialId))
                 .map(cred -> {
@@ -215,7 +215,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.read, query.getScopeId()));
 
         final CredentialListResult credentials = txManager.execute(tx -> credentialRepository.query(tx, query));
         credentials.getItems().forEach(credential -> credential.setCredentialKey(null));
@@ -231,7 +231,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.read, query.getScopeId()));
         return txManager.execute(tx -> credentialRepository.count(tx, query));
     }
 
@@ -242,7 +242,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
         ArgumentValidator.notNull(credentialId, "credential.id");
         ArgumentValidator.notNull(scopeId, "credential.scopeId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.delete, scopeId));
         txManager.execute(tx -> credentialRepository.delete(tx, scopeId, credentialId));
     }
 
@@ -253,7 +253,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(userId, "userId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.read, scopeId));
 
         final CredentialListResult credentials = txManager.execute(tx -> credentialRepository.findByUserId(tx, scopeId, userId));
         credentials.getItems().forEach(credential -> credential.setCredentialKey(null));
@@ -292,7 +292,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
         ///FIXME: why the permission check here? it does not rollback!
         // Check Access
         if (credential != null) {
-            authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, credential.getId()));
+            authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.read, credential.getId()));
             credential.setCredentialKey(null);
         }
 
@@ -305,7 +305,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(credentialId, "credentialId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.write, scopeId));
 
         txManager.execute(tx -> {
             Credential credential = credentialRepository.find(tx, scopeId, credentialId)
@@ -396,7 +396,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.read, null));
 
         return txManager.execute(tx -> credentialRepository.find(tx, scopeId, credentialId))
                 .orElse(null);

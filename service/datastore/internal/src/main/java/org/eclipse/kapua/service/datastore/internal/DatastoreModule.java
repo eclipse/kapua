@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
@@ -23,6 +24,10 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.model.domains.Domains;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
+import org.eclipse.kapua.model.domain.DomainEntry;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -52,6 +57,11 @@ public class DatastoreModule extends AbstractKapuaModule {
         bind(MessageStoreFactory.class).to(MessageStoreFactoryImpl.class);
         bind(MetricInfoFactory.class).to(MetricInfoFactoryImpl.class);
         bind(MetricInfoRegistryService.class).to(MetricInfoRegistryServiceImpl.class);
+    }
+
+    @ProvidesIntoSet
+    public Domain dataStoreDomain() {
+        return new DomainEntry(Domains.DATASTORE, false, Actions.read, Actions.delete, Actions.write);
     }
 
     @Provides

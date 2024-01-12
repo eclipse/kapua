@@ -889,7 +889,7 @@ public class UserServiceSteps extends TestBase {
                 stepData.put(LAST_PERMISSION_ADDED_TO_USER, permission);
             }
         } else {
-            Permission permission = permissionFactory.newPermission(null, null, null);
+            Permission permission = permissionFactory.newPermission((String) null, null, null);
             permissions.add(permission);
         }
         accessInfoCreator.setPermissions(permissions);

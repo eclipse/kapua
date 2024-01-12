@@ -36,6 +36,85 @@ public interface PermissionFactory extends KapuaObjectFactory {
      * @param targetScopeId The target scope id of the new {@link Permission}.
      * @return A instance of the implementing class of {@link Permission}.
      */
+    default Permission newPermission(String domain, Actions action, KapuaId targetScopeId) {
+        return newPermission(domain, action, targetScopeId, null);
+    }
+
+    /**
+     * Instantiate a new {@link Permission} implementing object with the provided parameters.
+     *
+     * @param domain        The {@link Domain} of the new {@link Permission}.
+     * @param action        The {@link Actions} of the new {@link Permission}.
+     * @param targetScopeId The target scope id of the new {@link Permission}.
+     * @param groupId       The {@link Group} id that this {@link Permission} gives access.
+     * @return A instance of the implementing class of {@link Permission}.
+     */
+    default Permission newPermission(String domain, Actions action, KapuaId targetScopeId, KapuaId groupId) {
+        return newPermission(domain, action, targetScopeId, groupId, false);
+    }
+
+    /**
+     * Instantiate a new {@link Permission} implementing object with the provided parameters.
+     *
+     * @param domain        The {@link Domain} of the new {@link Permission}.
+     * @param action        The {@link Actions} of the new {@link Permission}.
+     * @param targetScopeId The target scope id of the new {@link Permission}.
+     * @param groupId       The {@link Group} id that this {@link Permission} gives access.
+     * @param forwardable   If the {@link Permission} is forward-able to children scopeIds
+     * @return A instance of the implementing class of {@link Permission}.
+     */
+    Permission newPermission(String domain, Actions action, KapuaId targetScopeId, KapuaId groupId, boolean forwardable);
+
+    /**
+     * Instantiate new {@link Permission}s implementing object with the provided parameters.
+     *
+     * @param domain        The {@link Domain} of the new {@link Permission}.
+     * @param targetScopeId The target scope id of the new {@link Permission}.
+     * @param actions       The {@link Actions} of the new {@link Permission}s.
+     * @return A collection of instances of the implementing class of {@link Permission}.
+     */
+    default Collection<Permission> newPermissions(String domain, KapuaId targetScopeId, Actions... actions) {
+        return newPermissions(domain, targetScopeId, null, actions);
+    }
+
+    /**
+     * Instantiate new {@link Permission}s implementing object with the provided parameters.
+     *
+     * @param domain        The {@link Domain} of the new {@link Permission}.
+     * @param targetScopeId The target scope id of the new {@link Permission}.
+     * @param groupId       The {@link Group} id that this {@link Permission} gives access.
+     * @param actions       The {@link Actions} of the new {@link Permission}s.
+     * @return A collection of instances of the implementing class of {@link Permission}.
+     */
+    default Collection<Permission> newPermissions(String domain, KapuaId targetScopeId, KapuaId groupId, Actions... actions) {
+        return newPermissions(domain, targetScopeId, groupId, false, actions);
+    }
+
+    /**
+     * Instantiate new {@link Permission}s implementing object with the provided parameters.
+     *
+     * @param domain        The {@link Domain} of the new {@link Permission}.
+     * @param targetScopeId The target scope id of the new {@link Permission}.
+     * @param groupId       The {@link Group} id that this {@link Permission} gives access.
+     * @param forwardable   If the {@link Permission} is forward-able to children scopeIds
+     * @param actions       The {@link Actions} of the new {@link Permission}s.
+     * @return A collection of instances of the implementing class of {@link Permission}.
+     */
+    default Collection<Permission> newPermissions(String domain, KapuaId targetScopeId, KapuaId groupId, boolean forwardable, Actions... actions) {
+        return Arrays.stream(actions)
+                .map(action -> newPermission(domain, action, targetScopeId, groupId, forwardable))
+                .collect(Collectors.toList());
+    }
+
+
+    /**
+     * Instantiate a new {@link Permission} implementing object with the provided parameters.
+     *
+     * @param domain        The {@link Domain} of the new {@link Permission}.
+     * @param action        The {@link Actions} of the new {@link Permission}.
+     * @param targetScopeId The target scope id of the new {@link Permission}.
+     * @return A instance of the implementing class of {@link Permission}.
+     */
     default Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId) {
         return newPermission(domain, action, targetScopeId, null);
     }

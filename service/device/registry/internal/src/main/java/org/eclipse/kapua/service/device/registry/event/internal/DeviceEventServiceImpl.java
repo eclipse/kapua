@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.registry.event.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -21,7 +22,6 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
@@ -84,7 +84,7 @@ public class DeviceEventServiceImpl
         ArgumentValidator.notNull(deviceEventCreator.getReceivedOn(), "deviceEventCreator.receivedOn");
         ArgumentValidator.notEmptyOrNull(deviceEventCreator.getResource(), "deviceEventCreator.eventType");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.write, deviceEventCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_EVENT, Actions.write, deviceEventCreator.getScopeId()));
         return txManager.execute(tx -> {
             // Check that device exists
             final Device device = deviceRepository.findForUpdate(tx, deviceEventCreator.getScopeId(), deviceEventCreator.getDeviceId())
@@ -117,7 +117,7 @@ public class DeviceEventServiceImpl
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(entityId, "entityId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_EVENT, Actions.read, scopeId));
 
         return txManager.execute(tx -> repository.find(tx, scopeId, entityId))
                 .orElse(null);
@@ -129,7 +129,7 @@ public class DeviceEventServiceImpl
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_EVENT, Actions.read, query.getScopeId()));
 
         return txManager.execute(tx -> repository.query(tx, query));
     }
@@ -140,7 +140,7 @@ public class DeviceEventServiceImpl
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_EVENT, Actions.read, query.getScopeId()));
 
         return txManager.execute(tx -> repository.count(tx, query));
     }
@@ -152,7 +152,7 @@ public class DeviceEventServiceImpl
         ArgumentValidator.notNull(scopeId, "deviceEvent.scopeId");
 
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_EVENT, Actions.delete, scopeId));
 
         txManager.execute(tx -> repository.delete(tx, scopeId, deviceEventId));
     }

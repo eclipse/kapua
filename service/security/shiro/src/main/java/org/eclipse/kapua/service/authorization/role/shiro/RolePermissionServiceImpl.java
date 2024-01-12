@@ -16,12 +16,12 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -75,7 +75,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         ArgumentValidator.notNull(rolePermissionCreator.getRoleId(), "rolePermissionCreator.roleId");
         ArgumentValidator.notNull(rolePermissionCreator.getPermission(), "rolePermissionCreator.permission");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, rolePermissionCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ROLE, Actions.write, rolePermissionCreator.getScopeId()));
 
         return txManager.execute(tx -> {
             // Check role existence
@@ -128,7 +128,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         ArgumentValidator.notNull(rolePermissionId, KapuaEntityAttributes.ENTITY_ID);
 
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ROLE, Actions.delete, scopeId));
 
         if (KapuaId.ONE.equals(rolePermissionId)) {
             throw new KapuaException(KapuaErrorCodes.PERMISSION_DELETE_NOT_ALLOWED);
@@ -142,7 +142,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(rolePermissionId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ROLE, Actions.read, scopeId));
 
         return txManager.execute(tx -> rolePermissionRepository.find(tx, scopeId, rolePermissionId))
                 .orElse(null);
@@ -154,7 +154,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(roleId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ROLE, Actions.read, scopeId));
 
         return txManager.execute(tx -> rolePermissionRepository.findByRoleId(tx, scopeId, roleId));
     }
@@ -164,7 +164,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ROLE, Actions.read, query.getScopeId()));
 
         return txManager.execute(tx -> rolePermissionRepository.query(tx, query));
     }
@@ -174,7 +174,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ROLE, Actions.read, query.getScopeId()));
 
         return txManager.execute(tx -> rolePermissionRepository.count(tx, query));
     }

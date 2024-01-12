@@ -23,6 +23,7 @@ import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EventStorer;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
@@ -30,13 +31,11 @@ import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
-import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountAttributes;
 import org.eclipse.kapua.service.account.AccountCreator;
-import org.eclipse.kapua.service.account.AccountDomains;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountRepository;
 import org.eclipse.kapua.service.account.AccountService;
@@ -83,7 +82,7 @@ public class AccountServiceImpl
             AuthorizationService authorizationService,
             ServiceConfigurationManager serviceConfigurationManager,
             EventStorer eventStorer) {
-        super(txManager, serviceConfigurationManager, AccountDomains.ACCOUNT_DOMAIN, authorizationService, permissionFactory);
+        super(txManager, serviceConfigurationManager, Domains.ACCOUNT, authorizationService, permissionFactory);
         this.accountRepository = accountRepository;
         this.eventStorer = eventStorer;
     }
@@ -100,7 +99,7 @@ public class AccountServiceImpl
         ArgumentValidator.match(accountCreator.getOrganizationEmail(), CommonsValidationRegex.EMAIL_REGEXP, "accountCreator.organizationEmail");
 
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, accountCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, Actions.write, accountCreator.getScopeId()));
 
         return txManager.execute(tx -> {
             // Check entity limit
@@ -166,10 +165,10 @@ public class AccountServiceImpl
         // Check Access
         if (KapuaSecurityUtils.getSession().getScopeId().equals(account.getId())) {
             // Editing self
-            authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, account.getId()));
+            authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, Actions.write, account.getId()));
         } else {
             // Editing child
-            authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, account.getScopeId()));
+            authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, Actions.write, account.getScopeId()));
         }
 
         if (account.getExpirationDate() != null) {
@@ -241,7 +240,7 @@ public class AccountServiceImpl
         ArgumentValidator.notNull(accountId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
         Actions action = Actions.delete;
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, action, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, action, scopeId));
         // Check if it has children
         if (!findChildAccountsTrusted(accountId).isEmpty()) {
             throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "This account cannot be deleted. Delete its child first.");
@@ -285,7 +284,7 @@ public class AccountServiceImpl
         }
 
         // Check Access
-        checkAccountPermission(scopeId, accountId, AccountDomains.ACCOUNT_DOMAIN, Actions.read);
+        checkAccountPermission(scopeId, accountId, Domains.ACCOUNT, Actions.read);
 
         // Do find
         return txManager.execute(tx -> accountRepository.find(tx, scopeId, accountId))
@@ -303,7 +302,7 @@ public class AccountServiceImpl
 
         // Check Access
         if (account != null) {
-            checkAccountPermission(account.getScopeId(), account.getId(), AccountDomains.ACCOUNT_DOMAIN, Actions.read);
+            checkAccountPermission(account.getScopeId(), account.getId(), Domains.ACCOUNT, Actions.read);
         }
 
         // Return result
@@ -321,7 +320,7 @@ public class AccountServiceImpl
 
         // Check access
         if (account != null) {
-            checkAccountPermission(account.getScopeId(), account.getId(), AccountDomains.ACCOUNT_DOMAIN, Actions.read);
+            checkAccountPermission(account.getScopeId(), account.getId(), Domains.ACCOUNT, Actions.read);
         }
 
         // Return result
@@ -340,7 +339,7 @@ public class AccountServiceImpl
                     .orElseThrow(() -> new KapuaEntityNotFoundException(Account.TYPE, scopeId));
 
             // Check access
-            checkAccountPermission(account.getScopeId(), account.getId(), AccountDomains.ACCOUNT_DOMAIN, Actions.read, true);
+            checkAccountPermission(account.getScopeId(), account.getId(), Domains.ACCOUNT, Actions.read, true);
 
             // Do find
             return accountRepository.findChildAccountsRecursive(tx, account.getParentAccountPath());
@@ -353,7 +352,7 @@ public class AccountServiceImpl
         ArgumentValidator.notNull(query, "query");
 
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, Actions.read, query.getScopeId()));
 
         // Do query
         return txManager.execute(tx -> accountRepository.query(tx, query));
@@ -364,7 +363,7 @@ public class AccountServiceImpl
         // Argument validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, Actions.read, query.getScopeId()));
         // Do count
         return txManager.execute(tx -> accountRepository.count(tx, query));
     }
@@ -378,7 +377,7 @@ public class AccountServiceImpl
         return txManager.execute(tx -> accountRepository.query(tx, new AccountQueryImpl(accountId)));
     }
 
-    private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, Domain domain, Actions action) throws KapuaException {
+    private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, String domain, Actions action) throws KapuaException {
         checkAccountPermission(scopeId, accountId, domain, action, false);
     }
 
@@ -388,7 +387,7 @@ public class AccountServiceImpl
      *
      * @param accountId The {@link KapuaId} of the {@link Account} to look for
      */
-    private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, Domain domain, Actions action, boolean forwardable) throws KapuaException {
+    private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, String domain, Actions action, boolean forwardable) throws KapuaException {
         if (KapuaSecurityUtils.getSession().getScopeId().equals(accountId)) {
             // I'm looking for myself, so let's check if I have the correct permission
             authorizationService.checkPermission(permissionFactory.newPermission(domain, action, accountId, null, forwardable));

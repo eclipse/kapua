@@ -23,23 +23,27 @@ import java.math.BigInteger;
  */
 public class AclPermission {
 
-    private Domain domain;
+    private String domain;
 
     private Actions action;
 
     private KapuaEid targetScopeId;
 
     public AclPermission(Domain domain, Actions action, KapuaEid targetScopeId) {
+        this(domain.getName(), action, targetScopeId);
+    }
+
+    public AclPermission(String domain, Actions action, KapuaEid targetScopeId) {
         this.domain = domain;
         this.action = action;
         this.targetScopeId = targetScopeId;
     }
 
-    public Domain getDomain() {
+    public String getDomain() {
         return domain;
     }
 
-    public void setDomain(Domain domain) {
+    public void setDomain(String domain) {
         this.domain = domain;
     }
 

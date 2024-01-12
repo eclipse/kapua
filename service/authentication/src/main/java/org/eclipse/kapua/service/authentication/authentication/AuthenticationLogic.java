@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.authentication.authentication;
 
 import org.apache.shiro.ShiroException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.BrokerDomains;
 import org.eclipse.kapua.client.security.bean.AclUtils;
 import org.eclipse.kapua.client.security.bean.AuthAcl;
 import org.eclipse.kapua.client.security.bean.AuthAcl.Action;
@@ -23,12 +22,9 @@ import org.eclipse.kapua.client.security.metric.AuthMetric;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.datastore.DatastoreDomain;
-import org.eclipse.kapua.service.device.management.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
@@ -68,11 +64,7 @@ public abstract class AuthenticationLogic {
     //TODO inject!!!
     protected AuthMetric authenticationMetric = AuthMetric.getInstance();
 
-    protected static final Domain BROKER_DOMAIN = BrokerDomains.BROKER_DOMAIN;
     //TODO remove domain object. I cannot import one module just to get a constant
-    protected static final Domain DATASTORE_DOMAIN = new DatastoreDomain();
-    protected static final Domain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
-
     protected DeviceConnectionOptionFactory deviceConnectionOptionFactory = KapuaLocator.getInstance().getFactory(DeviceConnectionOptionFactory.class);
     protected DeviceConnectionOptionService deviceConnectionOptionService = KapuaLocator.getInstance().getService(DeviceConnectionOptionService.class);
     protected AuthorizationService authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);

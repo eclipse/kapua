@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -24,7 +25,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagCreator;
-import org.eclipse.kapua.service.tag.TagDomains;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagRepository;
@@ -67,7 +67,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
             TxManager txManager,
             TagRepository tagRepository,
             TagFactory tagFactory) {
-        super(txManager, serviceConfigurationManager, TagDomains.TAG_DOMAIN, authorizationService, permissionFactory);
+        super(txManager, serviceConfigurationManager, Domains.TAG, authorizationService, permissionFactory);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         this.tagRepository = tagRepository;
@@ -82,7 +82,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         ArgumentValidator.notNull(tagCreator.getScopeId(), "tagCreator.scopeId");
         ArgumentValidator.validateEntityName(tagCreator.getName(), "tagCreator.name");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.write, tagCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.TAG, Actions.write, tagCreator.getScopeId()));
         return txManager.execute(tx -> {
             // Check entity limit
             serviceConfigurationManager.checkAllowedEntities(tx, tagCreator.getScopeId(), "Tags");
@@ -110,7 +110,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
 
         // Check Access
         authorizationService.checkPermission(
-                permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.write, tag.getScopeId()));
+                permissionFactory.newPermission(Domains.TAG, Actions.write, tag.getScopeId()));
 
         // Check duplicate name
         return txManager.execute(tx -> {
@@ -131,7 +131,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(tagId, "tagId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.TAG, Actions.delete, scopeId));
         // Check existence
         txManager.execute(tx -> tagRepository.delete(tx, scopeId, tagId));
     }
@@ -142,7 +142,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(tagId, "tagId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.TAG, Actions.read, scopeId));
         // Do find
         return txManager.execute(tx -> tagRepository.find(tx, scopeId, tagId))
                 .orElse(null);
@@ -153,7 +153,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         // Argument validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.TAG, Actions.read, query.getScopeId()));
         // Do query
         return txManager.execute(tx -> tagRepository.query(tx, query));
     }
@@ -163,7 +163,7 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         // Argument validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.TAG, Actions.read, query.getScopeId()));
         // Do count
         return txManager.execute(tx -> tagRepository.count(tx, query));
     }

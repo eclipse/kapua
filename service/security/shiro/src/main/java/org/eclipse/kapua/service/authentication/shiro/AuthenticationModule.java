@@ -25,11 +25,15 @@ import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactoryImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
+import org.eclipse.kapua.model.domain.DomainEntry;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
@@ -93,6 +97,16 @@ public class AuthenticationModule extends AbstractKapuaModule {
         bind(AccessTokenFactory.class).to(AccessTokenFactoryImpl.class);
         bind(RegistrationService.class).to(RegistrationServiceImpl.class);
         bind(MfaAuthenticator.class).toInstance(new MfaAuthenticatorImpl());
+    }
+
+    @ProvidesIntoSet
+    public Domain accessTokenDomain() {
+        return new DomainEntry(Domains.ACCESS_TOKEN, false, Actions.read, Actions.delete, Actions.write);
+    }
+
+    @ProvidesIntoSet
+    public Domain credentialDomain() {
+        return new DomainEntry(Domains.CREDENTIAL, false, Actions.read, Actions.delete, Actions.write);
     }
 
     @ProvidesIntoSet

@@ -1559,7 +1559,7 @@ public class AuthorizationServiceSteps extends TestBase {
         Assert.assertEquals(Actions.write, tmpPerm.getAction());
         Assert.assertEquals(getKapuaId(9), tmpPerm.getGroupId());
         Assert.assertFalse(tmpPerm.getForwardable());
-        tmpPerm = permissionFactory.newPermission(null, Actions.execute, SYS_SCOPE_ID, getKapuaId(9), true);
+        tmpPerm = permissionFactory.newPermission((String) null, Actions.execute, SYS_SCOPE_ID, getKapuaId(9), true);
         Assert.assertNotNull(tmpPerm);
         Assert.assertEquals(Actions.execute, tmpPerm.getAction());
         Assert.assertTrue(tmpPerm.getForwardable());

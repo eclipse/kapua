@@ -13,12 +13,12 @@
 package org.eclipse.kapua.service.authorization.domain.shiro;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainCreator;
@@ -72,7 +72,7 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
         ArgumentValidator.notNull(domainCreator.getActions(), "domainCreator.actions");
         ArgumentValidator.notEmptyOrNull(domainCreator.getServiceName(), "domainCreator.serviceName");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.write, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DOMAIN, Actions.write, null));
         Domain domain = new DomainImpl();
 
         domain.setName(domainCreator.getName());
@@ -90,7 +90,7 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
     public void delete(KapuaId scopeId, KapuaId domainId) throws KapuaException {
         ArgumentValidator.notNull(domainId, "domainId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.delete, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DOMAIN, Actions.delete, null));
 
         txManager.execute(tx -> domainRepository.delete(tx, scopeId, domainId));
     }
@@ -100,7 +100,7 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
             throws KapuaException {
         ArgumentValidator.notNull(domainId, "domainId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DOMAIN, Actions.read, KapuaId.ANY));
 
         return txManager.execute(tx -> domainRepository.find(tx, scopeId, domainId))
                 .orElse(null);
@@ -114,7 +114,7 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
         // Do find
         final Optional<Domain> foundDomain = txManager.execute(tx -> domainRepository.findByName(tx, KapuaId.ANY, name));
         if (foundDomain.isPresent()) {
-            authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
+            authorizationService.checkPermission(permissionFactory.newPermission(Domains.DOMAIN, Actions.read, KapuaId.ANY));
         }
         return foundDomain
                 .orElse(null);
@@ -125,7 +125,7 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DOMAIN, Actions.read, KapuaId.ANY));
 
         return txManager.execute(tx -> domainRepository.query(tx, query));
     }
@@ -135,7 +135,7 @@ public class DomainRegistryServiceImpl implements DomainRegistryService {
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DOMAIN, Actions.read, KapuaId.ANY));
 
         return txManager.execute(tx -> domainRepository.count(tx, query));
     }

@@ -53,7 +53,7 @@ public class TagServiceImplTest {
     @BeforeEach
     public void setUp() throws KapuaException {
         permissionFactory = Mockito.mock(PermissionFactory.class);
-        Mockito.when(permissionFactory.newPermission(Mockito.any(), Mockito.any(), Mockito.any()))
+        Mockito.when(permissionFactory.newPermission(Mockito.<String>any(), Mockito.any(), Mockito.any()))
                 .thenReturn(FAKE_PERMISSION);
         authorizationService = Mockito.mock(AuthorizationService.class);
         serviceConfigurationManager = Mockito.mock(ServiceConfigurationManager.class);
