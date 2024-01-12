@@ -29,7 +29,6 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
-import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannelMode;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreFactory;
@@ -88,12 +87,11 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
                 DeviceAsset assetMetadata = assetsMetadata.getAssets().get(assetIndex);
                 DeviceAsset assetValues = assetsValues.getAssets().get(assetIndex);
                 for (DeviceAssetChannel channelMetadata : assetMetadata.getChannels()) {
-                    if (channelMetadata.getMode().equals(DeviceAssetChannelMode.READ) || channelMetadata.getMode().equals(DeviceAssetChannelMode.READ_WRITE)) {
-                        for (DeviceAssetChannel channelValue : assetValues.getChannels()) {
-                            if (channelValue.getName().equals(channelMetadata.getName())) {
-                                channelMetadata.setValue(channelValue.getValue());
-                                break;
-                            }
+                    for (DeviceAssetChannel channelValue : assetValues.getChannels()) {
+                        if (channelValue.getName().equals(channelMetadata.getName())) {
+                            channelMetadata.setValue(channelValue.getValue());
+                            channelMetadata.setError(channelValue.getError());
+                            break;
                         }
                     }
                 }
@@ -101,14 +99,14 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
 
             gwtAssets = KapuaGwtDeviceModelConverter.convertDeviceAssets(assetsMetadata);
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
         return gwtAssets.getAssets();
     }
 
     //
     // Asset Store Settings
-    //
+    @Override
     public boolean isStoreServiceEnabled(String scopeIdString, String deviceIdString) throws GwtKapuaException {
         try {
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
