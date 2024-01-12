@@ -53,6 +53,7 @@ docker_compose() {
     if [[ "$3" == true ]]; then
       echo "Dev mode enabled!"
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.db-dev.yml")
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.es-dev.yml")
     fi
 
     # SSL
