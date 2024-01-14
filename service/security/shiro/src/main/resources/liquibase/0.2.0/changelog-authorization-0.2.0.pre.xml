@@ -17,6 +17,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/changelog-authorization-0.2.0.pre.xml">
+<include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
     <include relativeToChangelogFile="true" file="./athz_domain.xml"/>
     <include relativeToChangelogFile="true" file="./athz_domain_actions.xml"/>

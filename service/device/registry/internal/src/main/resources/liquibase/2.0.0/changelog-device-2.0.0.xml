@@ -17,6 +17,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/changelog-device-2.0.0.xml">
+<include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
     <include relativeToChangelogFile="true" file="./device-add-clob-ip-if-columns.xml"/>
     <include relativeToChangelogFile="true" file="./device_connection-add_auth_type_column.xml"/>

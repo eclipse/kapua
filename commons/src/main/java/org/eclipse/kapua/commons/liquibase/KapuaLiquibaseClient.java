@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Client that execute {@link Liquibase} scripts.
@@ -155,7 +156,18 @@ public class KapuaLiquibaseClient {
                         contexts.add("!fixTimestamps");
                     }
 
-                    executeMasters(connection, schema, changelogDir, contexts);
+                    File[] releaseDirs = changelogDir.listFiles(file -> file.isDirectory() && file.getName().contains("."));
+
+                    if (releaseDirs != null) {
+                        Arrays.sort(releaseDirs);
+                        //iterate over the release directories
+                        for (File releaseDir : releaseDirs) {
+                            executeChangelogsInDir(connection, schema, releaseDir, contexts);
+                        }
+                    } else { //case where there aren't release dirs at all (for example, tests, or when you have a module external to Kapua)
+                        executeChangelogsInDir(connection, schema, changelogDir, contexts);
+                    }
+
                 }
 
                 LOG.info("Running Liquibase scripts... DONE!");
@@ -210,40 +222,45 @@ public class KapuaLiquibaseClient {
         return changelogTempDirectory;
     }
 
-    protected static void executeMasters(Connection connection, String schema, File changelogDir, List<String> contexts) throws LiquibaseException {
+    protected static void executeChangelogsInDir(Connection connection, String schema, File changelogDir, List<String> contexts) throws LiquibaseException {
+        List<File> changelogs = new ArrayList<>(Arrays.asList(changelogDir.listFiles((dir, name) -> name.startsWith("changelog"))));
+        List<File> preChangelogs = changelogs.stream().filter(file -> file.getName().endsWith("pre.xml")).collect(Collectors.toList());
+        List<File> postChangelogs = changelogs.stream().filter(file -> file.getName().endsWith("post.xml")).collect(Collectors.toList());
+        changelogs.removeAll(preChangelogs);
+        changelogs.removeAll(postChangelogs);
+
+        LOG.info("\tEXECUTING LIQUIBASE SCRIPTS FOR VERSION: {}", changelogDir.getName());
         // Find and execute all master scripts
-        LOG.info("Executing pre master files...");
-        executeMasters(connection, schema, changelogDir, "-master.pre.xml", contexts);
-        LOG.info("Executing pre master files... DONE!");
+        LOG.info("Executing pre changelog files...");
+        executeChangelogs(connection, schema, preChangelogs, contexts);
+        LOG.info("Executing pre changelog files... DONE!");
 
-        LOG.info("Executing master files...");
-        executeMasters(connection, schema, changelogDir, "-master.xml", contexts);
-        LOG.info("Executing master files... DONE!");
+        LOG.info("Executing changelog files...");
+        executeChangelogs(connection, schema, changelogs, contexts);
+        LOG.info("Executing changelog files... DONE!");
 
-        LOG.info("Executing post master files...");
-        executeMasters(connection, schema, changelogDir, "-master.post.xml", contexts);
-        LOG.info("Executing post master files... DONE!");
+        LOG.info("Executing post changelog files...");
+        executeChangelogs(connection, schema, postChangelogs, contexts);
+        LOG.info("Executing post changelog files... DONE!");
     }
 
-    protected static void executeMasters(Connection connection, String schema, File changelogTempDirectory, String preMaster, List<String> contexts) throws LiquibaseException {
-        List<File> masterChangelogs = Arrays.asList(changelogTempDirectory.listFiles((dir, name) -> name.endsWith(preMaster)));
+    protected static void executeChangelogs(Connection connection, String schema, List<File> changeLogs, List<String> contexts) throws LiquibaseException {
+        LOG.info("\tLiquibase files found: {}", changeLogs.size());
 
-        LOG.info("\tMaster Liquibase files found: {}", masterChangelogs.size());
-
-        LOG.trace("\tSorting master Liquibase files found.");
-        masterChangelogs.sort(Comparator.comparing(File::getAbsolutePath));
+        LOG.trace("\tSorting Liquibase files found.");
+        changeLogs.sort(Comparator.comparing(File::getAbsolutePath));
 
         String ctx = contexts.isEmpty() ? null : String.join(",", contexts);
-        for (File masterChangelog : masterChangelogs) {
-            LOG.info("\t\tExecuting liquibase script: {}...", masterChangelog.getAbsolutePath());
+        for (File changelog : changeLogs) {
+            LOG.info("\t\tExecuting liquibase script: {}...", changelog.getAbsolutePath());
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             if (!Strings.isNullOrEmpty(schema)) {
                 database.setDefaultSchemaName(schema);
             }
-            Liquibase liquibase = new Liquibase(masterChangelog.getAbsolutePath(), new FileSystemResourceAccessor(), database);
+            Liquibase liquibase = new Liquibase(changelog.getAbsolutePath(), new FileSystemResourceAccessor(), database);
             liquibase.update(ctx);
 
-            LOG.debug("\t\tExecuting liquibase script: {}... DONE!", masterChangelog.getAbsolutePath());
+            LOG.debug("\t\tExecuting liquibase script: {}... DONE!", changelog.getAbsolutePath());
         }
     }
 
