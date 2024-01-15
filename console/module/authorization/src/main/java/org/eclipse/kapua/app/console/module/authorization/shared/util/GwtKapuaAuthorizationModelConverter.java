@@ -327,7 +327,7 @@ public class GwtKapuaAuthorizationModelConverter {
         KapuaLocator locator = KapuaLocator.getInstance();
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         // Return converted
-        return permissionFactory.newPermission(convertDomain(new GwtDomain(gwtPermission.getDomain())),
+        return permissionFactory.newPermission(gwtPermission.getDomain(),
                 convertAction(gwtPermission.getActionEnum()),
                 GwtKapuaCommonsModelConverter.convertKapuaId(gwtPermission.getTargetScopeId()),
                 GwtKapuaCommonsModelConverter.convertKapuaId(gwtPermission.getGroupId()),

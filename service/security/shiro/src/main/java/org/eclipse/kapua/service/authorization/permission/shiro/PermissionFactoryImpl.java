@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.authorization.permission.shiro;
 
 import org.eclipse.kapua.model.domain.Actions;
-import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -28,10 +27,5 @@ public class PermissionFactoryImpl implements PermissionFactory {
     @Override
     public Permission newPermission(String domain, Actions action, KapuaId targetScopeId, KapuaId groupId, boolean forwardable) {
         return new PermissionImpl(domain, action, targetScopeId, groupId, forwardable);
-    }
-
-    @Override
-    public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId, boolean forwardable) {
-        return new PermissionImpl(domain != null ? domain.getName() : null, action, targetScopeId, groupId, forwardable);
     }
 }

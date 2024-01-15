@@ -41,7 +41,6 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
-import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdImpl;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -80,7 +79,6 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionAttributes
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionQueryImpl;
-import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
@@ -132,7 +130,6 @@ public class UserServiceSteps extends TestBase {
     private CredentialFactory credentialFactory;
     private CredentialsFactory credentialsFactory;
     private AccessPermissionService accessPermissionService;
-    private DomainRegistryService domainRegistryService;
 
     @Inject
     public UserServiceSteps(StepData stepData) {
@@ -156,7 +153,6 @@ public class UserServiceSteps extends TestBase {
         credentialFactory = locator.getFactory(CredentialFactory.class);
         credentialsFactory = locator.getFactory(CredentialsFactory.class);
         accessPermissionService = locator.getService(AccessPermissionService.class);
-        domainRegistryService = locator.getService(DomainRegistryService.class);
     }
 
     @Before
@@ -882,8 +878,7 @@ public class UserServiceSteps extends TestBase {
                 if (targetScopeId == null) {
                     targetScopeId = (KapuaEid) account.getId();
                 }
-                Domain domain = domainRegistryService.findByName(cucPermission.getDomain()).getDomain();
-                Permission permission = permissionFactory.newPermission(domain,
+                Permission permission = permissionFactory.newPermission(cucPermission.getDomain(),
                         action, targetScopeId);
                 permissions.add(permission);
                 stepData.put(LAST_PERMISSION_ADDED_TO_USER, permission);
