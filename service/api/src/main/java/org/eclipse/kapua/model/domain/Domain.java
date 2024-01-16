@@ -51,4 +51,7 @@ public interface Domain {
      */
     boolean getGroupable();
 
+    String getServiceName();
+
+
 }

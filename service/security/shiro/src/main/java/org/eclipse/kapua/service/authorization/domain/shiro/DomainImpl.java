@@ -87,6 +87,7 @@ public class DomainImpl extends AbstractKapuaEntity implements Domain {
         super(domain);
 
         setName(domain.getName());
+        setServiceName(domain.getServiceName());
         setActions(domain.getActions());
         setGroupable(domain.getGroupable());
     }

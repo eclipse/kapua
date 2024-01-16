@@ -97,22 +97,22 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
 
     @ProvidesIntoSet
     public Domain deviceDomain() {
-        return new DomainEntry(Domains.DEVICE, true, Actions.read, Actions.delete, Actions.write);
+        return new DomainEntry(Domains.DEVICE, DeviceRegistryService.class.getName(), true, Actions.read, Actions.delete, Actions.write);
     }
 
     @ProvidesIntoSet
     public Domain deviceLifecycleDomain() {
-        return new DomainEntry(Domains.DEVICE_LIFECYCLE, false, Actions.read, Actions.delete, Actions.write);
+        return new DomainEntry(Domains.DEVICE_LIFECYCLE, DeviceLifeCycleService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 
     @ProvidesIntoSet
     public Domain deviceConnectionDomain() {
-        return new DomainEntry(Domains.DEVICE_CONNECTION, false, Actions.read, Actions.delete, Actions.write);
+        return new DomainEntry(Domains.DEVICE_CONNECTION, DeviceConnectionService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 
     @ProvidesIntoSet
     public Domain deviceEventDomain() {
-        return new DomainEntry(Domains.DEVICE_EVENT, false, Actions.read, Actions.delete, Actions.write);
+        return new DomainEntry(Domains.DEVICE_EVENT, DeviceEventService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 
     @ProvidesIntoSet

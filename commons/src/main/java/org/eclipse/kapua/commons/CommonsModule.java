@@ -20,7 +20,9 @@ import org.eclipse.kapua.commons.jpa.EventStorerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
+import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreService;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
@@ -39,16 +41,17 @@ public class CommonsModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(QueryFactory.class).to(QueryFactoryImpl.class);
+        bind(DataPopulatorRunner.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet
     public Domain brokerDomain() {
-        return new DomainEntry(Domains.BROKER, false, Actions.connect);
+        return new DomainEntry(Domains.BROKER, "org.eclipse.kapua.broker.BrokerService", false, Actions.connect);
     }
 
     @ProvidesIntoSet
-    public Domain eventDtore() {
-        return new DomainEntry(Domains.EVENT_STORE, false, Actions.read, Actions.delete, Actions.write);
+    public Domain eventStoreDomain() {
+        return new DomainEntry(Domains.EVENT_STORE, EventStoreService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 
     @Provides

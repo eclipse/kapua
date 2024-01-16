@@ -101,12 +101,12 @@ public class AuthenticationModule extends AbstractKapuaModule {
 
     @ProvidesIntoSet
     public Domain accessTokenDomain() {
-        return new DomainEntry(Domains.ACCESS_TOKEN, false, Actions.read, Actions.delete, Actions.write);
+        return new DomainEntry(Domains.ACCESS_TOKEN, AccessTokenService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 
     @ProvidesIntoSet
     public Domain credentialDomain() {
-        return new DomainEntry(Domains.CREDENTIAL, false, Actions.read, Actions.delete, Actions.write);
+        return new DomainEntry(Domains.CREDENTIAL, CredentialService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 
     @ProvidesIntoSet

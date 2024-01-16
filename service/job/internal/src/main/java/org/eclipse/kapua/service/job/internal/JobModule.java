@@ -49,7 +49,7 @@ public class JobModule extends AbstractKapuaModule {
 
     @ProvidesIntoSet
     public Domain jobdomain() {
-        return new DomainEntry(Domains.JOB, false, Actions.read, Actions.delete, Actions.write, Actions.execute);
+        return new DomainEntry(Domains.JOB, JobService.class.getName(), false, Actions.read, Actions.delete, Actions.write, Actions.execute);
     }
 
     @Provides

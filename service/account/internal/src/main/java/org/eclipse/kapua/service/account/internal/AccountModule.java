@@ -63,7 +63,7 @@ public class AccountModule extends AbstractKapuaModule implements Module {
 
     @ProvidesIntoSet
     public Domain accountDomain() {
-        return new DomainEntry(Domains.ACCOUNT, false, Actions.read, Actions.delete, Actions.write);
+        return new DomainEntry(Domains.ACCOUNT, AccountService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 
     @Provides

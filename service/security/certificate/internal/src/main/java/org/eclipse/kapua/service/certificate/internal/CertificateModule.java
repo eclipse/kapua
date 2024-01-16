@@ -30,6 +30,6 @@ public class CertificateModule extends AbstractKapuaModule {
 
     @ProvidesIntoSet
     public Domain certificateDomain() {
-        return new DomainEntry(Domains.CERTIFICATE, false, Actions.read, Actions.delete, Actions.write);
+        return new DomainEntry(Domains.CERTIFICATE, CertificateService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 }

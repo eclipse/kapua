@@ -22,6 +22,7 @@ import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.domain.DomainEntry;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.device.management.DeviceManagementService;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
@@ -38,7 +39,7 @@ public class DeviceManagementBundleModule extends AbstractKapuaModule {
 
     @ProvidesIntoSet
     public Domain deviceManagementModule() {
-        return new DomainEntry(Domains.DEVICE_MANAGEMENT, false, Actions.execute, Actions.read, Actions.write);
+        return new DomainEntry(Domains.DEVICE_MANAGEMENT, DeviceManagementService.class.getName(), false, Actions.execute, Actions.read, Actions.write);
     }
 
     @Provides

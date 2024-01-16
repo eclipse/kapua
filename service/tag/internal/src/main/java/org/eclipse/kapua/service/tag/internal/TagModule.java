@@ -62,7 +62,7 @@ public class TagModule extends AbstractKapuaModule {
 
     @ProvidesIntoSet
     public Domain tagDomain() {
-        return new DomainEntry(Domains.TAG, false, Actions.read, Actions.delete, Actions.write);
+        return new DomainEntry(Domains.TAG, TagService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 
     @Provides

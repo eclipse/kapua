@@ -147,6 +147,12 @@ public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.
             public boolean getGroupable() {
                 return Domain.this.getGroupable();
             }
+
+            @Override
+            public String getServiceName() {
+                return Domain.this.getServiceName();
+            }
+
         };
     }
 }

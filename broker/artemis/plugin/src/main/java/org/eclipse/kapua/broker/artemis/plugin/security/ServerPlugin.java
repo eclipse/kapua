@@ -12,9 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.artemis.plugin.security;
 
-import java.util.Base64;
-import java.util.Map;
-
+import com.codahale.metrics.Timer.Context;
 import org.apache.activemq.artemis.api.core.ActiveMQException;
 import org.apache.activemq.artemis.api.core.ActiveMQExceptionType;
 import org.apache.activemq.artemis.api.core.Message;
@@ -44,6 +42,7 @@ import org.eclipse.kapua.client.security.context.SessionContext;
 import org.eclipse.kapua.client.security.context.Utils;
 import org.eclipse.kapua.commons.core.ServiceModuleBundle;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
+import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
@@ -61,12 +60,12 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionServ
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Timer.Context;
+import java.util.Base64;
+import java.util.Map;
 
 /**
  * Server Plugin implementation.
  * This plugin does session cleanup on disconnection and enrich the message context with Kapua session infos.
- *
  */
 public class ServerPlugin implements ActiveMQServerPlugin {
 
@@ -126,6 +125,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         publishInfoMessageSizeLimit = BrokerSetting.getInstance().getInt(BrokerSettingKey.PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD, DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD);
         //TODO find a proper way to initialize database
         DatabaseCheckUpdate databaseCheckUpdate = new DatabaseCheckUpdate();
+        KapuaLocator.getInstance().getService(DataPopulatorRunner.class).runPopulators();
         serverContext = ServerContext.getInstance();
         brokerEventHanldler = BrokerEventHandler.getInstance();
         brokerEventHanldler.registerConsumer((brokerEvent) -> disconnectClient(brokerEvent));
@@ -141,7 +141,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             String clusterName = SystemSetting.getInstance().getString(SystemSettingKey.CLUSTER_NAME);
             serverContext.init(server, clusterName);
             acceptorHandler = new AcceptorHandler(server,
-                BrokerSetting.getInstance().getMap(String.class, BrokerSettingKey.ACCEPTORS));
+                    BrokerSetting.getInstance().getMap(String.class, BrokerSettingKey.ACCEPTORS));
             //init acceptors
             acceptorHandler.syncAcceptors();
 
@@ -223,7 +223,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
      */
     @Override
     public void beforeSend(ServerSession session, Transaction tx, Message message, boolean direct,
-        boolean noAutoCreateQueue) throws ActiveMQException {
+                           boolean noAutoCreateQueue) throws ActiveMQException {
         String address = message.getAddress();
         int messageSize = message.getEncodeSize();
         SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextWithCacheFallback(PluginUtility.getConnectionId(session));
@@ -265,19 +265,16 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     }
 
     private String getMessgeType(String address) {
-        if (address!=null) {
+        if (address != null) {
             if (address.startsWith("active")) {
                 return MessageType.Broker.getAsUrl();
-            }
-            else if (address.startsWith("$")) {
+            } else if (address.startsWith("$")) {
                 if (address.startsWith("$SYS")) {
                     return MessageType.System.getAsUrl();
-                }
-                else {
+                } else {
                     return MessageType.Control.getAsUrl();
                 }
-            }
-            else {
+            } else {
                 return MessageType.Telemetry.getAsUrl();
             }
         }
@@ -286,6 +283,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
 
     /**
      * UTILS
+     *
      * @throws ActiveMQException
      */
 
@@ -293,8 +291,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         int disconnectedClients = 0;
         if (EventType.disconnectClientByClientId.equals(brokerEvent.getEventType())) {
             disconnectedClients = disconnectClient(brokerEvent.getScopeId(), brokerEvent.getClientId());
-        }
-        else if (EventType.disconnectClientByConnectionId.equals(brokerEvent.getEventType())) {
+        } else if (EventType.disconnectClientByConnectionId.equals(brokerEvent.getEventType())) {
             disconnectedClients = disconnectClient(brokerEvent.getOldConnectionId());
         }
         logger.info("Disconnected clients: {}", disconnectedClients);
@@ -315,8 +312,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
                 remotingConnection.disconnect(false);
                 remotingConnection.destroy();
                 return 1;
-            }
-            else {
+            } else {
                 logger.info("\tclientId to check: {} - full client id: {}... no action", clientIdToCheck, connectionFullClientId);
                 return 0;
             }
@@ -333,8 +329,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
                 remotingConnection.disconnect(false);
                 remotingConnection.destroy();
                 removed++;
-            }
-            else {
+            } else {
                 logger.info("\tclientId to check: {} - compared to: {} ... no action", connectionId, connectionIdTmp);
             }
             return removed;
@@ -344,21 +339,21 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     protected void processDeviceConnectionEvent(ServiceEvent event) {
         logger.debug("Received event: {}", event);
 
-        if(!DISCONNECT_EVENT_OPERATION.equals(event.getOperation())) {
+        if (!DISCONNECT_EVENT_OPERATION.equals(event.getOperation())) {
             logger.debug("Ignoring event with operation: {}", event.getOperation());
             return;
         }
 
         try {
             DeviceConnection deviceConnection = KapuaLocator.getInstance().getService(DeviceConnectionService.class).find(event.getEntityScopeId(), event.getEntityId());
-            if(deviceConnection == null) {
+            if (deviceConnection == null) {
                 logger.warn("DeviceConnection not found - scopeId: {}, id: {} - ", event.getEntityScopeId(), event.getEntityId());
                 return;
             }
 
             String fullClientId = Utils.getFullClientId(deviceConnection.getScopeId(), deviceConnection.getClientId());
             SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextByClientId(fullClientId);
-            if(sessionContext == null) {
+            if (sessionContext == null) {
                 logger.info("Did not find any connections to disconnect for clientId: {}", fullClientId);
                 return;
             }
@@ -394,35 +389,32 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         try {
             String connectionId = PluginUtility.getConnectionId(connection);
             serverContext.getSecurityContext().updateConnectionTokenOnDisconnection(connectionId);
-            logger.info("### cleanUpConnectionData connection: {} - reason: {} - Error: {}", connectionId, reason, exception!=null?exception.getMessage():"N/A");
-            if (exception!=null && logger.isDebugEnabled()) {
+            logger.info("### cleanUpConnectionData connection: {} - reason: {} - Error: {}", connectionId, reason, exception != null ? exception.getMessage() : "N/A");
+            if (exception != null && logger.isDebugEnabled()) {
                 logger.debug("### cleanUpConnectionData error", exception);
             }
             SessionContext sessionContext = serverContext.getSecurityContext().getSessionContext(connectionId);
-            if (sessionContext!=null) {
+            if (sessionContext != null) {
                 SessionContext sessionContextByClient = serverContext.getSecurityContext().cleanSessionContext(sessionContext);
                 if (!PluginUtility.isInternal(connection)) {
                     AuthRequest authRequest = new AuthRequest(
-                        serverContext.getClusterName(),
-                        serverContext.getBrokerIdentity().getBrokerHost(),
-                        SecurityAction.brokerDisconnect.name(), sessionContext);
-                    if (exception!=null) {
+                            serverContext.getClusterName(),
+                            serverContext.getBrokerIdentity().getBrokerHost(),
+                            SecurityAction.brokerDisconnect.name(), sessionContext);
+                    if (exception != null) {
                         updateError(authRequest, exception);
                     }
-                    serverContext.getSecurityContext().updateStealingLinkAndIllegalState(authRequest, connectionId, sessionContextByClient!=null ? sessionContextByClient.getConnectionId() : null);
+                    serverContext.getSecurityContext().updateStealingLinkAndIllegalState(authRequest, connectionId, sessionContextByClient != null ? sessionContextByClient.getConnectionId() : null);
                     serverContext.getAuthServiceClient().brokerDisconnect(authRequest);
                 }
-            }
-            else {
+            } else {
                 logger.warn("Cannot find any session context for connection id: {}", connectionId);
                 loginMetric.getCleanupNullSessionFailure().inc();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             loginMetric.getCleanupGenericFailure().inc();
             logger.error("Cleanup connection data error: {}", e.getMessage(), e);
-        }
-        finally {
+        } finally {
             timeTotal.stop();
         }
     }
@@ -438,16 +430,14 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             if (!ActiveMQExceptionType.REMOTE_DISCONNECT.equals(exceptionType)) {
                 errorCode = AuthErrorCodes.UNEXPECTED_STATUS.name();
             }
-        }
-        else if (exception instanceof KapuaIllegalDeviceStateException) {
-            AuthErrorCodes authErrorCode = (AuthErrorCodes)((KapuaIllegalDeviceStateException) exception).getCode();
-            if (authErrorCode!=null) {
+        } else if (exception instanceof KapuaIllegalDeviceStateException) {
+            AuthErrorCodes authErrorCode = (AuthErrorCodes) ((KapuaIllegalDeviceStateException) exception).getCode();
+            if (authErrorCode != null) {
                 errorCode = authErrorCode.name();
             }
-        }
-        else if (exception instanceof KapuaAuthenticationException) {
-            KapuaAuthenticationErrorCodes authErrorCode = (KapuaAuthenticationErrorCodes)((KapuaAuthenticationException) exception).getCode();
-            if (authErrorCode!=null) {
+        } else if (exception instanceof KapuaAuthenticationException) {
+            KapuaAuthenticationErrorCodes authErrorCode = (KapuaAuthenticationErrorCodes) ((KapuaAuthenticationException) exception).getCode();
+            if (authErrorCode != null) {
                 errorCode = authErrorCode.name();
             }
         }

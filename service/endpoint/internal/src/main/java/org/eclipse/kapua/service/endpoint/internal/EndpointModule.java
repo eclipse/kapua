@@ -55,7 +55,7 @@ public class EndpointModule extends AbstractKapuaModule {
 
     @ProvidesIntoSet
     public Domain endpointDomain() {
-        return new DomainEntry(Domains.ENDPOINT_INFO, false, Actions.read, Actions.delete, Actions.write);
+        return new DomainEntry(Domains.ENDPOINT_INFO, EndpointInfoService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 
     @Provides

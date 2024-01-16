@@ -29,6 +29,7 @@ import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactoryImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.model.domains.Domains;
+import org.eclipse.kapua.commons.populators.DataPopulator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
@@ -71,6 +72,7 @@ import org.eclipse.kapua.service.authorization.domain.DomainRepository;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainFactoryImpl;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainImplJpaRepository;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainRegistryServiceImpl;
+import org.eclipse.kapua.service.authorization.domain.shiro.DomainsPopulator;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupRepository;
 import org.eclipse.kapua.service.authorization.group.GroupService;
@@ -99,6 +101,7 @@ import org.eclipse.kapua.service.authorization.shiro.setting.KapuaAuthorizationS
 
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.Set;
 
 public class AuthorizationModule extends AbstractKapuaModule {
     @Override
@@ -121,21 +124,22 @@ public class AuthorizationModule extends AbstractKapuaModule {
 
     @ProvidesIntoSet
     public Domain accessInfoDomain() {
-        return new DomainEntry(Domains.ACCESS_INFO, false, Actions.read, Actions.delete, Actions.write);
+        return new DomainEntry(Domains.ACCESS_INFO, AccessInfoService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 
     @ProvidesIntoSet
     public Domain domainDomain() {
-        return new DomainEntry(Domains.DOMAIN, false, Actions.read, Actions.delete, Actions.write);
+        return new DomainEntry(Domains.DOMAIN, DomainRegistryService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 
     @ProvidesIntoSet
     public Domain groupDomain() {
-        return new DomainEntry(Domains.GROUP, false, Actions.read, Actions.delete, Actions.write);
+        return new DomainEntry(Domains.GROUP, GroupService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 
+    @ProvidesIntoSet
     public Domain roleDomain() {
-        return new DomainEntry(Domains.ROLE, false, Actions.read, Actions.delete, Actions.write);
+        return new DomainEntry(Domains.ROLE, RoleService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 
     @ProvidesIntoSet
@@ -165,6 +169,19 @@ public class AuthorizationModule extends AbstractKapuaModule {
                         ),
                         txManagerFactory.create("kapua-authorization")
                 ));
+    }
+
+    @ProvidesIntoSet
+    DataPopulator domainsPopulator(
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            DomainRepository domainRepository,
+            Set<Domain> declaredDomains
+    ) {
+        return new DomainsPopulator(
+                jpaTxManagerFactory.create("kapua-authorization"),
+                domainRepository,
+                declaredDomains
+        );
     }
 
     @Provides

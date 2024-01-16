@@ -61,7 +61,7 @@ public class DatastoreModule extends AbstractKapuaModule {
 
     @ProvidesIntoSet
     public Domain dataStoreDomain() {
-        return new DomainEntry(Domains.DATASTORE, false, Actions.read, Actions.delete, Actions.write);
+        return new DomainEntry(Domains.DATASTORE, "org.eclipse.kapua.service.datastore.DatastoreService", false, Actions.read, Actions.delete, Actions.write);
     }
 
     @Provides

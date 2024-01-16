@@ -66,7 +66,7 @@ public class UserModule extends AbstractKapuaModule {
 
     @ProvidesIntoSet
     public Domain userDomain() {
-        return new DomainEntry(Domains.USER, false, Actions.read, Actions.delete, Actions.write);
+        return new DomainEntry(Domains.USER, UserService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 
     @Provides

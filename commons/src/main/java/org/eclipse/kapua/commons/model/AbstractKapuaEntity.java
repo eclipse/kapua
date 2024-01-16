@@ -161,7 +161,6 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
     @PrePersist
     protected void prePersistsAction() {
         setId(new KapuaEid(IdGenerator.generate()));
-
         setCreatedBy(KapuaSecurityUtils.getSession().getUserId());
         setCreatedOn(new Date());
     }

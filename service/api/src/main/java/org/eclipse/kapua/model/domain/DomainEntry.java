@@ -14,13 +14,15 @@ package org.eclipse.kapua.model.domain;
 
 import java.util.EnumSet;
 
-public class DomainEntry implements Domain {
+public class DomainEntry extends AbstractDomain implements Domain {
     private final String name;
     private final boolean groupable;
     private final EnumSet<Actions> actions;
+    private final String serviceName;
 
-    public DomainEntry(String name, boolean groupable, Actions action, Actions... actions) {
-        this.name = name;
+    public DomainEntry(String domainName, String serviceName, boolean groupable, Actions action, Actions... actions) {
+        this.name = domainName;
+        this.serviceName = serviceName;
         this.groupable = groupable;
         this.actions = EnumSet.of(action, actions);
     }
@@ -36,7 +38,13 @@ public class DomainEntry implements Domain {
     }
 
     @Override
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    @Override
     public EnumSet<Actions> getActions() {
         return actions;
     }
+
 }

@@ -28,7 +28,7 @@ public class DeviceManagementRegistryModule extends AbstractKapuaModule {
 
     @ProvidesIntoSet
     public Domain deviceManagementRegistryDomain() {
-        return new DomainEntry(Domains.DEVICE_MANAGEMENT_REGISTRY, false, Actions.execute, Actions.read, Actions.write);
+        return new DomainEntry(Domains.DEVICE_MANAGEMENT_REGISTRY, DeviceManagementRegistryManagerService.class.getName(), false, Actions.execute, Actions.read, Actions.write);
     }
 
 }

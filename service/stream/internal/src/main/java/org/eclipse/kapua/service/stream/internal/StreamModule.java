@@ -28,6 +28,6 @@ public class StreamModule extends AbstractKapuaModule {
 
     @ProvidesIntoSet
     public Domain streamDomain() {
-        return new DomainEntry(Domains.STREAM, false, Actions.write);
+        return new DomainEntry(Domains.STREAM, StreamService.class.getName(), false, Actions.write);
     }
 }
