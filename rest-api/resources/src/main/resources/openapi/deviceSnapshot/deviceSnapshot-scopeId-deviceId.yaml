@@ -29,6 +29,9 @@ paths:
             application/json:
               schema:
                 $ref: './deviceSnapshot.yaml#/components/schemas/snapshots'
+            application/xml:
+              schema:
+                $ref: './deviceSnapshot.yaml#/components/schemas/snapshots'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
