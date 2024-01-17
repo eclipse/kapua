@@ -34,7 +34,7 @@ public abstract class AbstractDomain implements Domain {
         if (!getActions().equals(that.getActions())) {
             return false;
         }
-        return getServiceName() != null ? getServiceName().equals(that.getServiceName()) : that.getServiceName() == null;
+        return true;
     }
 
     @Override
@@ -42,7 +42,6 @@ public abstract class AbstractDomain implements Domain {
         int result = getName() != null ? getName().hashCode() : 0;
         result = 31 * result + (getGroupable() ? 1 : 0);
         result = 31 * result + getActions().hashCode();
-        result = 31 * result + (getServiceName() != null ? getServiceName().hashCode() : 0);
         return result;
     }
 

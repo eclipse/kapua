@@ -45,11 +45,6 @@ public class CommonsModule extends AbstractKapuaModule {
     }
 
     @ProvidesIntoSet
-    public Domain brokerDomain() {
-        return new DomainEntry(Domains.BROKER, "org.eclipse.kapua.broker.BrokerService", false, Actions.connect);
-    }
-
-    @ProvidesIntoSet
     public Domain eventStoreDomain() {
         return new DomainEntry(Domains.EVENT_STORE, EventStoreService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }

@@ -39,7 +39,7 @@ public class SchedulerQuartzModule extends AbstractKapuaModule {
 
     @ProvidesIntoSet
     public Domain schedulerDomain() {
-        return new DomainEntry(Domains.SCHEDULER, "org.eclipse.kapua.service.scheduler.SchedulerService", false, Actions.read, Actions.delete, Actions.write, Actions.execute);
+        return new DomainEntry(Domains.SCHEDULER, "org.eclipse.kapua.service.scheduler.SchedulerService", false, Actions.read, Actions.delete, Actions.write);
     }
 
     @Provides
