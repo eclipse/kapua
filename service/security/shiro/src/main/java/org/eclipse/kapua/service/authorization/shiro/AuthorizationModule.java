@@ -72,7 +72,7 @@ import org.eclipse.kapua.service.authorization.domain.DomainRepository;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainFactoryImpl;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainImplJpaRepository;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainRegistryServiceImpl;
-import org.eclipse.kapua.service.authorization.domain.shiro.DomainsPopulator;
+import org.eclipse.kapua.service.authorization.domain.shiro.DomainsAligner;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupRepository;
 import org.eclipse.kapua.service.authorization.group.GroupService;
@@ -175,11 +175,15 @@ public class AuthorizationModule extends AbstractKapuaModule {
     DataPopulator domainsPopulator(
             KapuaJpaTxManagerFactory jpaTxManagerFactory,
             DomainRepository domainRepository,
+            AccessPermissionRepository accessPermissionRepository,
+            RolePermissionRepository rolePermissionRepository,
             Set<Domain> declaredDomains
     ) {
-        return new DomainsPopulator(
+        return new DomainsAligner(
                 jpaTxManagerFactory.create("kapua-authorization"),
                 domainRepository,
+                accessPermissionRepository,
+                rolePermissionRepository,
                 declaredDomains
         );
     }

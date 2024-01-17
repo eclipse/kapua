@@ -20,6 +20,7 @@ import org.eclipse.kapua.commons.jpa.EventStorerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
+import org.eclipse.kapua.commons.populators.DataPopulator;
 import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreService;
@@ -42,6 +43,17 @@ public class CommonsModule extends AbstractKapuaModule {
     protected void configureModule() {
         bind(QueryFactory.class).to(QueryFactoryImpl.class);
         bind(DataPopulatorRunner.class).in(Singleton.class);
+    }
+
+    @ProvidesIntoSet
+    //Guice does not like to inject empty sets, so in order to always have a valid DataPopulatorRunner here is a placeholder, good-for-nothing populator implementation
+    public DataPopulator noopDataPopulator() {
+        return new DataPopulator() {
+            @Override
+            public void populate() {
+                //Noop
+            }
+        };
     }
 
     @ProvidesIntoSet

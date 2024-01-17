@@ -42,7 +42,6 @@ import org.eclipse.kapua.client.security.context.SessionContext;
 import org.eclipse.kapua.client.security.context.Utils;
 import org.eclipse.kapua.commons.core.ServiceModuleBundle;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
@@ -125,7 +124,6 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         publishInfoMessageSizeLimit = BrokerSetting.getInstance().getInt(BrokerSettingKey.PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD, DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD);
         //TODO find a proper way to initialize database
         DatabaseCheckUpdate databaseCheckUpdate = new DatabaseCheckUpdate();
-        KapuaLocator.getInstance().getService(DataPopulatorRunner.class).runPopulators();
         serverContext = ServerContext.getInstance();
         brokerEventHanldler = BrokerEventHandler.getInstance();
         brokerEventHanldler.registerConsumer((brokerEvent) -> disconnectClient(brokerEvent));
