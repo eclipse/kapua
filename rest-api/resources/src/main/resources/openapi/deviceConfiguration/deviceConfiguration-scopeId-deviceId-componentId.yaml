@@ -30,6 +30,9 @@ paths:
             application/json:
               schema:
                 $ref: './deviceConfiguration.yaml#/components/schemas/componentConfigurations'
+            application/xml:
+              schema:
+                $ref: './deviceConfiguration.yaml#/components/schemas/componentConfigurations'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -51,6 +54,9 @@ paths:
       requestBody:
         content:
           application/json:
+            schema:
+              $ref: './deviceConfiguration.yaml#/components/schemas/componentConfigurationInput'
+          application/xml:
             schema:
               $ref: './deviceConfiguration.yaml#/components/schemas/componentConfigurationInput'
         required: true
