@@ -62,8 +62,9 @@ public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.
      * Sets the {@link Domain} service Name.<br>
      *
      * @param serviceName The service name of the {@link Domain}
-     * @since 6.0.0
+     * @deprecated since 2.0.0 - This will be removed in future versions as it is not used
      */
+    @Deprecated
     void setServiceName(String serviceName);
 
     /**
@@ -79,8 +80,9 @@ public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.
      * Gets the {@link Domain} service name.
      *
      * @return The {@link Domain} service name.
-     * @since 6.0.0
+     * @deprecated since 2.0.0 - This will be removed in future versions as it is not used
      */
+    @Deprecated
     @XmlTransient
     String getServiceName();
 
