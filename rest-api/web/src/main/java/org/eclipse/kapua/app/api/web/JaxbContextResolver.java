@@ -21,6 +21,7 @@ import org.eclipse.kapua.app.api.core.exception.model.DeviceManagementSendExcept
 import org.eclipse.kapua.app.api.core.exception.model.DeviceManagementTimeoutExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.DeviceNotConnectedExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.EntityNotFoundExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.EntityUniquenessExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.IllegalArgumentExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.IllegalNullArgumentExceptionInfo;
@@ -347,6 +348,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     InternalUserOnlyExceptionInfo.class,
                     SelfManagedOnlyExceptionInfo.class,
                     SubjectUnauthorizedExceptionInfo.class,
+                    EntityUniquenessExceptionInfo.class,
 
                     EntityNotFoundExceptionInfo.class,
                     IllegalArgumentExceptionInfo.class,
