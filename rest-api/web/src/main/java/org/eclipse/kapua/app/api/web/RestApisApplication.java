@@ -15,7 +15,6 @@ package org.eclipse.kapua.app.api.web;
 import org.eclipse.kapua.app.api.core.KapuaSerializableBodyWriter;
 import org.eclipse.kapua.app.api.core.ListBodyWriter;
 import org.eclipse.kapua.app.api.core.MoxyJsonConfigContextResolver;
-import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.commons.rest.errors.ExceptionConfigurationProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -77,8 +76,6 @@ public class RestApisApplication extends ResourceConfig {
                 RestApiJAXBContextProvider provider = serviceLocator.createAndInitialize(RestApiJAXBContextProvider.class);
                 XmlUtil.setContextProvider(provider);
                 final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
-                //TODO: Move to databaseUpdate
-                kapuaLocator.getService(DataPopulatorRunner.class).runPopulators();
                 if (kapuaLocator instanceof GuiceLocatorImpl) {
                     GuiceBridge.getGuiceBridge().initializeGuiceBridge(serviceLocator);
                     GuiceIntoHK2Bridge guiceBridge = serviceLocator.getService(GuiceIntoHK2Bridge.class);

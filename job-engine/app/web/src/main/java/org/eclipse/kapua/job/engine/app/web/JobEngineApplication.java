@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.app.web;
 
-import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.commons.rest.errors.ExceptionConfigurationProvider;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
@@ -68,8 +67,6 @@ public class JobEngineApplication extends ResourceConfig {
                 JobEngineJAXBContextProvider provider = serviceLocator.createAndInitialize(JobEngineJAXBContextProvider.class);
                 XmlUtil.setContextProvider(provider);
                 final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
-                //TODO: Move to databaseUpdate
-                kapuaLocator.getService(DataPopulatorRunner.class).runPopulators();
                 if (kapuaLocator instanceof GuiceLocatorImpl) {
                     GuiceBridge.getGuiceBridge().initializeGuiceBridge(serviceLocator);
                     GuiceIntoHK2Bridge guiceBridge = serviceLocator.getService(GuiceIntoHK2Bridge.class);

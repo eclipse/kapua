@@ -55,7 +55,6 @@ import org.eclipse.kapua.storage.TxContext;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.lang.reflect.Constructor;
 
 public class DatastoreModule extends AbstractKapuaModule {
     @Override

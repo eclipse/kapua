@@ -241,7 +241,7 @@ public class DockerSteps {
 
     @Given("Service events are setup")
     public void startEventBus() throws Exception {
-        ServiceModuleBundle serviceModuleBundle = KapuaLocator.getInstance().getService(ServiceModuleBundle.class);
+        ServiceModuleBundle serviceModuleBundle = KapuaLocator.getInstance().getComponent(ServiceModuleBundle.class);
         serviceModuleBundle.startup();
     }
 

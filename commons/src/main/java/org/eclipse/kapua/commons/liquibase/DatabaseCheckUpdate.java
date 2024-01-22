@@ -14,10 +14,13 @@ package org.eclipse.kapua.commons.liquibase;
 
 import com.google.common.base.MoreObjects;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
+import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
 
 /**
  * Call Liquibase database schema check and update (if enabled)
@@ -26,8 +29,8 @@ public class DatabaseCheckUpdate {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseCheckUpdate.class);
 
-    public DatabaseCheckUpdate() {
-        final SystemSetting systemSetting = SystemSetting.getInstance();
+    @Inject
+    public DatabaseCheckUpdate(SystemSetting systemSetting, DataPopulatorRunner dataPopulatorRunner) {
         logger.info("Kapua database schema check and update...");
         try {
             final boolean runLiquibase = systemSetting.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false);
@@ -56,6 +59,7 @@ public class DatabaseCheckUpdate {
             } else {
                 logger.warn("Skipping Kapua Liquibase Client as per configured property! {}=false", SystemSettingKey.DB_SCHEMA_UPDATE);
             }
+            dataPopulatorRunner.runPopulators();
         } catch (Exception e) {
             logger.error("Kapua database schema check and update... ERROR: {}", e.getMessage(), e);
             throw new SecurityException(e);

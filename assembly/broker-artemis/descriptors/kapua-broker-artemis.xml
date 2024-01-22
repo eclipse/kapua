@@ -84,7 +84,7 @@
                 <include>javax.cache:cache-api</include>
                 <include>aopalliance:aopalliance</include>
                 <include>${pom.groupId}:kapua-locator-guice</include>
-                
+
                 <!-- / Locator dependencies -->
 
                 <include>com.fasterxml.jackson.core:jackson-core</include>
@@ -109,9 +109,11 @@
                 <include>com.warrenstrange:googleauth</include>
                 <include>javax.cache:cache-api</include>
                 <include>javax.inject:javax.inject</include>
+                <include>javax.annotation:javax.annotation-api</include>
                 <include>org.apache.shiro:shiro-core</include>
                 <include>org.bitbucket.b_c:jose4j</include>
                 <include>org.javassist:javassist</include>
+                <include>com.google.zxing:core</include>
 
                 <include>${pom.groupId}:kapua-account-api</include>
                 <include>${pom.groupId}:kapua-account-internal</include>
@@ -126,14 +128,17 @@
                 <include>${pom.groupId}:kapua-message-api</include>
                 <include>${pom.groupId}:kapua-message-internal</include>
                 <include>${pom.groupId}:kapua-openid-api</include>
+                <include>${pom.groupId}:kapua-openid-provider</include>
                 <include>${pom.groupId}:kapua-service-api</include>
                 <include>${pom.groupId}:kapua-security-authentication-api</include>
                 <include>${pom.groupId}:kapua-security-authorization-api</include>
                 <include>${pom.groupId}:kapua-security-certificate-api</include>
+                <include>${pom.groupId}:kapua-security-registration-api</include>
                 <include>${pom.groupId}:kapua-security-certificate-internal</include>
                 <include>${pom.groupId}:kapua-security-shiro</include>
                 <include>${pom.groupId}:kapua-service-client</include>
                 <include>${pom.groupId}:kapua-tag-api</include>
+                <include>${pom.groupId}:kapua-tag-internal</include>
                 <include>${pom.groupId}:kapua-user-api</include>
                 <include>${pom.groupId}:kapua-user-internal</include>
             </includes>

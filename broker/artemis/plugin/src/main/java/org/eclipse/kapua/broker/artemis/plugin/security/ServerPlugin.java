@@ -124,6 +124,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         this.pluginUtility = kapuaLocator.getComponent(PluginUtility.class);
         this.publishInfoMessageSizeLimit = brokerSetting.getInt(BrokerSettingKey.PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD, DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD);
         serverContext = kapuaLocator.getComponent(ServerContext.class);
+        deviceConnectionEventListenerService = kapuaLocator.getComponent(DeviceConnectionEventListenerService.class);
         brokerEventHandler = new BrokerEventHandler(kapuaLocator.getComponent(CommonsMetric.class));
         brokerEventHandler.registerConsumer((brokerEvent) -> disconnectClient(brokerEvent));
         brokerEventHandler.start();
@@ -143,7 +144,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             deviceConnectionEventListenerService.addReceiver(serviceEvent -> processDeviceConnectionEvent(serviceEvent));
 
             // Setup service events
-            ServiceModuleBundle app = KapuaLocator.getInstance().getService(ServiceModuleBundle.class);
+            ServiceModuleBundle app = KapuaLocator.getInstance().getComponent(ServiceModuleBundle.class);
             app.startup();
 
             // Setup JAXB Context
@@ -356,7 +357,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             BrokerEvent disconnectEvent = new BrokerEvent(EventType.disconnectClientByConnectionId, sessionContext, sessionContext);
 
             logger.info("Submitting broker event to disconnect clientId: {}, connectionId: {}", fullClientId, sessionContext.getConnectionId());
-            BrokerEventHandler.getInstance().enqueueEvent(disconnectEvent);
+            brokerEventHandler.enqueueEvent(disconnectEvent);
         } catch (Exception e) {
             logger.warn("Error processing event: {}", e);
         }

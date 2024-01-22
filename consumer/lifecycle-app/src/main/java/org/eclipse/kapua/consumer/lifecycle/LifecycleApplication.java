@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.lifecycle;
 
-import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.camel.setting.ServiceSettingKey;
 import org.eclipse.kapua.service.security.SecurityUtil;
 import org.springframework.boot.SpringApplication;
@@ -44,7 +42,6 @@ public class LifecycleApplication {
         System.setProperty(ServiceSettingKey.JAXB_CONTEXT_CLASS_NAME.key(), LifecycleJAXBContextProvider.class.getName());
         //org.springframework.context.ApplicationContext is not needed now so don't keep the SpringApplication.run return
         SpringApplication.run(LifecycleApplication.class, args);
-        KapuaLocator.getInstance().getService(DataPopulatorRunner.class).runPopulators();
 
     }
 

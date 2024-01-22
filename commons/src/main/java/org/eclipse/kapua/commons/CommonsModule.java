@@ -52,7 +52,6 @@ public class CommonsModule extends AbstractKapuaModule {
 
     @Override
     protected void configureModule() {
-        bind(QueryFactory.class).to(QueryFactoryImpl.class);
         bind(DataPopulatorRunner.class).in(Singleton.class);
         bind(QueryFactory.class).to(QueryFactoryImpl.class).in(Singleton.class);
         bind(CryptoSettings.class).toInstance(new CryptoSettings());
