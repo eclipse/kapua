@@ -18,6 +18,7 @@ import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceAttributes;
@@ -59,6 +60,8 @@ public class DeviceImplJpaRepository
         final Root<DeviceImpl> root = update.from(DeviceImpl.class);
         final Join<DeviceImpl, DeviceEventImpl> lastEventJoin = root.join(DeviceImpl_.lastEvent, JoinType.LEFT);
         update.set(root.get(DeviceImpl_.lastEventId), KapuaEid.parseKapuaId(deviceEventId));
+        update.set(root.get(DeviceImpl_.modifiedBy), KapuaEid.parseKapuaId(KapuaSecurityUtils.getSession().getUserId()));
+        update.set(root.get(DeviceImpl_.modifiedOn), new Date());
         update.where(
                 cb.and(
                         cb.equal(root.get(DeviceImpl_.scopeId), KapuaEid.parseKapuaId(scopeId)),
