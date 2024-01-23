@@ -69,7 +69,7 @@ public class KapuaTokenAuthenticationFilter extends AuthenticatingFilter {
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         HttpServletResponse httpResponse = WebUtils.toHttp(response);
         httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        // Continue with the filter chain, because CORS headers are still needed
+        // Continue with the filter chain, because CORS headers are still needed in the case when token is not authenticated or expired
         return true;
     }
 
