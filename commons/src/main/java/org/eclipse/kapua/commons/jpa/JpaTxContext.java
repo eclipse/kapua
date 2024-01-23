@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaEntityExistsException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.storage.TxContext;
+import org.eclipse.persistence.exceptions.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +78,20 @@ public class JpaTxContext implements JpaAwareTxContext, TxContext {
         return KapuaExceptionUtils.convertPersistenceException(ex);
     }
 
-    private final Predicate isLockExceptionTester = t -> t instanceof OptimisticLockException || t instanceof PessimisticLockException;
+    //https://dev.mysql.com/doc/mysql-errors/8.0/en/server-error-reference.html#error_er_lock_wait_timeout
+    private static final int ER_LOCK_WAIT_TIMEOUT = 1205;
+    //https://dev.mysql.com/doc/mysql-errors/8.0/en/server-error-reference.html#error_er_lock_deadlock
+    private static final int ER_LOCK_DEADLOCK = 1213;
+    private final Predicate isLockExceptionTester = t -> {
+        if (t instanceof OptimisticLockException || t instanceof PessimisticLockException) {
+            return true;
+        }
+        if (t instanceof DatabaseException) {
+            final DatabaseException de = (DatabaseException) t;
+            return de.getErrorCode() == ER_LOCK_DEADLOCK || de.getErrorCode() == ER_LOCK_WAIT_TIMEOUT;
+        }
+        return false;
+    };
 
     @Override
     public boolean isRecoverableException(Exception ex) {
