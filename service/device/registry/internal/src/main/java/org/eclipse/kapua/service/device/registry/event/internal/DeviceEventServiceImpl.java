@@ -12,16 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event.internal;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaOptimisticLockingException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
@@ -30,7 +27,6 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventRepository;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
-import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,12 +85,12 @@ public class DeviceEventServiceImpl
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.write, deviceEventCreator.getScopeId()));
         return txManager.execute(tx -> {
             // Check that device exists
-            final Device device = deviceRepository.find(tx, deviceEventCreator.getScopeId(), deviceEventCreator.getDeviceId())
-                    .orElseThrow(() -> new KapuaEntityNotFoundException(Device.TYPE, deviceEventCreator.getDeviceId()));
+//            final Device device = deviceRepository.find(tx, deviceEventCreator.getScopeId(), deviceEventCreator.getDeviceId())
+//                    .orElseThrow(() -> new KapuaEntityNotFoundException(Device.TYPE, deviceEventCreator.getDeviceId()));
 
             // Create the event
             DeviceEvent newEvent = entityFactory.newEntity(deviceEventCreator.getScopeId());
-            newEvent.setDeviceId(device.getId());
+            newEvent.setDeviceId(deviceEventCreator.getDeviceId());
             newEvent.setReceivedOn(deviceEventCreator.getReceivedOn());
             newEvent.setSentOn(deviceEventCreator.getSentOn());
             newEvent.setResource(deviceEventCreator.getResource());
@@ -104,8 +100,7 @@ public class DeviceEventServiceImpl
             newEvent.setPosition(deviceEventCreator.getPosition());
 
             final DeviceEvent created = repository.create(tx, newEvent);
-            updateLastEventOnDevice(tx, device, created);
-
+            deviceRepository.updateLastEvent(tx, deviceEventCreator.getScopeId(), deviceEventCreator.getDeviceId(), newEvent.getId(), newEvent.getReceivedOn());
             return newEvent;
         });
 
@@ -157,44 +152,4 @@ public class DeviceEventServiceImpl
 
         txManager.execute(tx -> repository.delete(tx, scopeId, deviceEventId));
     }
-
-
-    /**
-     * Updates the {@link Device#getLastEventId()} with the given {@link DeviceEvent}.
-     *
-     * @param tx
-     * @param deviceEvent The {@link DeviceEvent} that needs to be set.
-     * @throws KapuaException If {@link Device} does not exist or updating the entity causes an error that is not {@link KapuaOptimisticLockingException} which is ignored.
-     * @since 1.2.0
-     */
-    private void updateLastEventOnDevice(TxContext tx, Device device, DeviceEvent deviceEvent) throws KapuaException {
-        int retry = 0;
-        do {
-            retry++;
-            try {
-                if (device == null) {
-                    throw new KapuaEntityNotFoundException(Device.TYPE, deviceEvent.getDeviceId());
-                }
-
-                if (device.getLastEvent() == null ||
-                        device.getLastEvent().getReceivedOn().before(deviceEvent.getReceivedOn())) {
-                    device.setLastEventId(deviceEvent.getId());
-                    deviceRepository.update(tx, device);
-                }
-                break;
-            } catch (KapuaOptimisticLockingException e) {
-                LOG.warn("Concurrent update for device: {} - Event id: {} Attempt: {}/{}. {}", deviceEvent.getDeviceId(), deviceEvent.getId(), retry, MAX_RETRY, retry < MAX_RETRY ? "Retrying..." : "Skipping update!");
-
-                if (retry < MAX_RETRY) {
-                    try {
-                        Thread.sleep((long) (Math.random() * MAX_WAIT));
-                    } catch (InterruptedException e1) {
-                        LOG.warn("Error while waiting retry: {}", e.getMessage());
-                    }
-                }
-            }
-        }
-        while (retry < MAX_RETRY);
-    }
-
 }

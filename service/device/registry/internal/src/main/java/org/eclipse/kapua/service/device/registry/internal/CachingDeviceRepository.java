@@ -20,6 +20,7 @@ import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Date;
 import java.util.Optional;
 
 public class CachingDeviceRepository
@@ -43,5 +44,11 @@ public class CachingDeviceRepository
         final Optional<Device> found = wrapped.findByClientId(tx, scopeId, clientId);
         found.ifPresent(entityCache::put);
         return found;
+    }
+
+    @Override
+    public void updateLastEvent(TxContext tx, KapuaId scopeId, KapuaId deviceId, KapuaId deviceEventId, Date receivedOn) {
+        wrapped.updateLastEvent(tx, scopeId, deviceId, deviceEventId, receivedOn);
+        entityCache.remove(scopeId, deviceId);
     }
 }

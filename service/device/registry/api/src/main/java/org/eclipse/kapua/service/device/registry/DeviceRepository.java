@@ -17,9 +17,12 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.storage.KapuaUpdatableEntityRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.util.Date;
 import java.util.Optional;
 
 public interface DeviceRepository extends
         KapuaUpdatableEntityRepository<Device, DeviceListResult> {
     Optional<Device> findByClientId(TxContext tx, KapuaId scopeId, String clientId) throws KapuaException;
+
+    void updateLastEvent(TxContext tx, KapuaId scopeId, KapuaId deviceId, KapuaId deviceEventId, Date receivedOn);
 }
