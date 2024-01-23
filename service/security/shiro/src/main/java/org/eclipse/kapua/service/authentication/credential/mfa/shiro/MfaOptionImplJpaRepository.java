@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResult;
@@ -32,6 +33,7 @@ public class MfaOptionImplJpaRepository
 
     @Override
     public Optional<MfaOption> findByUserId(TxContext tx, KapuaId scopeId, KapuaId userId) throws KapuaException {
-        return doFindByField(tx, scopeId, MfaOptionImpl_.USER_ID, userId);
+        final KapuaEid userEid = KapuaEid.parseKapuaId(userId);
+        return doFindByField(tx, scopeId, MfaOptionImpl_.USER_ID, userEid);
     }
 }
