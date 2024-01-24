@@ -40,21 +40,27 @@ paths:
     post:
       tags:
         - Device Management - Asset
-      summary: Get the Assets Definitions of a single Device
+      summary: Get the Assets Definitions of a single Device filtered
       operationId: deviceAssetListFiltered
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: '../device/device.yaml#/components/parameters/deviceId'
         - $ref: '../device/device.yaml#/components/parameters/timeout'
       requestBody:
-        description: An object containing the list of Assets to use as a filter
+        description: An object containing the list of Assets to use as a filter. If no DeviceAsset is specified, all DeviceAsset will be read.
         content:
           application/json:
             schema:
-              $ref: './deviceAsset.yaml#/components/schemas/deviceAssetDefinitions'
-            example:
-              deviceAsset:
-                - name: asset2
+              $ref: './deviceAsset.yaml#/components/schemas/deviceAssetDefinitionsFilter'
+            examples:
+              Select all:
+                value:
+                  deviceAssets:
+                    -
+              Filtered:
+                value:
+                  deviceAssets:
+                    - name: Asset-1
       responses:
         200:
           description: The list of Assets definition of a single Device according to the filter
@@ -62,20 +68,6 @@ paths:
             application/json:
               schema:
                 $ref: './deviceAsset.yaml#/components/schemas/deviceAssetDefinitions'
-              example:
-                type: deviceAssets
-                deviceAsset:
-                  - name: asset2
-                    channels:
-                      - valueType: integer
-                        name: Channel-1
-                        mode: READ
-                      - valueType: integer
-                        name: Channel-2
-                        mode: WRITE
-                      - valueType: integer
-                        name: Channel-3
-                        mode: READ_WRITE
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
