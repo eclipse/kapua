@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
+import java.util.Optional;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
@@ -22,13 +24,11 @@ import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResu
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionRepository;
 import org.eclipse.kapua.storage.TxContext;
 
-import java.util.Optional;
-
 public class MfaOptionImplJpaRepository
         extends KapuaUpdatableEntityJpaRepository<MfaOption, MfaOptionImpl, MfaOptionListResult>
         implements MfaOptionRepository {
     public MfaOptionImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {
-        super(MfaOptionImpl.class, MfaOption.TYPE, () -> new MfaOptionListResultImpl(), jpaRepoConfig);
+        super(MfaOptionImpl.class, MfaOption.TYPE, MfaOptionListResultImpl::new, jpaRepoConfig);
     }
 
     @Override

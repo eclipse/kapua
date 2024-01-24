@@ -12,6 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.steps;
 
+import java.math.BigInteger;
+import java.text.MessageFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import javax.inject.Inject;
+
 import com.google.inject.Singleton;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -28,6 +43,7 @@ import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdImpl;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.qa.common.BasicSteps;
@@ -76,21 +92,6 @@ import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
 import org.junit.Assert;
-
-import javax.inject.Inject;
-import java.math.BigInteger;
-import java.text.MessageFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Callable;
 
 /**
  * Implementation of Gherkin steps used in user test scenarios.
@@ -1235,6 +1236,21 @@ public class UserServiceSteps extends TestBase {
         } catch (KapuaException e) {
             e.printStackTrace();
         }
+        Assert.assertNotNull(mfaOption);
+    }
+
+    @Then("mfa repository can get mfa for user \"([^\"]*)\"$")
+    public void mfaRepositoryCanGetMfaForUser(String username) throws KapuaException {
+        BigInteger userId = null;
+        BigInteger scopeId = null;
+        try {
+            userId = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(username).getId().getId());
+            scopeId = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(username).getScopeId().getId());
+        } catch (KapuaException e) {
+            e.printStackTrace();
+        }
+        final MfaOptionService mfaOptionService = KapuaLocator.getInstance().getService(MfaOptionService.class);
+        final MfaOption mfaOption = mfaOptionService.findByUserId(new KapuaIdImpl(scopeId), new KapuaIdImpl(userId));
         Assert.assertNotNull(mfaOption);
     }
 

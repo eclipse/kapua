@@ -14,7 +14,7 @@
 @lockoutExpiration
 @env_none
 
-Feature: User and Credential expiration abd lockout features
+Feature: User and Credential expiration and lockout features
   User Service has expiration value after which user is disabled.
   There is also expiration and status on user's credentials which are also tested.
   Additionally login failures and lockout and lockout resets are tested.
