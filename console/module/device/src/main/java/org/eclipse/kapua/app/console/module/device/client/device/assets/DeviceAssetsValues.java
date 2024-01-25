@@ -383,28 +383,23 @@ public class DeviceAssetsValues extends LayoutContainer {
         });
     }
 
-    public void refreshAssetPanel(GwtDeviceAsset asset) {
+    public void refreshAssetPanel(final GwtDeviceAsset asset) {
         apply.setEnabled(false);
         reset.setEnabled(false);
 
         if (assetValuesPanel != null) {
             assetValuesPanel.removeFromParent();
         }
-        if (asset != null) {
 
-            assetValuesPanel = new DeviceAssetsPanel(asset, currentSession);
-            assetValuesPanel.addListener(Events.Change, new Listener<BaseEvent>() {
+        assetValuesPanel = new DeviceAssetsPanel(asset, currentSession);
+        assetValuesPanel.addListener(Events.Change, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                apply.setEnabled(asset != null);
+                reset.setEnabled(asset != null);
+            }
+        });
 
-                @Override
-                public void handleEvent(BaseEvent be) {
-                    apply.setEnabled(true);
-                    reset.setEnabled(true);
-                }
-            });
-
-        } else {
-            assetValuesPanel = new DeviceAssetsPanel(null, currentSession);
-        }
         assetValuesContainer.add(assetValuesPanel, centerData);
         assetValuesContainer.layout();
     }

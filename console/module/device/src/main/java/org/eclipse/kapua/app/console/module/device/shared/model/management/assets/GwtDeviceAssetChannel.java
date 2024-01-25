@@ -90,6 +90,10 @@ public class GwtDeviceAssetChannel extends KapuaBaseModel implements IsSerializa
         set("error", error);
     }
 
+    public boolean hasError() {
+        return getError() != null;
+    }
+
     public String getValue() {
         return get("value");
     }
