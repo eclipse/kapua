@@ -741,6 +741,8 @@ components:
     deviceListResult:
       $ref: './device/device.yaml#/components/schemas/deviceListResult'
     ### Device Asset Entities ###
+    assetDescription:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/assetDescription'
     channelMode:
       $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/channelMode'
     channelValueType:
@@ -761,6 +763,11 @@ components:
       $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/deviceAssetValues'
     deviceAssetsFilter:
       $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/deviceAssetsFilter'
+    ### Device Asset Store Entities ###
+    deviceAssetStoreEnablementPolicy:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/deviceAssetStoreEnablementPolicy'
+    deviceAssetStoreSettings:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/deviceAssetStoreSettings'
     ### Device Bundle Entities ###
     deviceBundle:
       $ref: './deviceBundle/deviceBundle.yaml#/components/schemas/deviceBundle'

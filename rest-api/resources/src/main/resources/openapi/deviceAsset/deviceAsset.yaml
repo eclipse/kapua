@@ -231,6 +231,7 @@ components:
             channels:
               - name: Channel-1
     deviceAssetStoreEnablementPolicy:
+      type: string
       description: The policy for which the Device Asset Store Application is enabled or not for this device. 'INHERITED' means that it inherits the setting from the Account-wide Asset Store Service Configuration
       enum:
         - ENABLED
@@ -243,6 +244,8 @@ components:
           properties:
             enablementPolicy:
               $ref: '#/components/schemas/deviceAssetStoreEnablementPolicy'
+          required:
+            - enablementPolicy
           example:
             scopeId: AQ
             deviceId: dIVxI5QpFUI
