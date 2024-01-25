@@ -47,6 +47,7 @@ components:
           $ref: '#/components/schemas/channelMode'
         name:
           type: string
+          description: The name of the AssetChannel
         valueType:
           $ref: '#/components/schemas/channelValueType'
       example:
@@ -64,6 +65,7 @@ components:
                 $ref: '#/components/schemas/channelDefinition'
             name:
               type: string
+              description: The name of the DeviceAsset
           example:
             name: Asset-1
             channels:
@@ -85,7 +87,6 @@ components:
           items:
             $ref: '#/components/schemas/deviceAssetDefinition'
       example:
-        type: deviceAssets
         deviceAsset:
           - name: Asset-1
             channels:
@@ -110,24 +111,23 @@ components:
                 name: Channel-3
                 mode: READ
     deviceAssetDefinitionsFilter:
-      allOf:
-        - type: object
-          properties:
-            deviceAssets:
-              type: array
-              description: List of DeviceAsset names to filter DeviceAssetDefinitions
-              items:
-                properties:
-                  name:
-                    type: string
-                    description: The DeviceAsset name to filter
-                required:
-                  - name
-          required:
-            - deviceAssets
-          example:
-            deviceAssets:
-              - name: Asset-1
+      type: object
+      properties:
+        deviceAssets:
+          type: array
+          description: List of DeviceAsset names to filter DeviceAssetDefinitions
+          items:
+            properties:
+              name:
+                type: string
+                description: The DeviceAsset name to filter
+            required:
+              - name
+      required:
+        - deviceAssets
+      example:
+        deviceAssets:
+          - name: Asset-1
     channelValue:
       type: object
       description: The value read from an AssetChannel. Only AssetChannel that have READ or READ_WRITE can be read.
@@ -149,6 +149,7 @@ components:
           format: 'date-time'
       required:
         - name
+        - valueType
         - value
       example:
         name: Channel-1
@@ -165,6 +166,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/channelValue'
+      required:
+        - name
       example:
         name: Asset-1
         channels:
@@ -184,8 +187,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/deviceAssetValue'
+      required:
+        - deviceAssets
       example:
-        type: deviceAssets
         deviceAsset:
           - name: Asset-1
             channels:
@@ -198,35 +202,34 @@ components:
                 value: 8
                 timestamp: '2019-09-12T14:50:24.446Z'
     deviceAssetsFilter:
-      allOf:
-        - type: object
-          properties:
-            deviceAssets:
-              type: array
-              description: List of DeviceAsset names to filter DeviceAssets
-              items:
-                properties:
-                  name:
-                    type: string
-                    description: The DeviceAsset name to filter
-                  channels:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                      required:
-                        - name
-                required:
-                  - name
-          required:
-            - deviceAssets
-          example:
-            deviceAssets:
-              - name: Asset-1
-                channels:
-                  - name: Channel-1
+      type: object
+      properties:
+        deviceAssets:
+          type: array
+          description: List of DeviceAsset names to filter DeviceAssets
+          items:
+            properties:
+              name:
+                type: string
+                description: The DeviceAsset name to filter
+              channels:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                  required:
+                    - name
+            required:
+              - name
+      required:
+        - deviceAssets
+      example:
+        deviceAssets:
+          - name: Asset-1
+            channels:
+              - name: Channel-1
     deviceAssetStoreEnablementPolicy:
       description: The policy for which the Device Asset Store Application is enabled or not for this device. 'INHERITED' means that it inherits the setting from the Account-wide Asset Store Service Configuration
       enum:

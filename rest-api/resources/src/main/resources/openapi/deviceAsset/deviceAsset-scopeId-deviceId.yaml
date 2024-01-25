@@ -55,11 +55,11 @@ paths:
             examples:
               Select all:
                 value:
-                  deviceAssets:
+                  deviceAsset:
                     -
               Filtered:
                 value:
-                  deviceAssets:
+                  deviceAsset:
                     - name: Asset-1
       responses:
         200:

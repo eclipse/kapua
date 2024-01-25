@@ -31,15 +31,15 @@ paths:
             examples:
               Read all:
                 value:
-                  deviceAssets:
+                  deviceAsset:
                     -
               Filter by DeviceAsset:
                 value:
-                  deviceAssets:
+                  deviceAsset:
                     - name: Asset-1
               Filter by AssetChannel:
                 value:
-                  deviceAssets:
+                  deviceAsset:
                     - name: Asset-1
                       channels:
                         - name: Channel-1
