@@ -17,24 +17,15 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
-import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImpl;
-import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImpl_;
 import org.eclipse.kapua.storage.TxContext;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaUpdate;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Root;
-import java.util.Date;
+import javax.persistence.LockModeType;
 import java.util.Optional;
 
 public class DeviceImplJpaRepository
@@ -53,25 +44,9 @@ public class DeviceImplJpaRepository
     }
 
     @Override
-    public void updateLastEvent(TxContext tx, KapuaId scopeId, KapuaId deviceId, KapuaId deviceEventId, Date receivedOn) {
+    public Optional<Device> findForUpdate(TxContext tx, KapuaId scopeId, KapuaId deviceId) {
         final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
-        final CriteriaBuilder cb = em.getCriteriaBuilder();
-        final CriteriaUpdate<DeviceImpl> update = cb.createCriteriaUpdate(DeviceImpl.class);
-        final Root<DeviceImpl> root = update.from(DeviceImpl.class);
-        final Join<DeviceImpl, DeviceEventImpl> lastEventJoin = root.join(DeviceImpl_.lastEvent, JoinType.LEFT);
-        update.set(root.get(DeviceImpl_.lastEventId), KapuaEid.parseKapuaId(deviceEventId));
-        update.set(root.get(DeviceImpl_.modifiedBy), KapuaEid.parseKapuaId(KapuaSecurityUtils.getSession().getUserId()));
-        update.set(root.get(DeviceImpl_.modifiedOn), new Date());
-        update.where(
-                cb.and(
-                        cb.equal(root.get(DeviceImpl_.scopeId), KapuaEid.parseKapuaId(scopeId)),
-                        cb.equal(root.get(DeviceImpl_.id), KapuaEid.parseKapuaId(deviceId)),
-                        cb.or(
-                                cb.isNull(lastEventJoin.get(DeviceEventImpl_.receivedOn)),
-                                cb.lessThan(lastEventJoin.get(DeviceEventImpl_.receivedOn), receivedOn)
-                        )
-                )
-        );
-        em.createQuery(update).executeUpdate();
+        final Optional<Device> device = doFind(em, scopeId, deviceId, LockModeType.PESSIMISTIC_WRITE);
+        return device;
     }
 }

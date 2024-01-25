@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.Embedded;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
@@ -127,9 +128,13 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     }
 
     protected Optional<E> doFind(EntityManager em, KapuaId scopeId, KapuaId entityId) {
+        return doFind(em, scopeId, entityId, null);
+    }
+
+    protected Optional<E> doFind(EntityManager em, KapuaId scopeId, KapuaId entityId, LockModeType lockModeType) {
         final KapuaEid eId = KapuaEid.parseKapuaId(entityId);
         // Checking existence
-        final Optional<E> entityToFind = Optional.ofNullable(em.find(concreteClass, eId));
+        final Optional<E> entityToFind = Optional.ofNullable(em.find(concreteClass, eId, lockModeType));
 
         return entityToFind
                 .filter(e -> scopeId == null || KapuaId.ANY.equals(scopeId)

@@ -48,8 +48,10 @@
 
         <properties>
             <property name="javax.persistence.lock.timeout" value="1000"/>
-            <!-- <property name="eclipselink.logging.level.sql" value="FINE"/>
-            <property name="eclipselink.logging.parameters" value="true"/> -->
+            <!--            <property name="javax.persistence.lock.timeout" value="100000"/>-->
+            <!--            <property name="eclipselink.logging.level" value="FINE"/>-->
+            <!--            <property name="eclipselink.logging.level.sql" value="FINE"/>-->
+            <!--            <property name="eclipselink.logging.parameters" value="true"/>-->
 
             <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.slf4j.SLF4JLogger"/>
         </properties>

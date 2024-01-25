@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event.internal;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
@@ -19,6 +20,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
@@ -85,12 +87,12 @@ public class DeviceEventServiceImpl
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.write, deviceEventCreator.getScopeId()));
         return txManager.execute(tx -> {
             // Check that device exists
-//            final Device device = deviceRepository.find(tx, deviceEventCreator.getScopeId(), deviceEventCreator.getDeviceId())
-//                    .orElseThrow(() -> new KapuaEntityNotFoundException(Device.TYPE, deviceEventCreator.getDeviceId()));
+            final Device device = deviceRepository.findForUpdate(tx, deviceEventCreator.getScopeId(), deviceEventCreator.getDeviceId())
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(Device.TYPE, deviceEventCreator.getDeviceId()));
 
             // Create the event
             DeviceEvent newEvent = entityFactory.newEntity(deviceEventCreator.getScopeId());
-            newEvent.setDeviceId(deviceEventCreator.getDeviceId());
+            newEvent.setDeviceId(device.getId());
             newEvent.setReceivedOn(deviceEventCreator.getReceivedOn());
             newEvent.setSentOn(deviceEventCreator.getSentOn());
             newEvent.setResource(deviceEventCreator.getResource());
@@ -100,7 +102,9 @@ public class DeviceEventServiceImpl
             newEvent.setPosition(deviceEventCreator.getPosition());
 
             final DeviceEvent created = repository.create(tx, newEvent);
-            deviceRepository.updateLastEvent(tx, deviceEventCreator.getScopeId(), deviceEventCreator.getDeviceId(), newEvent.getId(), newEvent.getReceivedOn());
+            device.setLastEventId(created.getId());
+            //Do not call update explicitly, the transaction ending will automatically update the entity
+//            deviceRepository.update(tx, device, device);
             return newEvent;
         });
 
