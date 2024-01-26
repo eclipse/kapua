@@ -44,4 +44,15 @@ public class CachingDeviceRepository
         found.ifPresent(entityCache::put);
         return found;
     }
+
+    @Override
+    public Optional<Device> findForUpdate(TxContext tx, KapuaId scopeId, KapuaId deviceId) {
+        /*
+        The correct approach in thi scenario is  to leave to JPA the persistence of the updated entity at transaction's closure,
+        without calling explicitly update. Therefore if we don't clear the cache the next items would find an outdated optlock, and fail
+         */
+        entityCache.remove(scopeId, deviceId);
+        final Optional<Device> found = wrapped.findForUpdate(tx, scopeId, deviceId);
+        return found;
+    }
 }

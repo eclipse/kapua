@@ -55,14 +55,17 @@ public class TxManagerImpl implements TxManager {
                 } catch (Exception ex) {
                     //In JPA, all exceptions (even caught ones) force the transaction in rollback-only mode
                     txContext.rollback();
-                    final boolean canTryAgain = txContext.isRecoverableException(ex)
-                            && ++retry <= maxRetryAttemptsAllowed;
-                    if (canTryAgain) {
-                        logger.warn("Recoverable exception, retrying", ex);
-                        continue;
+                    final boolean isRecoverableException = txContext.isRecoverableException(ex);
+                    if (!isRecoverableException) {
+                        logger.error("Non-recoverable exception, failing", ex);
+                        throw txContext.convertPersistenceException(ex);
                     }
-                    logger.error("Non-recoverable exception or retry attempts exceeded, failing", ex);
-                    throw txContext.convertPersistenceException(ex);
+                    final boolean canTryAgain = ++retry <= maxRetryAttemptsAllowed;
+                    if (!canTryAgain) {
+                        logger.error("Retry attempts exceeded ({}/{}), failing", retry, maxRetryAttemptsAllowed, ex);
+                        throw txContext.convertPersistenceException(ex);
+                    }
+                    logger.warn("Recoverable exception '{}':'{}', retrying", ex.getClass(), ex.getMessage());
                 }
             }
         } finally {

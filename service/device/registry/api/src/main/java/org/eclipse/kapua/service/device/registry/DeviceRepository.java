@@ -22,4 +22,6 @@ import java.util.Optional;
 public interface DeviceRepository extends
         KapuaUpdatableEntityRepository<Device, DeviceListResult> {
     Optional<Device> findByClientId(TxContext tx, KapuaId scopeId, String clientId) throws KapuaException;
+
+    Optional<Device> findForUpdate(TxContext tx, KapuaId scopeId, KapuaId deviceId);
 }

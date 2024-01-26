@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.registry.internal;
 
 import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.JpaAwareTxContext;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -23,6 +24,8 @@ import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import java.util.Optional;
 
 public class DeviceImplJpaRepository
@@ -38,5 +41,12 @@ public class DeviceImplJpaRepository
         query.setPredicate(query.attributePredicate(DeviceAttributes.CLIENT_ID, clientId));
         query.setFetchAttributes(Lists.newArrayList(DeviceAttributes.CONNECTION, DeviceAttributes.LAST_EVENT));
         return Optional.ofNullable(this.query(tx, query).getFirstItem());
+    }
+
+    @Override
+    public Optional<Device> findForUpdate(TxContext tx, KapuaId scopeId, KapuaId deviceId) {
+        final EntityManager em = JpaAwareTxContext.extractEntityManager(tx);
+        final Optional<Device> device = doFind(em, scopeId, deviceId, LockModeType.PESSIMISTIC_WRITE);
+        return device;
     }
 }
