@@ -12,6 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.steps;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.Vector;
+import javax.inject.Inject;
+
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
@@ -101,19 +114,6 @@ import org.eclipse.kapua.service.user.UserService;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.Vector;
 
 /**
  * Implementation of Gherkin steps used in DeviceRegistry.feature scenarios.
@@ -2495,6 +2495,30 @@ public class DeviceRegistrySteps extends TestBase {
             primeException();
             stepData.remove(DEVICE);
             Device device = deviceRegistryService.create(deviceCreator);
+            stepData.put(DEVICE, device);
+        } catch (Exception ex) {
+            verifyException(ex);
+        }
+    }
+
+
+    @Then("I create a device with name {string} and tags")
+    public void iCreateADeviceWithName(String clientId, List<String> tags) throws Exception {
+        final HashSet<KapuaId> tagIds = new HashSet<>();
+        final TagCreator tagCreator = tagFactory.newCreator(getCurrentScopeId());
+        for (String tagName : tags) {
+            tagCreator.setName(tagName);
+            final Tag tag = tagService.create(tagCreator);
+            tagIds.add(tag.getId());
+        }
+        final DeviceCreator deviceCreator = deviceFactory.newCreator(getCurrentScopeId());
+        deviceCreator.setClientId(clientId);
+        deviceCreator.setTagIds(tagIds);
+        stepData.put(DEVICE_CREATOR, deviceCreator);
+        try {
+            primeException();
+            stepData.remove(DEVICE);
+            final Device device = deviceRegistryService.create(deviceCreator);
             stepData.put(DEVICE, device);
         } catch (Exception ex) {
             verifyException(ex);

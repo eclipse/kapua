@@ -12,15 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.service.device;
 
-import org.junit.runner.RunWith;
-
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
+import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = {"classpath:features/device/DeviceServiceI9n.feature"
-                   },
+        features = {
+            "classpath:features/device/DeviceServiceI9n.feature",
+            "classpath:features/tag/TagI9n.feature"
+        },
         glue = {"org.eclipse.kapua.qa.common",
                 "org.eclipse.kapua.qa.integration.steps",
                 "org.eclipse.kapua.service.account.steps",

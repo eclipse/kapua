@@ -12,16 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.validation.constraints.NotNull;
+
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceExtendedProperty;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
-
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * {@link DeviceCreator} implementation.
@@ -59,6 +61,7 @@ public class DeviceCreatorImpl extends AbstractKapuaUpdatableEntityCreator<Devic
     private String customAttribute4;
     private String customAttribute5;
     private List<DeviceExtendedProperty> extendedProperties;
+    private Set<KapuaId> tagIds;
 
     /**
      * Constructor.
@@ -357,5 +360,15 @@ public class DeviceCreatorImpl extends AbstractKapuaUpdatableEntityCreator<Devic
     @Override
     public void setExtendedProperties(List<DeviceExtendedProperty> extendedProperties) {
         this.extendedProperties = extendedProperties;
+    }
+
+    @Override
+    public Set<KapuaId> getTagIds() {
+        return tagIds == null ? new HashSet<>() : tagIds;
+    }
+
+    @Override
+    public void setTagIds(Set<KapuaId> tagIds) {
+        this.tagIds = tagIds;
     }
 }
