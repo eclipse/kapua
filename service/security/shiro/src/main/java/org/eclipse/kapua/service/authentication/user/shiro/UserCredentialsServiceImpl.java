@@ -31,6 +31,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapper;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidator;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
 import org.eclipse.kapua.service.authentication.user.PasswordResetRequest;
@@ -102,7 +103,7 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
             try {
                 authenticationService.verifyCredentials(usernamePasswordCredentials);
             } catch (KapuaAuthenticationException e) {
-                throw new KapuaIllegalArgumentException("passwordChangeRequest.currentPassword", passwordChangeRequest.getCurrentPassword());
+                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INCORRECT_CURRENT_PASSWORD);
             }
 
             CredentialListResult credentials = credentialRepository.findByUserId(tx, KapuaSecurityUtils.getSession().getScopeId(), KapuaSecurityUtils.getSession().getUserId());
