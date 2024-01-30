@@ -54,6 +54,7 @@ paths:
               type: device
               optlock: 1
               status: ENABLED
+              clientId: Client-Id-1
               displayName: Test Device
               serialNumber: "1234567890"
               modelId: Test Model
