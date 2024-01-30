@@ -14,6 +14,7 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -24,7 +25,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
-import org.eclipse.kapua.service.datastore.DatastoreDomains;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
@@ -200,7 +200,7 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
 
     private void checkDataAccess(KapuaId scopeId, Actions action)
             throws KapuaException {
-        Permission permission = permissionFactory.newPermission(DatastoreDomains.DATASTORE_DOMAIN, action, scopeId);
+        Permission permission = permissionFactory.newPermission(Domains.DATASTORE, action, scopeId);
         authorizationService.checkPermission(permission);
     }
 

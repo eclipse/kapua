@@ -18,6 +18,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.domain.Actions;
@@ -26,7 +27,6 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.datastore.DatastoreDomains;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreCommunicationException;
@@ -76,7 +76,7 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
             AccountService accountService,
             ServiceConfigurationManager serviceConfigurationManager
     ) {
-        super(txManager, serviceConfigurationManager, DatastoreDomains.DATASTORE_DOMAIN, authorizationService, permissionFactory);
+        super(txManager, serviceConfigurationManager, Domains.DATASTORE, authorizationService, permissionFactory);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         final ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this, accountService);
@@ -214,7 +214,7 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
 
     protected void checkDataAccess(KapuaId scopeId, Actions action)
             throws KapuaException {
-        Permission permission = permissionFactory.newPermission(DatastoreDomains.DATASTORE_DOMAIN, action, scopeId);
+        Permission permission = permissionFactory.newPermission(Domains.DATASTORE, action, scopeId);
         authorizationService.checkPermission(permission);
     }
 

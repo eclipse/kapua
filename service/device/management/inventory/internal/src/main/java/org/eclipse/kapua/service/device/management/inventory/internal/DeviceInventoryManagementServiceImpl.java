@@ -14,12 +14,12 @@ package org.eclipse.kapua.service.device.management.inventory.internal;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementTransactionalServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
@@ -90,7 +90,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.read, scopeId));
         // Prepare the request
         InventoryRequestChannel inventoryRequestChannel = new InventoryRequestChannel();
         inventoryRequestChannel.setAppName(DeviceInventoryAppProperties.APP_NAME);
@@ -142,7 +142,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.read, scopeId));
         // Prepare the request
         InventoryRequestChannel inventoryRequestChannel = new InventoryRequestChannel();
         inventoryRequestChannel.setAppName(DeviceInventoryAppProperties.APP_NAME);
@@ -200,7 +200,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         performAdditionalValidationOnDeviceInventoryBundleId(deviceInventoryBundle.getId());
 
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.write, scopeId));
         // Prepare the request
         InventoryRequestChannel inventoryRequestChannel = new InventoryRequestChannel();
         inventoryRequestChannel.setAppName(DeviceInventoryAppProperties.APP_NAME);
@@ -258,7 +258,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.read, scopeId));
         // Prepare the request
         InventoryRequestChannel inventoryRequestChannel = new InventoryRequestChannel();
         inventoryRequestChannel.setAppName(DeviceInventoryAppProperties.APP_NAME);
@@ -313,7 +313,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         ArgumentValidator.notNull(deviceInventoryContainer.getVersion(), "deviceInventoryContainer.version");
         ArgumentValidator.notNull(deviceInventoryContainerAction, "deviceInventoryContainerAction");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.write, scopeId));
         // Prepare the request
         InventoryRequestChannel inventoryRequestChannel = new InventoryRequestChannel();
         inventoryRequestChannel.setAppName(DeviceInventoryAppProperties.APP_NAME);
@@ -371,7 +371,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.read, scopeId));
         // Prepare the request
         InventoryRequestChannel inventoryRequestChannel = new InventoryRequestChannel();
         inventoryRequestChannel.setAppName(DeviceInventoryAppProperties.APP_NAME);
@@ -423,7 +423,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, Actions.read, scopeId));
         // Prepare the request
         InventoryRequestChannel inventoryRequestChannel = new InventoryRequestChannel();
         inventoryRequestChannel.setAppName(DeviceInventoryAppProperties.APP_NAME);

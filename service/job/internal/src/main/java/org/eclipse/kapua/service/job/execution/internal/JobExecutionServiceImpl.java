@@ -13,13 +13,13 @@
 package org.eclipse.kapua.service.job.execution.internal;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.execution.JobExecution;
 import org.eclipse.kapua.service.job.execution.JobExecutionCreator;
 import org.eclipse.kapua.service.job.execution.JobExecutionListResult;
@@ -59,7 +59,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
         ArgumentValidator.notNull(jobExecutionCreator, "jobExecutionCreator");
         ArgumentValidator.notNull(jobExecutionCreator.getScopeId(), "jobExecutionCreator.scopeId");
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobExecutionCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, jobExecutionCreator.getScopeId()));
 
         JobExecution jobExecution = new JobExecutionImpl(jobExecutionCreator.getScopeId());
         jobExecution.setJobId(jobExecutionCreator.getJobId());
@@ -76,7 +76,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
         ArgumentValidator.notNull(jobExecution, "jobExecution");
         ArgumentValidator.notNull(jobExecution.getScopeId(), "jobExecution.scopeId");
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobExecution.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, jobExecution.getScopeId()));
 
         return txManager.execute(tx -> jobExecutionRepository.update(tx, jobExecution));
     }
@@ -87,7 +87,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobExecutionId, "jobExecutionId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, scopeId));
         // Do find
         return txManager.execute(tx -> jobExecutionRepository.find(tx, scopeId, jobExecutionId))
                 .orElse(null);
@@ -98,7 +98,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
         // Do query
         return txManager.execute(tx -> jobExecutionRepository.query(tx, query));
     }
@@ -109,7 +109,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobId, "jobId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, scopeId));
         // Do find
         return txManager.execute(tx -> jobExecutionRepository.countByJobId(tx, scopeId, jobId));
     }
@@ -119,7 +119,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
         // Do query
         return txManager.execute(tx -> jobExecutionRepository.count(tx, query));
     }
@@ -130,7 +130,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobExecutionId, "jobExecutionId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.delete, scopeId));
         // Do delete
         txManager.execute(tx -> jobExecutionRepository.delete(tx, scopeId, jobExecutionId));
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,11 +10,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.stream;
+package org.eclipse.kapua.commons.populators;
 
-public class StreamDomains {
+public interface DataPopulator {
 
-    private StreamDomains() { }
-
-    public static final StreamDomain STREAM_DOMAIN = new StreamDomain();
+    void populate();
 }

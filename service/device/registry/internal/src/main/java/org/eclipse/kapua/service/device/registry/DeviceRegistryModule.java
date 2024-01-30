@@ -12,11 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
-import java.util.Map;
-
-import javax.inject.Named;
-import javax.inject.Singleton;
-
+import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
@@ -31,10 +28,14 @@ import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactoryImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
 import org.eclipse.kapua.event.ServiceEventBusException;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
+import org.eclipse.kapua.model.domain.DomainEntry;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.authentication.api.DeviceConnectionCredentialAdapter;
@@ -69,8 +70,9 @@ import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Provides;
-import com.google.inject.multibindings.ProvidesIntoSet;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import java.util.Map;
 
 /**
  * kapua-device-registry-internal's {@link AbstractKapuaModule}
@@ -94,13 +96,33 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     }
 
     @ProvidesIntoSet
+    public Domain deviceDomain() {
+        return new DomainEntry(Domains.DEVICE, DeviceRegistryService.class.getName(), true, Actions.read, Actions.delete, Actions.write);
+    }
+
+    @ProvidesIntoSet
+    public Domain deviceLifecycleDomain() {
+        return new DomainEntry(Domains.DEVICE_LIFECYCLE, DeviceLifeCycleService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
+    }
+
+    @ProvidesIntoSet
+    public Domain deviceConnectionDomain() {
+        return new DomainEntry(Domains.DEVICE_CONNECTION, DeviceConnectionService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
+    }
+
+    @ProvidesIntoSet
+    public Domain deviceEventDomain() {
+        return new DomainEntry(Domains.DEVICE_EVENT, DeviceEventService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
+    }
+
+    @ProvidesIntoSet
     protected ServiceModule deviceServiceModule(DeviceConnectionService deviceConnectionService,
-                                       DeviceRegistryService deviceRegistryService,
-                                       AuthorizationService authorizationService,
-                                       PermissionFactory permissionFactory,
-                                       @Named("DeviceRegistryTransactionManager") TxManager txManager,
-                                       EventStoreFactory eventStoreFactory,
-                                       EventStoreRecordRepository eventStoreRecordRepository
+                                                DeviceRegistryService deviceRegistryService,
+                                                AuthorizationService authorizationService,
+                                                PermissionFactory permissionFactory,
+                                                @Named("DeviceRegistryTransactionManager") TxManager txManager,
+                                                EventStoreFactory eventStoreFactory,
+                                                EventStoreRecordRepository eventStoreRecordRepository
     ) throws ServiceEventBusException {
         return new DeviceServiceModule(
                 deviceConnectionService,
@@ -121,8 +143,8 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     @Provides
     @Singleton
     protected DeviceRepository deviceRepository(DeviceFactory deviceFactory,
-                                      DeviceRegistryCache deviceRegistryCache,
-                                      KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+                                                DeviceRegistryCache deviceRegistryCache,
+                                                KapuaJpaRepositoryConfiguration jpaRepoConfig) {
         return new CachingDeviceRepository(new DeviceImplJpaRepository(jpaRepoConfig),
                 deviceRegistryCache
         );
@@ -169,7 +191,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     @Provides
     @Singleton
     protected DeviceConnectionRepository deviceConnectionRepository(DeviceRegistryCache deviceRegistryCache,
-                                                          KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+                                                                    KapuaJpaRepositoryConfiguration jpaRepoConfig) {
         return new CachingDeviceConnectionRepository(
                 new DeviceConnectionImplJpaRepository(jpaRepoConfig),
                 deviceRegistryCache

@@ -13,10 +13,9 @@
 package org.eclipse.kapua.service.authorization.access;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.query.KapuaQuery;
 
 public interface GroupQueryHelper {
 
-    void handleKapuaQueryGroupPredicate(KapuaQuery query, Domain domain, String groupPredicateName) throws KapuaException;
+    void handleKapuaQueryGroupPredicate(KapuaQuery query, String domain, String groupPredicateName) throws KapuaException;
 }

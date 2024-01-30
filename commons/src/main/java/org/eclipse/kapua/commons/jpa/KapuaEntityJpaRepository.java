@@ -70,7 +70,7 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     protected final Class<C> concreteClass;
     protected final String entityName;
     protected final Supplier<? extends L> listSupplier;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String SQL_ERROR_CODE_CONSTRAINT_VIOLATION = "23505";
     private final KapuaJpaRepositoryConfiguration configuration;
     private static final String ATTRIBUTE_SEPARATOR = ".";

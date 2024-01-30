@@ -19,6 +19,7 @@ import org.eclipse.kapua.commons.core.ServiceModuleBundle;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
+import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
@@ -78,6 +79,7 @@ public class ConsoleListener implements ServletContextListener {
             } catch (Exception e) {
                 throw new ExceptionInInitializerError(e);
             }
+            KapuaLocator.getInstance().getService(DataPopulatorRunner.class).runPopulators();
         }
 
         // Start Quartz scheduler

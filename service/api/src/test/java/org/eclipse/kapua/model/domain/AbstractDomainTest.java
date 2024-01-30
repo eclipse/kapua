@@ -47,6 +47,11 @@ public class AbstractDomainTest {
         public boolean getGroupable() {
             return false;
         }
+
+        @Override
+        public String getServiceName() {
+            return null;
+        }
     }
 
     @Test

@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authorization.access.shiro;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
 import org.eclipse.kapua.commons.storage.KapuaEntityRepositoryCachingWrapper;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionAttributes;
@@ -62,5 +63,14 @@ public class CachingAccessPermissionRepository
             entityCache.putList(scopeId, accessInfoId, listResult);
         }
         return listResult;
+    }
+
+    @Override
+    public AccessPermissionListResult deleteAllByDomainAndAction(TxContext tx, String domainEntryName, Actions actionToDelete) throws KapuaException {
+        final AccessPermissionListResult removed = wrapped.deleteAllByDomainAndAction(tx, domainEntryName, actionToDelete);
+        if (!removed.isEmpty()) {
+            removed.getItems().forEach(item -> entityCache.removeList(item.getScopeId(), item.getAccessInfoId()));
+        }
+        return removed;
     }
 }

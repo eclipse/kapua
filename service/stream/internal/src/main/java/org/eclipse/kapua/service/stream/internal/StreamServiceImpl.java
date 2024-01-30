@@ -17,6 +17,7 @@ import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.message.Message;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
@@ -35,7 +36,6 @@ import org.eclipse.kapua.service.endpoint.EndpointInfoAttributes;
 import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 import org.eclipse.kapua.service.endpoint.EndpointInfoService;
-import org.eclipse.kapua.service.stream.StreamDomains;
 import org.eclipse.kapua.service.stream.StreamService;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.TranslatorNotFoundException;
@@ -88,7 +88,7 @@ public class StreamServiceImpl implements StreamService {
         ArgumentValidator.notNull(kapuaDataMessage.getScopeId(), "dataMessage.scopeId");
         ArgumentValidator.notNull(kapuaDataMessage.getChannel(), "dataMessage.channel");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(StreamDomains.STREAM_DOMAIN, Actions.write, kapuaDataMessage.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.STREAM, Actions.write, kapuaDataMessage.getScopeId()));
         // Do publish
         try (TransportFacade transportFacade = borrowClient(kapuaDataMessage)) {
             // Get Kura to transport translator for the request and vice versa

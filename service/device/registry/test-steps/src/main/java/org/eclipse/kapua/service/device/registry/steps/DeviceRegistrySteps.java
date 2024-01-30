@@ -76,7 +76,6 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionDomain;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionListResult;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
@@ -1345,27 +1344,6 @@ public class DeviceRegistrySteps extends TestBase {
         tmpQuery = deviceConnectionFactory.newQuery(SYS_SCOPE_ID);
         Assert.assertNotNull(tmpCreator);
         Assert.assertNotNull(tmpQuery);
-    }
-
-    @Then("The device connection domain defaults are correctly initialized")
-    public void checkConnectionDomainInitialization() {
-        DeviceConnectionDomain tmpDomain = new DeviceConnectionDomain();
-        Assert.assertEquals("device_connection", tmpDomain.getName());
-        Assert.assertEquals(3, tmpDomain.getActions().size());
-        Assert.assertTrue(tmpDomain.getActions().contains(Actions.read));
-        Assert.assertTrue(tmpDomain.getActions().contains(Actions.write));
-        Assert.assertTrue(tmpDomain.getActions().contains(Actions.delete));
-    }
-
-    @Then("The device connection domain data can be updated")
-    public void checkDeviceConnectionDomainUpdate() {
-        Domain tmpDomain = new TestDomain();
-        tmpDomain.setName(TEST_DEVICE_NAME);
-        tmpDomain.setActions(new HashSet<>(Lists.newArrayList(Actions.connect, Actions.execute)));
-        Assert.assertEquals(TEST_DEVICE_NAME, tmpDomain.getName());
-        Assert.assertEquals(2, tmpDomain.getActions().size());
-        Assert.assertTrue(tmpDomain.getActions().contains(Actions.connect));
-        Assert.assertTrue(tmpDomain.getActions().contains(Actions.execute));
     }
 
     // ************************************************************************************

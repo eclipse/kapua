@@ -30,11 +30,15 @@ import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactoryImpl;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.event.ServiceEventBusException;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
+import org.eclipse.kapua.model.domain.DomainEntry;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountRepository;
 import org.eclipse.kapua.service.account.AccountService;
@@ -55,6 +59,11 @@ public class AccountModule extends AbstractKapuaModule implements Module {
     @Override
     protected void configureModule() {
         bind(AccountFactory.class).to(AccountFactoryImpl.class).in(Singleton.class);
+    }
+
+    @ProvidesIntoSet
+    public Domain accountDomain() {
+        return new DomainEntry(Domains.ACCOUNT, AccountService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 
     @Provides

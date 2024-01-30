@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.endpoint.internal;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
@@ -32,7 +33,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfo;
 import org.eclipse.kapua.service.endpoint.EndpointInfoAttributes;
 import org.eclipse.kapua.service.endpoint.EndpointInfoCreator;
-import org.eclipse.kapua.service.endpoint.EndpointInfoDomains;
 import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
@@ -106,7 +106,7 @@ public class EndpointInfoServiceImpl
         KapuaId scopeIdPermission = endpointInfoCreator.getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS) ?
                 endpointInfoCreator.getScopeId() : null;
         authorizationService.checkPermission(
-                permissionFactory.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.write, scopeIdPermission)
+                permissionFactory.newPermission(Domains.ENDPOINT_INFO, Actions.write, scopeIdPermission)
         );
         // Check duplicate endpoint
         checkDuplicateEndpointInfo(
@@ -148,7 +148,7 @@ public class EndpointInfoServiceImpl
         KapuaId scopeIdPermission = endpointInfo.getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS) ?
                 endpointInfo.getScopeId() : null;
         authorizationService.checkPermission(
-                permissionFactory.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.write, scopeIdPermission)
+                permissionFactory.newPermission(Domains.ENDPOINT_INFO, Actions.write, scopeIdPermission)
         );
         // Check duplicate endpoint
         checkDuplicateEndpointInfo(
@@ -178,7 +178,7 @@ public class EndpointInfoServiceImpl
             }
 
             authorizationService.checkPermission(
-                    permissionFactory.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.delete, scopeIdPermission)
+                    permissionFactory.newPermission(Domains.ENDPOINT_INFO, Actions.delete, scopeIdPermission)
             );
             // Do delete
             return repository.delete(tx, scopeId, endpointInfoId);
@@ -193,7 +193,7 @@ public class EndpointInfoServiceImpl
         // Check Access
         return txManager.execute(tx -> {
             authorizationService.checkPermission(
-                    permissionFactory.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, scopeId)
+                    permissionFactory.newPermission(Domains.ENDPOINT_INFO, Actions.read, scopeId)
             );
             EndpointInfo endpointInfoToFind = repository.find(tx, KapuaId.ANY, endpointInfoId)
                     .orElseThrow(() -> new KapuaEntityNotFoundException(EndpointInfo.TYPE, endpointInfoId)); // search the endpoint in any scope
@@ -230,7 +230,7 @@ public class EndpointInfoServiceImpl
         ArgumentValidator.notNull(query, "query");
         // Check Access
         authorizationService.checkPermission(
-                permissionFactory.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, query.getScopeId())
+                permissionFactory.newPermission(Domains.ENDPOINT_INFO, Actions.read, query.getScopeId())
         );
         return traverse(
                 txContext,
@@ -255,7 +255,7 @@ public class EndpointInfoServiceImpl
         //
         // Check Access
         authorizationService.checkPermission(
-                permissionFactory.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, query.getScopeId())
+                permissionFactory.newPermission(Domains.ENDPOINT_INFO, Actions.read, query.getScopeId())
         );
         return traverse(
                 tx,

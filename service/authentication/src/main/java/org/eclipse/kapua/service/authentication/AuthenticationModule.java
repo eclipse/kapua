@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.registry.manager.internal;
+package org.eclipse.kapua.service.authentication;
 
 import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
@@ -18,17 +18,15 @@ import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.domain.DomainEntry;
-import org.eclipse.kapua.service.device.management.registry.manager.DeviceManagementRegistryManagerService;
 
-public class DeviceManagementRegistryModule extends AbstractKapuaModule {
+public class AuthenticationModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(DeviceManagementRegistryManagerService.class).to(DeviceManagementRegistryManagerServiceImpl.class);
     }
 
     @ProvidesIntoSet
-    public Domain deviceManagementRegistryDomain() {
-        return new DomainEntry(Domains.DEVICE_MANAGEMENT_REGISTRY, DeviceManagementRegistryManagerService.class.getName(), false, Actions.delete, Actions.read, Actions.write);
+    public Domain brokerDomain() {
+        return new DomainEntry(Domains.BROKER, "org.eclipse.kapua.broker.BrokerService", false, Actions.connect);
     }
 
 }

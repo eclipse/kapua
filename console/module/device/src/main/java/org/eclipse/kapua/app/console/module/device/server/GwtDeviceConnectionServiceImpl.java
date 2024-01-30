@@ -28,6 +28,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDe
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConnectionService;
 import org.eclipse.kapua.app.console.module.device.shared.util.GwtKapuaDeviceModelConverter;
 import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceModelConverter;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -40,7 +41,6 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserDomain;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
@@ -191,7 +191,7 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
             }
             deviceConnectionPropertiesPairs
                     .add(new GwtGroupedNVPair(CONNECTION_USER_COUPLING_MODE_INFO, "connectionUserCouplingMode", gwtConnectionUserCouplingMode != null ? gwtConnectionUserCouplingMode.getLabel() : null));
-            if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new UserDomain(), Actions.read, scopeId))) {
+            if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(Domains.USER, Actions.read, scopeId))) {
                 deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair(CONNECTION_USER_COUPLING_MODE_INFO, "connectionReservedUser", reservedUser != null ? reservedUser.getName() : null));
                 deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair(CONNECTION_USER_COUPLING_MODE_INFO, "allowUserChange", deviceConnection.getAllowUserChange()));
             }

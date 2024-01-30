@@ -15,13 +15,13 @@ package org.eclipse.kapua.service.scheduler.trigger.quartz;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.scheduler.SchedulerDomains;
 import org.eclipse.kapua.service.scheduler.exception.TriggerInvalidDatesException;
 import org.eclipse.kapua.service.scheduler.exception.TriggerInvalidSchedulingException;
 import org.eclipse.kapua.service.scheduler.quartz.driver.QuartzTriggerDriver;
@@ -109,7 +109,7 @@ public class TriggerServiceImpl implements TriggerService {
         ArgumentValidator.notNull(triggerCreator.getStartsOn(), "triggerCreator.startsOn");
 
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.write, triggerCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.SCHEDULER, Actions.write, triggerCreator.getScopeId()));
 
         // Convert creator to new model.
         // To be removed after removing of TriggerCreator.cronScheduling and TriggerCreator.retryInterval
@@ -195,7 +195,7 @@ public class TriggerServiceImpl implements TriggerService {
         ArgumentValidator.validateEntityName(trigger.getName(), "trigger.name");
 
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.write, trigger.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.SCHEDULER, Actions.write, trigger.getScopeId()));
 
         return txManager.execute(tx -> {
             // Check existence
@@ -275,7 +275,7 @@ public class TriggerServiceImpl implements TriggerService {
         ArgumentValidator.notNull(triggerId, "scopeId");
         ArgumentValidator.notNull(scopeId, "triggerId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.SCHEDULER, Actions.delete, scopeId));
 
         // Do delete
         QuartzTriggerDriver.deleteTrigger(txManager.execute(tx -> {
@@ -290,7 +290,7 @@ public class TriggerServiceImpl implements TriggerService {
         ArgumentValidator.notNull(triggerId, "triggerId");
 
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.SCHEDULER, Actions.read, scopeId));
 
         // Do find
         return txManager.execute(tx -> {
@@ -307,7 +307,7 @@ public class TriggerServiceImpl implements TriggerService {
         // Argument validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.SCHEDULER, Actions.read, query.getScopeId()));
         return txManager.execute(tx -> {
             // Do query
             TriggerListResult triggers = triggerRepository.query(tx, query);
@@ -326,7 +326,7 @@ public class TriggerServiceImpl implements TriggerService {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobId, "jobId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.SCHEDULER, Actions.delete, scopeId));
         txManager.execute(tx -> {
             triggerRepository.deleteAllByJobId(tx, scopeId, jobId);
             return null;
@@ -338,7 +338,7 @@ public class TriggerServiceImpl implements TriggerService {
         // Argument validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.SCHEDULER, Actions.read, query.getScopeId()));
         // Do count
         return txManager.execute(tx -> triggerRepository.count(tx, query));
     }

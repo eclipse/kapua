@@ -38,8 +38,8 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
-import org.eclipse.kapua.broker.BrokerDomains;
 import org.eclipse.kapua.commons.configuration.metatype.EmptyTocd;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
@@ -67,7 +67,6 @@ import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.eclipse.kapua.service.endpoint.EndpointInfo;
-import org.eclipse.kapua.service.endpoint.EndpointInfoDomain;
 import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
 import org.eclipse.kapua.service.endpoint.EndpointInfoService;
@@ -155,7 +154,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                 @Override
                 public void run() throws Exception {
                     // Admin
-                    Permission adminPermission = PERMISSION_FACTORY.newPermission(null, null, account.getId(), null, true);
+                    Permission adminPermission = PERMISSION_FACTORY.newPermission((String) null, null, account.getId(), null, true);
 
                     RoleCreator adminRoleCreator = ROLE_FACTORY.newCreator(account.getId());
                     adminRoleCreator.setName("Admin");
@@ -165,7 +164,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                     ROLE_SERVICE.create(adminRoleCreator);
 
                     // Thing
-                    Permission thingPermission = PERMISSION_FACTORY.newPermission(BrokerDomains.BROKER_DOMAIN, Actions.connect, account.getId(), null, false);
+                    Permission thingPermission = PERMISSION_FACTORY.newPermission(Domains.BROKER, Actions.connect, account.getId(), null, false);
 
                     RoleCreator thingRoleCreator = ROLE_FACTORY.newCreator(account.getId());
                     thingRoleCreator.setName("Thing");
@@ -243,7 +242,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             }
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountName", account.getName()));
 
-            if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new EndpointInfoDomain(), Actions.read, scopeId))) {
+            if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(Domains.ENDPOINT_INFO, Actions.read, scopeId))) {
                 //TODO: #LAYER_VIOLATION - related entities lookup should not be done here
 
                 EndpointInfoListResult endpointInfos = KapuaSecurityUtils.doPrivileged(new Callable<EndpointInfoListResult>() {

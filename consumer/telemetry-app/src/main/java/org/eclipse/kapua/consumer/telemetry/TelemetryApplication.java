@@ -13,6 +13,8 @@
 package org.eclipse.kapua.consumer.telemetry;
 
 import org.eclipse.kapua.commons.metric.CommonsMetric;
+import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.camel.setting.ServiceSettingKey;
 import org.eclipse.kapua.service.security.SecurityUtil;
 import org.springframework.boot.SpringApplication;
@@ -22,7 +24,6 @@ import org.springframework.context.annotation.PropertySource;
 
 /**
  * Telemetry application container main class
- *
  */
 @ImportResource({"classpath:spring/applicationContext.xml"})
 @PropertySource(value = "classpath:spring/application.properties")
@@ -44,6 +45,7 @@ public class TelemetryApplication {
         System.setProperty(ServiceSettingKey.JAXB_CONTEXT_CLASS_NAME.key(), TelemetryJAXBContextProvider.class.getName());
         //org.springframework.context.ApplicationContext is not needed now so don't keep the SpringApplication.run return
         SpringApplication.run(TelemetryApplication.class, args);
+        KapuaLocator.getInstance().getService(DataPopulatorRunner.class).runPopulators();
     }
 
 }

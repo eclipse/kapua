@@ -62,6 +62,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -423,7 +424,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             throw new KapuaServiceDisabledException(pid);
         }
         // Check access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(domain, Actions.read, scopeId));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(Optional.ofNullable(domain).map(d -> d.getName()).orElse(null), Actions.read, scopeId));
         // Get the Tocd
         // Keep distinct values for service PID, Scope ID and disabled properties included/excluded from AD
         Triple<String, KapuaId, Boolean> cacheKey = Triple.of(pid, scopeId, excludeDisabled);
@@ -488,7 +489,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         // Check access
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(domain, Actions.read, scopeId));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(Optional.ofNullable(domain).map(d -> d.getName()).orElse(null), Actions.read, scopeId));
         // Get configuration values
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
 
@@ -542,7 +543,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             }
         }
 
-        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(domain, Actions.write, scopeId));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(Optional.ofNullable(domain).map(d -> d.getName()).orElse(null), Actions.write, scopeId));
 
         validateConfigurations(ocd, values, scopeId, parentId);
 

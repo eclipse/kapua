@@ -12,7 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.internal;
 
+import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.model.domains.Domains;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
+import org.eclipse.kapua.model.domain.DomainEntry;
 import org.eclipse.kapua.service.certificate.CertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificateService;
 
@@ -21,5 +26,10 @@ public class CertificateModule extends AbstractKapuaModule {
     protected void configureModule() {
         bind(CertificateFactory.class).to(CertificateFactoryImpl.class);
         bind(CertificateService.class).to(CertificateServiceImpl.class);
+    }
+
+    @ProvidesIntoSet
+    public Domain certificateDomain() {
+        return new DomainEntry(Domains.CERTIFICATE, CertificateService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 }

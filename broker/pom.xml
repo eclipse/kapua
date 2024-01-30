@@ -26,7 +26,6 @@
     <artifactId>kapua-broker</artifactId>
 
     <modules>
-        <module>api</module>
         <module>artemis</module>
     </modules>
 </project>

@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authorization.role.shiro;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
 import org.eclipse.kapua.commons.storage.KapuaEntityRepositoryCachingWrapper;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
@@ -64,5 +65,14 @@ public class RolePermissionCachingRepository
 
         entityCache.putList(scopeId, roleId, listResult);
         return fromWrapped;
+    }
+
+    @Override
+    public RolePermissionListResult deleteAllByDomainAndAction(TxContext tx, String domainName, Actions actionToDelete) throws KapuaException {
+        final RolePermissionListResult removed = wrapped.deleteAllByDomainAndAction(tx, domainName, actionToDelete);
+        if (!removed.isEmpty()) {
+            removed.getItems().forEach(item -> entityCache.removeList(item.getScopeId(), item.getRoleId()));
+        }
+        return removed;
     }
 }

@@ -245,7 +245,7 @@ public class AuthorizationServiceSteps extends TestBase {
             permissions = new HashSet<>();
             if ((tmpRole.getActions() != null) && (tmpRole.getActions().size() > 0)) {
                 for (Actions tmpAct : tmpRole.getActions()) {
-                    permissions.add(permissionFactory.newPermission(domain.getDomain(), tmpAct, tmpRole.getScopeId()));
+                    permissions.add(permissionFactory.newPermission(domain.getDomain().getName(), tmpAct, tmpRole.getScopeId()));
                 }
             }
             roleCreator = roleFactory.newCreator(tmpRole.getScopeId());
@@ -277,7 +277,7 @@ public class AuthorizationServiceSteps extends TestBase {
             domain.setScopeId(tmpCPerm.getScopeId());
             RolePermissionCreator rolePermissionCreator = rolePermissionFactory.newCreator(tmpCPerm.getScopeId());
             rolePermissionCreator.setRoleId(role.getId());
-            rolePermissionCreator.setPermission(permissionFactory.newPermission(domain.getDomain(), tmpCPerm.getAction(), tmpCPerm.getTargetScopeId()));
+            rolePermissionCreator.setPermission(permissionFactory.newPermission(domain.getDomain().getName(), tmpCPerm.getAction(), tmpCPerm.getTargetScopeId()));
             try {
                 stepData.remove(ROLE_PERMISSIONS);
                 rolePermission = rolePermissionService.create(rolePermissionCreator);
@@ -561,8 +561,8 @@ public class AuthorizationServiceSteps extends TestBase {
         RolePermission perm1 = rolePermissionFactory.newEntity(SYS_SCOPE_ID);
         RolePermission perm2 = rolePermissionFactory.newEntity(SYS_SCOPE_ID);
         Integer miscObj = 1;
-        Permission tmpPermission1 = permissionFactory.newPermission(TEST_DOMAIN, Actions.read, SYS_SCOPE_ID);
-        Permission tmpPermission2 = permissionFactory.newPermission(TEST_DOMAIN, Actions.write, SYS_SCOPE_ID);
+        Permission tmpPermission1 = permissionFactory.newPermission(TEST_DOMAIN.getName(), Actions.read, SYS_SCOPE_ID);
+        Permission tmpPermission2 = permissionFactory.newPermission(TEST_DOMAIN.getName(), Actions.write, SYS_SCOPE_ID);
         KapuaId tmpRoleId1 = getKapuaId();
         KapuaId tmpRoleId2 = getKapuaId();
         Assert.assertNotNull(perm1);
@@ -587,7 +587,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @Then("The role permission object constructors are sane")
     public void checkRolePermissionConstructors() {
-        Permission tmpPermission = permissionFactory.newPermission(TEST_DOMAIN, Actions.read, SYS_SCOPE_ID);
+        Permission tmpPermission = permissionFactory.newPermission(TEST_DOMAIN.getName(), Actions.read, SYS_SCOPE_ID);
         KapuaId tmpRoleId = getKapuaId();
         RolePermission perm1 = rolePermissionFactory.newEntity(SYS_SCOPE_ID);
         Assert.assertNotNull(perm1);
@@ -1027,19 +1027,19 @@ public class AuthorizationServiceSteps extends TestBase {
         for (String perm : tmpList) {
             switch (perm.trim()) {
                 case "read":
-                    permissions.add(permissionFactory.newPermission(curDomain.getDomain(), Actions.read, currId));
+                    permissions.add(permissionFactory.newPermission(curDomain.getDomain().getName(), Actions.read, currId));
                     break;
                 case "write":
-                    permissions.add(permissionFactory.newPermission(curDomain.getDomain(), Actions.write, currId));
+                    permissions.add(permissionFactory.newPermission(curDomain.getDomain().getName(), Actions.write, currId));
                     break;
                 case "delete":
-                    permissions.add(permissionFactory.newPermission(curDomain.getDomain(), Actions.delete, currId));
+                    permissions.add(permissionFactory.newPermission(curDomain.getDomain().getName(), Actions.delete, currId));
                     break;
                 case "connect":
-                    permissions.add(permissionFactory.newPermission(curDomain.getDomain(), Actions.connect, currId));
+                    permissions.add(permissionFactory.newPermission(curDomain.getDomain().getName(), Actions.connect, currId));
                     break;
                 case "execute":
-                    permissions.add(permissionFactory.newPermission(curDomain.getDomain(), Actions.execute, currId));
+                    permissions.add(permissionFactory.newPermission(curDomain.getDomain().getName(), Actions.execute, currId));
                     break;
             }
         }
@@ -1351,7 +1351,7 @@ public class AuthorizationServiceSteps extends TestBase {
         AccessPermission tmpAccPerm = accessPermissionFactory.newEntity(getKapuaId());
         Assert.assertNotNull(tmpAccPerm);
         tmpAccPerm.setAccessInfoId(getKapuaId());
-        Permission tmpPerm = permissionFactory.newPermission(new TestDomain(), Actions.read, getKapuaId(), getKapuaId());
+        Permission tmpPerm = permissionFactory.newPermission(new TestDomain().getName(), Actions.read, getKapuaId(), getKapuaId());
         tmpAccPerm.setPermission(tmpPerm);
         Assert.assertEquals(tmpPerm, tmpAccPerm.getPermission());
         tmpAccPerm.setAccessInfoId(null);
@@ -1510,8 +1510,8 @@ public class AuthorizationServiceSteps extends TestBase {
     public void checkAccessPermissionComparison() {
         AccessPermission accPerm1 = accessPermissionFactory.newEntity(getKapuaId());
         AccessPermission accPerm2 = accessPermissionFactory.newEntity(getKapuaId());
-        Permission tmpPerm1 = permissionFactory.newPermission(new TestDomain(), Actions.read, SYS_SCOPE_ID, getKapuaId());
-        Permission tmpPerm2 = permissionFactory.newPermission(new TestDomain(), Actions.write, SYS_SCOPE_ID, getKapuaId());
+        Permission tmpPerm1 = permissionFactory.newPermission(new TestDomain().getName(), Actions.read, SYS_SCOPE_ID, getKapuaId());
+        Permission tmpPerm2 = permissionFactory.newPermission(new TestDomain().getName(), Actions.write, SYS_SCOPE_ID, getKapuaId());
         Assert.assertTrue(accPerm1.equals(accPerm1));
         Assert.assertFalse(accPerm1.equals(null));
         Assert.assertFalse(accPerm1.equals(Integer.valueOf(15)));
@@ -1547,24 +1547,24 @@ public class AuthorizationServiceSteps extends TestBase {
     public void permissionFactorySanityChecks() throws KapuaException {
         Permission tmpPerm = null;
         TestDomain tmpDomain = new TestDomain();
-        tmpPerm = permissionFactory.newPermission(tmpDomain, Actions.read, SYS_SCOPE_ID);
+        tmpPerm = permissionFactory.newPermission(tmpDomain.getName(), Actions.read, SYS_SCOPE_ID);
         Assert.assertNotNull(tmpPerm);
         Assert.assertNotNull(tmpPerm.getDomain());
         Assert.assertEquals(tmpDomain.getName(), tmpPerm.getDomain());
         Assert.assertEquals(Actions.read, tmpPerm.getAction());
-        tmpPerm = permissionFactory.newPermission(tmpDomain, Actions.write, SYS_SCOPE_ID, getKapuaId(9));
+        tmpPerm = permissionFactory.newPermission(tmpDomain.getName(), Actions.write, SYS_SCOPE_ID, getKapuaId(9));
         Assert.assertNotNull(tmpPerm);
         Assert.assertNotNull(tmpPerm.getDomain());
         Assert.assertEquals(tmpDomain.getName(), tmpPerm.getDomain());
         Assert.assertEquals(Actions.write, tmpPerm.getAction());
         Assert.assertEquals(getKapuaId(9), tmpPerm.getGroupId());
         Assert.assertFalse(tmpPerm.getForwardable());
-        tmpPerm = permissionFactory.newPermission(null, Actions.execute, SYS_SCOPE_ID, getKapuaId(9), true);
+        tmpPerm = permissionFactory.newPermission((String) null, Actions.execute, SYS_SCOPE_ID, getKapuaId(9), true);
         Assert.assertNotNull(tmpPerm);
         Assert.assertEquals(Actions.execute, tmpPerm.getAction());
         Assert.assertTrue(tmpPerm.getForwardable());
         tmpDomain.setName(null);
-        tmpPerm = permissionFactory.newPermission(tmpDomain, Actions.connect, SYS_SCOPE_ID, getKapuaId());
+        tmpPerm = permissionFactory.newPermission(tmpDomain.getName(), Actions.connect, SYS_SCOPE_ID, getKapuaId());
         Assert.assertNotNull(tmpPerm);
         Assert.assertEquals(Actions.connect, tmpPerm.getAction());
     }
@@ -1574,8 +1574,8 @@ public class AuthorizationServiceSteps extends TestBase {
     // As such this step is of limited usefulness and should be taken with a grain of salt.
     @Then("I can compare permission objects")
     public void checkPermissionComparison() {
-        Permission perm1 = permissionFactory.newPermission(new TestDomain("test_domain_1"), Actions.read, getKapuaId(10), getKapuaId(100));
-        Permission perm2 = permissionFactory.newPermission(new TestDomain("test_domain_1"), Actions.read, getKapuaId(10), getKapuaId(100));
+        Permission perm1 = permissionFactory.newPermission("test_domain_1", Actions.read, getKapuaId(10), getKapuaId(100));
+        Permission perm2 = permissionFactory.newPermission("test_domain_1", Actions.read, getKapuaId(10), getKapuaId(100));
         Assert.assertTrue(perm1.equals(perm1));
         Assert.assertFalse(perm1.equals(null));
         Assert.assertFalse(perm1.equals(Integer.valueOf(10)));
@@ -1919,7 +1919,7 @@ public class AuthorizationServiceSteps extends TestBase {
             domain.setScopeId(tmpCPerm.getScopeId());
             RolePermissionCreator rolePermissionCreator = rolePermissionFactory.newCreator(account.getId());
             rolePermissionCreator.setRoleId(role.getId());
-            rolePermissionCreator.setPermission(permissionFactory.newPermission(domain.getDomain(), tmpCPerm.getAction(), tmpCPerm.getTargetScopeId()));
+            rolePermissionCreator.setPermission(permissionFactory.newPermission(domain.getDomain().getName(), tmpCPerm.getAction(), tmpCPerm.getTargetScopeId()));
             try {
                 stepData.remove("ChildAccountRolePermissions");
                 rolePermission = rolePermissionService.create(rolePermissionCreator);

@@ -14,12 +14,12 @@ package org.eclipse.kapua.service.authorization.access.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
@@ -95,7 +95,7 @@ public class AccessInfoServiceImpl implements AccessInfoService {
             throws KapuaException {
         ArgumentValidator.notNull(accessInfoCreator, "accessInfoCreator");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.write, accessInfoCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_INFO, Actions.write, accessInfoCreator.getScopeId()));
         // If permission are created out of the access info scope, check that the current user has the permission on the external scopeId.
         if (accessInfoCreator.getPermissions() != null) {
             for (Permission p : accessInfoCreator.getPermissions()) {
@@ -160,7 +160,7 @@ public class AccessInfoServiceImpl implements AccessInfoService {
         ArgumentValidator.notNull(scopeId, "accountId");
         ArgumentValidator.notNull(accessInfoId, "accessInfoId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_INFO, Actions.read, scopeId));
 
         return txManager.execute(tx -> accessInfoRepository.find(tx, scopeId, accessInfoId))
                 .orElse(null);
@@ -171,7 +171,7 @@ public class AccessInfoServiceImpl implements AccessInfoService {
         ArgumentValidator.notNull(scopeId, "accountId");
         ArgumentValidator.notNull(userId, "userId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_INFO, Actions.read, scopeId));
 
         return txManager.execute(tx -> accessInfoRepository.findByUserId(tx, scopeId, userId))
                 .orElse(null);
@@ -182,7 +182,7 @@ public class AccessInfoServiceImpl implements AccessInfoService {
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_INFO, Actions.read, query.getScopeId()));
 
         return txManager.execute(tx -> accessInfoRepository.query(tx, query));
     }
@@ -192,7 +192,7 @@ public class AccessInfoServiceImpl implements AccessInfoService {
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_INFO, Actions.read, query.getScopeId()));
 
         return txManager.execute(tx -> accessInfoRepository.count(tx, query));
     }
@@ -200,7 +200,7 @@ public class AccessInfoServiceImpl implements AccessInfoService {
     @Override
     public void delete(KapuaId scopeId, KapuaId accessInfoId) throws KapuaException {
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_INFO, Actions.delete, scopeId));
 
         txManager.execute(tx -> accessInfoRepository.delete(tx, scopeId, accessInfoId));
     }

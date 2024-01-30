@@ -29,6 +29,6 @@ public class PermissionXmlRegistry {
      * @since 1.0.0
      */
     public Permission newPermission() {
-        return PERMISSION_FACTORY.newPermission(null, null, null, null);
+        return PERMISSION_FACTORY.newPermission((String) null, null, null, null);
     }
 }

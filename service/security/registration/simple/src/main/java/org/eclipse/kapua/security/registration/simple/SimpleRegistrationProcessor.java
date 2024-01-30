@@ -13,7 +13,7 @@
 package org.eclipse.kapua.security.registration.simple;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.BrokerDomains;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
@@ -25,29 +25,21 @@ import org.eclipse.kapua.security.registration.simple.setting.SimpleSetting;
 import org.eclipse.kapua.security.registration.simple.setting.SimpleSettingKeys;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
-import org.eclipse.kapua.service.account.AccountDomains;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.authentication.AuthenticationDomains;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
-import org.eclipse.kapua.service.authorization.access.AccessInfoDomain;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.datastore.DatastoreDomains;
-import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
-import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
-import org.eclipse.kapua.service.user.UserDomains;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserType;
@@ -270,18 +262,18 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
         accessInfoCreator.setUserId(user.getId());
 
         Set<Permission> permissions = new HashSet<>();
-        permissions.add(permissionFactory.newPermission(new AccessInfoDomain(), Actions.read, user.getScopeId()));
+        permissions.add(permissionFactory.newPermission(Domains.ACCESS_INFO, Actions.read, user.getScopeId()));
 
-        permissions.addAll(permissionFactory.newPermissions(AccountDomains.ACCOUNT_DOMAIN, user.getScopeId(), Actions.read));
-        permissions.addAll(permissionFactory.newPermissions(AuthenticationDomains.CREDENTIAL_DOMAIN, user.getScopeId(), Actions.read, Actions.write, Actions.delete));
-        permissions.addAll(permissionFactory.newPermissions(DatastoreDomains.DATASTORE_DOMAIN, user.getScopeId(), Actions.read));
-        permissions.addAll(permissionFactory.newPermissions(DeviceDomains.DEVICE_DOMAIN, user.getScopeId(), Actions.read, Actions.write, Actions.delete));
-        permissions.addAll(permissionFactory.newPermissions(DeviceDomains.DEVICE_CONNECTION_DOMAIN, user.getScopeId(), Actions.read));
-        permissions.addAll(permissionFactory.newPermissions(DeviceDomains.DEVICE_EVENT_DOMAIN, user.getScopeId(), Actions.read, Actions.write));
-        permissions.addAll(permissionFactory.newPermissions(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, user.getScopeId(), Actions.read, Actions.write, Actions.execute));
-        permissions.addAll(permissionFactory.newPermissions(AuthorizationDomains.GROUP_DOMAIN, user.getScopeId(), Actions.read));
-        permissions.addAll(permissionFactory.newPermissions(AuthorizationDomains.ROLE_DOMAIN, user.getScopeId(), Actions.read));
-        permissions.addAll(permissionFactory.newPermissions(UserDomains.USER_DOMAIN, user.getScopeId(), Actions.read));
+        permissions.addAll(permissionFactory.newPermissions(Domains.ACCOUNT, user.getScopeId(), Actions.read));
+        permissions.addAll(permissionFactory.newPermissions(Domains.CREDENTIAL, user.getScopeId(), Actions.read, Actions.write, Actions.delete));
+        permissions.addAll(permissionFactory.newPermissions(Domains.DATASTORE, user.getScopeId(), Actions.read));
+        permissions.addAll(permissionFactory.newPermissions(Domains.DEVICE, user.getScopeId(), Actions.read, Actions.write, Actions.delete));
+        permissions.addAll(permissionFactory.newPermissions(Domains.DEVICE_CONNECTION, user.getScopeId(), Actions.read));
+        permissions.addAll(permissionFactory.newPermissions(Domains.DEVICE_EVENT, user.getScopeId(), Actions.read, Actions.write));
+        permissions.addAll(permissionFactory.newPermissions(Domains.DEVICE_MANAGEMENT, user.getScopeId(), Actions.read, Actions.write, Actions.execute));
+        permissions.addAll(permissionFactory.newPermissions(Domains.GROUP, user.getScopeId(), Actions.read));
+        permissions.addAll(permissionFactory.newPermissions(Domains.ROLE, user.getScopeId(), Actions.read));
+        permissions.addAll(permissionFactory.newPermissions(Domains.USER, user.getScopeId(), Actions.read));
 
         accessInfoCreator.setPermissions(permissions);
 
@@ -310,7 +302,7 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
         accessInfoCreator.setUserId(user.getId());
 
         Set<Permission> permissions = new HashSet<>();
-        permissions.add(permissionFactory.newPermission(BrokerDomains.BROKER_DOMAIN, Actions.connect, user.getScopeId()));
+        permissions.add(permissionFactory.newPermission(Domains.BROKER, Actions.connect, user.getScopeId()));
 
         accessInfoCreator.setPermissions(permissions);
 

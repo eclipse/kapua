@@ -44,6 +44,10 @@ public class DomainImpl extends AbstractKapuaEntity implements Domain {
     @Column(name = "name", nullable = false, updatable = false)
     private String name;
 
+    /**
+     * @deprecated since 2.0.0 - This will be removed in future versions as it is not used
+     */
+    @Deprecated
     @Basic
     @Column(name = "serviceName", nullable = false, updatable = false)
     private String serviceName;
@@ -87,6 +91,7 @@ public class DomainImpl extends AbstractKapuaEntity implements Domain {
         super(domain);
 
         setName(domain.getName());
+        setServiceName(domain.getServiceName());
         setActions(domain.getActions());
         setGroupable(domain.getGroupable());
     }
@@ -96,6 +101,10 @@ public class DomainImpl extends AbstractKapuaEntity implements Domain {
         this.name = name;
     }
 
+    /**
+     * @deprecated since 2.0.0 - This will be removed in future versions as it is not used
+     */
+    @Deprecated
     @Override
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
@@ -106,6 +115,10 @@ public class DomainImpl extends AbstractKapuaEntity implements Domain {
         return name;
     }
 
+    /**
+     * @deprecated since 2.0.0 - This will be removed in future versions as it is not used
+     */
+    @Deprecated
     @Override
     public String getServiceName() {
         return this.serviceName;

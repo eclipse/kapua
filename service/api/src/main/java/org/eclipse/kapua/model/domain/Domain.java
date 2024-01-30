@@ -51,4 +51,11 @@ public interface Domain {
      */
     boolean getGroupable();
 
+    /**
+     * @deprecated since 2.0.0 - This will be removed in future versions as it is not used
+     */
+    @Deprecated
+    String getServiceName();
+
+
 }

@@ -12,20 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import javax.imageio.ImageIO;
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -35,6 +21,7 @@ import org.apache.commons.lang.time.DateUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -44,7 +31,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.authentication.AuthenticationDomains;
 import org.eclipse.kapua.service.authentication.credential.mfa.KapuaExistingMfaOptionException;
 import org.eclipse.kapua.service.authentication.credential.mfa.KapuaExistingScratchCodesException;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
@@ -71,6 +57,20 @@ import org.eclipse.kapua.service.user.UserType;
 import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.imageio.ImageIO;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Base64;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * {@link MfaOptionService} implementation.
@@ -123,7 +123,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         ArgumentValidator.notNull(mfaOptionCreator.getScopeId(), "mfaOptionCreator.scopeId");
         ArgumentValidator.notNull(mfaOptionCreator.getUserId(), "mfaOptionCreator.userId");
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, mfaOptionCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.write, mfaOptionCreator.getScopeId()));
         // Check that the operation is carried by the user itself
         final KapuaSession session = KapuaSecurityUtils.getSession();
         final KapuaId expectedUser = session.getUserId();
@@ -196,7 +196,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         ScratchCodeListResult scratchCodeListResult = new ScratchCodeListResultImpl();
         // Check existing ScratchCodes
         ScratchCodeListResult existingScratchCodeListResult = txManager.execute(tx ->
-            scratchCodeRepository.findByMfaOptionId(tx, scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaOptionId()));
+                scratchCodeRepository.findByMfaOptionId(tx, scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaOptionId()));
         if (!existingScratchCodeListResult.isEmpty()) {
             throw new KapuaExistingScratchCodesException();
         }
@@ -228,7 +228,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         ArgumentValidator.notNull(mfaOption.getUserId(), "mfaOption.userId");
         ArgumentValidator.notEmptyOrNull(mfaOption.getMfaSecretKey(), "mfaOption.mfaSecretKey");
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, mfaOption.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.write, mfaOption.getScopeId()));
 
         return txManager.execute(tx -> mfaOptionRepository.update(tx, mfaOption));
     }
@@ -239,7 +239,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(mfaOptionId, "mfaOptionId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.read, scopeId));
 
         return txManager.execute(tx -> mfaOptionRepository.find(tx, scopeId, mfaOptionId))
                 .orElse(null);
@@ -250,7 +250,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.read, query.getScopeId()));
 
         return txManager.execute(tx -> mfaOptionRepository.query(tx, query));
     }
@@ -260,7 +260,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.read, query.getScopeId()));
 
         return txManager.execute(tx -> mfaOptionRepository.count(tx, query));
     }
@@ -271,7 +271,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         ArgumentValidator.notNull(mfaOptionId, "mfaOptionId");
         ArgumentValidator.notNull(scopeId, "scopeId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.delete, scopeId));
 
         txManager.execute(tx -> mfaOptionRepository.delete(tx, scopeId, mfaOptionId));
     }
@@ -282,7 +282,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(userId, MfaOptionAttributes.USER_ID);
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.read, scopeId));
 
         return txManager.execute(tx -> mfaOptionRepository.findByUserId(tx, scopeId, userId))
                 .orElse(null);

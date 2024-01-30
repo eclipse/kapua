@@ -17,6 +17,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
@@ -28,7 +29,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobCreator;
-import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.JobListResult;
 import org.eclipse.kapua.service.job.JobRepository;
 import org.eclipse.kapua.service.job.JobService;
@@ -70,7 +70,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
             TxManager txManager,
             JobRepository jobRepository,
             TriggerService triggerService) {
-        super(txManager, serviceConfigurationManager, JobDomains.JOB_DOMAIN, authorizationService, permissionFactory);
+        super(txManager, serviceConfigurationManager, Domains.JOB, authorizationService, permissionFactory);
         this.jobEngineService = jobEngineService;
         this.jobRepository = jobRepository;
         this.triggerService = triggerService;
@@ -83,7 +83,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
         ArgumentValidator.notNull(creator.getScopeId(), "jobCreator.scopeId");
         ArgumentValidator.validateJobName(creator.getName(), "jobCreator.name");
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, creator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, creator.getScopeId()));
         return txManager.execute(tx -> {
             // Check entity limit
             serviceConfigurationManager.checkAllowedEntities(tx, creator.getScopeId(), "Jobs");
@@ -107,7 +107,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
         ArgumentValidator.notNull(job.getScopeId(), "job.scopeId");
         ArgumentValidator.validateEntityName(job.getName(), "job.name");
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, job.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, job.getScopeId()));
 
         return txManager.execute(tx -> {
             // Check existence
@@ -129,7 +129,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, scopeId));
         // Do find
         return txManager.execute(tx -> jobRepository.find(tx, scopeId, jobId))
                 .orElse(null);
@@ -140,7 +140,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
         // Do query
         return txManager.execute(tx -> jobRepository.query(tx, query));
     }
@@ -150,7 +150,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
         // Do query
         return txManager.execute(tx -> jobRepository.count(tx, query));
     }
@@ -183,7 +183,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, forced ? null : scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.delete, forced ? null : scopeId));
 
         txManager.execute(tx -> {
             // Check existence

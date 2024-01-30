@@ -13,10 +13,16 @@
 package org.eclipse.kapua.service.device.management.bundle.internal;
 
 import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.model.domains.Domains;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
+import org.eclipse.kapua.model.domain.DomainEntry;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.device.management.DeviceManagementService;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
@@ -29,6 +35,11 @@ public class DeviceManagementBundleModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(DeviceBundleFactory.class).to(DeviceBundleFactoryImpl.class);
+    }
+
+    @ProvidesIntoSet
+    public Domain deviceManagementModule() {
+        return new DomainEntry(Domains.DEVICE_MANAGEMENT, DeviceManagementService.class.getName(), false, Actions.execute, Actions.read, Actions.write);
     }
 
     @Provides

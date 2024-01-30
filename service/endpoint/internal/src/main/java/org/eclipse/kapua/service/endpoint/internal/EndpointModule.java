@@ -14,9 +14,14 @@ package org.eclipse.kapua.service.endpoint.internal;
 
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.model.domains.Domains;
+import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
+import org.eclipse.kapua.model.domain.DomainEntry;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -46,6 +51,11 @@ public class EndpointModule extends AbstractKapuaModule {
                 endpointInfoFactory,
                 endpointInfoRepository,
                 jpaTxManagerFactory.create("kapua-endpoint"));
+    }
+
+    @ProvidesIntoSet
+    public Domain endpointDomain() {
+        return new DomainEntry(Domains.ENDPOINT_INFO, EndpointInfoService.class.getName(), false, Actions.read, Actions.delete, Actions.write);
     }
 
     @Provides

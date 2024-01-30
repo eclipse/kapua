@@ -17,6 +17,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaRuntimeErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -26,7 +27,6 @@ import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.authentication.api.DeviceConnectionCredentialAdapter;
-import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionAttributes;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
@@ -95,7 +95,7 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
         if (!availableDeviceConnectionAdapters.containsKey(deviceConnectionOptions.getAuthenticationType())) {
             throw new KapuaIllegalArgumentException("deviceConnection.authenticationType", deviceConnectionOptions.getAuthenticationType());
         }
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, deviceConnectionOptions.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_CONNECTION, Actions.write, deviceConnectionOptions.getScopeId()));
         return txManager.execute(tx -> {
             if (deviceConnectionOptions.getReservedUserId() != null) {
                 DeviceConnectionQuery query = entityFactory.newQuery(deviceConnectionOptions.getScopeId());
@@ -126,7 +126,7 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(entityId, "entityId");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_CONNECTION, Actions.read, scopeId));
 
         return txManager.execute(tx -> repository.find(tx, scopeId, entityId))
                 .orElse(null);
@@ -138,7 +138,7 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_CONNECTION, Actions.read, query.getScopeId()));
 
         return txManager.execute(tx -> repository.query(tx, query));
     }
@@ -149,7 +149,7 @@ public class DeviceConnectionOptionServiceImpl implements DeviceConnectionOption
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_CONNECTION, Actions.read, query.getScopeId()));
 
         return txManager.execute(tx -> repository.count(tx, query));
     }

@@ -14,12 +14,12 @@
 package org.eclipse.kapua.service.device.management.request.internal;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementTransactionalServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestBadMethodException;
@@ -97,7 +97,7 @@ public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagement
             default:
                 throw new DeviceManagementRequestBadMethodException(requestInput.getChannel().getMethod());
         }
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, action, requestInput.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.DEVICE_MANAGEMENT, action, requestInput.getScopeId()));
         // Prepare the request
         GenericRequestChannel genericRequestChannel = genericRequestFactory.newRequestChannel();
         genericRequestChannel.setAppName(requestInput.getChannel().getAppName());
