@@ -16,50 +16,62 @@ paths:
     post:
       tags:
         - Device Management - Asset
-      summary: Write the values for the Assets of a single Device
+      summary: Write the values for the DeviceAssets of a single Device
       operationId: deviceAssetWrite
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: '../device/device.yaml#/components/parameters/deviceId'
         - $ref: '../device/device.yaml#/components/parameters/timeout'
       requestBody:
-        description: An Asset list to be updated on the desired Devica
+        description: A DeviceAsset list to be updated on the desired Device
         content:
           application/json:
             schema:
               $ref: './deviceAsset.yaml#/components/schemas/deviceAssetValues'
             example:
-              type: deviceAssets
               deviceAsset:
-                - name: asset2
+                - name: Asset-1
                   channels:
-                    - valueType: integer
-                      value: 12
-                      name: Channel-2
-                    - valueType: integer
-                      value: 80
-                      name: Channel-3
+                    - name: Channel-1
+                      valueType: boolean
+                      value: true
+                    - name: Channel-2
+                      valueType: integer
+                      value: 10
         required: true
       responses:
         200:
-          description: The updated Asset list for the desired Device with updated values
+          description: The updated DeviceAssets list for the desired Device with updated values
           content:
             application/json:
               schema:
                 $ref: './deviceAsset.yaml#/components/schemas/deviceAssetValues'
-              example:
-                type: deviceAssets
-                deviceAsset:
-                  - name: asset2
-                    channels:
-                      - valueType: integer
-                        value: 12
-                        name: Channel-2
-                        timestamp: '2019-09-12T15:40:18.278Z'
-                      - valueType: integer
-                        value: 80
-                        name: Channel-3
-                        timestamp: '2019-09-12T15:40:18.278Z'
+              examples:
+                Successful write:
+                  value:
+                    deviceAsset:
+                      - name: Asset-1
+                        channels:
+                          - name: Channel-1
+                            valueType: boolean
+                            value: true
+                            timestamp: '2019-09-12T14:50:24.446Z'
+                          - name: Channel-2
+                            valueType: integer
+                            value: 8
+                            timestamp: '2019-09-12T14:50:24.446Z'
+                Write with failure:
+                  value:
+                    deviceAsset:
+                      - name: Asset-1
+                        channels:
+                          - name: Channel-1
+                            valueType: boolean
+                            value: true
+                            timestamp: '2019-09-12T14:50:24.446Z'
+                          - name: Channel-2
+                            error: "Channel not available"
+                            timestamp: '2019-09-12T14:50:24.446Z'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

@@ -741,18 +741,33 @@ components:
     deviceListResult:
       $ref: './device/device.yaml#/components/schemas/deviceListResult'
     ### Device Asset Entities ###
+    assetDescription:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/assetDescription'
+    channelMode:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/channelMode'
+    channelValueType:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/channelValueType'
+    channelDefinition:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/channelDefinition'
     deviceAssetDefinition:
       $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/deviceAssetDefinition'
     deviceAssetDefinitions:
       $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/deviceAssetDefinitions'
+    deviceAssetDefinitionsFilter:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/deviceAssetDefinitionsFilter'
+    channelValue:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/channelValue'
     deviceAssetValue:
       $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/deviceAssetValue'
     deviceAssetValues:
       $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/deviceAssetValues'
-    channelDefinition:
-      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/channelDefinition'
-    channelValue:
-      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/channelValue'
+    deviceAssetsFilter:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/deviceAssetsFilter'
+    ### Device Asset Store Entities ###
+    deviceAssetStoreEnablementPolicy:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/deviceAssetStoreEnablementPolicy'
+    deviceAssetStoreSettings:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/deviceAssetStoreSettings'
     ### Device Bundle Entities ###
     deviceBundle:
       $ref: './deviceBundle/deviceBundle.yaml#/components/schemas/deviceBundle'

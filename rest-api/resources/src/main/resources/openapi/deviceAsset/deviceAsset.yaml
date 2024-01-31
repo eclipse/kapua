@@ -11,10 +11,49 @@ info:
     name: Eclipse Public License 2.0
     url: https://www.eclipse.org/legal/epl-2.0
 
-paths: { }
+paths: {}
 
 components:
   schemas:
+    assetDescription:
+      description: |
+        An **Asset**, as defined in Kura, is a logical representation of a field device, described by a list of **Channels**.
+        The Asset uses a specific Driver instance to communicate with the underlying device and it models a generic device resource as a Channel.
+        A register in a PLC or a GATT Characteristic in a Bluetooth device are examples of Channels.
+        In this way, each Asset has multiple Channels for reading and writing data from/to an Industrial Device.
+    channelMode:
+      type: string
+      description: The AssetChannel mode, which determines which operation you can execute on it
+      enum:
+        - READ
+        - WRITE
+        - READ_WRITE
+    channelValueType:
+      type: string
+      description: The date type of AssetChannel value
+      enum:
+        - boolean
+        - float
+        - string
+        - integer
+        - long
+        - binary
+        - double
+    channelDefinition:
+      type: object
+      description: The definition of an Asset Channel describing its name, value type and mode.
+      properties:
+        mode:
+          $ref: '#/components/schemas/channelMode'
+        name:
+          type: string
+          description: The name of the AssetChannel
+        valueType:
+          $ref: '#/components/schemas/channelValueType'
+      example:
+        valueType: boolean
+        name: Channel-1
+        mode: READ
     deviceAssetDefinition:
       allOf:
         - $ref: '#/components/schemas/assetDescription'
@@ -26,42 +65,21 @@ components:
                 $ref: '#/components/schemas/channelDefinition'
             name:
               type: string
+              description: The name of the DeviceAsset
           example:
-            name: asset1
+            name: Asset-1
             channels:
-              - valueType: integer
+              - valueType: boolean
                 name: Channel-1
                 mode: READ
               - valueType: integer
                 name: Channel-2
-                mode: WRITE
-              - valueType: integer
-                name: Channel-3
                 mode: READ_WRITE
-    deviceAssetValue:
-      allOf:
-        - $ref: '#/components/schemas/assetDescription'
-        - type: object
-          properties:
-            channels:
-              type: array
-              items:
-                $ref: '#/components/schemas/channelValue'
-            name:
-              type: string
-          example:
-            name: asset2
-            channels:
-              - valueType: integer
-                value: 5
-                name: Channel-1
-                timestamp: '2019-09-12T14:50:24.446Z'
-              - valueType: integer
-                value: 8
+              - valueType: binary
                 name: Channel-3
-                timestamp: '2019-09-12T14:50:24.446Z'
+                mode: WRITE
     deviceAssetDefinitions:
-      description: A list container for the Assets of a Device
+      description: A list of the DeviceAssetDefinitions
       type: object
       properties:
         deviceAsset:
@@ -69,97 +87,151 @@ components:
           items:
             $ref: '#/components/schemas/deviceAssetDefinition'
       example:
-        type: deviceAssets
         deviceAsset:
-          - name: asset1
+          - name: Asset-1
+            channels:
+              - valueType: boolean
+                name: Channel-1
+                mode: READ
+              - valueType: integer
+                name: Channel-2
+                mode: READ_WRITE
+              - valueType: binary
+                name: Channel-3
+                mode: WRITE
+          - name: Asset-2
             channels:
               - valueType: integer
                 name: Channel-1
                 mode: READ
               - valueType: integer
                 name: Channel-2
-                mode: WRITE
-              - valueType: integer
-                name: Channel-3
-                mode: READ_WRITE
-          - name: asset2
-            channels:
-              - valueType: integer
-                name: Channel-1
                 mode: READ
               - valueType: integer
-                name: Channel-2
-                mode: WRITE
-              - valueType: integer
                 name: Channel-3
-                mode: READ_WRITE
-    deviceAssetValues:
-      description: A list container for the Assets of a Device
+                mode: READ
+    deviceAssetDefinitionsFilter:
       type: object
       properties:
-        deviceAsset:
+        deviceAssets:
+          type: array
+          description: List of DeviceAsset names to filter DeviceAssetDefinitions
           items:
-            type: array
-            items:
-              $ref: '#/components/schemas/deviceAssetValue'
+            properties:
+              name:
+                type: string
+                description: The DeviceAsset name to filter
+            required:
+              - name
+      required:
+        - deviceAssets
       example:
-        type: deviceAssets
-        deviceAsset:
-          - name: asset2
-            channels:
-              - valueType: integer
-                value: 5
-                name: Channel-1
-                timestamp: '2019-09-12T14:50:24.446Z'
-              - valueType: integer
-                value: 8
-                name: Channel-3
-                timestamp: '2019-09-12T14:50:24.446Z'
-    channelDefinition:
-      allOf:
-        - $ref: '#/components/schemas/assetDescription'
-        - type: object
-          properties:
-            mode:
-              type: string
-              enum:
-                - READ
-                - WRITE
-                - READ_WRITE
-            name:
-              type: string
-            valueType:
-              type: string
-          example:
-            valueType: integer
-            name: Channel-1
-            mode: READ
+        deviceAssets:
+          - name: Asset-1
     channelValue:
-      allOf:
-        - $ref: '#/components/schemas/assetDescription'
-        - type: object
-          properties:
-            name:
-              type: string
-            valueType:
-              type: string
-            value:
-              type: string
-            timestamp:
-              type: string
-              format: 'date-time'
-          example:
-            valueType: integer
-            value: 5
-            name: Channel-1
+      type: object
+      description: The value read from an AssetChannel. Only AssetChannel that have READ or READ_WRITE can be read.
+      properties:
+        name:
+          type: string
+          description: The name of the channel
+        valueType:
+          $ref: '#/components/schemas/channelValueType'
+        value:
+          type: string
+          description: The value read from the channel. Not present if read operation fails.
+        error:
+          type: string
+          description: The error associated with the read operation if it fails.
+        timestamp:
+          type: string
+          description: The time when this value was read
+          format: 'date-time'
+      required:
+        - name
+        - valueType
+        - value
+      example:
+        name: Channel-1
+        valueType: boolean
+        value: true
+        timestamp: '2019-09-12T14:50:24.446Z'
+    deviceAssetValue:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the DeviceAsset from which the values are read.
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/channelValue'
+      required:
+        - name
+      example:
+        name: Asset-1
+        channels:
+          - name: Channel-1
+            valueType: boolean
+            value: true
             timestamp: '2019-09-12T14:50:24.446Z'
-    assetDescription:
-      description: |
-        An **Asset**, as defined in Kura, is a logical representation of a field device, described by a list of **Channels**.
-        The Asset uses a specific Driver instance to communicate with the underlying device and it models a generic device resource as a Channel.
-        A register in a PLC or a GATT Characteristic in a Bluetooth device are examples of Channels.
-        In this way, each Asset has multiple Channels for reading and writing data from/to an Industrial Device.
+          - name: Channel-2
+            valueType: integer
+            value: 8
+            timestamp: '2019-09-12T14:50:24.446Z'
+    deviceAssetValues:
+      type: object
+      description: A list of DeviceAssets and their AssetChannel values
+      properties:
+        deviceAssets:
+          type: array
+          items:
+            $ref: '#/components/schemas/deviceAssetValue'
+      required:
+        - deviceAssets
+      example:
+        deviceAsset:
+          - name: Asset-1
+            channels:
+              - name: Channel-1
+                valueType: boolean
+                value: true
+                timestamp: '2019-09-12T14:50:24.446Z'
+              - name: Channel-2
+                valueType: integer
+                value: 8
+                timestamp: '2019-09-12T14:50:24.446Z'
+    deviceAssetsFilter:
+      type: object
+      properties:
+        deviceAssets:
+          type: array
+          description: List of DeviceAsset names to filter DeviceAssets
+          items:
+            properties:
+              name:
+                type: string
+                description: The DeviceAsset name to filter
+              channels:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                  required:
+                    - name
+            required:
+              - name
+      required:
+        - deviceAssets
+      example:
+        deviceAssets:
+          - name: Asset-1
+            channels:
+              - name: Channel-1
     deviceAssetStoreEnablementPolicy:
+      type: string
       description: The policy for which the Device Asset Store Application is enabled or not for this device. 'INHERITED' means that it inherits the setting from the Account-wide Asset Store Service Configuration
       enum:
         - ENABLED
@@ -172,6 +244,8 @@ components:
           properties:
             enablementPolicy:
               $ref: '#/components/schemas/deviceAssetStoreEnablementPolicy'
+          required:
+            - enablementPolicy
           example:
             scopeId: AQ
             deviceId: dIVxI5QpFUI

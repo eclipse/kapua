@@ -16,7 +16,7 @@ paths:
     post:
       tags:
         - Device Management - Asset
-      summary: Read the values for the Assets of a single Device
+      summary: Read the values for the DeviceAssets of a single Device
       operationId: deviceAssetRead
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
@@ -27,10 +27,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './deviceAsset.yaml#/components/schemas/deviceAssetDefinitions'
-            example:
-              deviceAsset:
-                - name: asset2
+              $ref: './deviceAsset.yaml#/components/schemas/deviceAssetsFilter'
+            examples:
+              Read all:
+                value:
+                  deviceAsset:
+                    -
+              Filter by DeviceAsset:
+                value:
+                  deviceAsset:
+                    - name: Asset-1
+              Filter by AssetChannel:
+                value:
+                  deviceAsset:
+                    - name: Asset-1
+                      channels:
+                        - name: Channel-1
         required: true
       responses:
         200:
@@ -39,6 +51,33 @@ paths:
             application/json:
               schema:
                 $ref: './deviceAsset.yaml#/components/schemas/deviceAssetValues'
+              examples:
+                Successful read:
+                  value:
+                    deviceAsset:
+                      - name: Asset-1
+                        channels:
+                          - name: Channel-1
+                            valueType: boolean
+                            value: true
+                            timestamp: '2019-09-12T14:50:24.446Z'
+                          - name: Channel-2
+                            valueType: integer
+                            value: 8
+                            timestamp: '2019-09-12T14:50:24.446Z'
+                Read with some errors:
+                  value:
+                    deviceAsset:
+                      - name: Asset-1
+                        channels:
+                          - name: Channel-1
+                            valueType: boolean
+                            value: true
+                            timestamp: '2019-09-12T14:50:24.446Z'
+                          - name: Channel-2
+                            valueType: integer
+                            error: Connection failed. Unable to Connect...
+                            timestamp: '2019-09-12T14:50:24.446Z'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
