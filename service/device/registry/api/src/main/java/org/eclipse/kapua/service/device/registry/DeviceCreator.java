@@ -12,20 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityCreator;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
-import org.eclipse.kapua.service.authorization.group.Group;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
-import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
-
+import java.util.List;
+import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.List;
+
+import org.eclipse.kapua.model.KapuaUpdatableEntityCreator;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.authorization.group.Group;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 
 /**
  * {@link DeviceCreator} encapsulates all the information needed to create a new {@link Device} in the system.<br>
@@ -67,7 +68,8 @@ import java.util.List;
         "customAttribute3",
         "customAttribute4",
         "customAttribute5",
-        "extendedProperties"
+        "extendedProperties",
+        "tagIds"
 }, factoryClass = DeviceXmlRegistry.class, factoryMethod = "newDeviceCreator")
 public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
 
@@ -557,4 +559,23 @@ public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
      * @since 1.5.0
      */
     void setExtendedProperties(List<DeviceExtendedProperty> extendedProperties);
+
+
+    /**
+     * Gets the list of tags associated with the device.
+     *
+     * @return The list of tags.
+     * @since 2.0.0
+     */
+    @XmlElement(name = "tagIds")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    Set<KapuaId> getTagIds();
+
+    /**
+     * Sets the list of tags associated with the device.
+     *
+     * @param tags The list of tags.
+     * @since 2.0.0
+     */
+    void setTagIds(Set<KapuaId> tags);
 }

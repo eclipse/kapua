@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
@@ -37,10 +41,6 @@ import org.eclipse.kapua.service.device.registry.common.DeviceValidation;
 import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 
 /**
  * {@link DeviceRegistryService} implementation.
@@ -118,6 +118,7 @@ public class DeviceRegistryServiceImpl
                     device.setCustomAttribute4(deviceCreator.getCustomAttribute4());
                     device.setCustomAttribute5(deviceCreator.getCustomAttribute5());
                     device.setExtendedProperties(deviceCreator.getExtendedProperties());
+                    device.setTagIds(deviceCreator.getTagIds());
 
                     device.setConnectionId(deviceCreator.getConnectionId());
                     device.setLastEventId(deviceCreator.getLastEventId());

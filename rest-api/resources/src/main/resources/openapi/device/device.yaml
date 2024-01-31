@@ -264,6 +264,12 @@ components:
             customAttribute5:
               description: A Custom Attirbute of this Device - 5
               type: string
+            tagIds:
+              description: A list of tag ID to link to the Device
+              type: array
+              items:
+                allOf:
+                  - $ref: '../openapi.yaml#/components/schemas/kapuaId'
           required:
             - clientId
           example:
@@ -279,6 +285,7 @@ components:
             osgiFrameworkVersion: 1.7.0
             acceptEncoding: gzip
             deviceCredentialsMode: LOOSE
+            tagIds: []
     deviceListResult:
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
