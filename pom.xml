@@ -49,6 +49,7 @@
         <commons-pool.version>2.3</commons-pool.version>
         <compress-lzf.version>1.0.3</compress-lzf.version>
         <cucumber.version>1.2.4</cucumber.version>
+        <!-- Do NOT bump eclipselink further than this version. For details, see issue: https://github.com/eclipse/kapua/issues/3955 -->
         <eclipselink.version>2.7.12</eclipselink.version>
         <dropwizard-metrics.version>3.2.2</dropwizard-metrics.version>
         <elasticsearch.version>7.8.1</elasticsearch.version>
