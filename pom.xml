@@ -70,7 +70,8 @@
         <commons-logging.version>1.2</commons-logging.version>
         <commons-pool.version>2.3</commons-pool.version>
         <compress-lzf.version>1.0.3</compress-lzf.version>
-        <eclipselink.version>2.7.7</eclipselink.version>
+        <!-- Do NOT bump eclipselink further than this version. For details, see issue: https://github.com/eclipse/kapua/issues/3955 -->
+        <eclipselink.version>2.7.12</eclipselink.version>
         <dropwizard-metrics.version>3.2.2</dropwizard-metrics.version>
         <elasticsearch.version>7.8.1</elasticsearch.version>
         <googleauth.version>1.5.0</googleauth.version>
@@ -1685,11 +1686,6 @@
             <dependency>
                 <groupId>org.eclipse.persistence</groupId>
                 <artifactId>org.eclipse.persistence.core</artifactId>
-                <version>${eclipselink.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.persistence</groupId>
-                <artifactId>org.eclipse.persistence.asm</artifactId>
                 <version>${eclipselink.version}</version>
             </dependency>
             <dependency>
