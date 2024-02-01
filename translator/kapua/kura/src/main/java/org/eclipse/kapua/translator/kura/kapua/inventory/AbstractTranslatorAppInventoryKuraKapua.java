@@ -147,6 +147,9 @@ public class AbstractTranslatorAppInventoryKuraKapua<M extends InventoryResponse
                     LOG.warn("Unrecognised KuraInventoryContainer.state '{}' received. Defaulting to UNKNOWN state for DeviceInventoryContainer {}", kuraInventoryContainer.getState(), deviceInventoryContainer.getName(), iae);
                     deviceInventoryContainer.setState(DeviceInventoryContainerState.UNKNOWN);
                 }
+            } else {
+                LOG.warn("Property KuraInventoryContainer.state '{}' not present. Defaulting to UNKNOWN state for DeviceInventoryContainer {}", kuraInventoryContainer.getState(), deviceInventoryContainer.getName());
+                deviceInventoryContainer.setState(DeviceInventoryContainerState.UNKNOWN);
             }
 
             deviceInventoryContainers.addInventoryContainer(deviceInventoryContainer);
