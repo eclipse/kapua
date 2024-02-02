@@ -39,25 +39,14 @@ public interface MfaOptionService extends KapuaEntityService<MfaOption, MfaOptio
     MfaOption findByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException;
 
     /**
-     * Enables the trust machine for the given {@link MfaOption}.
-     *
-     * @param mfaOption the {@link MfaOption}
-     * @return the value of the trust key in plain text
-     * @since 1.3.0
-     * @deprecated Since 2.0.0. Please make use of {@link #enableTrust(KapuaId, KapuaId)}
-     */
-    @Deprecated
-    String enableTrust(MfaOption mfaOption) throws KapuaException;
-
-    /**
      * Enables the trust machine for the {@link KapuaId} of the {@link MfaOption}.
      *
-     * @param scopeId     the scopeId
-     * @param mfaOptionId the {@link KapuaId} of the {@link MfaOption}
+     * @param scopeId the scopeId
+     * @param userId  the {@link KapuaId} of the User owning the {@link MfaOption}
      * @return the value of the trust key in plain text
      * @since 1.3.0
      */
-    String enableTrust(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException;
+    String enableTrust(KapuaId scopeId, KapuaId userId) throws KapuaException;
 
     /**
      * Disable the trust machine for the given {@link MfaOption}.
@@ -67,4 +56,15 @@ public interface MfaOptionService extends KapuaEntityService<MfaOption, MfaOptio
      * @since 1.3.0
      */
     void disableTrust(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException;
+
+    /**
+     * Disable the trust machine for the given {@link MfaOption}.
+     *
+     * @param scopeId the scopeid
+     * @param userId  the {@link KapuaId} of the User owning the {@link MfaOption}
+     * @since 1.3.0
+     */
+    void disableTrustByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException;
+
+    void deleteByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException;
 }

@@ -13,35 +13,35 @@
 package org.eclipse.kapua.service.authentication.credential.mfa;
 
 import org.eclipse.kapua.model.KapuaEntityFactory;
+import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaListResult;
 
 /**
  * {@link ScratchCodeFactory} definition.
  *
  * @see KapuaEntityFactory
  */
-public interface ScratchCodeFactory extends KapuaEntityFactory<ScratchCode, ScratchCodeCreator, ScratchCodeQuery, ScratchCodeListResult> {
+public interface ScratchCodeFactory extends KapuaObjectFactory {
+
+    ScratchCode newEntity(KapuaId scopeId);
+
+    /**
+     * Instantiates a new {@link KapuaListResult}.
+     *
+     * @return The newly instantiated {@link KapuaListResult}
+     * @since 1.0.0
+     */
+    ScratchCodeListResult newListResult();
 
     /**
      * Instantiates a new {@link ScratchCode}.
      *
-     * @param scopeId               The scope {@link KapuaId} to set into the {@link ScratchCode}.
+     * @param scopeId     The scope {@link KapuaId} to set into the {@link ScratchCode}.
      * @param mfaOptionId The {@link MfaOption} {@link KapuaId} to set into the
-     *                              {@link ScratchCode}.
-     * @param code                  The code to set into the {@link ScratchCode}.
+     *                    {@link ScratchCode}.
+     * @param code        The code to set into the {@link ScratchCode}.
      * @return The newly instantiated {@link ScratchCode}
      */
     ScratchCode newScratchCode(KapuaId scopeId, KapuaId mfaOptionId, String code);
-
-    /**
-     * Instantiates a new {@link ScratchCodeCreator}.
-     *
-     * @param scopeId               The scope {@link KapuaId} to set into the {@link ScratchCodeCreator}.
-     * @param mfaOptionId The {@link MfaOption} {@link KapuaId} to set into the
-     *                              {@link ScratchCode}.
-     * @param code                  The code to set into the {@link ScratchCode}.
-     * @return The newly instantiated {@link ScratchCodeCreator}
-     */
-    ScratchCodeCreator newCreator(KapuaId scopeId, KapuaId mfaOptionId, String code);
-
 }

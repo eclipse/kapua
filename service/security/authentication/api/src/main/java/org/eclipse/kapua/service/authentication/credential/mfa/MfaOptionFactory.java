@@ -24,23 +24,12 @@ import org.eclipse.kapua.service.authentication.token.AccessToken;
 public interface MfaOptionFactory extends KapuaEntityFactory<MfaOption, MfaOptionCreator, MfaOptionQuery, MfaOptionListResult> {
 
     /**
-     * Instantiates a new {@link MfaOption}.
-     *
-     * @param scopeId          The scope {@link KapuaId} to set into the {@link MfaOption}.
-     * @param userId           The {@link org.eclipse.kapua.service.user.User} {@link KapuaId} to set into the{@link AccessToken}.
-     * @param mfaSecretKey     The key to set into the {@link MfaOption}.
-     * @return The newly instantiated {@link MfaOption}
-     */
-    MfaOption newMfaOption(KapuaId scopeId, KapuaId userId, String mfaSecretKey);
-
-    /**
      * Instantiates a new {@link MfaOptionCreator}.
      *
-     * @param scopeId          The scope {@link KapuaId} to set into the {@link MfaOptionCreator}.
-     * @param userId           The {@link org.eclipse.kapua.service.user.User} {@link KapuaId} to set into the{@link AccessToken}.
-     * @param mfaSecretKey     The key to set into the {@link MfaOptionCreator}.
+     * @param scopeId The scope {@link KapuaId} to set into the {@link MfaOptionCreator}.
+     * @param userId  The {@link org.eclipse.kapua.service.user.User} {@link KapuaId} to set into the{@link AccessToken}.
      * @return The newly instantiated {@link MfaOptionCreator}
      */
-    MfaOptionCreator newCreator(KapuaId scopeId, KapuaId userId, String mfaSecretKey);
+    MfaOptionCreator newCreator(KapuaId scopeId, KapuaId userId);
 
 }

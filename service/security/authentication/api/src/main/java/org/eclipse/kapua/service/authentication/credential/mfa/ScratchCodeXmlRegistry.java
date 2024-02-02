@@ -38,17 +38,4 @@ public class ScratchCodeXmlRegistry {
     public ScratchCodeListResult newScratchCodeListResult() {
         return scratchCodeFactory.newListResult();
     }
-
-    /**
-     * Creates a new {@link ScratchCodeCreator} instance
-     *
-     * @return
-     */
-    public ScratchCodeCreator newScratchCodeCreator() {
-        return scratchCodeFactory.newCreator(null, null, null);
-    }
-
-    public ScratchCodeQuery newQuery() {
-        return scratchCodeFactory.newQuery(null);
-    }
 }

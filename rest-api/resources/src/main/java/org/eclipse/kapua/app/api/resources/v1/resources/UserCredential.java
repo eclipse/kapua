@@ -15,6 +15,7 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
@@ -30,7 +31,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Path("{scopeId}/user/credentials")
-public class UserCredential {
+public class UserCredential extends AbstractKapuaResource {
 
     @Inject
     public UserCredentialsService userCredentialsService;
@@ -43,7 +44,7 @@ public class UserCredential {
      * @return The updated {@link Credential}
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      */
-    @Path("/password")
+    @Path("credentials/password")
     @POST
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -63,7 +64,7 @@ public class UserCredential {
      * @since 2.0.0
      */
     @POST
-    @Path("{credentialId}/_reset")
+    @Path("credentials/{credentialId}/_reset")
     public Credential unlockCredential(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("credentialId") EntityId credentialId,

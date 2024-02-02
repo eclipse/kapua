@@ -218,7 +218,6 @@ public class AuthenticationModule extends AbstractKapuaModule {
             MfaOptionRepository mfaOptionRepository,
             AccountService accountService,
             ScratchCodeRepository scratchCodeRepository,
-            ScratchCodeFactory scratchCodeFactory,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             UserService userService,
@@ -234,7 +233,6 @@ public class AuthenticationModule extends AbstractKapuaModule {
                 mfaOptionRepository,
                 accountService,
                 scratchCodeRepository,
-                scratchCodeFactory,
                 authorizationService,
                 permissionFactory,
                 userService,
@@ -248,7 +246,6 @@ public class AuthenticationModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             ScratchCodeRepository scratchCodeRepository,
-            ScratchCodeFactory scratchCodeFactory,
             KapuaJpaTxManagerFactory jpaTxManagerFactory,
             AuthenticationUtils authenticationUtils) {
         return new ScratchCodeServiceImpl(
@@ -256,7 +253,6 @@ public class AuthenticationModule extends AbstractKapuaModule {
                 permissionFactory,
                 jpaTxManagerFactory.create("kapua-authentication"),
                 scratchCodeRepository,
-                scratchCodeFactory,
                 authenticationUtils);
     }
 

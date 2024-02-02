@@ -35,7 +35,6 @@ public class MfaOptionFactoryImplTest {
     MfaOptionFactoryImpl mfaOptionFactoryImpl;
     KapuaId[] scopeIds;
     KapuaEid[] userIds;
-    String[] mfaSecretKeys;
     MfaOption mfaOption;
     Date trustExpirationDate;
     Date modifiedOn;
@@ -45,7 +44,6 @@ public class MfaOptionFactoryImplTest {
         mfaOptionFactoryImpl = new MfaOptionFactoryImpl();
         scopeIds = new KapuaId[]{null, KapuaId.ONE};
         userIds = new KapuaEid[]{null, new KapuaEid()};
-        mfaSecretKeys = new String[]{null, "", "!!mfaSecretKey-1", "#1(newMfa.,/SecretKey)9--99", "!$$ 1-2 key//", "mfa_key(....)<00>"};
         mfaOption = Mockito.mock(MfaOption.class);
         trustExpirationDate = new Date();
         modifiedOn = new Date();
@@ -55,12 +53,9 @@ public class MfaOptionFactoryImplTest {
     public void newCreatorScopeIdUserIdMfaSecretKeyParametersTest() {
         for (KapuaId scopeId : scopeIds) {
             for (KapuaEid userId : userIds) {
-                for (String mfaSecretKey : mfaSecretKeys) {
-                    MfaOptionCreatorImpl mfaOptionCreatorImpl = mfaOptionFactoryImpl.newCreator(scopeId, userId, mfaSecretKey);
-                    Assert.assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionCreatorImpl.getScopeId());
-                    Assert.assertEquals("Expected and actual values should be the same.", userId, mfaOptionCreatorImpl.getUserId());
-                    Assert.assertEquals("Expected and actual values should be the same.", mfaSecretKey, mfaOptionCreatorImpl.getMfaSecretKey());
-                }
+                MfaOptionCreator mfaOptionCreatorImpl = mfaOptionFactoryImpl.newCreator(scopeId, userId);
+                Assert.assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionCreatorImpl.getScopeId());
+                Assert.assertEquals("Expected and actual values should be the same.", userId, mfaOptionCreatorImpl.getUserId());
             }
         }
     }
@@ -75,20 +70,6 @@ public class MfaOptionFactoryImplTest {
         for (KapuaId scopeId : scopeIds) {
             MfaOption mfaOption = mfaOptionFactoryImpl.newEntity(scopeId);
             Assert.assertEquals("Expected and actual values should be the same.", scopeId, mfaOption.getScopeId());
-        }
-    }
-
-    @Test
-    public void newMfaOptionTest() {
-        for (KapuaId scopeId : scopeIds) {
-            for (KapuaId userId : userIds) {
-                for (String mfaSecretKey : mfaSecretKeys) {
-                    MfaOption mfaOption = mfaOptionFactoryImpl.newMfaOption(scopeId, userId, mfaSecretKey);
-                    Assert.assertEquals("Expected and actual values should be the same.", scopeId, mfaOption.getScopeId());
-                    Assert.assertEquals("Expected and actual values should be the same.", userId, mfaOption.getUserId());
-                    Assert.assertEquals("Expected and actual values should be the same.", mfaSecretKey, mfaOption.getMfaSecretKey());
-                }
-            }
         }
     }
 

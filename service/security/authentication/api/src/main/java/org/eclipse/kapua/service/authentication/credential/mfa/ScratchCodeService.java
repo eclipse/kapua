@@ -14,16 +14,12 @@ package org.eclipse.kapua.service.authentication.credential.mfa;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.KapuaEntityService;
-import org.eclipse.kapua.service.KapuaUpdatableEntityService;
+import org.eclipse.kapua.service.KapuaService;
 
 /**
  * {@link ScratchCode} service definition.
  */
-public interface ScratchCodeService extends KapuaEntityService<ScratchCode, ScratchCodeCreator>, KapuaUpdatableEntityService<ScratchCode> {
-
-
+public interface ScratchCodeService extends KapuaService {
     /**
      * Return the ScratchCode list result looking by {@link MfaOption} identifier (and also scope identifier)
      *
@@ -34,12 +30,6 @@ public interface ScratchCodeService extends KapuaEntityService<ScratchCode, Scra
      */
     ScratchCodeListResult findByMfaOptionId(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException;
 
+    void delete(KapuaId scopeId, KapuaId scratchCodeId) throws KapuaException;
 
-    /**
-     * Queries for all the {@link ScratchCode}
-     *
-     * @param query
-     */
-    @Override
-    ScratchCodeListResult query(KapuaQuery query) throws KapuaException;
 }

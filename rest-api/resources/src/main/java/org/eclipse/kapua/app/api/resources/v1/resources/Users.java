@@ -19,6 +19,7 @@ import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
@@ -243,11 +244,13 @@ public class Users extends AbstractKapuaResource {
      * @return The newly created {@link MfaOption} object.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.4.0
+     * @deprecated since 2.0.0 - use POST {scopeId}/user/mfa instead (see {@link UserCredential})
      */
     @POST
     @Path("{userId}/mfa")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Deprecated
     public Response createMfa(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("userId") EntityId userId,
@@ -278,9 +281,6 @@ public class Users extends AbstractKapuaResource {
             throw new KapuaEntityNotFoundException(MfaOption.TYPE, "MfaOption");  // TODO: not sure "MfaOption" it's the best value to return here
         }
 
-        // Set the mfa secret key to null before returning the mfaOption, due to improve the security
-        mfaOption.setMfaSecretKey(null);
-
         return mfaOption;
     }
 
@@ -292,14 +292,15 @@ public class Users extends AbstractKapuaResource {
      * @return HTTP 200 if operation has completed successfully.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.4.0
+     * @deprecated since 2.0.0 - use DELETE {scopeId}/user/mfa instead (see {@link UserCredential})
      */
     @DELETE
+    @Deprecated
     @Path("{userId}/mfa")
     public Response deleteMfa(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("userId") EntityId userId) throws KapuaException {
-        MfaOption mfaOption = findMfa(scopeId, userId);
-        mfaOptionService.delete(scopeId, mfaOption.getId());
+        mfaOptionService.deleteByUserId(scopeId, KapuaSecurityUtils.getSession().getUserId());
 
         return returnNoContent();
     }
@@ -312,16 +313,17 @@ public class Users extends AbstractKapuaResource {
      * @return HTTP 200 if operation has completed successfully.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.4.0
+     * @deprecated since 2.0.0 - use DELETE {scopeId}/user/mfa/disableTrust instead (see {@link UserCredential})
      */
     @DELETE
+    @Deprecated
     @Path("{userId}/mfa/disableTrust")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response disableTrust(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("userId") EntityId userId) throws KapuaException {
-        MfaOption mfaOption = findMfa(scopeId, userId);
-        mfaOptionService.disableTrust(scopeId, mfaOption.getId());
+        mfaOptionService.disableTrustByUserId(scopeId, userId);
 
         return returnNoContent();
     }

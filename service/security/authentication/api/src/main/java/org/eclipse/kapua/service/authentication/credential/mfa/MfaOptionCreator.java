@@ -48,19 +48,4 @@ public interface MfaOptionCreator extends KapuaEntityCreator<MfaOption> {
      * @since 1.0
      */
     void setUserId(KapuaId userId);
-
-    /**
-     * Return the {@link MfaOption} key
-     *
-     * @return
-     */
-    @XmlElement(name = "mfaSecretKey")
-    String getMfaSecretKey();
-
-    /**
-     * Set the {@link MfaOption} key
-     *
-     * @param mfaSecretKey
-     */
-    void setMfaSecretKey(String mfaSecretKey);
 }

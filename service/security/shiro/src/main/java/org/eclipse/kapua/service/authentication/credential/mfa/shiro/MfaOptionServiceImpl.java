@@ -32,7 +32,6 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.credential.mfa.KapuaExistingMfaOptionException;
-import org.eclipse.kapua.service.authentication.credential.mfa.KapuaExistingScratchCodesException;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionAttributes;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
@@ -40,9 +39,6 @@ import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResu
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionRepository;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
-import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeCreator;
-import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeFactory;
-import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeRepository;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
@@ -54,6 +50,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserType;
+import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,11 +63,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * {@link MfaOptionService} implementation.
@@ -89,7 +88,6 @@ public class MfaOptionServiceImpl implements MfaOptionService {
     private final MfaOptionRepository mfaOptionRepository;
     private final AccountService accountService;
     private final ScratchCodeRepository scratchCodeRepository;
-    private final ScratchCodeFactory scratchCodeFactory;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final UserService userService;
@@ -101,7 +99,6 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             MfaOptionRepository mfaOptionRepository,
             AccountService accountService,
             ScratchCodeRepository scratchCodeRepository,
-            ScratchCodeFactory scratchCodeFactory,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             UserService userService,
@@ -112,7 +109,6 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         this.mfaOptionRepository = mfaOptionRepository;
         this.accountService = accountService;
         this.scratchCodeRepository = scratchCodeRepository;
-        this.scratchCodeFactory = scratchCodeFactory;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.userService = userService;
@@ -133,19 +129,14 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         if (!expectedUser.equals(mfaOptionCreator.getUserId())) {
             throw new SelfManagedOnlyException();
         }
-        final String fullKey = mfaAuthenticator.generateKey();
 
+        //Generate the key and then create the entity in the db
+        final String fullKey = mfaAuthenticator.generateKey();
         final MfaOption option = txManager.execute(tx -> {
             // Check that the user is an internal user (external users cannot have the MFA enabled)
-            final MfaOptionCreator finalMfaOptionCreator = mfaOptionCreator;
-            User user = Optional.ofNullable(
-                    KapuaSecurityUtils.doPrivileged(() ->
-                            userService.find(finalMfaOptionCreator.getScopeId(), finalMfaOptionCreator.getUserId())
-                    )
-            ).orElseThrow(() -> new KapuaEntityNotFoundException(User.TYPE, finalMfaOptionCreator.getUserId()));
-            if (!user.getUserType().equals(UserType.INTERNAL) || user.getExternalId() != null) {
-                throw new InternalUserOnlyException();
-            }
+            final User user = fetchUser(mfaOptionCreator);
+            final Account account = fetchAccount(mfaOptionCreator);
+
             // Check existing MfaOption
             Optional<MfaOption> existingMfaOption = mfaOptionRepository.findByUserId(tx, mfaOptionCreator.getScopeId(), mfaOptionCreator.getUserId());
             if (existingMfaOption.isPresent()) {
@@ -159,25 +150,36 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             final MfaOption mfaOption = mfaOptionRepository.create(tx, toCreate);
 
             // generating base64 QR code image
-            Account account = Optional.ofNullable(
-                    KapuaSecurityUtils.doPrivileged(() ->
-                            accountService.find(KapuaId.ANY, finalMfaOptionCreator.getScopeId())
-                    )
-            ).orElseThrow(() -> new KapuaEntityNotFoundException(Account.TYPE, finalMfaOptionCreator.getScopeId()));
-            mfaOption.setQRCodeImage(generateQRCode(account.getOrganization().getName(), account.getName(), user.getName(), fullKey));
 
+            mfaOption.setQRCodeImage(generateQRCode(account.getOrganization().getName(), account.getName(), user.getName(), fullKey));
+            mfaOption.setScratchCodes(createAllScratchCodes(tx, mfaOption.getScopeId(), mfaOption.getId()));
             return mfaOption;
         });
-
-        // generating scratch codes
-        final ScratchCodeCreator scratchCodeCreator = scratchCodeFactory.newCreator(mfaOptionCreator.getScopeId(), option.getId(), null);
-        final ScratchCodeListResult scratchCodeListResult = createAllScratchCodes(scratchCodeCreator);
-        final ScratchCodeListResult scratchCodes = scratchCodeListResult;
-        option.setScratchCodes(scratchCodes.getItems());
 
         // Do post persist magic on key value (note that this is the only place in which the key is returned in plain-text)
         option.setMfaSecretKey(fullKey);
         return option;
+    }
+
+    private Account fetchAccount(MfaOptionCreator mfaOptionCreator) throws KapuaException {
+        final Account account = Optional.ofNullable(
+                KapuaSecurityUtils.doPrivileged(() ->
+                        accountService.find(KapuaId.ANY, mfaOptionCreator.getScopeId())
+                )
+        ).orElseThrow(() -> new KapuaEntityNotFoundException(Account.TYPE, mfaOptionCreator.getScopeId()));
+        return account;
+    }
+
+    private User fetchUser(MfaOptionCreator mfaOptionCreator) throws KapuaException {
+        final User user = Optional.ofNullable(
+                KapuaSecurityUtils.doPrivileged(() ->
+                        userService.find(mfaOptionCreator.getScopeId(), mfaOptionCreator.getUserId())
+                )
+        ).orElseThrow(() -> new KapuaEntityNotFoundException(User.TYPE, mfaOptionCreator.getUserId()));
+        if (!user.getUserType().equals(UserType.INTERNAL) || user.getExternalId() != null) {
+            throw new InternalUserOnlyException();
+        }
+        return user;
     }
 
     /**
@@ -185,55 +187,29 @@ public class MfaOptionServiceImpl implements MfaOptionService {
      * The number of generated scratch codes is decided through the {@link org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator} service.
      * The scratch code provided within the scratchCodeCreator parameter is ignored.
      *
-     * @param scratchCodeCreator
      * @return
      * @throws KapuaException
      */
-    public ScratchCodeListResult createAllScratchCodes(ScratchCodeCreator scratchCodeCreator) throws KapuaException {
-        // Argument Validation
-        ArgumentValidator.notNull(scratchCodeCreator, "scratchCodeCreator");
-        ArgumentValidator.notNull(scratchCodeCreator.getScopeId(), "scratchCodeCreator.scopeId");
-        ArgumentValidator.notNull(scratchCodeCreator.getMfaOptionId(), "scratchCodeCreator.mfaOptionId");
-
-        List<String> codes = mfaAuthenticator.generateCodes();
-        ScratchCodeListResult scratchCodeListResult = new ScratchCodeListResultImpl();
-        // Check existing ScratchCodes
-        ScratchCodeListResult existingScratchCodeListResult = txManager.execute(tx ->
-                scratchCodeRepository.findByMfaOptionId(tx, scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaOptionId()));
-        if (!existingScratchCodeListResult.isEmpty()) {
-            throw new KapuaExistingScratchCodesException();
-        }
-
+    private List<ScratchCode> createAllScratchCodes(TxContext tx, KapuaId scopeId, KapuaId mfaOptionImpl) throws KapuaException {
+        final List<String> codes = mfaAuthenticator.generateCodes();
+        final List<ScratchCode> res = new ArrayList<>();
         for (String code : codes) {
-            scratchCodeCreator.setCode(code);
+
             // Crypto code (it's ok to do than if BCrypt is used when checking a provided scratch code against the stored one)
-            String encryptedCode = authenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, scratchCodeCreator.getCode());
+            String encryptedCode = authenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, code);
             // Create code
-            ScratchCodeImpl codeImpl = new ScratchCodeImpl(scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaOptionId(), encryptedCode);
-
-            ScratchCode scratchCode = txManager.execute(tx -> scratchCodeRepository.create(tx, codeImpl));
-
-            // setting back the non-encrypted code, so it can be read from the user only one time after creation
-            scratchCode.setCode(code);
-
-            scratchCodeListResult.addItem(scratchCode);
+            ScratchCode scratchCode = scratchCodeRepository.create(tx, new ScratchCodeImpl(scopeId, mfaOptionImpl, encryptedCode));
+            //return a copy of the created entity, with the code in clear to be seen by the user
+            final ScratchCodeImpl clearCodeClone = new ScratchCodeImpl(scratchCode);
+            clearCodeClone.setCode(code);
+            res.add(clearCodeClone);
         }
-
-        return scratchCodeListResult;
+        return res;
     }
 
     @Override
     public MfaOption update(MfaOption mfaOption) throws KapuaException {
-        // Argument Validation
-        ArgumentValidator.notNull(mfaOption, "mfaOption");
-        ArgumentValidator.notNull(mfaOption.getId(), "mfaOption.id");
-        ArgumentValidator.notNull(mfaOption.getScopeId(), "mfaOption.scopeId");
-        ArgumentValidator.notNull(mfaOption.getUserId(), "mfaOption.userId");
-        ArgumentValidator.notEmptyOrNull(mfaOption.getMfaSecretKey(), "mfaOption.mfaSecretKey");
-        // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.write, mfaOption.getScopeId()));
-
-        return txManager.execute(tx -> mfaOptionRepository.update(tx, mfaOption));
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -245,7 +221,17 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.read, scopeId));
 
         return txManager.execute(tx -> mfaOptionRepository.find(tx, scopeId, mfaOptionId))
+                .map(this::clearSecuritySensibleFields)
                 .orElse(null);
+    }
+
+    private MfaOption clearSecuritySensibleFields(MfaOption mfaOption) {
+// Set the mfa secret key to null before returning the mfaOption, because they should never be seen again
+        mfaOption.setMfaSecretKey(null);
+        mfaOption.setTrustKey(null);
+        mfaOption.setScratchCodes(null);
+        mfaOption.setQRCodeImage(null);
+        return mfaOption;
     }
 
     @Override
@@ -255,7 +241,16 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.read, query.getScopeId()));
 
-        return txManager.execute(tx -> mfaOptionRepository.query(tx, query));
+        final MfaOptionListResult res = txManager.execute(tx -> mfaOptionRepository.query(tx, query));
+        if (res.isEmpty() == false) {
+            final MfaOptionListResultImpl cleanedRes = new MfaOptionListResultImpl();
+            cleanedRes.addItems(res.getItems()
+                    .stream()
+                    .map(this::clearSecuritySensibleFields)
+                    .collect(Collectors.toList()));
+            return cleanedRes;
+        }
+        return res;
     }
 
     @Override
@@ -280,6 +275,20 @@ public class MfaOptionServiceImpl implements MfaOptionService {
     }
 
     @Override
+    public void deleteByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(userId, "userId");
+        // Check Access
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.delete, scopeId));
+
+        txManager.execute(tx -> mfaOptionRepository
+                .findByUserId(tx, scopeId, userId)
+                .map(d -> mfaOptionRepository.delete(tx, d))
+                .orElseThrow(() -> new KapuaEntityNotFoundException(MfaOptionImpl.TYPE, userId)));
+    }
+
+    @Override
     public MfaOption findByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
         // Argument Validation
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
@@ -288,31 +297,23 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.read, scopeId));
 
         return txManager.execute(tx -> mfaOptionRepository.findByUserId(tx, scopeId, userId))
+                .map(this::clearSecuritySensibleFields)
                 .orElse(null);
     }
 
     @Override
-    public String enableTrust(MfaOption mfaOption) throws KapuaException {
-
-        // Argument Validation (fields validation is performed inside the 'update' method)
-        ArgumentValidator.notNull(mfaOption, "mfaOption");
-
-        return enableTrust(mfaOption.getScopeId(), mfaOption.getId());
-    }
-
-    @Override
-    public String enableTrust(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
-        return doEnableTrust(scopeId, mfaOptionId);
-    }
-
-    private String doEnableTrust(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
+    public String enableTrust(KapuaId scopeId, KapuaId userId) throws KapuaException {
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(mfaOptionId, "mfaOptionId");
+        ArgumentValidator.notNull(userId, "userId");
+        // Check Access
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.write, scopeId));
+
         return txManager.execute(tx -> {
             // Checking existence
-            MfaOption mfaOption = mfaOptionRepository.find(tx, scopeId, mfaOptionId)
-                    .orElseThrow(() -> new KapuaEntityNotFoundException(MfaOption.TYPE, mfaOptionId));
+            MfaOption mfaOption = mfaOptionRepository.findByUserId(tx, scopeId, userId)
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(MfaOption.TYPE, userId));
 
             // Trust key generation always performed
             // This allows the use only of a single trusted machine,
@@ -333,22 +334,42 @@ public class MfaOptionServiceImpl implements MfaOptionService {
 
     @Override
     public void disableTrust(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
+        // Argument Validation
+        ArgumentValidator.notNull(mfaOptionId, "mfaOptionId");
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.write, scopeId));
         txManager.execute(tx -> {
-            // Argument Validation
-            ArgumentValidator.notNull(mfaOptionId, "mfaOptionId");
-            ArgumentValidator.notNull(scopeId, "scopeId");
-
             // extracting the MfaOption
             MfaOption mfaOption = mfaOptionRepository.find(tx, scopeId, mfaOptionId)
                     .orElseThrow(() -> new KapuaEntityNotFoundException(MfaOption.TYPE, mfaOptionId));
 
-            // Reset the trust machine fields
-            mfaOption.setTrustKey(null);
-            mfaOption.setTrustExpirationDate(null);
-
-            return mfaOptionRepository.update(tx, mfaOption);
+            return doDisableTrust(tx, mfaOption);
         });
     }
+
+    @Override
+    public void disableTrustByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
+        // Argument Validation
+        ArgumentValidator.notNull(userId, "userId");
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        txManager.execute(tx -> {
+            // extracting the MfaOption
+            MfaOption mfaOption = mfaOptionRepository.findByUserId(tx, scopeId, userId)
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(MfaOption.TYPE, userId));
+
+            // Reset the trust machine fields
+            return doDisableTrust(tx, mfaOption);
+        });
+    }
+
+    private MfaOption doDisableTrust(TxContext tx, MfaOption mfaOption) throws KapuaException {
+        // Reset the trust machine fields
+        mfaOption.setTrustKey(null);
+        mfaOption.setTrustExpirationDate(null);
+
+        return mfaOptionRepository.update(tx, mfaOption);
+    }
+
 
     /**
      * Generate the trust key string.

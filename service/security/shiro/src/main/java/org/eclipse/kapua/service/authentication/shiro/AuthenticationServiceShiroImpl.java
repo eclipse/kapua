@@ -44,7 +44,6 @@ import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
@@ -570,8 +569,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
             if (usernamePasswordCredentials.getTrustMe()) {
                 String trustKey = KapuaSecurityUtils.doPrivileged(() -> {
-                    MfaOption mfaOption = mfaOptionService.findByUserId(accessToken.getScopeId(), accessToken.getUserId());
-                    return mfaOptionService.enableTrust(mfaOption.getScopeId(), mfaOption.getId());
+                    return mfaOptionService.enableTrust(accessToken.getScopeId(), accessToken.getUserId());
                 });
 
                 accessToken.setTrustKey(trustKey);

@@ -45,7 +45,7 @@ public class MfaOptionXmlRegistry {
      * @return
      */
     public MfaOptionCreator newMfaOptionCreator() {
-        return mfaOptionFactory.newCreator(null, null, null);
+        return mfaOptionFactory.newCreator(null, null);
     }
 
     public MfaOptionQuery newQuery() {

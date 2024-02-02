@@ -12,21 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.steps;
 
-import java.math.BigInteger;
-import java.text.MessageFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import javax.inject.Inject;
-
 import com.google.inject.Singleton;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -90,6 +75,21 @@ import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
 import org.junit.Assert;
+
+import javax.inject.Inject;
+import java.math.BigInteger;
+import java.text.MessageFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Callable;
 
 /**
  * Implementation of Gherkin steps used in user test scenarios.
@@ -1210,7 +1210,7 @@ public class UserServiceSteps extends TestBase {
         KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
 
         MfaOptionFactory mfaFactory = KapuaLocator.getInstance().getFactory(MfaOptionFactoryImpl.class);
-        MfaOptionCreator mfaCreator = mfaFactory.newCreator(scopeId, userId, "mfaSecretKey");
+        MfaOptionCreator mfaCreator = mfaFactory.newCreator(scopeId, userId);
         MfaOptionService mfaOptionService = KapuaLocator.getInstance().getService(MfaOptionService.class);
         try {
             mfaOptionService.create(mfaCreator);

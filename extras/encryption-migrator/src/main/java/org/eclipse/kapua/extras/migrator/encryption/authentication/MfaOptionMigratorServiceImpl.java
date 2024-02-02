@@ -79,17 +79,22 @@ public class MfaOptionMigratorServiceImpl implements MfaOptionService {
     }
 
     @Override
-    public String enableTrust(MfaOption mfaOption) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public String enableTrust(KapuaId scopeId, KapuaId mfaOptionId) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public void disableTrust(KapuaId scopeId, KapuaId mfaOptionId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void disableTrustByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void deleteByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
         throw new UnsupportedOperationException();
     }
 }

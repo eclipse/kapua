@@ -12,13 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
-import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
-import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeCreator;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeFactory;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
-import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeQuery;
 
 import javax.inject.Singleton;
 
@@ -29,8 +26,8 @@ import javax.inject.Singleton;
 public class ScratchCodeFactoryImpl implements ScratchCodeFactory {
 
     @Override
-    public ScratchCodeCreatorImpl newCreator(KapuaId scopeId, KapuaId mfaOptionId, String code) {
-        return new ScratchCodeCreatorImpl(scopeId, mfaOptionId, code);
+    public ScratchCode newEntity(KapuaId scopeId) {
+        return new ScratchCodeImpl(scopeId);
     }
 
     @Override
@@ -39,31 +36,7 @@ public class ScratchCodeFactoryImpl implements ScratchCodeFactory {
     }
 
     @Override
-    public ScratchCode newEntity(KapuaId scopeId) {
-        return new ScratchCodeImpl(scopeId);
-    }
-
-    @Override
     public ScratchCode newScratchCode(KapuaId scopeId, KapuaId mfaOptionId, String code) {
         return new ScratchCodeImpl(scopeId, mfaOptionId, code);
-    }
-
-    @Override
-    public ScratchCodeQuery newQuery(KapuaId scopeId) {
-        return new ScratchCodeQueryImpl(scopeId);
-    }
-
-    @Override
-    public ScratchCodeCreator newCreator(KapuaId scopeId) {
-        return new ScratchCodeCreatorImpl(scopeId);
-    }
-
-    @Override
-    public ScratchCode clone(ScratchCode scratchCode) {
-        try {
-            return new ScratchCodeImpl(scratchCode);
-        } catch (Exception e) {
-            throw new KapuaEntityCloneException(e, ScratchCode.TYPE, scratchCode);
-        }
     }
 }

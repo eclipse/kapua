@@ -95,9 +95,7 @@ import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResu
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionQuery;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionXmlRegistry;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
-import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeCreator;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
-import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeQuery;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeXmlRegistry;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.LoginInfo;
@@ -618,8 +616,6 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     MfaOptionXmlRegistry.class,
                     ScratchCode.class,
                     ScratchCodeListResult.class,
-                    ScratchCodeCreator.class,
-                    ScratchCodeQuery.class,
                     ScratchCodeXmlRegistry.class,
 
                     // Permission

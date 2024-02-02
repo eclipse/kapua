@@ -25,19 +25,16 @@ public class MfaOptionCreatorImpl extends AbstractKapuaEntityCreator<MfaOption> 
     private static final long serialVersionUID = -4619585500941519330L;
 
     private KapuaId userId;
-    private String mfaSecretKey;
 
     /**
      * Constructor
      *
-     * @param scopeId          scope identifier
-     * @param userId           user identifier
-     * @param mfaSecretKey the secret key
+     * @param scopeId scope identifier
+     * @param userId  user identifier
      */
-    public MfaOptionCreatorImpl(KapuaId scopeId, KapuaId userId, String mfaSecretKey) {
+    public MfaOptionCreatorImpl(KapuaId scopeId, KapuaId userId) {
         super(scopeId);
         this.userId = userId;
-        this.mfaSecretKey = mfaSecretKey;
     }
 
     public MfaOptionCreatorImpl(KapuaId scopeId) {
@@ -54,13 +51,4 @@ public class MfaOptionCreatorImpl extends AbstractKapuaEntityCreator<MfaOption> 
         this.userId = userId;
     }
 
-    @Override
-    public String getMfaSecretKey() {
-        return mfaSecretKey;
-    }
-
-    @Override
-    public void setMfaSecretKey(String mfaSecretKey) {
-        this.mfaSecretKey = mfaSecretKey;
-    }
 }
