@@ -40,10 +40,10 @@ components:
         inventoryItems:
           - name: adduser
             version: 3.118
-            type: DEB
-          - name: alsa-utils
-            version: 1.1.8-2
-            type: DEB
+            itemType: DEB
+          - name: redis
+            version: latest
+            itemType: DOCKER
     deviceInventoryBundle:
       type: object
       properties:
