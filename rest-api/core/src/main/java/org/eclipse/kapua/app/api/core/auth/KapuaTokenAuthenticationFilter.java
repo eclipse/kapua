@@ -83,7 +83,7 @@ public class KapuaTokenAuthenticationFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        // Continue with the filter chain, because CORS headers are still needed for bad authorization or token expired
+        // Continue with the filter chain, because CORS headers are still needed
         return true;
     }
 
@@ -92,9 +92,9 @@ public class KapuaTokenAuthenticationFilter extends AuthenticatingFilter {
     private String handleAuthException(AuthenticationException ae) {
         String errorMessageInResponse = "An error occurred during the authentication process with the provided access token";
         if (ae instanceof MalformedAccessTokenException ||
-            ae instanceof InvalidatedAccessTokenException ||
-            ae instanceof ExpiredAccessTokenException) {
-                errorMessageInResponse = ae.getMessage();
+                ae instanceof InvalidatedAccessTokenException ||
+                ae instanceof ExpiredAccessTokenException) {
+            errorMessageInResponse = ae.getMessage();
         }
         return errorMessageInResponse;
     }

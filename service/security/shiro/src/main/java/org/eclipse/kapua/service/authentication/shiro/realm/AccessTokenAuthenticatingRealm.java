@@ -28,6 +28,7 @@ import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
+import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.shiro.AccessTokenCredentialsImpl;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.ExpiredAccessTokenException;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.InvalidatedAccessTokenException;
@@ -35,7 +36,6 @@ import org.eclipse.kapua.service.authentication.shiro.exceptions.MalformedAccess
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.authentication.AuthenticationService;
 
 import java.util.Date;
 
@@ -135,4 +135,5 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
     public boolean supports(AuthenticationToken authenticationToken) {
         return authenticationToken instanceof AccessTokenCredentialsImpl;
     }
+
 }
