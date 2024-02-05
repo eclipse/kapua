@@ -32,6 +32,6 @@ public class AccessTokenImplJpaRepository
 
     @Override
     public Optional<AccessToken> findByTokenId(TxContext tx, String tokenId) {
-        return doFindByField(tx, KapuaId.ANY, AccessTokenAttributes.TOKEN_ID, tokenId);
+        return doFindByField(tx, KapuaId.ANY, AccessTokenAttributes.TOKEN_IDENTIFIER, tokenId);
     }
 }

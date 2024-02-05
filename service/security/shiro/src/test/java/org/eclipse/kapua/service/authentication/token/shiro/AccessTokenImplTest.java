@@ -31,7 +31,7 @@ public class AccessTokenImplTest {
 
     KapuaId[] scopeIds;
     KapuaEid[] userIds;
-    String[] tokenIds, refreshTokens;
+    String[] tokenIds, refreshTokens, tokenIdentifiers;
     Date[] expiresOnDates, refreshExpiresOnDates;
     AccessToken accessToken;
     Date expiresOn, refreshExpiresOn, invalidatedOn, modifiedOn, createdOn;
@@ -51,6 +51,7 @@ public class AccessTokenImplTest {
         invalidatedOn = new Date();
         modifiedOn = new Date();
         createdOn = new Date();
+        tokenIdentifiers = new String[]{"a2fe104f-5d03-4a09-a28d-817ebbc85901", "8e075aeb-be2a-49a7-8dec-346760375d19", "e71b2f52-e02e-4e24-9147-96674e3bf599"};
 
         Mockito.when(accessToken.getId()).thenReturn(KapuaId.ANY);
         Mockito.when(accessToken.getScopeId()).thenReturn(KapuaId.ONE);
@@ -67,7 +68,7 @@ public class AccessTokenImplTest {
         Mockito.when(accessToken.getOptlock()).thenReturn(10);
 
         accessTokenImpl1 = new AccessTokenImpl();
-        accessTokenImpl2 = new AccessTokenImpl(KapuaId.ONE, new KapuaEid(KapuaId.ONE), "tokenId", expiresOn, "refreshToken", refreshExpiresOn);
+        accessTokenImpl2 = new AccessTokenImpl(KapuaId.ONE, new KapuaEid(KapuaId.ONE), "tokenId", expiresOn, "refreshToken", refreshExpiresOn, "id");
         accessTokenImpl3 = new AccessTokenImpl(KapuaId.ONE);
         accessTokenImpl4 = new AccessTokenImpl(accessToken);
     }
@@ -91,13 +92,16 @@ public class AccessTokenImplTest {
                     for (Date expiresOnDate : expiresOnDates) {
                         for (String refreshToken : refreshTokens) {
                             for (Date refreshExpiresOnDate : refreshExpiresOnDates) {
-                                AccessTokenImpl accessTokenImpl = new AccessTokenImpl(scopeId, userId, tokenId, expiresOnDate, refreshToken, refreshExpiresOnDate);
-                                Assert.assertEquals("Expected and actual values should be the same.", scopeId, accessTokenImpl.getScopeId());
-                                Assert.assertEquals("Expected and actual values should be the same.", userId, accessTokenImpl.getUserId());
-                                Assert.assertEquals("Expected and actual values should be the same.", tokenId, accessTokenImpl.getTokenId());
-                                Assert.assertEquals("Expected and actual values should be the same.", expiresOnDate, accessTokenImpl.getExpiresOn());
-                                Assert.assertEquals("Expected and actual values should be the same.", refreshToken, accessTokenImpl.getRefreshToken());
-                                Assert.assertEquals("Expected and actual values should be the same.", refreshExpiresOnDate, accessTokenImpl.getRefreshExpiresOn());
+                                for (String tokenIdentifier : tokenIdentifiers) {
+                                    AccessTokenImpl accessTokenImpl = new AccessTokenImpl(scopeId, userId, tokenId, expiresOnDate, refreshToken, refreshExpiresOnDate, tokenIdentifier);
+                                    Assert.assertEquals("Expected and actual values should be the same.", scopeId, accessTokenImpl.getScopeId());
+                                    Assert.assertEquals("Expected and actual values should be the same.", userId, accessTokenImpl.getUserId());
+                                    Assert.assertEquals("Expected and actual values should be the same.", tokenId, accessTokenImpl.getTokenId());
+                                    Assert.assertEquals("Expected and actual values should be the same.", expiresOnDate, accessTokenImpl.getExpiresOn());
+                                    Assert.assertEquals("Expected and actual values should be the same.", refreshToken, accessTokenImpl.getRefreshToken());
+                                    Assert.assertEquals("Expected and actual values should be the same.", refreshExpiresOnDate, accessTokenImpl.getRefreshExpiresOn());
+                                    Assert.assertEquals("Expected and actual values should be the same.", tokenIdentifier, accessTokenImpl.getTokenIdentifier());
+                                }
                             }
                         }
                     }

@@ -26,6 +26,6 @@ public class AccessTokenXmlRegistry {
     }
 
     public AccessTokenCreator newAccessTokenCreator() {
-        return accessTokenFactory.newCreator(null, null, null, null, null, null);
+        return accessTokenFactory.newCreator(null, null, null, null, null, null, null);
     }
 }

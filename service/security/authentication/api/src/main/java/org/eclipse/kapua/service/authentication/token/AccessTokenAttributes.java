@@ -21,10 +21,12 @@ import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
  */
 public class AccessTokenAttributes extends KapuaUpdatableEntityAttributes {
 
-    public static final String TOKEN_ID = "tokenId";
+    public static final String TOKEN_ID = "tokenId"; //This is the content of the JWT token
+    public static final String TOKEN_IDENTIFIER = "tokenIdentifier"; //This is an identifier of the JWT token that is meant to be inserted inside its payload
     public static final String USER_ID = "userId";
     public static final String EXPIRES_ON = "expiresOn";
     public static final String INVALIDATED_ON = "invalidatedOn";
     public static final String REFRESH_EXPIRES_ON = "refreshExpiresOn";
+
 
 }
