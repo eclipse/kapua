@@ -101,6 +101,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
         bind(DeviceEventFactory.class).to(DeviceEventFactoryImpl.class).in(Singleton.class);
         bind(DeviceLifeCycleService.class).to(DeviceLifeCycleServiceImpl.class).in(Singleton.class);
         bind(KapuaDeviceRegistrySettings.class).in(Singleton.class);
+        bind(DeviceConnectionService.class).to(DeviceConnectionServiceImpl.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet
@@ -241,29 +242,6 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                                 factory,
                                 deviceRepository)
                 ));
-    }
-
-    @Provides
-    @Singleton
-    DeviceConnectionService deviceConnectionService(
-            @Named("DeviceConnectionServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
-            AuthorizationService authorizationService,
-            PermissionFactory permissionFactory,
-            DeviceConnectionFactory entityFactory,
-            DeviceConnectionRepository repository,
-            KapuaMetatypeFactory kapuaMetatypeFactory,
-            Map<String, DeviceConnectionCredentialAdapter> availableDeviceConnectionAdapters,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory,
-            EventStorer eventStorer
-    ) {
-        return new DeviceConnectionServiceImpl(serviceConfigurationManager,
-                authorizationService,
-                permissionFactory,
-                entityFactory,
-                jpaTxManagerFactory.create("kapua-device"),
-                repository,
-                availableDeviceConnectionAdapters,
-                eventStorer);
     }
 
     @Provides
