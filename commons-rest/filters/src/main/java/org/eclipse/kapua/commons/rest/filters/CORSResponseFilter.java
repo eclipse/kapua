@@ -135,7 +135,8 @@ public class CORSResponseFilter implements Filter {
         }
         int errorCode = httpResponse.getStatus();
         if (errorCode >= 400) {
-            // if there's an error code at this point, return it and stop the chain
+            String errorMessage = httpResponse.getHeader("exceptionMessagePropagatedToCORS");
+            httpResponse.setHeader("exceptionMessagePropagatedToCORS", null); //no more needed
             httpResponse.sendError(errorCode, errorMessage);
             return;
         }

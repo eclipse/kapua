@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
@@ -26,6 +28,7 @@ import org.apache.shiro.session.mgt.SimpleSession;
 import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaParsingException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.commons.logging.LoggingMdcKeys;
@@ -34,7 +37,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.KapuaDelayUtil;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
@@ -98,6 +101,7 @@ import org.slf4j.MDC;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
@@ -244,7 +248,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             currentUser.login(shiroAuthenticationToken);
 
             // Retrieve token
-            AccessToken accessToken = findAccessToken((String) shiroAuthenticationToken.getCredentials());
+            AccessToken accessToken = findAccessTokenSession((String) shiroAuthenticationToken.getCredentials());
 
             // Enstablish session
             establishSession(currentUser, accessToken, null);
@@ -327,8 +331,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         }
     }
 
-    @Override
-    public AccessToken findAccessToken(String tokenId) throws KapuaException {
+    public AccessToken findAccessTokenSession(String jwtToken) throws KapuaException {
         AccessToken accessToken = null;
         try {
             KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
@@ -336,15 +339,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
                 accessToken = kapuaSession.getAccessToken();
 
                 if (accessToken == null) {
-                    AccessTokenQuery accessTokenQuery = accessTokenFactory.newQuery(null);
-                    AndPredicate andPredicate = accessTokenQuery.andPredicate(
-                            accessTokenQuery.attributePredicate(AccessTokenAttributes.EXPIRES_ON, new java.sql.Timestamp(new Date().getTime()), Operator.GREATER_THAN_OR_EQUAL),
-                            accessTokenQuery.attributePredicate(AccessTokenAttributes.INVALIDATED_ON, null, Operator.IS_NULL),
-                            accessTokenQuery.attributePredicate(AccessTokenAttributes.TOKEN_ID, tokenId)
-                    );
-                    accessTokenQuery.setPredicate(andPredicate);
-                    accessTokenQuery.setLimit(1);
-                    accessToken = accessTokenService.query(accessTokenQuery).getFirstItem();
+                    accessToken = findAccessToken(jwtToken);
                 }
             }
         } finally {
@@ -354,12 +349,42 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         return accessToken;
     }
 
+    public AccessToken findAccessToken(String jwt) throws KapuaException {
+        final String idToken = extractFieldFromJwtPayload(jwt, AccessTokenAttributes.TOKEN_IDENTIFIER);
+        AccessToken accessToken;
+        accessToken = KapuaSecurityUtils.doPrivileged(() -> accessTokenService.findByTokenId(idToken));
+        return accessToken;
+    }
+
+    /**
+     * Parse the provided 'jwt', validates it and extract a requested field from the payload. see https://metamug.com/article/security/decode-jwt-java.html for more info
+     *
+     * @param jwt The json web token to be validated. hopefully, will contain a valid payload from which the 'fieldName' value will be extracted
+     * @param fieldName  The name of the filed to extract
+     * @return The value for the requested 'fieldName'
+     * @throws KapuaParsingException if the validation of the jwt fails OR the "fieldname" is missing from the payload. NB: this method ignores validation of the signature
+     * @since 2.0.0
+     */
+    private String extractFieldFromJwtPayload(String jwt, String fieldName) throws KapuaParsingException {
+        try {
+            String[] parts = jwt.split("\\.");
+            String headerToken = parts[0];
+            String payloadToken = parts[1];
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonHeader = objectMapper.readTree(Base64.getUrlDecoder().decode(headerToken));
+            JsonNode jsonPayload = objectMapper.readTree(Base64.getUrlDecoder().decode(payloadToken));
+            return jsonPayload.get(fieldName).asText();
+        } catch (Exception e) {
+            throw new KapuaParsingException("Jwt token (header or payload)");
+        }
+    }
+
     @Override
     public AccessToken findRefreshableAccessToken(String tokenId) throws KapuaException {
         AccessTokenQuery accessTokenQuery = accessTokenFactory.newQuery(null);
         AndPredicate andPredicate = accessTokenQuery.andPredicate(
-                accessTokenQuery.attributePredicate(AccessTokenAttributes.REFRESH_EXPIRES_ON, new java.sql.Timestamp(new Date().getTime()), Operator.GREATER_THAN_OR_EQUAL),
-                accessTokenQuery.attributePredicate(AccessTokenAttributes.INVALIDATED_ON, null, Operator.IS_NULL),
+                accessTokenQuery.attributePredicate(AccessTokenAttributes.REFRESH_EXPIRES_ON, new java.sql.Timestamp(new Date().getTime()), AttributePredicate.Operator.GREATER_THAN_OR_EQUAL),
+                accessTokenQuery.attributePredicate(AccessTokenAttributes.INVALIDATED_ON, null, AttributePredicate.Operator.IS_NULL),
                 accessTokenQuery.attributePredicate(AccessTokenAttributes.TOKEN_ID, tokenId)
         );
         accessTokenQuery.setPredicate(andPredicate);
@@ -370,12 +395,15 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     @Override
     public AccessToken refreshAccessToken(String tokenId, String refreshToken) throws KapuaException {
         Date now = new Date();
-        AccessToken expiredAccessToken = KapuaSecurityUtils.doPrivileged(() -> findRefreshableAccessToken(tokenId));
-        if (expiredAccessToken == null ||
-                expiredAccessToken.getInvalidatedOn() != null && now.after(expiredAccessToken.getInvalidatedOn()) ||
-                !expiredAccessToken.getRefreshToken().equals(refreshToken) ||
-                expiredAccessToken.getRefreshExpiresOn() != null && now.after(expiredAccessToken.getRefreshExpiresOn())) {
-            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.REFRESH_ERROR);
+        AccessToken expiredAccessToken = KapuaSecurityUtils.doPrivileged(() -> findAccessToken(tokenId));
+        if (expiredAccessToken == null) {
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.REFRESH_ERROR, "");
+        } else if (expiredAccessToken.getInvalidatedOn() != null && now.after(expiredAccessToken.getInvalidatedOn())) {
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.REFRESH_ERROR, "The provided access token has been invalidated");
+        } else if (!expiredAccessToken.getRefreshToken().equals(refreshToken)) {
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.REFRESH_ERROR, "The provided refresh token doesn't match the one for this jwt");
+        } else if (expiredAccessToken.getRefreshExpiresOn() != null && now.after(expiredAccessToken.getRefreshExpiresOn())) {
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.REFRESH_ERROR, "The provided refresh token is expired");
         }
         KapuaSecurityUtils.doPrivileged(() -> {
             try {
@@ -535,7 +563,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
         // Generate token
         Date now = new Date();
-        String jwt = generateJwt(scopeId, userId, now, tokenTtl);
+        String tokenId = UUID.randomUUID().toString();
+        String jwt = generateJwt(scopeId, userId, now, tokenTtl, tokenId);
 
         // Persist token
         AccessTokenCreator accessTokenCreator = accessTokenFactory.newCreator(scopeId,
@@ -543,7 +572,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
                 jwt,
                 new Date(now.getTime() + tokenTtl),
                 UUID.randomUUID().toString(),
-                new Date(now.getTime() + refreshTokenTtl));
+                new Date(now.getTime() + refreshTokenTtl),
+                tokenId);
 
         AccessToken accessToken;
         try {
@@ -591,7 +621,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         MDC.put(LoggingMdcKeys.USER_NAME, (String) subjectSession.getAttribute(ShiroSessionKeys.USER_NAME));
     }
 
-    private String generateJwt(KapuaEid scopeId, KapuaEid userId, Date now, long ttl) {
+    private String generateJwt(KapuaEid scopeId, KapuaEid userId, Date now, long ttl, String tokenId) {
         // Build claims
         JwtClaims claims = new JwtClaims();
 
@@ -610,6 +640,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         // .setSubject(userId.getShortId()).claims.setClaim("sId", scopeId.getShortId());
         claims.setSubject(userId.toCompactId());
         claims.setClaim("sId", scopeId.toCompactId());
+        claims.setStringClaim(AccessTokenAttributes.TOKEN_IDENTIFIER, tokenId);
 
         String jwt = null;
         try {

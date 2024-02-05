@@ -17,19 +17,21 @@ import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.ExpiredCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.subject.Subject;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaParsingException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.shiro.AccessTokenCredentialsImpl;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.ExpiredAccessTokenException;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.InvalidatedAccessTokenException;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.MalformedAccessTokenException;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenAttributes;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
@@ -37,6 +39,7 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
+import org.eclipse.kapua.service.authentication.AuthenticationService;
 
 import java.util.Date;
 
@@ -54,6 +57,7 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
 
 
     private final AccessTokenService accessTokenService = KapuaLocator.getInstance().getService(AccessTokenService.class);
+    private final AuthenticationService authenticationService = KapuaLocator.getInstance().getService(AuthenticationService.class);
     private final AccessTokenFactory accessTokenFactory = KapuaLocator.getInstance().getFactory(AccessTokenFactory.class);
     private final UserService userService = KapuaLocator.getInstance().getService(UserService.class);
 
@@ -75,24 +79,15 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
         // Extract credentials
         AccessTokenCredentialsImpl token = (AccessTokenCredentialsImpl) authenticationToken;
         String tokenTokenId = token.getTokenId();
-
-        Date now = new Date();
+        
         // Find accessToken
         final AccessToken accessToken;
         try {
-            AccessTokenQuery accessTokenQuery = accessTokenFactory.newQuery(null);
-            AndPredicate andPredicate = accessTokenQuery.andPredicate(
-                    accessTokenQuery.attributePredicate(AccessTokenAttributes.EXPIRES_ON, new java.sql.Timestamp(now.getTime()), Operator.GREATER_THAN_OR_EQUAL),
-                    accessTokenQuery.attributePredicate(AccessTokenAttributes.INVALIDATED_ON, null, Operator.IS_NULL),
-                    accessTokenQuery.attributePredicate(AccessTokenAttributes.TOKEN_ID, tokenTokenId)
-            );
-            accessTokenQuery.setPredicate(andPredicate);
-            accessTokenQuery.setLimit(1);
-            accessToken = KapuaSecurityUtils.doPrivileged(() -> accessTokenService.query(accessTokenQuery).getFirstItem());
-        } catch (AuthenticationException ae) {
-            throw ae;
-        } catch (Exception e) {
-            throw new ShiroException("Unexpected error while looking for the access token!", e);
+            accessToken = authenticationService.findAccessToken(tokenTokenId);
+        } catch (KapuaParsingException e) {
+            throw new MalformedAccessTokenException();
+        } catch (KapuaException ke) {
+            throw new AuthenticationException();
         }
 
         // Check existence
@@ -101,10 +96,15 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
         }
 
         // Check validity
-        if ((accessToken.getExpiresOn() != null && accessToken.getExpiresOn().before(now)) ||
-                (accessToken.getInvalidatedOn() != null && accessToken.getInvalidatedOn().before(now))) {
-            throw new ExpiredCredentialsException();
+        Date now = new Date();
+        if ((accessToken.getExpiresOn() != null && accessToken.getExpiresOn().before(now))) {
+            throw new ExpiredAccessTokenException();
         }
+
+        if (accessToken.getInvalidatedOn() != null && accessToken.getInvalidatedOn().before(now)) {
+            throw new InvalidatedAccessTokenException();
+        }
+
         // Get the associated user by name
         final User user;
         try {
