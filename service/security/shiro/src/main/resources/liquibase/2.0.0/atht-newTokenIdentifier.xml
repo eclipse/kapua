@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017, 2022 Eurotech and/or its affiliates and others
+
+    This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        Eurotech - initial API and implementation
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="KapuaDB/atht-newTokenIdentifier.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+
+    <!--This changeset handles the creation of a new column (token_identifier) that identifies newly created JWT tokens-->
+    <changeSet id="changelog-access_token-2.0.0_new_token_id" author="eurotech">
+<!--        start by revoking old tokens deleting associated rows in the table -->
+        <delete tableName="atht_access_token"/>
+        <addColumn tableName="atht_access_token">
+            <column name="token_identifier" type="varchar(36)"/>
+        </addColumn>
+        <addUniqueConstraint tableName="atht_access_token"
+                             columnNames="token_identifier"
+                             constraintName="uc_token_identifier"/>
+        <addNotNullConstraint tableName="atht_access_token" columnDataType="varchar(36)" columnName="token_identifier"/>
+        <createIndex tableName="atht_access_token" indexName="idx_atht_access_token_token_identifier">
+            <column name="token_identifier"/>
+        </createIndex>
+<!--        remove no more needed indexes now that we look up with the above token identifier (they could also slow down db operations for their cost of update) -->
+        <dropIndex indexName="idx_atht_access_token_refresh_expires_on" tableName="atht_access_token"/>
+        <dropIndex indexName="idx_atht_access_token_expires_on" tableName="atht_access_token"/>
+    </changeSet>
+</databaseChangeLog>
