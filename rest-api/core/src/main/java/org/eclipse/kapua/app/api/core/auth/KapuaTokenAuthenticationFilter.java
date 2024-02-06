@@ -83,7 +83,7 @@ public class KapuaTokenAuthenticationFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        // Continue with the filter chain, because CORS headers are still needed
+        // Continue with the filter chain, because CORS headers are still needed for bad authorization or token expired
         return true;
     }
 
