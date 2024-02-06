@@ -217,7 +217,6 @@
                 <include>org.eclipse.persistence:org.eclipse.persistence.jpa</include>
                 <include>org.eclipse.persistence:org.eclipse.persistence.jpa.jpql</include>
                 <include>org.eclipse.persistence:org.eclipse.persistence.core</include>
-                <include>org.eclipse.persistence:org.eclipse.persistence.asm</include>
                 <include>org.eclipse.persistence:org.eclipse.persistence.moxy</include>
                 <include>org.eclipse.persistence:org.eclipse.persistence.extension</include>
                 <include>org.eclipse.persistence:javax.persistence</include>

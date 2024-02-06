@@ -328,10 +328,6 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
-            <artifactId>org.eclipse.persistence.asm</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
         </dependency>
         <dependency>
@@ -604,13 +600,6 @@
                                 <artifactItem>
                                     <groupId>org.eclipse.persistence</groupId>
                                     <artifactId>org.eclipse.persistence.core</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>target/broker_dependency</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.eclipse.persistence</groupId>
-                                    <artifactId>org.eclipse.persistence.asm</artifactId>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>target/broker_dependency</outputDirectory>
