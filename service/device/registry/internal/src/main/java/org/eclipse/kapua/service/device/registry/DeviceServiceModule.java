@@ -19,6 +19,7 @@ import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactory;
 import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
+import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 
 public class DeviceServiceModule extends ServiceEventTransactionalModule {
@@ -26,7 +27,8 @@ public class DeviceServiceModule extends ServiceEventTransactionalModule {
     public DeviceServiceModule(DeviceConnectionService deviceConnectionService,
                                DeviceRegistryService deviceRegistryService,
                                KapuaDeviceRegistrySettings deviceRegistrySettings,
-                               ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory) {
+                               ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory,
+                               ServiceEventBus serviceEventBus) {
         super(Arrays.asList(ServiceInspector.getEventBusClients(deviceRegistryService, DeviceRegistryService.class),
                                 ServiceInspector.getEventBusClients(deviceConnectionService, DeviceConnectionService.class)
                         )
@@ -35,6 +37,7 @@ public class DeviceServiceModule extends ServiceEventTransactionalModule {
                         .collect(Collectors.toList())
                         .toArray(new ServiceEventClientConfiguration[0]),
                 deviceRegistrySettings.getString(KapuaDeviceRegistrySettingKeys.DEVICE_EVENT_ADDRESS),
-                serviceEventTransactionalHousekeeperFactory);
+                serviceEventTransactionalHousekeeperFactory,
+                serviceEventBus);
     }
 }

@@ -24,5 +24,5 @@ public interface CacheFactory {
      *
      * @return an {@link EntityCache} instance.
      */
-    EntityCache createCache();
+    EntityCache createCache(String idCacheName);
 }

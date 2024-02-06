@@ -70,7 +70,7 @@ public abstract class ServiceEventModule implements ServiceModule {
         LOGGER.info("Starting service event module... initialize configurations");
         serviceEventModuleConfiguration = initializeConfiguration();
         LOGGER.info("Starting service event module... initialize event bus");
-        ServiceEventBus eventbus = ServiceEventBusManager.getInstance();
+        ServiceEventBus eventbus = KapuaLocator.getInstance().getComponent(ServiceEventBus.class);
         LOGGER.info("Starting service event module... initialize event subscriptions");
         List<ServiceEntry> servicesEntryList = new ArrayList<>();
         if (serviceEventModuleConfiguration.getServiceEventClientConfigurations() != null) {
@@ -93,7 +93,7 @@ public abstract class ServiceEventModule implements ServiceModule {
 
         // register events to the service map
         LOGGER.info("Starting service event module... register services names");
-        ServiceMap.registerServices(serviceEventModuleConfiguration.getInternalAddress(), servicesEntryList);
+        ServiceMap.registerServices(servicesEntryList);
 
         // Start the House keeper
         LOGGER.info("Starting service event module... start housekeeper");

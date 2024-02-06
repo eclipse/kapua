@@ -12,12 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query.predicate;
 
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.model.query.predicate.ChannelMatchPredicate;
 import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.predicate.MetricExistsPredicate;
 import org.eclipse.kapua.service.datastore.model.query.predicate.MetricPredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactoryImpl;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -28,6 +30,13 @@ import javax.inject.Singleton;
 @Singleton
 public class DatastorePredicateFactoryImpl extends StorablePredicateFactoryImpl implements DatastorePredicateFactory {
 
+    private final DatastoreUtils datastoreUtils;
+
+    @Inject
+    public DatastorePredicateFactoryImpl(DatastoreUtils datastoreUtils) {
+        this.datastoreUtils = datastoreUtils;
+    }
+
     @Override
     public ChannelMatchPredicate newChannelMatchPredicate(String expression) {
         return new ChannelMatchPredicateImpl(expression);
@@ -35,11 +44,11 @@ public class DatastorePredicateFactoryImpl extends StorablePredicateFactoryImpl 
 
     @Override
     public <V extends Comparable<V>> MetricPredicate newMetricPredicate(String field, Class<V> type, V minValue, V maxValue) {
-        return new MetricPredicateImpl(field, type, minValue, maxValue);
+        return new MetricPredicateImpl(field, type, minValue, maxValue, datastoreUtils);
     }
 
     @Override
     public <V extends Comparable<V>> MetricExistsPredicate newMetricExistsPredicate(String metricName, Class<V> type) {
-        return new MetricExistsPredicateImpl(metricName, type);
+        return new MetricExistsPredicateImpl(metricName, type, datastoreUtils);
     }
 }

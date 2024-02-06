@@ -12,24 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.metric;
 
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.KapuaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Counter;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 /**
  * Helper class to handle commons metrics.
- * TODO inject when injection will be available
- *
  */
+@Singleton
 public class CommonsMetric {
 
     private static final Logger logger = LoggerFactory.getLogger(CommonsMetric.class);
 
-    //TODO this value should be injected instead of set by the application entrypoint!
-    //TODO to be injected!!!
-    public static String module = "undefined";
+    private final String module;
     //cache
     private static final String CACHE_MANAGER = "cache_manager";
     private Integer cacheStatus = new Integer(0);
@@ -58,22 +58,10 @@ public class CommonsMetric {
     private Counter enqueuedEvent;
     private Counter dequeuedEvent;
 
-    private static CommonsMetric instance;
-
-    public synchronized static CommonsMetric getInstance() {
-        if (instance == null) {
-            try {
-                instance = new CommonsMetric();
-            } catch (KapuaException e) {
-                //TODO throw runtime exception
-                logger.error("Creating metrics error: {}", e.getMessage(), e);
-            }
-        }
-        return instance;
-    }
-
-    private CommonsMetric() throws KapuaException {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    @Inject
+    public CommonsMetric(MetricsService metricsService,
+                         @Named("metricModuleName") String metricModuleName) throws KapuaException {
+        this.module = metricModuleName;
         metricsService.registerGauge(() -> cacheStatus, module, CACHE_MANAGER, "cache_status");
         registeredCache = metricsService.getCounter(module, CACHE_MANAGER, "available_cache");
 
@@ -91,6 +79,10 @@ public class CommonsMetric {
         processedEvent = metricsService.getCounter(module, EVENT, "processed");
         dequeuedEvent = metricsService.getCounter(module, EVENT, "dequeued");
         enqueuedEvent = metricsService.getCounter(module, EVENT, "enqueued");
+    }
+
+    public String getModule() {
+        return module;
     }
 
     //TODO should be synchronized?

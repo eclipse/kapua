@@ -30,12 +30,14 @@ import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraReques
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
+import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestChannel;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestMessage;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestPayload;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +49,9 @@ import java.util.Map;
  * @since 1.0.0
  */
 public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapuaKura<ConfigurationRequestChannel, ConfigurationRequestPayload, ConfigurationRequestMessage> {
+
+    @Inject
+    protected DeviceConfigurationFactory deviceConfigurationFactory;
 
     @Override
     protected KuraRequestChannel translateChannel(ConfigurationRequestChannel kapuaChannel) throws InvalidChannelException {
@@ -84,7 +89,7 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
             KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
             if (kapuaPayload.hasBody()) {
-                DeviceConfiguration kapuaDeviceConfiguration = kapuaPayload.getDeviceConfigurations();
+                DeviceConfiguration kapuaDeviceConfiguration = kapuaPayload.getDeviceConfigurations().orElse(deviceConfigurationFactory.newConfigurationInstance());
 
                 KuraDeviceConfiguration kuraDeviceConfiguration = translate(kapuaDeviceConfiguration);
                 byte[] body;

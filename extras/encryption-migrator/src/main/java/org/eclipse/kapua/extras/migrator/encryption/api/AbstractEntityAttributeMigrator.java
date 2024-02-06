@@ -15,6 +15,7 @@ package org.eclipse.kapua.extras.migrator.encryption.api;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.extras.migrator.encryption.settings.EncryptionMigrationSettingKeys;
 import org.eclipse.kapua.extras.migrator.encryption.settings.EncryptionMigrationSettings;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -30,7 +31,7 @@ public abstract class AbstractEntityAttributeMigrator<E extends KapuaUpdatableEn
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityAttributeMigrator.class);
 
-    private static final Boolean DRY_RUN = EncryptionMigrationSettings.getInstance().getBoolean(EncryptionMigrationSettingKeys.DRY_RUN);
+    private static final Boolean DRY_RUN = KapuaLocator.getInstance().getComponent(EncryptionMigrationSettings.class).getBoolean(EncryptionMigrationSettingKeys.DRY_RUN);
 
     protected final KapuaEntityService<E, ?> entityService;
     protected final KapuaUpdatableEntityService<E> entityUpdatableService;

@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.device.management.packages.job;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
@@ -36,13 +35,13 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DevicePackageDownloadTargetProcessor extends AbstractDevicePackageTargetProcessor implements TargetProcessor {
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final DevicePackageManagementService PACKAGES_MANAGEMENT_SERVICE = LOCATOR.getService(DevicePackageManagementService.class);
-    private static final DevicePackageFactory DEVICE_PACKAGE_FACTORY = LOCATOR.getFactory(DevicePackageFactory.class);
 
     @Inject
+    DevicePackageManagementService devicePackageManagementService;
+    @Inject
+    DevicePackageFactory devicePackageFactory;
+    @Inject
     JobContext jobContext;
-
     @Inject
     StepContext stepContext;
 
@@ -64,10 +63,10 @@ public class DevicePackageDownloadTargetProcessor extends AbstractDevicePackageT
         DevicePackageDownloadRequest packageDownloadRequest = stepContextWrapper.getStepProperty(DevicePackageDownloadPropertyKeys.PACKAGE_DOWNLOAD_REQUEST, DevicePackageDownloadRequest.class);
         Long timeout = stepContextWrapper.getStepProperty(DevicePackageDownloadPropertyKeys.TIMEOUT, Long.class);
         // Send the request
-        DevicePackageDownloadOptions packageDownloadOptions = DEVICE_PACKAGE_FACTORY.newPackageDownloadOptions();
+        DevicePackageDownloadOptions packageDownloadOptions = devicePackageFactory.newPackageDownloadOptions();
         packageDownloadOptions.setTimeout(timeout);
 
-        KapuaId operationId = KapuaSecurityUtils.doPrivileged(() -> PACKAGES_MANAGEMENT_SERVICE.downloadExec(scopeId, jobTarget.getJobTargetId(), packageDownloadRequest, packageDownloadOptions));
+        KapuaId operationId = KapuaSecurityUtils.doPrivileged(() -> devicePackageManagementService.downloadExec(scopeId, jobTarget.getJobTargetId(), packageDownloadRequest, packageDownloadOptions));
         // Save the jobId-deviceManagementOperationId pair to track resuming
         createJobDeviceManagementOperation(scopeId, jobId, jobTarget, operationId);
     }

@@ -12,12 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.telemetry;
 
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-import com.codahale.metrics.Counter;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class MetricsTelemetry {
 
     public static final String CONSUMER_TELEMETRY = "consumer_telemetry";
@@ -25,17 +27,8 @@ public class MetricsTelemetry {
 
     private Counter converterDataMessage;
 
-    private static MetricsTelemetry instance;
-
-    public synchronized static MetricsTelemetry getInstance() {
-        if (instance == null) {
-            instance = new MetricsTelemetry();
-        }
-        return instance;
-    }
-
-    private MetricsTelemetry() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    @Inject
+    public MetricsTelemetry(MetricsService metricsService) {
         converterDataMessage = metricsService.getCounter(CONSUMER_TELEMETRY, CONVERTER, MetricsLabel.MESSAGE_DATA);
     }
 

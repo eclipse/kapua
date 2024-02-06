@@ -69,17 +69,17 @@ public class CORSResponseFilter implements Filter {
     private final AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
     private final EndpointInfoService endpointInfoService = locator.getService(EndpointInfoService.class);
     private final EndpointInfoFactory endpointInfoFactory = locator.getFactory(EndpointInfoFactory.class);
-
+    private final KapuaRestFiltersSetting kapuaRestFiltersSetting = locator.getComponent(KapuaRestFiltersSetting.class);
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> refreshTask;
 
     private Multimap<String, KapuaId> allowedOrigins = HashMultimap.create();
-    private final List<String> allowedSystemOrigins = KapuaRestFiltersSetting.getInstance().getList(String.class, KapuaRestFiltersSettingKeys.API_CORS_ORIGINS_ALLOWED);
+    private final List<String> allowedSystemOrigins = kapuaRestFiltersSetting.getList(String.class, KapuaRestFiltersSettingKeys.API_CORS_ORIGINS_ALLOWED);
 
     @Override
     public void init(FilterConfig filterConfig) {
         logger.info("Initializing with FilterConfig: {}...", filterConfig);
-        int intervalSecs = KapuaRestFiltersSetting.getInstance().getInt(KapuaRestFiltersSettingKeys.API_CORS_REFRESH_INTERVAL, 60);
+        int intervalSecs = kapuaRestFiltersSetting.getInt(KapuaRestFiltersSettingKeys.API_CORS_REFRESH_INTERVAL, 60);
         initRefreshThread(intervalSecs);
         logger.info("Initializing with FilterConfig: {}... DONE!", filterConfig);
     }

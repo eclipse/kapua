@@ -13,11 +13,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMetrics;
@@ -36,6 +34,7 @@ import org.eclipse.kapua.translator.exception.InvalidBodyException;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.io.UnsupportedEncodingException;
 
@@ -47,15 +46,13 @@ import java.io.UnsupportedEncodingException;
 public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends KapuaResponseChannel, TO_P extends KapuaResponsePayload, TO_M extends KapuaResponseMessage<TO_C, TO_P>>
         extends AbstractTranslatorResponseKuraKapua<TO_C, TO_P, TO_M> {
 
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
-    private static final boolean SHOW_STACKTRACE = DeviceManagementSetting.getInstance().getBoolean(DeviceManagementSettingKey.SHOW_STACKTRACE, false);
+    private final String charEncoding;
+    private final boolean showStacktrace;
 
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper()
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
-
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    @Inject
+    private ObjectMapper jsonMapper;
+    @Inject
+    private GenericRequestFactory genericRequestFactory;
 
     private final Class<TO_M> messageClazz;
     private final Class<TO_P> payloadClazz;
@@ -67,15 +64,15 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
      * @param payloadClazz The {@link Class} of the {@link KapuaResponsePayload}. It must have a 0-arguments constructor.
      * @since 1.0.0
      */
-    public AbstractSimpleTranslatorResponseKuraKapua(Class<TO_M> messageClazz, Class<TO_P> payloadClazz) {
+    public AbstractSimpleTranslatorResponseKuraKapua(DeviceManagementSetting deviceManagementSetting, Class<TO_M> messageClazz, Class<TO_P> payloadClazz) {
         this.messageClazz = messageClazz;
         this.payloadClazz = payloadClazz;
+        charEncoding = deviceManagementSetting.getString(DeviceManagementSettingKey.CHAR_ENCODING);
+        showStacktrace = deviceManagementSetting.getBoolean(DeviceManagementSettingKey.SHOW_STACKTRACE, false);
     }
 
     @Override
     protected TO_M createMessage() throws KapuaException {
-        GenericRequestFactory genericRequestFactory = LOCATOR.getFactory(GenericRequestFactory.class);
-
         try {
             if (this.messageClazz.equals(GenericResponseMessage.class)) {
                 return this.messageClazz.cast(genericRequestFactory.newResponseMessage());
@@ -103,8 +100,6 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
     @Override
     protected TO_P translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
         try {
-            GenericRequestFactory genericRequestFactory = LOCATOR.getFactory(GenericRequestFactory.class);
-
             TO_P appResponsePayload;
             if (payloadClazz.equals(GenericResponsePayload.class)) {
                 appResponsePayload = this.payloadClazz.cast(genericRequestFactory.newResponsePayload());
@@ -114,7 +109,7 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
 
             appResponsePayload.setExceptionMessage(kuraResponsePayload.getExceptionMessage());
 
-            if (SHOW_STACKTRACE) {
+            if (showStacktrace) {
                 appResponsePayload.setExceptionStack(kuraResponsePayload.getExceptionStack());
                 kuraResponsePayload.getMetrics().remove(KuraResponseMetrics.EXCEPTION_STACK.getName());
             }
@@ -139,7 +134,7 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
      * @since 1.5.0
      */
     protected <T> T readXmlBodyAs(@NotNull byte[] bytesToRead, @NotNull Class<T> returnAs) throws InvalidBodyException {
-        String bodyString = readBodyAsString(bytesToRead, CHAR_ENCODING);
+        String bodyString = readBodyAsString(bytesToRead, charEncoding);
 
         try {
             return XmlUtil.unmarshal(bodyString, returnAs);
@@ -160,7 +155,7 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
      * @since 1.5.0
      */
     protected <T> T readJsonBodyAs(@NotNull byte[] bytesToRead, @NotNull Class<T> returnAs) throws InvalidBodyException {
-        String bodyString = readBodyAsString(bytesToRead, CHAR_ENCODING);
+        String bodyString = readBodyAsString(bytesToRead, charEncoding);
 
         try {
             return getJsonMapper().readValue(bodyString, returnAs);
@@ -195,6 +190,6 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
      * @since 1.5.0
      */
     protected ObjectMapper getJsonMapper() {
-        return JSON_MAPPER;
+        return jsonMapper;
     }
 }

@@ -66,6 +66,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
     private SecureRandom random;
     private final CredentialRepository credentialRepository;
     private final CredentialFactory credentialFactory;
+    private final KapuaAuthenticationSetting kapuaAuthenticationSetting;
     private final CredentialMapper credentialMapper;
     private final PasswordValidator passwordValidator;
 
@@ -77,10 +78,12 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
             CredentialRepository credentialRepository,
             CredentialFactory credentialFactory,
             CredentialMapper credentialMapper,
-            PasswordValidator passwordValidator) {
+            PasswordValidator passwordValidator,
+            KapuaAuthenticationSetting kapuaAuthenticationSetting) {
         super(txManager, serviceConfigurationManager, Domains.CREDENTIAL, authorizationService, permissionFactory);
         this.credentialRepository = credentialRepository;
         this.credentialFactory = credentialFactory;
+        this.kapuaAuthenticationSetting = kapuaAuthenticationSetting;
         try {
             random = SecureRandom.getInstance("SHA1PRNG");
         } catch (NoSuchAlgorithmException e) {
@@ -128,9 +131,8 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
             // Do pre persist magic on key values
             switch (credentialCreator.getCredentialType()) {
                 case API_KEY: // Generate new api key
-                    KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-                    int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
-                    int keyLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_KEY_LENGTH);
+                    int preLength = kapuaAuthenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
+                    int keyLength = kapuaAuthenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_KEY_LENGTH);
 
                     byte[] bPre = new byte[preLength];
                     random.nextBytes(bPre);
@@ -262,15 +264,14 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
 
     @Override
     public Credential findByApiKey(String apiKey) throws KapuaException {
-        KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-        int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
+        int preLength = kapuaAuthenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
         // Argument Validation
         ArgumentValidator.notEmptyOrNull(apiKey, "apiKey");
         ArgumentValidator.lengthRange(apiKey, preLength, null, "apiKey");
         // Do the find
         Credential credential = txManager.execute(tx -> {
             // Build search query
-            String preSeparator = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR);
+            String preSeparator = kapuaAuthenticationSetting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR);
             String apiKeyPreValue = apiKey.substring(0, preLength).concat(preSeparator);
             // Build query
             KapuaQuery query = new CredentialQueryImpl();

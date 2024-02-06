@@ -15,11 +15,10 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.query.SortOrder;
@@ -34,6 +33,7 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -49,9 +49,10 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/roles/{roleId}/permissions")
 public class RolesPermissions extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
-    private final RolePermissionFactory rolePermissionFactory = locator.getFactory(RolePermissionFactory.class);
+    @Inject
+    public RolePermissionService rolePermissionService;
+    @Inject
+    public RolePermissionFactory rolePermissionFactory;
 
     /**
      * Gets the {@link RolePermission} list in the scope.

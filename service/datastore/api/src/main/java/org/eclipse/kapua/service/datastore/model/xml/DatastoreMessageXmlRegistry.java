@@ -27,8 +27,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class DatastoreMessageXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final MessageStoreFactory MESSAGE_STORE_FACTORY = LOCATOR.getFactory(MessageStoreFactory.class);
+    private final MessageStoreFactory messageStoreFactory = KapuaLocator.getInstance().getFactory(MessageStoreFactory.class);
 
     /**
      * Creates a {@link MessageListResult} instance
@@ -36,7 +35,7 @@ public class DatastoreMessageXmlRegistry {
      * @return
      */
     public MessageListResult newListResult() {
-        return MESSAGE_STORE_FACTORY.newListResult();
+        return messageStoreFactory.newListResult();
     }
 
     /**
@@ -45,6 +44,6 @@ public class DatastoreMessageXmlRegistry {
      * @return
      */
     public MessageQuery newQuery() {
-        return MESSAGE_STORE_FACTORY.newQuery(null);
+        return messageStoreFactory.newQuery(null);
     }
 }

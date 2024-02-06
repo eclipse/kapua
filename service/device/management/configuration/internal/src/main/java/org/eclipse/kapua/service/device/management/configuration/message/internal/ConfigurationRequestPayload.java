@@ -18,10 +18,10 @@ import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
-import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
 
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 /**
  * {@link DeviceConfiguration} {@link KapuaRequestPayload} implementation.
@@ -32,9 +32,7 @@ public class ConfigurationRequestPayload extends KapuaPayloadImpl implements Kap
 
     private static final long serialVersionUID = 1400605735748313538L;
 
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
-    private static final DeviceConfigurationFactory DEVICE_CONFIGURATION_FACTORY = KapuaLocator.getInstance().getFactory(DeviceConfigurationFactory.class);
+    private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     /**
      * Gets the {@link DeviceConfiguration}from the {@link #getBody()}.
@@ -43,13 +41,13 @@ public class ConfigurationRequestPayload extends KapuaPayloadImpl implements Kap
      * @throws Exception if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
-    public DeviceConfiguration getDeviceConfigurations() throws Exception {
+    public Optional<DeviceConfiguration> getDeviceConfigurations() throws Exception {
         if (!hasBody()) {
-            return DEVICE_CONFIGURATION_FACTORY.newConfigurationInstance();
+            return Optional.empty();
         }
 
-        String bodyString = new String(getBody(), CHAR_ENCODING);
-        return XmlUtil.unmarshal(bodyString, DeviceConfiguration.class);
+        String bodyString = new String(getBody(), charEncoding);
+        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceConfiguration.class));
     }
 
     /**
@@ -61,6 +59,6 @@ public class ConfigurationRequestPayload extends KapuaPayloadImpl implements Kap
      */
     public void setDeviceConfigurations(@NotNull DeviceConfiguration deviceConfiguration) throws Exception {
         String bodyString = XmlUtil.marshal(deviceConfiguration);
-        setBody(bodyString.getBytes(CHAR_ENCODING));
+        setBody(bodyString.getBytes(charEncoding));
     }
 }

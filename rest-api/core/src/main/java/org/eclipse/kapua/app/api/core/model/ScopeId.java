@@ -12,16 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.model;
 
-import org.eclipse.kapua.app.api.core.exception.SessionNotPopulatedException;
-import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSetting;
-import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSettingKeys;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.model.id.KapuaId;
 
 import javax.ws.rs.PathParam;
 import java.math.BigInteger;
-import java.util.Base64;
 
 /**
  * {@link KapuaId} implementation to be used on REST API to parse the {@link PathParam} scopeId.
@@ -35,31 +31,10 @@ public class ScopeId implements KapuaId {
 
     private static final long serialVersionUID = 6893262093856905182L;
 
-    private static final String SCOPE_ID_WILDCARD = KapuaApiCoreSetting.getInstance().getString(KapuaApiCoreSettingKeys.API_PATH_PARAM_SCOPEID_WILDCARD);
-
     private BigInteger id;
 
-    /**
-     * Builds the {@link KapuaId} from the given {@link String} compact scopeId.
-     * If the given parameter equals to "_" the current session scope will be used.
-     *
-     * @param compactScopeId The compact scopeId to parse.
-     * @since 1.0.0
-     */
-    public ScopeId(String compactScopeId) {
-
-        if (SCOPE_ID_WILDCARD.equals(compactScopeId)) {
-            KapuaSession session = KapuaSecurityUtils.getSession();
-
-            if (session == null) {
-                throw new SessionNotPopulatedException();
-            }
-
-            setId(session.getScopeId().getId());
-        } else {
-            byte[] bytes = Base64.getUrlDecoder().decode(compactScopeId);
-            setId(new BigInteger(bytes));
-        }
+    public ScopeId(BigInteger id) {
+        this.id = id;
     }
 
     @Override
@@ -67,7 +42,7 @@ public class ScopeId implements KapuaId {
         return id;
     }
 
-    protected void setId(BigInteger id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
 

@@ -33,11 +33,11 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DeviceAssetWriteTargetProcessor extends AbstractDeviceTargetProcessor implements TargetProcessor {
-    private static final DeviceAssetManagementService ASSET_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceAssetManagementService.class);
 
     @Inject
+    DeviceAssetManagementService deviceAssetManagementService;
+    @Inject
     JobContext jobContext;
-
     @Inject
     StepContext stepContext;
 
@@ -52,6 +52,6 @@ public class DeviceAssetWriteTargetProcessor extends AbstractDeviceTargetProcess
         DeviceAssets assets = stepContextWrapper.getStepProperty(DeviceAssetWritePropertyKeys.ASSETS, DeviceAssets.class);
         Long timeout = stepContextWrapper.getStepProperty(DeviceAssetWritePropertyKeys.TIMEOUT, Long.class);
 
-        KapuaSecurityUtils.doPrivileged(() -> ASSET_MANAGEMENT_SERVICE.write(jobTarget.getScopeId(), jobTarget.getJobTargetId(), assets, timeout));
+        KapuaSecurityUtils.doPrivileged(() -> deviceAssetManagementService.write(jobTarget.getScopeId(), jobTarget.getJobTargetId(), assets, timeout));
     }
 }

@@ -24,8 +24,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class JobExecutionXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final JobExecutionFactory JOB_EXECUTION_FACTORY = LOCATOR.getFactory(JobExecutionFactory.class);
+    private final JobExecutionFactory jobExecutionFactory = KapuaLocator.getInstance().getFactory(JobExecutionFactory.class);
 
     /**
      * Creates a new job instance
@@ -33,7 +32,7 @@ public class JobExecutionXmlRegistry {
      * @return
      */
     public JobExecution newJobExecution() {
-        return JOB_EXECUTION_FACTORY.newEntity(null);
+        return jobExecutionFactory.newEntity(null);
     }
 
     /**
@@ -42,7 +41,7 @@ public class JobExecutionXmlRegistry {
      * @return
      */
     public JobExecutionCreator newJobExecutionCreator() {
-        return JOB_EXECUTION_FACTORY.newCreator(null);
+        return jobExecutionFactory.newCreator(null);
     }
 
     /**
@@ -51,10 +50,10 @@ public class JobExecutionXmlRegistry {
      * @return
      */
     public JobExecutionListResult newJobExecutionListResult() {
-        return JOB_EXECUTION_FACTORY.newListResult();
+        return jobExecutionFactory.newListResult();
     }
 
     public JobExecutionQuery newQuery() {
-        return JOB_EXECUTION_FACTORY.newQuery(null);
+        return jobExecutionFactory.newQuery(null);
     }
 }

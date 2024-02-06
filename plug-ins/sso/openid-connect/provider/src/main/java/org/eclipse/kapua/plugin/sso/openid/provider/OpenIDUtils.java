@@ -14,6 +14,7 @@ package org.eclipse.kapua.plugin.sso.openid.provider;
 
 import com.google.common.base.Strings;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDIllegalArgumentException;
 import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDIllegalUriException;
 import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDJwtUriException;
@@ -44,19 +45,19 @@ public final class OpenIDUtils {
 
     private static final String DEFAULT_SSO_OPENID_CONF_PATH = ".well-known/openid-configuration";
 
-    private OpenIDUtils() {
+    public OpenIDUtils() {
     }
 
     /**
      * Attempts to retrieve a URI from the Well-Known OpenId Configuration using the given property.
      *
-     * @param property the property to get from the JSON response.
+     * @param property       the property to get from the JSON response.
      * @param openIdConfPath the OpendID Connect configuration path.
      * @return an Optional with a {@link URI} corresponding to the given property if everything is fine, otherwise
      * an empty Optional.
      * @throws OpenIDUriException if an {@link IOException}, a {@link MalformedURLException} or a {@link URISyntaxException} is caught.
      */
-    public static Optional<URI> getConfigUri(String property, String openIdConfPath) throws OpenIDUriException {
+    public Optional<URI> getConfigUri(String property, String openIdConfPath) throws OpenIDUriException {
         final JsonObject jsonObject;
 
         ConfigurationPrinter reqLogger =
@@ -108,9 +109,9 @@ public final class OpenIDUtils {
      * @param issuer the URI representing the JWT Issuer.
      * @return a String representing the discovery endpoint.
      * @throws OpenIDIllegalArgumentException if it cannot retrieve the OpenID configuration path or if the generated OpenID Connect discovery endpoint is a
-     * malformed URL
+     *                                        malformed URL
      */
-    public static String getOpenIdConfPath(final URI issuer) throws OpenIDIllegalArgumentException {
+    public String getOpenIdConfPath(final URI issuer) throws OpenIDIllegalArgumentException {
         return getOpenIdConfPath(issuer.toString());
     }
 
@@ -120,10 +121,10 @@ public final class OpenIDUtils {
      * @param issuer the String representing the JWT Issuer URI.
      * @return a String representing the discovery endpoint.
      * @throws OpenIDIllegalArgumentException if it cannot retrieve the OpenID configuration path or if the generated OpenID Connect discovery endpoint is a
-     * malformed URL
+     *                                        malformed URL
      */
-    public static String getOpenIdConfPath(String issuer) throws OpenIDIllegalArgumentException {
-        String openIDConfPathSuffix = OpenIDSetting.getInstance().getString(OpenIDSettingKeys.SSO_OPENID_CONF_PATH, DEFAULT_SSO_OPENID_CONF_PATH);
+    public String getOpenIdConfPath(String issuer) throws OpenIDIllegalArgumentException {
+        String openIDConfPathSuffix = KapuaLocator.getInstance().getComponent(OpenIDSetting.class).getString(OpenIDSettingKeys.SSO_OPENID_CONF_PATH, DEFAULT_SSO_OPENID_CONF_PATH);
         if (Strings.isNullOrEmpty(openIDConfPathSuffix)) {
             throw new OpenIDIllegalArgumentException(OpenIDSettingKeys.SSO_OPENID_CONF_PATH.key(), openIDConfPathSuffix);
         }

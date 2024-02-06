@@ -13,16 +13,17 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.app.api.resources.v1.resources.marker.JsonSerializationFixed;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.model.data.JsonKapuaDataMessage;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
+import org.eclipse.kapua.app.api.resources.v1.resources.marker.JsonSerializationFixed;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
+import org.eclipse.kapua.service.stream.StreamService;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
@@ -38,10 +39,10 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/streams")
 public class StreamsJson extends AbstractKapuaResource implements JsonSerializationFixed {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final KapuaDataMessageFactory KAPUA_DATA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaDataMessageFactory.class);
-
-    private static final Streams STREAMS = new Streams();
+    @Inject
+    public KapuaDataMessageFactory kapuaDataMessageFactory;
+    @Inject
+    public StreamService streamService;
 
     /**
      * Publishes a fire-and-forget message to a topic composed of:
@@ -98,7 +99,7 @@ public class StreamsJson extends AbstractKapuaResource implements JsonSerializat
             @QueryParam("timeout") @DefaultValue("30000") Long timeout,
             JsonKapuaDataMessage jsonKapuaDataMessage) throws KapuaException {
 
-        KapuaDataMessage kapuaDataMessage = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataMessage();
+        KapuaDataMessage kapuaDataMessage = kapuaDataMessageFactory.newKapuaDataMessage();
 
         kapuaDataMessage.setId(jsonKapuaDataMessage.getId());
         kapuaDataMessage.setScopeId(scopeId);
@@ -110,7 +111,7 @@ public class StreamsJson extends AbstractKapuaResource implements JsonSerializat
         kapuaDataMessage.setPosition(jsonKapuaDataMessage.getPosition());
         kapuaDataMessage.setChannel(jsonKapuaDataMessage.getChannel());
 
-        KapuaDataPayload kapuaDataPayload = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload();
+        KapuaDataPayload kapuaDataPayload = kapuaDataMessageFactory.newKapuaDataPayload();
 
         if (jsonKapuaDataMessage.getPayload() != null) {
             kapuaDataPayload.setBody(jsonKapuaDataMessage.getPayload().getBody());
@@ -126,8 +127,8 @@ public class StreamsJson extends AbstractKapuaResource implements JsonSerializat
 
         kapuaDataMessage.setPayload(kapuaDataPayload);
 
-        STREAMS.publish(scopeId, timeout, kapuaDataMessage);
-
+        kapuaDataMessage.setScopeId(scopeId);
+        streamService.publish(kapuaDataMessage, timeout);
         return returnNoContent();
     }
 }

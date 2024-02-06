@@ -18,14 +18,21 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.client.security.bean.AuthAcl;
 import org.eclipse.kapua.client.security.bean.AuthContext;
+import org.eclipse.kapua.client.security.metric.AuthMetric;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
+import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionFactory;
+import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +43,18 @@ import java.util.List;
  * @since 1.0
  */
 public class UserAuthenticationLogic extends AuthenticationLogic {
+
+    public UserAuthenticationLogic(
+            AclCreator aclCreator,
+            AuthMetric authenticationMetric,
+            DeviceConnectionOptionFactory deviceConnectionOptionFactory,
+            DeviceConnectionOptionService deviceConnectionOptionService,
+            AuthorizationService authorizationService,
+            DeviceConnectionFactory deviceConnectionFactory,
+            PermissionFactory permissionFactory,
+            DeviceConnectionService deviceConnectionService) {
+        super(aclCreator, authenticationMetric, deviceConnectionOptionFactory, deviceConnectionOptionService, authorizationService, deviceConnectionFactory, permissionFactory, deviceConnectionService);
+    }
 
     @Override
     public List<AuthAcl> connect(AuthContext authContext) throws KapuaException {

@@ -30,7 +30,6 @@ import org.eclipse.kapua.job.engine.exception.JobRunningException;
 import org.eclipse.kapua.job.engine.exception.JobStartingException;
 import org.eclipse.kapua.job.engine.exception.JobStoppingException;
 import org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -49,6 +48,7 @@ import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,21 +57,24 @@ import java.util.Set;
 @Singleton
 public class JobEngineServiceJbatch implements JobEngineService {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
-    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
-
-    private static final JobService JOB_SERVICE = LOCATOR.getService(JobService.class);
-
-    private static final JobExecutionService JOB_EXECUTION_SERVICE = LOCATOR.getService(JobExecutionService.class);
-
-    private static final JobStepService JOB_STEP_SERVICE = LOCATOR.getService(JobStepService.class);
-    private static final JobStepFactory JOB_STEP_FACTORY = LOCATOR.getFactory(JobStepFactory.class);
-
-    private static final JobTargetService JOB_TARGET_SERVICE = LOCATOR.getService(JobTargetService.class);
-    private static final JobTargetFactory JOB_TARGET_FACTORY = LOCATOR.getFactory(JobTargetFactory.class);
-
+    @Inject
+    private AuthorizationService authorizationService;
+    @Inject
+    private PermissionFactory permissionFactory;
+    @Inject
+    private JobService jobService;
+    @Inject
+    private JobExecutionService jobExecutionService;
+    @Inject
+    private JobStepService jobStepService;
+    @Inject
+    private JobStepFactory jobStepFactory;
+    @Inject
+    private JobTargetService jobTargetService;
+    @Inject
+    private JobTargetFactory jobTargetFactory;
+    @Inject
+    private JbatchDriver jbatchDriver;
     private static final String JOB_EXECUTION_ID = "jobExecutionId";
 
     @Override
@@ -86,16 +89,16 @@ public class JobEngineServiceJbatch implements JobEngineService {
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         ArgumentValidator.notNull(jobStartOptions, "jobStartOptions");
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(Domains.JOB, Actions.execute, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.execute, scopeId));
         // Check Job Existence
-        Job job = JOB_SERVICE.find(scopeId, jobId);
+        Job job = jobService.find(scopeId, jobId);
         if (job == null) {
             throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
         }
         // Check job targets
-        JobTargetQuery jobTargetQuery = JOB_TARGET_FACTORY.newQuery(scopeId);
+        JobTargetQuery jobTargetQuery = jobTargetFactory.newQuery(scopeId);
         jobTargetQuery.setPredicate(jobTargetQuery.attributePredicate(JobTargetAttributes.JOB_ID, jobId));
-        if (JOB_TARGET_SERVICE.count(jobTargetQuery) <= 0) {
+        if (jobTargetService.count(jobTargetQuery) <= 0) {
             throw new JobMissingTargetException(scopeId, jobId);
         }
         // Check job target sublist
@@ -107,19 +110,19 @@ public class JobEngineServiceJbatch implements JobEngineService {
                     )
             );
 
-            if (jobStartOptions.getTargetIdSublist().size() != JOB_TARGET_SERVICE.count(jobTargetQuery)) {
+            if (jobStartOptions.getTargetIdSublist().size() != jobTargetService.count(jobTargetQuery)) {
                 throw new JobInvalidTargetException(scopeId, jobId, jobStartOptions.getTargetIdSublist());
             }
         }
         // Check job steps
-        JobStepQuery jobStepQuery = JOB_STEP_FACTORY.newQuery(scopeId);
+        JobStepQuery jobStepQuery = jobStepFactory.newQuery(scopeId);
         jobStepQuery.setPredicate(jobStepQuery.attributePredicate(JobStepAttributes.JOB_ID, jobId));
-        if (JOB_STEP_SERVICE.count(jobStepQuery) <= 0) {
+        if (jobStepService.count(jobStepQuery) <= 0) {
             throw new JobMissingStepException(scopeId, jobId);
         }
         // Start the job
         try {
-            JbatchDriver.startJob(scopeId, jobId, jobStartOptions);
+            jbatchDriver.startJob(scopeId, jobId, jobStartOptions);
         } catch (Exception e) {
             throw new JobStartingException(e, scopeId, jobId);
         }
@@ -131,7 +134,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(Domains.JOB, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, scopeId));
 
         return internalIsRunning(scopeId, jobId);
     }
@@ -141,7 +144,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         // Argument Validation
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(Domains.JOB, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, scopeId));
 
         Map<KapuaId, Boolean> isRunningMap = new HashMap<>();
         jobIds.forEach(jobId -> {
@@ -162,19 +165,19 @@ public class JobEngineServiceJbatch implements JobEngineService {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(Domains.JOB, Actions.execute, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.execute, scopeId));
         // Check existence
-        Job job = JOB_SERVICE.find(scopeId, jobId);
+        Job job = jobService.find(scopeId, jobId);
         if (job == null) {
             throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
         }
         // Check job running
-        if (!JbatchDriver.isRunningJob(scopeId, jobId)) {
+        if (!jbatchDriver.isRunningJob(scopeId, jobId)) {
             throw new JobNotRunningException(scopeId, jobId);
         }
         // Stop the job
         try {
-            JbatchDriver.stopJob(scopeId, jobId, null);
+            jbatchDriver.stopJob(scopeId, jobId, null);
         } catch (Exception e) {
             throw new JobStoppingException(e, scopeId, jobId);
         }
@@ -187,14 +190,14 @@ public class JobEngineServiceJbatch implements JobEngineService {
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         ArgumentValidator.notNull(jobExecutionId, JOB_EXECUTION_ID);
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(Domains.JOB, Actions.execute, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.execute, scopeId));
         // Check existence
-        Job job = JOB_SERVICE.find(scopeId, jobId);
+        Job job = jobService.find(scopeId, jobId);
         if (job == null) {
             throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
         }
         // Check execution existence
-        JobExecution jobExecution = JOB_EXECUTION_SERVICE.find(scopeId, jobExecutionId);
+        JobExecution jobExecution = jobExecutionService.find(scopeId, jobExecutionId);
         if (jobExecution == null) {
             throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
         }
@@ -204,7 +207,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         }
         // Stop the JobExecution
         try {
-            JbatchDriver.stopJob(scopeId, jobId, jobExecutionId);
+            jbatchDriver.stopJob(scopeId, jobId, jobExecutionId);
         } catch (Exception e) {
             throw new JobStoppingException(e, scopeId, jobId, jobExecutionId);
         }
@@ -218,14 +221,14 @@ public class JobEngineServiceJbatch implements JobEngineService {
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         ArgumentValidator.notNull(jobExecutionId, JOB_EXECUTION_ID);
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(Domains.JOB, Actions.execute, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.execute, scopeId));
         // Check existence
-        Job job = JOB_SERVICE.find(scopeId, jobId);
+        Job job = jobService.find(scopeId, jobId);
         if (job == null) {
             throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
         }
         // Check execution existence
-        JobExecution jobExecution = JOB_EXECUTION_SERVICE.find(scopeId, jobExecutionId);
+        JobExecution jobExecution = jobExecutionService.find(scopeId, jobExecutionId);
 
         if (jobExecution == null) {
             throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
@@ -236,7 +239,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         }
         // Resume the JobExecution
         try {
-            JbatchDriver.resumeJob(scopeId, jobId, jobExecutionId);
+            jbatchDriver.resumeJob(scopeId, jobId, jobExecutionId);
         } catch (Exception e) {
             throw new JobResumingException(e, scopeId, jobId, jobExecutionId);
         }
@@ -248,19 +251,19 @@ public class JobEngineServiceJbatch implements JobEngineService {
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(Domains.JOB, Actions.delete, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.delete, null));
         // Check existence
-        Job job = JOB_SERVICE.find(scopeId, jobId);
+        Job job = jobService.find(scopeId, jobId);
         if (job == null) {
             throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
         }
         // Check job not running
-        if (JbatchDriver.isRunningJob(scopeId, jobId)) {
+        if (jbatchDriver.isRunningJob(scopeId, jobId)) {
             throw new JobRunningException(scopeId, jobId);
         }
 
         try {
-            JbatchDriver.cleanJobData(scopeId, jobId);
+            jbatchDriver.cleanJobData(scopeId, jobId);
         } catch (Exception ex) {
             throw new CleanJobDataException(ex, scopeId, jobId);
         }
@@ -280,13 +283,13 @@ public class JobEngineServiceJbatch implements JobEngineService {
      */
     private boolean internalIsRunning(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         // Check existence
-        Job job = JOB_SERVICE.find(scopeId, jobId);
+        Job job = jobService.find(scopeId, jobId);
         if (job == null) {
             throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
         }
         // Do check running
         try {
-            return JbatchDriver.isRunningJob(scopeId, jobId);
+            return jbatchDriver.isRunningJob(scopeId, jobId);
         } catch (Exception e) {
             throw new JobCheckRunningException(e, scopeId, jobId);
         }

@@ -18,21 +18,25 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.profile.UserProfile;
 import org.eclipse.kapua.service.user.profile.UserProfileFactory;
 import org.eclipse.kapua.service.user.profile.UserProfileService;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
 public class UserProfileServiceImpl implements UserProfileService {
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final UserService userService = locator.getService(UserService.class);
-    private final UserProfileFactory userProfileFactory = locator.getFactory(UserProfileFactory.class);
+    private final UserService userService;
+    private final UserProfileFactory userProfileFactory;
 
+    @Inject
+    public UserProfileServiceImpl(UserService userService, UserProfileFactory userProfileFactory) {
+        this.userService = userService;
+        this.userProfileFactory = userProfileFactory;
+    }
 
     @Override
     public void changeUserProfile(UserProfile userProfile) throws KapuaException {

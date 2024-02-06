@@ -19,8 +19,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class UserCredentialsXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final UserCredentialsFactory USER_CREDENTIAL_FACTORY = LOCATOR.getFactory(UserCredentialsFactory.class);
+    private final UserCredentialsFactory userCredentialsFactory = KapuaLocator.getInstance().getFactory(UserCredentialsFactory.class);
 
 
     /**
@@ -29,16 +28,17 @@ public class UserCredentialsXmlRegistry {
      * @return
      */
     public PasswordChangeRequest newPasswordChangeRequest() {
-        return USER_CREDENTIAL_FACTORY.newPasswordChangeRequest();
+        return userCredentialsFactory.newPasswordChangeRequest();
     }
 
 
     /**
      * Creates a new reset password request
+     *
      * @return
      */
     public PasswordResetRequest newPasswordResetRequest() {
-        return USER_CREDENTIAL_FACTORY.newPasswordResetRequest();
+        return userCredentialsFactory.newPasswordResetRequest();
     }
 
 }

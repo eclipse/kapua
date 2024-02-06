@@ -39,10 +39,9 @@ public class ServiceMap {
     /**
      * Register the list of services to the provided address
      *
-     * @param serviceDefaultAddress
      * @param servicesEntryList
      */
-    public static synchronized void registerServices(String serviceDefaultAddress, List<ServiceEntry> servicesEntryList) {
+    public static synchronized void registerServices(List<ServiceEntry> servicesEntryList) {
         for (ServiceEntry serviceEntry : servicesEntryList) {
             //register service name
             String tmpServiceName = AVAILABLE_SERVICES.get(serviceEntry.getServiceName());

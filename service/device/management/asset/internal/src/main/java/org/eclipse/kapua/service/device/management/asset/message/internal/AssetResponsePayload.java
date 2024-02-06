@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.device.management.asset.message.internal;
 
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
@@ -22,6 +21,7 @@ import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagem
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 /**
  * {@link DeviceAssets} {@link KapuaResponsePayload} implementation.
@@ -32,9 +32,7 @@ public class AssetResponsePayload extends KapuaResponsePayloadImpl implements Ka
 
     private static final long serialVersionUID = -9087980446970521618L;
 
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
-    private static final DeviceAssetFactory DEVICE_ASSET_FACTORY = KapuaLocator.getInstance().getFactory(DeviceAssetFactory.class);
+    private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     /**
      * Gets the {@link DeviceAssets} from the {@link #getBody()}.
@@ -43,13 +41,13 @@ public class AssetResponsePayload extends KapuaResponsePayloadImpl implements Ka
      * @throws Exception if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
-    public DeviceAssets getDeviceAssets() throws Exception {
+    public Optional<DeviceAssets> getDeviceAssets() throws Exception {
         if (!hasBody()) {
-            return DEVICE_ASSET_FACTORY.newAssetListResult();
+            return Optional.empty();
         }
 
-        String bodyString = new String(getBody(), CHAR_ENCODING);
-        return XmlUtil.unmarshal(bodyString, DeviceAssets.class);
+        String bodyString = new String(getBody(), charEncoding);
+        return Optional.of(XmlUtil.unmarshal(bodyString, DeviceAssets.class));
     }
 
     /**
@@ -61,7 +59,7 @@ public class AssetResponsePayload extends KapuaResponsePayloadImpl implements Ka
      */
     public void setDeviceAssets(@NotNull DeviceAssets deviceAssets) throws Exception {
         String bodyString = XmlUtil.marshal(deviceAssets);
-        setBody(bodyString.getBytes(CHAR_ENCODING));
+        setBody(bodyString.getBytes(charEncoding));
     }
 
 }

@@ -51,7 +51,6 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
-import org.eclipse.kapua.service.client.DatabaseCheckUpdate;
 import org.eclipse.kapua.service.client.message.MessageConstants;
 import org.eclipse.kapua.service.device.connection.listener.DeviceConnectionEventListenerService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
@@ -103,12 +102,13 @@ public class ServerPlugin implements ActiveMQServerPlugin {
      */
     private int publishInfoMessageSizeLimit;
 
-    //TODO inject!!!
-    private LoginMetric loginMetric;
-    private PublishMetric publishMetric;
-    private SubscribeMetric subscribeMetric;
+    private final LoginMetric loginMetric;
+    private final PublishMetric publishMetric;
+    private final SubscribeMetric subscribeMetric;
+    private final BrokerSetting brokerSetting;
+    private final PluginUtility pluginUtility;
 
-    protected BrokerEventHandler brokerEventHanldler;
+    protected BrokerEventHandler brokerEventHandler;
     protected AcceptorHandler acceptorHandler;
     protected String version;
     protected ServerContext serverContext;
@@ -116,20 +116,18 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     protected DeviceConnectionEventListenerService deviceConnectionEventListenerService;
 
     public ServerPlugin() {
-        //TODO find which is the right plugin to use to set this parameter (ServerPlugin or SecurityPlugin???)
-        CommonsMetric.module = MetricsSecurityPlugin.BROKER_TELEMETRY;
-        loginMetric = LoginMetric.getInstance();
-        publishMetric = PublishMetric.getInstance();
-        subscribeMetric = SubscribeMetric.getInstance();
-        publishInfoMessageSizeLimit = BrokerSetting.getInstance().getInt(BrokerSettingKey.PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD, DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD);
-        //TODO find a proper way to initialize database
-        DatabaseCheckUpdate databaseCheckUpdate = new DatabaseCheckUpdate();
-        serverContext = ServerContext.getInstance();
-        brokerEventHanldler = BrokerEventHandler.getInstance();
-        brokerEventHanldler.registerConsumer((brokerEvent) -> disconnectClient(brokerEvent));
-        brokerEventHanldler.start();
-
-        deviceConnectionEventListenerService = KapuaLocator.getInstance().getService(DeviceConnectionEventListenerService.class);
+        final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
+        loginMetric = kapuaLocator.getComponent(LoginMetric.class);
+        publishMetric = kapuaLocator.getComponent(PublishMetric.class);
+        subscribeMetric = kapuaLocator.getComponent(SubscribeMetric.class);
+        this.brokerSetting = kapuaLocator.getComponent(BrokerSetting.class);
+        this.pluginUtility = kapuaLocator.getComponent(PluginUtility.class);
+        this.publishInfoMessageSizeLimit = brokerSetting.getInt(BrokerSettingKey.PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD, DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD);
+        serverContext = kapuaLocator.getComponent(ServerContext.class);
+        deviceConnectionEventListenerService = kapuaLocator.getComponent(DeviceConnectionEventListenerService.class);
+        brokerEventHandler = new BrokerEventHandler(kapuaLocator.getComponent(CommonsMetric.class));
+        brokerEventHandler.registerConsumer((brokerEvent) -> disconnectClient(brokerEvent));
+        brokerEventHandler.start();
     }
 
     @Override
@@ -137,16 +135,16 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         logger.info("registering plugin {}...", this.getClass().getName());
         try {
             String clusterName = SystemSetting.getInstance().getString(SystemSettingKey.CLUSTER_NAME);
-            serverContext.init(server, clusterName);
+            serverContext.init(server);
             acceptorHandler = new AcceptorHandler(server,
-                    BrokerSetting.getInstance().getMap(String.class, BrokerSettingKey.ACCEPTORS));
+                    brokerSetting.getMap(String.class, BrokerSettingKey.ACCEPTORS));
             //init acceptors
             acceptorHandler.syncAcceptors();
 
             deviceConnectionEventListenerService.addReceiver(serviceEvent -> processDeviceConnectionEvent(serviceEvent));
 
             // Setup service events
-            ServiceModuleBundle app = KapuaLocator.getInstance().getService(ServiceModuleBundle.class);
+            ServiceModuleBundle app = KapuaLocator.getInstance().getComponent(ServiceModuleBundle.class);
             app.startup();
 
             // Setup JAXB Context
@@ -224,7 +222,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
                            boolean noAutoCreateQueue) throws ActiveMQException {
         String address = message.getAddress();
         int messageSize = message.getEncodeSize();
-        SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextWithCacheFallback(PluginUtility.getConnectionId(session));
+        SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextWithCacheFallback(pluginUtility.getConnectionId(session.getRemotingConnection()));
         logger.debug("Publishing message on address {} from clientId: {} - clientIp: {}", address, sessionContext.getClientId(), sessionContext.getClientIp());
         message.putStringProperty(MessageConstants.HEADER_KAPUA_CLIENT_ID, sessionContext.getClientId());
         message.putStringProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_NAME, sessionContext.getConnectorName());
@@ -302,7 +300,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         String fullClientId = Utils.getFullClientId(scopeId, clientId);
         return serverContext.getServer().getSessions().stream().map(session -> {
             RemotingConnection remotingConnection = session.getRemotingConnection();
-            String clientIdToCheck = PluginUtility.getConnectionId(remotingConnection);
+            String clientIdToCheck = pluginUtility.getConnectionId(remotingConnection);
             SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextByClientId(clientIdToCheck);
             String connectionFullClientId = Utils.getFullClientId(sessionContext);
             if (fullClientId.equals(connectionFullClientId)) {
@@ -321,7 +319,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         logger.info("Disconnecting client for connection: {}", connectionId);
         return serverContext.getServer().getRemotingService().getConnections().stream().map(remotingConnection -> {
             int removed = 0;
-            String connectionIdTmp = PluginUtility.getConnectionId(remotingConnection);
+            String connectionIdTmp = pluginUtility.getConnectionId(remotingConnection);
             if (connectionId.equals(connectionIdTmp)) {
                 logger.info("\tconnection: {} - compared to: {} ... CLOSE", connectionId, connectionIdTmp);
                 remotingConnection.disconnect(false);
@@ -359,7 +357,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             BrokerEvent disconnectEvent = new BrokerEvent(EventType.disconnectClientByConnectionId, sessionContext, sessionContext);
 
             logger.info("Submitting broker event to disconnect clientId: {}, connectionId: {}", fullClientId, sessionContext.getConnectionId());
-            BrokerEventHandler.getInstance().enqueueEvent(disconnectEvent);
+            brokerEventHandler.enqueueEvent(disconnectEvent);
         } catch (Exception e) {
             logger.warn("Error processing event: {}", e);
         }
@@ -385,7 +383,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     private void cleanUpConnectionData(RemotingConnection connection, Failure reason, Exception exception) {
         Context timeTotal = loginMetric.getRemoveConnection().time();
         try {
-            String connectionId = PluginUtility.getConnectionId(connection);
+            String connectionId = pluginUtility.getConnectionId(connection);
             serverContext.getSecurityContext().updateConnectionTokenOnDisconnection(connectionId);
             logger.info("### cleanUpConnectionData connection: {} - reason: {} - Error: {}", connectionId, reason, exception != null ? exception.getMessage() : "N/A");
             if (exception != null && logger.isDebugEnabled()) {
@@ -394,7 +392,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             SessionContext sessionContext = serverContext.getSecurityContext().getSessionContext(connectionId);
             if (sessionContext != null) {
                 SessionContext sessionContextByClient = serverContext.getSecurityContext().cleanSessionContext(sessionContext);
-                if (!PluginUtility.isInternal(connection)) {
+                if (!pluginUtility.isInternal(connection)) {
                     AuthRequest authRequest = new AuthRequest(
                             serverContext.getClusterName(),
                             serverContext.getBrokerIdentity().getBrokerHost(),

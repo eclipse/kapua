@@ -19,8 +19,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class TagXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final TagFactory TAG_FACTORY = LOCATOR.getFactory(TagFactory.class);
+    private final TagFactory tagFactory = KapuaLocator.getInstance().getFactory(TagFactory.class);
 
     /**
      * Creates a new tag instance
@@ -28,7 +27,7 @@ public class TagXmlRegistry {
      * @return
      */
     public Tag newTag() {
-        return TAG_FACTORY.newEntity(null);
+        return tagFactory.newEntity(null);
     }
 
     /**
@@ -37,7 +36,7 @@ public class TagXmlRegistry {
      * @return
      */
     public TagCreator newTagCreator() {
-        return TAG_FACTORY.newCreator(null, null);
+        return tagFactory.newCreator(null, null);
     }
 
     /**
@@ -46,10 +45,10 @@ public class TagXmlRegistry {
      * @return
      */
     public TagListResult newTagListResult() {
-        return TAG_FACTORY.newListResult();
+        return tagFactory.newListResult();
     }
 
     public TagQuery newQuery() {
-        return TAG_FACTORY.newQuery(null);
+        return tagFactory.newQuery(null);
     }
 }

@@ -15,9 +15,16 @@ package org.eclipse.kapua.commons;
 import com.google.inject.Provides;
 import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.crypto.CryptoUtil;
+import org.eclipse.kapua.commons.crypto.CryptoUtilImpl;
+import org.eclipse.kapua.commons.crypto.setting.CryptoSettings;
+import org.eclipse.kapua.commons.event.ServiceEventBusDriver;
+import org.eclipse.kapua.commons.event.ServiceEventMarshaler;
+import org.eclipse.kapua.commons.event.jms.JMSServiceEventBus;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.populators.DataPopulator;
@@ -25,6 +32,10 @@ import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreService;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.event.ServiceEventBus;
+import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.domain.DomainEntry;
@@ -41,8 +52,10 @@ public class CommonsModule extends AbstractKapuaModule {
 
     @Override
     protected void configureModule() {
-        bind(QueryFactory.class).to(QueryFactoryImpl.class);
         bind(DataPopulatorRunner.class).in(Singleton.class);
+        bind(QueryFactory.class).to(QueryFactoryImpl.class).in(Singleton.class);
+        bind(CryptoSettings.class).toInstance(new CryptoSettings());
+        bind(CryptoUtil.class).to(CryptoUtilImpl.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet
@@ -73,4 +86,28 @@ public class CommonsModule extends AbstractKapuaModule {
         return new EventStorerImpl(repository);
     }
 
+    @Provides
+    @Singleton
+    ServiceEventBusDriver serviceEventBusDriver(SystemSetting systemSetting, CommonsMetric commonsMetric, ServiceEventMarshaler serviceEventMarshaler) {
+        return new JMSServiceEventBus(systemSetting, commonsMetric, serviceEventMarshaler);
+    }
+
+    @Provides
+    @Singleton
+    ServiceEventMarshaler serviceEventMarshaler(SystemSetting systemSetting) throws ClassNotFoundException, InstantiationException, IllegalAccessException, ServiceEventBusException {
+        final String messageSerializer = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_MESSAGE_SERIALIZER);
+        // initialize event bus marshaler
+        final Class<?> messageSerializerClazz = Class.forName(messageSerializer);
+        if (ServiceEventMarshaler.class.isAssignableFrom(messageSerializerClazz)) {
+            return (ServiceEventMarshaler) messageSerializerClazz.newInstance();
+        } else {
+            throw new ServiceEventBusException(String.format("Wrong message serializer Object type ('%s')!", messageSerializerClazz));
+        }
+    }
+
+    @Provides
+    @Singleton
+    ServiceEventBus serviceEventBus(ServiceEventBusDriver serviceEventBusDriver) throws ServiceEventBusException {
+        return serviceEventBusDriver.getEventBus();
+    }
 }

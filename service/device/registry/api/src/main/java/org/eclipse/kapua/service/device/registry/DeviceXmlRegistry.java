@@ -24,8 +24,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class DeviceXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final DeviceFactory DEVICE_FACTORY = LOCATOR.getFactory(DeviceFactory.class);
+    private final DeviceFactory deviceFactory = KapuaLocator.getInstance().getFactory(DeviceFactory.class);
 
     /**
      * Creates a new {@link Device}
@@ -34,7 +33,7 @@ public class DeviceXmlRegistry {
      * @since 1.0.0
      */
     public Device newDevice() {
-        return DEVICE_FACTORY.newEntity(null);
+        return deviceFactory.newEntity(null);
     }
 
     /**
@@ -44,7 +43,7 @@ public class DeviceXmlRegistry {
      * @since 1.0.0
      */
     public DeviceCreator newDeviceCreator() {
-        return DEVICE_FACTORY.newCreator(null, null);
+        return deviceFactory.newCreator(null, null);
     }
 
     /**
@@ -54,11 +53,11 @@ public class DeviceXmlRegistry {
      * @since 1.0.0
      */
     public DeviceListResult newDeviceListResult() {
-        return DEVICE_FACTORY.newListResult();
+        return deviceFactory.newListResult();
     }
 
     public DeviceQuery newQuery() {
-        return DEVICE_FACTORY.newQuery(null);
+        return deviceFactory.newQuery(null);
     }
 
     /**
@@ -68,6 +67,6 @@ public class DeviceXmlRegistry {
      * @since 1.5.0
      */
     public DeviceExtendedProperty newDeviceExtendedProperty() {
-        return DEVICE_FACTORY.newExtendedProperty(null, null, null);
+        return deviceFactory.newExtendedProperty(null, null, null);
     }
 }

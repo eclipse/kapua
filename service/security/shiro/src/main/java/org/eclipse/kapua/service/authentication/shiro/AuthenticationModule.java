@@ -15,7 +15,7 @@ package org.eclipse.kapua.service.authentication.shiro;
 import com.google.inject.Provides;
 import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableServiceCache;
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
@@ -23,12 +23,14 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachin
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactoryImpl;
+import org.eclipse.kapua.commons.jpa.EntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
+import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
@@ -41,6 +43,7 @@ import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialRepository;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
+import org.eclipse.kapua.service.authentication.credential.cache.CacheMetric;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionFactory;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionRepository;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
@@ -60,6 +63,7 @@ import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMappe
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidator;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidatorImpl;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.registration.RegistrationService;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
@@ -71,6 +75,8 @@ import org.eclipse.kapua.service.authentication.shiro.realm.UserPassCredentialsH
 import org.eclipse.kapua.service.authentication.shiro.registration.RegistrationServiceImpl;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaCryptoSetting;
+import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 import org.eclipse.kapua.service.authentication.token.AccessTokenRepository;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
@@ -83,20 +89,37 @@ import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.storage.TxContext;
 
 import javax.inject.Singleton;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Map;
 import java.util.Optional;
 
 public class AuthenticationModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(AuthenticationService.class).to(AuthenticationServiceShiroImpl.class);
-        bind(CredentialFactory.class).to(CredentialFactoryImpl.class);
-        bind(CredentialsFactory.class).to(CredentialsFactoryImpl.class);
-        bind(MfaOptionFactory.class).to(MfaOptionFactoryImpl.class);
-        bind(ScratchCodeFactory.class).to(ScratchCodeFactoryImpl.class);
-        bind(AccessTokenFactory.class).to(AccessTokenFactoryImpl.class);
-        bind(RegistrationService.class).to(RegistrationServiceImpl.class);
-        bind(MfaAuthenticator.class).toInstance(new MfaAuthenticatorImpl());
+        bind(KapuaAuthenticationSetting.class).in(Singleton.class);
+        bind(AuthenticationService.class).to(AuthenticationServiceShiroImpl.class).in(Singleton.class);
+        bind(CredentialFactory.class).to(CredentialFactoryImpl.class).in(Singleton.class);
+        bind(CredentialsFactory.class).to(CredentialsFactoryImpl.class).in(Singleton.class);
+        bind(MfaOptionFactory.class).to(MfaOptionFactoryImpl.class).in(Singleton.class);
+        bind(ScratchCodeFactory.class).to(ScratchCodeFactoryImpl.class).in(Singleton.class);
+        bind(AccessTokenFactory.class).to(AccessTokenFactoryImpl.class).in(Singleton.class);
+        bind(RegistrationService.class).to(RegistrationServiceImpl.class).in(Singleton.class);
+        bind(MfaAuthenticator.class).to(MfaAuthenticatorImpl.class).in(Singleton.class);
+        bind(KapuaCryptoSetting.class).in(Singleton.class);
+        bind(CacheMetric.class).in(Singleton.class);
+    }
+
+    @Provides
+    @Singleton
+    AuthenticationUtils authenticationUtils(KapuaCryptoSetting kapuaCryptoSetting) {
+        final SecureRandom random;
+        try {
+            random = SecureRandom.getInstance("SHA1PRNG");
+        } catch (NoSuchAlgorithmException e) {
+            throw new KapuaRuntimeException(KapuaAuthenticationErrorCodes.CREDENTIAL_CRYPT_ERROR, e);
+        }
+        return new AuthenticationUtils(random, kapuaCryptoSetting);
     }
 
     @ProvidesIntoSet
@@ -116,12 +139,14 @@ public class AuthenticationModule extends AbstractKapuaModule {
                                                      PermissionFactory permissionFactory,
                                                      KapuaJpaTxManagerFactory txManagerFactory,
                                                      EventStoreFactory eventStoreFactory,
-                                                     EventStoreRecordRepository eventStoreRecordRepository
+                                                     EventStoreRecordRepository eventStoreRecordRepository,
+                                                     ServiceEventBus serviceEventBus,
+                                                     KapuaAuthenticationSetting kapuaAuthenticationSetting
     ) throws ServiceEventBusException {
         return new AuthenticationServiceModule(
                 credentialService,
                 accessTokenService,
-                KapuaAuthenticationSetting.getInstance(),
+                kapuaAuthenticationSetting,
                 new ServiceEventHouseKeeperFactoryImpl(
                         new EventStoreServiceImpl(
                                 authorizationService,
@@ -130,8 +155,10 @@ public class AuthenticationModule extends AbstractKapuaModule {
                                 eventStoreFactory,
                                 eventStoreRecordRepository
                         ),
-                        txManagerFactory.create("kapua-authentication")
-                ));
+                        txManagerFactory.create("kapua-authentication"),
+                        serviceEventBus
+                ),
+                serviceEventBus);
     }
 
     @ProvidesIntoSet
@@ -163,8 +190,9 @@ public class AuthenticationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    CredentialMapper credentialMapper(CredentialFactory credentialFactory) {
-        return new CredentialMapperImpl(credentialFactory);
+    CredentialMapper credentialMapper(CredentialFactory credentialFactory, KapuaAuthenticationSetting kapuaAuthenticationSetting,
+                                      AuthenticationUtils authenticationUtils) {
+        return new CredentialMapperImpl(credentialFactory, kapuaAuthenticationSetting, authenticationUtils);
     }
 
     @Provides
@@ -194,10 +222,10 @@ public class AuthenticationModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             UserService userService,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
-
-        final KapuaAuthenticationSetting authenticationSetting = KapuaAuthenticationSetting.getInstance();
-        int trustKeyDuration = authenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TRUST_KEY_DURATION);
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            KapuaAuthenticationSetting kapuaAuthenticationSetting,
+            AuthenticationUtils authenticationUtils) {
+        int trustKeyDuration = kapuaAuthenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TRUST_KEY_DURATION);
 
         return new MfaOptionServiceImpl(
                 trustKeyDuration,
@@ -209,7 +237,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
                 scratchCodeFactory,
                 authorizationService,
                 permissionFactory,
-                userService
+                userService,
+                authenticationUtils
         );
     }
 
@@ -220,13 +249,15 @@ public class AuthenticationModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             ScratchCodeRepository scratchCodeRepository,
             ScratchCodeFactory scratchCodeFactory,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            AuthenticationUtils authenticationUtils) {
         return new ScratchCodeServiceImpl(
                 authorizationService,
                 permissionFactory,
                 jpaTxManagerFactory.create("kapua-authentication"),
                 scratchCodeRepository,
-                scratchCodeFactory);
+                scratchCodeFactory,
+                authenticationUtils);
     }
 
     @Provides
@@ -257,7 +288,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
             CredentialFactory credentialFactory,
             KapuaJpaTxManagerFactory jpaTxManagerFactory,
             CredentialMapper credentialMapper,
-            PasswordValidator passwordValidator) {
+            PasswordValidator passwordValidator,
+            KapuaAuthenticationSetting kapuaAuthenticationSetting) {
         return new CredentialServiceImpl(serviceConfigurationManager,
                 authorizationService,
                 permissionFactory,
@@ -265,7 +297,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
                 credentialRepository,
                 credentialFactory,
                 credentialMapper,
-                passwordValidator);
+                passwordValidator,
+                kapuaAuthenticationSetting);
     }
 
     @Provides
@@ -278,13 +311,16 @@ public class AuthenticationModule extends AbstractKapuaModule {
     @Singleton
     public CredentialServiceConfigurationManager credentialServiceConfigurationManager(
             RootUserTester rootUserTester,
-            KapuaJpaRepositoryConfiguration jpaRepoConfig) {
+            KapuaJpaRepositoryConfiguration jpaRepoConfig,
+            KapuaAuthenticationSetting kapuaAuthenticationSetting,
+            EntityCacheFactory entityCacheFactory) {
         final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
                 new CachingServiceConfigRepository(
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
-                        new AbstractKapuaConfigurableServiceCache().createCache()
+                        entityCacheFactory.createCache("AbstractKapuaConfigurableServiceCacheId")
                 ),
-                rootUserTester);
+                rootUserTester,
+                kapuaAuthenticationSetting);
 
         final ServiceConfigurationManagerCachingWrapper cached = new ServiceConfigurationManagerCachingWrapper(credentialServiceConfigurationManager);
         return new CredentialServiceConfigurationManager() {

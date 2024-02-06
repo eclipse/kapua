@@ -19,15 +19,16 @@ import org.eclipse.kapua.app.api.core.model.device.management.JsonGenericRequest
 import org.eclipse.kapua.app.api.core.model.device.management.JsonGenericResponseMessage;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.resources.v1.resources.marker.JsonSerializationFixed;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.device.management.request.DeviceRequestManagementService;
 import org.eclipse.kapua.service.device.management.request.GenericRequestFactory;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestPayload;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
 import org.eclipse.kapua.service.device.registry.Device;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
@@ -43,10 +44,10 @@ import javax.ws.rs.core.MediaType;
 @Path("{scopeId}/devices/{deviceId}/requests")
 public class DeviceManagementRequestsJson extends AbstractKapuaResource implements JsonSerializationFixed {
 
-    private static final DeviceManagementRequests DEVICE_MANAGEMENT_REQUESTS = new DeviceManagementRequests();
-
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final GenericRequestFactory GENERIC_REQUEST_FACTORY = LOCATOR.getFactory(GenericRequestFactory.class);
+    @Inject
+    public GenericRequestFactory genericRequestFactory;
+    @Inject
+    public DeviceRequestManagementService requestService;
 
     /**
      * Sends a request message to a device.
@@ -69,7 +70,7 @@ public class DeviceManagementRequestsJson extends AbstractKapuaResource implemen
             @QueryParam("timeout") @DefaultValue("30000") Long timeout,
             JsonGenericRequestMessage jsonGenericRequestMessage) throws KapuaException {
 
-        GenericRequestMessage genericRequestMessage = GENERIC_REQUEST_FACTORY.newRequestMessage();
+        GenericRequestMessage genericRequestMessage = genericRequestFactory.newRequestMessage();
 
         genericRequestMessage.setId(jsonGenericRequestMessage.getId());
         genericRequestMessage.setScopeId(scopeId);
@@ -81,7 +82,7 @@ public class DeviceManagementRequestsJson extends AbstractKapuaResource implemen
         genericRequestMessage.setPosition(jsonGenericRequestMessage.getPosition());
         genericRequestMessage.setChannel(jsonGenericRequestMessage.getChannel());
 
-        GenericRequestPayload kapuaDataPayload = GENERIC_REQUEST_FACTORY.newRequestPayload();
+        GenericRequestPayload kapuaDataPayload = genericRequestFactory.newRequestPayload();
 
         if (jsonGenericRequestMessage.getPayload() != null) {
             kapuaDataPayload.setBody(jsonGenericRequestMessage.getPayload().getBody());
@@ -96,9 +97,9 @@ public class DeviceManagementRequestsJson extends AbstractKapuaResource implemen
         }
 
         genericRequestMessage.setPayload(kapuaDataPayload);
-
-        GenericResponseMessage genericResponseMessage = DEVICE_MANAGEMENT_REQUESTS.sendRequest(scopeId, deviceId, timeout, genericRequestMessage);
-
+        genericRequestMessage.setScopeId(scopeId);
+        genericRequestMessage.setDeviceId(deviceId);
+        GenericResponseMessage genericResponseMessage = requestService.exec(scopeId, deviceId, genericRequestMessage, timeout);
         return new JsonGenericResponseMessage(genericResponseMessage);
     }
 }

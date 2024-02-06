@@ -13,12 +13,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.KapuaPayload;
@@ -35,6 +32,8 @@ import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
 
+import javax.inject.Inject;
+
 /**
  * {@link Translator} abstract implementation from {@link KapuaMessage} to {@link KuraRequestMessage}
  *
@@ -44,24 +43,21 @@ public abstract class AbstractTranslatorKapuaKura<FROM_C extends KapuaChannel, F
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
 
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper()
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
-    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+    @Inject
+    private ObjectMapper jsonMapper;
+    @Inject
+    private AccountService accountService;
+    @Inject
+    private DeviceRegistryService deviceRegistryService;
 
     @Override
     public KuraRequestMessage translate(FROM_M kapuaMessage) throws TranslateException {
         try {
-            Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.find(kapuaMessage.getScopeId()));
+            Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(kapuaMessage.getScopeId()));
 
             Device device = null;
             if (kapuaMessage.getDeviceId() != null) {
-                device = DEVICE_REGISTRY_SERVICE.find(kapuaMessage.getScopeId(), kapuaMessage.getDeviceId());
+                device = deviceRegistryService.find(kapuaMessage.getScopeId(), kapuaMessage.getDeviceId());
             }
 
             KuraRequestChannel kuraRequestChannel = translateChannel(kapuaMessage.getChannel());
@@ -101,7 +97,7 @@ public abstract class AbstractTranslatorKapuaKura<FROM_C extends KapuaChannel, F
      * @since 1.5.0
      */
     protected ObjectMapper getJsonMapper() {
-        return JSON_MAPPER;
+        return jsonMapper;
     }
 
 }

@@ -14,6 +14,8 @@ package org.eclipse.kapua.service.device.call.message.kura.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
+import javax.inject.Inject;
+
 /**
  * {@link DeviceCallSettings} for {@code kapua-device-call-kura} module.
  *
@@ -30,28 +32,12 @@ public class DeviceCallSettings extends AbstractKapuaSetting<DeviceCallSettingKe
     private static final String DEVICE_CALL_SETTING_RESOURCE = "device-call-settings.properties";
 
     /**
-     * Singleton instance.
-     *
-     * @since 1.0.0
-     */
-    private static final DeviceCallSettings INSTANCE = new DeviceCallSettings();
-
-    /**
      * Constructor.
      *
      * @since 1.0.0
      */
-    private DeviceCallSettings() {
+    @Inject
+    public DeviceCallSettings() {
         super(DEVICE_CALL_SETTING_RESOURCE);
-    }
-
-    /**
-     * Gets a singleton instance of {@link DeviceCallSettings}.
-     *
-     * @return A singleton instance of {@link DeviceCallSettings}.
-     * @since 1.0.0
-     */
-    public static DeviceCallSettings getInstance() {
-        return INSTANCE;
     }
 }

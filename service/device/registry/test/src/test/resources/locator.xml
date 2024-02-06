@@ -24,6 +24,7 @@
         <package>org.eclipse.kapua.test.user</package>
         <package>org.eclipse.kapua.test.account</package>
         <package>org.eclipse.kapua.test.authentication</package>
+        <package>org.eclipse.kapua.locator</package>
         <package>org.eclipse.kapua.test.authorization</package>
     </packages>
 </locator-config>

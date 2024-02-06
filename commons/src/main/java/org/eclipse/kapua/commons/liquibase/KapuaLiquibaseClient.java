@@ -28,7 +28,7 @@ import org.eclipse.kapua.commons.liquibase.settings.LiquibaseClientSettings;
 import org.eclipse.kapua.commons.util.SemanticVersion;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
+import org.reflections.scanners.Scanners;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +60,7 @@ public class KapuaLiquibaseClient {
 
     private static final SemanticVersion LIQUIBASE_TIMESTAMP_FIX_VERSION = new SemanticVersion("3.3.3"); // https://liquibase.jira.com/browse/CORE-1958
 
-    private static final LiquibaseClientSettings LIQUIBASE_CLIENT_SETTINGS = LiquibaseClientSettings.getInstance();
+    private final LiquibaseClientSettings liquibaseClientSettings = new LiquibaseClientSettings();
 
     private final String jdbcUrl;
     private final String username;
@@ -111,8 +111,8 @@ public class KapuaLiquibaseClient {
         this.schema = schema;
 
         // Check wether or not fix the timestamp based on Liquibase version
-        boolean forceTimestampFix = LIQUIBASE_CLIENT_SETTINGS.getBoolean(LiquibaseClientSettingKeys.FORCE_TIMESTAMPS_FIX);
-        String currentLiquibaseVersionString = LIQUIBASE_CLIENT_SETTINGS.getString(LiquibaseClientSettingKeys.LIQUIBASE_VERSION);
+        boolean forceTimestampFix = liquibaseClientSettings.getBoolean(LiquibaseClientSettingKeys.FORCE_TIMESTAMPS_FIX);
+        String currentLiquibaseVersionString = liquibaseClientSettings.getString(LiquibaseClientSettingKeys.LIQUIBASE_VERSION);
         SemanticVersion currentLiquibaseVersion = new SemanticVersion(currentLiquibaseVersionString);
 
         runTimestampsFix = (currentLiquibaseVersion.afterOrMatches(LIQUIBASE_TIMESTAMP_FIX_VERSION) || forceTimestampFix);
@@ -192,7 +192,7 @@ public class KapuaLiquibaseClient {
         boolean createdTmp = changelogTempDirectory.mkdirs();
         LOG.trace("{} Tmp dir: {}", createdTmp ? "Created" : "Using", changelogTempDirectory.getAbsolutePath());
 
-        Reflections reflections = new Reflections("liquibase", new ResourcesScanner());
+        Reflections reflections = new Reflections("liquibase", Scanners.Resources);
         Set<String> changeLogs = reflections.getResources(Pattern.compile(".*\\.xml|.*\\.sql"));
         for (String script : changeLogs) {
             URL scriptUrl = KapuaLiquibaseClient.class.getResource("/" + script);

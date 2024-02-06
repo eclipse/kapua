@@ -30,28 +30,11 @@ public class CryptoSettings extends AbstractKapuaSetting<CryptoSettingKeys> {
     private static final String CRYPTO_SETTING_RESOURCE = "crypto-settings.properties";
 
     /**
-     * Singleton instance.
-     *
-     * @since 2.0.0
-     */
-    private static final CryptoSettings INSTANCE = new CryptoSettings();
-
-    /**
      * Constructor.
      *
      * @since 2.0.0
      */
-    private CryptoSettings() {
+    public CryptoSettings() {
         super(CRYPTO_SETTING_RESOURCE);
-    }
-
-    /**
-     * Gets a singleton instance of {@link CryptoSettings}.
-     *
-     * @return A singleton instance of {@link CryptoSettings}.
-     * @since 2.0.0
-     */
-    public static CryptoSettings getInstance() {
-        return INSTANCE;
     }
 }

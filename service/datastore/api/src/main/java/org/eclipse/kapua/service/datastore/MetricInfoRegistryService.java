@@ -12,11 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.storable.StorableService;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
 
 /**
  * {@link MetricInfoRegistryService} definition.
@@ -26,4 +29,9 @@ import org.eclipse.kapua.service.storable.StorableService;
  * @since 1.0.0
  */
 public interface MetricInfoRegistryService extends KapuaService, StorableService<MetricInfo, MetricInfoListResult, MetricInfoQuery> {
+    void delete(MetricInfoQuery query)
+            throws KapuaException;
+
+    void delete(KapuaId scopeId, StorableId id)
+            throws KapuaException;
 }

@@ -22,12 +22,6 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 public enum DatastoreElasticsearchClientSettingsKey implements SettingKey {
 
     /**
-     * {@link org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider} implementation class.
-     *
-     * @since 1.3.0
-     */
-    PROVIDER("datastore.elasticsearch.provider"),
-    /**
      * The name of the module which is managing the {@link org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient}.
      *
      * @since 1.3.0

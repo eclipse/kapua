@@ -56,16 +56,19 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     private final TxManager txManager;
     private final RoleRepository roleRepository;
     private final RolePermissionRepository rolePermissionRepository;
+    private final PermissionValidator permissionValidator;
 
     public RolePermissionServiceImpl(
             AuthorizationService authorizationService, PermissionFactory permissionFactory, TxManager txManager,
             RoleRepository roleRepository,
-            RolePermissionRepository rolePermissionRepository) {
+            RolePermissionRepository rolePermissionRepository,
+            PermissionValidator permissionValidator) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.txManager = txManager;
         this.roleRepository = roleRepository;
         this.rolePermissionRepository = rolePermissionRepository;
+        this.permissionValidator = permissionValidator;
     }
 
     @Override
@@ -82,7 +85,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
             final Role role = roleRepository.find(tx, rolePermissionCreator.getScopeId(), rolePermissionCreator.getRoleId())
                     .orElseThrow(() -> new KapuaEntityNotFoundException(Role.TYPE, rolePermissionCreator.getRoleId()));
             // Check that the given permission matches the definition of the Domains.
-            PermissionValidator.validatePermission(rolePermissionCreator.getPermission());
+            permissionValidator.validatePermission(rolePermissionCreator.getPermission());
             // If permission are created out of the role permission scope, check that the current user has the permission on the external scopeId.
             Permission permission = rolePermissionCreator.getPermission();
             if (permission.getTargetScopeId() == null || !permission.getTargetScopeId().equals(rolePermissionCreator.getScopeId())) {

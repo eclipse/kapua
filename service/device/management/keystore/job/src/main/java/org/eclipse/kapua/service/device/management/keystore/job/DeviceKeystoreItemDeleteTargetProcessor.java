@@ -33,11 +33,11 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DeviceKeystoreItemDeleteTargetProcessor extends AbstractDeviceTargetProcessor implements TargetProcessor {
-    private static final DeviceKeystoreManagementService KEYSTORE_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceKeystoreManagementService.class);
 
     @Inject
+    DeviceKeystoreManagementService deviceKeystoreManagementService;
+    @Inject
     JobContext jobContext;
-
     @Inject
     StepContext stepContext;
 
@@ -53,6 +53,6 @@ public class DeviceKeystoreItemDeleteTargetProcessor extends AbstractDeviceTarge
         String alias = stepContextWrapper.getStepProperty(DeviceKeystoreItemDeletePropertyKeys.ALIAS, String.class);
         Long timeout = stepContextWrapper.getStepProperty(DeviceKeystoreItemDeletePropertyKeys.TIMEOUT, Long.class);
 
-        KapuaSecurityUtils.doPrivileged(() -> KEYSTORE_MANAGEMENT_SERVICE.deleteKeystoreItem(jobTarget.getScopeId(), jobTarget.getJobTargetId(), keystoreId, alias, timeout));
+        KapuaSecurityUtils.doPrivileged(() -> deviceKeystoreManagementService.deleteKeystoreItem(jobTarget.getScopeId(), jobTarget.getJobTargetId(), keystoreId, alias, timeout));
     }
 }

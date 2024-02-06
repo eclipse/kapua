@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
@@ -25,6 +24,7 @@ import org.eclipse.kapua.service.device.management.configuration.store.DeviceCon
 import org.eclipse.kapua.service.device.management.configuration.store.settings.DeviceConfigurationStoreSettings;
 import org.eclipse.kapua.service.device.registry.Device;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -39,10 +39,10 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/devices/{deviceId}/configurations")
 public class DeviceManagementConfigurations extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DeviceConfigurationManagementService configurationService = locator.getService(DeviceConfigurationManagementService.class);
-
-    private final DeviceConfigurationStoreService deviceConfigurationStoreService = locator.getService(DeviceConfigurationStoreService.class);
+    @Inject
+    public DeviceConfigurationManagementService configurationService;
+    @Inject
+    public DeviceConfigurationStoreService deviceConfigurationStoreService;
 
     /**
      * Returns the current configuration of the device.

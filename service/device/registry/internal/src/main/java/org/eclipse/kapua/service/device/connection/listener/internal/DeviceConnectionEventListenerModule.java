@@ -12,14 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.connection.listener.internal;
 
-import javax.inject.Named;
-
+import com.google.inject.Module;
+import com.google.inject.multibindings.ProvidesIntoSet;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactoryImpl;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
+import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -28,8 +29,7 @@ import org.eclipse.kapua.service.device.registry.KapuaDeviceRegistrySettingKeys;
 import org.eclipse.kapua.service.device.registry.KapuaDeviceRegistrySettings;
 import org.eclipse.kapua.storage.TxManager;
 
-import com.google.inject.Module;
-import com.google.inject.multibindings.ProvidesIntoSet;
+import javax.inject.Named;
 
 /**
  * {@code kapua-account-internal} {@link Module} implementation.
@@ -45,14 +45,16 @@ public class DeviceConnectionEventListenerModule extends AbstractKapuaModule imp
 
     @ProvidesIntoSet
     protected ServiceModule deviceConnectionEventListenerServiceModule(DeviceConnectionEventListenerService deviceConnectionEventListenerService,
-                                       AuthorizationService authorizationService,
-                                       PermissionFactory permissionFactory,
-                                       @Named("DeviceRegistryTransactionManager") TxManager txManager,
-                                       EventStoreFactory eventStoreFactory,
-                                       EventStoreRecordRepository eventStoreRecordRepository
+                                                                       AuthorizationService authorizationService,
+                                                                       PermissionFactory permissionFactory,
+                                                                       KapuaDeviceRegistrySettings kapuaDeviceRegistrySettings,
+                                                                       @Named("DeviceRegistryTransactionManager") TxManager txManager,
+                                                                       EventStoreFactory eventStoreFactory,
+                                                                       EventStoreRecordRepository eventStoreRecordRepository,
+                                                                       ServiceEventBus serviceEventBus
     ) throws ServiceEventBusException {
 
-        String address = KapuaDeviceRegistrySettings.getInstance().getString(KapuaDeviceRegistrySettingKeys.DEVICE_EVENT_ADDRESS);
+        String address = kapuaDeviceRegistrySettings.getString(KapuaDeviceRegistrySettingKeys.DEVICE_EVENT_ADDRESS);
         return new DeviceConnectionEventListenerServiceModule(
                 deviceConnectionEventListenerService,
                 address,
@@ -64,7 +66,9 @@ public class DeviceConnectionEventListenerModule extends AbstractKapuaModule imp
                                 eventStoreFactory,
                                 eventStoreRecordRepository
                         ),
-                        txManager
-                ));
+                        txManager,
+                        serviceEventBus
+                ),
+                serviceEventBus);
     }
 }

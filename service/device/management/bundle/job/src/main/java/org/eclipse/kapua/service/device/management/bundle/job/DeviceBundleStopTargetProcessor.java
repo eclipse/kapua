@@ -32,11 +32,11 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DeviceBundleStopTargetProcessor extends AbstractDeviceTargetProcessor implements TargetProcessor {
-    private static final DeviceBundleManagementService BUNDLE_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceBundleManagementService.class);
 
     @Inject
+    DeviceBundleManagementService deviceBundleManagementService;
+    @Inject
     JobContext jobContext;
-
     @Inject
     StepContext stepContext;
 
@@ -51,6 +51,6 @@ public class DeviceBundleStopTargetProcessor extends AbstractDeviceTargetProcess
         String bundleId = stepContextWrapper.getStepProperty(DeviceBundlePropertyKeys.BUNDLE_ID, String.class);
         Long timeout = stepContextWrapper.getStepProperty(DeviceBundlePropertyKeys.TIMEOUT, Long.class);
 
-        KapuaSecurityUtils.doPrivileged(() -> BUNDLE_MANAGEMENT_SERVICE.stop(jobTarget.getScopeId(), jobTarget.getJobTargetId(), bundleId, timeout));
+        KapuaSecurityUtils.doPrivileged(() -> deviceBundleManagementService.stop(jobTarget.getScopeId(), jobTarget.getJobTargetId(), bundleId, timeout));
     }
 }

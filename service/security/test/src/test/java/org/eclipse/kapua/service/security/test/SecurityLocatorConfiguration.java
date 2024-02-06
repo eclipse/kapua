@@ -12,10 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.security.test;
 
+import com.codahale.metrics.MetricRegistry;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
@@ -23,11 +25,19 @@ import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.crypto.CryptoUtil;
+import org.eclipse.kapua.commons.crypto.CryptoUtilImpl;
+import org.eclipse.kapua.commons.crypto.setting.CryptoSettings;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
+import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.commons.metric.MetricsServiceImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
+import org.eclipse.kapua.commons.service.internal.cache.CacheManagerProvider;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
@@ -39,8 +49,14 @@ import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImplJ
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapperImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidatorImpl;
+import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.CredentialServiceConfigurationManagerImpl;
+import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaCryptoSetting;
+import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
@@ -48,6 +64,7 @@ import org.eclipse.kapua.service.authorization.group.shiro.GroupImplJpaRepositor
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValidator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RoleService;
@@ -64,6 +81,9 @@ import org.eclipse.kapua.service.user.internal.UserServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
 @Singleton
 public class SecurityLocatorConfiguration {
 
@@ -76,6 +96,18 @@ public class SecurityLocatorConfiguration {
 
             @Override
             protected void configure() {
+                bind(CommonsMetric.class).toInstance(Mockito.mock(CommonsMetric.class));
+                bind(SystemSetting.class).toInstance(SystemSetting.getInstance());
+                bind(DomainRegistryService.class).toInstance(Mockito.mock(DomainRegistryService.class));
+                final CacheManagerProvider cacheManagerProvider;
+                cacheManagerProvider = new CacheManagerProvider(Mockito.mock(CommonsMetric.class), SystemSetting.getInstance());
+                bind(javax.cache.CacheManager.class).toInstance(cacheManagerProvider.get());
+                bind(MfaAuthenticator.class).toInstance(new MfaAuthenticatorImpl(new KapuaAuthenticationSetting()));
+                bind(CryptoUtil.class).toInstance(new CryptoUtilImpl(new CryptoSettings()));
+                bind(String.class).annotatedWith(Names.named("metricModuleName")).toInstance("tests");
+                bind(MetricRegistry.class).toInstance(new MetricRegistry());
+                bind(MetricsService.class).to(MetricsServiceImpl.class).in(Singleton.class);
+
                 // Inject mocked Authorization Service method checkPermission
                 AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
                 try {
@@ -103,7 +135,8 @@ public class SecurityLocatorConfiguration {
                         Mockito.mock(ServiceConfigurationManager.class),
                         new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-authorization"),
                         new RoleImplJpaRepository(jpaRepoConfig),
-                        new RolePermissionImplJpaRepository(jpaRepoConfig)
+                        new RolePermissionImplJpaRepository(jpaRepoConfig),
+                        Mockito.mock(PermissionValidator.class)
                 ));
                 bind(RoleFactory.class).toInstance(new RoleFactoryImpl());
                 bind(RolePermissionFactory.class).toInstance(new RolePermissionFactoryImpl());
@@ -119,16 +152,21 @@ public class SecurityLocatorConfiguration {
                 bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
                 final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
-                        Mockito.mock(RootUserTester.class));
-                bind(CredentialService.class).toInstance(new CredentialServiceImpl(
-                        credentialServiceConfigurationManager,
-                        mockedAuthorization,
-                        mockPermissionFactory,
-                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-authorization"),
-                        new CredentialImplJpaRepository(jpaRepoConfig),
-                        new CredentialFactoryImpl(),
-                        new CredentialMapperImpl(new CredentialFactoryImpl()),
-                        new PasswordValidatorImpl(credentialServiceConfigurationManager)));
+                        Mockito.mock(RootUserTester.class),
+                        new KapuaAuthenticationSetting());
+                try {
+                    bind(CredentialService.class).toInstance(new CredentialServiceImpl(
+                            credentialServiceConfigurationManager,
+                            mockedAuthorization,
+                            mockPermissionFactory,
+                            new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-authorization"),
+                            new CredentialImplJpaRepository(jpaRepoConfig),
+                            new CredentialFactoryImpl(),
+                            new CredentialMapperImpl(new CredentialFactoryImpl(), new KapuaAuthenticationSetting(), new AuthenticationUtils(SecureRandom.getInstance("SHA1PRNG"), new KapuaCryptoSetting())),
+                            new PasswordValidatorImpl(credentialServiceConfigurationManager), new KapuaAuthenticationSetting()));
+                } catch (NoSuchAlgorithmException e) {
+                    throw new RuntimeException(e);
+                }
                 final UserFactoryImpl userFactory = new UserFactoryImpl();
                 bind(UserFactory.class).toInstance(userFactory);
                 final RootUserTester rootUserTester = Mockito.mock(RootUserTester.class);

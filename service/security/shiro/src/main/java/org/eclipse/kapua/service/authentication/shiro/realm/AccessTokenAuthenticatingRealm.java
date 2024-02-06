@@ -52,11 +52,10 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
      */
     public static final String REALM_NAME = "accessTokenAuthenticatingRealm";
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
-    private static final AccessTokenService ACCESS_TOKEN_SERVICE = LOCATOR.getService(AccessTokenService.class);
-    private static final AccessTokenFactory ACCESS_TOKEN_FACTORY = LOCATOR.getFactory(AccessTokenFactory.class);
-    private static final UserService USER_SERVICE = LOCATOR.getService(UserService.class);
+    private final AccessTokenService accessTokenService = KapuaLocator.getInstance().getService(AccessTokenService.class);
+    private final AccessTokenFactory accessTokenFactory = KapuaLocator.getInstance().getFactory(AccessTokenFactory.class);
+    private final UserService userService = KapuaLocator.getInstance().getService(UserService.class);
 
     /**
      * Constructor
@@ -81,7 +80,7 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
         // Find accessToken
         final AccessToken accessToken;
         try {
-            AccessTokenQuery accessTokenQuery = ACCESS_TOKEN_FACTORY.newQuery(null);
+            AccessTokenQuery accessTokenQuery = accessTokenFactory.newQuery(null);
             AndPredicate andPredicate = accessTokenQuery.andPredicate(
                     accessTokenQuery.attributePredicate(AccessTokenAttributes.EXPIRES_ON, new java.sql.Timestamp(now.getTime()), Operator.GREATER_THAN_OR_EQUAL),
                     accessTokenQuery.attributePredicate(AccessTokenAttributes.INVALIDATED_ON, null, Operator.IS_NULL),
@@ -89,7 +88,7 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
             );
             accessTokenQuery.setPredicate(andPredicate);
             accessTokenQuery.setLimit(1);
-            accessToken = KapuaSecurityUtils.doPrivileged(() -> ACCESS_TOKEN_SERVICE.query(accessTokenQuery).getFirstItem());
+            accessToken = KapuaSecurityUtils.doPrivileged(() -> accessTokenService.query(accessTokenQuery).getFirstItem());
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
@@ -109,7 +108,7 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
         // Get the associated user by name
         final User user;
         try {
-            user = KapuaSecurityUtils.doPrivileged(() -> USER_SERVICE.find(accessToken.getScopeId(), accessToken.getUserId()));
+            user = KapuaSecurityUtils.doPrivileged(() -> userService.find(accessToken.getScopeId(), accessToken.getUserId()));
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {

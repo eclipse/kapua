@@ -14,6 +14,8 @@ package org.eclipse.kapua.extras.migrator.encryption.settings;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
+import javax.inject.Inject;
+
 /**
  * {@link EncryptionMigrationSettings} for {@code kapua-encryption-migrator} module.
  *
@@ -30,28 +32,12 @@ public class EncryptionMigrationSettings extends AbstractKapuaSetting<Encryption
     private static final String SETTINGS_RESOURCE = "encryption-migrator-settings.properties";
 
     /**
-     * Singleton instance.
-     *
-     * @since 2.0.0
-     */
-    private static final EncryptionMigrationSettings INSTANCE = new EncryptionMigrationSettings();
-
-    /**
      * Constructor.
      *
      * @since 2.0.0
      */
-    private EncryptionMigrationSettings() {
+    @Inject
+    public EncryptionMigrationSettings() {
         super(SETTINGS_RESOURCE);
-    }
-
-    /**
-     * Gets a singleton instance of {@link EncryptionMigrationSettings}.
-     *
-     * @return A singleton instance of {@link EncryptionMigrationSettings}.
-     * @since 2.0.0
-     */
-    public static EncryptionMigrationSettings getInstance() {
-        return INSTANCE;
     }
 }

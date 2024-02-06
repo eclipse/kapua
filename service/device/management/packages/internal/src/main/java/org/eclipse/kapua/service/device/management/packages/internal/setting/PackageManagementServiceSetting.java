@@ -14,6 +14,8 @@ package org.eclipse.kapua.service.device.management.packages.internal.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
+import javax.inject.Inject;
+
 /**
  * Class that offers access to {@link PackageManagementServiceSetting} settings.
  *
@@ -26,21 +28,12 @@ public class PackageManagementServiceSetting extends AbstractKapuaSetting<Packag
      */
     private static final String PACKAGE_MANAGEMENT_CONFIG_RESOURCE = "service-device-management-package-setting.properties";
 
-    private static final PackageManagementServiceSetting INSTANCE = new PackageManagementServiceSetting();
-
     /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link PackageManagementServiceSettingKeys#PACKAGE_MANAGEMENT_SERVICE_SETTING_KEYS} value.
      */
-    private PackageManagementServiceSetting() {
+    @Inject
+    public PackageManagementServiceSetting() {
         super(PACKAGE_MANAGEMENT_CONFIG_RESOURCE);
     }
 
-    /**
-     * Gets a singleton instance of {@link PackageManagementServiceSetting}.
-     *
-     * @return A singleton instance of PackageManagementServiceSetting.
-     */
-    public static PackageManagementServiceSetting getInstance() {
-        return INSTANCE;
-    }
 }

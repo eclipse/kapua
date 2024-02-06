@@ -18,8 +18,8 @@ import javax.xml.bind.annotation.XmlRegistry;
 
 @XmlRegistry
 public class SystemInfoXmlRegistry {
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final SystemInfoFactory SYSTEM_INFO_FACTORY = LOCATOR.getFactory(SystemInfoFactory.class);
+
+    private final SystemInfoFactory systemInfoFactory = KapuaLocator.getInstance().getFactory(SystemInfoFactory.class);
 
 
     /**
@@ -28,6 +28,6 @@ public class SystemInfoXmlRegistry {
      * @return new SystemInfo instance.
      */
     public SystemInfo newSystemInfo() {
-        return SYSTEM_INFO_FACTORY.newSystemInfo();
+        return systemInfoFactory.newSystemInfo();
     }
 }

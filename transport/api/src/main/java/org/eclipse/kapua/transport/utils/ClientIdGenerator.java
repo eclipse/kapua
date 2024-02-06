@@ -13,8 +13,7 @@
 package org.eclipse.kapua.transport.utils;
 
 
-import org.eclipse.kapua.commons.util.RandomUtils;
-
+import javax.inject.Inject;
 import java.util.Random;
 
 /**
@@ -37,31 +36,16 @@ public class ClientIdGenerator {
      *
      * @since 1.2.0
      */
-    private static final Random RANDOM = RandomUtils.getInstance();
+    private final Random random;
 
     /**
-     * {@code static} instance singleton reference
+     * Default constructor.
      *
      * @since 1.0.0
      */
-    private static final ClientIdGenerator INSTANCE = new ClientIdGenerator();
-
-    /**
-     * Private default constructor. To obtain an instance of {@link ClientIdGenerator} use {@link ClientIdGenerator#getInstance()}.
-     *
-     * @since 1.0.0
-     */
-    private ClientIdGenerator() {
-    }
-
-    /**
-     * Returns a {@code static} instance of the {@link ClientIdGenerator}.
-     *
-     * @return The singleton instance of {@link ClientIdGenerator}
-     * @since 1.0.0
-     */
-    public static ClientIdGenerator getInstance() {
-        return INSTANCE;
+    @Inject
+    public ClientIdGenerator(Random random) {
+        this.random = random;
     }
 
     /**
@@ -86,7 +70,7 @@ public class ClientIdGenerator {
      */
     public String next(String prefix) {
         long timestamp = System.currentTimeMillis();
-        long randomNumber = RANDOM.nextLong();
+        long randomNumber = random.nextLong();
 
         return String.format(GENERATED_ID_STRING_FORMAT,
                 prefix,

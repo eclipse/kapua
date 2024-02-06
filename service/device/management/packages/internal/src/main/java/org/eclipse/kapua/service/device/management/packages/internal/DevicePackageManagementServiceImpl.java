@@ -67,6 +67,7 @@ import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -84,7 +85,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
     private static final Logger LOG = LoggerFactory.getLogger(DevicePackageManagementServiceImpl.class);
 
-    private final PackageManagementServiceSetting packageManagementServiceSetting = PackageManagementServiceSetting.getInstance();
+    private final PackageManagementServiceSetting packageManagementServiceSetting;
 
     private final DeviceManagementOperationRegistryService deviceManagementOperationRegistryService;
     private final DeviceManagementOperationFactory deviceManagementOperationFactory;
@@ -93,6 +94,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
     private static final String SCOPE_ID = "scopeId";
     private static final String DEVICE_ID = "deviceId";
 
+    @Inject
     public DevicePackageManagementServiceImpl(
             TxManager txManager,
             AuthorizationService authorizationService,
@@ -102,7 +104,8 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
             DeviceRegistryService deviceRegistryService,
             DeviceManagementOperationRegistryService deviceManagementOperationRegistryService,
             DeviceManagementOperationFactory deviceManagementOperationFactory,
-            DevicePackageFactory devicePackageFactory) {
+            DevicePackageFactory devicePackageFactory,
+            PackageManagementServiceSetting packageManagementServiceSetting) {
         super(txManager,
                 authorizationService,
                 permissionFactory,
@@ -112,6 +115,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         this.deviceManagementOperationRegistryService = deviceManagementOperationRegistryService;
         this.deviceManagementOperationFactory = deviceManagementOperationFactory;
         this.devicePackageFactory = devicePackageFactory;
+        this.packageManagementServiceSetting = packageManagementServiceSetting;
     }
     // Installed
 
@@ -157,7 +161,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         // Create event
         createDeviceEvent(scopeId, deviceId, packageRequestMessage, responseMessage);
         // Check response
-        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDevicePackages());
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDevicePackages().orElse(devicePackageFactory.newDeviceDeploymentPackages()));
     }
     // Download
 
@@ -475,7 +479,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         // Create event
         createDeviceEvent(scopeId, deviceId, packageRequestMessage, responseMessage);
         // Check response
-        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDevicePackageInstallOperation());
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDevicePackageInstallOperation().orElse(devicePackageFactory.newPackageInstallOperation()));
     }
     // Uninstall
 
@@ -592,7 +596,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         // Create event
         createDeviceEvent(scopeId, deviceId, packageRequestMessage, responseMessage);
         // Check response
-        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDevicePackageUninstallOperation());
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDevicePackageUninstallOperation().orElse(devicePackageFactory.newPackageUninstallOperation()));
     }
 
     private void verifyOverflowPackageFields(DevicePackageDownloadRequest packageDownloadRequest) throws KapuaIllegalArgumentException {

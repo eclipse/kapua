@@ -16,6 +16,7 @@ import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class ApiKeyCredentialsMatcherTest {
 
     @Before
     public void initialize() {
-        apiKeyCredentialsMatcher = new ApiKeyCredentialsMatcher();
+        apiKeyCredentialsMatcher = new ApiKeyCredentialsMatcher(new KapuaAuthenticationSetting());
         authenticationToken = Mockito.mock(JwtCredentialsImpl.class);
         authenticationInfo = Mockito.mock(LoginAuthenticationInfo.class);
         credential = Mockito.mock(Credential.class);

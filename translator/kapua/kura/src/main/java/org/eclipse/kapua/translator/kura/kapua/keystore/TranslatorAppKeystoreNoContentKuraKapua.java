@@ -13,8 +13,12 @@
 package org.eclipse.kapua.translator.kura.kapua.keystore;
 
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
+import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
 import org.eclipse.kapua.service.device.management.keystore.internal.message.response.KeystoreNoContentResponseMessage;
 import org.eclipse.kapua.translator.Translator;
+
+import javax.inject.Inject;
 
 /**
  * {@link Translator} implementation from {@link KuraResponseMessage} to {@link KeystoreNoContentResponseMessage}
@@ -28,7 +32,8 @@ public class TranslatorAppKeystoreNoContentKuraKapua extends AbstractTranslatorA
      *
      * @since 1.5.0
      */
-    public TranslatorAppKeystoreNoContentKuraKapua() {
-        super(KeystoreNoContentResponseMessage.class);
+    @Inject
+    public TranslatorAppKeystoreNoContentKuraKapua(DeviceManagementSetting deviceManagementSetting, DeviceKeystoreManagementFactory deviceKeystoreManagementFactory) {
+        super(deviceManagementSetting, deviceKeystoreManagementFactory, KeystoreNoContentResponseMessage.class);
     }
 }

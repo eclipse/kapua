@@ -16,18 +16,13 @@ package org.eclipse.kapua.translator;
 import org.eclipse.kapua.message.Channel;
 import org.eclipse.kapua.message.Message;
 import org.eclipse.kapua.message.Payload;
-import org.eclipse.kapua.translator.cache.TranslatorCache;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
 import org.eclipse.kapua.translator.exception.TranslatorException;
-import org.eclipse.kapua.translator.exception.TranslatorNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.validation.constraints.NotNull;
-import java.util.ServiceLoader;
 
 /**
  * {@link javassist.Translator} defintions.
@@ -48,50 +43,6 @@ import java.util.ServiceLoader;
 public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
 
     private static final Logger LOG = LoggerFactory.getLogger(Translator.class);
-
-    private static final ServiceLoader<Translator> AVAILABLE_TRANSLATORS;
-
-    static {
-        try {
-            AVAILABLE_TRANSLATORS = ServiceLoader.load(Translator.class);
-        } catch (Throwable e) {
-            LOG.error("Error while loading available translators!", e);
-            throw new ExceptionInInitializerError(e);
-        }
-    }
-
-    /**
-     * Return a {@link Translator} for the given {@link Message}s types.
-     * <br>
-     * This method will lookup instances of {@link Translator} through {@link java.util.ServiceLoader}
-     *
-     * @param fromMessageClass {@link Message} type from which {@link #translate(Message)}.
-     * @param toMessageClass   {@link Message} type to which {@link #translate(Message)}.
-     * @return The matching {@link Translator} for the given {@link Message}s types.
-     * @throws TranslatorNotFoundException if no {@link Translator} if found for the given {@link Message} types.
-     * @since 1.0.0
-     */
-    public static <FROM_M extends Message<?, ?>, TO_M extends Message, T extends Translator<FROM_M, TO_M>> T getTranslatorFor(@NotNull Class<? extends FROM_M> fromMessageClass, @NotNull Class<? extends TO_M> toMessageClass) {
-
-        T cachedTranslator = TranslatorCache.getCachedTranslator(fromMessageClass, toMessageClass);
-
-        if (cachedTranslator != null) {
-            return cachedTranslator;
-        }
-
-        synchronized (AVAILABLE_TRANSLATORS) {
-            for (Translator<FROM_M, TO_M> translator : AVAILABLE_TRANSLATORS) {
-                if ((fromMessageClass.isAssignableFrom(translator.getClassFrom())) &&
-                        toMessageClass.isAssignableFrom(translator.getClassTo())) {
-                    TranslatorCache.cacheTranslator(fromMessageClass, toMessageClass, translator);
-
-                    return (T) translator;
-                }
-            }
-        }
-
-        throw new TranslatorNotFoundException(fromMessageClass, toMessageClass);
-    }
 
     /**
      * Translates {@link Message} from the domain FROM_M to the domain TO_M

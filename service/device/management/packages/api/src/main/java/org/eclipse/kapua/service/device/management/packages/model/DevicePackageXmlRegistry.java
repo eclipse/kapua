@@ -31,8 +31,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class DevicePackageXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final DevicePackageFactory DEVICE_PACKAGE_FACTORY = LOCATOR.getFactory(DevicePackageFactory.class);
+    private final DevicePackageFactory devicePackageFactory = KapuaLocator.getInstance().getFactory(DevicePackageFactory.class);
 
     /**
      * Creates a new device package instance
@@ -41,7 +40,7 @@ public class DevicePackageXmlRegistry {
      * @since 1.0.0
      */
     public DevicePackage newDevicePackage() {
-        return DEVICE_PACKAGE_FACTORY.newDeviceDeploymentPackage();
+        return devicePackageFactory.newDeviceDeploymentPackage();
     }
 
     /**
@@ -51,7 +50,7 @@ public class DevicePackageXmlRegistry {
      * @since 1.0.0
      */
     public DevicePackages newDevicePackages() {
-        return DEVICE_PACKAGE_FACTORY.newDeviceDeploymentPackages();
+        return devicePackageFactory.newDeviceDeploymentPackages();
     }
 
     /**
@@ -61,7 +60,7 @@ public class DevicePackageXmlRegistry {
      * @since 1.0.0
      */
     public DevicePackageBundleInfo newDevicePackageBundleInfo() {
-        return DEVICE_PACKAGE_FACTORY.newDevicePackageBundleInfo();
+        return devicePackageFactory.newDevicePackageBundleInfo();
     }
 
     /**
@@ -71,7 +70,7 @@ public class DevicePackageXmlRegistry {
      * @since 1.0.0
      */
     public DevicePackageBundleInfos newDevicePackageBundleInfos() {
-        return DEVICE_PACKAGE_FACTORY.newDevicePackageBundleInfos();
+        return devicePackageFactory.newDevicePackageBundleInfos();
     }
 
     /**
@@ -80,7 +79,7 @@ public class DevicePackageXmlRegistry {
      * @return
      */
     public DevicePackageDownloadRequest newDevicePackageDownloadRequest() {
-        return DEVICE_PACKAGE_FACTORY.newPackageDownloadRequest();
+        return devicePackageFactory.newPackageDownloadRequest();
     }
 
     /**
@@ -90,7 +89,7 @@ public class DevicePackageXmlRegistry {
      * @since 1.1.0
      */
     public AdvancedPackageDownloadOptions newAdvancedPackageDownloadOptions() {
-        return DEVICE_PACKAGE_FACTORY.newAdvancedPackageDownloadOptions();
+        return devicePackageFactory.newAdvancedPackageDownloadOptions();
     }
 
     /**
@@ -100,7 +99,7 @@ public class DevicePackageXmlRegistry {
      * @since 1.5.0
      */
     public DevicePackageDownloadOperation newDevicePackageDownloadOperation() {
-        return DEVICE_PACKAGE_FACTORY.newPackageDownloadOperation();
+        return devicePackageFactory.newPackageDownloadOperation();
     }
 
     /**
@@ -110,7 +109,7 @@ public class DevicePackageXmlRegistry {
      * @since 1.5.0
      */
     public DevicePackageInstallOperation newDevicePackageInstallOperation() {
-        return DEVICE_PACKAGE_FACTORY.newPackageInstallOperation();
+        return devicePackageFactory.newPackageInstallOperation();
     }
 
     /**
@@ -120,7 +119,7 @@ public class DevicePackageXmlRegistry {
      * @since 1.0.0
      */
     public DevicePackageUninstallRequest newDevicePackageUninstallRequest() {
-        return DEVICE_PACKAGE_FACTORY.newPackageUninstallRequest();
+        return devicePackageFactory.newPackageUninstallRequest();
     }
 
     /**
@@ -130,6 +129,6 @@ public class DevicePackageXmlRegistry {
      * @since 1.5.0
      */
     public DevicePackageUninstallOperation newDevicePackageUninstallOperation() {
-        return DEVICE_PACKAGE_FACTORY.newPackageUninstallOperation();
+        return devicePackageFactory.newPackageUninstallOperation();
     }
 }

@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationAttributes;
@@ -28,7 +27,6 @@ import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperat
 import org.eclipse.kapua.service.device.management.job.manager.JobDeviceManagementOperationManagerService;
 import org.eclipse.kapua.service.device.management.message.notification.NotifyStatus;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationProperty;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
@@ -42,6 +40,7 @@ import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Date;
 
@@ -55,19 +54,31 @@ public class JobDeviceManagementOperationManagerServiceImpl implements JobDevice
 
     private static final Logger LOG = LoggerFactory.getLogger(JobDeviceManagementOperationManagerService.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private final DeviceManagementOperationRegistryService deviceManagementOperationRegistryService;
+    private final JobDeviceManagementOperationService jobDeviceManagementOperationService;
+    private final JobDeviceManagementOperationFactory jobDeviceManagementOperationFactory;
+    private final JobEngineService jobEngineService;
+    private final JobEngineFactory jobEngineFactory;
+    private final JobTargetService jobTargetService;
+    private final JobTargetFactory jobTargetFactory;
 
-    private static final DeviceManagementOperationRegistryService DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE = LOCATOR.getService(DeviceManagementOperationRegistryService.class);
-    private static final DeviceManagementOperationFactory DEVICE_MANAGEMENT_OPERATION_FACTORY = LOCATOR.getFactory(DeviceManagementOperationFactory.class);
-
-    private static final JobDeviceManagementOperationService JOB_DEVICE_MANAGEMENT_OPERATION_SERVICE = LOCATOR.getService(JobDeviceManagementOperationService.class);
-    private static final JobDeviceManagementOperationFactory JOB_DEVICE_MANAGEMENT_OPERATION_FACTORY = LOCATOR.getFactory(JobDeviceManagementOperationFactory.class);
-
-    private static final JobEngineService JOB_ENGINE_SERVICE = LOCATOR.getService(JobEngineService.class);
-    private static final JobEngineFactory JOB_ENGINE_FACTORY = LOCATOR.getFactory(JobEngineFactory.class);
-
-    private static final JobTargetService JOB_TARGET_SERVICE = LOCATOR.getService(JobTargetService.class);
-    private static final JobTargetFactory JOB_TARGET_FACTORY = LOCATOR.getFactory(JobTargetFactory.class);
+    @Inject
+    public JobDeviceManagementOperationManagerServiceImpl(
+            DeviceManagementOperationRegistryService deviceManagementOperationRegistryService,
+            JobDeviceManagementOperationService jobDeviceManagementOperationService,
+            JobDeviceManagementOperationFactory jobDeviceManagementOperationFactory,
+            JobEngineService jobEngineService,
+            JobEngineFactory jobEngineFactory,
+            JobTargetService jobTargetService,
+            JobTargetFactory jobTargetFactory) {
+        this.deviceManagementOperationRegistryService = deviceManagementOperationRegistryService;
+        this.jobDeviceManagementOperationService = jobDeviceManagementOperationService;
+        this.jobDeviceManagementOperationFactory = jobDeviceManagementOperationFactory;
+        this.jobEngineService = jobEngineService;
+        this.jobEngineFactory = jobEngineFactory;
+        this.jobTargetService = jobTargetService;
+        this.jobTargetFactory = jobTargetFactory;
+    }
 
     @Override
     public void processJobTargetOnNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, String resource, NotifyStatus status) throws KapuaException {
@@ -89,7 +100,7 @@ public class JobDeviceManagementOperationManagerServiceImpl implements JobDevice
             return;
         }
 
-        JobTargetQuery jobTargetQuery = JOB_TARGET_FACTORY.newQuery(scopeId);
+        JobTargetQuery jobTargetQuery = jobTargetFactory.newQuery(scopeId);
         jobTargetQuery.setPredicate(
                 jobTargetQuery.andPredicate(
                         jobTargetQuery.attributePredicate(JobTargetAttributes.JOB_ID, jobDeviceManagementOperation.getJobId()),
@@ -103,7 +114,7 @@ public class JobDeviceManagementOperationManagerServiceImpl implements JobDevice
         JobTarget jobTarget = null;
         do {
             try {
-                JobTargetListResult jobTargets = JOB_TARGET_SERVICE.query(jobTargetQuery);
+                JobTargetListResult jobTargets = jobTargetService.query(jobTargetQuery);
                 jobTarget = jobTargets.getFirstItem();
 
                 if (jobTarget == null) {
@@ -123,7 +134,7 @@ public class JobDeviceManagementOperationManagerServiceImpl implements JobDevice
                         break;
                 }
 
-                JOB_TARGET_SERVICE.update(jobTarget);
+                jobTargetService.update(jobTarget);
                 failed = false;
             } catch (Exception e) {
                 failed = true;
@@ -146,12 +157,12 @@ public class JobDeviceManagementOperationManagerServiceImpl implements JobDevice
             return;
         }
         // Start the job
-        JobStartOptions jobStartOptions = JOB_ENGINE_FACTORY.newJobStartOptions();
+        JobStartOptions jobStartOptions = jobEngineFactory.newJobStartOptions();
         jobStartOptions.addTargetIdToSublist(jobTarget.getId());
         jobStartOptions.setFromStepIndex(jobTarget.getStepIndex());
         jobStartOptions.setEnqueue(true);
 
-        JOB_ENGINE_SERVICE.startJob(scopeId, jobDeviceManagementOperation.getJobId(), jobStartOptions);
+        jobEngineService.startJob(scopeId, jobDeviceManagementOperation.getJobId(), jobStartOptions);
     }
 
     /**
@@ -199,10 +210,10 @@ public class JobDeviceManagementOperationManagerServiceImpl implements JobDevice
 
         DeviceManagementOperation deviceManagementOperation = getDeviceManagementOperation(scopeId, operationId);
 
-        JobDeviceManagementOperationQuery query = JOB_DEVICE_MANAGEMENT_OPERATION_FACTORY.newQuery(scopeId);
+        JobDeviceManagementOperationQuery query = jobDeviceManagementOperationFactory.newQuery(scopeId);
         query.setPredicate(query.attributePredicate(JobDeviceManagementOperationAttributes.DEVICE_MANAGEMENT_OPERATION_ID, deviceManagementOperation.getId()));
 
-        JobDeviceManagementOperationListResult operations = JOB_DEVICE_MANAGEMENT_OPERATION_SERVICE.query(query);
+        JobDeviceManagementOperationListResult operations = jobDeviceManagementOperationService.query(query);
         JobDeviceManagementOperation jobDeviceManagementOperation = operations.getFirstItem();
 
         if (jobDeviceManagementOperation == null) {
@@ -224,7 +235,7 @@ public class JobDeviceManagementOperationManagerServiceImpl implements JobDevice
      * @since 1.1.0
      */
     private DeviceManagementOperation getDeviceManagementOperation(KapuaId scopeId, KapuaId operationId) throws KapuaException {
-        DeviceManagementOperation deviceManagementOperation = DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.findByOperationId(scopeId, operationId);
+        DeviceManagementOperation deviceManagementOperation = deviceManagementOperationRegistryService.findByOperationId(scopeId, operationId);
 
         if (deviceManagementOperation == null) {
             throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, operationId);

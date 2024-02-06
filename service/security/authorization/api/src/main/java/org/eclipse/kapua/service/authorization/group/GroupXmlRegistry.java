@@ -19,8 +19,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class GroupXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final GroupFactory GROUP_FACTORY = LOCATOR.getFactory(GroupFactory.class);
+    private final GroupFactory groupFactory = KapuaLocator.getInstance().getFactory(GroupFactory.class);
 
     /**
      * Creates a new {@link Group} instance
@@ -29,7 +28,7 @@ public class GroupXmlRegistry {
      * @since 1.0.0
      */
     public Group newGroup() {
-        return GROUP_FACTORY.newEntity(null);
+        return groupFactory.newEntity(null);
     }
 
     /**
@@ -39,7 +38,7 @@ public class GroupXmlRegistry {
      * @since 1.0.0
      */
     public GroupCreator newGroupCreator() {
-        return GROUP_FACTORY.newCreator(null, null);
+        return groupFactory.newCreator(null, null);
     }
 
     /**
@@ -49,7 +48,7 @@ public class GroupXmlRegistry {
      * @since 1.0.0
      */
     public GroupListResult newGroupListResult() {
-        return GROUP_FACTORY.newListResult();
+        return groupFactory.newListResult();
     }
 
     /**
@@ -59,6 +58,6 @@ public class GroupXmlRegistry {
      * @since 1.0.0
      */
     public GroupQuery newQuery() {
-        return GROUP_FACTORY.newQuery(null);
+        return groupFactory.newQuery(null);
     }
 }

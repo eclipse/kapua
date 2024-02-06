@@ -26,7 +26,7 @@ import java.util.TimerTask;
 public class WaitForJobExecutionStopTask extends TimerTask {
 
     private static final Logger LOG = LoggerFactory.getLogger(WaitForJobExecutionStopTask.class);
-    private static final JobOperator JOB_OPERATOR = BatchRuntime.getJobOperator();
+    private final JobOperator jobOperator = BatchRuntime.getJobOperator();
 
     private JobExecution jobExecution;
     private Date expireDate;
@@ -42,7 +42,7 @@ public class WaitForJobExecutionStopTask extends TimerTask {
 
     @Override
     public void run() {
-        JobExecution runningJobExecution = JOB_OPERATOR.getJobExecution(jobExecution.getExecutionId());
+        JobExecution runningJobExecution = jobOperator.getJobExecution(jobExecution.getExecutionId());
 
         if (JbatchJobRunningStatuses.getStatuses().contains(runningJobExecution.getBatchStatus())) {
 

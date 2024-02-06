@@ -28,6 +28,7 @@ import org.eclipse.kapua.service.certificate.info.CertificateInfoService;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementTransactionalServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallBuilder;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
+import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService;
 import org.eclipse.kapua.service.device.management.keystore.internal.message.request.KeystoreCertificateRequestMessage;
 import org.eclipse.kapua.service.device.management.keystore.internal.message.request.KeystoreCsrRequestMessage;
@@ -77,6 +78,7 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
 
     protected final CertificateInfoService certificateInfoService;
     protected final CertificateInfoFactory certificateInfoFactory;
+    private final DeviceKeystoreManagementFactory deviceKeystoreManagementFactory;
 
     public DeviceKeystoreManagementServiceImpl(
             TxManager txManager,
@@ -86,7 +88,7 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
             DeviceEventFactory deviceEventFactory,
             DeviceRegistryService deviceRegistryService,
             CertificateInfoService certificateInfoService,
-            CertificateInfoFactory certificateInfoFactory) {
+            CertificateInfoFactory certificateInfoFactory, DeviceKeystoreManagementFactory deviceKeystoreManagementFactory) {
         super(txManager,
                 authorizationService,
                 permissionFactory,
@@ -95,6 +97,7 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
                 deviceRegistryService);
         this.certificateInfoService = certificateInfoService;
         this.certificateInfoFactory = certificateInfoFactory;
+        this.deviceKeystoreManagementFactory = deviceKeystoreManagementFactory;
     }
 
     @Override
@@ -144,7 +147,7 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
         // Create event
         createDeviceEvent(scopeId, deviceId, keystoreRequestMessage, responseMessage);
         // Check response
-        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getKeystores());
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getKeystores().orElse(deviceKeystoreManagementFactory.newDeviceKeystores()));
     }
 
     @Override
@@ -213,7 +216,7 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
         // Create event
         createDeviceEvent(scopeId, deviceId, keystoreRequestMessage, responseMessage);
         // Check response
-        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getKeystoreItems());
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getKeystoreItems().orElse(deviceKeystoreManagementFactory.newDeviceKeystoreItems()));
     }
 
     @Override
@@ -275,7 +278,7 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
         // Create event
         createDeviceEvent(scopeId, deviceId, keystoreRequestMessage, responseMessage);
         // Check response
-        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getKeystoreItem());
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getKeystoreItem().orElse(deviceKeystoreManagementFactory.newDeviceKeystoreItem()));
     }
 
     @Override
@@ -474,7 +477,7 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
         // Create event
         createDeviceEvent(scopeId, deviceId, keystoreRequestMessage, responseMessage);
         // Check response
-        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getCSR());
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getCSR().orElse(deviceKeystoreManagementFactory.newDeviceKeystoreCSR()));
     }
 
     @Override

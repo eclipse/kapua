@@ -39,14 +39,15 @@ public class DeviceManagementInventoryModule extends AbstractKapuaModule {
             DeviceEventService deviceEventService,
             DeviceEventFactory deviceEventFactory,
             DeviceRegistryService deviceRegistryService,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            DeviceInventoryManagementFactory deviceInventoryManagementFactory) {
         return new DeviceInventoryManagementServiceImpl(
                 jpaTxManagerFactory.create("kapua-device_management_operation_registry"),
                 authorizationService,
                 permissionFactory,
                 deviceEventService,
                 deviceEventFactory,
-                deviceRegistryService
-        );
+                deviceRegistryService,
+                deviceInventoryManagementFactory);
     }
 }

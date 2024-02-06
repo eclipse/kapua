@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.mfa;
 
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 
 /**
@@ -25,7 +26,7 @@ public class MfaAuthenticatorServiceLocator {
 
     private MfaAuthenticatorServiceLocator() {
         // for the moment the one implemented in MfaAuthenticatorImpl is the only available authenticator
-        mfaAuthenticator = new MfaAuthenticatorImpl();
+        mfaAuthenticator = KapuaLocator.getInstance().getComponent(MfaAuthenticator.class);
     }
 
     public static MfaAuthenticatorServiceLocator getInstance() {

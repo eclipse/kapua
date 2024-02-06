@@ -22,8 +22,7 @@ import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManage
  */
 public class DeviceKeystoreXmlRegistry {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DeviceKeystoreManagementFactory factory = locator.getFactory(DeviceKeystoreManagementFactory.class);
+    private final DeviceKeystoreManagementFactory factory = KapuaLocator.getInstance().getFactory(DeviceKeystoreManagementFactory.class);
 
     /**
      * Instantiates a new {@link DeviceKeystores}.

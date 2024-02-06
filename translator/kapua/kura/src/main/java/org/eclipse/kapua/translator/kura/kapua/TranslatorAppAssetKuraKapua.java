@@ -16,7 +16,6 @@ package org.eclipse.kapua.translator.kura.kapua;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.model.asset.AssetMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssetChannelMode;
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssets;
@@ -31,9 +30,11 @@ import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponseChannel;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponseMessage;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponsePayload;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
+import javax.inject.Inject;
 import java.util.Date;
 
 /**
@@ -43,16 +44,18 @@ import java.util.Date;
  */
 public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<AssetResponseChannel, AssetResponsePayload, AssetResponseMessage> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private final DeviceAssetFactory deviceAssetFactory;
 
-    public TranslatorAppAssetKuraKapua() {
-        super(AssetResponseMessage.class, AssetResponsePayload.class);
+    @Inject
+    public TranslatorAppAssetKuraKapua(DeviceManagementSetting deviceManagementSetting, DeviceAssetFactory deviceAssetFactory) {
+        super(deviceManagementSetting, AssetResponseMessage.class, AssetResponsePayload.class);
+        this.deviceAssetFactory = deviceAssetFactory;
     }
 
     @Override
     protected AssetResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
         try {
-            TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, AssetMetrics.APP_ID, AssetMetrics.APP_VERSION);
+            translatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, AssetMetrics.APP_ID, AssetMetrics.APP_VERSION);
 
             return new AssetResponseChannel();
         } catch (Exception e) {
@@ -65,7 +68,6 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
         AssetResponsePayload assetResponsePayload = super.translatePayload(kuraResponsePayload);
 
         try {
-            DeviceAssetFactory deviceAssetFactory = LOCATOR.getFactory(DeviceAssetFactory.class);
             if (kuraResponsePayload.hasBody()) {
 
                 ObjectMapper mapper = new ObjectMapper();

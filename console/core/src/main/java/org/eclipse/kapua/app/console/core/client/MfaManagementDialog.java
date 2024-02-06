@@ -12,6 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.client;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.SimpleDialog;
@@ -20,17 +26,10 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials.MfaManagementPanel;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.core.client.GWT;
-
 public class MfaManagementDialog extends SimpleDialog {
 
-    private static final ConsoleCredentialMessages CREDENTIAL_MSGS = GWT.create(ConsoleCredentialMessages.class);
-    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private final ConsoleCredentialMessages credentialMessages = GWT.create(ConsoleCredentialMessages.class);
+    private final ConsoleMessages messages = GWT.create(ConsoleMessages.class);
 
     private GwtSession currentSession;
 
@@ -60,7 +59,7 @@ public class MfaManagementDialog extends SimpleDialog {
 
     @Override
     public String getHeaderMessage() {
-        return CREDENTIAL_MSGS.mfaDialogHeader();
+        return credentialMessages.mfaDialogHeader();
     }
 
     @Override
@@ -96,7 +95,7 @@ public class MfaManagementDialog extends SimpleDialog {
 
     @Override
     protected String getCancelButtonText() {
-        return MSGS.closeButton();
+        return messages.closeButton();
     }
 
 }

@@ -14,6 +14,8 @@ package org.eclipse.kapua.service.authorization.shiro.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
+import javax.inject.Inject;
+
 /**
  * Authorization setting implementation.
  */
@@ -21,21 +23,12 @@ public class KapuaAuthorizationSetting extends AbstractKapuaSetting<KapuaAuthori
 
     private static final String AUTHORIZATION_SETTING_RESOURCE = "kapua-authorization-setting.properties";
 
-    private static final KapuaAuthorizationSetting INSTANCE = new KapuaAuthorizationSetting();
-
     /**
      * Construct a new authorization setting reading settings from {@link KapuaAuthorizationSetting#AUTHORIZATION_SETTING_RESOURCE}
      */
-    private KapuaAuthorizationSetting() {
+    @Inject
+    public KapuaAuthorizationSetting() {
         super(AUTHORIZATION_SETTING_RESOURCE);
     }
 
-    /**
-     * Return the authorization setting instance (singleton)
-     *
-     * @return
-     */
-    public static KapuaAuthorizationSetting getInstance() {
-        return INSTANCE;
-    }
 }

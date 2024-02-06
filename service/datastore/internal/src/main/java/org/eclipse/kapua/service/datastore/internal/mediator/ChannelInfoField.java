@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.mediator;
 
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
@@ -83,7 +84,8 @@ public enum ChannelInfoField implements StorableField {
      */
     private static String getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel) {
         if (id == null) {
-            return DatastoreUtils.getHashCode(scopeId.toCompactId(), clientId, channel);
+            //TODO: FIXME: REMOVE: A collaborator in a data class? Behaviour should not be part of a data class!
+            return KapuaLocator.getInstance().getComponent(DatastoreUtils.class).getHashCode(scopeId.toCompactId(), clientId, channel);
         } else {
             return id.toString();
         }

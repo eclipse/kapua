@@ -12,13 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.Timer;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.Timer;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class MetricsDatastore {
 
     private static final String CONSUMER_TELEMETRY = "consumer_telemetry";
@@ -40,17 +42,8 @@ public class MetricsDatastore {
     private final Counter processedConfigurationError;
     private final Counter processedGenericError;
 
-    private static MetricsDatastore instance;
-
-    public synchronized static MetricsDatastore getInstance() {
-        if (instance == null) {
-            instance = new MetricsDatastore();
-        }
-        return instance;
-    }
-
-    private MetricsDatastore() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    @Inject
+    public MetricsDatastore(MetricsService metricsService) {
         alreadyInTheDatastore = metricsService.getCounter(CONSUMER_TELEMETRY, STORE, DUPLICATED_STORE);
 
         // data message

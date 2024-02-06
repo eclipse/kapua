@@ -18,8 +18,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class KapuaTscalarAdapter extends XmlAdapter<String, KapuaTscalar> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final KapuaMetatypeFactory METATYPE_FACTORY = LOCATOR.getFactory(KapuaMetatypeFactory.class);
+    private final KapuaMetatypeFactory kapuaMetatypeFactory = KapuaLocator.getInstance().getFactory(KapuaMetatypeFactory.class);
 
     @Override
     public String marshal(KapuaTscalar v) throws Exception {
@@ -28,6 +27,6 @@ public class KapuaTscalarAdapter extends XmlAdapter<String, KapuaTscalar> {
 
     @Override
     public KapuaTscalar unmarshal(String v) throws Exception {
-        return METATYPE_FACTORY.newKapuaTscalar(v);
+        return kapuaMetatypeFactory.newKapuaTscalar(v);
     }
 }

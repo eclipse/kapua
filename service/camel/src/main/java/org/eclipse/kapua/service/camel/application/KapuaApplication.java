@@ -32,7 +32,7 @@ public class KapuaApplication {
         logger.info(">>> Kapua Application: calling init...");
         synchronized (KapuaApplication.class) {
             if (application == null) {
-                application = KapuaLocator.getInstance().getService(ServiceModuleBundle.class);
+                application = KapuaLocator.getInstance().getComponent(ServiceModuleBundle.class);
             }
             application.startup();
         }

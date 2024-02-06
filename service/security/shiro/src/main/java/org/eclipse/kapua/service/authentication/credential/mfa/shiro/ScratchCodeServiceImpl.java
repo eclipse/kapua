@@ -50,18 +50,21 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
     private final ScratchCodeFactory scratchCodeFactory;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
+    private final AuthenticationUtils authenticationUtils;
 
     public ScratchCodeServiceImpl(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             TxManager txManager,
             ScratchCodeRepository scratchCodeRepository,
-            ScratchCodeFactory scratchCodeFactory) {
+            ScratchCodeFactory scratchCodeFactory,
+            AuthenticationUtils authenticationUtils) {
         this.txManager = txManager;
         this.scratchCodeRepository = scratchCodeRepository;
         this.scratchCodeFactory = scratchCodeFactory;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
+        this.authenticationUtils = authenticationUtils;
     }
 
     @Override
@@ -79,7 +82,7 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
         // Do create
         final ScratchCode res = txManager.execute(tx -> {
             // Crypto code (it's ok to do than if BCrypt is used when checking a provided scratch code against the stored one)
-            String encryptedCode = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, scratchCodeCreator.getCode());
+            String encryptedCode = authenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, scratchCodeCreator.getCode());
             // Create code
             ScratchCodeImpl codeImpl = new ScratchCodeImpl(scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaOptionId(), encryptedCode);
             return scratchCodeRepository.create(tx, codeImpl);

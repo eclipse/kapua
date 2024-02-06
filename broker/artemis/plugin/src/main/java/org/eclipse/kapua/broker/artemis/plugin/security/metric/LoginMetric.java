@@ -14,15 +14,15 @@ package org.eclipse.kapua.broker.artemis.plugin.security.metric;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
-
-import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-public class LoginMetric {
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
-    private static final LoginMetric LOGIN_METRIC = new LoginMetric();
+@Singleton
+public class LoginMetric {
 
     public static final String COMPONENT_LOGIN = "login";
     //action
@@ -44,49 +44,47 @@ public class LoginMetric {
     private static final String ADD_CONNECTION = "add_connection";
     private static final String REMOVE_CONNECTION = "remove_connection";
 
-    private ActionMetric externalConnector;
-    private ActionMetric internalConnector;
-    private Counter authenticateFromCache;
-    private Counter cleanupGenericFailure;
-    private Counter cleanupNullSessionFailure;
-    private Counter loginClosedConnectionFailure;
-    private Counter duplicateSessionMetadataFailure;
-    private Counter disconnectCallbackCallFailure;//disconnect callback called before the connect callback (usually when a stealing link happens)
-    private Counter sessionContextByClientIdFailure;//no session context is found by client id on disconnect on cleanupConnectionData (disconnect)
-    private Counter aclCacheHit;//acl found from cache (it happens when a client id disconnected but some address related to this client id deleted after)
-    private Counter aclCreationFailure;//error while creating acl
+    private final ActionMetric externalConnector;
+    private final ActionMetric internalConnector;
+    private final Counter authenticateFromCache;
+    private final Counter cleanupGenericFailure;
+    private final Counter cleanupNullSessionFailure;
+    private final Counter loginClosedConnectionFailure;
+    private final Counter duplicateSessionMetadataFailure;
+    private final Counter disconnectCallbackCallFailure;//disconnect callback called before the connect callback (usually when a stealing link happens)
+    private final Counter sessionContextByClientIdFailure;//no session context is found by client id on disconnect on cleanupConnectionData (disconnect)
+    private final Counter aclCacheHit;//acl found from cache (it happens when a client id disconnected but some address related to this client id deleted after)
+    private final Counter aclCreationFailure;//error while creating acl
 
-    private Counter invalidUserPassword;
-    private Counter disconnectByEvent;
+    private final Counter invalidUserPassword;
+    private final Counter disconnectByEvent;
 
-    private Timer externalAddConnection;
-    private Timer removeConnection;
+    private final Timer externalAddConnection;
+    private final Timer removeConnection;
 
-    public static LoginMetric getInstance() {
-        return LOGIN_METRIC;
-    }
-
-    private LoginMetric() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    @Inject
+    public LoginMetric(MetricsService metricsService,
+                       @Named("metricModuleName")
+                       String metricModuleName) {
         // login by connectors
-        externalConnector = new ActionMetric(CommonsMetric.module, COMPONENT_LOGIN, EXTERNAL_CONNECTOR);
-        authenticateFromCache = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, AUTHENTICATE_FROM_CACHE);
-        internalConnector = new ActionMetric(CommonsMetric.module, COMPONENT_LOGIN, INTERNAL_CONNECTOR);
-        cleanupGenericFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, CLEANUP_GENERIC, MetricsLabel.FAILURE);
-        cleanupNullSessionFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, CLEANUP_NULL_SESSION, MetricsLabel.FAILURE);
-        loginClosedConnectionFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, CLOSED_CONNECTION, MetricsLabel.FAILURE);
-        duplicateSessionMetadataFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, DUPLICATE_SESSION_METADATA, MetricsLabel.FAILURE);
-        disconnectCallbackCallFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, DISCONNECT_CALLBACK_CALL, MetricsLabel.FAILURE);
-        sessionContextByClientIdFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, SESSION_CONTEXT_BY_CLIENT_ID, MetricsLabel.FAILURE);
-        aclCacheHit = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, ACL_CACHE_HIT);
-        aclCreationFailure = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, ACL_CREATION, MetricsLabel.FAILURE);
+        externalConnector = new ActionMetric(metricsService, metricModuleName, COMPONENT_LOGIN, EXTERNAL_CONNECTOR);
+        authenticateFromCache = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, AUTHENTICATE_FROM_CACHE);
+        internalConnector = new ActionMetric(metricsService, metricModuleName, COMPONENT_LOGIN, INTERNAL_CONNECTOR);
+        cleanupGenericFailure = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, CLEANUP_GENERIC, MetricsLabel.FAILURE);
+        cleanupNullSessionFailure = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, CLEANUP_NULL_SESSION, MetricsLabel.FAILURE);
+        loginClosedConnectionFailure = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, CLOSED_CONNECTION, MetricsLabel.FAILURE);
+        duplicateSessionMetadataFailure = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, DUPLICATE_SESSION_METADATA, MetricsLabel.FAILURE);
+        disconnectCallbackCallFailure = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, DISCONNECT_CALLBACK_CALL, MetricsLabel.FAILURE);
+        sessionContextByClientIdFailure = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, SESSION_CONTEXT_BY_CLIENT_ID, MetricsLabel.FAILURE);
+        aclCacheHit = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, ACL_CACHE_HIT);
+        aclCreationFailure = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, ACL_CREATION, MetricsLabel.FAILURE);
 
-        invalidUserPassword = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, PASSWORD, MetricsLabel.FAILURE);
-        disconnectByEvent = metricsService.getCounter(CommonsMetric.module, COMPONENT_LOGIN, DISCONNECT_BY_EVENT, DISCONNECT);
+        invalidUserPassword = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, PASSWORD, MetricsLabel.FAILURE);
+        disconnectByEvent = metricsService.getCounter(metricModuleName, COMPONENT_LOGIN, DISCONNECT_BY_EVENT, DISCONNECT);
 
         // login time
-        externalAddConnection = metricsService.getTimer(CommonsMetric.module, COMPONENT_LOGIN, ADD_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
-        removeConnection = metricsService.getTimer(CommonsMetric.module, COMPONENT_LOGIN, REMOVE_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        externalAddConnection = metricsService.getTimer(metricModuleName, COMPONENT_LOGIN, ADD_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        removeConnection = metricsService.getTimer(metricModuleName, COMPONENT_LOGIN, REMOVE_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
     }
 
     public Counter getAuthenticateFromCache() {
@@ -127,6 +125,7 @@ public class LoginMetric {
 
     /**
      * Disconnect callback called before the connect callback (usually when a stealing link happens)
+     *
      * @return
      */
     public Counter getDisconnectCallbackCallFailure() {
@@ -136,6 +135,7 @@ public class LoginMetric {
     /**
      * No session context is found by client id on disconnect on cleanupConnectionData (disconnect)
      * It's not necessary an error or failure but the metric is classified as failure
+     *
      * @return
      */
     public Counter getSessionContextByClientIdFailure() {
@@ -144,6 +144,7 @@ public class LoginMetric {
 
     /**
      * ACL found from cache (it happens when a client id disconnected but some address related to this client id deleted after)
+     *
      * @return
      */
     public Counter getAclCacheHit() {
@@ -152,6 +153,7 @@ public class LoginMetric {
 
     /**
      * Failure while creating ACL count (a failure doesn't mean all the ACL for a user aren't created but just one of the available ACLs)
+     *
      * @return
      */
     public Counter getAclCreationFailure() {
@@ -160,6 +162,7 @@ public class LoginMetric {
 
     /**
      * External connector - Add connection total time
+     *
      * @return
      */
     public Timer getExternalAddConnection() {
@@ -168,6 +171,7 @@ public class LoginMetric {
 
     /**
      * Remove connection total time
+     *
      * @return
      */
     public Timer getRemoveConnection() {

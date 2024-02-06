@@ -15,13 +15,12 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.DateParam;
 import org.eclipse.kapua.app.api.core.model.MetricType;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.model.StorableEntityId;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.KapuaService;
@@ -43,6 +42,7 @@ import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -60,10 +60,12 @@ import java.util.List;
 @Path("{scopeId}/data/messages")
 public class DataMessages extends AbstractKapuaResource {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final MessageStoreService MESSAGE_STORE_SERVICE = LOCATOR.getService(MessageStoreService.class);
-    private static final MessageStoreFactory MESSAGE_STORE_FACTORY = LOCATOR.getFactory(MessageStoreFactory.class);
-    private static final DatastorePredicateFactory DATASTORE_PREDICATE_FACTORY = LOCATOR.getFactory(DatastorePredicateFactory.class);
+    @Inject
+    public MessageStoreService messageStoreService;
+    @Inject
+    public MessageStoreFactory messageStoreFactory;
+    @Inject
+    public DatastorePredicateFactory datastorePredicateFactory;
 
     /**
      * Gets the {@link DatastoreMessage} list in the scope.
@@ -97,38 +99,11 @@ public class DataMessages extends AbstractKapuaResource {
                                                                    @QueryParam("limit") @DefaultValue("50") int limit)
             throws KapuaException {
 
-        AndPredicate andPredicate = DATASTORE_PREDICATE_FACTORY.newAndPredicate();
-        if (!Strings.isNullOrEmpty(clientId)) {
-            TermPredicate clientIdPredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, clientId);
-            andPredicate.getPredicates().add(clientIdPredicate);
-        }
-
-        if (!Strings.isNullOrEmpty(channel)) {
-            andPredicate.getPredicates().add(getChannelPredicate(channel, strictChannel));
-        }
-
-        Date startDate = startDateParam != null ? startDateParam.getDate() : null;
-        Date endDate = endDateParam != null ? endDateParam.getDate() : null;
-        if (startDate != null || endDate != null) {
-            RangePredicate timestampPredicate = DATASTORE_PREDICATE_FACTORY.newRangePredicate(ChannelInfoField.TIMESTAMP, startDate, endDate);
-            andPredicate.getPredicates().add(timestampPredicate);
-        }
-
-        if (!Strings.isNullOrEmpty(metricName)) {
-            andPredicate.getPredicates().add(getMetricPredicate(metricName, metricType, metricMinValue, metricMaxValue));
-        }
-
-        MessageQuery query = MESSAGE_STORE_FACTORY.newQuery(scopeId);
-        query.setPredicate(andPredicate);
-        query.setOffset(offset);
-        query.setLimit(limit);
-
-        List<SortField> sort = new ArrayList<>();
-        sort.add(SortField.of(MessageSchema.MESSAGE_TIMESTAMP, sortDir));
-        query.setSortFields(sort);
+        MessageQuery query = parametersToQuery(datastorePredicateFactory, messageStoreFactory, scopeId, clientId, channel, strictChannel, startDateParam, endDateParam, metricName, metricType, metricMinValue, metricMaxValue, sortDir, offset, limit);
 
         return query(scopeId, query);
     }
+
 
     /**
      * Stores a new Message under the account of the currently connected user.
@@ -148,7 +123,7 @@ public class DataMessages extends AbstractKapuaResource {
                                  KapuaDataMessage message)
             throws KapuaException {
         message.setScopeId(scopeId);
-        return returnCreated(new StorableEntityId(MESSAGE_STORE_SERVICE.store(message).toString()));
+        return returnCreated(new StorableEntityId(messageStoreService.store(message).toString()));
     }
 
     /**
@@ -169,7 +144,7 @@ public class DataMessages extends AbstractKapuaResource {
             throws KapuaException {
         query.setScopeId(scopeId);
 
-        return MESSAGE_STORE_SERVICE.query(query);
+        return messageStoreService.query(query);
     }
 
     /**
@@ -190,7 +165,7 @@ public class DataMessages extends AbstractKapuaResource {
             throws KapuaException {
         query.setScopeId(scopeId);
 
-        return new CountResult(MESSAGE_STORE_SERVICE.count(query));
+        return new CountResult(messageStoreService.count(query));
     }
 
     /**
@@ -207,25 +182,75 @@ public class DataMessages extends AbstractKapuaResource {
     public DatastoreMessage find(@PathParam("scopeId") ScopeId scopeId,
                                  @PathParam("datastoreMessageId") StorableEntityId datastoreMessageId)
             throws KapuaException {
-        DatastoreMessage datastoreMessage = MESSAGE_STORE_SERVICE.find(scopeId, datastoreMessageId, StorableFetchStyle.SOURCE_FULL);
+        DatastoreMessage datastoreMessage = messageStoreService.find(scopeId, datastoreMessageId, StorableFetchStyle.SOURCE_FULL);
 
         return returnNotNullEntity(datastoreMessage);
     }
 
-    private StorablePredicate getChannelPredicate(String channel, boolean strictChannel) {
+
+    //TODO: move this logic within the service, or at least in a collaborator shared with DataMessagesJson
+    protected static <V extends Comparable<V>> MessageQuery parametersToQuery(
+            DatastorePredicateFactory datastorePredicateFactory,
+            MessageStoreFactory messageStoreFactory,
+            ScopeId scopeId,
+            String clientId,
+            String channel,
+            boolean strictChannel,
+            DateParam startDateParam,
+            DateParam endDateParam,
+            String metricName,
+            MetricType<V> metricType,
+            String metricMinValue,
+            String metricMaxValue,
+            SortDirection sortDir,
+            int offset,
+            int limit) throws KapuaIllegalNullArgumentException {
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
+        if (!Strings.isNullOrEmpty(clientId)) {
+            TermPredicate clientIdPredicate = datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, clientId);
+            andPredicate.getPredicates().add(clientIdPredicate);
+        }
+
+        if (!Strings.isNullOrEmpty(channel)) {
+            andPredicate.getPredicates().add(getChannelPredicate(datastorePredicateFactory, channel, strictChannel));
+        }
+
+        Date startDate = startDateParam != null ? startDateParam.getDate() : null;
+        Date endDate = endDateParam != null ? endDateParam.getDate() : null;
+        if (startDate != null || endDate != null) {
+            RangePredicate timestampPredicate = datastorePredicateFactory.newRangePredicate(ChannelInfoField.TIMESTAMP, startDate, endDate);
+            andPredicate.getPredicates().add(timestampPredicate);
+        }
+
+        if (!Strings.isNullOrEmpty(metricName)) {
+            andPredicate.getPredicates().add(getMetricPredicate(datastorePredicateFactory, metricName, metricType, metricMinValue, metricMaxValue));
+        }
+
+        MessageQuery query = messageStoreFactory.newQuery(scopeId);
+        query.setPredicate(andPredicate);
+        query.setOffset(offset);
+        query.setLimit(limit);
+
+        List<SortField> sort = new ArrayList<>();
+        sort.add(SortField.of(MessageSchema.MESSAGE_TIMESTAMP, sortDir));
+        query.setSortFields(sort);
+        return query;
+    }
+
+    private static StorablePredicate getChannelPredicate(DatastorePredicateFactory datastorePredicateFactory, String channel, boolean strictChannel) {
         StorablePredicate channelPredicate;
         if (strictChannel) {
-            channelPredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(ChannelInfoField.CHANNEL, channel);
+            channelPredicate = datastorePredicateFactory.newTermPredicate(ChannelInfoField.CHANNEL, channel);
         } else {
-            channelPredicate = DATASTORE_PREDICATE_FACTORY.newChannelMatchPredicate(channel);
+            channelPredicate = datastorePredicateFactory.newChannelMatchPredicate(channel);
         }
         return channelPredicate;
     }
 
-    private <V extends Comparable<V>> StorablePredicate getMetricPredicate(String metricName, MetricType<V> metricType, String metricMinValue, String metricMaxValue) throws KapuaIllegalNullArgumentException {
+    private static <V extends Comparable<V>> StorablePredicate getMetricPredicate(DatastorePredicateFactory datastorePredicateFactory, String metricName, MetricType<V> metricType, String metricMinValue, String metricMaxValue) throws KapuaIllegalNullArgumentException {
         if (metricMinValue == null && metricMaxValue == null) {
             Class<V> type = metricType != null ? metricType.getType() : null;
-            return DATASTORE_PREDICATE_FACTORY.newMetricExistsPredicate(metricName, type);
+            return datastorePredicateFactory.newMetricExistsPredicate(metricName, type);
         } else {
             if (metricType == null) {
                 throw new KapuaIllegalNullArgumentException("metricType");
@@ -233,7 +258,7 @@ public class DataMessages extends AbstractKapuaResource {
             V minValue = (V) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
             V maxValue = (V) ObjectValueConverter.fromString(metricMaxValue, metricType.getType());
 
-            return DATASTORE_PREDICATE_FACTORY.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
+            return datastorePredicateFactory.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
         }
     }
 }

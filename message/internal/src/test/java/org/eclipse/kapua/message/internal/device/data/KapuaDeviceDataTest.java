@@ -29,12 +29,11 @@ import java.util.List;
 @Category(JUnitTests.class)
 public class KapuaDeviceDataTest {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final KapuaDataMessageFactory KAPUA_DATA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaDataMessageFactory.class);
+    private final KapuaDataMessageFactory kapuaDataMessageFactory = KapuaLocator.getInstance().getFactory(KapuaDataMessageFactory.class);
 
     @Test
     public void kapuaDataChanneltoString() throws Exception {
-        KapuaDataChannel kapuaDataChannel = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataChannel();
+        KapuaDataChannel kapuaDataChannel = kapuaDataMessageFactory.newKapuaDataChannel();
         List<String> semanticParts = new ArrayList<>();
         semanticParts.add("part1");
         semanticParts.add("part2");
@@ -46,7 +45,7 @@ public class KapuaDeviceDataTest {
 
     @Test
     public void kapuaDataMesssageGetterSetters() {
-        KapuaDataMessage kapuaDataMessage = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataMessage();
+        KapuaDataMessage kapuaDataMessage = kapuaDataMessageFactory.newKapuaDataMessage();
 
         kapuaDataMessage.setClientId("clientId-1");
         Assert.assertEquals("clientId-1", kapuaDataMessage.getClientId());
@@ -54,7 +53,7 @@ public class KapuaDeviceDataTest {
 
     @Test
     public void kapuaDataPayloadDefaultConstructor() {
-        KapuaDataPayload kapuaDataPayload = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload();
+        KapuaDataPayload kapuaDataPayload = kapuaDataMessageFactory.newKapuaDataPayload();
 
         Assert.assertNotNull(kapuaDataPayload);
     }

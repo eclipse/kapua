@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.mediator;
 
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
@@ -107,9 +108,11 @@ public enum MetricInfoField implements StorableField {
      */
     private static String getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel, String metricName, Class<?> metricType) {
         if (id == null) {
-            String metricMappedName = DatastoreUtils.getMetricValueQualifier(metricName, DatastoreUtils.convertToClientMetricType(metricType));
+            //TODO: FIXME: REMOVE: A collaborator in a data class? Behaviour should not be part of a data class!
+            final DatastoreUtils datastoreUtils = KapuaLocator.getInstance().getComponent(DatastoreUtils.class);
+            String metricMappedName = datastoreUtils.getMetricValueQualifier(metricName, datastoreUtils.convertToClientMetricType(metricType));
 
-            return DatastoreUtils.getHashCode(scopeId.toCompactId(), clientId, channel, metricMappedName);
+            return datastoreUtils.getHashCode(scopeId.toCompactId(), clientId, channel, metricMappedName);
         } else {
             return id.toString();
         }

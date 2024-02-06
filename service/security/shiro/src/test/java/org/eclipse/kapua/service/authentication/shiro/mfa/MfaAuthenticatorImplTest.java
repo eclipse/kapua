@@ -15,7 +15,11 @@ package org.eclipse.kapua.service.authentication.shiro.mfa;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaCryptoSetting;
 import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 import org.junit.Assert;
@@ -23,6 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.List;
 
 @Category(JUnitTests.class)
@@ -34,14 +40,21 @@ public class MfaAuthenticatorImplTest {
 
     @Before
     public void initialize() throws KapuaException {
-        mfaAuthenticatorImpl = new MfaAuthenticatorImpl();
+        mfaAuthenticatorImpl = new MfaAuthenticatorImpl(new KapuaAuthenticationSetting());
 
+        final SecureRandom random;
+        try {
+            random = SecureRandom.getInstance("SHA1PRNG");
+        } catch (NoSuchAlgorithmException e) {
+            throw new KapuaRuntimeException(KapuaAuthenticationErrorCodes.CREDENTIAL_CRYPT_ERROR, e);
+        }
+        AuthenticationUtils authenticationUtils = new AuthenticationUtils(random, new KapuaCryptoSetting());
         encryptedSecrets = new String[]{
-                AuthenticationUtils.encryptAes("value to encrypt"),
-                AuthenticationUtils.encryptAes("value@#$ en-999crypt"),
-                AuthenticationUtils.encryptAes("!<>v87a-lue to encrypt"),
-                AuthenticationUtils.encryptAes("value_to$#encr-0y()pt"),
-                AuthenticationUtils.encryptAes("va09l-ue|,,,.to00encrypt")
+                authenticationUtils.encryptAes("value to encrypt"),
+                authenticationUtils.encryptAes("value@#$ en-999crypt"),
+                authenticationUtils.encryptAes("!<>v87a-lue to encrypt"),
+                authenticationUtils.encryptAes("value_to$#encr-0y()pt"),
+                authenticationUtils.encryptAes("va09l-ue|,,,.to00encrypt")
         };
 
         verificationCodes = new int[]{
@@ -57,10 +70,10 @@ public class MfaAuthenticatorImplTest {
         };
 
         hashedScratchCodes = new String[]{
-                AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, "val-ue99_<11>"),
-                AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, "   !@#$v66a0l-ueee"),
-                AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, "val  *&^%087,...ueee   "),
-                AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, "_877V.A;;LUE")
+                authenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, "val-ue99_<11>"),
+                authenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, "   !@#$v66a0l-ueee"),
+                authenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, "val  *&^%087,...ueee   "),
+                authenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, "_877V.A;;LUE")
         };
 
         stringVerificationCodes = new String[]{

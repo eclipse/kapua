@@ -93,6 +93,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final UserService userService;
+    private final AuthenticationUtils authenticationUtils;
 
     public MfaOptionServiceImpl(
             int trustKeyDuration,
@@ -103,7 +104,8 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             ScratchCodeFactory scratchCodeFactory,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
-            UserService userService) {
+            UserService userService,
+            AuthenticationUtils authenticationUtils) {
         this.trustKeyDuration = trustKeyDuration;
         this.mfaAuthenticator = mfaAuthenticator;
         this.txManager = txManager;
@@ -114,6 +116,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.userService = userService;
+        this.authenticationUtils = authenticationUtils;
     }
 
     @Override
@@ -204,7 +207,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         for (String code : codes) {
             scratchCodeCreator.setCode(code);
             // Crypto code (it's ok to do than if BCrypt is used when checking a provided scratch code against the stored one)
-            String encryptedCode = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, scratchCodeCreator.getCode());
+            String encryptedCode = authenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, scratchCodeCreator.getCode());
             // Create code
             ScratchCodeImpl codeImpl = new ScratchCodeImpl(scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaOptionId(), encryptedCode);
 
@@ -315,7 +318,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             // This allows the use only of a single trusted machine,
             // until a solution with different trust keys is implemented!
             final String trustKey = generateTrustKey();
-            mfaOption.setTrustKey(AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, trustKey));
+            mfaOption.setTrustKey(authenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, trustKey));
 
             Date expirationDate = new Date(System.currentTimeMillis());
             expirationDate = DateUtils.addDays(expirationDate, trustKeyDuration);

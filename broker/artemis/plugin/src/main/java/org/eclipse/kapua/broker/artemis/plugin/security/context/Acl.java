@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.artemis.plugin.security.context;
 
-import java.util.List;
-
 import org.apache.activemq.artemis.core.config.WildcardConfiguration;
 import org.apache.activemq.artemis.core.settings.HierarchicalRepository;
 import org.apache.activemq.artemis.core.settings.impl.HierarchicalObjectRepository;
@@ -25,47 +23,44 @@ import org.eclipse.kapua.service.authentication.KapuaPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class Acl {
 
-    private static Logger logger = LoggerFactory.getLogger(Acl.class);
+    private final Logger logger = LoggerFactory.getLogger(Acl.class);
 
     private static final char SINGLE_WORD = '+';
     private static final char ANY_WORDS = '#';
     private static final char SEPARATOR = '/';
 
-    private static final WildcardConfiguration WILDCARD_CONFIGURATION;
-    //TODO inject!!!
-    private LoginMetric loginMetric;
+    private final LoginMetric loginMetric;
+    private final WildcardConfiguration wildcardConfiguration;
+    private final HierarchicalRepository<KapuaPrincipal> read;
+    private final HierarchicalRepository<KapuaPrincipal> write;
+    private final HierarchicalRepository<KapuaPrincipal> admin;
 
-    static {
-        WILDCARD_CONFIGURATION = new WildcardConfiguration();
-        WILDCARD_CONFIGURATION.setSingleWord(SINGLE_WORD);
-        WILDCARD_CONFIGURATION.setAnyWords(ANY_WORDS);
-        WILDCARD_CONFIGURATION.setDelimiter(SEPARATOR);
-    }
-
-    private HierarchicalRepository<KapuaPrincipal> read;
-    private HierarchicalRepository<KapuaPrincipal> write;
-    private HierarchicalRepository<KapuaPrincipal> admin;
-
-    public Acl(KapuaPrincipal principal, List<AuthAcl> authAcls) throws KapuaIllegalArgumentException {
-        loginMetric = LoginMetric.getInstance();
-        if (principal==null) {
+    public Acl(LoginMetric loginMetric, KapuaPrincipal principal, List<AuthAcl> authAcls) throws KapuaIllegalArgumentException {
+        this.loginMetric = loginMetric;
+        wildcardConfiguration = new WildcardConfiguration();
+        wildcardConfiguration.setSingleWord(SINGLE_WORD);
+        wildcardConfiguration.setAnyWords(ANY_WORDS);
+        wildcardConfiguration.setDelimiter(SEPARATOR);
+        if (principal == null) {
             throw new KapuaIllegalArgumentException("principal", null);
         }
-        read = new HierarchicalObjectRepository<>(WILDCARD_CONFIGURATION);
+        read = new HierarchicalObjectRepository<>(wildcardConfiguration);
         read.setDefault(null);
-        write = new HierarchicalObjectRepository<>(WILDCARD_CONFIGURATION);
+        write = new HierarchicalObjectRepository<>(wildcardConfiguration);
         write.setDefault(null);
-        admin = new HierarchicalObjectRepository<>(WILDCARD_CONFIGURATION);
+        admin = new HierarchicalObjectRepository<>(wildcardConfiguration);
         admin.setDefault(null);
         StringBuilder aclLog = new StringBuilder();
-        if (authAcls!=null) {
+        if (authAcls != null) {
             authAcls.forEach((authAcl) -> {
                 try {
                     add(principal, authAcl.getMatch(), authAcl.getAction());
                     aclLog.append("\n\t").append(authAcl.getMatch()).append(" - ").append(authAcl.getAction()).append(" - ").
-                        append(principal.getName()).append("/").append(principal.getAccountId().toStringId()).append("/").append(principal.getClientId());
+                            append(principal.getName()).append("/").append(principal.getAccountId().toStringId()).append("/").append(principal.getClientId());
                 } catch (Exception e) {
                     loginMetric.getAclCreationFailure().inc();
                     //no security issue since in case of error no acl is added
@@ -77,38 +72,38 @@ public class Acl {
     }
 
     private void add(KapuaPrincipal principal, String match, Action action) throws KapuaIllegalArgumentException {
-        if (action==null) {
+        if (action == null) {
             throw new KapuaIllegalArgumentException("action", null);
         }
-        if (principal==null) {
+        if (principal == null) {
             throw new KapuaIllegalArgumentException("principal", null);
         }
-        if (match==null || match.trim().length()<=0) {
+        if (match == null || match.trim().length() <= 0) {
             throw new KapuaIllegalArgumentException("match", match);
         }
         switch (action) {
-        case all:
-            read.addMatch(match, principal);
-            write.addMatch(match, principal);
-            admin.addMatch(match, principal);
-            break;
-        case read:
-            read.addMatch(match, principal);
-            break;
-        case write:
-            write.addMatch(match, principal);
-            break;
-        case admin:
-            admin.addMatch(match, principal);
-            break;
-        case readAdmin:
-            read.addMatch(match, principal);
-            admin.addMatch(match, principal);
-            break;
-        case writeAdmin:
-            write.addMatch(match, principal);
-            admin.addMatch(match, principal);
-            break;
+            case all:
+                read.addMatch(match, principal);
+                write.addMatch(match, principal);
+                admin.addMatch(match, principal);
+                break;
+            case read:
+                read.addMatch(match, principal);
+                break;
+            case write:
+                write.addMatch(match, principal);
+                break;
+            case admin:
+                admin.addMatch(match, principal);
+                break;
+            case readAdmin:
+                read.addMatch(match, principal);
+                admin.addMatch(match, principal);
+                break;
+            case writeAdmin:
+                write.addMatch(match, principal);
+                admin.addMatch(match, principal);
+                break;
         }
     }
 
@@ -125,10 +120,10 @@ public class Acl {
     }
 
     private boolean containsAnyWordWildcardBeforeLastPosition(String address) {
-        return address.indexOf(ANY_WORDS)<address.length()-1 && address.indexOf(ANY_WORDS)>-1;
+        return address.indexOf(ANY_WORDS) < address.length() - 1 && address.indexOf(ANY_WORDS) > -1;
     }
 
     private boolean containsWildcards(String address) {
-        return address.indexOf(ANY_WORDS)>-1 || address.indexOf(SINGLE_WORD)>-1 ;
+        return address.indexOf(ANY_WORDS) > -1 || address.indexOf(SINGLE_WORD) > -1;
     }
 }

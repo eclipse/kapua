@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal.cache;
 
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -28,9 +29,9 @@ public class NamedEntityCache extends EntityCache {
 
     protected Cache<Serializable, Serializable> nameCache;
 
-    public NamedEntityCache(String idCacheName, String nameCacheName) {
-        super(idCacheName);
-        nameCache = KapuaCacheManager.getCache(nameCacheName);
+    public NamedEntityCache(KapuaCacheManager kapuaCacheManager, CommonsMetric commonsMetric, String idCacheName, String nameCacheName) {
+        super(kapuaCacheManager, commonsMetric, idCacheName);
+        nameCache = kapuaCacheManager.getCache(nameCacheName);
     }
 
     public KapuaEntity get(KapuaId scopeId, String name) {

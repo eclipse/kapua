@@ -36,8 +36,8 @@ import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCre
 
 public class ChangePasswordDialog extends SimpleDialog {
 
-    GwtCredentialServiceAsync credentialService = GWT.create(GwtCredentialService.class);
-    private static final ConsoleMessages CONSOLE_MSGS = GWT.create(ConsoleMessages.class);
+    private final GwtCredentialServiceAsync credentialService = GWT.create(GwtCredentialService.class);
+    private final ConsoleMessages consoleMessages = GWT.create(ConsoleMessages.class);
 
     private TextField<String> oldPassword;
     private TextField<String> newPassword;
@@ -130,17 +130,17 @@ public class ChangePasswordDialog extends SimpleDialog {
                     GwtKapuaException gwtCaught = (GwtKapuaException) caught;
                     if (gwtCaught.getCode().equals(GwtKapuaErrorCode.INVALID_USERNAME_PASSWORD)) {
                         if (credentialFormPanel.findComponent(code) != null) {
-                            ConsoleInfo.display(CONSOLE_MSGS.error(), ActionDialog.MSGS.changePasswordError(MSGS.changePasswordErrorWrongOldPasswordOrMfaCode()));
+                            ConsoleInfo.display(consoleMessages.error(), ActionDialog.MSGS.changePasswordError(MSGS.changePasswordErrorWrongOldPasswordOrMfaCode()));
                         } else {
-                            ConsoleInfo.display(CONSOLE_MSGS.error(), ActionDialog.MSGS.changePasswordError(MSGS.changePasswordErrorWrongOldPassword()));
+                            ConsoleInfo.display(consoleMessages.error(), ActionDialog.MSGS.changePasswordError(MSGS.changePasswordErrorWrongOldPassword()));
                             oldPassword.markInvalid(MSGS.changePasswordErrorWrongOldPassword());
                         }
                     } else if (gwtCaught.getCode().equals(GwtKapuaErrorCode.UNAUTHENTICATED)) {
-                        ConsoleInfo.display(CONSOLE_MSGS.error(), ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
+                        ConsoleInfo.display(consoleMessages.error(), ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
                         hide();
                         TokenCleaner.cleanToken();
                     } else {
-                        ConsoleInfo.display(CONSOLE_MSGS.error(), ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
+                        ConsoleInfo.display(consoleMessages.error(), ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
                     }
                 }
             }

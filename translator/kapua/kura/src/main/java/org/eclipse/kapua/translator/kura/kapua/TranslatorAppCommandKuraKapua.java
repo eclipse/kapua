@@ -20,9 +20,11 @@ import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraRespo
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponseChannel;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponseMessage;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponsePayload;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
+import javax.inject.Inject;
 import java.util.Map;
 
 /**
@@ -32,14 +34,15 @@ import java.util.Map;
  */
 public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<CommandResponseChannel, CommandResponsePayload, CommandResponseMessage> {
 
-    public TranslatorAppCommandKuraKapua() {
-        super(CommandResponseMessage.class, CommandResponsePayload.class);
+    @Inject
+    public TranslatorAppCommandKuraKapua(DeviceManagementSetting deviceManagementSetting) {
+        super(deviceManagementSetting, CommandResponseMessage.class, CommandResponsePayload.class);
     }
 
     @Override
     protected CommandResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
         try {
-            TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, CommandMetrics.APP_ID, CommandMetrics.APP_VERSION);
+            translatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, CommandMetrics.APP_ID, CommandMetrics.APP_VERSION);
 
             return new CommandResponseChannel();
         } catch (Exception e) {

@@ -1,3 +1,5 @@
+#Deprecated! Use dependency injection instead (KuraMqttTranslatorsModule)
+
 org.eclipse.kapua.translator.kura.mqtt.TranslatorDataKuraMqtt
 org.eclipse.kapua.translator.kura.mqtt.TranslatorRequestKuraMqtt
 

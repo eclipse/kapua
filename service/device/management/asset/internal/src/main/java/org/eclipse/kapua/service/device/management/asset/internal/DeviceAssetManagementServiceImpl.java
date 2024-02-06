@@ -19,6 +19,7 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestChannel;
@@ -56,6 +57,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementTr
     private static final String DEVICE_ASSETS = "deviceAssets";
 
     private final DeviceAssetStoreService deviceAssetStoreService;
+    private final DeviceAssetFactory deviceAssetFactory;
 
     public DeviceAssetManagementServiceImpl(
             TxManager txManager,
@@ -64,7 +66,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementTr
             DeviceEventService deviceEventService,
             DeviceEventFactory deviceEventFactory,
             DeviceRegistryService deviceRegistryService,
-            DeviceAssetStoreService deviceAssetStoreService) {
+            DeviceAssetStoreService deviceAssetStoreService, DeviceAssetFactory deviceAssetFactory) {
         super(txManager,
                 authorizationService,
                 permissionFactory,
@@ -72,6 +74,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementTr
                 deviceEventFactory,
                 deviceRegistryService);
         this.deviceAssetStoreService = deviceAssetStoreService;
+        this.deviceAssetFactory = deviceAssetFactory;
     }
 
     @Override
@@ -123,7 +126,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementTr
             // Create event
             createDeviceEvent(scopeId, deviceId, assetRequestMessage, responseMessage);
             // Check response
-            DeviceAssets onlineDeviceAssets = checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets());
+            DeviceAssets onlineDeviceAssets = checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets().orElse(deviceAssetFactory.newAssetListResult()));
             // Store value and return
             if (deviceAssetStoreService.isServiceEnabled(scopeId) &&
                     deviceAssetStoreService.isApplicationEnabled(scopeId, deviceId)) {
@@ -189,7 +192,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementTr
             // Create event
             createDeviceEvent(scopeId, deviceId, assetRequestMessage, responseMessage);
             // Check response
-            DeviceAssets onlineDeviceAssets = checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets());
+            DeviceAssets onlineDeviceAssets = checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets().orElse(deviceAssetFactory.newAssetListResult()));
             // Store value and return
             if (deviceAssetStoreService.isServiceEnabled(scopeId) &&
                     deviceAssetStoreService.isApplicationEnabled(scopeId, deviceId)) {
@@ -255,6 +258,6 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementTr
         // Create event
         createDeviceEvent(scopeId, deviceId, assetRequestMessage, responseMessage);
         // Check response
-        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets());
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets().orElse(deviceAssetFactory.newAssetListResult()));
     }
 }

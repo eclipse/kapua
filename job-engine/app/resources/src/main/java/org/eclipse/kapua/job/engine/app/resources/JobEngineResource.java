@@ -18,10 +18,10 @@ import org.eclipse.kapua.commons.rest.model.IsJobRunningResponse;
 import org.eclipse.kapua.commons.rest.model.MultipleJobIdRequest;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.glassfish.jersey.process.internal.RequestScoped;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -34,8 +34,8 @@ import javax.ws.rs.core.MediaType;
 @RequestScoped
 public class JobEngineResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final JobEngineService jobEngineService = locator.getService(JobEngineService.class);
+    @Inject
+    public JobEngineService jobEngineService;
 
     @POST
     @Path("clean-data/{scopeId}/{jobId}")

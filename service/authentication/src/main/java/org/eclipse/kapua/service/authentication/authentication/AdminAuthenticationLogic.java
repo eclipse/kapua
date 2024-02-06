@@ -12,17 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.authentication;
 
-import java.util.List;
-
+import com.codahale.metrics.Timer.Context;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.client.security.bean.AuthAcl;
+import org.eclipse.kapua.client.security.bean.AuthContext;
+import org.eclipse.kapua.client.security.metric.AuthMetric;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
+import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionFactory;
+import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService;
 
-import com.codahale.metrics.Timer.Context;
-
-import org.eclipse.kapua.client.security.bean.AuthContext;
+import java.util.List;
 
 /**
  * Admin profile authentication logic implementation
@@ -31,14 +36,26 @@ import org.eclipse.kapua.client.security.bean.AuthContext;
  */
 public class AdminAuthenticationLogic extends AuthenticationLogic {
 
+    public AdminAuthenticationLogic(
+            AclCreator aclCreator,
+            AuthMetric authenticationMetric,
+            DeviceConnectionOptionFactory deviceConnectionOptionFactory,
+            DeviceConnectionOptionService deviceConnectionOptionService,
+            AuthorizationService authorizationService,
+            DeviceConnectionFactory deviceConnectionFactory,
+            PermissionFactory permissionFactory,
+            DeviceConnectionService deviceConnectionService) {
+        super(aclCreator, authenticationMetric, deviceConnectionOptionFactory, deviceConnectionOptionService, authorizationService, deviceConnectionFactory, permissionFactory, deviceConnectionService);
+    }
+
     @Override
     public List<AuthAcl> connect(AuthContext authContext) throws KapuaException {
         Context timeAdminTotal = authenticationMetric.getExtConnectorTime().getAdminAddConnection().time();
         authContext.setAdmin(true);
         DeviceConnection deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(
                 KapuaEid.parseCompactId(authContext.getScopeId()), authContext.getClientId()));
-        deviceConnection = deviceConnection!=null ? updateDeviceConnection(authContext, deviceConnection) : createDeviceConnection(authContext);
-        if (deviceConnection!=null && deviceConnection.getId()!=null) {
+        deviceConnection = deviceConnection != null ? updateDeviceConnection(authContext, deviceConnection) : createDeviceConnection(authContext);
+        if (deviceConnection != null && deviceConnection.getId() != null) {
             authContext.setKapuaConnectionId(deviceConnection.getId());
         }
         //no need to have permissions since is admin profile

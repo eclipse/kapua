@@ -19,10 +19,9 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class DomainXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final DomainFactory DOMAIN_FACTORY = LOCATOR.getFactory(DomainFactory.class);
+    private final DomainFactory domainFactory = KapuaLocator.getInstance().getFactory(DomainFactory.class);
 
     public DomainQuery newQuery() {
-        return DOMAIN_FACTORY.newQuery(null);
+        return domainFactory.newQuery(null);
     }
 }

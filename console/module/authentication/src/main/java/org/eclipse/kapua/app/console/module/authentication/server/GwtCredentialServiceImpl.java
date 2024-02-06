@@ -81,6 +81,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
 
     private static final UserCredentialsService USER_CREDENTIALS_SERVICE = LOCATOR.getService(UserCredentialsService.class);
     private static final UserCredentialsFactory USER_CREDENTIALS_FACTORY = LOCATOR.getFactory(UserCredentialsFactory.class);
+    private static final AuthenticationUtils AUTHENTICATION_UTILS = LOCATOR.getComponent(AuthenticationUtils.class);
 
     // this should be removed due to the refactoring in fixPasswordValidationBypass method
     private static final int SYSTEM_MAXIMUM_PASSWORD_LENGTH = 255;
@@ -185,7 +186,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
 
             // Update
             if (StringUtils.isNotEmpty(StringUtils.strip(gwtCredential.getCredentialKey()))) {
-                String encryptedPass = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, gwtCredential.getCredentialKey());
+                String encryptedPass = AUTHENTICATION_UTILS.cryptCredential(CryptAlgorithm.BCRYPT, gwtCredential.getCredentialKey());
                 gwtCredential.setCredentialKey(encryptedPass);
             } else {
                 Credential currentCredential = CREDENTIAL_SERVICE.find(scopeId, credentialId);

@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.device.management.bundle.message.internal;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
-import org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
@@ -23,6 +22,7 @@ import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagem
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 /**
  * {@link DeviceBundle} {@link KapuaResponsePayload} implementation.
@@ -33,9 +33,7 @@ public class BundleResponsePayload extends KapuaResponsePayloadImpl implements K
 
     private static final long serialVersionUID = 4380715272822080425L;
 
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
-    private static final DeviceBundleFactory DEVICE_BUNDLE_FACTORY = KapuaLocator.getInstance().getFactory(DeviceBundleFactory.class);
+    private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     /**
      * Gets the {@link DeviceBundles} from the {@link #getBody()}.
@@ -44,13 +42,13 @@ public class BundleResponsePayload extends KapuaResponsePayloadImpl implements K
      * @throws Exception if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
-    public DeviceBundles getDeviceBundles() throws Exception {
+    public Optional<DeviceBundles> getDeviceBundles() throws Exception {
         if (!hasBody()) {
-            return DEVICE_BUNDLE_FACTORY.newBundleListResult();
+            return Optional.empty();
         }
 
-        String bodyString = new String(getBody(), CHAR_ENCODING);
-        return XmlUtil.unmarshal(bodyString, DeviceBundles.class);
+        String bodyString = new String(getBody(), charEncoding);
+        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceBundles.class));
     }
 
     /**
@@ -62,6 +60,6 @@ public class BundleResponsePayload extends KapuaResponsePayloadImpl implements K
      */
     public void setDeviceBundles(@NotNull DeviceBundles deviceBundles) throws Exception {
         String bodyString = XmlUtil.marshal(deviceBundles);
-        setBody(bodyString.getBytes(CHAR_ENCODING));
+        setBody(bodyString.getBytes(charEncoding));
     }
 }

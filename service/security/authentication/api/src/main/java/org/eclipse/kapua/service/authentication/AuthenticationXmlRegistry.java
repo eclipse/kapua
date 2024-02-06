@@ -17,8 +17,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 
 public class AuthenticationXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final CredentialsFactory CREDENTIALS_FACTORY = LOCATOR.getFactory(CredentialsFactory.class);
+    private final CredentialsFactory credentialsFactory = KapuaLocator.getInstance().getFactory(CredentialsFactory.class);
 
     /**
      * Creates a new {@link UsernamePasswordCredentials} instance
@@ -26,7 +25,7 @@ public class AuthenticationXmlRegistry {
      * @return
      */
     public UsernamePasswordCredentials newUsernamePasswordCredentials() {
-        return CREDENTIALS_FACTORY.newUsernamePasswordCredentials();
+        return credentialsFactory.newUsernamePasswordCredentials();
     }
 
     /**
@@ -35,7 +34,7 @@ public class AuthenticationXmlRegistry {
      * @return
      */
     public ApiKeyCredentials newApiKeyCredentials() {
-        return CREDENTIALS_FACTORY.newApiKeyCredentials(null);
+        return credentialsFactory.newApiKeyCredentials(null);
     }
 
     /**
@@ -44,7 +43,7 @@ public class AuthenticationXmlRegistry {
      * @return
      */
     public JwtCredentials newJwtCredentials() {
-        return CREDENTIALS_FACTORY.newJwtCredentials(null, null);
+        return credentialsFactory.newJwtCredentials(null, null);
     }
 
     /**
@@ -53,7 +52,7 @@ public class AuthenticationXmlRegistry {
      * @return
      */
     public AccessTokenCredentials newAccessTokenCredentials() {
-        return CREDENTIALS_FACTORY.newAccessTokenCredentials(null);
+        return credentialsFactory.newAccessTokenCredentials(null);
     }
 
     /**
@@ -62,6 +61,6 @@ public class AuthenticationXmlRegistry {
      * @return
      */
     public RefreshTokenCredentials newRefreshTokenCredentials() {
-        return CREDENTIALS_FACTORY.newRefreshTokenCredentials(null, null);
+        return credentialsFactory.newRefreshTokenCredentials(null, null);
     }
 }

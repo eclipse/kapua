@@ -14,12 +14,16 @@ package org.eclipse.kapua.translator.kura.kapua.keystore;
 
 import org.eclipse.kapua.service.device.call.kura.model.keystore.KuraKeystoreCSR;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
+import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
 import org.eclipse.kapua.service.device.management.keystore.internal.message.response.KeystoreCsrResponseMessage;
 import org.eclipse.kapua.service.device.management.keystore.internal.message.response.KeystoreResponsePayload;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
 
 /**
  * {@link Translator} implementation from {@link KeystoreCsrResponseMessage} to {@link KeystoreCsrResponseMessage}
@@ -35,8 +39,9 @@ public class TranslatorAppKeystoreCsrKuraKapua extends AbstractTranslatorAppKeys
      *
      * @since 1.5.0
      */
-    public TranslatorAppKeystoreCsrKuraKapua() {
-        super(KeystoreCsrResponseMessage.class);
+    @Inject
+    public TranslatorAppKeystoreCsrKuraKapua(DeviceManagementSetting deviceManagementSetting, DeviceKeystoreManagementFactory deviceKeystoreManagementFactory) {
+        super(deviceManagementSetting, deviceKeystoreManagementFactory, KeystoreCsrResponseMessage.class);
     }
 
     @Override

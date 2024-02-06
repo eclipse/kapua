@@ -12,17 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.localevent;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.TimeUnit;
-
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * @param <O> Who knows?
+ * @deprecated since 2.0.0 - this was probably intended to be part of a larger abstraction that never came to fruition - as it is now it just creates confusion.
+ * Do not use, will be removed in future releases
+ */
+@Deprecated
 public abstract class EventHandler<O> {
 
     private static Logger logger = LoggerFactory.getLogger(EventHandler.class);
+    private final CommonsMetric commonsMetric;
 
     private boolean running;
     private ExecutorWrapper executorWrapper;
@@ -32,21 +39,21 @@ public abstract class EventHandler<O> {
     private BlockingQueue<O> eventQueue = new LinkedBlockingDeque<>(MAX_ONGOING_OPERATION);
     private EventProcessor<O> eventProcessor;
 
-    protected EventHandler(String name, long initialDelay, long pollTimeout) {
+    protected EventHandler(CommonsMetric commonsMetric, String name, long initialDelay, long pollTimeout) {
+        this.commonsMetric = commonsMetric;
         executorWrapper = new ExecutorWrapper(name, () -> {
             while (isRunning()) {
                 try {
                     O eventBean = eventQueue.poll(POLL_TIMEOUT, TimeUnit.MILLISECONDS);
-                    if (eventBean!=null) {
-                        CommonsMetric.getInstance().getDequeuedEvent().inc();
+                    if (eventBean != null) {
+                        commonsMetric.getDequeuedEvent().inc();
                         eventProcessor.processEvent(eventBean);
-                        CommonsMetric.getInstance().getProcessedEvent().inc();
+                        commonsMetric.getProcessedEvent().inc();
                     }
                 } catch (InterruptedException e) {
                     //do nothing...
                     Thread.currentThread().interrupt();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     //do nothing
                     logger.error("Error while processing event: {}", e.getMessage(), e);
                     //TODO add metric?
@@ -57,7 +64,7 @@ public abstract class EventHandler<O> {
 
     public void enqueueEvent(O eventBean) {
         eventQueue.add(eventBean);
-        CommonsMetric.getInstance().getEnqueuedEvent().inc();
+        commonsMetric.getEnqueuedEvent().inc();
     }
 
     public void registerConsumer(EventProcessor<O> eventProcessor) {

@@ -13,12 +13,12 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.service.stream.StreamService;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
@@ -31,8 +31,8 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/streams")
 public class Streams extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final StreamService streamService = locator.getService(StreamService.class);
+    @Inject
+    public StreamService streamService;
 
     /**
      * Publishes a fire-and-forget message to a topic composed of:
@@ -83,7 +83,7 @@ public class Streams extends AbstractKapuaResource {
      */
     @POST
     @Path("messages")
-    @Consumes({ MediaType.APPLICATION_XML })
+    @Consumes({MediaType.APPLICATION_XML})
     public Response publish(
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("timeout") @DefaultValue("30000") Long timeout,

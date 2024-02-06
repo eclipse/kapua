@@ -52,16 +52,12 @@ import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoFactory;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
-import org.eclipse.kapua.service.datastore.internal.ChannelInfoRegistryServiceProxy;
-import org.eclipse.kapua.service.datastore.internal.ClientInfoRegistryServiceProxy;
 import org.eclipse.kapua.service.datastore.internal.DatastoreCacheManager;
+import org.eclipse.kapua.service.datastore.internal.MessageStoreFacade;
 import org.eclipse.kapua.service.datastore.internal.MetricEntry;
-import org.eclipse.kapua.service.datastore.internal.MetricInfoRegistryServiceProxy;
-import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreChannel;
-import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
@@ -93,6 +89,7 @@ import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.model.IndexRequest;
 import org.eclipse.kapua.service.elasticsearch.client.rest.ElasticsearchResourcePaths;
@@ -153,6 +150,7 @@ public class DatastoreSteps extends TestBase {
     private static final String NO_MESSAGES_TO_COMPARE_TO = "No messages to compare to!";
     private static final String NUMBER_OF_CLIENTS_DOES_NOT_MATCH = "The number of clients does not match!";
     private static final String CLIENT_ID_NOT_FOUND = "The client id [%s] is not found in the info list!";
+    private DatastoreCacheManager datastoreCacheManager;
 
     @Then("Number of received data messages is different than {int}")
     public void numberOfReceivedDataMessagesIsDifferentThan(int numberOfMessages) {
@@ -269,17 +267,13 @@ public class DatastoreSteps extends TestBase {
     private StorableIdFactory storableIdFactory;
 
     private ChannelInfoRegistryService channelInfoRegistryService;
-    private ChannelInfoRegistryServiceProxy channelInfoRegistryServiceProxy;
-
     private MetricInfoRegistryService metricInfoRegistryService;
-    private MetricInfoRegistryServiceProxy metricInfoRegistryServiceProxy;
-
     private ClientInfoRegistryService clientInfoRegistryService;
-    private ClientInfoRegistryServiceProxy clientInfoRegistryServiceProxy;
 
     private MessageStoreService messageStoreService;
     private KapuaMessageFactory messageFactory;
     private KapuaDataMessageFactory dataMessageFactory;
+    private MessageStoreFacade messageStoreFacade;
 
     private SimulatedDevice currentDevice;
     private Session session;
@@ -302,20 +296,18 @@ public class DatastoreSteps extends TestBase {
         messageFactory = locator.getFactory(KapuaMessageFactory.class);
         storableIdFactory = locator.getFactory(StorableIdFactory.class);
         channelInfoRegistryService = locator.getService(ChannelInfoRegistryService.class);
-        elasticsearchClient = DatastoreClientFactory.getInstance().getElasticsearchClient();
+        elasticsearchClient = locator.getComponent(ElasticsearchClientProvider.class).getElasticsearchClient();
         channelInfoFactory = locator.getFactory(ChannelInfoFactory.class);
         clientInfoFactory = locator.getFactory(ClientInfoFactory.class);
         messageStoreFactory = locator.getFactory(MessageStoreFactory.class);
         metricInfoFactory = locator.getFactory(MetricInfoFactory.class);
         datastorePredicateFactory = locator.getFactory(DatastorePredicateFactory.class);
-        channelInfoRegistryServiceProxy = new ChannelInfoRegistryServiceProxy();
         metricInfoRegistryService = locator.getService(MetricInfoRegistryService.class);
-        metricInfoRegistryServiceProxy = new MetricInfoRegistryServiceProxy();
         clientInfoRegistryService = locator.getService(ClientInfoRegistryService.class);
-        clientInfoRegistryServiceProxy = new ClientInfoRegistryServiceProxy();
         messageFactory = locator.getFactory(KapuaMessageFactory.class);
         dataMessageFactory = locator.getFactory(KapuaDataMessageFactory.class);
-
+        messageStoreFacade = locator.getComponent(MessageStoreFacade.class);
+        datastoreCacheManager = locator.getComponent(DatastoreCacheManager.class);
     }
 
     // *************************************
@@ -340,26 +332,29 @@ public class DatastoreSteps extends TestBase {
 
     @Given("I delete indexes {string}")
     public void deleteIndexes(String indexExp) throws Exception {
-        DatastoreMediator.getInstance().deleteIndexes(indexExp);
-        DatastoreMediator.getInstance().refreshAllIndexes();
+        messageStoreFacade.deleteIndexes(indexExp);
     }
 
     @Given("I delete all indices")
     public void deleteIndices() throws Exception {
-        DatastoreMediator.getInstance().deleteAllIndexes();
+        messageStoreFacade.refreshAllIndexes();
+        messageStoreFacade.deleteAllIndexes();
     }
 
     @When("I refresh all indices")
     public void refreshIndeces() throws Throwable {
-        DatastoreMediator.getInstance().refreshAllIndexes();
+        messageStoreFacade.refreshAllIndexes();
+        datastoreCacheManager.getMetricsCache().invalidateAll();
+        datastoreCacheManager.getChannelsCache().invalidateAll();
+        datastoreCacheManager.getClientsCache().invalidateAll();
     }
 
     @When("I clear all the database caches")
     public void clearDatabaseCaches() {
-        DatastoreCacheManager.getInstance().getChannelsCache().invalidateAll();
-        DatastoreCacheManager.getInstance().getClientsCache().invalidateAll();
-        DatastoreCacheManager.getInstance().getMetricsCache().invalidateAll();
-        DatastoreCacheManager.getInstance().getMetadataCache().invalidateAll();
+        datastoreCacheManager.getChannelsCache().invalidateAll();
+        datastoreCacheManager.getClientsCache().invalidateAll();
+        datastoreCacheManager.getMetricsCache().invalidateAll();
+        datastoreCacheManager.getMetadataCache().invalidateAll();
     }
 
     @Given("I have a mock data application named {string}")
@@ -383,35 +378,32 @@ public class DatastoreSteps extends TestBase {
 
     @Then("I expect the number of messages for this device to be {long}")
     public void expectNumberOfMessages(long numberOfMessages) throws Exception {
-        final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
         session.withLogin(() -> With.withUserAccount(currentDevice.getAccountName(), account -> {
             MessageQuery query = messageStoreFactory.newQuery(account.getId());
             query.setPredicate(datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
             query.setAskTotalCount(true);
             query.setLimit((int) numberOfMessages);
-            MessageListResult result = service.query(query);
+            MessageListResult result = messageStoreService.query(query);
 
             Assert.assertEquals(numberOfMessages, result.getSize());
             Assert.assertEquals(Long.valueOf(numberOfMessages), result.getTotalCount());
-            Assert.assertEquals(numberOfMessages, service.count(query));
+            Assert.assertEquals(numberOfMessages, messageStoreService.count(query));
         }));
     }
 
     @Then("I delete the messages for this device")
     public void deleteMessages() throws Exception {
-        final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
         session.withLogin(() -> With.withUserAccount(currentDevice.getAccountName(), account -> {
             MessageQuery query = messageStoreFactory.newQuery(account.getId());
             query.setPredicate(datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
             query.setAskTotalCount(true);
             query.setLimit(100);
-            service.delete(query);
+            messageStoreService.delete(query);
         }));
     }
 
     @Then("I expect the latest captured message on channel {string} to have the metrics")
     public void testMessageData(String topic, List<MetricEntry> expectedMetrics) throws Exception {
-        final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
         session.withLogin(() -> With.withUserAccount(currentDevice.getAccountName(), account -> {
             MessageQuery query = messageStoreFactory.newQuery(account.getId());
             AndPredicate and = datastorePredicateFactory.newAndPredicate();
@@ -419,7 +411,7 @@ public class DatastoreSteps extends TestBase {
             and.getPredicates().add(datastorePredicateFactory.newTermPredicate(MessageField.CHANNEL, topic));
             query.setPredicate(and);
             query.setSortFields(Arrays.asList(SortField.descending(MessageField.CAPTURED_ON.field())));
-            MessageListResult result = service.query(query);
+            MessageListResult result = messageStoreService.query(query);
             Assert.assertEquals(1, result.getSize());
             DatastoreMessage message = result.getFirstItem();
             Assert.assertEquals(currentDevice.getClientId(), message.getClientId());
@@ -443,11 +435,7 @@ public class DatastoreSteps extends TestBase {
         String indexName = "";
 
         primeException();
-        try {
-            indexName = DatastoreUtils.getDataIndexName(SYS_SCOPE_ID, instant.toEpochMilli(), window);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        indexName = KapuaLocator.getInstance().getComponent(DatastoreUtils.class).getDataIndexName(SYS_SCOPE_ID, instant.toEpochMilli(), window);
 
         Assert.assertEquals(name, indexName);
     }
@@ -961,7 +949,7 @@ public class DatastoreSteps extends TestBase {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         ChannelInfoListResult tmpList = (ChannelInfoListResult) stepData.get(lstKey);
         for (ChannelInfo tmpItem : tmpList.getItems()) {
-            channelInfoRegistryServiceProxy.delete(account.getId(), tmpItem.getId());
+            channelInfoRegistryService.delete(account.getId(), tmpItem.getId());
         }
     }
 
@@ -969,7 +957,7 @@ public class DatastoreSteps extends TestBase {
     public void deleteChannelWithId(String idKey) throws KapuaException {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         StorableId tmpId = (StorableId) stepData.get(idKey);
-        channelInfoRegistryServiceProxy.delete(account.getId(), tmpId);
+        channelInfoRegistryService.delete(account.getId(), tmpId);
     }
 
     @When("I query for the current account metrics (again )and store (it/them) as {string}")
@@ -1125,7 +1113,7 @@ public class DatastoreSteps extends TestBase {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         MetricInfoListResult tmpList = (MetricInfoListResult) stepData.get(lstKey);
         for (MetricInfo tmpItem : tmpList.getItems()) {
-            metricInfoRegistryServiceProxy.delete(account.getId(), tmpItem.getId());
+            metricInfoRegistryService.delete(account.getId(), tmpItem.getId());
         }
     }
 
@@ -1220,7 +1208,7 @@ public class DatastoreSteps extends TestBase {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         ClientInfoListResult tmpList = (ClientInfoListResult) stepData.get(lstKey);
         for (ClientInfo tmpItem : tmpList.getItems()) {
-            clientInfoRegistryServiceProxy.delete(account.getId(), tmpItem.getId());
+            clientInfoRegistryService.delete(account.getId(), tmpItem.getId());
         }
     }
 
@@ -1228,7 +1216,7 @@ public class DatastoreSteps extends TestBase {
     public void deleteClientFromList(int index, String lstKey) throws KapuaException {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         ClientInfoListResult tmpList = (ClientInfoListResult) stepData.get(lstKey);
-        clientInfoRegistryServiceProxy.delete(account.getId(), tmpList.getItem(index).getId());
+        clientInfoRegistryService.delete(account.getId(), tmpList.getItem(index).getId());
     }
 
     @When("I search for data message with id {string}")
@@ -1443,13 +1431,13 @@ public class DatastoreSteps extends TestBase {
     @When("I delete the channel info data based on the last query")
     public void deleteChannelInfoByQuery() throws KapuaException {
         ChannelInfoQuery tmpQuery = (ChannelInfoQuery) stepData.get(CHANNEL_INFO_QUERY);
-        channelInfoRegistryServiceProxy.delete(tmpQuery);
+        channelInfoRegistryService.delete(tmpQuery);
     }
 
     @When("I delete the the channel info data with the ID {string} from the current account")
     public void deleteChannelInfoWithId(String id) throws KapuaException {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
-        channelInfoRegistryServiceProxy.delete(account.getId(), storableIdFactory.newStorableId(id));
+        channelInfoRegistryService.delete(account.getId(), storableIdFactory.newStorableId(id));
     }
 
     @Then("I get empty channel info list result")
@@ -1495,13 +1483,13 @@ public class DatastoreSteps extends TestBase {
     @When("I delete the metric info data based on the last query")
     public void deleteMetricsInfoByQuery() throws KapuaException {
         MetricInfoQuery tmpQuery = (MetricInfoQuery) stepData.get(METRIC_INFO_QUERY);
-        metricInfoRegistryServiceProxy.delete(tmpQuery);
+        metricInfoRegistryService.delete(tmpQuery);
     }
 
     @When("I delete the the metric info data with the ID {string} from the current account")
     public void deleteMetricsInfoWithId(String id) throws KapuaException {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
-        metricInfoRegistryServiceProxy.delete(account.getId(), storableIdFactory.newStorableId(id));
+        metricInfoRegistryService.delete(account.getId(), storableIdFactory.newStorableId(id));
     }
 
     @When("I count for metric info")
@@ -1540,13 +1528,13 @@ public class DatastoreSteps extends TestBase {
     @When("I delete the client info data based on the last query")
     public void deleteClientInfoByQuery() throws KapuaException {
         ClientInfoQuery tmpQuery = (ClientInfoQuery) stepData.get(CLIENT_INFO_QUERY);
-        clientInfoRegistryServiceProxy.delete(tmpQuery);
+        clientInfoRegistryService.delete(tmpQuery);
     }
 
     @When("I delete the the client info data with the ID {string} from the current account")
     public void deleteClientInfoWithId(String id) throws KapuaException {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
-        clientInfoRegistryServiceProxy.delete(account.getId(), storableIdFactory.newStorableId(id));
+        clientInfoRegistryService.delete(account.getId(), storableIdFactory.newStorableId(id));
     }
 
     @When("I count for client info")
@@ -1594,7 +1582,7 @@ public class DatastoreSteps extends TestBase {
     public void deleteIndexesBetweenDates(String fromDate, String toDate) throws Exception {
         primeException();
         try {
-            String[] indexes = DatastoreUtils.convertToDataIndexes(getDataIndexesByAccount(getCurrentScopeId()), KapuaDateUtils.parseDate(fromDate).toInstant(),
+            String[] indexes = KapuaLocator.getInstance().getComponent(DatastoreUtils.class).convertToDataIndexes(getDataIndexesByAccount(getCurrentScopeId()), KapuaDateUtils.parseDate(fromDate).toInstant(),
                     KapuaDateUtils.parseDate(toDate).toInstant());
             elasticsearchClient.deleteIndexes(indexes);
         } catch (Exception ex) {

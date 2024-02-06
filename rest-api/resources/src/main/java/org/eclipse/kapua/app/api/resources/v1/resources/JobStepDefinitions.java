@@ -18,7 +18,6 @@ import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.service.KapuaService;
@@ -32,6 +31,7 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionListResult
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionQuery;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -45,9 +45,10 @@ import javax.ws.rs.core.MediaType;
 @Path("{scopeId}/jobStepDefinitions")
 public class JobStepDefinitions extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final JobStepDefinitionService jobStepDefinitionService = locator.getService(JobStepDefinitionService.class);
-    private final JobStepDefinitionFactory jobStepDefinitionFactory = locator.getFactory(JobStepDefinitionFactory.class);
+    @Inject
+    public JobStepDefinitionService jobStepDefinitionService;
+    @Inject
+    public JobStepDefinitionFactory jobStepDefinitionFactory;
 
     /**
      * Gets the {@link JobStep} list for a given {@link Job}.

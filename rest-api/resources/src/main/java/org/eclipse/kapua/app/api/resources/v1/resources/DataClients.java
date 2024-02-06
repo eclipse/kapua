@@ -14,11 +14,10 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.model.StorableEntityId;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.datastore.ClientInfoFactory;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
@@ -30,6 +29,7 @@ import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredic
 import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -43,10 +43,12 @@ import javax.ws.rs.core.MediaType;
 @Path("{scopeId}/data/clients")
 public class DataClients extends AbstractKapuaResource {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final ClientInfoRegistryService CLIENT_INFO_REGISTRY_SERVICE = LOCATOR.getService(ClientInfoRegistryService.class);
-    private static final ClientInfoFactory CLIENT_INFO_FACTORY = LOCATOR.getFactory(ClientInfoFactory.class);
-    private static final DatastorePredicateFactory DATASTORE_PREDICATE_FACTORY = LOCATOR.getFactory(DatastorePredicateFactory.class);
+    @Inject
+    public ClientInfoRegistryService clientInfoRegistryService;
+    @Inject
+    public ClientInfoFactory clientInfoFactory;
+    @Inject
+    public DatastorePredicateFactory datastorePredicateFactory;
 
     /**
      * Gets the {@link ClientInfo} list in the scope.
@@ -66,13 +68,13 @@ public class DataClients extends AbstractKapuaResource {
                                             @QueryParam("offset") @DefaultValue("0") int offset,
                                             @QueryParam("limit") @DefaultValue("50") int limit)
             throws KapuaException {
-        AndPredicate andPredicate = DATASTORE_PREDICATE_FACTORY.newAndPredicate();
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
         if (!Strings.isNullOrEmpty(clientId)) {
-            TermPredicate clientIdPredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(ClientInfoField.CLIENT_ID, clientId);
+            TermPredicate clientIdPredicate = datastorePredicateFactory.newTermPredicate(ClientInfoField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientIdPredicate);
         }
 
-        ClientInfoQuery query = CLIENT_INFO_FACTORY.newQuery(scopeId);
+        ClientInfoQuery query = clientInfoFactory.newQuery(scopeId);
 
         query.setPredicate(andPredicate);
 
@@ -100,7 +102,7 @@ public class DataClients extends AbstractKapuaResource {
             throws KapuaException {
         query.setScopeId(scopeId);
         query.addFetchAttributes(ClientInfoField.TIMESTAMP.field());
-        return CLIENT_INFO_REGISTRY_SERVICE.query(query);
+        return clientInfoRegistryService.query(query);
     }
 
     /**
@@ -121,7 +123,7 @@ public class DataClients extends AbstractKapuaResource {
             throws KapuaException {
         query.setScopeId(scopeId);
 
-        return new CountResult(CLIENT_INFO_REGISTRY_SERVICE.count(query));
+        return new CountResult(clientInfoRegistryService.count(query));
     }
 
     /**
@@ -138,7 +140,7 @@ public class DataClients extends AbstractKapuaResource {
     public ClientInfo find(@PathParam("scopeId") ScopeId scopeId,
                            @PathParam("clientInfoId") StorableEntityId clientInfoId)
             throws KapuaException {
-        ClientInfo clientInfo = CLIENT_INFO_REGISTRY_SERVICE.find(scopeId, clientInfoId);
+        ClientInfo clientInfo = clientInfoRegistryService.find(scopeId, clientInfoId);
 
         return returnNotNullEntity(clientInfo);
     }

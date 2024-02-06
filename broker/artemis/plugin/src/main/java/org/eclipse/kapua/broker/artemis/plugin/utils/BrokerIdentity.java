@@ -14,33 +14,25 @@ package org.eclipse.kapua.broker.artemis.plugin.utils;
 
 import org.apache.activemq.artemis.core.server.ActiveMQServer;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
-import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
-import org.eclipse.kapua.commons.util.ReflectionUtil;
 
-//TODO find a better way to share this singleton between SecurityPlugin and ServerPlugin
+import javax.inject.Inject;
+import javax.inject.Named;
+
 public class BrokerIdentity {
 
-    private static final BrokerIdentity INSTANCE = new BrokerIdentity();
-
     private String brokerId;
-    private String brokerHost;
+    private final BrokerIdResolver brokerIdResolver;
+    private final String brokerHost;
 
-    private BrokerIdentity() {
+    @Inject
+    public BrokerIdentity(BrokerIdResolver brokerIdResolver,
+                          @Named("brokerHost") String brokerHost) {
+        this.brokerIdResolver = brokerIdResolver;
+        this.brokerHost = brokerHost;
     }
 
-    public static BrokerIdentity getInstance() {
-        return INSTANCE;
-    }
-
-    //TODO find a way to inject these classes
     public synchronized void init(ActiveMQServer server) throws KapuaException {
-        BrokerIdResolver brokerIdResolver =
-            ReflectionUtil.newInstance(BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_ID_RESOLVER_CLASS_NAME), DefaultBrokerIdResolver.class);
-        brokerId = brokerIdResolver.getBrokerId(server);
-        BrokerHostResolver brokerIpResolver =
-            ReflectionUtil.newInstance(BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_HOST_RESOLVER_CLASS_NAME), DefaultBrokerHostResolver.class);
-        brokerHost = brokerIpResolver.getBrokerHost();
+        this.brokerId = brokerIdResolver.getBrokerId(server);
     }
 
     public String getBrokerId() {

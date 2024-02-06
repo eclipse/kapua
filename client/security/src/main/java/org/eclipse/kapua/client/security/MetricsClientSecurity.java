@@ -12,32 +12,27 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security;
 
-import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-import com.codahale.metrics.Counter;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
+@Singleton
 public class MetricsClientSecurity {
 
     private static final String CALLBACK = "callback";
     private Counter loginCallbackError;
     private Counter loginCallbackTimeout;
 
-    private static MetricsClientSecurity instance;
-
-    public synchronized static MetricsClientSecurity getInstance() {
-        if (instance == null) {
-            instance = new MetricsClientSecurity();
-        }
-        return instance;
-    }
-
-    private MetricsClientSecurity() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
-        loginCallbackError = metricsService.getCounter(CommonsMetric.module, CALLBACK, MetricsLabel.ERROR);
-        loginCallbackTimeout = metricsService.getCounter(CommonsMetric.module, CALLBACK, MetricsLabel.TIMEOUT);
+    @Inject
+    public MetricsClientSecurity(MetricsService metricsService,
+                                 @Named("metricModuleName")
+                                 String metricModuleName) {
+        loginCallbackError = metricsService.getCounter(metricModuleName, CALLBACK, MetricsLabel.ERROR);
+        loginCallbackTimeout = metricsService.getCounter(metricModuleName, CALLBACK, MetricsLabel.TIMEOUT);
     }
 
     public Counter getLoginCallbackError() {

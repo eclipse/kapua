@@ -31,7 +31,6 @@ import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreCommunicationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
-import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
@@ -46,6 +45,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -58,14 +58,13 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
 
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceImpl.class);
 
-    //TODO inject!!!
     private MetricsDatastore metrics;
     protected AccountService accountService;
     protected AuthorizationService authorizationService;
     protected PermissionFactory permissionFactory;
 
-    protected static final Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.CONFIG_MAX_ENTRIES_ON_DELETE);
-    protected static final Integer MAX_LIMIT_VALUE = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.MAX_LIMIT_VALUE);
+    protected final Integer maxLimitValue;
+    protected final Integer maxEntriesOnDelete;
     protected final MessageStoreFacade messageStoreFacade;
 
     @Inject
@@ -73,16 +72,18 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
             TxManager txManager,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
-            AccountService accountService,
-            ServiceConfigurationManager serviceConfigurationManager
+            ServiceConfigurationManager serviceConfigurationManager,
+            MessageStoreFacade messageStoreFacade,
+            MetricsDatastore metricsDatastore,
+            DatastoreSettings datastoreSettings
     ) {
         super(txManager, serviceConfigurationManager, Domains.DATASTORE, authorizationService, permissionFactory);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
-        final ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this, accountService);
-        metrics = MetricsDatastore.getInstance();
-        messageStoreFacade = new MessageStoreFacade(configurationProvider, DatastoreMediator.getInstance());
-        DatastoreMediator.getInstance().setMessageStoreFacade(messageStoreFacade);
+        this.metrics = metricsDatastore;
+        this.messageStoreFacade = messageStoreFacade;
+        maxLimitValue = datastoreSettings.getInt(DatastoreSettingsKey.MAX_LIMIT_VALUE);
+        maxEntriesOnDelete = datastoreSettings.getInt(DatastoreSettingsKey.CONFIG_MAX_ENTRIES_ON_DELETE);
     }
 
     @Override
@@ -95,15 +96,19 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
             metrics.getMessage().inc();
             return messageStoreFacade.store(message, datastoreId, true);
         } catch (ConfigurationException e) {
+            logger.error("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ", e);
             metrics.getConfigurationError().inc();
             throw e;
         } catch (KapuaIllegalArgumentException e) {
+            logger.error("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ", e);
             metrics.getValidationError().inc();
             throw e;
         } catch (ClientCommunicationException e) {
+            logger.error("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ", e);
             metrics.getCommunicationError().inc();
             throw new DatastoreCommunicationException(datastoreId, e);
         } catch (Exception e) {
+            logger.error("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ", e);
             metrics.getGenericError().inc();
             logException(e);
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
@@ -148,7 +153,7 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
     public DatastoreMessage find(KapuaId scopeId, StorableId id, StorableFetchStyle fetchStyle) throws KapuaException {
         checkDataAccess(scopeId, Actions.read);
         try {
-            return messageStoreFacade.find(scopeId, id, fetchStyle);
+            return messageStoreFacade.find(scopeId, id);
         } catch (Exception e) {
             logException(e);
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
@@ -160,7 +165,7 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
             throws KapuaException {
         checkDataAccess(query.getScopeId(), Actions.read);
         if (query.getLimit() != null) {
-            ArgumentValidator.numRange(query.getLimit(), 0, MAX_LIMIT_VALUE, "limit");
+            ArgumentValidator.numRange(query.getLimit(), 0, maxLimitValue, "limit");
         }
         try {
             return messageStoreFacade.query(query);
@@ -169,7 +174,7 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
             throw new DatastoreException(
                     KapuaErrorCodes.INTERNAL_ERROR,
                     e,
-                    e.getCause().getMessage() != null ? e.getCause().getMessage() : e.getMessage()
+                    Optional.ofNullable(e.getCause()).flatMap(c -> Optional.ofNullable(c.getMessage())).orElse(e.getMessage())
             );
         }
     }
@@ -201,7 +206,7 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
     @Override
     public void delete(MessageQuery query)
             throws KapuaException {
-        ArgumentValidator.numRange(query.getLimit(), 0, MAX_ENTRIES_ON_DELETE, "limit");
+        ArgumentValidator.numRange(query.getLimit(), 0, maxEntriesOnDelete, "limit");
 
         checkDataAccess(query.getScopeId(), Actions.delete);
         try {

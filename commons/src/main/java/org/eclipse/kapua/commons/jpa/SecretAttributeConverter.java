@@ -16,6 +16,7 @@ import com.google.common.base.Strings;
 import org.eclipse.kapua.commons.crypto.CryptoUtil;
 import org.eclipse.kapua.commons.crypto.exception.AesDecryptionException;
 import org.eclipse.kapua.commons.crypto.exception.AesEncryptionException;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 
 import javax.persistence.AttributeConverter;
@@ -31,6 +32,7 @@ import javax.persistence.PersistenceException;
 public class SecretAttributeConverter implements AttributeConverter<String, String> {
 
     private static final String AES_V1 = "$aes$";
+    private final CryptoUtil cryptoUtil = KapuaLocator.getInstance().getComponent(CryptoUtil.class);
 
     @Override
     public String convertToDatabaseColumn(String entityAttribute) {
@@ -39,7 +41,7 @@ public class SecretAttributeConverter implements AttributeConverter<String, Stri
         }
 
         try {
-            return AES_V1 + CryptoUtil.encryptAes(entityAttribute);
+            return AES_V1 + cryptoUtil.encryptAes(entityAttribute);
         } catch (AesEncryptionException e) {
             throw new PersistenceException("Cannot write value to database", e);
         }
@@ -54,7 +56,7 @@ public class SecretAttributeConverter implements AttributeConverter<String, Stri
         // Handling encryption versions
         if (databaseValue.startsWith(AES_V1)) {
             try {
-                return CryptoUtil.decryptAes(databaseValue.substring(AES_V1.length()));
+                return cryptoUtil.decryptAes(databaseValue.substring(AES_V1.length()));
             } catch (AesDecryptionException e) {
                 throw new PersistenceException("Cannot read value from database", e);
             }

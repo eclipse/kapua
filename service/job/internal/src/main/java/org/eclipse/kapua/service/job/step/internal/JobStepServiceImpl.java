@@ -93,7 +93,7 @@ public class JobStepServiceImpl implements JobStepService {
         this.jobStepDefinitionRepository = jobStepDefinitionRepository;
     }
 
-    private final JobServiceSettings jobServiceSettings = JobServiceSettings.getInstance();
+    private final JobServiceSettings jobServiceSettings = new JobServiceSettings();
     /**
      * The maximum length that a {@link JobStepProperty#getPropertyValue()} is allowed to have
      *
@@ -348,11 +348,9 @@ public class JobStepServiceImpl implements JobStepService {
 
     @Override
     public int getJobStepPropertyMaxLength() throws KapuaException {
-        //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, KapuaId.ANY));
 
-        //
         // Return the value
         return jobStepPropertyValueLengthMax;
     }

@@ -21,6 +21,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +34,12 @@ import java.util.stream.Collectors;
  */
 @Singleton
 public class AuthorizationServiceImpl implements AuthorizationService {
+    private final PermissionMapper permissionMapper;
+
+    @Inject
+    public AuthorizationServiceImpl(PermissionMapper permissionMapper) {
+        this.permissionMapper = permissionMapper;
+    }
 
     @Override
     public boolean[] isPermitted(List<Permission> permissions) throws KapuaException {
@@ -47,7 +54,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             return returnedPermissions;
         } else {
             List<org.apache.shiro.authz.Permission> permissionsShiro = permissions.stream()
-                    .map(permission -> (org.apache.shiro.authz.Permission) permission)
+                    .map(permission -> permissionMapper.mapPermission(permission))
                     .collect(Collectors.toList());
             return SecurityUtils.getSubject().isPermitted(permissionsShiro);
         }
@@ -63,7 +70,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         }
 
         return session.isTrustedMode() ||
-                SecurityUtils.getSubject().isPermitted((org.apache.shiro.authz.Permission) permission);
+                SecurityUtils.getSubject().isPermitted(permissionMapper.mapPermission(permission));
     }
 
     @Override

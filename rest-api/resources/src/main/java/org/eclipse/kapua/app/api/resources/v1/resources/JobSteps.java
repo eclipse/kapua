@@ -12,25 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
@@ -45,14 +32,27 @@ import org.eclipse.kapua.service.job.step.JobStepListResult;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepService;
 
-import com.google.common.base.Strings;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("{scopeId}/jobs/{jobId}/steps")
 public class JobSteps extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final JobStepService jobStepService = locator.getService(JobStepService.class);
-    private final JobStepFactory jobStepFactory = locator.getFactory(JobStepFactory.class);
+    @Inject
+    public JobStepService jobStepService;
+    @Inject
+    public JobStepFactory jobStepFactory;
 
     /**
      * Gets the {@link JobStep} list for a given {@link Job}.
@@ -157,8 +157,8 @@ public class JobSteps extends AbstractKapuaResource {
      * Returns the Job specified by the "jobId" path parameter.
      *
      * @param scopeId The {@link ScopeId} of the requested {@link Job}.
-     * @param jobId The id of the requested Job.
-     * @param stepId The id of the requested JobStep.
+     * @param jobId   The id of the requested Job.
+     * @param stepId  The id of the requested JobStep.
      * @return The requested Job object.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
@@ -177,11 +177,11 @@ public class JobSteps extends AbstractKapuaResource {
      * Creates a new {@link JobStep} based on the information provided in {@link JobStepCreator}
      * parameter.
      *
-     * @param scopeId           The {@link ScopeId} in which to create the {@link JobStep}
-     * @param jobId             The ID of the {@link Job} to attach the {@link JobStep} to
-     * @param jobStepCreator    Provides the information for the new {@link JobStep} to be created.
-     * @return                  The newly created {@link JobStep} object.
-     * @throws                  KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @param scopeId        The {@link ScopeId} in which to create the {@link JobStep}
+     * @param jobId          The ID of the {@link Job} to attach the {@link JobStep} to
+     * @param jobStepCreator Provides the information for the new {@link JobStep} to be created.
+     * @return The newly created {@link JobStep} object.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.5.0
      */
     @POST
@@ -200,12 +200,12 @@ public class JobSteps extends AbstractKapuaResource {
      * Updates a new {@link JobStep} based on the information provided in {@link JobStep}
      * parameter.
      *
-     * @param scopeId           The {@link ScopeId} in which to create the {@link JobStep}
-     * @param jobId             The ID of the {@link Job} to attach the {@link JobStep} to
-     * @param jobStep           Provides the information for the new {@link JobStep} to be created.
-     * @param jobStepId         The ID of the {@link JobStep} to be updated
-     * @return                  The newly created {@link JobStep} object.
-     * @throws                  KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @param scopeId   The {@link ScopeId} in which to create the {@link JobStep}
+     * @param jobId     The ID of the {@link Job} to attach the {@link JobStep} to
+     * @param jobStep   Provides the information for the new {@link JobStep} to be created.
+     * @param jobStepId The ID of the {@link JobStep} to be updated
+     * @return The newly created {@link JobStep} object.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.5.0
      */
     @PUT
@@ -226,10 +226,10 @@ public class JobSteps extends AbstractKapuaResource {
     /**
      * Deletes the JobStep specified by the "stepId" path parameter.
      *
-     * @param scopeId        The ScopeId of the requested {@link JobStep}.
-     * @param stepId         The id of the JobStep to be deleted.
-     * @return               HTTP 201 if operation has completed successfully.
-     * @throws               KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @param scopeId The ScopeId of the requested {@link JobStep}.
+     * @param stepId  The id of the JobStep to be deleted.
+     * @return HTTP 201 if operation has completed successfully.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.5.0
      */
     @DELETE

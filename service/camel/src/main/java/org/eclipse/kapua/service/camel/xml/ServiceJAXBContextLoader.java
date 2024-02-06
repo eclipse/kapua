@@ -23,25 +23,21 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Jaxb context loader
- *
  */
 public class ServiceJAXBContextLoader {
 
     protected static final Logger logger = LoggerFactory.getLogger(ServiceJAXBContextLoader.class);
 
-    private static final String JAXB_CONTEXT_CLASS_NAME;
-
-    static {
-        ServiceSetting config = ServiceSetting.getInstance();
-        JAXB_CONTEXT_CLASS_NAME = config.getString(ServiceSettingKey.JAXB_CONTEXT_CLASS_NAME);
-    }
+    private final String jaxbContextClassName;
 
     public ServiceJAXBContextLoader() throws KapuaException {
+        ServiceSetting config = ServiceSetting.getInstance();
+        jaxbContextClassName = config.getString(ServiceSettingKey.JAXB_CONTEXT_CLASS_NAME);
     }
 
     public void init() throws KapuaException {
         logger.info(">>> Jaxb context loader... load context");
-        JAXBContextProvider jaxbContextProvider = ClassUtil.newInstance(JAXB_CONTEXT_CLASS_NAME, null);
+        JAXBContextProvider jaxbContextProvider = ClassUtil.newInstance(jaxbContextClassName, null);
         XmlUtil.setContextProvider(jaxbContextProvider);
         logger.info(">>> Jaxb context loader... load context DONE");
     }

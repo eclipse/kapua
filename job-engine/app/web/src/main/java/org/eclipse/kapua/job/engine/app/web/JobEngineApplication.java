@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.app.web;
 
-import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.commons.rest.errors.ExceptionConfigurationProvider;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.app.web.jaxb.JobEngineJAXBContextProvider;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.guice.GuiceLocatorImpl;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
@@ -26,14 +26,18 @@ import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.filter.UriConnegFilter;
 import org.glassfish.jersey.server.spi.Container;
 import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
+import org.jvnet.hk2.guice.bridge.api.GuiceBridge;
+import org.jvnet.hk2.guice.bridge.api.GuiceIntoHK2Bridge;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 import javax.ws.rs.core.MediaType;
 import java.util.HashMap;
 
 public class JobEngineApplication extends ResourceConfig {
-
-    private static final String MODULE = "job-engine";
+    private static final SystemSetting SYSTEM_SETTING = SystemSetting.getInstance();
+    private static final Logger LOG = LoggerFactory.getLogger(JobEngineApplication.class);
 
     public JobEngineApplication() {
         register(new AbstractBinder() {
@@ -59,12 +63,15 @@ public class JobEngineApplication extends ResourceConfig {
 
             @Override
             public void onStartup(Container container) {
-                //TODO to be injected!!!
-                CommonsMetric.module = MODULE;
                 ServiceLocator serviceLocator = container.getApplicationHandler().getInjectionManager().getInstance(ServiceLocator.class);
                 JobEngineJAXBContextProvider provider = serviceLocator.createAndInitialize(JobEngineJAXBContextProvider.class);
                 XmlUtil.setContextProvider(provider);
-                KapuaLocator.getInstance().getService(DataPopulatorRunner.class).runPopulators();
+                final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
+                if (kapuaLocator instanceof GuiceLocatorImpl) {
+                    GuiceBridge.getGuiceBridge().initializeGuiceBridge(serviceLocator);
+                    GuiceIntoHK2Bridge guiceBridge = serviceLocator.getService(GuiceIntoHK2Bridge.class);
+                    guiceBridge.bridgeGuiceInjector(((GuiceLocatorImpl) kapuaLocator).getInjector());
+                }
             }
 
             @Override

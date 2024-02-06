@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.datastore.internal.converter;
 import com.fasterxml.jackson.core.Base64Variants;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.message.internal.KapuaPositionImpl;
@@ -43,6 +42,7 @@ import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.Date;
@@ -60,11 +60,16 @@ public class ModelContextImpl implements ModelContext {
 
     private static final Logger logger = LoggerFactory.getLogger(ModelContextImpl.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final StorableIdFactory STORABLE_ID_FACTORY = LOCATOR.getFactory(StorableIdFactory.class);
-
+    private final StorableIdFactory storableIdFactory;
+    private final DatastoreUtils datastoreUtils;
     private static final String UNSUPPORTED_OBJECT_TYPE_ERROR_MSG = "The conversion of object [%s] is not supported!";
     private static final String MARSHAL_INVALID_PARAMETERS_ERROR_MSG = "Object and/or object type cannot be null!";
+
+    @Inject
+    public ModelContextImpl(StorableIdFactory storableIdFactory, DatastoreUtils datastoreUtils) {
+        this.storableIdFactory = storableIdFactory;
+        this.datastoreUtils = datastoreUtils;
+    }
 
     @Override
     public String getIdKeyName() {
@@ -132,7 +137,7 @@ public class ModelContextImpl implements ModelContext {
         StorableFetchStyle fetchStyle = getStorableFetchStyle(messageMap);
         DatastoreMessageImpl message = new DatastoreMessageImpl();
         String id = (String) messageMap.get(getIdKeyName());
-        message.setDatastoreId(STORABLE_ID_FACTORY.newStorableId(id));
+        message.setDatastoreId(storableIdFactory.newStorableId(id));
         String messageId = (String) messageMap.get(MessageSchema.MESSAGE_ID);
         if (messageId != null) {
             message.setId(UUID.fromString(messageId));
@@ -149,7 +154,7 @@ public class ModelContextImpl implements ModelContext {
         message.setDeviceId(deviceId);
         String clientId = (String) messageMap.get(MessageSchema.MESSAGE_CLIENT_ID);
         message.setClientId(clientId);
-        message.setDatastoreId(STORABLE_ID_FACTORY.newStorableId(id));
+        message.setDatastoreId(storableIdFactory.newStorableId(id));
 
         KapuaDataChannelImpl dataChannel = new KapuaDataChannelImpl();
         message.setChannel(dataChannel);
@@ -226,7 +231,7 @@ public class ModelContextImpl implements ModelContext {
                     // since elasticsearch doesn't return always the same type of the saved field
                     // (usually due to some promotion of the field type)
                     // we need to check the metric type returned by elasticsearch and, if needed, convert to the proper type
-                    payloadMetrics.put(DatastoreUtils.restoreMetricName(metricsName), DatastoreUtils.convertToCorrectType(valueTypes[0], value));
+                    payloadMetrics.put(datastoreUtils.restoreMetricName(metricsName), datastoreUtils.convertToCorrectType(valueTypes[0], value));
                 }
             }
             payload.setMetrics(payloadMetrics);
@@ -255,17 +260,17 @@ public class ModelContextImpl implements ModelContext {
         String lastMsgId = (String) metricMap.get(MetricInfoSchema.METRIC_MTR_MSG_ID);
         String clientId = (String) metricInfoMap.get(MetricInfoSchema.METRIC_CLIENT_ID);
         String channel = (String) metricInfoMap.get(MetricInfoSchema.METRIC_CHANNEL);
-        String metricName = DatastoreUtils.restoreMetricName(name);
+        String metricName = datastoreUtils.restoreMetricName(name);
         Date timestamp = KapuaDateUtils.parseDate(lastMsgTimestamp);
 
         MetricInfo metricInfo = new MetricInfoImpl(scopeId);
-        metricInfo.setId(STORABLE_ID_FACTORY.newStorableId(id));
+        metricInfo.setId(storableIdFactory.newStorableId(id));
         metricInfo.setClientId(clientId);
         metricInfo.setChannel(channel);
-        metricInfo.setFirstMessageId(STORABLE_ID_FACTORY.newStorableId(lastMsgId));
+        metricInfo.setFirstMessageId(storableIdFactory.newStorableId(lastMsgId));
         metricInfo.setName(metricName);
         metricInfo.setFirstMessageOn(timestamp);
-        metricInfo.setMetricType(DatastoreUtils.convertToKapuaType(type));
+        metricInfo.setMetricType(datastoreUtils.convertToKapuaType(type));
 
         return metricInfo;
     }
@@ -275,10 +280,10 @@ public class ModelContextImpl implements ModelContext {
         String id = (String) channelInfoMap.get(getIdKeyName());
 
         ChannelInfo channelInfo = new ChannelInfoImpl(scopeId);
-        channelInfo.setId(STORABLE_ID_FACTORY.newStorableId(id));
+        channelInfo.setId(storableIdFactory.newStorableId(id));
         channelInfo.setClientId((String) channelInfoMap.get(ChannelInfoSchema.CHANNEL_CLIENT_ID));
         channelInfo.setName((String) channelInfoMap.get(ChannelInfoSchema.CHANNEL_NAME));
-        channelInfo.setFirstMessageId(STORABLE_ID_FACTORY.newStorableId((String) channelInfoMap.get(ChannelInfoSchema.CHANNEL_MESSAGE_ID)));
+        channelInfo.setFirstMessageId(storableIdFactory.newStorableId((String) channelInfoMap.get(ChannelInfoSchema.CHANNEL_MESSAGE_ID)));
         channelInfo.setFirstMessageOn(KapuaDateUtils.parseDate((String) channelInfoMap.get(ChannelInfoSchema.CHANNEL_TIMESTAMP)));
 
         return channelInfo;
@@ -289,9 +294,9 @@ public class ModelContextImpl implements ModelContext {
         String id = (String) clientInfoMap.get(getIdKeyName());
 
         ClientInfo clientInfo = new ClientInfoImpl(scopeId);
-        clientInfo.setId(STORABLE_ID_FACTORY.newStorableId(id));
+        clientInfo.setId(storableIdFactory.newStorableId(id));
         clientInfo.setClientId((String) clientInfoMap.get(ClientInfoSchema.CLIENT_ID));
-        clientInfo.setFirstMessageId(STORABLE_ID_FACTORY.newStorableId((String) clientInfoMap.get(ClientInfoSchema.CLIENT_MESSAGE_ID)));
+        clientInfo.setFirstMessageId(storableIdFactory.newStorableId((String) clientInfoMap.get(ClientInfoSchema.CLIENT_MESSAGE_ID)));
         clientInfo.setFirstMessageOn(KapuaDateUtils.parseDate((String) clientInfoMap.get(ClientInfoSchema.CLIENT_TIMESTAMP)));
 
         return clientInfo;
@@ -356,11 +361,11 @@ public class ModelContextImpl implements ModelContext {
             for (String kapuaMetricName : metricNames) {
                 Object metricValue = kapuaMetrics.get(kapuaMetricName);
                 // Sanitize field names: '.' is not allowed
-                String metricName = DatastoreUtils.normalizeMetricName(kapuaMetricName);
-                String clientMetricType = DatastoreUtils.getClientMetricFromType(metricValue.getClass());
-                String clientMetricTypeAcronym = DatastoreUtils.getClientMetricFromAcronym(clientMetricType);
+                String metricName = datastoreUtils.normalizeMetricName(kapuaMetricName);
+                String clientMetricType = datastoreUtils.getClientMetricFromType(metricValue.getClass());
+                String clientMetricTypeAcronym = datastoreUtils.getClientMetricFromAcronym(clientMetricType);
                 Map<String, Object> field = new HashMap<>();
-                if (DatastoreUtils.isDateMetric(clientMetricTypeAcronym) && metricValue instanceof Date) {
+                if (datastoreUtils.isDateMetric(clientMetricTypeAcronym) && metricValue instanceof Date) {
                     field.put(clientMetricTypeAcronym, KapuaDateUtils.formatDate((Date) metricValue));
                 } else {
                     field.put(clientMetricTypeAcronym, metricValue);
@@ -402,7 +407,7 @@ public class ModelContextImpl implements ModelContext {
 
         Map<String, Object> unmarshalledMetricValue = new HashMap<>();
         unmarshalledMetricValue.put(MetricInfoSchema.METRIC_MTR_NAME, metricInfo.getName());
-        unmarshalledMetricValue.put(MetricInfoSchema.METRIC_MTR_TYPE, DatastoreUtils.convertToClientMetricType(metricInfo.getMetricType()));
+        unmarshalledMetricValue.put(MetricInfoSchema.METRIC_MTR_TYPE, datastoreUtils.convertToClientMetricType(metricInfo.getMetricType()));
         unmarshalledMetricValue.put(MetricInfoSchema.METRIC_MTR_TIMESTAMP, KapuaDateUtils.formatDate(metricInfo.getFirstMessageOn()));
         unmarshalledMetricValue.put(MetricInfoSchema.METRIC_MTR_MSG_ID, metricInfo.getFirstMessageId().toString());
         unmarshalledMetricInfo.put(MetricInfoSchema.METRIC_MTR, unmarshalledMetricValue);

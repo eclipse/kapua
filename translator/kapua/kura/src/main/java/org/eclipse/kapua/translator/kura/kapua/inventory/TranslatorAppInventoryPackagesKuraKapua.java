@@ -15,10 +15,14 @@ package org.eclipse.kapua.translator.kura.kapua.inventory;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.packages.KuraInventoryPackages;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
+import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
 import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryPackagesResponseMessage;
 import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryResponsePayload;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
+
+import javax.inject.Inject;
 
 /**
  * {@link Translator} implementation from {@link KuraResponseMessage} to {@link InventoryPackagesResponseMessage}
@@ -32,8 +36,9 @@ public class TranslatorAppInventoryPackagesKuraKapua extends AbstractTranslatorA
      *
      * @since 1.5.0
      */
-    public TranslatorAppInventoryPackagesKuraKapua() {
-        super(InventoryPackagesResponseMessage.class);
+    @Inject
+    public TranslatorAppInventoryPackagesKuraKapua(DeviceManagementSetting deviceManagementSetting, DeviceInventoryManagementFactory deviceInventoryManagementFactory) {
+        super(deviceManagementSetting, deviceInventoryManagementFactory, InventoryPackagesResponseMessage.class);
     }
 
     @Override

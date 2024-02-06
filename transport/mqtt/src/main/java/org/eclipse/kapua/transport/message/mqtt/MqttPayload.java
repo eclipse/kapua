@@ -27,6 +27,7 @@ import java.util.Base64;
  */
 public class MqttPayload implements TransportPayload {
 
+    //TODO: FIXME: REMOVE: A collaborator in a data class? Behaviour should not be part of a data class!
     private static final int BODY_TOSTRING_LENGTH = MqttClientSetting.getInstance().getInt(MqttClientSettingKeys.PAYLOAD_TOSTRING_LENGTH, 64);
 
     /**

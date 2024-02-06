@@ -39,15 +39,16 @@ public class DeviceManagementSnapshotModule extends AbstractKapuaModule {
             DeviceEventService deviceEventService,
             DeviceEventFactory deviceEventFactory,
             DeviceRegistryService deviceRegistryService,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            DeviceSnapshotFactory deviceSnapshotFactory) {
         return new DeviceSnapshotManagementServiceImpl(
                 jpaTxManagerFactory.create("kapua-device_management_operation_registry"),
                 authorizationService,
                 permissionFactory,
                 deviceEventService,
                 deviceEventFactory,
-                deviceRegistryService
-        );
+                deviceRegistryService,
+                deviceSnapshotFactory);
 
     }
 

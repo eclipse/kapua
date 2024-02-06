@@ -29,10 +29,12 @@ import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
  */
 public class MetricExistsPredicateImpl extends ExistsPredicateImpl implements MetricExistsPredicate {
 
+    private final DatastoreUtils datastoreUtils;
     private Class<?> type;
 
-    public <V extends Comparable<V>> MetricExistsPredicateImpl(String fieldName, Class<V> type) {
+    public <V extends Comparable<V>> MetricExistsPredicateImpl(String fieldName, Class<V> type, DatastoreUtils datastoreUtils) {
         super(fieldName);
+        this.datastoreUtils = datastoreUtils;
 
         setType(type);
     }
@@ -67,11 +69,11 @@ public class MetricExistsPredicateImpl extends ExistsPredicateImpl implements Me
 
         fieldNameSb.append(MessageField.METRICS.field())
                 .append(".")
-                .append(DatastoreUtils.normalizeMetricName(getName()));
+                .append(datastoreUtils.normalizeMetricName(getName()));
 
         if (getType() != null) {
             fieldNameSb.append(".")
-                    .append(DatastoreUtils.getClientMetricFromAcronym(type.getSimpleName().toLowerCase()));
+                    .append(datastoreUtils.getClientMetricFromAcronym(type.getSimpleName().toLowerCase()));
         }
 
         ObjectNode termNode = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(PredicateConstants.FIELD_KEY, fieldNameSb.toString())});

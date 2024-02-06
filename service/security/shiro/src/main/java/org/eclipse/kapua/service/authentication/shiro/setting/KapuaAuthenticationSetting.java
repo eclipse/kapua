@@ -26,23 +26,10 @@ public class KapuaAuthenticationSetting extends AbstractKapuaSetting<KapuaAuthen
 
     private static final String AUTHENTICATION_CONFIG_RESOURCE = "kapua-authentication-setting.properties";
 
-    private static final KapuaAuthenticationSetting INSTANCE = new KapuaAuthenticationSetting();
-
     /**
      * Construct a new authentication setting reading settings from {@link KapuaAuthenticationSetting#AUTHENTICATION_CONFIG_RESOURCE}
      */
     public KapuaAuthenticationSetting() {
         super(AUTHENTICATION_CONFIG_RESOURCE);
-    }
-
-    /**
-     * Return the authentication setting instance (singleton)
-     *
-     * @return the authentication setting instance (singleton)
-     * @deprecated since 2.0.0 - Please use {@link KapuaAuthenticationSetting#KapuaAuthenticationSetting()} instead. This might be removed in future releases
-     */
-    @Deprecated
-    public static KapuaAuthenticationSetting getInstance() {
-        return INSTANCE;
     }
 }

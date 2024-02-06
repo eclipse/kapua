@@ -17,7 +17,6 @@ import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
@@ -30,6 +29,7 @@ import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerStatus;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -43,10 +43,10 @@ import javax.ws.rs.core.MediaType;
 @Path("{scopeId}/jobs/{jobId}/triggers/{triggerId}/fired")
 public class JobTriggersFired extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-
-    private final FiredTriggerService firedTriggerService = locator.getService(FiredTriggerService.class);
-    private final FiredTriggerFactory firedTriggerFactory = locator.getFactory(FiredTriggerFactory.class);
+    @Inject
+    public FiredTriggerService firedTriggerService;
+    @Inject
+    public FiredTriggerFactory firedTriggerFactory;
 
     /**
      * Gets the {@link Trigger} list for a given {@link Job}.

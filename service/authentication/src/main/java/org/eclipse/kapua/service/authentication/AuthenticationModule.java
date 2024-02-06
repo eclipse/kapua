@@ -18,10 +18,14 @@ import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.domain.DomainEntry;
+import org.eclipse.kapua.service.authentication.setting.ServiceAuthenticationSetting;
+
+import javax.inject.Singleton;
 
 public class AuthenticationModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
+        bind(ServiceAuthenticationSetting.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet

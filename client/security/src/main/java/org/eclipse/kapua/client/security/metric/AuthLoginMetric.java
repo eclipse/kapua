@@ -12,13 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security.metric;
 
-import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-import com.codahale.metrics.Counter;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
+@Singleton
 public class AuthLoginMetric {
 
     private static final String CONNECT = "connect";
@@ -32,14 +33,14 @@ public class AuthLoginMetric {
     private Counter stealingLinkDisconnect;
     private Counter illegalStateDisconnect;
 
-    public AuthLoginMetric(String type) {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
-        connected = metricsService.getCounter(CommonsMetric.module, type, CONNECT);
-        attempt = metricsService.getCounter(CommonsMetric.module, type, MetricsLabel.ATTEMPT);
-        disconnected = metricsService.getCounter(CommonsMetric.module, type, AuthMetric.DISCONNECT);
-        stealingLinkConnect = metricsService.getCounter(CommonsMetric.module, type, STEALING_LINK, CONNECT);
-        stealingLinkDisconnect = metricsService.getCounter(CommonsMetric.module, type, STEALING_LINK, AuthMetric.DISCONNECT);
-        illegalStateDisconnect = metricsService.getCounter(CommonsMetric.module, type, ILLEGAL_STATE, AuthMetric.DISCONNECT);
+    public AuthLoginMetric(@Named("metricModuleName")
+    String metricModuleName, MetricsService metricsService, String type) {
+        connected = metricsService.getCounter(metricModuleName, type, CONNECT);
+        attempt = metricsService.getCounter(metricModuleName, type, MetricsLabel.ATTEMPT);
+        disconnected = metricsService.getCounter(metricModuleName, type, AuthMetric.DISCONNECT);
+        stealingLinkConnect = metricsService.getCounter(metricModuleName, type, STEALING_LINK, CONNECT);
+        stealingLinkDisconnect = metricsService.getCounter(metricModuleName, type, STEALING_LINK, AuthMetric.DISCONNECT);
+        illegalStateDisconnect = metricsService.getCounter(metricModuleName, type, ILLEGAL_STATE, AuthMetric.DISCONNECT);
     }
 
     public Counter getAttempt() {

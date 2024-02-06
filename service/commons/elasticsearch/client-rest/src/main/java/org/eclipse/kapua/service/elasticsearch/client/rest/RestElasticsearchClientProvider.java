@@ -14,6 +14,7 @@
 package org.eclipse.kapua.service.elasticsearch.client.rest;
 
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
@@ -57,7 +58,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
@@ -88,13 +88,18 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     private ScheduledExecutorService reconnectExecutorTask;
 
     private MetricsEsClient metrics;
+    private boolean initialized;
 
-    public RestElasticsearchClientProvider() {
-        metrics = MetricsEsClient.getInstance();
+    @Inject
+    public RestElasticsearchClientProvider(MetricsEsClient metricsEsClient) {
+        this.metrics = metricsEsClient;
     }
 
     @Override
     public RestElasticsearchClientProvider init() throws ClientProviderInitException {
+        if (initialized) {
+            return this;
+        }
         synchronized (RestElasticsearchClientProvider.class) {
             if (elasticsearchClientConfiguration == null) {
                 throw new ClientProviderInitException("Client configuration not defined");
@@ -176,7 +181,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
                     LOG.info(">>> Initializing Elasticsearch REST client... Connecting... Error: {}", e.getMessage(), e);
                 }
             }, getClientReconnectConfiguration().getReconnectDelay(), getClientReconnectConfiguration().getReconnectDelay(), TimeUnit.MILLISECONDS);
-
+            initialized = true;
             return this;
         }
     }
@@ -269,20 +274,41 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
 
         boolean sslEnabled = clientConfiguration.getSslConfiguration().isEnabled();
         LOG.info("ES Rest Client - SSL Layer: {}", (sslEnabled ? "Enabled" : "Disabled "));
-        List<HttpHost> hosts = new ArrayList<>();
+        List<HttpHost> hosts;
         try {
-            InetAddressParser
+            hosts = InetAddressParser
                     .parseAddresses(clientConfiguration.getNodes())
                     .stream()
-                    .map(inetSocketAddress ->
-                            new HttpHost(
-                                    inetSocketAddress.getAddress(),
-                                    inetSocketAddress.getHostName(),
-                                    inetSocketAddress.getPort(),
-                                    (sslEnabled ? "https" : "http"))
+                    .peek(inetSocketAddress -> LOG.info("Evaluating address: {}", inetSocketAddress))
+                    .filter(inetSocketAddress -> {
+                        if (inetSocketAddress == null) {
+                            LOG.warn("Null Inet Socket Address! Skipping...");
+                            return false;
+                        }
+                        return true;
+                    }).filter(inetSocketAddress -> {
+                        if (inetSocketAddress.getAddress() == null) {
+                            LOG.warn("Invalid Inet Socket Address! Skipping...");
+                            return false;
+                        }
+                        return true;
+                    }).filter(inetSocketAddress -> {
+                        if (inetSocketAddress.getHostName() == null) {
+                            LOG.warn("Invalid Inet Socket hostname! Skipping...");
+                            return false;
+                        }
+                        return true;
+                    })
+                    .map(inetSocketAddress -> {
+                                LOG.info("Inet Socket Address: {}", inetSocketAddress);
+                                return new HttpHost(
+                                        inetSocketAddress.getAddress(),
+                                        inetSocketAddress.getHostName(),
+                                        inetSocketAddress.getPort(),
+                                        (sslEnabled ? "https" : "http"));
+                            }
                     )
-                    .collect(Collectors.toCollection(() -> hosts));
-
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             throw new ClientInitializationException(e, "Error while parsing node addresses!");
         }
@@ -319,7 +345,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
         RestClient restClient = restClientBuilder.build();
 
         // Init Kapua Elasticsearch Client
-        restElasticsearchClient = new RestElasticsearchClient();
+        restElasticsearchClient = new RestElasticsearchClient(metrics);
         restElasticsearchClient
                 .withClientConfiguration(clientConfiguration)
                 .withModelContext(modelContext)
@@ -387,7 +413,8 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     }
 
     @Override
-    public RestElasticsearchClient getElasticsearchClient() throws ClientUnavailableException {
+    public RestElasticsearchClient getElasticsearchClient() throws ClientUnavailableException, ClientProviderInitException {
+        this.init();
         if (restElasticsearchClient == null) {
             throw new ClientUnavailableException("Client not initialized");
         }

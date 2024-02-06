@@ -27,8 +27,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  */
 public class DeviceAssetChannelXmlAdapter extends XmlAdapter<XmlAdaptedDeviceAssetChannel, DeviceAssetChannel> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final DeviceAssetFactory DEVICE_ASSET_FACTORY = LOCATOR.getFactory(DeviceAssetFactory.class);
+    private final DeviceAssetFactory deviceAssetFactory = KapuaLocator.getInstance().getFactory(DeviceAssetFactory.class);
 
     @Override
     public XmlAdaptedDeviceAssetChannel marshal(DeviceAssetChannel deviceAssetChannel) throws Exception {
@@ -47,7 +46,7 @@ public class DeviceAssetChannelXmlAdapter extends XmlAdapter<XmlAdaptedDeviceAss
     @Override
     public DeviceAssetChannel unmarshal(XmlAdaptedDeviceAssetChannel xmlAdaptedDeviceAssetChannel) throws Exception {
 
-        DeviceAssetChannel adaptedDeviceAssetChannel = DEVICE_ASSET_FACTORY.newDeviceAssetChannel();
+        DeviceAssetChannel adaptedDeviceAssetChannel = deviceAssetFactory.newDeviceAssetChannel();
         adaptedDeviceAssetChannel.setName(xmlAdaptedDeviceAssetChannel.getName());
         adaptedDeviceAssetChannel.setType(xmlAdaptedDeviceAssetChannel.getValueType());
         adaptedDeviceAssetChannel.setValue(ObjectValueConverter.fromString(xmlAdaptedDeviceAssetChannel.getValue(), adaptedDeviceAssetChannel.getType()));

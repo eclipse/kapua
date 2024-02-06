@@ -12,20 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.web;
 
-import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSetting;
-import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSettingKeys;
 import org.eclipse.kapua.commons.rest.errors.ExceptionConfigurationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 @Singleton
 public class ExceptionConfigurationProviderImpl implements ExceptionConfigurationProvider {
-    private final boolean showStackTrace = KapuaApiCoreSetting.getInstance().getBoolean(KapuaApiCoreSettingKeys.API_EXCEPTION_STACKTRACE_SHOW, false);
+    private final boolean showStackTrace;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public ExceptionConfigurationProviderImpl() {
+    public ExceptionConfigurationProviderImpl(@Named("showStackTrace") Boolean showStackTrace) {
+        this.showStackTrace = showStackTrace;
         logger.debug("Initialized with showStackTrace={}", showStackTrace);
     }
 

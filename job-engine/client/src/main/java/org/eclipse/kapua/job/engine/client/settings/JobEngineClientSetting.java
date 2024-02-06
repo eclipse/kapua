@@ -28,23 +28,9 @@ public class JobEngineClientSetting extends AbstractKapuaSetting<JobEngineClient
     private static final String JOB_ENGINE_SETTING_RESOURCE = "job-engine-client-setting.properties";
 
     /**
-     * Singleton instance of this {@link Class}.
-     */
-    private static final JobEngineClientSetting INSTANCE = new JobEngineClientSetting();
-
-    /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link JobEngineClientSetting#JOB_ENGINE_SETTING_RESOURCE} value.
      */
-    private JobEngineClientSetting() {
+    public JobEngineClientSetting() {
         super(JOB_ENGINE_SETTING_RESOURCE);
-    }
-
-    /**
-     * Gets a singleton instance of {@link JobEngineClientSetting}.
-     *
-     * @return A singleton instance of JmsClientSetting.
-     */
-    public static JobEngineClientSetting getInstance() {
-        return INSTANCE;
     }
 }

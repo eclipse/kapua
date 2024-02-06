@@ -18,7 +18,7 @@ import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobContextWrapper;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.job.engine.commons.wrappers.StepContextWrapper;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
@@ -55,16 +55,16 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultTargetReader.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
-
-    private final JobTargetFactory jobTargetFactory = LOCATOR.getFactory(JobTargetFactory.class);
-    private final JobTargetService jobTargetService = LOCATOR.getService(JobTargetService.class);
-
+    @Inject
+    private DeviceRegistryService deviceRegistryService;
+    @Inject
+    private JobTargetFactory jobTargetFactory;
+    @Inject
+    private JobTargetService jobTargetService;
+    @Inject
+    KapuaIdFactory kapuaIdFactory;
     @Inject
     private JobContext jobContext;
-
     @Inject
     private StepContext stepContext;
 
@@ -74,7 +74,7 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
     @Override
     public void open(Serializable arg0) throws Exception {
         JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
-        StepContextWrapper stepContextWrapper = new StepContextWrapper(stepContext);
+        StepContextWrapper stepContextWrapper = new StepContextWrapper(kapuaIdFactory, stepContext);
 
         JobLogger jobLogger = jobContextWrapper.getJobLogger();
         jobLogger.setClassLog(LOG);
@@ -168,7 +168,7 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
     }
 
     protected String getTargetDisplayName(JobTarget jobTarget) throws KapuaException {
-        Device device = KapuaSecurityUtils.doPrivileged(() -> DEVICE_REGISTRY_SERVICE.find(jobTarget.getScopeId(), jobTarget.getJobTargetId()));
+        Device device = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.find(jobTarget.getScopeId(), jobTarget.getJobTargetId()));
         if (device == null) {
             return "N/A";
         }

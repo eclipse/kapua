@@ -24,19 +24,18 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class DataMessageXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final KapuaDataMessageFactory KAPUA_DATA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaDataMessageFactory.class);
+    private final KapuaDataMessageFactory kapuaDataMessageFactory = KapuaLocator.getInstance().getFactory(KapuaDataMessageFactory.class);
 
     public KapuaDataMessage newKapuaDataMessage() {
-        return KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataMessage();
+        return kapuaDataMessageFactory.newKapuaDataMessage();
     }
 
     public KapuaDataChannel newKapuaDataChannel() {
-        return KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataChannel();
+        return kapuaDataMessageFactory.newKapuaDataChannel();
     }
 
     public KapuaDataPayload newKapuaDataPayload() {
-        return KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload();
+        return kapuaDataMessageFactory.newKapuaDataPayload();
     }
 
 }

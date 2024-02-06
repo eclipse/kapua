@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.SnapshotMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
@@ -29,6 +29,7 @@ import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
+import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -38,16 +39,18 @@ import java.util.List;
  */
 public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<SnapshotResponseChannel, SnapshotResponsePayload, SnapshotResponseMessage> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private final DeviceSnapshotFactory deviceSnapshotFactory;
 
-    public TranslatorAppSnapshotKuraKapua() {
-        super(SnapshotResponseMessage.class, SnapshotResponsePayload.class);
+    @Inject
+    public TranslatorAppSnapshotKuraKapua(DeviceManagementSetting deviceManagementSetting, DeviceSnapshotFactory deviceSnapshotFactory) {
+        super(deviceManagementSetting, SnapshotResponseMessage.class, SnapshotResponsePayload.class);
+        this.deviceSnapshotFactory = deviceSnapshotFactory;
     }
 
     @Override
     protected SnapshotResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
         try {
-            TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, SnapshotMetrics.APP_ID, SnapshotMetrics.APP_VERSION);
+            translatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, SnapshotMetrics.APP_ID, SnapshotMetrics.APP_VERSION);
 
             return new SnapshotResponseChannel();
         } catch (Exception e) {
@@ -82,7 +85,6 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
      * @since 1.0.0
      */
     private DeviceSnapshots translate(KuraSnapshotIds kuraSnapshotIdResult) {
-        DeviceSnapshotFactory deviceSnapshotFactory = LOCATOR.getFactory(DeviceSnapshotFactory.class);
         DeviceSnapshots deviceSnapshots = deviceSnapshotFactory.newDeviceSnapshots();
 
         List<Long> snapshotIds = kuraSnapshotIdResult.getSnapshotIds();

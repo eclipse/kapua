@@ -13,7 +13,6 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
@@ -46,6 +45,7 @@ import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
 
+import javax.inject.Inject;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,32 +57,34 @@ import java.util.Map;
  */
 public class TranslatorAppNotifyKuraKapua extends Translator<KuraNotifyMessage, KapuaNotifyMessage> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    @Inject
+    private AccountService accountService;
+    @Inject
+    private DeviceRegistryService deviceRegistryService;
+    @Inject
+    private KapuaIdFactory kapuaIdFactory;
+    @Inject
+    private TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
 
-    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
-    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+    private final Map<String, KapuaAppProperties> appNameDictionary;
+    private final Map<String, KapuaAppProperties> appVersionDictionary;
 
-    private static final KapuaIdFactory KAPUA_ID_FACTORY = LOCATOR.getFactory(KapuaIdFactory.class);
+    public TranslatorAppNotifyKuraKapua() {
+        appNameDictionary = new HashMap<>();
 
-    private static final Map<String, KapuaAppProperties> APP_NAME_DICTIONARY;
-    private static final Map<String, KapuaAppProperties> APP_VERSION_DICTIONARY;
+        appNameDictionary.put(AssetMetrics.APP_ID.getName(), DeviceAssetAppProperties.APP_NAME);
+        appNameDictionary.put(BundleMetrics.APP_ID.getName(), DeviceBundleAppProperties.APP_NAME);
+        appNameDictionary.put(CommandMetrics.APP_ID.getName(), CommandAppProperties.APP_NAME);
+        appNameDictionary.put(ConfigurationMetrics.APP_ID.getName(), DeviceConfigurationAppProperties.APP_NAME);
+        appNameDictionary.put(PackageMetrics.APP_ID.getName(), PackageAppProperties.APP_NAME);
 
-    static {
-        APP_NAME_DICTIONARY = new HashMap<>();
+        appVersionDictionary = new HashMap<>();
 
-        APP_NAME_DICTIONARY.put(AssetMetrics.APP_ID.getName(), DeviceAssetAppProperties.APP_NAME);
-        APP_NAME_DICTIONARY.put(BundleMetrics.APP_ID.getName(), DeviceBundleAppProperties.APP_NAME);
-        APP_NAME_DICTIONARY.put(CommandMetrics.APP_ID.getName(), CommandAppProperties.APP_NAME);
-        APP_NAME_DICTIONARY.put(ConfigurationMetrics.APP_ID.getName(), DeviceConfigurationAppProperties.APP_NAME);
-        APP_NAME_DICTIONARY.put(PackageMetrics.APP_ID.getName(), PackageAppProperties.APP_NAME);
-
-        APP_VERSION_DICTIONARY = new HashMap<>();
-
-        APP_VERSION_DICTIONARY.put(AssetMetrics.APP_ID.getName(), DeviceAssetAppProperties.APP_VERSION);
-        APP_VERSION_DICTIONARY.put(BundleMetrics.APP_ID.getName(), DeviceBundleAppProperties.APP_VERSION);
-        APP_VERSION_DICTIONARY.put(CommandMetrics.APP_ID.getName(), CommandAppProperties.APP_VERSION);
-        APP_VERSION_DICTIONARY.put(ConfigurationMetrics.APP_ID.getName(), DeviceConfigurationAppProperties.APP_VERSION);
-        APP_VERSION_DICTIONARY.put(PackageMetrics.APP_ID.getName(), PackageAppProperties.APP_VERSION);
+        appVersionDictionary.put(AssetMetrics.APP_ID.getName(), DeviceAssetAppProperties.APP_VERSION);
+        appVersionDictionary.put(BundleMetrics.APP_ID.getName(), DeviceBundleAppProperties.APP_VERSION);
+        appVersionDictionary.put(CommandMetrics.APP_ID.getName(), CommandAppProperties.APP_VERSION);
+        appVersionDictionary.put(ConfigurationMetrics.APP_ID.getName(), DeviceConfigurationAppProperties.APP_VERSION);
+        appVersionDictionary.put(PackageMetrics.APP_ID.getName(), PackageAppProperties.APP_VERSION);
     }
 
     @Override
@@ -93,12 +95,12 @@ public class TranslatorAppNotifyKuraKapua extends Translator<KuraNotifyMessage, 
             kapuaNotifyMessage.setChannel(translate(kuraNotifyMessage.getChannel()));
             kapuaNotifyMessage.setPayload(translate(kuraNotifyMessage.getPayload()));
 
-            Account account = ACCOUNT_SERVICE.findByName(kuraNotifyMessage.getChannel().getScope());
+            Account account = accountService.findByName(kuraNotifyMessage.getChannel().getScope());
             if (account == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraNotifyMessage.getChannel().getScope());
             }
 
-            Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), kuraNotifyMessage.getChannel().getClientId());
+            Device device = deviceRegistryService.findByClientId(account.getId(), kuraNotifyMessage.getChannel().getClientId());
             if (device == null) {
                 throw new KapuaEntityNotFoundException(Device.class.toString(), kuraNotifyMessage.getChannel().getClientId());
             }
@@ -108,7 +110,7 @@ public class TranslatorAppNotifyKuraKapua extends Translator<KuraNotifyMessage, 
             kapuaNotifyMessage.setCapturedOn(kuraNotifyMessage.getPayload().getTimestamp());
             kapuaNotifyMessage.setSentOn(kuraNotifyMessage.getPayload().getTimestamp());
             kapuaNotifyMessage.setReceivedOn(kuraNotifyMessage.getTimestamp());
-            kapuaNotifyMessage.setPosition(TranslatorKuraKapuaUtils.translate(kuraNotifyMessage.getPayload().getPosition()));
+            kapuaNotifyMessage.setPosition(translatorKuraKapuaUtils.translate(kuraNotifyMessage.getPayload().getPosition()));
 
             return kapuaNotifyMessage;
         } catch (InvalidChannelException | InvalidPayloadException te) {
@@ -124,8 +126,8 @@ public class TranslatorAppNotifyKuraKapua extends Translator<KuraNotifyMessage, 
             String kuraAppIdVersion = kuraNotifyChannel.getAppId().split("-")[1];
 
             KapuaNotifyChannel kapuaNotifyChannel = new KapuaNotifyChannelImpl();
-            kapuaNotifyChannel.setAppName(APP_NAME_DICTIONARY.get(kuraAppIdName));
-            kapuaNotifyChannel.setVersion(APP_VERSION_DICTIONARY.get(kuraAppIdVersion));
+            kapuaNotifyChannel.setAppName(appNameDictionary.get(kuraAppIdName));
+            kapuaNotifyChannel.setVersion(appVersionDictionary.get(kuraAppIdVersion));
             kapuaNotifyChannel.setResources(kuraNotifyChannel.getResources());
 
             return kapuaNotifyChannel;
@@ -138,7 +140,7 @@ public class TranslatorAppNotifyKuraKapua extends Translator<KuraNotifyMessage, 
         try {
             KapuaNotifyPayload kapuaNotifyPayload = new KapuaNotifyPayloadImpl();
 
-            kapuaNotifyPayload.setOperationId(KAPUA_ID_FACTORY.newKapuaId(new BigInteger(kuraNotifyPayload.getOperationId().toString())));
+            kapuaNotifyPayload.setOperationId(kapuaIdFactory.newKapuaId(new BigInteger(kuraNotifyPayload.getOperationId().toString())));
             kapuaNotifyPayload.setResource(kuraNotifyPayload.getResource());
             kapuaNotifyPayload.setProgress(kuraNotifyPayload.getProgress());
 

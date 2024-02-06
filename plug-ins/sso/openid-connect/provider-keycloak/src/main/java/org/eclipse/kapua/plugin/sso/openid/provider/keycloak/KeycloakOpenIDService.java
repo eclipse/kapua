@@ -26,37 +26,40 @@ public class KeycloakOpenIDService extends AbstractOpenIDService {
     private static final String KEYCLOAK_TOKEN_URI_SUFFIX = "/protocol/openid-connect/token";
     private static final String KEYCLOAK_USERINFO_URI_SUFFIX = "/protocol/openid-connect/userinfo";
     private static final String KEYCLOAK_LOGOUT_URI_SUFFIX = "/protocol/openid-connect/logout";
+    private final KeycloakOpenIDUtils keycloakOpenIDUtils;
 
-    public KeycloakOpenIDService() {
-        this(OpenIDSetting.getInstance());
-    }
-
-    public KeycloakOpenIDService(final OpenIDSetting ssoSettings) {
+    public KeycloakOpenIDService(final OpenIDSetting ssoSettings,
+                                 KeycloakOpenIDUtils keycloakOpenIDUtils) {
         super(ssoSettings);
+        this.keycloakOpenIDUtils = keycloakOpenIDUtils;
     }
 
     @Override
     protected String getAuthUri() throws OpenIDIllegalArgumentException {
-        return KeycloakOpenIDUtils.getProviderUri() + KeycloakOpenIDUtils.KEYCLOAK_URI_COMMON_PART +
-                KeycloakOpenIDUtils.getRealm() + KEYCLOAK_AUTH_URI_SUFFIX;
+        return keycloakOpenIDUtils.getProviderUri() + keycloakOpenIDUtils.KEYCLOAK_URI_COMMON_PART +
+                keycloakOpenIDUtils.getRealm() + KEYCLOAK_AUTH_URI_SUFFIX;
     }
 
     @Override
     protected String getLogoutUri() throws OpenIDIllegalArgumentException {
-        return KeycloakOpenIDUtils.getProviderUri() + KeycloakOpenIDUtils.KEYCLOAK_URI_COMMON_PART +
-                KeycloakOpenIDUtils.getRealm() + KEYCLOAK_LOGOUT_URI_SUFFIX;
+        return keycloakOpenIDUtils.getProviderUri() + keycloakOpenIDUtils.KEYCLOAK_URI_COMMON_PART +
+                keycloakOpenIDUtils.getRealm() + KEYCLOAK_LOGOUT_URI_SUFFIX;
     }
 
     @Override
     protected String getTokenUri() throws OpenIDIllegalArgumentException {
-        return KeycloakOpenIDUtils.getProviderUri() + KeycloakOpenIDUtils.KEYCLOAK_URI_COMMON_PART +
-                KeycloakOpenIDUtils.getRealm() + KEYCLOAK_TOKEN_URI_SUFFIX;
+        return keycloakOpenIDUtils.getProviderUri() + keycloakOpenIDUtils.KEYCLOAK_URI_COMMON_PART +
+                keycloakOpenIDUtils.getRealm() + KEYCLOAK_TOKEN_URI_SUFFIX;
     }
 
     @Override
     protected String getUserInfoUri() throws OpenIDIllegalArgumentException {
-        return KeycloakOpenIDUtils.getProviderUri() + KeycloakOpenIDUtils.KEYCLOAK_URI_COMMON_PART +
-                KeycloakOpenIDUtils.getRealm() + KEYCLOAK_USERINFO_URI_SUFFIX;
+        return keycloakOpenIDUtils.getProviderUri() + keycloakOpenIDUtils.KEYCLOAK_URI_COMMON_PART +
+                keycloakOpenIDUtils.getRealm() + KEYCLOAK_USERINFO_URI_SUFFIX;
     }
 
+    @Override
+    public String getId() {
+        return "keycloak";
+    }
 }

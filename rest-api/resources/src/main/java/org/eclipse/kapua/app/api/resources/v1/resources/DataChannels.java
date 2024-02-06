@@ -12,16 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
-import java.util.Collections;
-
 import com.google.common.base.Strings;
-
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.model.StorableEntityId;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.datastore.ChannelInfoFactory;
@@ -38,6 +34,7 @@ import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -47,28 +44,31 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import java.util.Collections;
 
 @Path("{scopeId}/data/channels")
 public class DataChannels extends AbstractKapuaResource {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final ChannelInfoRegistryService CHANNEL_INFO_REGISTRY_SERVICE = LOCATOR.getService(ChannelInfoRegistryService.class);
-    private static final ChannelInfoFactory CHANNEL_INFO_FACTORY = LOCATOR.getFactory(ChannelInfoFactory.class);
-    private static final DatastorePredicateFactory DATASTORE_PREDICATE_FACTORY = LOCATOR.getFactory(DatastorePredicateFactory.class);
+    @Inject
+    public ChannelInfoRegistryService channelInfoRegistryService;
+    @Inject
+    public ChannelInfoFactory channelInfoFactory;
+    @Inject
+    public DatastorePredicateFactory datastorePredicateFactory;
 
     /**
      * Gets the {@link ChannelInfo} list in the scope.
      *
-     * @param scopeId       The {@link ScopeId} in which to search results.
-     * @param clientId      The client id to filter results.
-     * @param name          The channel name to filter results. It allows '#' wildcard in last channel level
-     * @param sortParam     The name of the parameter that will be used as a sorting key
-     * @param sortDir       The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
-     * @param offset        The result set offset.
-     * @param limit         The result set limit.
-     * @return              The {@link ChannelInfoListResult} of all the channelInfos associated to the current selected scope.
-     * @throws              KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
-     * @since               1.0.0
+     * @param scopeId   The {@link ScopeId} in which to search results.
+     * @param clientId  The client id to filter results.
+     * @param name      The channel name to filter results. It allows '#' wildcard in last channel level
+     * @param sortParam The name of the parameter that will be used as a sorting key
+     * @param sortDir   The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
+     * @param offset    The result set offset.
+     * @param limit     The result set limit.
+     * @return The {@link ChannelInfoListResult} of all the channelInfos associated to the current selected scope.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -80,9 +80,9 @@ public class DataChannels extends AbstractKapuaResource {
                                              @QueryParam("offset") @DefaultValue("0") int offset,
                                              @QueryParam("limit") @DefaultValue("50") int limit)
             throws KapuaException {
-        AndPredicate andPredicate = DATASTORE_PREDICATE_FACTORY.newAndPredicate();
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
         if (!Strings.isNullOrEmpty(clientId)) {
-            TermPredicate clientIdPredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
+            TermPredicate clientIdPredicate = datastorePredicateFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientIdPredicate);
         }
 
@@ -91,7 +91,7 @@ public class DataChannels extends AbstractKapuaResource {
             andPredicate.getPredicates().add(channelPredicate);
         }
 
-        ChannelInfoQuery query = CHANNEL_INFO_FACTORY.newQuery(scopeId);
+        ChannelInfoQuery query = channelInfoFactory.newQuery(scopeId);
         query.setPredicate(andPredicate);
         query.setOffset(offset);
         query.setLimit(limit);
@@ -120,7 +120,7 @@ public class DataChannels extends AbstractKapuaResource {
             throws KapuaException {
         query.setScopeId(scopeId);
         query.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
-        return CHANNEL_INFO_REGISTRY_SERVICE.query(query);
+        return channelInfoRegistryService.query(query);
     }
 
     /**
@@ -141,7 +141,7 @@ public class DataChannels extends AbstractKapuaResource {
             throws KapuaException {
         query.setScopeId(scopeId);
 
-        return new CountResult(CHANNEL_INFO_REGISTRY_SERVICE.count(query));
+        return new CountResult(channelInfoRegistryService.count(query));
     }
 
     /**
@@ -158,7 +158,7 @@ public class DataChannels extends AbstractKapuaResource {
     public ChannelInfo find(@PathParam("scopeId") ScopeId scopeId,
                             @PathParam("channelInfoId") StorableEntityId channelInfoId)
             throws KapuaException {
-        ChannelInfo channelInfo = CHANNEL_INFO_REGISTRY_SERVICE.find(scopeId, channelInfoId);
+        ChannelInfo channelInfo = channelInfoRegistryService.find(scopeId, channelInfoId);
 
         return returnNotNullEntity(channelInfo);
     }

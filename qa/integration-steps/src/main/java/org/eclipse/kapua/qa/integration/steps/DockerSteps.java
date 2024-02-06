@@ -37,7 +37,6 @@ import com.spotify.docker.client.messages.PortBinding;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-
 import org.eclipse.kapua.commons.core.ServiceModuleBundle;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.common.BasicSteps;
@@ -242,7 +241,7 @@ public class DockerSteps {
 
     @Given("Service events are setup")
     public void startEventBus() throws Exception {
-        ServiceModuleBundle serviceModuleBundle = KapuaLocator.getInstance().getService(ServiceModuleBundle.class);
+        ServiceModuleBundle serviceModuleBundle = KapuaLocator.getInstance().getComponent(ServiceModuleBundle.class);
         serviceModuleBundle.startup();
     }
 
@@ -675,16 +674,16 @@ public class DockerSteps {
      * @param brokerAddr
      * @param brokerIp
      * @param clusterName
-     * @param mqttPort                mqtt port on docker
-     * @param mqttHostPort            mqtt port on docker host
-     * @param mqttsPort               mqtts port on docker
-     * @param mqttsHostPort           mqtts port on docker host
-     * @param webPort                 web port on docker
-     * @param webHostPort             web port on docker host
-     * @param debugPort               debug port on docker
-     * @param debugHostPort           debug port on docker host
-     * @param brokerInternalDebugPort
-     * @param dockerImage             full name of image (e.g. "kapua/kapua-broker:" + version)
+     * @param mqttPort      mqtt port on docker
+     * @param mqttHostPort  mqtt port on docker host
+     * @param mqttsPort     mqtts port on docker
+     * @param mqttsHostPort mqtts port on docker host
+     * @param webPort       web port on docker
+     * @param webHostPort   web port on docker host
+     * @param debugPort     debug port on docker
+     * @param debugHostPort debug port on docker host
+     *                      //     * @param brokerInternalDebugPort
+     * @param dockerImage   full name of image (e.g. "kapua/kapua-broker:" + version)
      * @return Container configuration for specific boroker instance
      */
     private ContainerConfig getBrokerContainerConfig(String brokerIp,
@@ -708,7 +707,6 @@ public class DockerSteps {
                 "commons.db.connection.host=db",
                 "commons.db.connection.port=3306",
                 "datastore.elasticsearch.nodes=es:9200",
-                "datastore.elasticsearch.provider=org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider",
                 "commons.eventbus.url=failover:(amqp://events-broker:5672)?jms.sendTimeout=1000",
                 "certificate.jwt.private.key=file:///var/opt/activemq/key.pk8",
                 "certificate.jwt.certificate=file:///var/opt/activemq/cert.pem",

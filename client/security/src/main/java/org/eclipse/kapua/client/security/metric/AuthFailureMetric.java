@@ -12,13 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security.metric;
 
-import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-import com.codahale.metrics.Counter;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
+@Singleton
 public class AuthFailureMetric {
 
     private static final String FIND_DEVICE = "find_device";
@@ -30,16 +32,19 @@ public class AuthFailureMetric {
     private Counter findDeviceConnectionFailure;
     private Counter brokerHostFailure;
 
-    public AuthFailureMetric() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
-        logoutFailureOnLogin = metricsService.getCounter(CommonsMetric.module, LOGOUT_ON_FAILURE);
-        disconnectFailure = metricsService.getCounter(CommonsMetric.module, AuthMetric.DISCONNECT, MetricsLabel.FAILURE);
-        findDeviceConnectionFailure = metricsService.getCounter(CommonsMetric.module, FIND_DEVICE, MetricsLabel.FAILURE);
-        brokerHostFailure = metricsService.getCounter(CommonsMetric.module, BROKER_HOST, MetricsLabel.FAILURE);
+    @Inject
+    public AuthFailureMetric(MetricsService metricsService,
+                             @Named("metricModuleName")
+                             String metricModuleName) {
+        logoutFailureOnLogin = metricsService.getCounter(metricModuleName, LOGOUT_ON_FAILURE);
+        disconnectFailure = metricsService.getCounter(metricModuleName, AuthMetric.DISCONNECT, MetricsLabel.FAILURE);
+        findDeviceConnectionFailure = metricsService.getCounter(metricModuleName, FIND_DEVICE, MetricsLabel.FAILURE);
+        brokerHostFailure = metricsService.getCounter(metricModuleName, BROKER_HOST, MetricsLabel.FAILURE);
     }
 
     /**
      * Failure while doing Shiro logout (Internal error)
+     *
      * @return
      */
     public Counter getLogoutFailureOnLogin() {
@@ -48,6 +53,7 @@ public class AuthFailureMetric {
 
     /**
      * Failure while calling authenticator disconnect (Internal error)
+     *
      * @return
      */
     public Counter getDisconnectFailure() {
@@ -56,6 +62,7 @@ public class AuthFailureMetric {
 
     /**
      * Failure while getting device connection (Internal error)
+     *
      * @return
      */
     public Counter getFindDeviceConnectionFailure() {
@@ -64,6 +71,7 @@ public class AuthFailureMetric {
 
     /**
      * Failure while getting broker host from authentication context (Internal error)
+     *
      * @return
      */
     public Counter getBrokerHostFailure() {

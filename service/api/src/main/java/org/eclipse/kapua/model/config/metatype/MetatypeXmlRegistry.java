@@ -25,12 +25,12 @@ public class MetatypeXmlRegistry {
     /**
      * Locator instance
      */
-    private KapuaLocator locator = KapuaLocator.getInstance();
+    private final KapuaLocator locator = KapuaLocator.getInstance();
 
     /**
      * Meta type factory instance
      */
-    private KapuaMetatypeFactory factory = locator.getFactory(KapuaMetatypeFactory.class);
+    private final KapuaMetatypeFactory factory = locator.getFactory(KapuaMetatypeFactory.class);
 
     /**
      * Returns a {@link KapuaTocd} instance

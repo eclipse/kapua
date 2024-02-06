@@ -25,27 +25,26 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class TriggerXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final TriggerFactory TRIGGER_FACTORY = LOCATOR.getFactory(TriggerFactory.class);
+    private final TriggerFactory triggerFactory = KapuaLocator.getInstance().getFactory(TriggerFactory.class);
 
     public Trigger newEntity() {
-        return TRIGGER_FACTORY.newEntity(null);
+        return triggerFactory.newEntity(null);
     }
 
     public TriggerCreator newCreator() {
-        return TRIGGER_FACTORY.newCreator(null);
+        return triggerFactory.newCreator(null);
     }
 
     public TriggerListResult newListResult() {
-        return TRIGGER_FACTORY.newListResult();
+        return triggerFactory.newListResult();
     }
 
     public TriggerQuery newQuery() {
-        return TRIGGER_FACTORY.newQuery(null);
+        return triggerFactory.newQuery(null);
     }
 
     public TriggerProperty newTriggerProperty() {
-        return TRIGGER_FACTORY.newTriggerProperty(null, null, null);
+        return triggerFactory.newTriggerProperty(null, null, null);
     }
 
 }

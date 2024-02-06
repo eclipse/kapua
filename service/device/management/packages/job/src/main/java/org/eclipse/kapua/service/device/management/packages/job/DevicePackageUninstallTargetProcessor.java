@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.device.management.packages.job;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
@@ -36,13 +35,13 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DevicePackageUninstallTargetProcessor extends AbstractDevicePackageTargetProcessor implements TargetProcessor {
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final DevicePackageManagementService PACKAGES_MANAGEMENT_SERVICE = LOCATOR.getService(DevicePackageManagementService.class);
-    private static final DevicePackageFactory DEVICE_PACKAGE_FACTORY = LOCATOR.getFactory(DevicePackageFactory.class);
 
     @Inject
+    DevicePackageManagementService devicePackageManagementService;
+    @Inject
+    DevicePackageFactory devicePackageFactory;
+    @Inject
     JobContext jobContext;
-
     @Inject
     StepContext stepContext;
 
@@ -60,10 +59,10 @@ public class DevicePackageUninstallTargetProcessor extends AbstractDevicePackage
         DevicePackageUninstallRequest packageUninstallRequest = stepContextWrapper.getStepProperty(DevicePackageUninstallPropertyKeys.PACKAGE_UNINSTALL_REQUEST, DevicePackageUninstallRequest.class);
         Long timeout = stepContextWrapper.getStepProperty(DevicePackageUninstallPropertyKeys.TIMEOUT, Long.class);
         // Send the request
-        DevicePackageUninstallOptions packageUninstallOptions = DEVICE_PACKAGE_FACTORY.newPackageUninstallOptions();
+        DevicePackageUninstallOptions packageUninstallOptions = devicePackageFactory.newPackageUninstallOptions();
         packageUninstallOptions.setTimeout(timeout);
 
-        KapuaId operationId = KapuaSecurityUtils.doPrivileged(() -> PACKAGES_MANAGEMENT_SERVICE.uninstallExec(scopeId, jobTarget.getJobTargetId(), packageUninstallRequest, packageUninstallOptions));
+        KapuaId operationId = KapuaSecurityUtils.doPrivileged(() -> devicePackageManagementService.uninstallExec(scopeId, jobTarget.getJobTargetId(), packageUninstallRequest, packageUninstallOptions));
         // Save the jobId-deviceManagementOperationId pair to track resuming
         createJobDeviceManagementOperation(scopeId, jobId, jobTarget, operationId);
     }

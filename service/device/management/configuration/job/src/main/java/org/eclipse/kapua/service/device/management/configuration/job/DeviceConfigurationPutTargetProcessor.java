@@ -33,11 +33,11 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DeviceConfigurationPutTargetProcessor extends AbstractDeviceTargetProcessor implements TargetProcessor {
-    private static final DeviceConfigurationManagementService CONFIGURATION_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceConfigurationManagementService.class);
 
     @Inject
+    DeviceConfigurationManagementService deviceConfigurationManagementService;
+    @Inject
     JobContext jobContext;
-
     @Inject
     StepContext stepContext;
 
@@ -52,6 +52,6 @@ public class DeviceConfigurationPutTargetProcessor extends AbstractDeviceTargetP
         DeviceConfiguration configuration = stepContextWrapper.getStepProperty(DeviceConfigurationPutPropertyKeys.CONFIGURATION, DeviceConfiguration.class);
         Long timeout = stepContextWrapper.getStepProperty(DeviceConfigurationPutPropertyKeys.TIMEOUT, Long.class);
 
-        KapuaSecurityUtils.doPrivileged(() -> CONFIGURATION_MANAGEMENT_SERVICE.put(jobTarget.getScopeId(), jobTarget.getJobTargetId(), configuration, timeout));
+        KapuaSecurityUtils.doPrivileged(() -> deviceConfigurationManagementService.put(jobTarget.getScopeId(), jobTarget.getJobTargetId(), configuration, timeout));
     }
 }
