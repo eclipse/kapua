@@ -37,7 +37,7 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/user")
 public class UserMfa extends AbstractKapuaResource {
 
-    //TIOD: Inject
+    //TODO: Inject
     public MfaOptionService mfaOptionService = KapuaLocator.getInstance().getService(MfaOptionService.class);
 
     /**
@@ -78,12 +78,6 @@ public class UserMfa extends AbstractKapuaResource {
         if (mfaOption == null) {
             throw new KapuaEntityNotFoundException(MfaOption.TYPE, "MfaOption");  // TODO: not sure "MfaOption" it's the best value to return here
         }
-
-        // Set the mfa secret key to null before returning the mfaOption, due to improve the security
-        mfaOption.setMfaSecretKey(null);
-        mfaOption.setTrustKey(null);
-        mfaOption.setScratchCodes(null);
-
         return mfaOption;
     }
 

@@ -97,4 +97,9 @@ public class MfaOptionMigratorServiceImpl implements MfaOptionService {
     public void deleteByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public boolean validateMfaCredentials(KapuaId scopeId, KapuaId userId, String tokenAuthenticationCode, String tokenTrustKey) throws KapuaException {
+        throw new UnsupportedOperationException();
+    }
 }

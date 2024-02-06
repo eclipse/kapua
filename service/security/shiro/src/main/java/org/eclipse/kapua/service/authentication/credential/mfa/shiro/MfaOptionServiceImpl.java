@@ -19,6 +19,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.shiro.ShiroException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.domains.Domains;
@@ -39,8 +40,12 @@ import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResu
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionRepository;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeRepository;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.MfaRequiredException;
 import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -54,6 +59,7 @@ import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;
@@ -244,6 +250,8 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         final MfaOptionListResult res = txManager.execute(tx -> mfaOptionRepository.query(tx, query));
         if (res.isEmpty() == false) {
             final MfaOptionListResultImpl cleanedRes = new MfaOptionListResultImpl();
+            cleanedRes.setLimitExceeded(res.isLimitExceeded());
+            cleanedRes.setTotalCount(res.getTotalCount());
             cleanedRes.addItems(res.getItems()
                     .stream()
                     .map(this::clearSecuritySensibleFields)
@@ -286,6 +294,96 @@ public class MfaOptionServiceImpl implements MfaOptionService {
                 .findByUserId(tx, scopeId, userId)
                 .map(d -> mfaOptionRepository.delete(tx, d))
                 .orElseThrow(() -> new KapuaEntityNotFoundException(MfaOptionImpl.TYPE, userId)));
+    }
+
+    @Override
+    public boolean validateMfaCredentials(KapuaId scopeId, KapuaId userId, String tokenAuthenticationCode, String tokenTrustKey) throws KapuaException {
+        if (!mfaAuthenticator.isEnabled()) {
+            return true;
+        }
+        return txManager.execute(tx -> {
+            // Check if MFA is enabled for the current user
+            final MfaOption mfaOption;
+            try {
+                final Optional<MfaOption> maybeOption = mfaOptionRepository.findByUserId(tx, scopeId, userId);
+                if (!maybeOption.isPresent()) {
+                    return true;  // MFA service is enabled, but the user has no MFA enabled
+                }
+                mfaOption = maybeOption.get();
+            } catch (Exception e) {
+                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.AUTHENTICATION_ERROR, e, "Error while finding Mfa Option!");
+            }
+
+            if (tokenAuthenticationCode != null) {
+                return validateFromTokenAuthenticationCode(tx, scopeId, mfaOption, tokenAuthenticationCode);
+            }
+
+            // If authentication code is null, then check the trust_key
+            if (tokenTrustKey != null) {
+                return validateFromTrustKey(tx, mfaOption, tokenTrustKey);
+            }
+            // In case both the authenticationCode and the trustKey are null, the MFA login via Rest API must be triggered.
+            // Since this method only returns true or false, the MFA request via Rest API is handled through exceptions.
+            throw new MfaRequiredException();
+        });
+    }
+
+    private Boolean validateFromTrustKey(TxContext tx, MfaOption mfaOption, String tokenTrustKey) {
+        // Check trust machine authentication on the server side
+        if (mfaOption.getTrustKey() == null) {
+            return false;
+        }
+        Date now = new Date(System.currentTimeMillis());
+        if (mfaOption.getTrustExpirationDate().before(now)) {
+            // The trust key is expired and must be disabled
+            try {
+                doDisableTrust(tx, mfaOption);
+                return false;
+            } catch (Exception e) {
+                throw new ShiroException("Error while disabling trust!", e);
+            }
+        }
+        return BCrypt.checkpw(tokenTrustKey, mfaOption.getTrustKey());
+    }
+
+    private Boolean validateFromTokenAuthenticationCode(TxContext tx, KapuaId scopeId, MfaOption mfaOption, String tokenAuthenticationCode) {
+        // Do MFA match
+        try {
+            boolean isCodeValid = mfaAuthenticator.authorize(mfaOption.getMfaSecretKey(), Integer.parseInt(tokenAuthenticationCode));
+            if (isCodeValid) {
+                return true;
+            }
+        } catch (Exception e) {
+            throw new ShiroException("Error while authenticating Mfa Option!", e);
+        }
+
+        //  Code is not valid, try scratch codes login
+        final ScratchCodeListResult scratchCodeListResult;
+        try {
+            scratchCodeListResult = scratchCodeRepository.findByMfaOptionId(tx, scopeId, mfaOption.getId());
+        } catch (Exception e) {
+            throw new ShiroException("Error while finding scratch codes!", e);
+        }
+
+        for (ScratchCode code : scratchCodeListResult.getItems()) {
+            final boolean codeIsValid;
+            try {
+                codeIsValid = mfaAuthenticator.authorize(code.getCode(), tokenAuthenticationCode);
+            } catch (KapuaException e) {
+                throw new ShiroException("Error while validating scratch codes!", e);
+            }
+            if (codeIsValid) {
+                try {
+                    // Delete the used scratch code
+                    scratchCodeRepository.delete(tx, code);
+                    return true;
+                } catch (Exception e) {
+                    throw new ShiroException("Error while removing used scratch code!", e);
+                }
+            }
+        }
+        //None of the scratch codes matched, authentication failed
+        return false;
     }
 
     @Override

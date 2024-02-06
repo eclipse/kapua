@@ -67,4 +67,6 @@ public interface MfaOptionService extends KapuaEntityService<MfaOption, MfaOptio
     void disableTrustByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException;
 
     void deleteByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException;
+
+    boolean validateMfaCredentials(KapuaId scopeId, KapuaId userId, String tokenAuthenticationCode, String tokenTrustKey) throws KapuaException;
 }
