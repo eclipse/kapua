@@ -17,13 +17,13 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.credential.mfa.shiro.MfaOptionCreatorImpl;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -37,8 +37,8 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/user")
 public class UserMfa extends AbstractKapuaResource {
 
-    //TODO: Inject
-    public MfaOptionService mfaOptionService = KapuaLocator.getInstance().getService(MfaOptionService.class);
+    @Inject
+    public MfaOptionService mfaOptionService;
 
     /**
      * Creates a new {@link MfaOption} for the user specified by the "userId" path parameter.
