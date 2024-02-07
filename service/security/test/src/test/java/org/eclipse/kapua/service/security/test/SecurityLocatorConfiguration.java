@@ -21,7 +21,7 @@ import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.AccountRelativeFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
@@ -179,8 +179,8 @@ public class SecurityLocatorConfiguration {
                 bind(UserFactory.class).toInstance(userFactory);
                 final RootUserTester rootUserTester = Mockito.mock(RootUserTester.class);
                 bind(RootUserTester.class).toInstance(rootUserTester);
-                final AccountChildrenFinder accountChildrenFinder = Mockito.mock(AccountChildrenFinder.class);
-                bind(AccountChildrenFinder.class).toInstance(accountChildrenFinder);
+                final AccountRelativeFinder accountRelativeFinder = Mockito.mock(AccountRelativeFinder.class);
+                bind(AccountRelativeFinder.class).toInstance(accountRelativeFinder);
                 bind(UserService.class).toInstance(new UserServiceImpl(
                         Mockito.mock(ServiceConfigurationManager.class),
                         mockedAuthorization,

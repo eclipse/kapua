@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.job.internal;
 
 import com.google.inject.Provides;
 import com.google.inject.multibindings.ProvidesIntoSet;
-import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.AccountRelativeFinder;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
@@ -80,7 +80,7 @@ public class JobModule extends AbstractKapuaModule {
     public ServiceConfigurationManager jobServiceConfigurationManager(
             JobFactory factory,
             RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder,
+            AccountRelativeFinder accountRelativeFinder,
             JobRepository jobRepository,
             KapuaJpaRepositoryConfiguration jpaRepoConfig,
             EntityCacheFactory entityCacheFactory
@@ -93,7 +93,7 @@ public class JobModule extends AbstractKapuaModule {
                                 entityCacheFactory.createCache("AbstractKapuaConfigurableServiceCacheId")
                         ),
                         rootUserTester,
-                        accountChildrenFinder,
+                        accountRelativeFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
                                 jobRepository

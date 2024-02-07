@@ -32,17 +32,17 @@ public class ResourceLimitedServiceConfigurationManagerImpl
         extends ServiceConfigurationManagerImpl
         implements ServiceConfigurationManager {
 
-    private final AccountChildrenFinder accountChildrenFinder;
+    private final AccountRelativeFinder accountRelativeFinder;
     private final UsedEntitiesCounter usedEntitiesCounter;
 
     public ResourceLimitedServiceConfigurationManagerImpl(
             String pid,
             ServiceConfigRepository serviceConfigRepository,
             RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder,
+            AccountRelativeFinder accountRelativeFinder,
             UsedEntitiesCounter usedEntitiesCounter) {
         super(pid, serviceConfigRepository, rootUserTester);
-        this.accountChildrenFinder = accountChildrenFinder;
+        this.accountRelativeFinder = accountRelativeFinder;
         this.usedEntitiesCounter = usedEntitiesCounter;
     }
 
@@ -135,7 +135,7 @@ public class ResourceLimitedServiceConfigurationManagerImpl
             // Current used entities
             long currentUsedEntities = usedEntitiesCounter.countEntitiesInScope(txContext, scopeId);
 
-            final AccountListResult childAccounts = accountChildrenFinder.findChildren(scopeId, targetScopeId);
+            final AccountListResult childAccounts = accountRelativeFinder.findChildren(scopeId, targetScopeId);
             // Resources assigned to children
             long childCount = 0;
             for (Account childAccount : childAccounts.getItems()) {

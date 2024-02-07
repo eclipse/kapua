@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.device.registry;
 
 import com.google.inject.Provides;
 import com.google.inject.multibindings.ProvidesIntoSet;
-import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.AccountRelativeFinder;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
@@ -226,7 +226,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
     protected ServiceConfigurationManager deviceRegistryServiceConfigurationManager(
             DeviceFactory factory,
             RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder,
+            AccountRelativeFinder accountRelativeFinder,
             DeviceRepository deviceRepository,
             KapuaJpaRepositoryConfiguration jpaRepoConfig,
             EntityCacheFactory entityCacheFactory
@@ -239,7 +239,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                                 entityCacheFactory.createCache("AbstractKapuaConfigurableServiceCacheId")
                         ),
                         rootUserTester,
-                        accountChildrenFinder,
+                        accountRelativeFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
                                 deviceRepository)

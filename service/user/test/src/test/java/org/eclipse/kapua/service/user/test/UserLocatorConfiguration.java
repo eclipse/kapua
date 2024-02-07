@@ -20,7 +20,7 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.AccountRelativeFinder;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
@@ -109,8 +109,8 @@ public class UserLocatorConfiguration {
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
                 // binding Account related services
-                final AccountChildrenFinder accountChildrenFinder = Mockito.mock(AccountChildrenFinder.class);
-                bind(AccountChildrenFinder.class).toInstance(accountChildrenFinder);
+                final AccountRelativeFinder accountRelativeFinder = Mockito.mock(AccountRelativeFinder.class);
+                bind(AccountRelativeFinder.class).toInstance(accountRelativeFinder);
 
                 // Inject actual User service related services
                 final UserFactoryImpl userFactory = new UserFactoryImpl();
@@ -122,7 +122,7 @@ public class UserLocatorConfiguration {
                 final ResourceLimitedServiceConfigurationManagerImpl userConfigurationManager = new ResourceLimitedServiceConfigurationManagerImpl(UserService.class.getName(),
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         Mockito.mock(RootUserTester.class),
-                        accountChildrenFinder,
+                        accountRelativeFinder,
                         new UsedEntitiesCounterImpl(
                                 userFactory,
                                 userRepository)
