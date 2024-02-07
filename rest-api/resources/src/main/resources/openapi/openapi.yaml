@@ -435,6 +435,11 @@ paths:
     $ref: './user/user-scopeId-userId-mfa.yaml#/paths/~1{scopeId}~1users~1{userId}~1mfa'
   /{scopeId}/users/{userId}/mfa/disableTrust:
     $ref: './user/user-scopeId-userId-mfa-disableTrust.yaml#/paths/~1{scopeId}~1users~1{userId}~1mfa~1disableTrust'
+  ### User Mfa ###
+  /{scopeId}/user/mfa:
+    $ref: './userMfa/userMfa-scopeId.yaml#/paths/~1{scopeId}~1user~1mfa'
+  /{scopeId}/user/mfa/disableTrust:
+    $ref: './userMfa/userMfa-scopeId-disableTrust.yaml#/paths/~1{scopeId}~1user~1mfa~1disableTrust'
   ### User Credentials ###
   /{scopeId}/user/credentials/password:
     $ref: './userCredentials/userCredentials-scopeId.yaml#/paths/~1{scopeId}~1user~1credentials~1password'
@@ -1007,10 +1012,11 @@ components:
       $ref: './user/user.yaml#/components/schemas/userCreator'
     userListResult:
       $ref: './user/user.yaml#/components/schemas/userListResult'
+    ### User MFA Entities ###
     mfaOption:
-      $ref: './user/user.yaml#/components/schemas/mfaOption'
+      $ref: './userMfa/userMfa.yaml#/components/schemas/mfaOption'
     mfaOptionCreator:
-      $ref: './user/user.yaml#/components/schemas/mfaOptionCreator'
+      $ref: './userMfa/userMfa.yaml#/components/schemas/mfaOptionCreator'
     ### User Credentials Entities ###
     passwordChangeRequest:
       $ref: './userCredentials/userCredentials.yaml#/components/schemas/passwordChangeRequest'
