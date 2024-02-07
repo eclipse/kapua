@@ -1249,7 +1249,7 @@ components:
           schema:
             $ref: '#/components/schemas/subjectUnauthorizedExceptionInfo'
     unauthenticated:
-      description: The authentication with the provided AccessToken failed for some reason. For example, it could never been issued by the platform, it could be expired or not valid
+      description: The authentication failed for some reason. If this was done via an Access Token, it could be expired or invalidated
     entityUniqueness:
       description: An Entity with the same unique fields is already present in the system
       content:
