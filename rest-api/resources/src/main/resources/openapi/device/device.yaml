@@ -138,6 +138,9 @@ components:
             customAttribute5:
               description: A Custom Attribute of this Device - 5
               type: string
+            tamperStatus:
+              description: The tamper status of the Device
+              type: string
             extendedProperties:
               type: array
               items:
@@ -177,6 +180,7 @@ components:
             groupName: Hardware Info
             name: CPU Cores
             value: 4
+        tamperStatus: NOT_TAMPERED
         tagIds: [ ]
     deviceCreator:
       allOf:
@@ -264,6 +268,9 @@ components:
             customAttribute5:
               description: A Custom Attirbute of this Device - 5
               type: string
+            tamperStatus:
+              description: The tamper status of the Device
+              type: string
             tagIds:
               description: A list of tag ID to link to the Device
               type: array
@@ -285,6 +292,7 @@ components:
             osgiFrameworkVersion: 1.7.0
             acceptEncoding: gzip
             deviceCredentialsMode: LOOSE
+            tamperStatus: NOT_TAMPERED
             tagIds: []
     deviceListResult:
       allOf:

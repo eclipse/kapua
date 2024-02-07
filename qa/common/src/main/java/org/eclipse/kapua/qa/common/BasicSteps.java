@@ -13,6 +13,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common;
 
+import java.time.Duration;
+import java.util.Date;
+import java.util.Map;
+import javax.inject.Inject;
+
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import io.cucumber.java.After;
@@ -56,11 +61,6 @@ import org.eclipse.kapua.transport.message.jms.JmsTopic;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import java.time.Duration;
-import java.util.Date;
-import java.util.Map;
 
 @Singleton
 public class BasicSteps extends TestBase {

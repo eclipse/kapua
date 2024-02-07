@@ -173,4 +173,9 @@ public class KapuaBirthPayloadAttibutes {
      * @since 1.5.0
      */
     public static final String EXTENDED_PROPERTIES = "extendedProperties";
+
+    /**
+     * @since 2.0.0
+     */
+    public static final String TAMPER_STATUS = "tamperStatus";
 }

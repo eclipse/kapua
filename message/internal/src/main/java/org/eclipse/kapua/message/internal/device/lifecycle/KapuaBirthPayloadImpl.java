@@ -69,6 +69,7 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
      * @param modemImsi                   The {@link KapuaBirthPayloadAttibutes#MODEM_IMSI} of the {@link KapuaBirthMessage}
      * @param modemIccid                  The {@link KapuaBirthPayloadAttibutes#MODEM_ICCID} of the {@link KapuaBirthMessage}
      * @param extendedProperties          The {@link KapuaBirthPayloadAttibutes#EXTENDED_PROPERTIES} of the {@link KapuaBirthMessage}
+     * @param tamperStatus                The {@link KapuaBirthPayloadAttibutes#TAMPER_STATUS} of the {@link KapuaBirthMessage}
      * @since 1.0.0
      */
     public KapuaBirthPayloadImpl(String uptime,
@@ -100,7 +101,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
                                  String modemImei,
                                  String modemImsi,
                                  String modemIccid,
-                                 String extendedProperties) {
+                                 String extendedProperties,
+                                 String tamperStatus) {
 
         setUptime(uptime);
         setDisplayName(displayName);
@@ -132,6 +134,7 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         setModemImsi(modemImsi);
         setModemIccid(modemIccid);
         setExtendedProperties(extendedProperties);
+        setTamperStatus(tamperStatus);
     }
 
     @Override
@@ -432,5 +435,15 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
     @Override
     public void setExtendedProperties(String extendedProperties) {
         getMetrics().put(KapuaBirthPayloadAttibutes.EXTENDED_PROPERTIES, extendedProperties);
+    }
+
+    @Override
+    public String getTamperStatus() {
+        return (String) getMetrics().get(KapuaBirthPayloadAttibutes.TAMPER_STATUS);
+    }
+
+    @Override
+    public void setTamperStatus(String temperStatus) {
+        getMetrics().put(KapuaBirthPayloadAttibutes.TAMPER_STATUS, temperStatus);
     }
 }

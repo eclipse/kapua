@@ -66,7 +66,8 @@ public class KapuaAppsPayloadImpl extends KapuaBirthPayloadImpl implements Kapua
                                 String modemImei,
                                 String modemImsi,
                                 String modemIccid,
-                                String extendedProperties) {
+                                String extendedProperties,
+                                String tamperStatus) {
         super(uptime,
                 displayName,
                 modelName,
@@ -96,6 +97,7 @@ public class KapuaAppsPayloadImpl extends KapuaBirthPayloadImpl implements Kapua
                 modemImei,
                 modemImsi,
                 modemIccid,
-                extendedProperties);
+                extendedProperties,
+                tamperStatus);
     }
 }
