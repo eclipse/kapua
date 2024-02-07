@@ -32,6 +32,8 @@ paths:
             application/xml:
               schema:
                 $ref: './deviceSnapshot.yaml#/components/schemas/snapshots'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

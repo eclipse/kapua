@@ -78,6 +78,8 @@ paths:
                             valueType: integer
                             error: Connection failed. Unable to Connect...
                             timestamp: '2019-09-12T14:50:24.446Z'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

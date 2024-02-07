@@ -29,6 +29,8 @@ paths:
             application/json:
               schema:
                 $ref: './jobTrigger.yaml#/components/schemas/jobTrigger'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -60,6 +62,8 @@ paths:
             application/json:
               schema:
                 $ref: './jobTrigger.yaml#/components/schemas/jobTrigger'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -80,6 +84,8 @@ paths:
       responses:
         204:
           description: The Job Trigger has been deleted
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

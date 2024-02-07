@@ -28,6 +28,8 @@ paths:
             application/json:
               schema:
                 $ref: '../userMfa/userMfa.yaml#/components/schemas/mfaOption'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -53,6 +55,8 @@ paths:
             application/json:
               schema:
                 $ref: '../userMfa/userMfa.yaml#/components/schemas/mfaOptionCreationResponse'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -72,6 +76,8 @@ paths:
       responses:
         204:
           description: The MfaOption has been deleted
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

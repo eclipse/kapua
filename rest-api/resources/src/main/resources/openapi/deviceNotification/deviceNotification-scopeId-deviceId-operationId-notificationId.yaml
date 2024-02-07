@@ -30,6 +30,8 @@ paths:
             application/json:
               schema:
                 $ref: './deviceNotification.yaml#/components/schemas/deviceNotification'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -51,6 +53,8 @@ paths:
       responses:
         204:
           description: The Registry Notification has been deleted
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

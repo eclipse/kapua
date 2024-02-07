@@ -47,6 +47,8 @@ paths:
             application/json:
               schema:
                 $ref: './authentication.yaml#/components/schemas/accessToken'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         500:

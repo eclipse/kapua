@@ -31,6 +31,8 @@ paths:
             application/json:
               schema:
                 $ref: '../jobExecution/jobExecution.yaml#/components/schemas/jobExecutionListResult'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
