@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.shiro.ShiroException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.domains.Domains;
@@ -290,7 +289,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         if (!mfaAuthenticator.isEnabled()) {
             return true;
         }
-        return txManager.execute(tx -> {
+        final Boolean res = txManager.execute(tx -> {
             // Check if MFA is enabled for the current user
             final MfaOption mfaOption;
             try {
@@ -311,13 +310,17 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             if (tokenTrustKey != null) {
                 return validateFromTrustKey(tx, mfaOption, tokenTrustKey);
             }
+            return false;
+        });
+        if (!res) {
             // In case both the authenticationCode and the trustKey are null, the MFA login via Rest API must be triggered.
             // Since this method only returns true or false, the MFA request via Rest API is handled through exceptions.
             throw new MfaRequiredException();
-        });
+        }
+        return res;
     }
 
-    private Boolean validateFromTrustKey(TxContext tx, MfaOption mfaOption, String tokenTrustKey) {
+    private Boolean validateFromTrustKey(TxContext tx, MfaOption mfaOption, String tokenTrustKey) throws KapuaAuthenticationException {
         // Check trust machine authentication on the server side
         if (mfaOption.getTrustKey() == null) {
             return false;
@@ -329,21 +332,24 @@ public class MfaOptionServiceImpl implements MfaOptionService {
                 doDisableTrust(tx, mfaOption);
                 return false;
             } catch (Exception e) {
-                throw new ShiroException("Error while disabling trust!", e);
+                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.MFA_ERROR, e, "Error while disabling trust!");
             }
         }
         return BCrypt.checkpw(tokenTrustKey, mfaOption.getTrustKey());
     }
 
-    private Boolean validateFromTokenAuthenticationCode(TxContext tx, KapuaId scopeId, MfaOption mfaOption, String tokenAuthenticationCode) {
+    private Boolean validateFromTokenAuthenticationCode(TxContext tx, KapuaId scopeId, MfaOption mfaOption, String tokenAuthenticationCode) throws KapuaAuthenticationException {
         // Do MFA match
         try {
-            boolean isCodeValid = mfaAuthenticator.authorize(mfaOption.getMfaSecretKey(), Integer.parseInt(tokenAuthenticationCode));
+            final int numberToken = Integer.parseInt(tokenAuthenticationCode);
+            boolean isCodeValid = mfaAuthenticator.authorize(mfaOption.getMfaSecretKey(), numberToken);
             if (isCodeValid) {
                 return true;
             }
+        } catch (NumberFormatException e) {
+            //Token is not a valid number, continue assuming it is a scratch code
         } catch (Exception e) {
-            throw new ShiroException("Error while authenticating Mfa Option!", e);
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.MFA_ERROR, e, "Error while authenticating Mfa Option!");
         }
 
         //  Code is not valid, try scratch codes login
@@ -351,7 +357,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         try {
             scratchCodeListResult = scratchCodeRepository.findByMfaOptionId(tx, scopeId, mfaOption.getId());
         } catch (Exception e) {
-            throw new ShiroException("Error while finding scratch codes!", e);
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.MFA_ERROR, e, "Error while finding scratch codes!");
         }
 
         for (ScratchCode code : scratchCodeListResult.getItems()) {
@@ -359,7 +365,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             try {
                 codeIsValid = mfaAuthenticator.authorize(code.getCode(), tokenAuthenticationCode);
             } catch (KapuaException e) {
-                throw new ShiroException("Error while validating scratch codes!", e);
+                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.MFA_ERROR, e, "Error while validating scratch codes!");
             }
             if (codeIsValid) {
                 try {
@@ -367,7 +373,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
                     scratchCodeRepository.delete(tx, code);
                     return true;
                 } catch (Exception e) {
-                    throw new ShiroException("Error while removing used scratch code!", e);
+                    throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.MFA_ERROR, e, "Error while removing used scratch code!");
                 }
             }
         }
