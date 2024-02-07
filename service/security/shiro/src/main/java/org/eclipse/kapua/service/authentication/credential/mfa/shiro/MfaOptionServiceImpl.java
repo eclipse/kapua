@@ -12,11 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.shiro.ShiroException;
@@ -26,6 +21,7 @@ import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.commons.util.qr.QRCodeBuilder;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -61,16 +57,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import javax.imageio.ImageIO;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -87,8 +76,6 @@ public class MfaOptionServiceImpl implements MfaOptionService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MfaOptionServiceImpl.class);
 
     private final int trustKeyDuration;
-    private static final int QR_CODE_SIZE = 134;  // TODO: make this configurable?
-    private static final String IMAGE_FORMAT = "png";
     private final MfaAuthenticator mfaAuthenticator;
     private final TxManager txManager;
     private final MfaOptionRepository mfaOptionRepository;
@@ -98,6 +85,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
     private final PermissionFactory permissionFactory;
     private final UserService userService;
     private final AuthenticationUtils authenticationUtils;
+    private final QRCodeBuilder qrCodeBuilder;
 
     public MfaOptionServiceImpl(
             int trustKeyDuration,
@@ -108,7 +96,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             UserService userService,
-            AuthenticationUtils authenticationUtils) {
+            AuthenticationUtils authenticationUtils, QRCodeBuilder qrCodeBuilder) {
         this.trustKeyDuration = trustKeyDuration;
         this.mfaAuthenticator = mfaAuthenticator;
         this.txManager = txManager;
@@ -119,6 +107,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
         this.permissionFactory = permissionFactory;
         this.userService = userService;
         this.authenticationUtils = authenticationUtils;
+        this.qrCodeBuilder = qrCodeBuilder;
     }
 
     @Override
@@ -491,7 +480,6 @@ public class MfaOptionServiceImpl implements MfaOptionService {
      * @since 1.3.0
      */
     private String generateQRCode(String organizationName, String accountName, String username, String key) {
-        // url to qr_barcode encoding
         URI uri = null;
         try {
             uri = new URIBuilder()
@@ -501,46 +489,10 @@ public class MfaOptionServiceImpl implements MfaOptionService {
                     .setParameter("secret", key)
                     .setParameter("issuer", organizationName)
                     .build();
-            BitMatrix bitMatrix = null;
-            bitMatrix = new QRCodeWriter().encode(uri.toString(), BarcodeFormat.QR_CODE, QR_CODE_SIZE, QR_CODE_SIZE);
-            BufferedImage image = buildImage(bitMatrix);
-            return imgToBase64(image);
+            return qrCodeBuilder.generateQRCode(uri);
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        } catch (WriterException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * Converts a {@link BufferedImage} to base64 string format
-     *
-     * @param img the {@link BufferedImage} to convert
-     * @return the base64 string representation of the input image
-     * @since 1.3.0
-     */
-    private static String imgToBase64(BufferedImage img) throws IOException {
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ImageIO.write(img, IMAGE_FORMAT, outputStream);
-        return Base64.getEncoder().encodeToString(outputStream.toByteArray());
-    }
-
-    /**
-     * Converts a {@link BitMatrix} to a {@link BufferedImage}
-     *
-     * @param bitMatrix the {@link BitMatrix} to be converted into ad image
-     * @return the {@link BufferedImage} obtained from the conversion
-     * @since 1.3.0
-     */
-    private static BufferedImage buildImage(BitMatrix bitMatrix) {
-        BufferedImage qrCodeImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
-        BufferedImage resultImage = new BufferedImage(QR_CODE_SIZE, QR_CODE_SIZE, BufferedImage.TYPE_INT_RGB);
-
-        Graphics g = resultImage.getGraphics();
-        g.drawImage(qrCodeImage, 0, 0, new Color(232, 232, 232, 255), null);
-
-        return resultImage;
-    }
 }

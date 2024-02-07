@@ -93,11 +93,7 @@
 
         <!--  -->
         <!-- External dependencies -->
-        <dependency>
-            <!-- QR code generation -->
-            <groupId>com.google.zxing</groupId>
-            <artifactId>javase</artifactId>
-        </dependency>
+
         <dependency>
             <!-- TOTP dependencies -->
             <groupId>com.warrenstrange</groupId>

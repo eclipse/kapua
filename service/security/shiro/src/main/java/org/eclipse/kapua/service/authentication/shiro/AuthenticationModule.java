@@ -30,6 +30,7 @@ import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
+import org.eclipse.kapua.commons.util.qr.QRCodeBuilder;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
@@ -223,7 +224,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
             UserService userService,
             KapuaJpaTxManagerFactory jpaTxManagerFactory,
             KapuaAuthenticationSetting kapuaAuthenticationSetting,
-            AuthenticationUtils authenticationUtils) {
+            AuthenticationUtils authenticationUtils,
+            QRCodeBuilder qrCodeBuilder) {
         int trustKeyDuration = kapuaAuthenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TRUST_KEY_DURATION);
 
         return new MfaOptionServiceImpl(
@@ -236,7 +238,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
                 authorizationService,
                 permissionFactory,
                 userService,
-                authenticationUtils
+                authenticationUtils,
+                qrCodeBuilder
         );
     }
 

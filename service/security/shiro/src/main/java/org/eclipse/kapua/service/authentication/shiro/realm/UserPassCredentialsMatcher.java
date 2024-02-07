@@ -100,6 +100,4 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
 
         return false;
     }
-
-
 }
