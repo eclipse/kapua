@@ -775,6 +775,24 @@ components:
           - "schema=mqtt"
           - "dns=10.200.12.148"
           - "port=1883"
+    InternalUserOnlyExceptionInfo:
+      description: the operation is reserved only to users with 'userType' INTERNAL
+      allOf:
+        - $ref: '#/components/schemas/exceptionInfo'
+      example:
+        type: "InternalUserOnlyExceptionInfo"
+        httpErrorCode: 403
+        message: "This operation is reserved only for Users of type INTERNAL."
+        kapuaErrorCode: "INTERNAL_USER_ONLY"
+    SelfManagedOnlyExceptionInfo:
+      description: the operation can only be performed on the user which is currently authenticated
+      allOf:
+        - $ref: '#/components/schemas/exceptionInfo'
+      example:
+        type: "SelfManagedOnlyExceptionInfo"
+        httpErrorCode: 403
+        message: "This operation can be performed only on the current logged User."
+        kapuaErrorCode: "SELF_MANAGED_ONLY"
     ### Other Base Entities ###
     kapuaListResult:
       description: A container for all the Entities List
@@ -1206,7 +1224,7 @@ components:
           schema:
             $ref: '#/components/schemas/setResult'
     ### Errors - responses ###
-    kapuaError:
+    kapuaError: #Base 500 response
       description: An error occurred while performing the request
       content:
         application/json:
@@ -1215,7 +1233,7 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/exceptionInfo'
-    entityNotFound:
+    entityNotFound: #Base 404 response
       description: The desired entity could not be found
       content:
         application/json:
@@ -1224,7 +1242,7 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/entityNotFoundExceptionInfo'
-    illegalArgument:
+    illegalArgument: #Base 400 response
       description: An illegal argument has been passed to the operation
       content:
         application/json:
@@ -1239,7 +1257,7 @@ components:
               - $ref: '#/components/schemas/illegalNullArgumentExceptionInfo'
             xml:
               name: 'illegalArgumentExceptionInfo'
-    subjectUnauthorized:
+    subjectUnauthorized: #Base 403 response
       description: The user performing the operation does not have the required permissions
       content:
         application/json:
@@ -1248,9 +1266,9 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/subjectUnauthorizedExceptionInfo'
-    unauthenticated:
+    unauthenticated: #Base 401 response
       description: The authentication failed for some reason. If this was done via an Access Token, it could be expired or invalidated
-    entityUniqueness:
+    entityUniqueness: #Base 404 response
       description: An Entity with the same unique fields is already present in the system
       content:
         application/json:
