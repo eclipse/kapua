@@ -33,10 +33,6 @@ import org.eclipse.kapua.service.authentication.shiro.exceptions.ExpiredAccessTo
 import org.eclipse.kapua.service.authentication.shiro.exceptions.InvalidatedAccessTokenException;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.MalformedAccessTokenException;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
-import org.eclipse.kapua.service.authentication.token.AccessTokenAttributes;
-import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
-import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
-import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
@@ -54,11 +50,7 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
      * Realm name.
      */
     public static final String REALM_NAME = "accessTokenAuthenticatingRealm";
-
-
-    private final AccessTokenService accessTokenService = KapuaLocator.getInstance().getService(AccessTokenService.class);
     private final AuthenticationService authenticationService = KapuaLocator.getInstance().getService(AuthenticationService.class);
-    private final AccessTokenFactory accessTokenFactory = KapuaLocator.getInstance().getFactory(AccessTokenFactory.class);
     private final UserService userService = KapuaLocator.getInstance().getService(UserService.class);
 
     /**
@@ -79,7 +71,6 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
         // Extract credentials
         AccessTokenCredentialsImpl token = (AccessTokenCredentialsImpl) authenticationToken;
         String tokenTokenId = token.getTokenId();
-        
         // Find accessToken
         final AccessToken accessToken;
         try {
