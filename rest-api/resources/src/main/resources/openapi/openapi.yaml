@@ -624,8 +624,11 @@ components:
             - name
     ### Errors - schemas ###
     exceptionInfo:
-      description: The base object to represent an Error
+      description: The base object to represent an Error. Every '*exceptionInfo' object in the codebase extends this, adding some fields if needed
       properties:
+        type:
+          type: string
+          description: the exact type of exceptionInfo object
         message:
           type: string
           description: An extended description of the error that occurred when performing the operation
@@ -1225,7 +1228,7 @@ components:
             $ref: '#/components/schemas/setResult'
     ### Errors - responses ###
     kapuaError: #Base 500 response
-      description: An error occurred while performing the request
+      description: An internal error occurred while performing the request
       content:
         application/json:
           schema:
