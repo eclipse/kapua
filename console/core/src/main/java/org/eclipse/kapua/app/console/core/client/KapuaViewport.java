@@ -24,7 +24,7 @@ import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
  */
 public class KapuaViewport extends Viewport {
 
-    protected final ConsoleMessages consoleMessages = GWT.create(ConsoleMessages.class);
+    protected static final ConsoleMessages CONSOLE_MESSAGES = GWT.create(ConsoleMessages.class);
 
     /**
      * Minimum width of browser window.
@@ -42,7 +42,7 @@ public class KapuaViewport extends Viewport {
         super();
 
         setMonitorWindowResize(true);
-        infoPopup = new InfoPopup(consoleMessages.browserWindowTooSmall());
+        infoPopup = new InfoPopup(CONSOLE_MESSAGES.browserWindowTooSmall());
         infoPopup.setGlassStyleName("kapua-PopupPanelGlass");
         int clientHeight = Window.getClientHeight();
         int clientWidth = Window.getClientWidth();
