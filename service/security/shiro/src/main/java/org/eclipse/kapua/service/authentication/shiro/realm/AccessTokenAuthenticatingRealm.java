@@ -18,7 +18,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
@@ -26,18 +26,35 @@ import org.eclipse.kapua.KapuaParsingException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
-import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.shiro.AccessTokenCredentialsImpl;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.ExpiredAccessTokenException;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.InvalidatedAccessTokenException;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.JwtCertificateNotFoundException;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.MalformedAccessTokenException;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.authentication.token.AccessTokenService;
+import org.eclipse.kapua.service.certificate.CertificateAttributes;
+import org.eclipse.kapua.service.certificate.CertificateStatus;
+import org.eclipse.kapua.service.certificate.info.CertificateInfo;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoFactory;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoQuery;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoService;
+import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.consumer.InvalidJwtException;
+import org.jose4j.jwt.consumer.JwtConsumer;
+import org.jose4j.jwt.consumer.JwtConsumerBuilder;
+import org.jose4j.jwt.consumer.JwtContext;
 
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * {@link AccessTokenCredentials} based {@link AuthenticatingRealm} implementation.
@@ -50,8 +67,11 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
      * Realm name.
      */
     public static final String REALM_NAME = "accessTokenAuthenticatingRealm";
-    private final AuthenticationService authenticationService = KapuaLocator.getInstance().getService(AuthenticationService.class);
+    private final CertificateInfoFactory certificateInfoFactory = KapuaLocator.getInstance().getFactory(CertificateInfoFactory.class);
+    private final CertificateInfoService certificateInfoService = KapuaLocator.getInstance().getService(CertificateInfoService.class);
+    private final AccessTokenService accessTokenService = KapuaLocator.getInstance().getService(AccessTokenService.class);
     private final UserService userService = KapuaLocator.getInstance().getService(UserService.class);
+    private final KapuaAuthenticationSetting authenticationSetting = KapuaLocator.getInstance().getComponent(KapuaAuthenticationSetting.class);
 
     /**
      * Constructor
@@ -60,9 +80,7 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
      */
     public AccessTokenAuthenticatingRealm() {
         setName(REALM_NAME);
-
-        CredentialsMatcher credentialsMatcher = new AccessTokenCredentialsMatcher();
-        setCredentialsMatcher(credentialsMatcher);
+        setCredentialsMatcher(new AllowAllCredentialsMatcher());
     }
 
     @Override
@@ -70,11 +88,53 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
             throws AuthenticationException {
         // Extract credentials
         AccessTokenCredentialsImpl token = (AccessTokenCredentialsImpl) authenticationToken;
-        String tokenTokenId = token.getTokenId();
+        // Token data
+        String jwt = token.getTokenId();
+
+        final JwtClaims jwtClaims;
+        try {
+            String issuer = authenticationSetting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_ISSUER);
+
+            CertificateInfoQuery certificateInfoQuery = certificateInfoFactory.newQuery(null);
+            certificateInfoQuery.setPredicate(
+                    certificateInfoQuery.andPredicate(
+                            certificateInfoQuery.attributePredicate(CertificateAttributes.USAGE_NAME, "JWT"),
+                            certificateInfoQuery.attributePredicate(CertificateAttributes.STATUS, CertificateStatus.VALID)
+                    )
+            );
+            certificateInfoQuery.setSortCriteria(certificateInfoQuery.fieldSortCriteria(CertificateAttributes.CREATED_BY, SortOrder.DESCENDING));
+            certificateInfoQuery.setIncludeInherited(true);
+            certificateInfoQuery.setLimit(1);
+
+            CertificateInfo certificateInfo = KapuaSecurityUtils.doPrivileged(() -> certificateInfoService.query(certificateInfoQuery)).getFirstItem();
+
+            if (certificateInfo == null) {
+                throw new JwtCertificateNotFoundException();
+            }
+            // Set validator
+            JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+                    .setVerificationKey(CertificateUtils.stringToCertificate(certificateInfo.getCertificate()).getPublicKey()) // Set public key
+                    .setExpectedIssuer(issuer) // Set expected issuer
+                    .setRequireIssuedAt() // Set require reserved claim: iat
+                    .setRequireExpirationTime() // Set require reserved claim: exp
+                    .setRequireSubject() // // Set require reserved claim: sub
+                    .build();
+            // This validates JWT
+            final JwtContext jwtContext = jwtConsumer.process(jwt);
+            jwtClaims = jwtContext.getJwtClaims();
+
+        } catch (KapuaException ke) {
+            throw new AuthenticationException();
+        } catch (InvalidJwtException e) {
+            throw new MalformedAccessTokenException();
+        }
         // Find accessToken
         final AccessToken accessToken;
         try {
-            accessToken = authenticationService.findAccessToken(tokenTokenId);
+            final String tokenIdentifier = Optional.ofNullable(jwtClaims.getClaimValue("tokenIdentifier"))
+                    .map(s -> (String) s)
+                    .orElseThrow(() -> new ShiroException("Missing tokenIdentifier in jwt token"));
+            accessToken = accessTokenService.findByTokenId(tokenIdentifier);
         } catch (KapuaParsingException e) {
             throw new MalformedAccessTokenException();
         } catch (KapuaException ke) {
@@ -110,7 +170,9 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
         // Check account
         Account account = checkAccount(user.getScopeId());
         // BuildAuthenticationInfo
-        return new SessionAuthenticationInfo(getName(),
+        return new SessionAuthenticationInfo(
+                jwtClaims,
+                getName(),
                 account,
                 user,
                 accessToken);

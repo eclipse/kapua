@@ -12,11 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.ExpiredCredentialsException;
@@ -28,7 +27,6 @@ import org.apache.shiro.session.mgt.SimpleSession;
 import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaParsingException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.commons.logging.LoggingMdcKeys;
@@ -93,7 +91,12 @@ import org.eclipse.kapua.service.user.UserService;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.NumericDate;
+import org.jose4j.jwt.consumer.InvalidJwtException;
+import org.jose4j.jwt.consumer.JwtConsumer;
+import org.jose4j.jwt.consumer.JwtConsumerBuilder;
+import org.jose4j.jwt.consumer.JwtContext;
 import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,8 +104,8 @@ import org.slf4j.MDC;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -349,33 +352,20 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         return accessToken;
     }
 
-    public AccessToken findAccessToken(String jwt) throws KapuaException {
-        final String idToken = extractFieldFromJwtPayload(jwt, AccessTokenAttributes.TOKEN_IDENTIFIER);
-        AccessToken accessToken;
-        accessToken = KapuaSecurityUtils.doPrivileged(() -> accessTokenService.findByTokenId(idToken));
-        return accessToken;
-    }
+    public AccessToken findAccessToken(String jwtToken) throws KapuaException {
+        final JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+                .setSkipAllValidators()
+                .setDisableRequireSignature()
+                .setSkipSignatureVerification()
+                .build();
 
-    /**
-     * Parse the provided 'jwt', validates it and extract a requested field from the payload. see https://metamug.com/article/security/decode-jwt-java.html for more info
-     *
-     * @param jwt The json web token to be validated. hopefully, will contain a valid payload from which the 'fieldName' value will be extracted
-     * @param fieldName  The name of the filed to extract
-     * @return The value for the requested 'fieldName'
-     * @throws KapuaParsingException if the validation of the jwt fails OR the "fieldname" is missing from the payload. NB: this method ignores validation of the signature
-     * @since 2.0.0
-     */
-    private String extractFieldFromJwtPayload(String jwt, String fieldName) throws KapuaParsingException {
         try {
-            String[] parts = jwt.split("\\.");
-            String headerToken = parts[0];
-            String payloadToken = parts[1];
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonHeader = objectMapper.readTree(Base64.getUrlDecoder().decode(headerToken));
-            JsonNode jsonPayload = objectMapper.readTree(Base64.getUrlDecoder().decode(payloadToken));
-            return jsonPayload.get(fieldName).asText();
-        } catch (Exception e) {
-            throw new KapuaParsingException("Jwt token (header or payload)");
+            final JwtContext jwtContext = jwtConsumer.process(jwtToken);
+            final String tokenIdentified = Optional.ofNullable(jwtContext.getJwtClaims().getClaimValue(AccessTokenAttributes.TOKEN_IDENTIFIER, String.class))
+                    .orElseThrow(() -> new AuthenticationException());
+            return KapuaSecurityUtils.doPrivileged(() -> accessTokenService.findByTokenId(tokenIdentified));
+        } catch (InvalidJwtException | MalformedClaimException e) {
+            throw new AuthenticationException();
         }
     }
 
