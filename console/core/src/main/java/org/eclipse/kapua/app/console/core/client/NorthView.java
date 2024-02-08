@@ -61,14 +61,14 @@ import java.util.List;
 
 public class NorthView extends LayoutContainer {
 
-    private final ConsoleMessages messages = GWT.create(ConsoleMessages.class);
-    private final ConsoleCredentialMessages credentialMessages = GWT.create(ConsoleCredentialMessages.class);
+    private static final ConsoleMessages CONSOLE_MESSAGES = GWT.create(ConsoleMessages.class);
+    private static final ConsoleCredentialMessages CONSOLE_CREDENTIAL_MESSAGES = GWT.create(ConsoleCredentialMessages.class);
 
-    private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
-    private final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
-    private final GwtConsoleServiceAsync gwtConsoleService = GWT.create(GwtConsoleService.class);
-    private final GwtSettingsServiceAsync gwtSettingService = GWT.create(GwtSettingsService.class);
-    private final GwtMfaCredentialOptionsServiceAsync gwtMfaCredentialOptionsService = GWT.create(GwtMfaCredentialOptionsService.class);
+    private static final GwtAuthorizationServiceAsync GWT_AUTHORIZATION_SERVICE = GWT.create(GwtAuthorizationService.class);
+    private static final GwtAccountServiceAsync GWT_ACCOUNT_SERVICE = GWT.create(GwtAccountService.class);
+    private static final GwtConsoleServiceAsync GWT_CONSOLE_SERVICE = GWT.create(GwtConsoleService.class);
+    private static final GwtSettingsServiceAsync GWT_SETTINGS_SERVICE = GWT.create(GwtSettingsService.class);
+    private static final GwtMfaCredentialOptionsServiceAsync GWT_MFA_CREDENTIAL_OPTIONS_SERVICE = GWT.create(GwtMfaCredentialOptionsService.class);
 
     // UI stuff
     private final KapuaCloudConsole parent;
@@ -184,13 +184,13 @@ public class NorthView extends LayoutContainer {
                 //  (only if the current user is an INTERNAL one; note that an INTERNAL user has no ssoIdToken)
                 if (currentSession.getOpenIDIdToken() == null) {
                     KapuaMenuItem changePassword = new KapuaMenuItem();
-                    changePassword.setText(messages.changePassword());
+                    changePassword.setText(CONSOLE_MESSAGES.changePassword());
                     changePassword.setIcon(IconSet.KEY);
                     changePassword.addSelectionListener(new SelectionListener<MenuEvent>() {
 
                         @Override
                         public void componentSelected(MenuEvent ce) {
-                            gwtMfaCredentialOptionsService.findByUserId(currentSession.getAccountId(), currentSession.getUserId(), true, new AsyncCallback<GwtMfaCredentialOptions>() {
+                            GWT_MFA_CREDENTIAL_OPTIONS_SERVICE.findByUserId(currentSession.getAccountId(), currentSession.getUserId(), true, new AsyncCallback<GwtMfaCredentialOptions>() {
 
                                 @Override
                                 public void onFailure(Throwable caught) {
@@ -211,7 +211,7 @@ public class NorthView extends LayoutContainer {
                 }
 
                 KapuaMenuItem manageMfa = new KapuaMenuItem();
-                manageMfa.setText(credentialMessages.manageMfaMenuItem());
+                manageMfa.setText(CONSOLE_CREDENTIAL_MESSAGES.manageMfaMenuItem());
                 manageMfa.setIcon(IconSet.LOCK);
                 manageMfa.addSelectionListener(new SelectionListener<MenuEvent>() {
 
@@ -226,13 +226,13 @@ public class NorthView extends LayoutContainer {
                 userActionMenu.add(new SeparatorMenuItem());
                 // Logout menu item
                 KapuaMenuItem userLogoutMenuItem = new KapuaMenuItem();
-                userLogoutMenuItem.setText(messages.consoleHeaderUserActionLogout());
+                userLogoutMenuItem.setText(CONSOLE_MESSAGES.consoleHeaderUserActionLogout());
                 userLogoutMenuItem.setIcon(IconSet.SIGN_OUT);
                 userLogoutMenuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
 
                     @Override
                     public void componentSelected(MenuEvent ce) {
-                        gwtAuthorizationService.logout(new AsyncCallback<Void>() {
+                        GWT_AUTHORIZATION_SERVICE.logout(new AsyncCallback<Void>() {
 
                             @Override
                             public void onFailure(Throwable caught) {
@@ -242,7 +242,7 @@ public class NorthView extends LayoutContainer {
                             @Override
                             public void onSuccess(Void arg0) {
                                 if (currentSession.isSsoEnabled() && currentSession.getOpenIDIdToken() != null) {
-                                    gwtSettingService.getOpenIDLogoutUri(currentSession.getOpenIDIdToken(), new AsyncCallback<String>() {
+                                    GWT_SETTINGS_SERVICE.getOpenIDLogoutUri(currentSession.getOpenIDIdToken(), new AsyncCallback<String>() {
 
                                         @Override
                                         public void onFailure(Throwable caught) {
@@ -288,8 +288,8 @@ public class NorthView extends LayoutContainer {
      */
     public MenuItem createAccountNavigationMenuItem() {
         KapuaMenuItem mainAccountMenuItem = new KapuaMenuItem();
-        mainAccountMenuItem.setText(messages.accountSelectorItemYourAccount(accountName));
-        mainAccountMenuItem.setToolTip(messages.accountSelectorTooltipYourAccount());
+        mainAccountMenuItem.setText(CONSOLE_MESSAGES.accountSelectorItemYourAccount(accountName));
+        mainAccountMenuItem.setToolTip(CONSOLE_MESSAGES.accountSelectorTooltipYourAccount());
         mainAccountMenuItem.setIcon(IconSet.USER_MD);
         mainAccountMenuItem.setId(accountId);
         mainAccountMenuItem.addSelectionListener(switchToAccountListener);
@@ -303,7 +303,7 @@ public class NorthView extends LayoutContainer {
         populateNavigatorMenu(subAccountMenu, accountId);
 
         KapuaMenuItem switchToAccountMenuItem = new KapuaMenuItem();
-        switchToAccountMenuItem.setText(messages.consoleHeaderUserActionSwitchToAccount());
+        switchToAccountMenuItem.setText(CONSOLE_MESSAGES.consoleHeaderUserActionSwitchToAccount());
         switchToAccountMenuItem.setIcon(IconSet.USERS);
         switchToAccountMenuItem.setSubMenu(subAccountMenu);
 
@@ -319,15 +319,15 @@ public class NorthView extends LayoutContainer {
      */
     private void populateNavigatorMenu(final Menu menu, String accountId) {
         final KapuaMenuItem loadingChildAccounts;
-        loadingChildAccounts = new KapuaMenuItem(messages.accountSelectorLoadingChildAccounts());
-        loadingChildAccounts.setToolTip(messages.accountSelectorTooltipYourAccount());
+        loadingChildAccounts = new KapuaMenuItem(CONSOLE_MESSAGES.accountSelectorLoadingChildAccounts());
+        loadingChildAccounts.setToolTip(CONSOLE_MESSAGES.accountSelectorTooltipYourAccount());
         loadingChildAccounts.setIcon(IconSet.USER_MD);
         loadingChildAccounts.setId(accountId);
         loadingChildAccounts.disable();
 
         menu.add(loadingChildAccounts);
 
-        gwtAccountService.find(accountId, new AsyncCallback<GwtAccount>() {
+        GWT_ACCOUNT_SERVICE.find(accountId, new AsyncCallback<GwtAccount>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -339,7 +339,7 @@ public class NorthView extends LayoutContainer {
                 // If no children are found, add "No Child" label
                 if (result.getChildAccounts() != null && result.getChildAccounts().isEmpty()) {
                     menu.remove(loadingChildAccounts);
-                    MenuItem noChildMenuItem = new MenuItem(messages.accountSelectorItemNoChild());
+                    MenuItem noChildMenuItem = new MenuItem(CONSOLE_MESSAGES.accountSelectorItemNoChild());
                     noChildMenuItem.disable();
                     menu.add(noChildMenuItem);
                 } else {
@@ -387,9 +387,9 @@ public class NorthView extends LayoutContainer {
         String accountIdString = ce.getItem().getId();
 
         // Mask the whole page
-        parent.getViewport().mask(messages.accountSelectorMenuMaskLoading(accountName));
+        parent.getViewport().mask(CONSOLE_MESSAGES.accountSelectorMenuMaskLoading(accountName));
 
-        gwtAccountService.find(accountIdString, new AsyncCallback<GwtAccount>() {
+        GWT_ACCOUNT_SERVICE.find(accountIdString, new AsyncCallback<GwtAccount>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -399,7 +399,7 @@ public class NorthView extends LayoutContainer {
 
             @Override
             public void onSuccess(final GwtAccount result) {
-                gwtConsoleService.getCustomEntityViews(new AsyncCallback<List<MainViewDescriptor>>() {
+                GWT_CONSOLE_SERVICE.getCustomEntityViews(new AsyncCallback<List<MainViewDescriptor>>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
@@ -451,7 +451,7 @@ public class NorthView extends LayoutContainer {
             userDisplayName = username;
         }
 
-        userActionButton.setText(messages.consoleHeaderUserActionButtonLabel(userDisplayName, accountName));
+        userActionButton.setText(CONSOLE_MESSAGES.consoleHeaderUserActionButtonLabel(userDisplayName, accountName));
     }
 
 }

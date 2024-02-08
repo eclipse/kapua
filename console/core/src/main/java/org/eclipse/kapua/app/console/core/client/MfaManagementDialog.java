@@ -28,8 +28,8 @@ import org.eclipse.kapua.app.console.module.authentication.client.tabs.credentia
 
 public class MfaManagementDialog extends SimpleDialog {
 
-    private final ConsoleCredentialMessages credentialMessages = GWT.create(ConsoleCredentialMessages.class);
-    private final ConsoleMessages messages = GWT.create(ConsoleMessages.class);
+    private static final ConsoleMessages CONSOLE_MESSAGES = GWT.create(ConsoleMessages.class);
+    private static final ConsoleCredentialMessages CONSOLE_CREDENTIAL_MESSAGES = GWT.create(ConsoleCredentialMessages.class);
 
     private GwtSession currentSession;
 
@@ -59,7 +59,7 @@ public class MfaManagementDialog extends SimpleDialog {
 
     @Override
     public String getHeaderMessage() {
-        return credentialMessages.mfaDialogHeader();
+        return CONSOLE_CREDENTIAL_MESSAGES.mfaDialogHeader();
     }
 
     @Override
@@ -95,7 +95,7 @@ public class MfaManagementDialog extends SimpleDialog {
 
     @Override
     protected String getCancelButtonText() {
-        return messages.closeButton();
+        return CONSOLE_MESSAGES.closeButton();
     }
 
 }
