@@ -1015,8 +1015,8 @@ components:
     ### User MFA Entities ###
     mfaOption:
       $ref: './userMfa/userMfa.yaml#/components/schemas/mfaOption'
-    mfaOptionCreator:
-      $ref: './userMfa/userMfa.yaml#/components/schemas/mfaOptionCreator'
+    mfaOptionCreationResponse:
+      $ref: './userMfa/userMfa.yaml#/components/schemas/mfaOptionCreationResponse'
     ### User Credentials Entities ###
     passwordChangeRequest:
       $ref: './userCredentials/userCredentials.yaml#/components/schemas/passwordChangeRequest'

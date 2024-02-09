@@ -48,20 +48,13 @@ paths:
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: './user.yaml#/components/parameters/userId'
-      requestBody:
-        description: An object containing the properties for the new MfaOption to be created
-        content:
-          application/json:
-            schema:
-              $ref: '../userMfa/userMfa.yaml#/components/schemas/mfaOptionCreator'
-        required: true
       responses:
         201:
           description: The MfaOption that has just been created
           content:
             application/json:
               schema:
-                $ref: '../userMfa/userMfa.yaml#/components/schemas/mfaOption'
+                $ref: '../userMfa/userMfa.yaml#/components/schemas/mfaOptionCreationResponse'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

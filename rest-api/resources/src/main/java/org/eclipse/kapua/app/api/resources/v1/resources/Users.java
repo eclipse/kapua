@@ -25,8 +25,8 @@ import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
+import org.eclipse.kapua.service.authentication.credential.mfa.shiro.MfaOptionCreatorImpl;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -253,12 +253,8 @@ public class Users extends AbstractKapuaResource {
     @Deprecated
     public Response createMfa(
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("userId") EntityId userId,
-            MfaOptionCreator mfaOptionCreator) throws KapuaException {
-        mfaOptionCreator.setScopeId(scopeId);
-        mfaOptionCreator.setUserId(userId);
-
-        return returnCreated(mfaOptionService.create(mfaOptionCreator));
+            @PathParam("userId") EntityId userId) throws KapuaException {
+        return returnCreated(mfaOptionService.create(new MfaOptionCreatorImpl(scopeId, userId)));
     }
 
     /**

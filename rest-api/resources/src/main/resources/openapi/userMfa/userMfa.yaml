@@ -31,10 +31,33 @@ components:
               format: 'date-time'
           example:
             $ref: '#/components/examples/mfaOption/value'
-    mfaOptionCreator:
+    mfaOptionCreationResponse:
       allOf:
-        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntityCreator'
+        - $ref: '#/components/schemas/mfaOption'
         - type: object
+        - scratchCodes:
+          description: A list of one-use-only tokens to be used for authentication
+          type: array
+          items:
+            $ref: '#/components/schemas/scratchCode'
+      example:
+        $ref: '#/components/examples/mfaOptionCreationResponse/value'
+    scratchCode:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaEntity'
+        - description: An object containing the list of available scratch (one-use-only) codes for account recovery
+          type: object
+          properties:
+            scratchCode:
+              description: |
+                The one-time-code to use to recover the account
+              type: string
+            mfaOptionId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+                - description: The id of the MFA Option this code refers to
+          example:
+            $ref: '#/components/examples/scratchCode/value'
   examples:
     mfaOption:
       value:
@@ -47,5 +70,58 @@ components:
         modifiedBy: "AQ"
         optlock: 1,
         userId: "AQ"
-        trustKey: "exampleTrustKey"
+        trustKey: "52dfe60f-93e5-43b6-a071-dfc5df52da7b"
         trustExpirationDate: '2020-31-12T00:00:00.000Z'
+    scratchCode:
+      value:
+        type: scratchCode
+        id: "RAgOxnjSkEM"
+        scopeId: "AQ"
+        createdOn: "2021-05-12T08:04:21.962Z"
+        createdBy: "AQ"
+        scratchCode: "32930567"
+        mfaOptionId: "Tu4UpgmN0A4"
+    mfaOptionCreationResponse:
+      value:
+        type: mfaOption
+        id: "Tu4UpgmN0A4"
+        scopeId: "AQ"
+        createdOn: "2021-05-12T08:04:21.962Z"
+        createdBy: "AQ"
+        modifiedOn: "2021-05-12T08:04:21.962Z"
+        modifiedBy: "AQ"
+        optlock: 1,
+        userId: "AQ"
+        mfaSecretKey: "DN4CALTCLAHKCMRT6GPKKCTDVLUFSOCM"
+        qrCodeImage: "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"
+        scratchCodes:
+          - id: "RgHPZWpltNw"
+            scopeId: "AQ"
+            createdOn: "2024-02-09T07:58:42.174Z"
+            createdBy: "AQ"
+            scratchCode: "37721853"
+            mfaOptionId: "Tu4UpgmN0A4"
+          - id: "aJQoAVS4gtE"
+            scopeId: "AQ"
+            createdOn: "2024-02-09T07:58:42.174Z"
+            createdBy: "AQ"
+            scratchCode: "54644504"
+            mfaOptionId: "Tu4UpgmN0A4"
+          - id: "RAgOxnjSkEM"
+            scopeId: "AQ"
+            createdOn: "2024-02-09T07:58:42.174Z"
+            createdBy: "AQ"
+            scratchCode: "32930567"
+            mfaOptionId: "Tu4UpgmN0A4"
+          - id: "SCdg9xd1Crc"
+            scopeId: "AQ"
+            createdOn: "2024-02-09T07:58:42.174Z"
+            createdBy: "AQ"
+            scratchCode: "81508973"
+            mfaOptionId: "Tu4UpgmN0A4"
+          - id: "b0r_BCpc2k4"
+            scopeId: "AQ"
+            createdOn: "2024-02-09T07:58:42.174Z"
+            createdBy: "AQ"
+            scratchCode: "20795182"
+            mfaOptionId: "Tu4UpgmN0A4"
