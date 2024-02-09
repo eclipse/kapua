@@ -21,7 +21,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeRepository;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeService;
-import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.storage.TxManager;
@@ -41,19 +40,16 @@ public class ScratchCodeServiceImpl implements ScratchCodeService {
     private final ScratchCodeRepository scratchCodeRepository;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
-    private final AuthenticationUtils authenticationUtils;
 
     public ScratchCodeServiceImpl(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             TxManager txManager,
-            ScratchCodeRepository scratchCodeRepository,
-            AuthenticationUtils authenticationUtils) {
+            ScratchCodeRepository scratchCodeRepository) {
         this.txManager = txManager;
         this.scratchCodeRepository = scratchCodeRepository;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
-        this.authenticationUtils = authenticationUtils;
     }
 
     @Override

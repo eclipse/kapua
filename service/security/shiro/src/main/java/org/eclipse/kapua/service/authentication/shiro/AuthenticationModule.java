@@ -255,8 +255,7 @@ public class AuthenticationModule extends AbstractKapuaModule {
                 authorizationService,
                 permissionFactory,
                 jpaTxManagerFactory.create("kapua-authentication"),
-                scratchCodeRepository,
-                authenticationUtils);
+                scratchCodeRepository);
     }
 
     @Provides
