@@ -37,6 +37,7 @@ import org.eclipse.kapua.service.authentication.shiro.exceptions.MalformedAccess
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.authentication.token.AccessTokenAttributes;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.eclipse.kapua.service.certificate.CertificateAttributes;
 import org.eclipse.kapua.service.certificate.CertificateStatus;
@@ -91,6 +92,7 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
         // Token data
         String jwt = token.getTokenId();
 
+        //verify validity of this token
         final JwtClaims jwtClaims;
         try {
             String issuer = authenticationSetting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_ISSUER);
@@ -122,19 +124,20 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
             // This validates JWT
             final JwtContext jwtContext = jwtConsumer.process(jwt);
             jwtClaims = jwtContext.getJwtClaims();
-
+        // FIXME: JWT cert. could be cached to speed-up validation process
         } catch (KapuaException ke) {
             throw new AuthenticationException();
         } catch (InvalidJwtException e) {
             throw new MalformedAccessTokenException();
         }
+
         // Find accessToken
         final AccessToken accessToken;
         try {
-            final String tokenIdentifier = Optional.ofNullable(jwtClaims.getClaimValue("tokenIdentifier"))
+            final String tokenIdentifier = Optional.ofNullable(jwtClaims.getClaimValue(AccessTokenAttributes.TOKEN_IDENTIFIER))
                     .map(s -> (String) s)
                     .orElseThrow(() -> new ShiroException("Missing tokenIdentifier in jwt token"));
-            accessToken = accessTokenService.findByTokenId(tokenIdentifier);
+            accessToken = KapuaSecurityUtils.doPrivileged(() -> accessTokenService.findByTokenId(tokenIdentifier));
         } catch (KapuaParsingException e) {
             throw new MalformedAccessTokenException();
         } catch (KapuaException ke) {

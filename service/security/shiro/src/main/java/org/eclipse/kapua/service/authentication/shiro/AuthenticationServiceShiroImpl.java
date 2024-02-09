@@ -334,7 +334,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         }
     }
 
-    public AccessToken findAccessTokenSession(String jwtToken) throws KapuaException {
+    public AccessToken findAccessTokenSession(String jwt) throws KapuaException {
         AccessToken accessToken = null;
         try {
             KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
@@ -342,7 +342,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
                 accessToken = kapuaSession.getAccessToken();
 
                 if (accessToken == null) {
-                    accessToken = findAccessToken(jwtToken);
+                    accessToken = findAccessToken(jwt);
                 }
             }
         } finally {
@@ -352,7 +352,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         return accessToken;
     }
 
-    public AccessToken findAccessToken(String jwtToken) throws KapuaException {
+    public AccessToken findAccessToken(String jwt) throws KapuaException {
         final JwtConsumer jwtConsumer = new JwtConsumerBuilder()
                 .setSkipAllValidators()
                 .setDisableRequireSignature()
@@ -360,7 +360,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
                 .build();
 
         try {
-            final JwtContext jwtContext = jwtConsumer.process(jwtToken);
+            final JwtContext jwtContext = jwtConsumer.process(jwt);
             final String tokenIdentified = Optional.ofNullable(jwtContext.getJwtClaims().getClaimValue(AccessTokenAttributes.TOKEN_IDENTIFIER, String.class))
                     .orElseThrow(() -> new AuthenticationException());
             return KapuaSecurityUtils.doPrivileged(() -> accessTokenService.findByTokenId(tokenIdentified));
