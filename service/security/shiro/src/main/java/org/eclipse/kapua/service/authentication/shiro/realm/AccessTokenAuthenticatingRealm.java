@@ -49,6 +49,7 @@ import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.consumer.ErrorCodes;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
@@ -128,7 +129,11 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
         } catch (KapuaException ke) {
             throw new AuthenticationException();
         } catch (InvalidJwtException e) {
-            throw new MalformedAccessTokenException();
+            if (e.hasErrorCode(ErrorCodes.EXPIRED)) {
+                throw new ExpiredAccessTokenException();
+            } else {
+                throw new MalformedAccessTokenException();
+            }
         }
 
         // Find accessToken
@@ -151,10 +156,6 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
 
         // Check validity
         Date now = new Date();
-        if ((accessToken.getExpiresOn() != null && accessToken.getExpiresOn().before(now))) {
-            throw new ExpiredAccessTokenException();
-        }
-
         if (accessToken.getInvalidatedOn() != null && accessToken.getInvalidatedOn().before(now)) {
             throw new InvalidatedAccessTokenException();
         }
