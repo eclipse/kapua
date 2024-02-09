@@ -63,7 +63,7 @@ public class RolePermissionCachingRepository
         }
         final RolePermissionListResult fromWrapped = wrapped.findByRoleId(tx, scopeId, roleId);
 
-        entityCache.putList(scopeId, roleId, listResult);
+        entityCache.putList(scopeId, roleId, fromWrapped);
         return fromWrapped;
     }
 
