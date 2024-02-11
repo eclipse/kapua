@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.model.configuration.xml;
 
-import org.eclipse.kapua.commons.configuration.metatype.PasswordPropertyAdapter;
 import org.eclipse.kapua.commons.crypto.CryptoUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.xml.adapters.BooleanPropertyAdapter;
@@ -50,7 +49,7 @@ public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigProp
             put(ConfigPropertyType.charType, new CharPropertyAdapter());
             put(ConfigPropertyType.booleanType, new BooleanPropertyAdapter());
             put(ConfigPropertyType.shortType, new ShortPropertyAdapter());
-            put(ConfigPropertyType.passwordType, new PasswordPropertyAdapter(KapuaLocator.getInstance().getComponent(CryptoUtil.class)));
+            put(ConfigPropertyType.passwordType, new KuraPasswordPropertyAdapter(KapuaLocator.getInstance().getComponent(CryptoUtil.class)));
         }
     });
 
