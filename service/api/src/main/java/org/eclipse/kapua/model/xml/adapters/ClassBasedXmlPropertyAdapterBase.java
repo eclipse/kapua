@@ -33,13 +33,19 @@ public abstract class ClassBasedXmlPropertyAdapterBase<T> implements XmlProperty
     }
 
     @Override
+    public boolean doesEncrypt() {
+        return false;
+    }
+
+    @Override
     public void marshallValues(XmlPropertyAdapted<?> property, Object value) {
         if (!value.getClass().isArray()) {
             property.setArray(false);
-            property.setEncrypted(false);
+            property.setEncrypted(doesEncrypt());
             property.setValues(new String[]{marshallValue(value)});
         } else {
             property.setArray(true);
+            property.setEncrypted(doesEncrypt());
             Object[] nativeValues = (Object[]) value;
             String[] stringValues = new String[nativeValues.length];
             for (int i = 0; i < nativeValues.length; i++) {

@@ -10,26 +10,27 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.configuration.metatype;
+package org.eclipse.kapua.service.device.call.kura.model.configuration.xml;
 
 import org.eclipse.kapua.commons.crypto.CryptoUtil;
 import org.eclipse.kapua.model.xml.XmlPropertyAdapted;
 import org.eclipse.kapua.model.xml.adapters.ClassBasedXmlPropertyAdapterBase;
+import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraPassword;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class PasswordPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Password> {
+public class KuraPasswordPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<KuraPassword> {
     private final CryptoUtil cryptoUtil;
 
-    public PasswordPropertyAdapter(CryptoUtil cryptoUtil) {
-        super(Password.class);
+    public KuraPasswordPropertyAdapter(CryptoUtil cryptoUtil) {
+        super(KuraPassword.class);
         this.cryptoUtil = cryptoUtil;
     }
 
     @Override
     public boolean canMarshall(Class objectClass) {
-        return Password.class.equals(objectClass);
+        return KuraPassword.class.equals(objectClass);
     }
 
     @Override
@@ -43,18 +44,18 @@ public class PasswordPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Pa
     }
 
     @Override
-    public Password unmarshallValue(String value) {
-        return new Password(cryptoUtil.decodeBase64(value));
+    public KuraPassword unmarshallValue(String value) {
+        return new KuraPassword(cryptoUtil.decodeBase64(value));
     }
 
     @Override
     public Object unmarshallValues(XmlPropertyAdapted<?> property) {
         if (!property.getArray()) {
-            return property.isEncrypted() ? unmarshallValue(property.getValues()[0]) : new Password(property.getValues()[0]);
+            return property.isEncrypted() ? unmarshallValue(property.getValues()[0]) : new KuraPassword(property.getValues()[0]);
         } else {
             return Arrays
                     .stream(property.getValues())
-                    .map(value -> property.isEncrypted() ? unmarshallValue(value) : new Password(value))
+                    .map(value -> property.isEncrypted() ? unmarshallValue(value) : new KuraPassword(value))
                     .collect(Collectors.toList()).toArray();
         }
     }

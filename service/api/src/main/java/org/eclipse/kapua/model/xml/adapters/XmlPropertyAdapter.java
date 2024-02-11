@@ -17,6 +17,8 @@ import org.eclipse.kapua.model.xml.XmlPropertyAdapted;
 public interface XmlPropertyAdapter {
     boolean canMarshall(Class<?> objectClass);
 
+    boolean doesEncrypt();
+
     void marshallValues(XmlPropertyAdapted<?> property, Object value);
 
     Object unmarshallValues(XmlPropertyAdapted<?> property);
