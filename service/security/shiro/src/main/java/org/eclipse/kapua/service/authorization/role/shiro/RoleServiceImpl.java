@@ -164,10 +164,8 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
             if (roleRepository.countOtherEntitiesWithNameInScope(tx, role.getScopeId(), role.getId(), role.getName()) > 0) {
                 throw new KapuaDuplicateNameException(role.getName());
             }
-            current.setName(role.getName());
-            current.setDescription(role.getDescription());
             // Do update
-            return roleRepository.update(tx, current, current);
+            return roleRepository.update(tx, current, role);
         });
     }
 
