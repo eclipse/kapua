@@ -16,6 +16,7 @@ import org.eclipse.kapua.commons.rest.errors.ExceptionConfigurationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -24,6 +25,7 @@ public class ExceptionConfigurationProviderImpl implements ExceptionConfiguratio
     private final boolean showStackTrace;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Inject
     public ExceptionConfigurationProviderImpl(@Named("showStackTrace") Boolean showStackTrace) {
         this.showStackTrace = showStackTrace;
         logger.debug("Initialized with showStackTrace={}", showStackTrace);

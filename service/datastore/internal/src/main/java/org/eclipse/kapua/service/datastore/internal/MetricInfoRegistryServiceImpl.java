@@ -72,7 +72,7 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
     private final DatastorePredicateFactory datastorePredicateFactory;
     private final MessageRepository messageRepository;
     private final DatastoreSettings datastoreSettings;
-    protected final Integer MAX_RESULT_WINDOW_VALUE;
+    protected final Integer maxResultWindowValue;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -93,7 +93,7 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
         this.metricInfoRegistryFacade = metricInfoRegistryFacade;
         this.messageRepository = messageRepository;
         this.datastoreSettings = datastoreSettings;
-        MAX_RESULT_WINDOW_VALUE = datastoreSettings.getInt(DatastoreSettingsKey.MAX_RESULT_WINDOW_VALUE);
+        maxResultWindowValue = datastoreSettings.getInt(DatastoreSettingsKey.MAX_RESULT_WINDOW_VALUE);
     }
 
     @Override
@@ -138,7 +138,7 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
         if (query.getLimit() != null && query.getOffset() != null) {
             ArgumentValidator.notNegative(query.getLimit(), "limit");
             ArgumentValidator.notNegative(query.getOffset(), "offset");
-            ArgumentValidator.numLessThenOrEqual(query.getLimit() + query.getOffset(), MAX_RESULT_WINDOW_VALUE, "limit + offset");
+            ArgumentValidator.numLessThenOrEqual(query.getLimit() + query.getOffset(), maxResultWindowValue, "limit + offset");
         }
 
         try {

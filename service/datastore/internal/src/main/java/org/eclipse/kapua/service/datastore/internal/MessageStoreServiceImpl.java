@@ -23,7 +23,6 @@ import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -59,12 +58,11 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceImpl.class);
 
     private MetricsDatastore metrics;
-    protected AccountService accountService;
     protected AuthorizationService authorizationService;
     protected PermissionFactory permissionFactory;
 
     protected final Integer maxEntriesOnDelete;
-    protected Integer MAX_RESULT_WINDOW_VALUE;
+    protected final Integer maxResultWindowValue;
     protected final MessageStoreFacade messageStoreFacade;
 
     @Inject
@@ -83,7 +81,7 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
         this.metrics = metricsDatastore;
         this.messageStoreFacade = messageStoreFacade;
         maxEntriesOnDelete = datastoreSettings.getInt(DatastoreSettingsKey.CONFIG_MAX_ENTRIES_ON_DELETE);
-        MAX_RESULT_WINDOW_VALUE = datastoreSettings.getInt(DatastoreSettingsKey.MAX_RESULT_WINDOW_VALUE);
+        maxResultWindowValue = datastoreSettings.getInt(DatastoreSettingsKey.MAX_RESULT_WINDOW_VALUE);
     }
 
     @Override
@@ -163,7 +161,7 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
         if (query.getLimit() != null && query.getOffset() != null) {
             ArgumentValidator.notNegative(query.getLimit(), "limit");
             ArgumentValidator.notNegative(query.getOffset(), "offset");
-            ArgumentValidator.numLessThenOrEqual(query.getLimit() + query.getOffset(), MAX_RESULT_WINDOW_VALUE, "limit + offset");
+            ArgumentValidator.numLessThenOrEqual(query.getLimit() + query.getOffset(), maxResultWindowValue, "limit + offset");
         }
         try {
             return messageStoreFacade.query(query);
