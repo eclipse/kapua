@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authentication.user.shiro;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.KapuaRuntimeErrorCodes;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -142,6 +143,9 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
         Credential credential = credentialRepository.find(tx, scopeId, credentialId)
                 .orElseThrow(() -> new KapuaEntityNotFoundException(Credential.TYPE, credentialId));
 
+        if (credential.getCredentialType() != CredentialType.PASSWORD) {
+            throw new KapuaException(KapuaRuntimeErrorCodes.SERVICE_OPERATION_NOT_SUPPORTED);
+        }
         String plainNewPassword = passwordResetRequest.getNewPassword();
         try {
             passwordValidator.validatePassword(tx, credential.getScopeId(), plainNewPassword);

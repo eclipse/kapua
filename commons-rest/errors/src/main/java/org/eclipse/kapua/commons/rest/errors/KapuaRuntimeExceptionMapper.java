@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.rest.errors;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeErrorCodes;
-import org.eclipse.kapua.commons.rest.model.errors.ExceptionInfo;
+import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.rest.model.errors.ThrowableInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,33 +25,33 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class KapuaExceptionMapper implements ExceptionMapper<KapuaException> {
+public class KapuaRuntimeExceptionMapper implements ExceptionMapper<KapuaRuntimeException> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KapuaExceptionMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KapuaRuntimeExceptionMapper.class);
     public static final int UNPROCESSABLE_CONTENT_HTTP_CODE = 422;
 
     private final boolean showStackTrace;
 
     @Inject
-    public KapuaExceptionMapper(ExceptionConfigurationProvider exceptionConfigurationProvider) {
+    public KapuaRuntimeExceptionMapper(ExceptionConfigurationProvider exceptionConfigurationProvider) {
         this.showStackTrace = exceptionConfigurationProvider.showStackTrace();
     }
 
     @Override
-    public Response toResponse(KapuaException kapuaException) {
-        LOG.error(kapuaException.getMessage(), kapuaException);
-        if (kapuaException.getCode() instanceof KapuaRuntimeErrorCodes) {
-            switch ((KapuaRuntimeErrorCodes) kapuaException.getCode()) {
+    public Response toResponse(KapuaRuntimeException runtimeException) {
+        LOG.error(runtimeException.getMessage(), runtimeException);
+        if (runtimeException.getCode() instanceof KapuaRuntimeErrorCodes) {
+            switch ((KapuaRuntimeErrorCodes) runtimeException.getCode()) {
                 case SERVICE_OPERATION_NOT_SUPPORTED:
                     return Response
                             .status(UNPROCESSABLE_CONTENT_HTTP_CODE) //Unprocessable content.
-                            .entity(new ExceptionInfo(UNPROCESSABLE_CONTENT_HTTP_CODE, kapuaException, showStackTrace))
+                            .entity(new ThrowableInfo(UNPROCESSABLE_CONTENT_HTTP_CODE, runtimeException, showStackTrace))
                             .build();
             }
         }
         return Response
                 .serverError()
-                .entity(new ExceptionInfo(Status.INTERNAL_SERVER_ERROR.getStatusCode(), kapuaException, showStackTrace))
+                .entity(new ThrowableInfo(Status.INTERNAL_SERVER_ERROR.getStatusCode(), runtimeException, showStackTrace))
                 .build();
     }
 
