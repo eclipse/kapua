@@ -28,12 +28,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Singleton
 public class MessageListener extends ClientMessageListener {
 
     protected static Logger logger = LoggerFactory.getLogger(MessageListener.class);
