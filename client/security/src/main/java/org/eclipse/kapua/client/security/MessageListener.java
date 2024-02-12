@@ -38,7 +38,7 @@ public class MessageListener extends ClientMessageListener {
 
     protected static Logger logger = LoggerFactory.getLogger(MessageListener.class);
 
-    private final Map<String, ResponseContainer<?>> callbacks = new ConcurrentHashMap<>();//is not needed the synchronization
+    private static final Map<String, ResponseContainer<?>> CALLBACKS = new ConcurrentHashMap<>();//is not needed the synchronization
     private static ObjectMapper mapper = new ObjectMapper();
     private static ObjectReader reader = mapper.reader();//check if it's thread safe
 
@@ -73,7 +73,7 @@ public class MessageListener extends ClientMessageListener {
     }
 
     private <R extends Response> void updateResponseContainer(R response) throws JMSException, IOException {
-        ResponseContainer<R> responseContainer = (ResponseContainer<R>) callbacks.get(response.getRequestId());
+        ResponseContainer<R> responseContainer = (ResponseContainer<R>) CALLBACKS.get(response.getRequestId());
         if (responseContainer == null) {
             //internal error
             logger.error("Cannot find request container for requestId {}", response.getRequestId());
@@ -97,11 +97,11 @@ public class MessageListener extends ClientMessageListener {
     }
 
     public void registerCallback(String requestId, ResponseContainer<?> responseContainer) {
-        callbacks.put(requestId, responseContainer);
+        CALLBACKS.put(requestId, responseContainer);
     }
 
     public void removeCallback(String requestId) {
-        callbacks.remove(requestId);
+        CALLBACKS.remove(requestId);
     }
 
 }
