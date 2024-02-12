@@ -144,7 +144,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         try {
             if (usernameToCompare == null || !usernameToCompare.equals(username) ||
                     passToCompare == null || !passToCompare.equals(password)) {
-                throw new ActiveMQException(ActiveMQExceptionType.SECURITY_EXCEPTION, "User not authorized!");
+                throw new ActiveMQException(ActiveMQExceptionType.SECURITY_EXCEPTION, "User not authorized! Internal connection credential did not match!");
             }
             logger.info("Authenticate internal: user: {} - clientId: {} - connectionIp: {} - connectionId: {} - remoteIP: {} - isOpen: {}",
                     username, connectionInfo.getClientId(), connectionInfo.getClientIp(), remotingConnection.getID(),
@@ -285,7 +285,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
     //
     private void validateAuthResponse(AuthResponse authResponse) throws CredentialException, ActiveMQException {
         if (authResponse == null) {
-            throw new ActiveMQException(ActiveMQExceptionType.SECURITY_EXCEPTION, "User not authorized!");
+            throw new ActiveMQException(ActiveMQExceptionType.SECURITY_EXCEPTION, "User not authorized! Authentication response is empty!");
         } else if (authResponse.getErrorCode() != null) {
             //analyze response code
             String errorCode = authResponse.getErrorCode();
@@ -302,11 +302,11 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                 logger.warn("User {} not authorized ({})", authResponse.getUsername(), errorCode);
                 //TODO check if it's still valid with Artemis
                 // activeMQ-MQ will map SecurityException into a CONNECTION_REFUSED_NOT_AUTHORIZED message (see javadoc on top of this method)
-                throw new SecurityException("User not authorized!");
+                throw new SecurityException("User not authorized! Credentials provided are either locked, disabled or expired");
             } else {
                 //KapuaAuthenticationErrorCodes.AUTHENTICATION_ERROR - ILLEGAL_ACCESS etc
                 //TODO throw other exception?
-                throw new SecurityException("User not authorized!");
+                throw new SecurityException("User not authorized! Error returned from the Broker Authentication Service: " + errorCode);
             }
         }
     }
@@ -376,7 +376,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         if (accountResponse != null) {
             return new AccountInfo(KapuaEid.parseCompactId(accountResponse.getId()), accountResponse.getName());
         }
-        throw new SecurityException("User not authorized!");
+        throw new SecurityException("User not authorized! Cannot get Admin Account info!");
     }
 
     /**
@@ -400,7 +400,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         if (userResponse != null && userResponse.getScopeId() != null) {
             return KapuaEid.parseCompactId(userResponse.getScopeId());
         }
-        throw new SecurityException("User not authorized!");
+        throw new SecurityException("User not authorized! Cannot get scopeId for username:" + username);
     }
 
 }

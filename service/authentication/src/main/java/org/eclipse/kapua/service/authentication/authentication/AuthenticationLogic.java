@@ -193,13 +193,13 @@ public abstract class AuthenticationLogic {
                 if (deviceConnection.getReservedUserId() == null) {
                     checkConnectionCountByReservedUserId(scopeId, userId, 0);
                     if (!deviceConnection.getAllowUserChange() && !userId.equals(deviceConnection.getUserId())) {
-                        throw new SecurityException(USER_NOT_AUTHORIZED);
+                        throw new SecurityException(USER_NOT_AUTHORIZED + " DeviceConnection cannot change the user to connect!");
                         // TODO manage the error message. is it better to throw a more specific exception or keep it obfuscated for security reason?
                     }
                 } else {
                     checkConnectionCountByReservedUserId(scopeId, deviceConnection.getReservedUserId(), 1);
                     if (!userId.equals(deviceConnection.getReservedUserId())) {
-                        throw new SecurityException(USER_NOT_AUTHORIZED);
+                        throw new SecurityException(USER_NOT_AUTHORIZED + " DeviceConnection must use the Reserved User assigned to connect!");
                         // TODO manage the error message. is it better to throw a more specific exception or keep it obfuscated for security reason?
                     }
                 }
@@ -230,7 +230,7 @@ public abstract class AuthenticationLogic {
 
         Long connectionCountByReservedUserId = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionOptionService.count(query));
         if (connectionCountByReservedUserId != null && connectionCountByReservedUserId > count) {
-            throw new SecurityException(USER_NOT_AUTHORIZED);
+            throw new SecurityException(USER_NOT_AUTHORIZED + " DeviceConnection cannot use this user because its reserved for another DeviceConnection");
             // TODO manage the error message. is it better to throw a more specific exception or keep it obfuscated for security reason?
         }
     }
