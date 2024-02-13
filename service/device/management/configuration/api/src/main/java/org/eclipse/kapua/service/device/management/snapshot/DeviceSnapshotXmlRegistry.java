@@ -24,8 +24,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class DeviceSnapshotXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final DeviceSnapshotFactory DEVICE_SNAPSHOT_FACTORY = LOCATOR.getFactory(DeviceSnapshotFactory.class);
+    private final DeviceSnapshotFactory deviceSnapshotFactory = KapuaLocator.getInstance().getFactory(DeviceSnapshotFactory.class);
 
     /**
      * Creates a new device snapshots list
@@ -33,7 +32,7 @@ public class DeviceSnapshotXmlRegistry {
      * @return
      */
     public DeviceSnapshots newDeviceSnapshots() {
-        return DEVICE_SNAPSHOT_FACTORY.newDeviceSnapshots();
+        return deviceSnapshotFactory.newDeviceSnapshots();
     }
 
     /**
@@ -42,6 +41,6 @@ public class DeviceSnapshotXmlRegistry {
      * @return
      */
     public DeviceSnapshot newDeviceSnapshot() {
-        return DEVICE_SNAPSHOT_FACTORY.newDeviceSnapshot();
+        return deviceSnapshotFactory.newDeviceSnapshot();
     }
 }

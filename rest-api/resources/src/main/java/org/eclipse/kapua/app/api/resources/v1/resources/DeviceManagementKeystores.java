@@ -17,7 +17,6 @@ import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.keystore.DeviceKeystoreCertificateInfo;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService;
@@ -31,6 +30,7 @@ import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
 import org.eclipse.kapua.service.device.registry.Device;
 
+import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -50,10 +50,10 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/devices/{deviceId}/keystore")
 public class DeviceManagementKeystores extends AbstractKapuaResource {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final DeviceKeystoreManagementService DEVICE_KEYSTORE_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceKeystoreManagementService.class);
-    private static final DeviceKeystoreManagementFactory DEVICE_KEYSTORE_MANAGEMENT_FACTORY = LOCATOR.getFactory(DeviceKeystoreManagementFactory.class);
+    @Inject
+    public DeviceKeystoreManagementService deviceKeystoreManagementService;
+    @Inject
+    public DeviceKeystoreManagementFactory deviceKeystoreManagementFactory;
 
     /**
      * Gets the {@link DeviceKeystores} present on the {@link Device}.
@@ -71,7 +71,7 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("timeout") @DefaultValue("30000") Long timeout) throws KapuaException {
-        return DEVICE_KEYSTORE_MANAGEMENT_SERVICE.getKeystores(scopeId, deviceId, timeout);
+        return deviceKeystoreManagementService.getKeystores(scopeId, deviceId, timeout);
     }
 
     /**
@@ -94,11 +94,11 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
             @QueryParam("alias") String alias,
             @QueryParam("timeout") @DefaultValue("30000") Long timeout) throws KapuaException {
 
-        DeviceKeystoreItemQuery itemQuery = DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreItemQuery();
+        DeviceKeystoreItemQuery itemQuery = deviceKeystoreManagementFactory.newDeviceKeystoreItemQuery();
         itemQuery.setKeystoreId(keystoreId);
         itemQuery.setAlias(alias);
 
-        return DEVICE_KEYSTORE_MANAGEMENT_SERVICE.getKeystoreItems(scopeId, deviceId, itemQuery, timeout);
+        return deviceKeystoreManagementService.getKeystoreItems(scopeId, deviceId, itemQuery, timeout);
     }
 
     /**
@@ -121,7 +121,7 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
             @QueryParam("alias") String alias,
             @QueryParam("timeout") @DefaultValue("30000") Long timeout) throws KapuaException {
 
-        return DEVICE_KEYSTORE_MANAGEMENT_SERVICE.getKeystoreItem(scopeId, deviceId, keystoreId, alias, timeout);
+        return deviceKeystoreManagementService.getKeystoreItem(scopeId, deviceId, keystoreId, alias, timeout);
     }
 
     /**
@@ -144,7 +144,7 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
             @QueryParam("timeout") @DefaultValue("30000") Long timeout,
             DeviceKeystoreCertificateInfo keystoreCertificateInfo) throws KapuaException {
 
-        DEVICE_KEYSTORE_MANAGEMENT_SERVICE.createKeystoreCertificate(
+        deviceKeystoreManagementService.createKeystoreCertificate(
                 scopeId,
                 deviceId,
                 keystoreCertificateInfo.getKeystoreId(),
@@ -175,7 +175,7 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
             @QueryParam("timeout") @DefaultValue("30000") Long timeout,
             DeviceKeystoreCertificate keystoreCertificate) throws KapuaException {
 
-        DEVICE_KEYSTORE_MANAGEMENT_SERVICE.createKeystoreCertificate(scopeId, deviceId, keystoreCertificate, timeout);
+        deviceKeystoreManagementService.createKeystoreCertificate(scopeId, deviceId, keystoreCertificate, timeout);
 
         return returnNoContent();
     }
@@ -201,7 +201,7 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
             @QueryParam("timeout") @DefaultValue("30000") Long timeout,
             DeviceKeystoreKeypair deviceKeystoreKeypair) throws KapuaException {
 
-        DEVICE_KEYSTORE_MANAGEMENT_SERVICE.createKeystoreKeypair(scopeId, deviceId, deviceKeystoreKeypair, timeout);
+        deviceKeystoreManagementService.createKeystoreKeypair(scopeId, deviceId, deviceKeystoreKeypair, timeout);
 
         return returnNoContent();
     }
@@ -226,7 +226,7 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
             @QueryParam("timeout") @DefaultValue("30000") Long timeout,
             DeviceKeystoreCSRInfo deviceKeystoreCSRInfo) throws KapuaException {
 
-        return DEVICE_KEYSTORE_MANAGEMENT_SERVICE.createKeystoreCSR(scopeId, deviceId, deviceKeystoreCSRInfo, timeout);
+        return deviceKeystoreManagementService.createKeystoreCSR(scopeId, deviceId, deviceKeystoreCSRInfo, timeout);
     }
 
     /**
@@ -249,7 +249,7 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
             @QueryParam("alias") String alias,
             @QueryParam("timeout") @DefaultValue("30000") Long timeout) throws KapuaException {
 
-        DEVICE_KEYSTORE_MANAGEMENT_SERVICE.deleteKeystoreItem(scopeId, deviceId, keystoreId, alias, timeout);
+        deviceKeystoreManagementService.deleteKeystoreItem(scopeId, deviceId, keystoreId, alias, timeout);
 
         return returnNoContent();
     }

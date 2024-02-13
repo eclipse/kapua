@@ -125,7 +125,7 @@
         <protobuf.version>3.23.2</protobuf.version>
         <qpid-jms-client.version>1.7.0</qpid-jms-client.version>
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
-        <reflections.version>0.9.12</reflections.version>
+        <reflections.version>0.10.2</reflections.version>
         <scada-utils.version>0.4.0</scada-utils.version>
         <shiro.version>1.12.0</shiro.version>
         <slf4j.version>1.7.33</slf4j.version>
@@ -2113,6 +2113,11 @@
             <dependency>
                 <groupId>org.glassfish.hk2</groupId>
                 <artifactId>hk2-locator</artifactId>
+                <version>${hk2-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>guice-bridge</artifactId>
                 <version>${hk2-api.version}</version>
             </dependency>
 

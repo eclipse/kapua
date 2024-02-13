@@ -74,8 +74,8 @@ public class KapuaCloudConsole implements EntryPoint {
 
     private static final Logger LOG = Logger.getLogger(KapuaCloudConsole.class.getName());
 
-    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
-    private static final ConsoleCoreMessages CORE_MSGS = GWT.create(ConsoleCoreMessages.class);
+    private static final ConsoleMessages CONSOLE_MESSAGES = GWT.create(ConsoleMessages.class);
+    private static final ConsoleCoreMessages CONSOLE_CORE_MESSAGES = GWT.create(ConsoleCoreMessages.class);
 
     private static final GwtAuthorizationServiceAsync GWT_AUTHORIZATION_SERVICE = GWT.create(GwtAuthorizationService.class);
     private static final GwtSettingsServiceAsync GWT_SETTINGS_SERVICE = GWT.create(GwtSettingsService.class);
@@ -360,7 +360,7 @@ public class KapuaCloudConsole implements EntryPoint {
             // Check if coming from failed OpenID Connect login (the user exists but she does not have the authorizations)
             if (error != null && error.equals("access_denied")) {
                 LOG.info("Access denied, OpenID Connect login failed");
-                ConsoleInfo.display(CORE_MSGS.loginSsoLoginError(), CORE_MSGS.ssoClientAuthenticationFailed());
+                ConsoleInfo.display(CONSOLE_CORE_MESSAGES.loginSsoLoginError(), CONSOLE_CORE_MESSAGES.ssoClientAuthenticationFailed());
             }
             showLoginDialog(viewport);
         }
@@ -380,7 +380,7 @@ public class KapuaCloudConsole implements EntryPoint {
             }
         });
 
-        loginDialog.setHeading(CORE_MSGS.loginTitle(productInformation.getProductName()));
+        loginDialog.setHeading(CONSOLE_CORE_MESSAGES.loginTitle(productInformation.getProductName()));
 
         if (!UserAgentUtils.isIE()) {
             Window.addResizeHandler(new ResizeHandler() {
@@ -399,14 +399,14 @@ public class KapuaCloudConsole implements EntryPoint {
 
         // show wait dialog
         final Dialog ssoLoginWaitDialog = new Dialog();
-        ssoLoginWaitDialog.setHeading(MSGS.ssoWaitDialog_title());
+        ssoLoginWaitDialog.setHeading(CONSOLE_MESSAGES.ssoWaitDialog_title());
         ssoLoginWaitDialog.setButtons("");
         ssoLoginWaitDialog.setClosable(false);
         ssoLoginWaitDialog.setResizable(false);
         ssoLoginWaitDialog.setModal(true);
         ssoLoginWaitDialog.setOnEsc(false);
 
-        Label label = new Label(MSGS.ssoWaitDialog_text());
+        Label label = new Label(CONSOLE_MESSAGES.ssoWaitDialog_text());
         ssoLoginWaitDialog.add(label);
 
         ssoLoginWaitDialog.show();
@@ -422,7 +422,7 @@ public class KapuaCloudConsole implements EntryPoint {
                 ssoLoginWaitDialog.hide();
 
                 LOG.info("OpenID Connect login failed.");
-                ConsoleInfo.display(CORE_MSGS.loginSsoLoginError(), caught.getLocalizedMessage());
+                ConsoleInfo.display(CONSOLE_CORE_MESSAGES.loginSsoLoginError(), caught.getLocalizedMessage());
 
                 // Invalidating the OpenID IdToken. We must use the OpenID logout here, since we don't have the KapuSession set yet, so we don't have the
                 // openIDidToken set inside. This means we cannot realy on the OpenIDLogoutListener to invalidate the OpenID session, instead we must do that
@@ -523,7 +523,7 @@ public class KapuaCloudConsole implements EntryPoint {
 
         // or else
 
-        ConsoleInfo.display(MSGS.error(), CORE_MSGS.loginError());
+        ConsoleInfo.display(CONSOLE_MESSAGES.error(), CONSOLE_CORE_MESSAGES.loginError());
         showLoginDialog(viewport);
     }
 }

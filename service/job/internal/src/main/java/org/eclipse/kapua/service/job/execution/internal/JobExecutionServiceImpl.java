@@ -60,7 +60,6 @@ public class JobExecutionServiceImpl implements JobExecutionService {
         ArgumentValidator.notNull(jobExecutionCreator.getScopeId(), "jobExecutionCreator.scopeId");
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, jobExecutionCreator.getScopeId()));
-
         JobExecution jobExecution = new JobExecutionImpl(jobExecutionCreator.getScopeId());
         jobExecution.setJobId(jobExecutionCreator.getJobId());
         jobExecution.setStartedOn(jobExecutionCreator.getStartedOn());

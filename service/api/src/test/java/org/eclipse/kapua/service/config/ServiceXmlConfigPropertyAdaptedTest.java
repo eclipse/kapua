@@ -18,6 +18,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.util.Optional;
+
 
 @Category(JUnitTests.class)
 public class ServiceXmlConfigPropertyAdaptedTest {
@@ -52,8 +54,8 @@ public class ServiceXmlConfigPropertyAdaptedTest {
             for (ServiceXmlConfigPropertyAdapted.ConfigPropertyType type : configPropertyType) {
                 for (String[] value : stringValues) {
                     ServiceXmlConfigPropertyAdapted serviceXmlConfigPropertyAdapted = new ServiceXmlConfigPropertyAdapted(name, type, value);
-                    Assert.assertNull("Null expected.", serviceXmlConfigPropertyAdapted.getName());
-                    Assert.assertFalse("False expected.", serviceXmlConfigPropertyAdapted.getArray());
+                    Assert.assertEquals("Name expected.", name, serviceXmlConfigPropertyAdapted.getName());
+                    Assert.assertEquals("False expected.", Optional.ofNullable(serviceXmlConfigPropertyAdapted.getValues()).map(v -> v.length > 1).orElse(false), serviceXmlConfigPropertyAdapted.getArray());
                     Assert.assertEquals("Expected and actual values should be the same.", type, serviceXmlConfigPropertyAdapted.getType());
                     Assert.assertFalse("False expected", serviceXmlConfigPropertyAdapted.isEncrypted());
                     Assert.assertEquals("Expected and actual values should be the same.", value, serviceXmlConfigPropertyAdapted.getValues());

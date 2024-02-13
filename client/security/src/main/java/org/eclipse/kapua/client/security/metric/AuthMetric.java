@@ -13,15 +13,15 @@
 package org.eclipse.kapua.client.security.metric;
 
 import com.codahale.metrics.Timer;
-
-import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-public class AuthMetric {
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
-    private static final AuthMetric AUTH_METRIC = new AuthMetric();
+@Singleton
+public class AuthMetric {
 
     public static final String DISCONNECT = "disconnect";
     public static final String USER = "user";
@@ -36,17 +36,16 @@ public class AuthMetric {
     private AuthFailureMetric failure;
     private Timer removeConnection;
 
-    public static AuthMetric getInstance() {
-        return AUTH_METRIC;
-    }
-
-    private AuthMetric() {
-        adminLogin = new AuthLoginMetric(ADMIN);
-        userLogin = new AuthLoginMetric(USER);
-        extConnectorTime = new AuthTimeMetric();
-        failure = new AuthFailureMetric();
-        MetricsService metricsService = MetricServiceFactory.getInstance();
-        removeConnection = metricsService.getTimer(CommonsMetric.module, AuthMetric.USER, REMOVE_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
+    @Inject
+    public AuthMetric(AuthLoginMetricFactory authLoginMetricFactory,
+                      MetricsService metricsService,
+                      @Named("metricModuleName")
+                      String metricModuleName) {
+        adminLogin = authLoginMetricFactory.authLoginMetric(ADMIN);
+        userLogin = authLoginMetricFactory.authLoginMetric(USER);
+        extConnectorTime = new AuthTimeMetric(metricsService, metricModuleName);
+        failure = new AuthFailureMetric(metricsService, metricModuleName);
+        removeConnection = metricsService.getTimer(metricModuleName, AuthMetric.USER, REMOVE_CONNECTION, MetricsLabel.TIME, MetricsLabel.SECONDS);
     }
 
     public AuthLoginMetric getAdminLogin() {
@@ -67,6 +66,7 @@ public class AuthMetric {
 
     /**
      * Remove connection total time
+     *
      * @return
      */
     public Timer getRemoveConnection() {

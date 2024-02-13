@@ -24,22 +24,21 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class JobDeviceManagementOperationXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final JobDeviceManagementOperationFactory JOB_STEP_FACTORY = LOCATOR.getFactory(JobDeviceManagementOperationFactory.class);
+    private final JobDeviceManagementOperationFactory jobDeviceManagementOperationFactory = KapuaLocator.getInstance().getFactory(JobDeviceManagementOperationFactory.class);
 
     public JobDeviceManagementOperation newJobDeviceManagementOperation() {
-        return JOB_STEP_FACTORY.newEntity(null);
+        return jobDeviceManagementOperationFactory.newEntity(null);
     }
 
     public JobDeviceManagementOperationCreator newJobDeviceManagementOperationCreator() {
-        return JOB_STEP_FACTORY.newCreator(null);
+        return jobDeviceManagementOperationFactory.newCreator(null);
     }
 
     public JobDeviceManagementOperationListResult newJobDeviceManagementOperationListResult() {
-        return JOB_STEP_FACTORY.newListResult();
+        return jobDeviceManagementOperationFactory.newListResult();
     }
 
     public JobDeviceManagementOperationQuery newQuery() {
-        return JOB_STEP_FACTORY.newQuery(null);
+        return jobDeviceManagementOperationFactory.newQuery(null);
     }
 }

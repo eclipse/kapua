@@ -28,6 +28,7 @@ import java.util.Random;
  *
  * @since 1.2.0
  */
+//TODO: FIXME: promote from static utility to injectable collaborator
 public class RandomUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(RandomUtils.class);

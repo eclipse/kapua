@@ -23,8 +23,11 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  */
 public class KapuaIdAdapter extends XmlAdapter<String, KapuaId> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final KapuaIdFactory KAPUA_ID_FACTORY = LOCATOR.getFactory(KapuaIdFactory.class);
+    private final KapuaIdFactory kapuaIdFactory;
+
+    public KapuaIdAdapter() {
+        this.kapuaIdFactory = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class);
+    }
 
     @Override
     public String marshal(KapuaId v) throws Exception {
@@ -33,6 +36,6 @@ public class KapuaIdAdapter extends XmlAdapter<String, KapuaId> {
 
     @Override
     public KapuaId unmarshal(String v) throws Exception {
-        return v != null ? KAPUA_ID_FACTORY.newKapuaId(v) : null;
+        return v != null ? kapuaIdFactory.newKapuaId(v) : null;
     }
 }

@@ -31,8 +31,7 @@ import java.util.stream.Collectors;
  */
 public class AccountParentPathXmlAdapter extends XmlAdapter<String, String> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final KapuaIdFactory KAPUA_ID_FACTORY = LOCATOR.getFactory(KapuaIdFactory.class);
+    private final KapuaIdFactory kapuaIdFactory = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class);
 
     @Override
     public String marshal(String parentAccountPathLong) {
@@ -43,7 +42,7 @@ public class AccountParentPathXmlAdapter extends XmlAdapter<String, String> {
 
             List<String> parentAccountPathBase64List =
                     Arrays.stream(parentAccountPathLongTokens)
-                            .map(p -> KAPUA_ID_FACTORY.newKapuaId(new BigInteger(p)).toCompactId())
+                            .map(p -> kapuaIdFactory.newKapuaId(new BigInteger(p)).toCompactId())
                             .collect(Collectors.toList());
 
             return "/" + String.join("/", parentAccountPathBase64List);
@@ -60,7 +59,7 @@ public class AccountParentPathXmlAdapter extends XmlAdapter<String, String> {
             try {
                 List<String> parentAccountPathLongList =
                         Arrays.stream(parentAccountPathBase64Tokens)
-                                .map(p -> KAPUA_ID_FACTORY.newKapuaId(p).toStringId())
+                                .map(p -> kapuaIdFactory.newKapuaId(p).toStringId())
                                 .collect(Collectors.toList());
 
                 return "/" + String.join("/", parentAccountPathLongList);

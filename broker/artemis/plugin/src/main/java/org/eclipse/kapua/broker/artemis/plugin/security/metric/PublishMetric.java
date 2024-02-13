@@ -15,39 +15,37 @@ package org.eclipse.kapua.broker.artemis.plugin.security.metric;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Timer;
-
-import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-public class PublishMetric {
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
-    private static final PublishMetric PUBLISH_METRIC = new PublishMetric();
+@Singleton
+public class PublishMetric {
 
     public static final String PUBLISH = "publish";
 
     public static final String ALLOWED = "allowed";
     public static final String NOT_ALLOWED = "not_allowed";
 
-    private Counter allowedMessages;
-    private Counter notAllowedMessages;
-    private Timer time;
+    private final Counter allowedMessages;
+    private final Counter notAllowedMessages;
+    private final Timer time;
     // message size
-    private Histogram messageSizeAllowed;
+    private final Histogram messageSizeAllowed;
 
-    public static PublishMetric getInstance() {
-        return PUBLISH_METRIC;
-    }
-
-    private PublishMetric() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    @Inject
+    private PublishMetric(MetricsService metricsService,
+                          @Named("metricModuleName")
+                          String metricModuleName) {
         // publish/subscribe
-        allowedMessages = metricsService.getCounter(CommonsMetric.module, PUBLISH, ALLOWED);
-        notAllowedMessages = metricsService.getCounter(CommonsMetric.module, PUBLISH, NOT_ALLOWED);
-        time = metricsService.getTimer(CommonsMetric.module, PUBLISH, MetricsLabel.TIME, MetricsLabel.SECONDS);
+        allowedMessages = metricsService.getCounter(metricModuleName, PUBLISH, ALLOWED);
+        notAllowedMessages = metricsService.getCounter(metricModuleName, PUBLISH, NOT_ALLOWED);
+        time = metricsService.getTimer(metricModuleName, PUBLISH, MetricsLabel.TIME, MetricsLabel.SECONDS);
         // message size
-        messageSizeAllowed = metricsService.getHistogram(CommonsMetric.module, PUBLISH, ALLOWED, MetricsLabel.SIZE, MetricsLabel.BYTES);
+        messageSizeAllowed = metricsService.getHistogram(metricModuleName, PUBLISH, ALLOWED, MetricsLabel.SIZE, MetricsLabel.BYTES);
     }
 
     public Counter getAllowedMessages() {

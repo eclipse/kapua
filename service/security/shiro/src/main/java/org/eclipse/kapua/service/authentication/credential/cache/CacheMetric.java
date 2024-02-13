@@ -12,16 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.cache;
 
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.Counter;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
+@Singleton
 public class CacheMetric {
 
     private static final Logger logger = LoggerFactory.getLogger(CacheMetric.class);
@@ -33,30 +35,18 @@ public class CacheMetric {
     private Counter cachePutError;
     private Counter passwordEncryptionError;
 
-    private static CacheMetric instance;
-
-    public synchronized static CacheMetric getInstance() {
-        if (instance == null) {
-            try {
-                instance = new CacheMetric();
-            } catch (KapuaException e) {
-                //TODO throw runtime exception
-                logger.error("Creating metrics error: {}", e.getMessage(), e);
-            }
-        }
-        return instance;
-    }
-
-    private CacheMetric() throws KapuaException {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
-        cacheMiss = metricsService.getCounter(CommonsMetric.module, AUTH_CACHE, "miss");
-        cacheHit = metricsService.getCounter(CommonsMetric.module, AUTH_CACHE, "hit");
-        cachePutError = metricsService.getCounter(CommonsMetric.module, AUTH_CACHE, "put", MetricsLabel.ERROR);
-        passwordEncryptionError = metricsService.getCounter(CommonsMetric.module, AUTH_CACHE, "encryption", MetricsLabel.ERROR);
+    @Inject
+    public CacheMetric(MetricsService metricsService,
+                       @Named("metricModuleName")
+                       String metricModuleName) throws KapuaException {
+        cacheMiss = metricsService.getCounter(metricModuleName, AUTH_CACHE, "miss");
+        cacheHit = metricsService.getCounter(metricModuleName, AUTH_CACHE, "hit");
+        cachePutError = metricsService.getCounter(metricModuleName, AUTH_CACHE, "put", MetricsLabel.ERROR);
+        passwordEncryptionError = metricsService.getCounter(metricModuleName, AUTH_CACHE, "encryption", MetricsLabel.ERROR);
     }
 
     public Counter getCacheHit() {
-         return cacheHit;
+        return cacheHit;
     }
 
     public Counter getCacheMiss() {

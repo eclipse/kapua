@@ -16,6 +16,7 @@ import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactory;
 import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
+import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
@@ -30,7 +31,8 @@ public class AuthenticationServiceModule extends ServiceEventTransactionalModule
             CredentialService credentialService,
             AccessTokenService accessTokenService,
             KapuaAuthenticationSetting authenticationSetting,
-            ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory) {
+            ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory,
+            ServiceEventBus serviceEventBus) {
         super(Arrays.asList(
                                 ServiceInspector.getEventBusClients(credentialService, CredentialService.class),
                                 ServiceInspector.getEventBusClients(accessTokenService, AccessTokenService.class)
@@ -40,6 +42,7 @@ public class AuthenticationServiceModule extends ServiceEventTransactionalModule
                         .collect(Collectors.toList())
                         .toArray(new ServiceEventClientConfiguration[0]),
                 authenticationSetting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_EVENT_ADDRESS),
-                serviceEventTransactionalHousekeeperFactory);
+                serviceEventTransactionalHousekeeperFactory,
+                serviceEventBus);
     }
 }

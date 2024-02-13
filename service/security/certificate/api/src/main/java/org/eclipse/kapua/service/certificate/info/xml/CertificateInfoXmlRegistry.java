@@ -24,22 +24,21 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class CertificateInfoXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final CertificateInfoFactory FACTORY = LOCATOR.getFactory(CertificateInfoFactory.class);
+    private final CertificateInfoFactory certificateInfoFactory = KapuaLocator.getInstance().getFactory(CertificateInfoFactory.class);
 
     public CertificateInfo newCertificateInfo() {
-        return FACTORY.newEntity(null);
+        return certificateInfoFactory.newEntity(null);
     }
 
     public CertificateInfoCreator newCreator() {
-        return FACTORY.newCreator(null);
+        return certificateInfoFactory.newCreator(null);
     }
 
     public CertificateInfoQuery newQuery() {
-        return FACTORY.newQuery(null);
+        return certificateInfoFactory.newQuery(null);
     }
 
     public CertificateInfoListResult newListResult() {
-        return FACTORY.newListResult();
+        return certificateInfoFactory.newListResult();
     }
 }

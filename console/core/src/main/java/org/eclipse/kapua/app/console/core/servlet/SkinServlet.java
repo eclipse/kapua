@@ -12,10 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.servlet;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
-
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +32,8 @@ public class SkinServlet extends HttpServlet {
 
     private static final long serialVersionUID = -5374075152873372059L;
     private static final Logger LOGGER = LoggerFactory.getLogger(SkinServlet.class);
+    //Injection not supported here, unfortunately
+    private ConsoleSetting consoleSetting = ConsoleSetting.getInstance();
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
@@ -43,7 +44,7 @@ public class SkinServlet extends HttpServlet {
             w = response.getWriter();
 
             // check to see if we have an external resource directory configured
-            ConsoleSetting consoleSetting = ConsoleSetting.getInstance();
+            ConsoleSetting consoleSetting = this.consoleSetting;
             String resourceDir = consoleSetting.getString(ConsoleSettingKeys.SKIN_RESOURCE_DIR);
             if (resourceDir != null && resourceDir.trim().length() != 0) {
 

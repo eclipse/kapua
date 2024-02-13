@@ -12,43 +12,43 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.jms.JMSException;
-import javax.jms.Message;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import org.apache.qpid.jms.message.JmsTextMessage;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.client.security.ServiceClient.SecurityAction;
 import org.eclipse.kapua.client.security.amqpclient.ClientMessageListener;
+import org.eclipse.kapua.client.security.bean.AuthResponse;
 import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.bean.MessageConstants;
-import org.eclipse.kapua.client.security.bean.AuthResponse;
-import org.eclipse.kapua.client.security.bean.ResponseContainer;
 import org.eclipse.kapua.client.security.bean.Response;
+import org.eclipse.kapua.client.security.bean.ResponseContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+@Singleton
 public class MessageListener extends ClientMessageListener {
 
     protected static Logger logger = LoggerFactory.getLogger(MessageListener.class);
 
     private static final Map<String, ResponseContainer<?>> CALLBACKS = new ConcurrentHashMap<>();//is not needed the synchronization
-
     private static ObjectMapper mapper = new ObjectMapper();
     private static ObjectReader reader = mapper.reader();//check if it's thread safe
 
-    //TODO inject!!!!
     private MetricsClientSecurity metrics;
 
-    public MessageListener() {
-        metrics = MetricsClientSecurity.getInstance();
+    @Inject
+    public MessageListener(MetricsClientSecurity metricsClientSecurity) {
+        this.metrics = metricsClientSecurity;
     }
 
     @Override
@@ -56,17 +56,17 @@ public class MessageListener extends ClientMessageListener {
         try {
             SecurityAction securityAction = SecurityAction.valueOf(message.getStringProperty(MessageConstants.HEADER_ACTION));
             switch (securityAction) {
-            case brokerConnect:
-                updateResponseContainer(buildAuthResponseFromMessage((JmsTextMessage)message));
-                break;
-            case brokerDisconnect:
-                updateResponseContainer(buildAuthResponseFromMessage((JmsTextMessage)message));
-                break;
-            case getEntity:
-                updateResponseContainer(buildAccountResponseFromMessage((JmsTextMessage)message));
-                break;
-            default:
-                throw new KapuaRuntimeException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "action");
+                case brokerConnect:
+                    updateResponseContainer(buildAuthResponseFromMessage((JmsTextMessage) message));
+                    break;
+                case brokerDisconnect:
+                    updateResponseContainer(buildAuthResponseFromMessage((JmsTextMessage) message));
+                    break;
+                case getEntity:
+                    updateResponseContainer(buildAccountResponseFromMessage((JmsTextMessage) message));
+                    break;
+                default:
+                    throw new KapuaRuntimeException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "action");
             }
         } catch (JMSException | IOException e) {
             metrics.getLoginCallbackError().inc();
@@ -75,14 +75,13 @@ public class MessageListener extends ClientMessageListener {
     }
 
     private <R extends Response> void updateResponseContainer(R response) throws JMSException, IOException {
-        ResponseContainer<R> responseContainer = (ResponseContainer<R>)CALLBACKS.get(response.getRequestId());
-        if (responseContainer==null) {
+        ResponseContainer<R> responseContainer = (ResponseContainer<R>) CALLBACKS.get(response.getRequestId());
+        if (responseContainer == null) {
             //internal error
             logger.error("Cannot find request container for requestId {}", response.getRequestId());
             metrics.getLoginCallbackTimeout().inc();
-        }
-        else {
-            synchronized(responseContainer) {
+        } else {
+            synchronized (responseContainer) {
                 responseContainer.setResponse(response);
                 responseContainer.notify();
             }
@@ -99,11 +98,11 @@ public class MessageListener extends ClientMessageListener {
         return reader.readValue(body, EntityResponse.class);
     }
 
-    public static void registerCallback(String requestId, ResponseContainer<?> responseContainer) {
+    public void registerCallback(String requestId, ResponseContainer<?> responseContainer) {
         CALLBACKS.put(requestId, responseContainer);
     }
 
-    public static void removeCallback(String requestId) {
+    public void removeCallback(String requestId) {
         CALLBACKS.remove(requestId);
     }
 

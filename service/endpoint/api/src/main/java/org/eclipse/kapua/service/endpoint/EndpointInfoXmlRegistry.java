@@ -19,8 +19,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class EndpointInfoXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final EndpointInfoFactory FACTORY = LOCATOR.getFactory(EndpointInfoFactory.class);
+    private final EndpointInfoFactory endpointInfoFactory = KapuaLocator.getInstance().getFactory(EndpointInfoFactory.class);
 
     /**
      * Creates a new {@link EndpointInfo} instance
@@ -28,7 +27,7 @@ public class EndpointInfoXmlRegistry {
      * @return
      */
     public EndpointInfo newEntity() {
-        return FACTORY.newEntity(null);
+        return endpointInfoFactory.newEntity(null);
     }
 
     /**
@@ -37,7 +36,7 @@ public class EndpointInfoXmlRegistry {
      * @return
      */
     public EndpointInfoCreator newCreator() {
-        return FACTORY.newCreator(null);
+        return endpointInfoFactory.newCreator(null);
     }
 
     /**
@@ -46,7 +45,7 @@ public class EndpointInfoXmlRegistry {
      * @return
      */
     public EndpointInfoListResult newListResult() {
-        return FACTORY.newListResult();
+        return endpointInfoFactory.newListResult();
     }
 
     /**
@@ -55,10 +54,10 @@ public class EndpointInfoXmlRegistry {
      * @return
      */
     public EndpointInfoQuery newQuery() {
-        return FACTORY.newQuery(null);
+        return endpointInfoFactory.newQuery(null);
     }
 
     public EndpointUsage newEndpointUsage() {
-        return FACTORY.newEndpointUsage(null);
+        return endpointInfoFactory.newEndpointUsage(null);
     }
 }

@@ -36,8 +36,8 @@ import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCre
 
 public class ChangePasswordDialog extends SimpleDialog {
 
-    GwtCredentialServiceAsync credentialService = GWT.create(GwtCredentialService.class);
-    private static final ConsoleMessages CONSOLE_MSGS = GWT.create(ConsoleMessages.class);
+    private static final ConsoleMessages CONSOLE_MESSAGES = GWT.create(ConsoleMessages.class);
+    private static final GwtCredentialServiceAsync GWT_CREDENTIAL_SERVICE = GWT.create(GwtCredentialService.class);
 
     private TextField<String> oldPassword;
     private TextField<String> newPassword;
@@ -82,7 +82,7 @@ public class ChangePasswordDialog extends SimpleDialog {
         credentialFormPanel.add(confirmPassword);
 
         passwordTooltip = new LabelField();
-        credentialService.getMinPasswordLength(currentSession.getAccountId(), new AsyncCallback<Integer>() {
+        GWT_CREDENTIAL_SERVICE.getMinPasswordLength(currentSession.getAccountId(), new AsyncCallback<Integer>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -117,7 +117,7 @@ public class ChangePasswordDialog extends SimpleDialog {
 
     @Override
     public void submit() {
-        credentialService.changePassword(xsrfToken, oldPassword.getValue(), newPassword.getValue(), code.getValue(), currentSession.getUserId(), currentSession.getAccountId(), new AsyncCallback<Void>() {
+        GWT_CREDENTIAL_SERVICE.changePassword(xsrfToken, oldPassword.getValue(), newPassword.getValue(), code.getValue(), currentSession.getUserId(), currentSession.getAccountId(), new AsyncCallback<Void>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -130,17 +130,17 @@ public class ChangePasswordDialog extends SimpleDialog {
                     GwtKapuaException gwtCaught = (GwtKapuaException) caught;
                     if (gwtCaught.getCode().equals(GwtKapuaErrorCode.INVALID_USERNAME_PASSWORD)) {
                         if (credentialFormPanel.findComponent(code) != null) {
-                            ConsoleInfo.display(CONSOLE_MSGS.error(), ActionDialog.MSGS.changePasswordError(MSGS.changePasswordErrorWrongOldPasswordOrMfaCode()));
+                            ConsoleInfo.display(CONSOLE_MESSAGES.error(), ActionDialog.MSGS.changePasswordError(MSGS.changePasswordErrorWrongOldPasswordOrMfaCode()));
                         } else {
-                            ConsoleInfo.display(CONSOLE_MSGS.error(), ActionDialog.MSGS.changePasswordError(MSGS.changePasswordErrorWrongOldPassword()));
+                            ConsoleInfo.display(CONSOLE_MESSAGES.error(), ActionDialog.MSGS.changePasswordError(MSGS.changePasswordErrorWrongOldPassword()));
                             oldPassword.markInvalid(MSGS.changePasswordErrorWrongOldPassword());
                         }
                     } else if (gwtCaught.getCode().equals(GwtKapuaErrorCode.UNAUTHENTICATED)) {
-                        ConsoleInfo.display(CONSOLE_MSGS.error(), ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
+                        ConsoleInfo.display(CONSOLE_MESSAGES.error(), ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
                         hide();
                         TokenCleaner.cleanToken();
                     } else {
-                        ConsoleInfo.display(CONSOLE_MSGS.error(), ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
+                        ConsoleInfo.display(CONSOLE_MESSAGES.error(), ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
                     }
                 }
             }

@@ -14,35 +14,26 @@ package org.eclipse.kapua.service.device.management.commons.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
+import javax.inject.Inject;
+
 /**
  * Class that offers access to device management settings
  *
  * @since 1.0
- *
  */
 public class DeviceManagementSetting extends AbstractKapuaSetting<DeviceManagementSettingKey> {
 
     /**
      * Resource file from which source properties.
-     *
      */
     private static final String DEVICE_MANAGEMENT_SETTING_RESOURCE = "device-management-setting.properties";
-
-    private static final DeviceManagementSetting INSTANCE = new DeviceManagementSetting();
 
     /**
      * Constructor
      */
-    private DeviceManagementSetting() {
+    @Inject
+    public DeviceManagementSetting() {
         super(DEVICE_MANAGEMENT_SETTING_RESOURCE);
     }
 
-    /**
-     * Get a singleton instance of {@link DeviceManagementSetting}.
-     *
-     * @return
-     */
-    public static DeviceManagementSetting getInstance() {
-        return INSTANCE;
-    }
 }

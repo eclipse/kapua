@@ -13,7 +13,6 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectPayload;
@@ -33,6 +32,8 @@ import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
 
+import javax.inject.Inject;
+
 /**
  * {@link Translator} implementation from {@link KuraDisconnectMessage} to {@link KapuaDisconnectMessage}
  *
@@ -40,10 +41,12 @@ import org.eclipse.kapua.translator.exception.TranslateException;
  */
 public class TranslatorLifeDisconnectKuraKapua extends Translator<KuraDisconnectMessage, KapuaDisconnectMessage> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
-    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+    @Inject
+    private AccountService accountService;
+    @Inject
+    private DeviceRegistryService deviceRegistryService;
+    @Inject
+    private TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
 
     @Override
     public KapuaDisconnectMessage translate(KuraDisconnectMessage kuraDisconnectMessage) throws TranslateException {
@@ -52,12 +55,12 @@ public class TranslatorLifeDisconnectKuraKapua extends Translator<KuraDisconnect
             kapuaDisconnectMessage.setChannel(translate(kuraDisconnectMessage.getChannel()));
             kapuaDisconnectMessage.setPayload(translate(kuraDisconnectMessage.getPayload()));
 
-            Account account = ACCOUNT_SERVICE.findByName(kuraDisconnectMessage.getChannel().getScope());
+            Account account = accountService.findByName(kuraDisconnectMessage.getChannel().getScope());
             if (account == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraDisconnectMessage.getChannel().getScope());
             }
 
-            Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), kuraDisconnectMessage.getChannel().getClientId());
+            Device device = deviceRegistryService.findByClientId(account.getId(), kuraDisconnectMessage.getChannel().getClientId());
             if (device == null) {
                 throw new KapuaEntityNotFoundException(Device.class.toString(), kuraDisconnectMessage.getChannel().getClientId());
             }
@@ -67,7 +70,7 @@ public class TranslatorLifeDisconnectKuraKapua extends Translator<KuraDisconnect
             kapuaDisconnectMessage.setCapturedOn(kuraDisconnectMessage.getPayload().getTimestamp());
             kapuaDisconnectMessage.setSentOn(kuraDisconnectMessage.getPayload().getTimestamp());
             kapuaDisconnectMessage.setReceivedOn(kuraDisconnectMessage.getTimestamp());
-            kapuaDisconnectMessage.setPosition(TranslatorKuraKapuaUtils.translate(kuraDisconnectMessage.getPayload().getPosition()));
+            kapuaDisconnectMessage.setPosition(translatorKuraKapuaUtils.translate(kuraDisconnectMessage.getPayload().getPosition()));
 
             return kapuaDisconnectMessage;
         } catch (InvalidChannelException | InvalidPayloadException te) {

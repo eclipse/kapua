@@ -52,11 +52,11 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
  */
 public class LoginDialog extends Dialog {
 
-    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
-    private static final ConsoleCoreMessages CORE_MSGS = GWT.create(ConsoleCoreMessages.class);
+    private static final ConsoleMessages CONSOLE_MESSAGES = GWT.create(ConsoleMessages.class);
+    private static final ConsoleCoreMessages CONSOLE_CORE_MESSAGES = GWT.create(ConsoleCoreMessages.class);
 
-    private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
-    private final GwtSettingsServiceAsync gwtSettingService = GWT.create(GwtSettingsService.class);
+    private static final GwtAuthorizationServiceAsync GWT_AUTHORIZATION_SERVICE = GWT.create(GwtAuthorizationService.class);
+    private static final GwtSettingsServiceAsync GWT_SETTINGS_SERVICE = GWT.create(GwtSettingsService.class);
 
     private GwtSession currentSession;
     private TextField<String> username;
@@ -114,7 +114,7 @@ public class LoginDialog extends Dialog {
         };
 
         username = new TextField<String>();
-        username.setFieldLabel(CORE_MSGS.loginUsername());
+        username.setFieldLabel(CONSOLE_CORE_MESSAGES.loginUsername());
         username.addKeyListener(keyListener);
         username.setAllowBlank(false);
         username.addListener(Events.OnBlur, changeListener);
@@ -123,18 +123,18 @@ public class LoginDialog extends Dialog {
 
         password = new TextField<String>();
         password.setPassword(true);
-        password.setFieldLabel(CORE_MSGS.loginPassword());
+        password.setFieldLabel(CONSOLE_CORE_MESSAGES.loginPassword());
         password.addKeyListener(keyListener);
         password.setAllowBlank(false);
         password.addListener(Events.OnBlur, changeListener);
 
         add(password);
 
-        gwtSettingService.getOpenIDEnabled(new AsyncCallback<Boolean>() {
+        GWT_SETTINGS_SERVICE.getOpenIDEnabled(new AsyncCallback<Boolean>() {
 
             @Override
             public void onFailure(Throwable caught) {
-                ConsoleInfo.display(CORE_MSGS.loginSsoEnabledError(), caught.getLocalizedMessage());
+                ConsoleInfo.display(CONSOLE_CORE_MESSAGES.loginSsoEnabledError(), caught.getLocalizedMessage());
             }
 
             @Override
@@ -190,14 +190,14 @@ public class LoginDialog extends Dialog {
         super.createButtons();
 
         status = new Status();
-        status.setBusy(MSGS.waitMsg());
+        status.setBusy(CONSOLE_MESSAGES.waitMsg());
         status.hide();
         status.setAutoWidth(true);
 
         getButtonBar().add(status);
         getButtonBar().add(new FillToolItem());
 
-        reset = new Button(CORE_MSGS.loginReset());
+        reset = new Button(CONSOLE_CORE_MESSAGES.loginReset());
         reset.disable();
 
         reset.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -213,7 +213,7 @@ public class LoginDialog extends Dialog {
             }
         });
 
-        login = new Button(CORE_MSGS.loginLogin());
+        login = new Button(CONSOLE_CORE_MESSAGES.loginLogin());
         login.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
@@ -222,7 +222,7 @@ public class LoginDialog extends Dialog {
             }
         });
 
-        ssoLogin = new Button(CORE_MSGS.loginSsoLogin());
+        ssoLogin = new Button(CONSOLE_CORE_MESSAGES.loginSsoLogin());
         ssoLogin.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
@@ -239,11 +239,11 @@ public class LoginDialog extends Dialog {
     }
 
     protected void doSsoLogin() {
-        gwtSettingService.getOpenIDLoginUri(new AsyncCallback<String>() {
+        GWT_SETTINGS_SERVICE.getOpenIDLoginUri(new AsyncCallback<String>() {
 
             @Override
             public void onFailure(Throwable caught) {
-                ConsoleInfo.display(CORE_MSGS.loginSsoLoginError(), caught.getLocalizedMessage());
+                ConsoleInfo.display(CONSOLE_CORE_MESSAGES.loginSsoLoginError(), caught.getLocalizedMessage());
             }
 
             @Override
@@ -265,12 +265,12 @@ public class LoginDialog extends Dialog {
      */
     protected void onSubmit() {
         if (username.getValue() == null && password.getValue() == null) {
-            ConsoleInfo.display(MSGS.dialogError(), MSGS.usernameAndPasswordRequired());
+            ConsoleInfo.display(CONSOLE_MESSAGES.dialogError(), CONSOLE_MESSAGES.usernameAndPasswordRequired());
             password.markInvalid(password.getErrorMessage());
         } else if (username.getValue() == null) {
-            ConsoleInfo.display(MSGS.dialogError(), MSGS.usernameFieldRequired());
+            ConsoleInfo.display(CONSOLE_MESSAGES.dialogError(), CONSOLE_MESSAGES.usernameFieldRequired());
         } else if (password.getValue() == null) {
-            ConsoleInfo.display(MSGS.dialogError(), MSGS.passwordFieldRequired());
+            ConsoleInfo.display(CONSOLE_MESSAGES.dialogError(), CONSOLE_MESSAGES.passwordFieldRequired());
             password.markInvalid(password.getErrorMessage());
         } else {
 
@@ -299,7 +299,7 @@ public class LoginDialog extends Dialog {
         GwtLoginCredential credentials = new GwtLoginCredential(username.getValue(), password.getValue());
         credentials.setTrustKey(trustKey);
 
-        gwtAuthorizationService.login(credentials, false, new AsyncCallback<GwtSession>() {
+        GWT_AUTHORIZATION_SERVICE.login(credentials, false, new AsyncCallback<GwtSession>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -309,7 +309,7 @@ public class LoginDialog extends Dialog {
                         mfaLoginDialog.show();
                         return;
                     } else {
-                        ConsoleInfo.display(CORE_MSGS.loginError(), caught.getLocalizedMessage());
+                        ConsoleInfo.display(CONSOLE_CORE_MESSAGES.loginError(), caught.getLocalizedMessage());
                     }
                     CookieUtils.removeCookie(CookieUtils.KAPUA_COOKIE_TRUST + username.getValue());
                 } else {
@@ -328,7 +328,7 @@ public class LoginDialog extends Dialog {
     }
 
     public void performLogout() {
-        gwtAuthorizationService.logout(new AsyncCallback<Void>() {
+        GWT_AUTHORIZATION_SERVICE.logout(new AsyncCallback<Void>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -337,7 +337,7 @@ public class LoginDialog extends Dialog {
 
             @Override
             public void onSuccess(Void arg0) {
-                ConsoleInfo.display(MSGS.popupInfo(), MSGS.loggedOut());
+                ConsoleInfo.display(CONSOLE_MESSAGES.popupInfo(), CONSOLE_MESSAGES.loggedOut());
                 resetDialog();
                 show();
             }

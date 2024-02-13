@@ -12,12 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.lifecycle;
 
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-import com.codahale.metrics.Counter;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class MetricsLifecycle {
 
     public static final String CONSUMER_LIFECYCLE = "consumer_lifecycle";
@@ -46,17 +48,8 @@ public class MetricsLifecycle {
     private Counter deviceAppsMessage;
     private Counter deviceErrorMessage;
 
-    private static MetricsLifecycle instance;
-
-    public synchronized static MetricsLifecycle getInstance() {
-        if (instance == null) {
-            instance = new MetricsLifecycle();
-        }
-        return instance;
-    }
-
-    private MetricsLifecycle() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    @Inject
+    public MetricsLifecycle(MetricsService metricsService) {
         converterAppMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERTER, MetricsLabel.MESSAGE_APPS);
         converterBirthMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERTER, MetricsLabel.MESSAGE_BIRTH);
         converterDcMessage = metricsService.getCounter(CONSUMER_LIFECYCLE, CONVERTER, MetricsLabel.MESSAGE_DC);

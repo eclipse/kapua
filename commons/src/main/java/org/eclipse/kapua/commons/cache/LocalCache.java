@@ -12,23 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.cache;
 
+import com.google.common.cache.CacheBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.cache.CacheBuilder;
-
 /**
  * Default Kapua cache implementation
  *
- * @param <K>
- *            keys type
- * @param <V>
- *            values type
- *
+ * @param <K> keys type
+ * @param <V> values type
  * @since 1.0
  */
 public class LocalCache<K, V> implements Cache<K, V> {
@@ -43,12 +39,9 @@ public class LocalCache<K, V> implements Cache<K, V> {
     /**
      * Construct local cache setting the provided max size, expire time and default value
      *
-     * @param sizeMax
-     *            max cache size
-     * @param expireAfter
-     *            values ttl (seconds)
-     * @param defaultValue
-     *            default value (if no value is found for a specific key)
+     * @param sizeMax      max cache size
+     * @param expireAfter  values ttl (seconds)
+     * @param defaultValue default value (if no value is found for a specific key)
      */
     public LocalCache(int sizeMax, int expireAfter, final V defaultValue) {
         this.defaultValue = defaultValue;
@@ -58,10 +51,8 @@ public class LocalCache<K, V> implements Cache<K, V> {
     /**
      * Construct local cache setting the provided max size and default value. <b>ttl is disabled, so no time based eviction will be performed.</b>
      *
-     * @param sizeMax
-     *            max cache size
-     * @param defaultValue
-     *            default value (if no value is found for a specific key)
+     * @param sizeMax      max cache size
+     * @param defaultValue default value (if no value is found for a specific key)
      */
     public LocalCache(int sizeMax, final V defaultValue) {
         this.defaultValue = defaultValue;
@@ -122,5 +113,9 @@ public class LocalCache<K, V> implements Cache<K, V> {
     @Override
     public void invalidateAll() {
         cache.invalidateAll();
+    }
+
+    public boolean containsKey(K k) {
+        return cache.asMap().containsKey(k);
     }
 }

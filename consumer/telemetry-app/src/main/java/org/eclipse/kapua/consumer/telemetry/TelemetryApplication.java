@@ -12,13 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.telemetry;
 
-import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.camel.setting.ServiceSettingKey;
 import org.eclipse.kapua.service.security.SecurityUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 
@@ -27,6 +25,7 @@ import org.springframework.context.annotation.PropertySource;
  */
 @ImportResource({"classpath:spring/applicationContext.xml"})
 @PropertySource(value = "classpath:spring/application.properties")
+@Import(SpringBridge.class)
 @SpringBootApplication
 public class TelemetryApplication {
 
@@ -39,13 +38,10 @@ public class TelemetryApplication {
     }
 
     public static void main(String[] args) {
-        //TODO to be injected!!!
-        CommonsMetric.module = MetricsTelemetry.CONSUMER_TELEMETRY;
         //statically set parameters
         System.setProperty(ServiceSettingKey.JAXB_CONTEXT_CLASS_NAME.key(), TelemetryJAXBContextProvider.class.getName());
         //org.springframework.context.ApplicationContext is not needed now so don't keep the SpringApplication.run return
         SpringApplication.run(TelemetryApplication.class, args);
-        KapuaLocator.getInstance().getService(DataPopulatorRunner.class).runPopulators();
     }
 
 }

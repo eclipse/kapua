@@ -22,21 +22,10 @@ public class SimpleSetting extends AbstractKapuaSetting<SimpleSettingKeys> {
 
     private static final String SETTING_RESOURCE = "kapua-security-registration-simple-setting.properties";
 
-    private static final SimpleSetting INSTANCE = new SimpleSetting();
-
     /**
      * Construct a new setting reading settings from {@link SimpleSetting#SETTING_RESOURCE}
      */
-    private SimpleSetting() {
+    public SimpleSetting() {
         super(SETTING_RESOURCE);
-    }
-
-    /**
-     * Return the setting instance (singleton)
-     *
-     * @return the settings instance
-     */
-    public static SimpleSetting getInstance() {
-        return INSTANCE;
     }
 }

@@ -14,6 +14,8 @@ package org.eclipse.kapua.app.api.core.settings;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
+import javax.inject.Inject;
+
 /**
  * API setting implementation.
  *
@@ -23,21 +25,11 @@ public class KapuaApiCoreSetting extends AbstractKapuaSetting<KapuaApiCoreSettin
 
     private static final String API_SETTING_RESOURCE = "kapua-api-core-settings.properties";
 
-    private static final KapuaApiCoreSetting INSTANCE = new KapuaApiCoreSetting();
-
     /**
      * Construct a new api setting reading settings from {@link KapuaApiCoreSetting#API_SETTING_RESOURCE}
      */
-    private KapuaApiCoreSetting() {
+    @Inject
+    public KapuaApiCoreSetting() {
         super(API_SETTING_RESOURCE);
-    }
-
-    /**
-     * Return the api setting instance (singleton)
-     *
-     * @return A singleton instance of {@link KapuaApiCoreSetting}
-     */
-    public static KapuaApiCoreSetting getInstance() {
-        return INSTANCE;
     }
 }

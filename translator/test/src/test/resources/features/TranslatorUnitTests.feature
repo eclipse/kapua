@@ -18,8 +18,8 @@ Feature: Translator Service
 
   #KapuaTranslatorApi
 
-@setup
-@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+  @setup
+  @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
   Scenario: Initialize test environment
     Given Init Jaxb Context
     And Init Security Context
@@ -35,7 +35,7 @@ Feature: Translator Service
   Trying to make translation from CommandRequestMessage to null message.
   NullPointerException should be thrown.
 
-    Given I expect the exception "NullPointerException" with the text "*"
+    Given I expect the exception "TranslatorNotFoundException" with the text "*"
     When I try to translate from "org.eclipse.kapua.service.device.management.command.message.internal.CommandRequestMessage" to ""
     Then An exception was thrown
 
@@ -43,14 +43,14 @@ Feature: Translator Service
   Trying to make translation from null to KuraRequestMessage message.
   NullPointerException should be thrown.
 
-    Given I expect the exception "NullPointerException" with the text "*"
+    Given I expect the exception "TranslatorNotFoundException" with the text "*"
     When I try to translate from "" to "org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage"
     Then An exception was thrown
 
   Scenario: Translating empty message to empty message
   Trying to do translation without messages. NPE exception should be thrown.
 
-    Given I expect the exception "NullPointerException" with the text "*"
+    Given I expect the exception "TranslatorNotFoundException" with the text "*"
     And I try to translate from "" to ""
     Then An exception was thrown
 
@@ -221,9 +221,9 @@ Feature: Translator Service
     Given I create jms message with invalid payload "invalidPayload" and valid topic "kapua-sys/rpione3/DEPLOY-V2/GET/packages"
     When I try to translate jms message to kura data message
     Then I got kura data message channel with "kapua-sys" scope, "rpione3" client id and proper semanticPart
-      | DEPLOY-V2    |
-      | GET          |
-      | packages     |
+      | DEPLOY-V2 |
+      | GET       |
+      | packages  |
     And I got kura data message with "byte[]" payload body
     And No exception was thrown
 
@@ -234,9 +234,9 @@ Feature: Translator Service
     Given I create jms message with valid payload "response.code" and valid topic "kapua-sys/rpione3/DEPLOY-V2/GET/packages"
     When I try to translate jms message to kura data message
     Then I got kura data message channel with "kapua-sys" scope, "rpione3" client id and proper semanticPart
-      | DEPLOY-V2    |
-      | GET          |
-      | packages     |
+      | DEPLOY-V2 |
+      | GET       |
+      | packages  |
     And I got kura data message with proper payload metrics response code 200
     And No exception was thrown
 
@@ -247,9 +247,9 @@ Feature: Translator Service
     Given I create jms message with empty payload "" and valid topic "kapua-sys/rpione3/DEPLOY-V2/GET/packages"
     And I try to translate jms message to kura data message
     And I got kura data message channel with "kapua-sys" scope, "rpione3" client id and proper semanticPart
-      | DEPLOY-V2    |
-      | GET          |
-      | packages     |
+      | DEPLOY-V2 |
+      | GET       |
+      | packages  |
     Then I got kura data message with empty payload
     And No exception was thrown
 
@@ -328,7 +328,7 @@ Feature: Translator Service
     When I try to translate invalid kura data message to jms message
     Then An exception was thrown
 
-@teardown
+  @teardown
   Scenario: Reset Security Context for all scenarios
     Given Reset Security Context
     And An exception was thrown

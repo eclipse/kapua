@@ -12,10 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.camel.listener.error;
 
-import java.text.ParseException;
-import java.util.Base64;
-import java.util.Date;
-
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.spi.UriEndpoint;
@@ -25,6 +21,11 @@ import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.client.message.MessageConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import java.text.ParseException;
+import java.util.Base64;
+import java.util.Date;
 
 @UriEndpoint(title = "error message processor", syntax = "bean:ecErrorMessageListener", scheme = "bean")
 public class ErrorMessageListener {
@@ -40,7 +41,12 @@ public class ErrorMessageListener {
     private static final String EMPTY_ENCODED_MESSAGE = "N/A";
     private static final String EMPTY_FIELD = "N/A";
 
-    private MetricsCamel metrics;
+    @Inject
+    public ErrorMessageListener(MetricsCamel metricsCamel) {
+        this.metrics = metricsCamel;
+    }
+
+    private final MetricsCamel metrics;
 
     /**
      * Process an error condition for an elaboration of a generic message
@@ -49,7 +55,6 @@ public class ErrorMessageListener {
      * @param message
      */
     public void processMessage(Exchange exchange, Object message) {
-        metrics = MetricsCamel.getInstance();
         logToFile(exchange, message);
     }
 
@@ -70,7 +75,7 @@ public class ErrorMessageListener {
         Long timestamp = message.getHeader(MessageConstants.HEADER_KAPUA_RECEIVED_TIMESTAMP, Long.class);
         String encodedMsg = getMessageBody(message.getBody());
         String messageLogged = String.format("%s %s %s",
-                clientId!=null ? clientId : EMPTY_FIELD,
+                clientId != null ? clientId : EMPTY_FIELD,
                 getDate(timestamp),
                 encodedMsg);
         if (logger.isDebugEnabled()) {
@@ -81,7 +86,7 @@ public class ErrorMessageListener {
 
     private String getDate(Long timestamp) {
         try {
-            return timestamp!=null ? KapuaDateUtils.formatDate(new Date(timestamp)) : EMPTY_FIELD;
+            return timestamp != null ? KapuaDateUtils.formatDate(new Date(timestamp)) : EMPTY_FIELD;
         } catch (ParseException e) {
             return String.format(ERROR_DATE_MESSAGE_PATTERN, timestamp);
         }
@@ -90,26 +95,23 @@ public class ErrorMessageListener {
     private String getMessageBody(Object body) {
         if (body instanceof CamelKapuaMessage<?>) {
             return getBody(((CamelKapuaMessage<?>) body).getMessage());
-        }
-        else {
+        } else {
             return getBody(body);
         }
     }
 
     private String getBody(Object body) {
         if (body instanceof byte[]) {
-            return Base64.getEncoder().encodeToString((byte[])body);
-        }
-        else if (body instanceof String) {
+            return Base64.getEncoder().encodeToString((byte[]) body);
+        } else if (body instanceof String) {
             return Base64.getEncoder().encodeToString(((String) body).getBytes());
-        }
-        else {
+        } else {
             //something wrong happened! Anyway try to get the message to be stored
-            logger.error("Wrong message type! Cannot convert message of type {} to byte[]", body!=null ? body.getClass() : "N/A");
+            logger.error("Wrong message type! Cannot convert message of type {} to byte[]", body != null ? body.getClass() : "N/A");
             metrics.getUnknownBodyType().inc();
             return EMPTY_ENCODED_MESSAGE;
         }
-     }
+    }
 
     protected int getDelivery(Exchange exchange) {
         return exchange.getIn().getHeader(JMS_EXCHANGE_REDELIVERY_COUNTER, 0, Integer.class);

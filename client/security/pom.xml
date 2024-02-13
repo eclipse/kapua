@@ -53,10 +53,6 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-service-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-service-client</artifactId>
-        </dependency>
         <!-- just for service bus settings - should be moved to service-api???? -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>

@@ -12,12 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
-import com.codahale.metrics.Counter;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class MetricsAuthentication {
 
     public static final String SERVICE_AUTHENTICATION = "service_authentication";
@@ -36,17 +38,8 @@ public class MetricsAuthentication {
     private Counter converter;
     private Counter converterError;
 
-    private static MetricsAuthentication instance;
-
-    public synchronized static MetricsAuthentication getInstance() {
-        if (instance == null) {
-            instance = new MetricsAuthentication();
-        }
-        return instance;
-    }
-
-    private MetricsAuthentication() {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    @Inject
+    public MetricsAuthentication(MetricsService metricsService) {
         converter = metricsService.getCounter(SERVICE_AUTHENTICATION, CONVERTER, MetricsLabel.SUCCESS);
         converterError = metricsService.getCounter(SERVICE_AUTHENTICATION, CONVERTER, MetricsLabel.ERROR);
 

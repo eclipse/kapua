@@ -95,5 +95,10 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-system-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-grapher</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
     </dependencies>
 </project>

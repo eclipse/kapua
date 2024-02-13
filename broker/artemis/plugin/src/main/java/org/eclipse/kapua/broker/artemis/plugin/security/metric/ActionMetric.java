@@ -12,11 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.artemis.plugin.security.metric;
 
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import com.codahale.metrics.Counter;
 import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
-
-import com.codahale.metrics.Counter;
 
 public class ActionMetric {
 
@@ -24,8 +22,7 @@ public class ActionMetric {
     private Counter success;
     private Counter failure;
 
-    public ActionMetric(String module, String component, String type) {
-        MetricsService metricsService = MetricServiceFactory.getInstance();
+    public ActionMetric(MetricsService metricsService, String module, String component, String type) {
         attempt = metricsService.getCounter(module, component, type, MetricsLabel.ATTEMPT);
         success = metricsService.getCounter(module, component, type, MetricsLabel.SUCCESS);
         failure = metricsService.getCounter(module, component, type, MetricsLabel.FAILURE);

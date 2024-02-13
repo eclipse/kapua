@@ -28,7 +28,10 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-commons</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-service-storable-api</artifactId>
+        </dependency>
         <!-- External dependencies -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

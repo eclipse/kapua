@@ -35,12 +35,13 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DeviceKeystoreKeypairCreateTargetProcessor extends AbstractDeviceTargetProcessor implements TargetProcessor {
-    private static final DeviceKeystoreManagementService KEYSTORE_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceKeystoreManagementService.class);
-    private static final DeviceKeystoreManagementFactory KEYSTORE_MANAGEMENT_FACTORY = LOCATOR.getFactory(DeviceKeystoreManagementFactory.class);
 
     @Inject
+    DeviceKeystoreManagementService deviceKeystoreManagementService;
+    @Inject
+    DeviceKeystoreManagementFactory deviceKeystoreManagementFactory;
+    @Inject
     JobContext jobContext;
-
     @Inject
     StepContext stepContext;
 
@@ -60,7 +61,7 @@ public class DeviceKeystoreKeypairCreateTargetProcessor extends AbstractDeviceTa
         String attributes = stepContextWrapper.getStepProperty(DeviceKeypairCreatePropertyKeys.ATTRIBUTES, String.class);
         Long timeout = stepContextWrapper.getStepProperty(DeviceKeypairCreatePropertyKeys.TIMEOUT, Long.class);
 
-        DeviceKeystoreKeypair deviceKeystoreKeypair = KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreKeypair();
+        DeviceKeystoreKeypair deviceKeystoreKeypair = deviceKeystoreManagementFactory.newDeviceKeystoreKeypair();
 
         deviceKeystoreKeypair.setKeystoreId(keystoreId);
         deviceKeystoreKeypair.setAlias(alias);
@@ -69,6 +70,6 @@ public class DeviceKeystoreKeypairCreateTargetProcessor extends AbstractDeviceTa
         deviceKeystoreKeypair.setSignatureAlgorithm(signatureAlgorithm);
         deviceKeystoreKeypair.setAttributes(attributes);
 
-        KapuaSecurityUtils.doPrivileged(() -> KEYSTORE_MANAGEMENT_SERVICE.createKeystoreKeypair(jobTarget.getScopeId(), jobTarget.getJobTargetId(), deviceKeystoreKeypair, timeout));
+        KapuaSecurityUtils.doPrivileged(() -> deviceKeystoreManagementService.createKeystoreKeypair(jobTarget.getScopeId(), jobTarget.getJobTargetId(), deviceKeystoreKeypair, timeout));
     }
 }

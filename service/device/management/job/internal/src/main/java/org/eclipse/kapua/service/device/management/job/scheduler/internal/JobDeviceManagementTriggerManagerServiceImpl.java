@@ -17,7 +17,6 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceManagementTriggerManagerService;
@@ -44,6 +43,7 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionS
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Date;
 
@@ -57,43 +57,38 @@ public class JobDeviceManagementTriggerManagerServiceImpl implements JobDeviceMa
 
     private static final Logger LOG = LoggerFactory.getLogger(JobDeviceManagementTriggerManagerServiceImpl.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private final JobEngineService jobEngineService;
+    private final JobEngineFactory jobEngineFactory;
+    private final JobStepService jobStepService;
+    private final JobStepFactory jobStepFactory;
+    private final JobTargetService jobTargetService;
+    private final JobTargetFactory jobTargetFactory;
+    private final TriggerDefinitionService triggerDefinitionService;
+    private final TriggerService triggerService;
+    private final TriggerFactory triggerFactory;
 
-    private static final JobEngineService JOB_ENGINE_SERVICE = LOCATOR.getService(JobEngineService.class);
-    private static final JobEngineFactory JOB_ENGINE_FACTORY = LOCATOR.getFactory(JobEngineFactory.class);
-
-    private static final JobStepService JOB_STEP_SERVICE = LOCATOR.getService(JobStepService.class);
-    private static final JobStepFactory JOB_STEP_FACTORY = LOCATOR.getFactory(JobStepFactory.class);
-
-    private static final JobTargetService JOB_TARGET_SERVICE = LOCATOR.getService(JobTargetService.class);
-    private static final JobTargetFactory JOB_TARGET_FACTORY = LOCATOR.getFactory(JobTargetFactory.class);
-
-    private static final TriggerDefinitionService TRIGGER_DEFINITION_SERVICE = LOCATOR.getService(TriggerDefinitionService.class);
-
-    private static final TriggerService TRIGGER_SERVICE = LOCATOR.getService(TriggerService.class);
-    private static final TriggerFactory TRIGGER_FACTORY = LOCATOR.getFactory(TriggerFactory.class);
-
-    private static final TriggerDefinition DEVICE_CONNECT_TRIGGER;
-
-    /**
-     * Looks fot the "Device Connect" {@link TriggerDefinition} to have access to its {@link TriggerDefinition#getId()}
-     *
-     * @since 1.1.0
-     */
-    static {
-        TriggerDefinition deviceConnectTrigger;
-        try {
-            deviceConnectTrigger = KapuaSecurityUtils.doPrivileged(() -> TRIGGER_DEFINITION_SERVICE.findByName("Device Connect"));
-            if (deviceConnectTrigger == null) {
-                throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, "Device Connect");
-            }
-        } catch (Exception e) {
-            LOG.error("Error while searching the Trigger Definition named 'Device Connect'", e);
-            throw new ExceptionInInitializerError(e);
-        }
-
-        DEVICE_CONNECT_TRIGGER = deviceConnectTrigger;
+    @Inject
+    public JobDeviceManagementTriggerManagerServiceImpl(
+            JobEngineService jobEngineService,
+            JobEngineFactory jobEngineFactory,
+            JobStepService jobStepService,
+            JobStepFactory jobStepFactory,
+            JobTargetService jobTargetService,
+            JobTargetFactory jobTargetFactory,
+            TriggerDefinitionService triggerDefinitionService,
+            TriggerService triggerService,
+            TriggerFactory triggerFactory) {
+        this.jobEngineService = jobEngineService;
+        this.jobEngineFactory = jobEngineFactory;
+        this.jobStepService = jobStepService;
+        this.jobStepFactory = jobStepFactory;
+        this.jobTargetService = jobTargetService;
+        this.jobTargetFactory = jobTargetFactory;
+        this.triggerDefinitionService = triggerDefinitionService;
+        this.triggerService = triggerService;
+        this.triggerFactory = triggerFactory;
     }
+
 
     @Override
     public void processOnConnect(KapuaId scopeId, KapuaId deviceId) throws ProcessOnConnectException {
@@ -101,33 +96,33 @@ public class JobDeviceManagementTriggerManagerServiceImpl implements JobDeviceMa
         Date now = new Date();
 
         try {
-            JobTargetQuery jobTargetQuery = JOB_TARGET_FACTORY.newQuery(scopeId);
+            JobTargetQuery jobTargetQuery = jobTargetFactory.newQuery(scopeId);
 
             jobTargetQuery.setPredicate(
                     jobTargetQuery.attributePredicate(JobTargetAttributes.JOB_TARGET_ID, deviceId)
             );
 
-            JobTargetListResult jobTargetListResult = KapuaSecurityUtils.doPrivileged(() -> JOB_TARGET_SERVICE.query(jobTargetQuery));
+            JobTargetListResult jobTargetListResult = KapuaSecurityUtils.doPrivileged(() -> jobTargetService.query(jobTargetQuery));
 
             for (JobTarget jt : jobTargetListResult.getItems()) {
-                JobStepQuery jobStepQuery = JOB_STEP_FACTORY.newQuery(jt.getScopeId());
+                JobStepQuery jobStepQuery = jobStepFactory.newQuery(jt.getScopeId());
 
                 jobStepQuery.setPredicate(
                         jobStepQuery.attributePredicate(JobStepAttributes.JOB_ID, jt.getJobId())
                 );
 
-                long jobStepCount = JOB_STEP_SERVICE.count(jobStepQuery);
+                long jobStepCount = jobStepService.count(jobStepQuery);
 
                 if (JobTargetStatus.PROCESS_OK.equals(jt.getStatus()) && jobStepCount <= jt.getStepIndex() + 1) {
                     // The target is at the end of the job step processing
                     continue;
                 }
 
-                TriggerQuery triggerQuery = TRIGGER_FACTORY.newQuery(scopeId);
+                TriggerQuery triggerQuery = triggerFactory.newQuery(scopeId);
 
                 triggerQuery.setPredicate(
                         triggerQuery.andPredicate(
-                                triggerQuery.attributePredicate(TriggerAttributes.TRIGGER_DEFINITION_ID, DEVICE_CONNECT_TRIGGER.getId()),
+                                triggerQuery.attributePredicate(TriggerAttributes.TRIGGER_DEFINITION_ID, getTriggerDefinition().getId()),
                                 triggerQuery.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName()),
                                 triggerQuery.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_VALUE, jt.getJobId().toCompactId()),
                                 triggerQuery.attributePredicate(TriggerAttributes.STARTS_ON, now, AttributePredicate.Operator.LESS_THAN),
@@ -138,21 +133,40 @@ public class JobDeviceManagementTriggerManagerServiceImpl implements JobDeviceMa
                         )
                 );
 
-                TriggerListResult jobTriggers = KapuaSecurityUtils.doPrivileged(() -> TRIGGER_SERVICE.query(triggerQuery));
+                TriggerListResult jobTriggers = KapuaSecurityUtils.doPrivileged(() -> triggerService.query(triggerQuery));
 
                 for (Trigger t : jobTriggers.getItems()) {
-                    JobStartOptions jobStartOptions = JOB_ENGINE_FACTORY.newJobStartOptions();
+                    JobStartOptions jobStartOptions = jobEngineFactory.newJobStartOptions();
 
                     jobStartOptions.addTargetIdToSublist(jt.getId());
                     jobStartOptions.setFromStepIndex(jt.getStepIndex());
                     jobStartOptions.setEnqueue(true);
 
-                    KapuaSecurityUtils.doPrivileged(() -> JOB_ENGINE_SERVICE.startJob(jt.getScopeId(), jt.getJobId(), jobStartOptions));
+                    KapuaSecurityUtils.doPrivileged(() -> jobEngineService.startJob(jt.getScopeId(), jt.getJobId(), jobStartOptions));
                 }
             }
 
         } catch (Exception e) {
             throw new ProcessOnConnectException(e, scopeId, deviceId);
         }
+    }
+
+    private TriggerDefinition getTriggerDefinition() {
+        /**
+         * Looks fot the "Device Connect" {@link TriggerDefinition} to have access to its {@link TriggerDefinition#getId()}
+         *
+         * @since 1.1.0
+         */
+        TriggerDefinition deviceConnectTrigger;
+        try {
+            deviceConnectTrigger = KapuaSecurityUtils.doPrivileged(() -> triggerDefinitionService.findByName("Device Connect"));
+            if (deviceConnectTrigger == null) {
+                throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, "Device Connect");
+            }
+        } catch (Exception e) {
+            LOG.error("Error while searching the Trigger Definition named 'Device Connect'", e);
+            throw new ExceptionInInitializerError(e);
+        }
+        return deviceConnectTrigger;
     }
 }

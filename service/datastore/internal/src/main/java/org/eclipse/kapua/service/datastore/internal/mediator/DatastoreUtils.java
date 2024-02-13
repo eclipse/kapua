@@ -16,7 +16,6 @@ package org.eclipse.kapua.service.datastore.internal.mediator;
 import com.google.common.hash.Hashing;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
@@ -24,6 +23,7 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -51,10 +51,40 @@ import java.util.regex.Pattern;
 public class DatastoreUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(DatastoreUtils.class);
+    private final DatastoreSettings datastoreSettings;
 
-    private enum IndexType { CHANNEL, CLIENT, METRIC }
+    private enum IndexType {CHANNEL, CLIENT, METRIC}
 
-    private DatastoreUtils() {
+    @Inject
+    public DatastoreUtils(DatastoreSettings datastoreSettings) {
+        this.datastoreSettings = datastoreSettings;
+        dataIndexFormatterWeek = new DateTimeFormatterBuilder()
+                .parseDefaulting(WeekFields.ISO.dayOfWeek(), 1)
+                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+                .appendPattern("YYYY-ww")
+                .toFormatter(KapuaDateUtils.getLocale())
+                .withLocale(KapuaDateUtils.getLocale())
+                .withResolverStyle(ResolverStyle.STRICT)
+                .withZone(KapuaDateUtils.getTimeZone());
+        dataIndexFormatterDay = new DateTimeFormatterBuilder()
+                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+                .appendPattern("YYYY-ww-ee")
+                .toFormatter(KapuaDateUtils.getLocale())
+                .withLocale(KapuaDateUtils.getLocale())
+                .withResolverStyle(ResolverStyle.STRICT)
+                .withZone(KapuaDateUtils.getTimeZone());
+        dataIndexFormatterHour = new DateTimeFormatterBuilder()
+                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+                .appendPattern("YYYY-ww-ee-HH")
+                .toFormatter(KapuaDateUtils.getLocale())
+                .withLocale(KapuaDateUtils.getLocale())
+                .withResolverStyle(ResolverStyle.STRICT)
+                .withZone(KapuaDateUtils.getTimeZone());
     }
 
     private static final char SPECIAL_DOT = '.';
@@ -92,33 +122,9 @@ public class DatastoreUtils {
 
     public static final String DATASTORE_DATE_FORMAT = "8" + KapuaDateUtils.ISO_DATE_PATTERN; // example 2017-01-24T11:22:10.999Z
 
-    private static final DateTimeFormatter DATA_INDEX_FORMATTER_WEEK = new DateTimeFormatterBuilder()
-            .parseDefaulting(WeekFields.ISO.dayOfWeek(), 1)
-            .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
-            .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-            .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-            .appendPattern("YYYY-ww")
-            .toFormatter(KapuaDateUtils.getLocale())
-            .withLocale(KapuaDateUtils.getLocale())
-            .withResolverStyle(ResolverStyle.STRICT)
-            .withZone(KapuaDateUtils.getTimeZone());
-    private static final DateTimeFormatter DATA_INDEX_FORMATTER_DAY = new DateTimeFormatterBuilder()
-            .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
-            .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-            .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-            .appendPattern("YYYY-ww-ee")
-            .toFormatter(KapuaDateUtils.getLocale())
-            .withLocale(KapuaDateUtils.getLocale())
-            .withResolverStyle(ResolverStyle.STRICT)
-            .withZone(KapuaDateUtils.getTimeZone());
-    private static final DateTimeFormatter DATA_INDEX_FORMATTER_HOUR = new DateTimeFormatterBuilder()
-            .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-            .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-            .appendPattern("YYYY-ww-ee-HH")
-            .toFormatter(KapuaDateUtils.getLocale())
-            .withLocale(KapuaDateUtils.getLocale())
-            .withResolverStyle(ResolverStyle.STRICT)
-            .withZone(KapuaDateUtils.getTimeZone());
+    private final DateTimeFormatter dataIndexFormatterWeek;
+    private final DateTimeFormatter dataIndexFormatterDay;
+    private final DateTimeFormatter dataIndexFormatterHour;
 
     /**
      * Return the hash code for the provided components (typically components are a sequence of account - client id - channel ...)
@@ -126,7 +132,7 @@ public class DatastoreUtils {
      * @param components
      * @return
      */
-    public static String getHashCode(String... components) {
+    public String getHashCode(String... components) {
         String concatString = "";
         for (String str : components) {
             concatString = concatString.concat(str);
@@ -141,15 +147,15 @@ public class DatastoreUtils {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(hashCode);
     }
 
-    private static String normalizeIndexName(String name) {
+    private String normalizeIndexName(String name) {
         String normName = null;
         try {
-            DatastoreUtils.checkIdxAliasName(name);
+            checkIdxAliasName(name);
             normName = name;
         } catch (IllegalArgumentException exc) {
             LOG.trace(exc.getMessage(), exc);
             normName = name.toLowerCase().replace(ILLEGAL_CHARS, "_");
-            DatastoreUtils.checkIdxAliasName(normName);
+            checkIdxAliasName(normName);
         }
         return normName;
     }
@@ -162,7 +168,7 @@ public class DatastoreUtils {
      * @return The normalized metric name
      * @since 1.0.0
      */
-    public static String normalizeMetricName(String name) {
+    public String normalizeMetricName(String name) {
         String newName = name;
         if (newName.contains(".")) {
             newName = newName.replace(String.valueOf(SPECIAL_DOLLAR), SPECIAL_DOLLAR_ESC);
@@ -179,7 +185,7 @@ public class DatastoreUtils {
      * @return The restored metric name
      * @since 1.0.0
      */
-    public static String restoreMetricName(String normalizedName) {
+    public String restoreMetricName(String normalizedName) {
         String oldName = normalizedName;
         oldName = oldName.replace(SPECIAL_DOT_ESC, String.valueOf(SPECIAL_DOT));
         oldName = oldName.replace(SPECIAL_DOLLAR_ESC, String.valueOf(SPECIAL_DOLLAR));
@@ -192,7 +198,7 @@ public class DatastoreUtils {
      * @param fullName
      * @return
      */
-    public static String[] getMetricParts(String fullName) {
+    public String[] getMetricParts(String fullName) {
         return fullName == null ? null : fullName.split(Pattern.quote("."));
     }
 
@@ -203,7 +209,7 @@ public class DatastoreUtils {
      * @param alias
      * @since 1.0.0
      */
-    public static void checkIdxAliasName(String alias) {
+    public void checkIdxAliasName(String alias) {
         if (alias == null || alias.isEmpty()) {
             throw new IllegalArgumentException(String.format("Alias name cannot be %s", alias == null ? "null" : "empty"));
         }
@@ -226,8 +232,8 @@ public class DatastoreUtils {
      * @param index
      * @since 1.0.0
      */
-    public static void checkIdxName(String index) {
-        DatastoreUtils.checkIdxAliasName(index);
+    public void checkIdxName(String index) {
+        checkIdxAliasName(index);
     }
 
     /**
@@ -237,7 +243,7 @@ public class DatastoreUtils {
      * @return The normalized index alias
      * @since 1.0.0
      */
-    public static String normalizeIndexAliasName(String alias) {
+    public String normalizeIndexAliasName(String alias) {
         String aliasName = normalizeIndexName(alias);
         aliasName = aliasName.replace("-", "_");
         return aliasName;
@@ -249,13 +255,13 @@ public class DatastoreUtils {
      * @param scopeId
      * @return
      */
-    public static String getDataIndexName(KapuaId scopeId) {
+    public String getDataIndexName(KapuaId scopeId) {
         final StringBuilder sb = new StringBuilder();
-        final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEX_PREFIX);
+        final String prefix = datastoreSettings.getString(DatastoreSettingsKey.INDEX_PREFIX);
         if (StringUtils.isNotEmpty(prefix)) {
             sb.append(prefix).append("-");
         }
-        String indexName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
+        String indexName = normalizedIndexName(scopeId.toStringId());
         sb.append(indexName).append("-").append("data-message").append("-*");
         return sb.toString();
     }
@@ -267,40 +273,40 @@ public class DatastoreUtils {
      * @param timestamp
      * @return
      */
-    public static String getDataIndexName(KapuaId scopeId, long timestamp, String indexingWindowOption) throws KapuaException {
+    public String getDataIndexName(KapuaId scopeId, long timestamp, String indexingWindowOption) {
         final StringBuilder sb = new StringBuilder();
-        final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEX_PREFIX);
+        final String prefix = datastoreSettings.getString(DatastoreSettingsKey.INDEX_PREFIX);
         if (StringUtils.isNotEmpty(prefix)) {
             sb.append(prefix).append("-");
         }
-        final String actualName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
+        final String actualName = normalizedIndexName(scopeId.toStringId());
         sb.append(actualName).append('-').append("data-message").append('-');
         DateTimeFormatter formatter;
         switch (indexingWindowOption) {
             default:
             case INDEXING_WINDOW_OPTION_WEEK:
-                formatter = DATA_INDEX_FORMATTER_WEEK;
+                formatter = dataIndexFormatterWeek;
                 break;
             case INDEXING_WINDOW_OPTION_DAY:
-                formatter = DATA_INDEX_FORMATTER_DAY;
+                formatter = dataIndexFormatterDay;
                 break;
             case INDEXING_WINDOW_OPTION_HOUR:
-                formatter = DATA_INDEX_FORMATTER_HOUR;
+                formatter = dataIndexFormatterHour;
                 break;
         }
         formatter.formatTo(Instant.ofEpochMilli(timestamp).atOffset(ZoneOffset.UTC), sb);
         return sb.toString();
     }
 
-    public static String getChannelIndexName(KapuaId scopeId) {
+    public String getChannelIndexName(KapuaId scopeId) {
         return getRegistryIndexName(scopeId, IndexType.CHANNEL);
     }
 
-    public static String getClientIndexName(KapuaId scopeId) {
+    public String getClientIndexName(KapuaId scopeId) {
         return getRegistryIndexName(scopeId, IndexType.CLIENT);
     }
 
-    public static String getMetricIndexName(KapuaId scopeId) {
+    public String getMetricIndexName(KapuaId scopeId) {
         return getRegistryIndexName(scopeId, IndexType.METRIC);
     }
 
@@ -311,13 +317,13 @@ public class DatastoreUtils {
      * @return The Kapua index name
      * @since 1.0.0
      */
-    private static String getRegistryIndexName(KapuaId scopeId, IndexType indexType) {
+    private String getRegistryIndexName(KapuaId scopeId, IndexType indexType) {
         final StringBuilder sb = new StringBuilder();
-        final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEX_PREFIX);
+        final String prefix = datastoreSettings.getString(DatastoreSettingsKey.INDEX_PREFIX);
         if (StringUtils.isNotEmpty(prefix)) {
             sb.append(prefix).append("-");
         }
-        String indexName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
+        String indexName = normalizedIndexName(scopeId.toStringId());
         sb.append(indexName);
         sb.append("-data-").append(indexType.name().toLowerCase());
         return sb.toString();
@@ -329,7 +335,7 @@ public class DatastoreUtils {
      * @param index
      * @return
      */
-    public static String normalizedIndexName(String index) {
+    public String normalizedIndexName(String index) {
         return normalizeIndexName(index);
     }
 
@@ -344,7 +350,7 @@ public class DatastoreUtils {
      * @return The list of the data indexes between start and end
      * @throws DatastoreException
      */
-    public static String[] convertToDataIndexes(@NotNull String[] indexes, Instant windowStart, Instant windowEnd) throws DatastoreException {
+    public String[] convertToDataIndexes(@NotNull String[] indexes, Instant windowStart, Instant windowEnd) throws DatastoreException {
         if (windowStart == null && windowEnd == null) {
             return indexes;
         }
@@ -363,19 +369,19 @@ public class DatastoreUtils {
                 case 2:
                 default:
                     // YYYY-ww
-                    formatter = DATA_INDEX_FORMATTER_WEEK;
+                    formatter = dataIndexFormatterWeek;
                     indexUnit = ChronoUnit.DAYS;
                     indexWidth = 7;
                     break;
                 case 3:
                     // YYYY-ww-ee
-                    formatter = DATA_INDEX_FORMATTER_DAY;
+                    formatter = dataIndexFormatterDay;
                     indexUnit = ChronoUnit.DAYS;
                     indexWidth = 1;
                     break;
                 case 4:
                     // YYYY-ww-ee-HH
-                    formatter = DATA_INDEX_FORMATTER_HOUR;
+                    formatter = dataIndexFormatterHour;
                     indexUnit = ChronoUnit.HOURS;
                     indexWidth = 1;
                     break;
@@ -405,15 +411,15 @@ public class DatastoreUtils {
         return result.toArray(new String[0]);
     }
 
-    private static boolean isIndexFullyAfterInstant(@NotNull Instant indexStart, @NotNull Instant indexEnd, @NotNull Instant checkpoint) {
+    private boolean isIndexFullyAfterInstant(@NotNull Instant indexStart, @NotNull Instant indexEnd, @NotNull Instant checkpoint) {
         return !indexStart.isBefore(checkpoint) && !indexEnd.isBefore(checkpoint);
     }
 
-    private static boolean isIndexFullyBeforeInstant(@NotNull Instant indexStart, @NotNull Instant indexEnd, @NotNull Instant checkpoint) {
+    private boolean isIndexFullyBeforeInstant(@NotNull Instant indexStart, @NotNull Instant indexEnd, @NotNull Instant checkpoint) {
         return !indexStart.isAfter(checkpoint) && !indexEnd.isAfter(checkpoint);
     }
 
-    private static String stripPrefixAndAccount(@NotNull String index) {
+    private String stripPrefixAndAccount(@NotNull String index) {
         return StringUtils.substringAfter(index, "-data-message-");
     }
 
@@ -425,8 +431,8 @@ public class DatastoreUtils {
      * @param type
      * @return
      */
-    public static String getMetricValueQualifier(String name, String type) {
-        String shortType = DatastoreUtils.getClientMetricFromAcronym(type);
+    public String getMetricValueQualifier(String name, String type) {
+        String shortType = getClientMetricFromAcronym(type);
         return String.format("%s.%s", name, shortType);
     }
 
@@ -437,7 +443,7 @@ public class DatastoreUtils {
      * @return The client metric type
      * @since 1.0.0
      */
-    public static String getClientMetricFromType(Class<?> clazz) {
+    public String getClientMetricFromType(Class<?> clazz) {
         if (clazz == null) {
             throw new NullPointerException("Metric value must not be null");
         }
@@ -471,7 +477,7 @@ public class DatastoreUtils {
      * @return The client metric type acronym
      * @since 1.0.0
      */
-    public static String getClientMetricFromAcronym(String acronym) {
+    public String getClientMetricFromAcronym(String acronym) {
         if (CLIENT_METRIC_TYPE_STRING.equals(acronym)) {
             return CLIENT_METRIC_TYPE_STRING_ACRONYM;
         }
@@ -505,7 +511,7 @@ public class DatastoreUtils {
      * @param acronym
      * @return
      */
-    public static boolean isDateMetric(String acronym) {
+    public boolean isDateMetric(String acronym) {
         return CLIENT_METRIC_TYPE_DATE_ACRONYM.equals(acronym);
     }
 
@@ -516,7 +522,7 @@ public class DatastoreUtils {
      * @return The metric value type converted to string
      * @since 1.0.0
      */
-    public static <T> String convertToClientMetricType(Class<T> aClass) {
+    public <T> String convertToClientMetricType(Class<T> aClass) {
         if (aClass == String.class) {
             return CLIENT_METRIC_TYPE_STRING;
         }
@@ -551,7 +557,7 @@ public class DatastoreUtils {
      * @return The concrete metric value type
      * @since 1.0.0
      */
-    public static Class<?> convertToKapuaType(String clientType) {
+    public Class<?> convertToKapuaType(String clientType) {
         Class<?> clazz;
         if (CLIENT_METRIC_TYPE_STRING.equals(clientType)) {
             clazz = String.class;
@@ -583,7 +589,7 @@ public class DatastoreUtils {
      * @return The concrete metric value type
      * @since 1.0.0
      */
-    public static Object convertToCorrectType(String acronymType, Object value) {
+    public Object convertToCorrectType(String acronymType, Object value) {
         Object convertedValue = null;
         if (CLIENT_METRIC_TYPE_DOUBLE_ACRONYM.equals(acronymType)) {
             if (value instanceof Number) {
@@ -638,7 +644,7 @@ public class DatastoreUtils {
         return convertedValue;
     }
 
-    private static String getValueClass(Object value) {
+    private String getValueClass(Object value) {
         return value != null ? value.getClass().toString() : "null";
     }
 

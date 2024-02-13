@@ -12,32 +12,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
-import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
-import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
+import com.google.inject.Inject;
+import org.eclipse.kapua.commons.jpa.EntityCacheFactory;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
+import org.eclipse.kapua.commons.service.internal.cache.KapuaCacheManager;
 
 /**
  * Cache factory for the {@link DeviceRegistryServiceImpl}
  */
-public class DeviceRegistryCacheFactory extends AbstractEntityCacheFactory {
+public class DeviceRegistryCacheFactory extends EntityCacheFactory {
 
-    public DeviceRegistryCacheFactory() {
-        super("DeviceId");
+    @Inject
+    public DeviceRegistryCacheFactory(KapuaCacheManager cacheManager, CommonsMetric commonsMetric) {
+        super(cacheManager, commonsMetric);
     }
 
     /**
      * @return a {@link DeviceRegistryCache} instance.
      */
-    @Override
-    public EntityCache createCache() {
-        return new DeviceRegistryCache(getEntityIdCacheName(), "DeviceClientId", "DeviceConnectionId");
-    }
-
-    /**
-     * @return the built instance
-     * @deprecated since 2.0.0 - Please use {@link DeviceRegistryCacheFactory#DeviceRegistryCacheFactory()} instead. This may be removed in future releases
-     **/
-    @Deprecated
-    public static DeviceRegistryCacheFactory getInstance() {
-        return new DeviceRegistryCacheFactory();
+    public DeviceRegistryCache createCache() {
+        return new DeviceRegistryCache(this.cacheManager, this.commonsMetric, "DeviceId", "DeviceClientId", "DeviceConnectionId");
     }
 }

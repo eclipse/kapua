@@ -12,6 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
+import com.google.common.base.Strings;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.app.api.core.model.CountResult;
+import org.eclipse.kapua.app.api.core.model.EntityId;
+import org.eclipse.kapua.app.api.core.model.ScopeId;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
+import org.eclipse.kapua.model.query.SortOrder;
+import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionListResult;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQuery;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService;
+
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -22,38 +38,22 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.model.CountResult;
-import org.eclipse.kapua.app.api.core.model.EntityId;
-import org.eclipse.kapua.app.api.core.model.ScopeId;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.query.SortOrder;
-import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.job.Job;
-import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
-import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
-import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionListResult;
-import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQuery;
-import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService;
-
-import com.google.common.base.Strings;
-
 @Path("{scopeId}/triggerDefinitions")
 public class JobTriggerDefinitions extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final TriggerDefinitionService triggerDefinitionService = locator.getService(TriggerDefinitionService.class);
-    private final TriggerDefinitionFactory triggerDefinitionFactory = locator.getFactory(TriggerDefinitionFactory.class);
+    @Inject
+    public TriggerDefinitionService triggerDefinitionService;
+    @Inject
+    public TriggerDefinitionFactory triggerDefinitionFactory;
 
     /**
      * Gets the {@link TriggerDefinition} list for a given {@link Job}.
      *
-     * @param scopeId       The {@link ScopeId} in which to search results.
-     * @param sortParam     The name of the parameter that will be used as a sorting key
-     * @param sortDir       The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
-     * @param offset        The result set offset.
-     * @param limit         The result set limit.
+     * @param scopeId   The {@link ScopeId} in which to search results.
+     * @param sortParam The name of the parameter that will be used as a sorting key
+     * @param sortDir   The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
+     * @param offset    The result set offset.
+     * @param limit     The result set limit.
      * @return The {@link TriggerDefinitionListResult} of all the jobs triggers associated to the current selected job.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.5.0
@@ -123,7 +123,7 @@ public class JobTriggerDefinitions extends AbstractKapuaResource {
     /**
      * Returns the Job specified by the "jobId" path parameter.
      *
-     * @param scopeId The {@link ScopeId} of the requested {@link Job}.
+     * @param scopeId             The {@link ScopeId} of the requested {@link Job}.
      * @param triggerDefinitionId The id of the requested Trigger Definition.
      * @return The requested Job object.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.

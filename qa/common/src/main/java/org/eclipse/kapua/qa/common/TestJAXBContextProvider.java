@@ -14,6 +14,7 @@ package org.eclipse.kapua.qa.common;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
+import org.eclipse.kapua.commons.rest.model.errors.ExceptionInfo;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
@@ -118,6 +119,7 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
                     KapuaTdesignate.class,
                     KapuaTobject.class,
                     MetatypeXmlRegistry.class,
+                    ExceptionInfo.class,
 
                     // KapuaEvent
                     ServiceEvent.class,

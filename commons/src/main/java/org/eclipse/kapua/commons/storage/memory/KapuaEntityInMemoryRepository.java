@@ -12,16 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.storage.memory;
 
+import org.apache.commons.lang3.RandomUtils;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdImpl;
 import org.eclipse.kapua.model.query.FieldSortCriteria;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.storage.KapuaEntityRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -52,6 +55,9 @@ public class KapuaEntityInMemoryRepository<E extends KapuaEntity, L extends Kapu
 
     @Override
     public E create(TxContext txContext, E entity) throws KapuaException {
+        if (entity.getId() == null) {
+            entity.setId(new KapuaIdImpl(BigInteger.valueOf(RandomUtils.nextLong(2, Long.MAX_VALUE))));
+        }
         this.entities.add(entity);
         return entity;
     }
@@ -79,8 +85,8 @@ public class KapuaEntityInMemoryRepository<E extends KapuaEntity, L extends Kapu
         res.addItems(this.entities
                 .stream()
                 .filter(e -> scopePredicate.test(e) && queryPredicate.test(e))
-                .skip(kapuaQuery.getOffset())
-                .limit(kapuaQuery.getLimit())
+                .skip(Optional.ofNullable(kapuaQuery.getOffset()).orElse(0))
+                .limit(Optional.ofNullable(kapuaQuery.getLimit()).orElse(this.entities.size()))
                 .sorted(createComparator(kapuaQuery))
                 .collect(Collectors.toList()));
         return res;

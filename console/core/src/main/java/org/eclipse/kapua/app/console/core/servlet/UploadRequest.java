@@ -34,10 +34,11 @@ class UploadRequest extends ServletFileUpload {
 
     private final Map<String, String> formFields;
     private final List<FileItem> fileItems;
+    private final ConsoleSetting consoleSetting = ConsoleSetting.getInstance();
 
     public UploadRequest(DiskFileItemFactory diskFileItemFactory) {
         super(diskFileItemFactory);
-        setSizeMax(ConsoleSetting.getInstance().getLong(ConsoleSettingKeys.FILE_UPLOAD_SIZE_MAX));
+        setSizeMax(consoleSetting.getLong(ConsoleSettingKeys.FILE_UPLOAD_SIZE_MAX));
         formFields = new HashMap<String, String>();
         fileItems = new ArrayList<FileItem>();
     }

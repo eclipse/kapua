@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.certificate.info.internal;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.certificate.CertificateQuery;
@@ -27,14 +26,19 @@ import org.eclipse.kapua.service.certificate.info.CertificateInfoQuery;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoService;
 import org.eclipse.kapua.service.certificate.internal.CertificateQueryImpl;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
 
 @Singleton
 public class CertificateInfoServiceImpl implements CertificateInfoService {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final CertificateService CERTIFICATE_SERVICE = LOCATOR.getService(CertificateService.class);
+    private final CertificateService certificateService;
+
+    @Inject
+    public CertificateInfoServiceImpl(CertificateService certificateService) {
+        this.certificateService = certificateService;
+    }
 
     @Override
     public CertificateInfo create(CertificateInfoCreator creator) {
@@ -54,7 +58,7 @@ public class CertificateInfoServiceImpl implements CertificateInfoService {
         certificateQuery.setIncludeInherited(((CertificateInfoQuery) query).getIncludeInherited());
 
         CertificateInfoListResult publicCertificates = new CertificateInfoListResultImpl();
-        publicCertificates.addItem(CERTIFICATE_SERVICE.query(certificateQuery).getFirstItem());
+        publicCertificates.addItem(certificateService.query(certificateQuery).getFirstItem());
 
         return publicCertificates;
     }
@@ -66,7 +70,7 @@ public class CertificateInfoServiceImpl implements CertificateInfoService {
         CertificateQuery privateQuery = new CertificateQueryImpl(query);
         privateQuery.setIncludeInherited(((CertificateInfoQuery) query).getIncludeInherited());
 
-        return CERTIFICATE_SERVICE.count(privateQuery);
+        return certificateService.count(privateQuery);
     }
 
     @Override

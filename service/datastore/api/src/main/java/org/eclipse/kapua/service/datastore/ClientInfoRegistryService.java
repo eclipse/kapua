@@ -12,11 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.storable.StorableService;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
 
 /**
  * {@link ClientInfoRegistryService} definition.
@@ -26,4 +29,9 @@ import org.eclipse.kapua.service.storable.StorableService;
  * @since 1.0.0
  */
 public interface ClientInfoRegistryService extends KapuaService, StorableService<ClientInfo, ClientInfoListResult, ClientInfoQuery> {
+    void delete(ClientInfoQuery query)
+            throws KapuaException;
+
+    void delete(KapuaId scopeId, StorableId id)
+            throws KapuaException;
 }

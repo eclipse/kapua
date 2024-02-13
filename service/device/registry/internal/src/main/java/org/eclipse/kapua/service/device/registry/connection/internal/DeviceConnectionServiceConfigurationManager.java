@@ -43,7 +43,7 @@ public class DeviceConnectionServiceConfigurationManager extends ServiceConfigur
 
     private final Map<String, DeviceConnectionCredentialAdapter> availableDeviceConnectionAdapters;
 
-    private final KapuaDeviceRegistrySettings deviceRegistrySettings = KapuaDeviceRegistrySettings.getInstance();
+    private final KapuaDeviceRegistrySettings deviceRegistrySettings;
     private final KapuaMetatypeFactory kapuaMetatypeFactory;
 
     /**
@@ -55,11 +55,17 @@ public class DeviceConnectionServiceConfigurationManager extends ServiceConfigur
      * @param kapuaMetatypeFactory              The {@link KapuaMetatypeFactory} instance.
      * @since 2.0.0
      */
-    public DeviceConnectionServiceConfigurationManager(ServiceConfigRepository serviceConfigRepository, RootUserTester rootUserTester, Map<String, DeviceConnectionCredentialAdapter> availableDeviceConnectionAdapters, KapuaMetatypeFactory kapuaMetatypeFactory) {
+    public DeviceConnectionServiceConfigurationManager(
+            ServiceConfigRepository serviceConfigRepository,
+            RootUserTester rootUserTester,
+            Map<String, DeviceConnectionCredentialAdapter> availableDeviceConnectionAdapters,
+            KapuaMetatypeFactory kapuaMetatypeFactory,
+            KapuaDeviceRegistrySettings kapuaDeviceRegistrySettings) {
         super(DeviceConnectionService.class.getName(), serviceConfigRepository, rootUserTester);
 
         this.availableDeviceConnectionAdapters = availableDeviceConnectionAdapters;
         this.kapuaMetatypeFactory = kapuaMetatypeFactory;
+        this.deviceRegistrySettings = kapuaDeviceRegistrySettings;
     }
 
     /**

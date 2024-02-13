@@ -20,7 +20,6 @@ ENV BROKER_ADDR broker
 ENV BROKER_PORT 1883
 
 ENV DATASTORE_ADDR es:9200
-ENV DATASTORE_CLIENT org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider
 
 ENV SQL_DB_ADDR db
 ENV SQL_DB_PORT 3306
@@ -31,11 +30,11 @@ ENV JOB_ENGINE_BASE_ADDR http://job-engine:8080/v1
 
 ENV JAVA_OPTS "-Dapi.cors.origins.allowed=\${API_CORS_ORIGINS_ALLOWED} \
                -Dcommons.db.schema.update=true \
+               -Dlocator.guice.stage=PRODUCTION \
                -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
                -Dcommons.db.connection.port=\${SQL_DB_PORT} \
                -Dbroker.host=\${BROKER_ADDR} \
                -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} \
-               -Ddatastore.elasticsearch.provider=\${DATASTORE_CLIENT} \
                -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
                -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
                -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \

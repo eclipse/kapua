@@ -26,8 +26,7 @@ import org.junit.experimental.categories.Category;
 @Category(JUnitTests.class)
 public class KapuaAppsMessageTest {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final KapuaLifecycleMessageFactory LIFECYCLE_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaLifecycleMessageFactory.class);
+    private final KapuaLifecycleMessageFactory kapuaLifecycleMessageFactory = KapuaLocator.getInstance().getFactory(KapuaLifecycleMessageFactory.class);
 
     private static final String PAYLOAD_DISPLAY_STR = "" +
             "acceptEncoding=UTF-8" +
@@ -106,14 +105,14 @@ public class KapuaAppsMessageTest {
 
     @Test
     public void kapuaAppsMessageConstructor() throws Exception {
-        KapuaAppsMessage kapuaAppsMessage = LIFECYCLE_MESSAGE_FACTORY.newKapuaAppsMessage();
+        KapuaAppsMessage kapuaAppsMessage = kapuaLifecycleMessageFactory.newKapuaAppsMessage();
 
         Assert.assertNotNull(kapuaAppsMessage);
     }
 
     @Test
     public void kapuaAppsChannelGetterSetters() throws Exception {
-        KapuaAppsChannel kapuaAppsChannel = LIFECYCLE_MESSAGE_FACTORY.newKapuaAppsChannel();
+        KapuaAppsChannel kapuaAppsChannel = kapuaLifecycleMessageFactory.newKapuaAppsChannel();
 
         kapuaAppsChannel.setClientId("clientId-1");
         Assert.assertEquals("clientId-1", kapuaAppsChannel.getClientId());

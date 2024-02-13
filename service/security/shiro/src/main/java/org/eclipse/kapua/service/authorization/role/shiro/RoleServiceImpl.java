@@ -58,6 +58,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
     private final RolePermissionFactory rolePermissionFactory;
     private final RoleRepository roleRepository;
     private final RolePermissionRepository rolePermissionRepository;
+    private final PermissionValidator permissionValidator;
 
     /**
      * Injectable constructor
@@ -78,11 +79,13 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
             ServiceConfigurationManager serviceConfigurationManager,
             TxManager txManager,
             RoleRepository roleRepository,
-            RolePermissionRepository rolePermissionRepository) {
+            RolePermissionRepository rolePermissionRepository,
+            PermissionValidator permissionValidator) {
         super(txManager, serviceConfigurationManager, Domains.ROLE, authorizationService, permissionFactory);
         this.rolePermissionFactory = rolePermissionFactory;
         this.roleRepository = roleRepository;
         this.rolePermissionRepository = rolePermissionRepository;
+        this.permissionValidator = permissionValidator;
     }
 
     @Override
@@ -114,7 +117,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
             }
 
             // Check that the given permission matches the definition of the Domains.
-            PermissionValidator.validatePermissions(roleCreator.getPermissions());
+            permissionValidator.validatePermissions(roleCreator.getPermissions());
 
             // Do create
             Role newRole = new RoleImpl(roleCreator.getScopeId());

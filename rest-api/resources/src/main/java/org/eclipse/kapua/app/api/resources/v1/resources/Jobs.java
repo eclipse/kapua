@@ -19,7 +19,6 @@ import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
@@ -31,6 +30,7 @@ import org.eclipse.kapua.service.job.JobListResult;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobService;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -47,9 +47,10 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/jobs")
 public class Jobs extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final JobService jobService = locator.getService(JobService.class);
-    private final JobFactory jobFactory = locator.getFactory(JobFactory.class);
+    @Inject
+    public JobService jobService;
+    @Inject
+    public JobFactory jobFactory;
 
     /**
      * Gets the {@link Job} list in the scope.

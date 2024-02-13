@@ -351,7 +351,6 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
             properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
 
             jaxbContext = JAXBContextFactory.createContext(new Class[]{
-
                     // REST API utility models
                     CountResult.class,
                     SetResult.class,

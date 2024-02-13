@@ -13,23 +13,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import com.google.common.base.MoreObjects;
+import com.google.inject.Singleton;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtilsWithResources;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.service.internal.cache.KapuaCacheManager;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.MoreObjects;
-import com.google.inject.Singleton;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Optional;
 
 /**
  * Singleton for managing database creation and deletion inside Gherkin scenarios.
@@ -38,7 +39,7 @@ import com.google.inject.Singleton;
 public class DBHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(DBHelper.class);
-
+    private KapuaCacheManager cacheManager;
     /**
      * Path to root of full DB scripts.
      */
@@ -53,6 +54,7 @@ public class DBHelper {
 
     public void init() {
         logger.warn("########################### Called DBHelper ###########################");
+        cacheManager = KapuaLocator.getInstance().getComponent(KapuaCacheManager.class);
         SystemSetting config = SystemSetting.getInstance();
         String dbUsername = config.getString(SystemSettingKey.DB_USERNAME);
         String dbPassword = config.getString(SystemSettingKey.DB_PASSWORD);
@@ -98,11 +100,11 @@ public class DBHelper {
      */
     public void deleteAll() {
         KapuaConfigurableServiceSchemaUtilsWithResources.scriptSession(FULL_SCHEMA_PATH, DELETE_SCRIPT);
-        KapuaCacheManager.invalidateAll();
+        Optional.ofNullable(cacheManager).ifPresent(cm -> cm.invalidateAll());
     }
 
     public void dropAll() throws SQLException {
-        if (connection!=null && !connection.isClosed()) {
+        if (connection != null && !connection.isClosed()) {
             String[] types = {"TABLE"};
             ResultSet sqlResults = connection.getMetaData().getTables(null, null, "%", types);
 
@@ -113,11 +115,10 @@ public class DBHelper {
                 }
             }
             close();
-        }
-        else {
+        } else {
             logger.warn("================================> invoked drop all on closed connection!");
         }
-        KapuaCacheManager.invalidateAll();
+        Optional.ofNullable(cacheManager).ifPresent(cm -> cm.invalidateAll());
     }
 
 }

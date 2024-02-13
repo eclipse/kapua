@@ -29,6 +29,7 @@ ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=100
 ENV JAVA_OPTS -Dcommons.db.schema.update=true \
               -Dcommons.db.connection.host=${SQL_DB_ADDR} \
               -Dcommons.db.connection.port=${SQL_DB_PORT} \
+              -Dlocator.guice.stage=PRODUCTION \
               -Dcommons.eventbus.url="${SERVICE_BROKER_ADDR}" \
               -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
               -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \

@@ -359,7 +359,7 @@
                 <gwt-maven-plugin.compile.module>org.eclipse.kapua.app.console.adminDev</gwt-maven-plugin.compile.module>
 
                 <!-- Faster but less optimized and easier for JS debug-->
-                <gwt-maven-plugin.compile.style>OBF</gwt-maven-plugin.compile.style>
+                <gwt-maven-plugin.compile.style>DETAILED</gwt-maven-plugin.compile.style>
             </properties>
         </profile>
     </profiles>

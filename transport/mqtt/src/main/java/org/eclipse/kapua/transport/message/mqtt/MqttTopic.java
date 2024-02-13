@@ -32,6 +32,7 @@ public class MqttTopic implements TransportChannel {
      *
      * @since 1.0.0
      */
+    //TODO: FIXME: REMOVE: A collaborator in a data class? Behaviour should not be part of a data class!
     private static final String TOPIC_SEPARATOR = MqttClientSetting.getInstance().getString(MqttClientSettingKeys.TRANSPORT_TOPIC_SEPARATOR, "/");
 
     /**

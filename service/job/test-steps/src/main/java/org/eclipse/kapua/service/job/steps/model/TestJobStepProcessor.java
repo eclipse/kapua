@@ -24,9 +24,9 @@ import javax.batch.runtime.context.StepContext;
 import javax.inject.Inject;
 
 public class TestJobStepProcessor extends AbstractDeviceTargetProcessor implements TargetProcessor {
+
     @Inject
     JobContext jobContext;
-
     @Inject
     StepContext stepContext;
 

@@ -19,17 +19,8 @@ public class GenericOpenIDSetting extends AbstractKapuaSetting<GenericOpenIDSett
 
     private static final String GENERIC_OPENID_SETTING_RESOURCE = "openid-generic-setting.properties";
 
-    private static final GenericOpenIDSetting INSTANCE = new GenericOpenIDSetting();
-
-    private GenericOpenIDSetting() {
+    public GenericOpenIDSetting() {
         super(GENERIC_OPENID_SETTING_RESOURCE);
     }
 
-    GenericOpenIDSetting(final String resourceName) {
-        super(resourceName);
-    }
-
-    public static GenericOpenIDSetting getInstance() {
-        return INSTANCE;
-    }
 }

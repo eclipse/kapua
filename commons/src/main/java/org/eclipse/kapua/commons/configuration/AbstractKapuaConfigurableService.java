@@ -19,8 +19,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.eclipse.kapua.commons.cache.LocalCache;
-import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.CacheFactory;
+import org.eclipse.kapua.commons.jpa.EntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.JpaTxContext;
@@ -75,7 +75,7 @@ import java.util.stream.Collectors;
 @Deprecated
 public abstract class AbstractKapuaConfigurableService extends AbstractKapuaService implements KapuaConfigurableService {
 
-    private static final EntityCache PRIVATE_ENTITY_CACHE = new AbstractKapuaConfigurableServiceCache().createCache();
+    private static final EntityCache PRIVATE_ENTITY_CACHE = KapuaLocator.getInstance().getComponent(CacheFactory.class).createCache("AbstractKapuaConfigurableServiceCacheId");
     private static final int LOCAL_CACHE_SIZE_MAX = SystemSetting.getInstance().getInt(SystemSettingKey.TMETADATA_LOCAL_CACHE_SIZE_MAXIMUM, 100);
 
     private final Domain domain;
@@ -118,7 +118,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param domain               The {@link Domain} on which check access.
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
      * @since 1.0.0
-     * @deprecated Since 2.0.0. Please use {@link AbstractKapuaConfigurableService#AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, PermissionFactory, AuthorizationService, RootUserTester)} This constructor may be removed in a next release
+     * @deprecated Since 2.0.0. Please use {@link AbstractKapuaConfigurableService#AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, EntityCacheFactory, PermissionFactory, AuthorizationService, RootUserTester)} This constructor may be removed in a next release
      */
     @Deprecated
     protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory) {
@@ -143,10 +143,10 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
      * @param abstractCacheFactory The {@link CacheFactory} that handles caching of the entities
      * @since 1.2.0
-     * @deprecated Since 2.0.0. Please use {@link AbstractKapuaConfigurableService#AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, PermissionFactory, AuthorizationService, RootUserTester)} This constructor may be removed in a next release
+     * @deprecated Since 2.0.0. Please use {@link AbstractKapuaConfigurableService#AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, EntityCacheFactory, PermissionFactory, AuthorizationService, RootUserTester)} This constructor may be removed in a next release
      */
     @Deprecated
-    protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory, AbstractEntityCacheFactory abstractCacheFactory) {
+    protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory, EntityCacheFactory abstractCacheFactory) {
         this(pid,
                 domain,
                 entityManagerFactory,
@@ -173,7 +173,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     protected AbstractKapuaConfigurableService(String pid,
                                                Domain domain,
                                                EntityManagerFactory entityManagerFactory,
-                                               AbstractEntityCacheFactory abstractCacheFactory,
+                                               EntityCacheFactory abstractCacheFactory,
                                                PermissionFactory permissionFactory,
                                                AuthorizationService authorizationService,
                                                RootUserTester rootUserTester) {

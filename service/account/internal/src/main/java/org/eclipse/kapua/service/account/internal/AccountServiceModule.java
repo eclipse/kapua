@@ -17,6 +17,7 @@ import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactory;
 import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
+import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSetting;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSettingKeys;
@@ -31,10 +32,12 @@ public class AccountServiceModule extends ServiceEventTransactionalModule implem
     public AccountServiceModule(
             AccountService accountService,
             KapuaAccountSetting kapuaAccountSetting,
-            ServiceEventHouseKeeperFactory serviceEventHouseKeeperFactory) {
+            ServiceEventHouseKeeperFactory serviceEventHouseKeeperFactory,
+            ServiceEventBus serviceEventBus) {
         super(
                 ServiceInspector.getEventBusClients(accountService, AccountService.class).toArray(new ServiceEventClientConfiguration[0]),
                 kapuaAccountSetting.getString(KapuaAccountSettingKeys.ACCOUNT_EVENT_ADDRESS),
-                serviceEventHouseKeeperFactory);
+                serviceEventHouseKeeperFactory,
+                serviceEventBus);
     }
 }

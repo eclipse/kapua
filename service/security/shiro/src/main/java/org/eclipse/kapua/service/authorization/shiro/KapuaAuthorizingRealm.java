@@ -58,8 +58,12 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
 
     public static final String REALM_NAME = "kapuaAuthorizingRealm";
 
+    private final PermissionMapper permissionMapper;
+
     public KapuaAuthorizingRealm() throws KapuaException {
         setName(REALM_NAME);
+
+        permissionMapper = KapuaLocator.getInstance().getComponent(PermissionMapperImpl.class);
     }
 
     /**
@@ -128,7 +132,7 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
             for (AccessPermission accessPermission : accessPermissions.getItems()) {
                 PermissionImpl p = accessPermission.getPermission();
                 logger.trace("User: {} has permission: {}", username, p);
-                info.addObjectPermission(p);
+                info.addObjectPermission(permissionMapper.mapPermission(p));
             }
 
             // Access Role Id
@@ -169,7 +173,7 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
 
                     PermissionImpl p = rolePermission.getPermission();
                     logger.trace("Role: {} has permission: {}", role, p);
-                    info.addObjectPermission(p);
+                    info.addObjectPermission(permissionMapper.mapPermission(p));
                 }
             }
         }

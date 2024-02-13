@@ -32,15 +32,17 @@ public class EntityCache {
 
     protected Cache<Serializable, Serializable> idCache;
     protected Cache<Serializable, Serializable> listsCache;  // listsCache does not use the same keys as idCache
+    private final CommonsMetric commonsMetric;
 
     /**
      * The constructor initializes the {@link #idCache} and the {@link #listsCache}.
      *
      * @param idCacheName
      */
-    public EntityCache(String idCacheName) {
-        idCache = KapuaCacheManager.getCache(idCacheName);
-        listsCache = KapuaCacheManager.getCache(idCacheName + "_list");
+    public EntityCache(KapuaCacheManager cacheManager, CommonsMetric commonsMetric, String idCacheName) {
+        this.idCache = cacheManager.getCache(idCacheName);
+        this.listsCache = cacheManager.getCache(idCacheName + "_list");
+        this.commonsMetric = commonsMetric;
     }
 
     public KapuaEntity get(KapuaId scopeId, KapuaId kapuaId) {
@@ -53,9 +55,9 @@ public class EntityCache {
                 cacheErrorLogger("get", idCache.getName(), kapuaId, e);
             }
             if (entity == null) {
-                CommonsMetric.getInstance().getCacheMiss().inc();
+                commonsMetric.getCacheMiss().inc();
             } else {
-                CommonsMetric.getInstance().getCacheHit().inc();
+                commonsMetric.getCacheHit().inc();
             }
             return entity;
         }
@@ -104,7 +106,7 @@ public class EntityCache {
             if (entity != null) {
                 try {
                     idCache.remove(kapuaId);
-                    CommonsMetric.getInstance().getCacheRemoval().inc();
+                    commonsMetric.getCacheRemoval().inc();
                     return entity;
                 } catch (Exception e) {
                     cacheErrorLogger("remove", idCache.getName(), kapuaId, e);
@@ -190,8 +192,8 @@ public class EntityCache {
      * @param t         the exception
      */
     protected void cacheErrorLogger(String operation, String cacheName, Serializable keyId, Throwable t) {
-        CommonsMetric.getInstance().getCacheError().inc();
+        commonsMetric.getCacheError().inc();
         LOGGER.warn("Cache error while performing {} on {} for key {} : {}", operation, cacheName, keyId, t.getLocalizedMessage());
-        LOGGER.debug("Cache exception", t);
+        LOGGER.error("Cache exception", t);
     }
 }

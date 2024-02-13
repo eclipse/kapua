@@ -12,27 +12,28 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
-import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
-import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
+import com.google.inject.Inject;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
+import org.eclipse.kapua.commons.service.internal.cache.KapuaCacheManager;
 
 /**
  * Cache factory for the {@link AccessInfoImpl}
  */
-public class AccessInfoCacheFactory extends AbstractEntityCacheFactory {
+public class AccessInfoCacheFactory {
+    protected final KapuaCacheManager cacheManager;
+    protected final CommonsMetric commonsMetric;
 
-    public AccessInfoCacheFactory() {
-        super("AccessInfoId");
+    @Inject
+    public AccessInfoCacheFactory(KapuaCacheManager cacheManager, CommonsMetric commonsMetric) {
+        this.cacheManager = cacheManager;
+        this.commonsMetric = commonsMetric;
     }
+
 
     /**
      * @return an {@link AccessInfoCache}
      */
-    @Override
-    public EntityCache createCache() {
-        return new AccessInfoCache(getEntityIdCacheName(), "AccessInfoUserIdId");
-    }
-
-    protected static AccessInfoCacheFactory getInstance() {
-        return new AccessInfoCacheFactory();
+    public AccessInfoCache createCache() {
+        return new AccessInfoCache(cacheManager, commonsMetric, "AccessInfoId", "AccessInfoUserIdId");
     }
 }

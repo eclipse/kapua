@@ -17,11 +17,14 @@ import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraReques
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
+import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
 import org.eclipse.kapua.service.device.management.keystore.internal.message.request.KeystoreQueryRequestMessage;
 import org.eclipse.kapua.service.device.management.keystore.internal.message.request.KeystoreRequestPayload;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItemQuery;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
+
+import javax.inject.Inject;
 
 /**
  * {@link Translator} implementation from {@link KeystoreQueryRequestMessage} to {@link KuraRequestMessage}
@@ -30,7 +33,13 @@ import org.eclipse.kapua.translator.exception.InvalidPayloadException;
  */
 public class TranslatorAppKeystoreQueryKapuaKura extends AbstractTranslatorAppKeystoreKapuaKura<KeystoreQueryRequestMessage> {
 
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private final String charEncoding;
+
+    @Inject
+    public TranslatorAppKeystoreQueryKapuaKura(DeviceManagementSetting deviceManagementSetting, DeviceKeystoreManagementFactory deviceKeystoreManagementFactory) {
+        super(deviceKeystoreManagementFactory);
+        charEncoding = deviceManagementSetting.getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    }
 
     @Override
     protected KuraRequestPayload translatePayload(KeystoreRequestPayload kapuaPayload) throws InvalidPayloadException {
@@ -38,7 +47,7 @@ public class TranslatorAppKeystoreQueryKapuaKura extends AbstractTranslatorAppKe
             KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
             if (kapuaPayload.hasBody()) {
-                DeviceKeystoreItemQuery deviceKeystoreItemQuery = kapuaPayload.getItemQuery();
+                DeviceKeystoreItemQuery deviceKeystoreItemQuery = kapuaPayload.getItemQuery().orElse(deviceKeystoreManagementFactory.newDeviceKeystoreItemQuery());
 
                 if (deviceKeystoreItemQuery.hasFilters()) {
 
@@ -46,7 +55,7 @@ public class TranslatorAppKeystoreQueryKapuaKura extends AbstractTranslatorAppKe
                     kuraItemQuery.setKeystoreServicePid(deviceKeystoreItemQuery.getKeystoreId());
                     kuraItemQuery.setAlias(deviceKeystoreItemQuery.getAlias());
 
-                    kuraRequestPayload.setBody(getJsonMapper().writeValueAsString(kuraItemQuery).getBytes(CHAR_ENCODING));
+                    kuraRequestPayload.setBody(getJsonMapper().writeValueAsString(kuraItemQuery).getBytes(charEncoding));
                 }
             }
 

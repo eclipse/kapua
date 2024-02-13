@@ -133,6 +133,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     private final UserService userService;
 
     private final Set<CredentialsHandler> credentialsHandlers;
+    private final KapuaAuthenticationSetting kapuaAuthenticationSetting;
 
     @Inject
     public AuthenticationServiceShiroImpl(
@@ -150,7 +151,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             AccessPermissionService accessPermissionService,
             AccessPermissionFactory accessPermissionFactory,
             UserService userService,
-            Set<CredentialsHandler> credentialsHandlers) {
+            Set<CredentialsHandler> credentialsHandlers,
+            KapuaAuthenticationSetting kapuaAuthenticationSetting) {
         this.credentialService = credentialService;
         this.mfaOptionService = mfaOptionService;
         this.accessTokenService = accessTokenService;
@@ -166,6 +168,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         this.accessPermissionFactory = accessPermissionFactory;
         this.userService = userService;
         this.credentialsHandlers = credentialsHandlers;
+        this.kapuaAuthenticationSetting = kapuaAuthenticationSetting;
     }
 
     @Override
@@ -528,9 +531,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
      */
     private AccessToken createAccessToken(KapuaEid scopeId, KapuaEid userId) throws KapuaException {
         // Retrieve TTL access token
-        KapuaAuthenticationSetting settings = KapuaAuthenticationSetting.getInstance();
-        long tokenTtl = settings.getLong(KapuaAuthenticationSettingKeys.AUTHENTICATION_TOKEN_EXPIRE_AFTER);
-        long refreshTokenTtl = settings.getLong(KapuaAuthenticationSettingKeys.AUTHENTICATION_REFRESH_TOKEN_EXPIRE_AFTER);
+        long tokenTtl = kapuaAuthenticationSetting.getLong(KapuaAuthenticationSettingKeys.AUTHENTICATION_TOKEN_EXPIRE_AFTER);
+        long refreshTokenTtl = kapuaAuthenticationSetting.getLong(KapuaAuthenticationSettingKeys.AUTHENTICATION_REFRESH_TOKEN_EXPIRE_AFTER);
 
         // Generate token
         Date now = new Date();
@@ -592,13 +594,11 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     }
 
     private String generateJwt(KapuaEid scopeId, KapuaEid userId, Date now, long ttl) {
-        KapuaAuthenticationSetting settings = KapuaAuthenticationSetting.getInstance();
-
         // Build claims
         JwtClaims claims = new JwtClaims();
 
         // Reserved claims
-        String issuer = settings.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_ISSUER);
+        String issuer = kapuaAuthenticationSetting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_ISSUER);
         Date issuedAtDate = now; // Issued at claim
         Date expiresOnDate = new Date(now.getTime() + ttl); // Expires claim.
 

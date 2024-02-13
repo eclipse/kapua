@@ -12,8 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura;
 
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.call.DeviceCallFactory;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.translator.TranslatorHub;
+import org.eclipse.kapua.transport.TransportClientFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -23,8 +28,23 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class KuraDeviceCallFactoryImpl implements DeviceCallFactory {
+    private final AccountService accountService;
+    private final DeviceRegistryService deviceRegistryService;
+    private final TransportClientFactory transportClientFactory;
+    private final TranslatorHub translatorHub;
+
+    @Inject
+    public KuraDeviceCallFactoryImpl(AccountService accountService,
+                                     DeviceRegistryService deviceRegistryService,
+                                     TransportClientFactory transportClientFactory, TranslatorHub translatorHub) {
+        this.accountService = accountService;
+        this.deviceRegistryService = deviceRegistryService;
+        this.transportClientFactory = transportClientFactory;
+        this.translatorHub = translatorHub;
+    }
+
     @Override
     public KuraDeviceCallImpl newDeviceCall() {
-        return new KuraDeviceCallImpl();
+        return new KuraDeviceCallImpl(accountService, deviceRegistryService, transportClientFactory, translatorHub);
     }
 }

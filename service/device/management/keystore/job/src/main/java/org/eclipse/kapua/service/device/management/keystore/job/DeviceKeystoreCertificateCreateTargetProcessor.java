@@ -34,12 +34,13 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DeviceKeystoreCertificateCreateTargetProcessor extends AbstractDeviceTargetProcessor implements TargetProcessor {
-    private static final DeviceKeystoreManagementService KEYSTORE_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceKeystoreManagementService.class);
-    private static final DeviceKeystoreManagementFactory KEYSTORE_MANAGEMENT_FACTORY = LOCATOR.getFactory(DeviceKeystoreManagementFactory.class);
 
     @Inject
+    DeviceKeystoreManagementService deviceKeystoreManagementService;
+    @Inject
+    DeviceKeystoreManagementFactory deviceKeystoreManagementFactory;
+    @Inject
     JobContext jobContext;
-
     @Inject
     StepContext stepContext;
 
@@ -56,12 +57,12 @@ public class DeviceKeystoreCertificateCreateTargetProcessor extends AbstractDevi
         String certificate = stepContextWrapper.getStepProperty(DeviceCertificateCreatePropertyKeys.CERTIFICATE, String.class);
         Long timeout = stepContextWrapper.getStepProperty(DeviceCertificateCreatePropertyKeys.TIMEOUT, Long.class);
 
-        DeviceKeystoreCertificate deviceKeystoreCertificate = KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreCertificate();
+        DeviceKeystoreCertificate deviceKeystoreCertificate = deviceKeystoreManagementFactory.newDeviceKeystoreCertificate();
 
         deviceKeystoreCertificate.setKeystoreId(keystoreId);
         deviceKeystoreCertificate.setAlias(alias);
         deviceKeystoreCertificate.setCertificate(certificate);
 
-        KapuaSecurityUtils.doPrivileged(() -> KEYSTORE_MANAGEMENT_SERVICE.createKeystoreCertificate(jobTarget.getScopeId(), jobTarget.getJobTargetId(), deviceKeystoreCertificate, timeout));
+        KapuaSecurityUtils.doPrivileged(() -> deviceKeystoreManagementService.createKeystoreCertificate(jobTarget.getScopeId(), jobTarget.getJobTargetId(), deviceKeystoreCertificate, timeout));
     }
 }

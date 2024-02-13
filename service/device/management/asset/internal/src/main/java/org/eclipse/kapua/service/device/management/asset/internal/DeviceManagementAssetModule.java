@@ -39,7 +39,8 @@ public class DeviceManagementAssetModule extends AbstractKapuaModule {
                                                               DeviceEventFactory deviceEventFactory,
                                                               DeviceRegistryService deviceRegistryService,
                                                               DeviceAssetStoreService deviceAssetStoreService,
-                                                              KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+                                                              KapuaJpaTxManagerFactory jpaTxManagerFactory,
+                                                              DeviceAssetFactory deviceAssetFactory) {
         return new DeviceAssetManagementServiceImpl(
                 jpaTxManagerFactory.create("kapua-device_management_operation_registry"),
                 authorizationService,
@@ -47,7 +48,7 @@ public class DeviceManagementAssetModule extends AbstractKapuaModule {
                 deviceEventService,
                 deviceEventFactory,
                 deviceRegistryService,
-                deviceAssetStoreService
-        );
+                deviceAssetStoreService,
+                deviceAssetFactory);
     }
 }

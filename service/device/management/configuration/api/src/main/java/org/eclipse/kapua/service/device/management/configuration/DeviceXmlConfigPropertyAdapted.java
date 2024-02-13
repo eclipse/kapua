@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration;
 
+import org.eclipse.kapua.model.xml.XmlPropertyAdapted;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -27,20 +29,34 @@ import javax.xml.bind.annotation.XmlEnumValue;
  * @since 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DeviceXmlConfigPropertyAdapted {
+public class DeviceXmlConfigPropertyAdapted implements XmlPropertyAdapted<DeviceXmlConfigPropertyAdapted.ConfigPropertyType> {
 
     @XmlEnum
     public enum ConfigPropertyType {
-        @XmlEnumValue("String")stringType,
-        @XmlEnumValue("Long")longType,
-        @XmlEnumValue("Double")doubleType,
-        @XmlEnumValue("Float")floatType,
-        @XmlEnumValue("Integer")integerType,
-        @XmlEnumValue("Byte")byteType,
-        @XmlEnumValue("Char")charType,
-        @XmlEnumValue("Boolean")booleanType,
-        @XmlEnumValue("Short")shortType,
-        @XmlEnumValue("Password")passwordType
+        @XmlEnumValue("String") stringType,
+        @XmlEnumValue("Long") longType,
+        @XmlEnumValue("Double") doubleType,
+        @XmlEnumValue("Float") floatType,
+        @XmlEnumValue("Integer") integerType,
+        @XmlEnumValue("Byte") byteType,
+        @XmlEnumValue("Char") charType,
+        @XmlEnumValue("Boolean") booleanType,
+        @XmlEnumValue("Short") shortType,
+        @XmlEnumValue("Password") passwordType
+    }
+
+    public DeviceXmlConfigPropertyAdapted() {
+    }
+
+    public DeviceXmlConfigPropertyAdapted(String name,
+                                          ConfigPropertyType type,
+                                          String... values) {
+        super();
+        this.name = name;
+        this.type = type;
+        this.encrypted = false;
+        this.array = values != null && values.length > 1;
+        this.values = values;
     }
 
     /**
@@ -72,19 +88,6 @@ public class DeviceXmlConfigPropertyAdapted {
      */
     @XmlElement(name = "value")
     private String[] values;
-
-    public DeviceXmlConfigPropertyAdapted() {
-    }
-
-    public DeviceXmlConfigPropertyAdapted(String name,
-                                          ConfigPropertyType type,
-                                          String[] values) {
-        super();
-
-        this.type = type;
-        this.values = values;
-        this.encrypted = false;
-    }
 
     public String getName() {
         return name;

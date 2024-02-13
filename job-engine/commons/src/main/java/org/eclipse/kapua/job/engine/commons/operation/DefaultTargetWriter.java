@@ -18,7 +18,7 @@ import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobContextWrapper;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.job.engine.commons.wrappers.StepContextWrapper;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.service.job.operation.TargetWriter;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
@@ -43,12 +43,12 @@ public class DefaultTargetWriter extends AbstractItemWriter implements TargetWri
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultTargetWriter.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final JobTargetService JOB_TARGET_SERVICE = LOCATOR.getService(JobTargetService.class);
-
+    @Inject
+    private JobTargetService jobTargetService;
+    @Inject
+    KapuaIdFactory kapuaIdFactory;
     @Inject
     JobContext jobContext;
-
     @Inject
     StepContext stepContext;
 
@@ -56,7 +56,7 @@ public class DefaultTargetWriter extends AbstractItemWriter implements TargetWri
     public void writeItems(List<Object> items) throws Exception {
 
         JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
-        StepContextWrapper stepContextWrapper = new StepContextWrapper(stepContext);
+        StepContextWrapper stepContextWrapper = new StepContextWrapper(kapuaIdFactory, stepContext);
 
         JobLogger jobLogger = jobContextWrapper.getJobLogger();
         jobLogger.setClassLog(LOG);
@@ -70,7 +70,7 @@ public class DefaultTargetWriter extends AbstractItemWriter implements TargetWri
             JobTargetWrapper processedWrappedJobTarget = (JobTargetWrapper) item;
             JobTarget processedJobTarget = processedWrappedJobTarget.getJobTarget();
 
-            JobTarget jobTarget = KapuaSecurityUtils.doPrivileged(() -> JOB_TARGET_SERVICE.find(processedJobTarget.getScopeId(), processedJobTarget.getId()));
+            JobTarget jobTarget = KapuaSecurityUtils.doPrivileged(() -> jobTargetService.find(processedJobTarget.getScopeId(), processedJobTarget.getId()));
 
             if (jobTarget == null) {
                 jobLogger.warn("Target {} has not been found. Likely the target or job has been deleted when it was running... Status was: {}", processedJobTarget.getId(), processedJobTarget.getStatus());
@@ -93,7 +93,7 @@ public class DefaultTargetWriter extends AbstractItemWriter implements TargetWri
             }
 
             try {
-                KapuaSecurityUtils.doPrivileged(() -> JOB_TARGET_SERVICE.update(jobTarget));
+                KapuaSecurityUtils.doPrivileged(() -> jobTargetService.update(jobTarget));
             } catch (KapuaOptimisticLockingException kole) {
                 LOG.warn("Target {} has been updated by another component! Status was: {}. Error: {}", jobTarget.getId(), jobTarget.getStatus(), kole.getMessage());
             }

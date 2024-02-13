@@ -19,17 +19,7 @@ public class KeycloakOpenIDSetting extends AbstractKapuaSetting<KeycloakOpenIDSe
 
     private static final String KEYCLOAK_OPENID_SETTING_RESOURCE = "openid-keycloak-setting.properties";
 
-    private static final KeycloakOpenIDSetting INSTANCE = new KeycloakOpenIDSetting();
-
-    private KeycloakOpenIDSetting() {
+    public KeycloakOpenIDSetting() {
         super(KEYCLOAK_OPENID_SETTING_RESOURCE);
-    }
-
-    KeycloakOpenIDSetting(final String resourceName) {
-        super(resourceName);
-    }
-
-    public static KeycloakOpenIDSetting getInstance() {
-        return INSTANCE;
     }
 }

@@ -19,14 +19,12 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.realm.AuthenticatingRealm;
-import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
-import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.shiro.UsernamePasswordCredentialsImpl;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.MfaRequiredException;
@@ -46,8 +44,8 @@ import java.util.Map;
 public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserPassAuthenticatingRealm.class);
-
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    // Get Services
+    private final UserService userService = KapuaLocator.getInstance().getService(UserService.class);
 
     /**
      * Realm name.
@@ -72,16 +70,6 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
         // Extract credentials
         UsernamePasswordCredentialsImpl token = (UsernamePasswordCredentialsImpl) authenticationToken;
         String tokenUsername = token.getUsername();
-        // Get Services
-        UserService userService;
-        CredentialService credentialService;
-
-        try {
-            userService = LOCATOR.getService(UserService.class);
-            credentialService = LOCATOR.getService(CredentialService.class);
-        } catch (KapuaRuntimeException kre) {
-            throw new ShiroException("Unexpected error while loading KapuaServices!", kre);
-        }
         // Get the associated user by name
         final User user;
         try {

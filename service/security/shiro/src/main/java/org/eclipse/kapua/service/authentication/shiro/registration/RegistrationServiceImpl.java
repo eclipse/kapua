@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authentication.shiro.registration;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.plugin.sso.openid.JwtProcessor;
+import org.eclipse.kapua.plugin.sso.openid.OpenIDLocator;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
 import org.eclipse.kapua.security.registration.RegistrationProcessor;
 import org.eclipse.kapua.security.registration.RegistrationProcessorProvider;
@@ -22,16 +23,15 @@ import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.registration.RegistrationService;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
-import org.eclipse.kapua.service.authentication.shiro.utils.JwtProcessors;
 import org.eclipse.kapua.service.user.User;
 import org.jose4j.jwt.consumer.JwtContext;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.ServiceLoader;
-
-import javax.inject.Singleton;
+import java.util.Set;
 
 @Singleton
 public class RegistrationServiceImpl implements RegistrationService, AutoCloseable {
@@ -40,12 +40,14 @@ public class RegistrationServiceImpl implements RegistrationService, AutoCloseab
 
     private final List<RegistrationProcessor> processors = new ArrayList<>();
 
-    private static final KapuaAuthenticationSetting SETTING = KapuaAuthenticationSetting.getInstance();
+    private final KapuaAuthenticationSetting authenticationSetting;
 
-    public RegistrationServiceImpl() throws OpenIDException {
-        jwtProcessor = JwtProcessors.createDefault();
+    @Inject
+    public RegistrationServiceImpl(KapuaAuthenticationSetting authenticationSetting, OpenIDLocator openIDLocator, Set<RegistrationProcessorProvider> registrationProcessorProvider) throws OpenIDException {
+        this.authenticationSetting = authenticationSetting;
+        jwtProcessor = openIDLocator.getProcessor();
 
-        for (RegistrationProcessorProvider provider : ServiceLoader.load(RegistrationProcessorProvider.class)) {
+        for (RegistrationProcessorProvider provider : registrationProcessorProvider) {
             processors.addAll(provider.createAll());
         }
     }
@@ -65,7 +67,7 @@ public class RegistrationServiceImpl implements RegistrationService, AutoCloseab
 
     @Override
     public boolean isAccountCreationEnabled() {
-        final String registrationServiceEnabled = SETTING.getString(
+        final String registrationServiceEnabled = authenticationSetting.getString(
                 KapuaAuthenticationSettingKeys.AUTHENTICATION_REGISTRATION_SERVICE_ENABLED, String.valueOf(false));
         if (registrationServiceEnabled.equals(String.valueOf(false))) {
             return false;

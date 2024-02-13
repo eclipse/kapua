@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
 import org.eclipse.kapua.commons.service.internal.cache.KapuaCacheManager;
 import org.eclipse.kapua.model.KapuaEntity;
@@ -31,9 +32,9 @@ public class AccessInfoCache extends EntityCache {
 
     protected Cache<Serializable, Serializable> accessInfoByUserIdCache;
 
-    public AccessInfoCache(String idCacheName, String nameCacheName) {
-        super(idCacheName);
-        accessInfoByUserIdCache = KapuaCacheManager.getCache(nameCacheName);
+    public AccessInfoCache(KapuaCacheManager cacheManager, CommonsMetric commonsMetric, String idCacheName, String nameCacheName) {
+        super(cacheManager, commonsMetric, idCacheName);
+        accessInfoByUserIdCache = cacheManager.getCache(nameCacheName);
     }
 
     public KapuaEntity getByUserId(KapuaId scopeId, KapuaId userId) {

@@ -16,6 +16,7 @@ import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactory;
 import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
+import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.group.GroupService;
@@ -33,7 +34,8 @@ public class AuthorizationServiceModule extends ServiceEventTransactionalModule 
                                       DomainRegistryService domainRegistryService,
                                       GroupService groupService,
                                       KapuaAuthorizationSetting kapuaAuthorizationSettings,
-                                      ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory) {
+                                      ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory,
+                                      ServiceEventBus serviceEventBus) {
         super(Arrays.asList(
                                 ServiceInspector.getEventBusClients(accessInfoService, AccessInfoService.class),
                                 ServiceInspector.getEventBusClients(roleService, RoleService.class),
@@ -45,6 +47,7 @@ public class AuthorizationServiceModule extends ServiceEventTransactionalModule 
                         .collect(Collectors.toList())
                         .toArray(new ServiceEventClientConfiguration[0]),
                 kapuaAuthorizationSettings.getString(KapuaAuthorizationSettingKeys.AUTHORIZATION_EVENT_ADDRESS),
-                serviceEventTransactionalHousekeeperFactory);
+                serviceEventTransactionalHousekeeperFactory,
+                serviceEventBus);
     }
 }

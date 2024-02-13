@@ -12,23 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public abstract class ServiceEventTransactionalModule implements ServiceModule {
 
@@ -51,24 +50,17 @@ public abstract class ServiceEventTransactionalModule implements ServiceModule {
     private final ServiceEventClientConfiguration[] serviceEventClientConfigurations;
     private final String internalAddress;
     private final ServiceEventHouseKeeperFactory houseKeeperFactory;
+    private final ServiceEventBus serviceEventBus;
 
     public ServiceEventTransactionalModule(
             ServiceEventClientConfiguration[] serviceEventClientConfigurations,
             String internalAddress,
-            ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory) {
-
-        // generate a unique client id
-        this(serviceEventClientConfigurations, internalAddress, UUID.randomUUID().toString(), serviceEventTransactionalHousekeeperFactory);
-    }
-
-    public ServiceEventTransactionalModule(
-            ServiceEventClientConfiguration[] serviceEventClientConfigurations,
-            String internalAddress,
-            String uniqueClientId,
-            ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory) {
-        this.serviceEventClientConfigurations = appendClientId(uniqueClientId, serviceEventClientConfigurations);
+            ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory,
+            ServiceEventBus serviceEventBus) {
+        this.serviceEventClientConfigurations = serviceEventClientConfigurations;
         this.internalAddress = internalAddress;
         this.houseKeeperFactory = serviceEventTransactionalHousekeeperFactory;
+        this.serviceEventBus = serviceEventBus;
     }
 
 
@@ -77,7 +69,6 @@ public abstract class ServiceEventTransactionalModule implements ServiceModule {
         LOGGER.info("Starting service event module... {}", this.getClass().getName());
         LOGGER.info("Starting service event module... initialize configurations");
         LOGGER.info("Starting service event module... initialize event bus");
-        ServiceEventBus eventbus = ServiceEventBusManager.getInstance();
         LOGGER.info("Starting service event module... initialize event subscriptions");
         List<ServiceEntry> servicesEntryList = new ArrayList<>();
         if (serviceEventClientConfigurations != null) {
@@ -89,7 +80,7 @@ public abstract class ServiceEventTransactionalModule implements ServiceModule {
                 }
                 // Listen to upstream service events
                 if (selc.getEventListener() != null) {
-                    eventbus.subscribe(address, getSubscriptionName(address, selc.getClientName()), selc.getEventListener());
+                    serviceEventBus.subscribe(address, getSubscriptionName(address, selc.getClientName()), selc.getEventListener());
                 }
                 servicesEntryList.add(new ServiceEntry(selc.getClientName(), address));
                 subscriberNames.add(selc.getClientName()); // Set because names must be unique
@@ -100,7 +91,7 @@ public abstract class ServiceEventTransactionalModule implements ServiceModule {
 
         // register events to the service map
         LOGGER.info("Starting service event module... register services names");
-        ServiceMap.registerServices(internalAddress, servicesEntryList);
+        ServiceMap.registerServices(servicesEntryList);
 
         // Start the House keeper
         LOGGER.info("Starting service event module... start housekeeper");

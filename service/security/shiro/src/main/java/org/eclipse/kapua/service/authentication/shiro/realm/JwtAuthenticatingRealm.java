@@ -22,13 +22,12 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.util.Destroyable;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.plugin.sso.openid.JwtProcessor;
+import org.eclipse.kapua.plugin.sso.openid.OpenIDLocator;
 import org.eclipse.kapua.plugin.sso.openid.OpenIDService;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
-import org.eclipse.kapua.plugin.sso.openid.provider.ProviderOpenIDLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
@@ -39,7 +38,6 @@ import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
-import org.eclipse.kapua.service.authentication.shiro.utils.JwtProcessors;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.jose4j.jwt.consumer.JwtContext;
@@ -57,20 +55,21 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
 
     private static final Logger LOG = LoggerFactory.getLogger(JwtAuthenticatingRealm.class);
 
-    private static final KapuaAuthenticationSetting AUTHENTICATION_SETTING = KapuaAuthenticationSetting.getInstance();
-
-    private static final Boolean SSO_USER_EXTERNAL_ID_AUTOFILL = AUTHENTICATION_SETTING.getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_SSO_USER_EXTERNAL_ID_AUTOFILL);
-    private static final Boolean SSO_USER_EXTERNAL_USERNAME_AUTOFILL = AUTHENTICATION_SETTING.getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_SSO_USER_EXTERNAL_USERNAME_AUTOFILL);
+    private final Boolean ssoUserExternalIdAutofill;
+    private final Boolean ssoUserExternalUsernameAutofill;
+    // Get services
+    private final UserService userService = KapuaLocator.getInstance().getService(UserService.class);
+    private final OpenIDService openIDService = KapuaLocator.getInstance().getComponent(OpenIDLocator.class).getService();
+    private final KapuaAuthenticationSetting authenticationSetting = KapuaLocator.getInstance().getComponent(KapuaAuthenticationSetting.class);
+    /**
+     * JWT Processor.
+     */
+    private final JwtProcessor jwtProcessor;
 
     /**
      * Realm name.
      */
     public static final String REALM_NAME = "jwtAuthenticatingRealm";
-
-    /**
-     * JWT Processor.
-     */
-    private JwtProcessor jwtProcessor;
 
     /**
      * Constructor.
@@ -79,25 +78,26 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
      */
     public JwtAuthenticatingRealm() {
         setName(REALM_NAME);
+        try {
+            jwtProcessor = KapuaLocator.getInstance().getComponent(OpenIDLocator.class).getProcessor();
+        } catch (OpenIDException se) {
+            throw new ShiroException("Unexpected error while creating Jwt Processor!", se);
+        }
+        ssoUserExternalIdAutofill = authenticationSetting.getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_SSO_USER_EXTERNAL_ID_AUTOFILL);
+        ssoUserExternalUsernameAutofill = authenticationSetting.getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_SSO_USER_EXTERNAL_USERNAME_AUTOFILL);
     }
 
     @Override
     protected void onInit() {
         super.onInit();
 
-        try {
-            jwtProcessor = JwtProcessors.createDefault();
-            setCredentialsMatcher(new JwtCredentialsMatcher(jwtProcessor));
-        } catch (OpenIDException se) {
-            throw new ShiroException("Unexpected error while creating Jwt Processor!", se);
-        }
+        setCredentialsMatcher(new JwtCredentialsMatcher(jwtProcessor));
     }
 
     @Override
     public void destroy() throws Exception {
         if (jwtProcessor != null) {
             jwtProcessor.close();
-            jwtProcessor = null;
         }
     }
 
@@ -106,15 +106,6 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
         // Extract credentials
         JwtCredentialsImpl jwtCredentials = (JwtCredentialsImpl) authenticationToken;
         String jwtIdToken = jwtCredentials.getIdToken();
-        // Get Services
-        KapuaLocator locator;
-        UserService userService;
-        try {
-            locator = KapuaLocator.getInstance();
-            userService = locator.getService(UserService.class);
-        } catch (KapuaRuntimeException kre) {
-            throw new ShiroException("Unexpected error while loading KapuaServices!", kre);
-        }
         // Get the associated user by external id
         User user;
         try {
@@ -123,7 +114,7 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
             user = KapuaSecurityUtils.doPrivileged(() -> userService.findByExternalId(userExternalId));
 
             // Update User.externalUsername if not populated and if autofill is enabled
-            if (SSO_USER_EXTERNAL_USERNAME_AUTOFILL &&
+            if (ssoUserExternalUsernameAutofill &&
                     user != null &&
                     Strings.isNullOrEmpty(user.getExternalUsername())) {
 
@@ -151,7 +142,7 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
                     user = KapuaSecurityUtils.doPrivileged(() -> userService.findByExternalUsername(externalUsername));
 
                     // Update User.externalId if autofill is enabled
-                    if (SSO_USER_EXTERNAL_ID_AUTOFILL && user != null) {
+                    if (ssoUserExternalIdAutofill && user != null) {
                         String userExternalId = extractExternalId(jwtIdToken);
                         user.setExternalId(userExternalId);
                         user = updateUser(user);
@@ -266,10 +257,6 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
      * @since 2.0.0
      */
     private User resolveExternalUsernameWithOpenIdProvider(JwtCredentials jwtCredentials) throws KapuaException {
-        // Get services
-        UserService userService = KapuaLocator.getInstance().getService(UserService.class);
-        ProviderOpenIDLocator singleSignOnLocator = new ProviderOpenIDLocator();
-        OpenIDService openIDService = singleSignOnLocator.getService();
 
         // Ask to the OpenId Provider the user's info
         JsonObject userInfo = openIDService.getUserInfo(jwtCredentials.getAccessToken());
@@ -281,7 +268,7 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
             user = KapuaSecurityUtils.doPrivileged(() -> userService.findByExternalUsername(externalUsername));
 
             // Update User.externalId if autofill is configured
-            if (SSO_USER_EXTERNAL_ID_AUTOFILL && user != null) {
+            if (ssoUserExternalIdAutofill && user != null) {
                 String userExternalId = extractExternalId(jwtCredentials.getIdToken());
 
                 if (!Strings.isNullOrEmpty(userExternalId)) {
@@ -303,7 +290,6 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
      * @since 2.0.0
      */
     private User updateUser(User user) throws KapuaException {
-        UserService userService = KapuaLocator.getInstance().getService(UserService.class);
         return KapuaSecurityUtils.doPrivileged(() -> userService.update(user));
     }
 }

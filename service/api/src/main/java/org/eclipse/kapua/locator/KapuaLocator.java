@@ -13,12 +13,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator;
 
-import java.util.ServiceLoader;
-
 import org.eclipse.kapua.KapuaRuntimeErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Type;
+import java.util.ServiceLoader;
 
 /**
  * Interface to load KapuaService instances in a given environment.<br>
@@ -32,7 +33,7 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
 
     private static final Logger logger = LoggerFactory.getLogger(KapuaLocator.class);
 
-    private static KapuaLocator instance = createInstance();
+    private static KapuaLocator instance;
 
     /**
      * {@link KapuaLocator} implementation classname specified via "System property" constants
@@ -57,7 +58,9 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
             String locatorImplementation = locatorClassName();
             if (locatorImplementation != null && !locatorImplementation.trim().isEmpty()) {
                 try {
-                    return (KapuaLocator) Class.forName(locatorImplementation).newInstance();
+                    logger.info("initializing locator class {}... ", locatorImplementation);
+                    final Class<?> locatorClass = Class.forName(locatorImplementation);
+                    return (KapuaLocator) locatorClass.newInstance();
                 } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
                     logger.info("An error occurred during Servicelocator initialization", e);
                 }
@@ -87,6 +90,9 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
      * @return
      */
     public static KapuaLocator getInstance() {
+        if (instance == null) {
+            instance = createInstance();
+        }
         return instance;
     }
 
@@ -113,5 +119,15 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
 
         logger.debug("No service locator class resolved. Falling back to default.");
         return null;
+    }
+
+    @Override
+    public <T> T getComponent(Class<T> type, String named) {
+        return instance.getComponent(type, named);
+    }
+
+    @Override
+    public <T> T getComponent(Type type) {
+        return instance.getComponent(type);
     }
 }

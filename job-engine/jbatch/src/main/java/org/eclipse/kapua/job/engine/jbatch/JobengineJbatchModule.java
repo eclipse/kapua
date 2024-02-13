@@ -12,14 +12,31 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.jbatch;
 
+import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobEngineService;
+import org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver;
+import org.eclipse.kapua.job.engine.jbatch.setting.JobEngineSetting;
+import org.eclipse.kapua.service.job.execution.JobExecutionService;
+import org.eclipse.kapua.service.job.step.JobStepFactory;
+import org.eclipse.kapua.service.job.step.JobStepService;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
+
+import javax.batch.runtime.BatchRuntime;
+import javax.inject.Singleton;
 
 public class JobengineJbatchModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(JobEngineFactory.class).to(JobEngineFactoryJbatch.class);
-        bind(JobEngineService.class).to(JobEngineServiceJbatch.class);
+        bind(JobEngineFactory.class).to(JobEngineFactoryJbatch.class).in(Singleton.class);
+        bind(JobEngineService.class).to(JobEngineServiceJbatch.class).in(Singleton.class);
+        bind(JobEngineSetting.class).in(Singleton.class);
+    }
+
+    @Provides
+    @Singleton
+    JbatchDriver jbatchDriver(JobExecutionService jobExecutionService, JobStepService jobStepService, JobStepFactory jobStepFactory, JobStepDefinitionService jobStepDefinitionService) {
+        return new JbatchDriver(BatchRuntime.getJobOperator(), jobExecutionService, jobStepService, jobStepFactory, jobStepDefinitionService);
     }
 }

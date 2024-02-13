@@ -19,6 +19,7 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  *
  * @since 1.0.0
  */
+//TODO: FIXME: singletons should not be handled manually, we have DI for that
 public class MqttClientSetting extends AbstractKapuaSetting<MqttClientSettingKeys> {
 
     /**

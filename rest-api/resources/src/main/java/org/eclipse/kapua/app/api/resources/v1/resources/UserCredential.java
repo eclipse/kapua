@@ -15,13 +15,13 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
 import org.eclipse.kapua.service.authentication.user.PasswordResetRequest;
 import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -31,9 +31,9 @@ import javax.ws.rs.core.MediaType;
 
 @Path("{scopeId}/user/credentials")
 public class UserCredential {
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final UserCredentialsService userCredentialsService = locator.getService(UserCredentialsService.class);
 
+    @Inject
+    public UserCredentialsService userCredentialsService;
 
     /**
      * Change the user password
@@ -65,9 +65,9 @@ public class UserCredential {
     @POST
     @Path("{credentialId}/_reset")
     public Credential unlockCredential(
-        @PathParam("scopeId") ScopeId scopeId,
-        @PathParam("credentialId") EntityId credentialId,
-        PasswordResetRequest passwordResetRequest) throws KapuaException {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("credentialId") EntityId credentialId,
+            PasswordResetRequest passwordResetRequest) throws KapuaException {
         return userCredentialsService.resetPassword(scopeId, credentialId, passwordResetRequest);
     }
 }

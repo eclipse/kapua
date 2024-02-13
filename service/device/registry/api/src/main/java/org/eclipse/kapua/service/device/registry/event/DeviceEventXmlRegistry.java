@@ -24,8 +24,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class DeviceEventXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final DeviceEventFactory DEVICE_EVENT_FACTORY = LOCATOR.getFactory(DeviceEventFactory.class);
+    private final DeviceEventFactory deviceEventFactory = KapuaLocator.getInstance().getFactory(DeviceEventFactory.class);
 
     /**
      * Creates a new device event
@@ -33,7 +32,7 @@ public class DeviceEventXmlRegistry {
      * @return
      */
     public DeviceEvent newDeviceEvent() {
-        return DEVICE_EVENT_FACTORY.newEntity(null);
+        return deviceEventFactory.newEntity(null);
     }
 
     /**
@@ -42,10 +41,10 @@ public class DeviceEventXmlRegistry {
      * @return
      */
     public DeviceEventListResult newDeviceEventListResult() {
-        return DEVICE_EVENT_FACTORY.newListResult();
+        return deviceEventFactory.newListResult();
     }
 
     public DeviceEventQuery newQuery() {
-        return DEVICE_EVENT_FACTORY.newQuery(null);
+        return deviceEventFactory.newQuery(null);
     }
 }

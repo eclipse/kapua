@@ -13,14 +13,15 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageInfo;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
+import org.eclipse.kapua.storage.TxManager;
 
 /**
  * Datastore configuration provider implementation.
@@ -29,19 +30,22 @@ import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfigu
  */
 public class ConfigurationProviderImpl implements ConfigurationProvider {
 
+    private final TxManager txManager;
     private AccountService accountService;
-    private KapuaConfigurableService configurableService;
+    private ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * Construct the configuration provider with the provided parameters
      *
-     * @param configurableService
+     * @param serviceConfigurationManager
      * @param accountService
      */
-    public ConfigurationProviderImpl(KapuaConfigurableService configurableService,
-            AccountService accountService) {
+    public ConfigurationProviderImpl(TxManager txManager,
+                                     ServiceConfigurationManager serviceConfigurationManager,
+                                     AccountService accountService) {
+        this.txManager = txManager;
         this.accountService = accountService;
-        this.configurableService = configurableService;
+        this.serviceConfigurationManager = serviceConfigurationManager;
     }
 
     @Override
@@ -49,7 +53,7 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
             throws ConfigurationException {
         MessageStoreConfiguration messageStoreConfiguration = null;
         try {
-            messageStoreConfiguration = new MessageStoreConfiguration(configurableService.getConfigValues(scopeId));
+            messageStoreConfiguration = new MessageStoreConfiguration(txManager.execute(tx -> serviceConfigurationManager.getConfigValues(tx, scopeId, true)));
         } catch (KapuaException e) {
             throw new ConfigurationException("Cannot load configuration parameters", e);
         }

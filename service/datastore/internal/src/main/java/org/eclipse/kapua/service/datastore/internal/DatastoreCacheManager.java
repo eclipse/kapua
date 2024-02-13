@@ -12,10 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
+import com.google.inject.Inject;
 import org.eclipse.kapua.commons.cache.LocalCache;
-import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
+import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
+
+import java.util.Map;
 
 /**
  * Datastore cache manager.<br>
@@ -25,18 +28,16 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey
  */
 public class DatastoreCacheManager {
 
-    private static final DatastoreCacheManager INSTANCE = new DatastoreCacheManager();
-
-    private final LocalCache<String, Metadata> schemaCache;
+    private final LocalCache<String, Map<String, Metric>> schemaCache;
     private final LocalCache<String, Boolean> channelsCache;
     private final LocalCache<String, Boolean> metricsCache;
     private final LocalCache<String, Boolean> clientsCache;
 
-    private DatastoreCacheManager() {
-        DatastoreSettings config = DatastoreSettings.getInstance();
-        int expireAfter = config.getInt(DatastoreSettingsKey.CONFIG_CACHE_LOCAL_EXPIRE_AFTER);
-        int sizeMax = config.getInt(DatastoreSettingsKey.CONFIG_CACHE_LOCAL_SIZE_MAXIMUM);
-        int sizeMaxMetadata = config.getInt(DatastoreSettingsKey.CONFIG_CACHE_METADATA_LOCAL_SIZE_MAXIMUM);
+    @Inject
+    public DatastoreCacheManager(DatastoreSettings datastoreSettings) {
+        int expireAfter = datastoreSettings.getInt(DatastoreSettingsKey.CONFIG_CACHE_LOCAL_EXPIRE_AFTER);
+        int sizeMax = datastoreSettings.getInt(DatastoreSettingsKey.CONFIG_CACHE_LOCAL_SIZE_MAXIMUM);
+        int sizeMaxMetadata = datastoreSettings.getInt(DatastoreSettingsKey.CONFIG_CACHE_METADATA_LOCAL_SIZE_MAXIMUM);
 
         // TODO set expiration to happen frequently because the reset cache method will not get
         // called from service clients any more
@@ -44,16 +45,6 @@ public class DatastoreCacheManager {
         metricsCache = new LocalCache<>(sizeMax, expireAfter, false);
         clientsCache = new LocalCache<>(sizeMax, expireAfter, false);
         schemaCache = new LocalCache<>(sizeMaxMetadata, null);
-    }
-
-    /**
-     * Get the cache manager instance
-     *
-     * @return
-     * @since 1.0.0
-     */
-    public static DatastoreCacheManager getInstance() {
-        return INSTANCE;
     }
 
     /**
@@ -92,7 +83,7 @@ public class DatastoreCacheManager {
      * @return
      * @since 1.0.0
      */
-    public LocalCache<String, Metadata> getMetadataCache() {
+    public LocalCache<String, Map<String, Metric>> getMetadataCache() {
         return schemaCache;
     }
 }

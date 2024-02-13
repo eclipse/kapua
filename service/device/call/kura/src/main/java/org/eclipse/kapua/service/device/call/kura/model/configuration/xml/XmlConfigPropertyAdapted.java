@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.model.configuration.xml;
 
+import org.eclipse.kapua.model.xml.XmlPropertyAdapted;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -26,10 +28,9 @@ import javax.xml.bind.annotation.XmlEnumValue;
  * encrypted.
  *
  * @since 1.0
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class XmlConfigPropertyAdapted {
+public class XmlConfigPropertyAdapted implements XmlPropertyAdapted<XmlConfigPropertyAdapted.ConfigPropertyType> {
 
     @XmlEnum
     public enum ConfigPropertyType {
@@ -44,6 +45,20 @@ public class XmlConfigPropertyAdapted {
         booleanType, @XmlEnumValue("Short")
         shortType, @XmlEnumValue("Password")
         passwordType
+    }
+
+    public XmlConfigPropertyAdapted() {
+    }
+
+    public XmlConfigPropertyAdapted(String name,
+                                    ConfigPropertyType type,
+                                    String... values) {
+        super();
+        this.name = name;
+        this.type = type;
+        this.encrypted = false;
+        this.array = values != null && values.length > 1;
+        this.values = values;
     }
 
     /**
@@ -76,115 +91,42 @@ public class XmlConfigPropertyAdapted {
     @XmlElement(name = "value")
     private String[] values;
 
-    /**
-     * Constructor
-     */
-    public XmlConfigPropertyAdapted() {
-    }
-
-    /**
-     * Constructor
-     *
-     * @param name
-     * @param type
-     * @param values
-     */
-    public XmlConfigPropertyAdapted(String name,
-            ConfigPropertyType type,
-            String[] values) {
-        super();
-
-        this.type = type;
-        this.values = values;
-        this.encrypted = false;
-    }
-
-    /**
-     * Get the property name
-     *
-     * @return
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * Set the property name
-     *
-     * @param name
-     */
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * Get the is array flag property
-     *
-     * @return
-     */
     public boolean getArray() {
         return array;
     }
 
-    /**
-     * Set the is array flag property
-     *
-     * @param array
-     */
     public void setArray(boolean array) {
         this.array = array;
     }
 
-    /**
-     * Get the property type
-     *
-     * @return
-     */
     public ConfigPropertyType getType() {
         return type;
     }
 
-    /**
-     * Set the property type
-     *
-     * @param type
-     */
     public void setType(ConfigPropertyType type) {
         this.type = type;
     }
 
-    /**
-     * Get the is encrypted flag property
-     *
-     * @return
-     */
     public boolean isEncrypted() {
         return encrypted;
     }
 
-    /**
-     * Set the is encrypted flag property
-     *
-     * @param encrypted
-     */
     public void setEncrypted(boolean encrypted) {
         this.encrypted = encrypted;
     }
 
-    /**
-     * Get property values
-     *
-     * @return
-     */
     public String[] getValues() {
         return values;
     }
 
-    /**
-     * Set property values
-     *
-     * @param values
-     */
     public void setValues(String[] values) {
         this.values = values;
     }

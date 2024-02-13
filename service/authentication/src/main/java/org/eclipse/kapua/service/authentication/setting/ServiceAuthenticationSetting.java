@@ -14,6 +14,8 @@ package org.eclipse.kapua.service.authentication.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
+import javax.inject.Inject;
+
 /**
  * Service authentication implementation.<br>
  * This class handles settings for the {@link ServiceAuthenticationSettingKey}.
@@ -22,38 +24,9 @@ public final class ServiceAuthenticationSetting extends AbstractKapuaSetting<Ser
 
     private static final String CONFIG_RESOURCE_NAME = "kapua-service-authentication-setting.properties";
 
-    private static ServiceAuthenticationSetting instance;
-
-    private ServiceAuthenticationSetting() {
+    @Inject
+    public ServiceAuthenticationSetting() {
         super(CONFIG_RESOURCE_NAME);
     }
 
-    /**
-     * Return the service authentication setting instance (singleton)
-     */
-    public static ServiceAuthenticationSetting getInstance() {
-        synchronized (ServiceAuthenticationSetting.class) {
-            if (instance == null) {
-                instance = new ServiceAuthenticationSetting();
-            }
-            return instance;
-        }
-    }
-
-    /**
-     * Allow re-setting the global instance
-     * <p>
-     * This method clears out the internal global instance in order to let the next call
-     * to {@link #getInstance()} return a fresh instance.
-     * </p>
-     * <p>
-     * This may be helpful for unit tests which need to change system properties for testing
-     * different behaviors.
-     * </p>
-     */
-    public static void resetInstance() {
-        synchronized (ServiceAuthenticationSetting.class) {
-            instance = null;
-        }
-    }
 }

@@ -20,7 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * {@link ClientIdGenerator} tests.
@@ -33,19 +36,8 @@ public class ClientIdGeneratorTest {
     private static final Logger LOG = LoggerFactory.getLogger(ClientIdGeneratorTest.class);
 
     @Test
-    public void getInstanceTest() {
-        ClientIdGenerator clientIdGenerator1 = ClientIdGenerator.getInstance();
-        Assert.assertNotNull(clientIdGenerator1);
-
-        ClientIdGenerator clientIdGenerator2 = ClientIdGenerator.getInstance();
-        Assert.assertNotNull(clientIdGenerator2);
-
-        Assert.assertEquals(clientIdGenerator1, clientIdGenerator2);
-    }
-
-    @Test
     public void nextTest() {
-        ClientIdGenerator clientIdGenerator = ClientIdGenerator.getInstance();
+        ClientIdGenerator clientIdGenerator = new ClientIdGenerator(new Random());
 
         String nextId = clientIdGenerator.next();
 
@@ -56,9 +48,9 @@ public class ClientIdGeneratorTest {
 
     @Test
     public void nextGenerationTest() {
-        ClientIdGenerator clientIdGenerator = ClientIdGenerator.getInstance();
+        ClientIdGenerator clientIdGenerator = new ClientIdGenerator(new Random());
 
-        List<String> generatedIds = new ArrayList<>();
+        Set<String> generatedIds = new HashSet<>();
         for (int i = 0; i < 10000; i++) {
             String nextId = clientIdGenerator.next();
             LOG.trace("Generated Id: {}", nextId);
@@ -72,7 +64,7 @@ public class ClientIdGeneratorTest {
 
     @Test
     public void nextWithPrefixTest() {
-        ClientIdGenerator clientIdGenerator = ClientIdGenerator.getInstance();
+        ClientIdGenerator clientIdGenerator = new ClientIdGenerator(new Random());
 
         String nextId = clientIdGenerator.next("MyPrefix");
 
@@ -83,7 +75,7 @@ public class ClientIdGeneratorTest {
 
     @Test
     public void nextWithPrefixGenerationTest() {
-        ClientIdGenerator clientIdGenerator = ClientIdGenerator.getInstance();
+        ClientIdGenerator clientIdGenerator = new ClientIdGenerator(new Random());
 
         List<String> generatedIds = new ArrayList<>();
         for (int i = 0; i < 10000; i++) {

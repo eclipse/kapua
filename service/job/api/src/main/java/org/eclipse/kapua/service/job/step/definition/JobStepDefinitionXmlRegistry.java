@@ -24,8 +24,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class JobStepDefinitionXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final JobStepDefinitionFactory JOB_STEP_DEFINITION_FACTORY = LOCATOR.getFactory(JobStepDefinitionFactory.class);
+    private final JobStepDefinitionFactory jobStepDefinitionFactory = KapuaLocator.getInstance().getFactory(JobStepDefinitionFactory.class);
 
     /**
      * Creates a new job instance
@@ -33,7 +32,7 @@ public class JobStepDefinitionXmlRegistry {
      * @return
      */
     public JobStepDefinition newJobStepDefinition() {
-        return JOB_STEP_DEFINITION_FACTORY.newEntity(null);
+        return jobStepDefinitionFactory.newEntity(null);
     }
 
     /**
@@ -42,7 +41,7 @@ public class JobStepDefinitionXmlRegistry {
      * @return
      */
     public JobStepDefinitionCreator newJobStepDefinitionCreator() {
-        return JOB_STEP_DEFINITION_FACTORY.newCreator(null);
+        return jobStepDefinitionFactory.newCreator(null);
     }
 
     /**
@@ -51,10 +50,10 @@ public class JobStepDefinitionXmlRegistry {
      * @return
      */
     public JobStepDefinitionListResult newJobStepDefinitionListResult() {
-        return JOB_STEP_DEFINITION_FACTORY.newListResult();
+        return jobStepDefinitionFactory.newListResult();
     }
 
     public JobStepDefinitionQuery newQuery() {
-        return JOB_STEP_DEFINITION_FACTORY.newQuery(null);
+        return jobStepDefinitionFactory.newQuery(null);
     }
 }

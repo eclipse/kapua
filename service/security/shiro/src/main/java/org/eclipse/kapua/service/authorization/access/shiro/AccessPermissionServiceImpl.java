@@ -56,6 +56,7 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
     private final TxManager txManager;
     private final AccessPermissionRepository accessPermissionRepository;
     private final AccessInfoRepository accessInfoRepository;
+    private final PermissionValidator permissionValidator;
 
     @Inject
     public AccessPermissionServiceImpl(
@@ -63,12 +64,14 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
             PermissionFactory permissionFactory,
             TxManager txManager,
             AccessPermissionRepository accessPermissionRepository,
-            AccessInfoRepository accessInfoRepository) {
+            AccessInfoRepository accessInfoRepository,
+            PermissionValidator permissionValidator) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.txManager = txManager;
         this.accessPermissionRepository = accessPermissionRepository;
         this.accessInfoRepository = accessInfoRepository;
+        this.permissionValidator = permissionValidator;
     }
 
     @Override
@@ -86,7 +89,7 @@ public class AccessPermissionServiceImpl implements AccessPermissionService {
             authorizationService.checkPermission(permission);
         }
 
-        PermissionValidator.validatePermission(permission);
+        permissionValidator.validatePermission(permission);
 
         return txManager.execute(tx -> {
             // Check duplicates

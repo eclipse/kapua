@@ -19,13 +19,13 @@ import org.eclipse.kapua.service.device.management.commons.message.response.Kapu
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
-import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadStatus;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallOperation;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOperation;
 
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 /**
  * {@link DevicePackages} {@link KapuaResponsePayload} implementation.
@@ -36,9 +36,7 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
 
     private static final long serialVersionUID = -2100712552502696907L;
 
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
-    private static final DevicePackageFactory DEVICE_PACKAGE_FACTORY = KapuaLocator.getInstance().getFactory(DevicePackageFactory.class);
+    private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     /**
      * Set the package download operation identifier
@@ -135,13 +133,13 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
      * @throws Exception if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
-    public DevicePackages getDevicePackages() throws Exception {
+    public Optional<DevicePackages> getDevicePackages() throws Exception {
         if (!hasBody()) {
-            return DEVICE_PACKAGE_FACTORY.newDeviceDeploymentPackages();
+            return Optional.empty();
         }
 
-        String bodyString = new String(getBody(), CHAR_ENCODING);
-        return XmlUtil.unmarshal(bodyString, DevicePackages.class);
+        String bodyString = new String(getBody(), charEncoding);
+        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DevicePackages.class));
     }
 
     /**
@@ -153,7 +151,7 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
      */
     public void setDeploymentPackages(@NotNull DevicePackages devicePackages) throws Exception {
         String bodyString = XmlUtil.marshal(devicePackages);
-        setBody(bodyString.getBytes(CHAR_ENCODING));
+        setBody(bodyString.getBytes(charEncoding));
     }
 
     /**
@@ -163,13 +161,13 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
      * @throws Exception if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
-    public DevicePackageInstallOperation getDevicePackageInstallOperation() throws Exception {
+    public Optional<DevicePackageInstallOperation> getDevicePackageInstallOperation() throws Exception {
         if (!hasBody()) {
-            return DEVICE_PACKAGE_FACTORY.newPackageInstallOperation();
+            return Optional.empty();
         }
 
-        String bodyString = new String(getBody(), CHAR_ENCODING);
-        return XmlUtil.unmarshal(bodyString, DevicePackageInstallOperation.class);
+        String bodyString = new String(getBody(), charEncoding);
+        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DevicePackageInstallOperation.class));
     }
 
     /**
@@ -181,7 +179,7 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
      */
     public void setDevicePackageInstallOperations(@NotNull DevicePackageInstallOperation devicePackageInstallOperation) throws Exception {
         String bodyString = XmlUtil.marshal(devicePackageInstallOperation);
-        setBody(bodyString.getBytes(CHAR_ENCODING));
+        setBody(bodyString.getBytes(charEncoding));
     }
 
     /**
@@ -191,13 +189,13 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
      * @throws Exception if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
-    public DevicePackageUninstallOperation getDevicePackageUninstallOperation() throws Exception {
+    public Optional<DevicePackageUninstallOperation> getDevicePackageUninstallOperation() throws Exception {
         if (!hasBody()) {
-            return DEVICE_PACKAGE_FACTORY.newPackageUninstallOperation();
+            return Optional.empty();
         }
 
-        String bodyString = new String(getBody(), CHAR_ENCODING);
-        return XmlUtil.unmarshal(bodyString, DevicePackageUninstallOperation.class);
+        String bodyString = new String(getBody(), charEncoding);
+        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DevicePackageUninstallOperation.class));
     }
 
     /**
@@ -209,6 +207,6 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
      */
     public void setDevicePackageUninstallOperations(@NotNull DevicePackageUninstallOperation devicePackageUninstallOperation) throws Exception {
         String bodyString = XmlUtil.marshal(devicePackageUninstallOperation);
-        setBody(bodyString.getBytes(CHAR_ENCODING));
+        setBody(bodyString.getBytes(charEncoding));
     }
 }

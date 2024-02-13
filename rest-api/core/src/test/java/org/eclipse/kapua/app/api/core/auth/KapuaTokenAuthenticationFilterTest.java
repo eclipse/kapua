@@ -33,6 +33,7 @@ public class KapuaTokenAuthenticationFilterTest {
 
     @Before
     public void initialize() {
+        System.setProperty(org.eclipse.kapua.locator.KapuaLocator.LOCATOR_CLASS_NAME_SYSTEM_PROPERTY, MockitoLocator.class.getName());
         request = Mockito.mock(HttpServletRequest.class);
         response = Mockito.mock(HttpServletResponse.class);
         kapuaTokenAuthenticationFilter = new KapuaTokenAuthenticationFilter();

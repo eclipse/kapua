@@ -26,6 +26,8 @@ import org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreS
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+
 /**
  * Data storage message listener
  *
@@ -40,11 +42,11 @@ public class DataStorageMessageProcessor {
 
     private final DeviceAssetStoreService deviceAssetStoreService = KapuaLocator.getInstance().getService(DeviceAssetStoreService.class);
 
-    //TODO inject!!!
     private MetricsDatastore metrics;
 
-    public DataStorageMessageProcessor() {
-        metrics = MetricsDatastore.getInstance();
+    @Inject
+    public DataStorageMessageProcessor(MetricsDatastore metricsDatastore) {
+        metrics = metricsDatastore;
     }
 
     /**
@@ -66,7 +68,7 @@ public class DataStorageMessageProcessor {
         if (message.getMessage().getChannel().toString().startsWith("W1/A1")) {
             KapuaId scopeId = message.getMessage().getScopeId();
             KapuaId deviceId = message.getMessage().getDeviceId();
-            if (deviceAssetStoreService.isServiceEnabled(scopeId) && deviceAssetStoreService.isApplicationEnabled(scopeId,deviceId)) {
+            if (deviceAssetStoreService.isServiceEnabled(scopeId) && deviceAssetStoreService.isApplicationEnabled(scopeId, deviceId)) {
                 deviceAssetStoreService.storeAssetValues((KapuaDataMessage) message.getMessage());
             }
         } else {

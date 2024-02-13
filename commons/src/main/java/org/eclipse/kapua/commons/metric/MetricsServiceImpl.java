@@ -18,7 +18,6 @@ import com.codahale.metrics.Histogram;
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.JmxReporter.Builder;
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.SharedMetricRegistries;
 import com.codahale.metrics.Timer;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -26,6 +25,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
 
@@ -54,14 +54,9 @@ public class MetricsServiceImpl implements MetricsService {
     /**
      * Default metric service constructor
      */
-    MetricsServiceImpl() {
-        try {
-            metricRegistry = SharedMetricRegistries.getDefault();
-            logger.info("Default Metric Registry loaded");
-        } catch (IllegalStateException e) {
-            metricRegistry = new MetricRegistry();
-            logger.warn("Unable to load Default Metric Registry - creating a new one");
-        }
+    @Inject
+    public MetricsServiceImpl(MetricRegistry metricRegistry) {
+        this.metricRegistry = metricRegistry;
 
         if (isJmxEnabled()) {
             enableJmxSupport();
@@ -79,11 +74,6 @@ public class MetricsServiceImpl implements MetricsService {
          * As Kapua services don't have any proper lifecycle management we can only
          * start the reporter but never stop it.
          */
-    }
-
-    @Override
-    public MetricRegistry getMetricRegistry() {
-        return metricRegistry;
     }
 
     @Override
@@ -142,10 +132,9 @@ public class MetricsServiceImpl implements MetricsService {
      * @return
      */
     private String getMetricName(MetricType metricType, String module, String component, String... metricsName) {
-        if (metricsName==null || metricsName.length<=0) {
-            return MessageFormat.format(METRICS_SHORT_NAME_FORMAT, module, component, metricType!=null ? SEPARATOR + metricType.name() : "");
-        }
-        else {
+        if (metricsName == null || metricsName.length <= 0) {
+            return MessageFormat.format(METRICS_SHORT_NAME_FORMAT, module, component, metricType != null ? SEPARATOR + metricType.name() : "");
+        } else {
             return MessageFormat.format(METRICS_NAME_FORMAT, module, component, convertToDotNotation(metricType, metricsName));
         }
     }
@@ -166,7 +155,7 @@ public class MetricsServiceImpl implements MetricsService {
             firstMetricName = false;
             builder.append(s);
         }
-        if (metricType!=null) {
+        if (metricType != null) {
             builder.append(SEPARATOR).append(metricType.name());
         }
         return builder.toString();

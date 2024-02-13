@@ -19,10 +19,8 @@ import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagem
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
-import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory;
 import org.eclipse.kapua.service.device.management.configuration.message.event.DeviceConfigurationEventPayload;
 
-import javax.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,9 +33,7 @@ public class DeviceConfigurationEventPayloadImpl extends KapuaEventPayloadImpl i
 
     private static final long serialVersionUID = 1400605735748313538L;
 
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
-    private static final DeviceConfigurationFactory DEVICE_CONFIGURATION_FACTORY = KapuaLocator.getInstance().getFactory(DeviceConfigurationFactory.class);
+    private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     @Override
     public List<DeviceComponentConfiguration> getDeviceComponentConfigurations() throws Exception {
@@ -45,16 +41,13 @@ public class DeviceConfigurationEventPayloadImpl extends KapuaEventPayloadImpl i
             return Collections.emptyList();
         }
 
-        String bodyString = new String(getBody(), CHAR_ENCODING);
+        String bodyString = new String(getBody(), charEncoding);
         return XmlUtil.unmarshal(bodyString, DeviceConfiguration.class).getComponentConfigurations();
     }
 
     @Override
-    public void setDeviceComponentConfigurations(@NotNull List<DeviceComponentConfiguration> deviceComponentConfigurations) throws Exception {
-        DeviceConfiguration deviceConfiguration = DEVICE_CONFIGURATION_FACTORY.newConfigurationInstance();
-        deviceConfiguration.setComponentConfigurations(deviceComponentConfigurations);
-
+    public void setDeviceComponentConfigurations(DeviceConfiguration deviceConfiguration) throws Exception {
         String bodyString = XmlUtil.marshal(deviceConfiguration);
-        setBody(bodyString.getBytes(CHAR_ENCODING));
+        setBody(bodyString.getBytes(charEncoding));
     }
 }

@@ -18,9 +18,8 @@ import javax.xml.bind.annotation.XmlRegistry;
 
 @XmlRegistry
 public class UserProfileXmlRegistry {
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final UserProfileFactory userProfileFactory = locator.getFactory(UserProfileFactory.class);
 
+    private final UserProfileFactory userProfileFactory = KapuaLocator.getInstance().getFactory(UserProfileFactory.class);
 
     public UserProfile newUserProfile() {
         return userProfileFactory.newUserProfile();

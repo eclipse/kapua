@@ -35,9 +35,9 @@ public class ResponseContainer<O extends Response> {
         return requestId;
     }
 
-    public static <O extends Response> ResponseContainer<O> createAnRegisterNewMessageContainer(Request request) {
+    public static <O extends Response> ResponseContainer<O> createAnRegisterNewMessageContainer(MessageListener messageListener, Request request) {
         ResponseContainer<O> messageContainer = new ResponseContainer<>(request.getRequestId());
-        MessageListener.registerCallback(request.getRequestId(), messageContainer);
+        messageListener.registerCallback(request.getRequestId(), messageContainer);
         return messageContainer;
     }
 }

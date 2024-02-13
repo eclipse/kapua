@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.model;
 
+import org.eclipse.kapua.service.storable.model.Storable;
+
 /**
  * Update {@link Request} definition.
  *
@@ -27,7 +29,7 @@ public class UpdateRequest extends Request {
      * @param storable       The Object to update.
      * @since 1.0.0
      */
-    public UpdateRequest(String id, TypeDescriptor typeDescriptor, Object storable) {
+    public UpdateRequest(String id, TypeDescriptor typeDescriptor, Storable storable) {
         super(id, typeDescriptor, storable);
     }
 

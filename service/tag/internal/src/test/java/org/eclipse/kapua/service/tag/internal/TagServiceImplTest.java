@@ -99,28 +99,4 @@ public class TagServiceImplTest {
                 () -> instance.create(new TagCreatorImpl(new KapuaIdImpl(BigInteger.ONE), null)),
                 "Does not accept tagCreator with null name");
     }
-
-//TODO: FIXME
-//    @Test
-//    public void createTagCallsCollaboratorsAsExpected() throws KapuaException {
-//        final KapuaIdImpl scopeId = new KapuaIdImpl(BigInteger.ONE);
-//
-//        final Tag got = instance.create(new TagCreatorImpl(scopeId, "testTag"));
-//        Assertions.assertEquals(scopeId, got.getScopeId());
-//        Assertions.assertEquals("tag", got.getType());
-//        Assertions.assertEquals("testTag", got.getName());
-//
-//        Mockito.verify(permissionFactory).newPermission(Mockito.eq(TagDomains.TAG_DOMAIN), Mockito.eq(Actions.write), Mockito.eq(scopeId));
-//        Mockito.verify(permissionFactory).newPermission(Mockito.eq(TagDomains.TAG_DOMAIN), Mockito.eq(Actions.read), Mockito.eq(scopeId));
-//        Mockito.verify(authorizationService, Mockito.times(2)).checkPermission(Mockito.eq(FAKE_PERMISSION));
-//        Mockito.verify(serviceConfigurationManager).checkAllowedEntities(Mockito.eq(scopeId), Mockito.any());
-//        Mockito.verify(tagRepository).create(Mockito.any(), Mockito.<Tag>any());
-//        Mockito.verify(tagRepository).count(Mockito.any(), Mockito.any());
-//        Mockito.verify(tagFactory).newEntity(scopeId);
-//        Mockito.verifyNoMoreInteractions(serviceConfigurationManager);
-//        Mockito.verifyNoMoreInteractions(permissionFactory);
-//        Mockito.verifyNoMoreInteractions(authorizationService);
-//        Mockito.verifyNoMoreInteractions(tagRepository);
-//        Mockito.verifyNoMoreInteractions(tagFactory);
-//    }
 }

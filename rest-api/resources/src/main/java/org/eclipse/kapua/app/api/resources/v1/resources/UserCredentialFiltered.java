@@ -17,7 +17,6 @@ import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authentication.credential.Credential;
@@ -28,6 +27,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -41,10 +41,11 @@ import javax.ws.rs.core.Response;
 
 @Path("/{scopeId}/user/{userId}/credentials")
 public class UserCredentialFiltered extends AbstractKapuaResource {
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final CredentialService credentialService = locator.getService(CredentialService.class);
-    private final CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
 
+    @Inject
+    public CredentialService credentialService;
+    @Inject
+    public CredentialFactory credentialFactory;
 
     /**
      * Gets the {@link Credential} list in the scope.
@@ -60,10 +61,10 @@ public class UserCredentialFiltered extends AbstractKapuaResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public CredentialListResult getAll(
-        @PathParam("scopeId") ScopeId scopeId,
-        @PathParam("userId") EntityId userId,
-        @QueryParam("offset") @DefaultValue("0") int offset,
-        @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("userId") EntityId userId,
+            @QueryParam("offset") @DefaultValue("0") int offset,
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         CredentialQuery query = credentialFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate();
@@ -92,9 +93,9 @@ public class UserCredentialFiltered extends AbstractKapuaResource {
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
-        @PathParam("scopeId") ScopeId scopeId,
-        @PathParam("userId") EntityId userId,
-        CredentialQuery query) throws KapuaException {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("userId") EntityId userId,
+            CredentialQuery query) throws KapuaException {
         AndPredicate andPredicate = query.andPredicate();
         andPredicate.and(query.attributePredicate(CredentialAttributes.USER_ID, userId));
         query.setPredicate(andPredicate);
@@ -118,9 +119,9 @@ public class UserCredentialFiltered extends AbstractKapuaResource {
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response create(
-        @PathParam("scopeId") ScopeId scopeId,
-        @PathParam("userId") EntityId userId,
-        CredentialCreator credentialCreator) throws KapuaException {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("userId") EntityId userId,
+            CredentialCreator credentialCreator) throws KapuaException {
         credentialCreator.setScopeId(scopeId);
         credentialCreator.setUserId(userId);
 

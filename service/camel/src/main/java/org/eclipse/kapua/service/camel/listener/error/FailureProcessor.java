@@ -19,20 +19,21 @@ import org.eclipse.kapua.service.camel.application.MetricsCamel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+
 /**
  * Processor called before sending the message to the dlq processor chain.
  * So this is the last chance to modify the object or take actions before the message will be discarded.
- *
  */
 public class FailureProcessor implements Processor {
 
     private static final Logger logger = LoggerFactory.getLogger(FailureProcessor.class);
 
-    //TODO inject!!!
-    private MetricsCamel metrics;
+    private MetricsCamel metricsCamel;
 
-    public FailureProcessor() {
-        metrics = MetricsCamel.getInstance();
+    @Inject
+    public FailureProcessor(MetricsCamel metricsCamel) {
+        this.metricsCamel = metricsCamel;
     }
 
     @Override
@@ -41,10 +42,9 @@ public class FailureProcessor implements Processor {
             if (logger.isDebugEnabled()) {
                 logger.debug("Detected unauthenticated error on message processing retry!");
             }
-            metrics.getUnauthenticatedError().inc();
-        }
-        else {
-            metrics.getGenericError().inc();
+            metricsCamel.getUnauthenticatedError().inc();
+        } else {
+            metricsCamel.getGenericError().inc();
         }
     }
 
@@ -56,9 +56,8 @@ public class FailureProcessor implements Processor {
     private Exception getException(Exchange exchange) {
         if (exchange.getException() != null) {
             return exchange.getException();
-        }
-        else {
-            return (Exception)exchange.getProperty(org.apache.camel.Exchange.EXCEPTION_CAUGHT);
+        } else {
+            return (Exception) exchange.getProperty(org.apache.camel.Exchange.EXCEPTION_CAUGHT);
         }
     }
 }

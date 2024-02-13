@@ -18,10 +18,10 @@ import org.eclipse.kapua.service.device.management.commons.message.response.Kapu
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
-import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 /**
  * {@link DeviceSnapshots} {@link KapuaResponsePayload} implementation.
@@ -32,9 +32,7 @@ public class SnapshotResponsePayload extends KapuaResponsePayloadImpl implements
 
     private static final long serialVersionUID = -5650474443429208877L;
 
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
-    private static final DeviceSnapshotFactory DEVICE_SNAPSHOT_FACTORY = KapuaLocator.getInstance().getFactory(DeviceSnapshotFactory.class);
+    private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     /**
      * Gets the {@link DeviceSnapshots} from the {@link #getBody()}.
@@ -43,13 +41,13 @@ public class SnapshotResponsePayload extends KapuaResponsePayloadImpl implements
      * @throws Exception if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
-    public DeviceSnapshots getDeviceSnapshots() throws Exception {
+    public Optional<DeviceSnapshots> getDeviceSnapshots() throws Exception {
         if (!hasBody()) {
-            return DEVICE_SNAPSHOT_FACTORY.newDeviceSnapshots();
+            return Optional.empty();
         }
 
-        String bodyString = new String(getBody(), CHAR_ENCODING);
-        return XmlUtil.unmarshal(bodyString, DeviceSnapshots.class);
+        String bodyString = new String(getBody(), charEncoding);
+        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceSnapshots.class));
     }
 
     /**
@@ -61,7 +59,7 @@ public class SnapshotResponsePayload extends KapuaResponsePayloadImpl implements
      */
     public void setDeviceSnapshots(@NotNull DeviceSnapshots devicePackages) throws Exception {
         String bodyString = XmlUtil.marshal(devicePackages);
-        setBody(bodyString.getBytes(CHAR_ENCODING));
+        setBody(bodyString.getBytes(charEncoding));
     }
 
 }

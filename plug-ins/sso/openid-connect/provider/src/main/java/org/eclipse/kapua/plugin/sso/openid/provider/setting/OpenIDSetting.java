@@ -22,17 +22,7 @@ public class OpenIDSetting extends AbstractKapuaSetting<OpenIDSettingKeys> {
 
     private static final String OPENID_SETTING_RESOURCE = "openid-setting.properties";
 
-    private static final OpenIDSetting INSTANCE = new OpenIDSetting();
-
-    private OpenIDSetting() {
+    public OpenIDSetting() {
         super(OPENID_SETTING_RESOURCE);
-    }
-
-    OpenIDSetting(final String resourceName) {
-        super(resourceName);
-    }
-
-    public static OpenIDSetting getInstance() {
-        return INSTANCE;
     }
 }

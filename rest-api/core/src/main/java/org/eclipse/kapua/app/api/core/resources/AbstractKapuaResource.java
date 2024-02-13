@@ -12,32 +12,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.resources;
 
+import org.eclipse.kapua.model.KapuaEntity;
+
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.eclipse.kapua.model.KapuaEntity;
-
 import java.net.URI;
 
 /**
- *
  * @author alberto.codutti
- *
  */
 public abstract class AbstractKapuaResource {
-
-    protected static final String DEFAULT_SCOPE_ID = "_"; // KapuaApiSetting.getInstance().getString(KapuaApiSettingKeys.API_PATH_PARAM_SCOPEID_WILDCARD);
 
     /**
      * Checks if the given entity is {@code null}.
      * If it is <code>null</code> a {@link WebApplicationException} is raised.
      *
-     * @param entity
-     *            The {@link KapuaEntity} to check.
+     * @param entity The {@link KapuaEntity} to check.
      * @return The entity given if not <code>null</code>.
-     * @throws WebApplicationException
-     *             with {@link Status#NOT_FOUND} if the entity is <code>null</code>.
+     * @throws WebApplicationException with {@link Status#NOT_FOUND} if the entity is <code>null</code>.
      * @since 1.0.0
      */
     public <T> T returnNotNullEntity(T entity) {

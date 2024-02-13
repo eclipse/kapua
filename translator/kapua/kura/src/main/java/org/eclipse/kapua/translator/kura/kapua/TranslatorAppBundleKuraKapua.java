@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.model.bundle.BundleMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundles;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
@@ -25,9 +24,11 @@ import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponseChannel;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponseMessage;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponsePayload;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
+import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,16 +39,18 @@ import java.util.List;
  */
 public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<BundleResponseChannel, BundleResponsePayload, BundleResponseMessage> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private final DeviceBundleFactory deviceBundleFactory;
 
-    public TranslatorAppBundleKuraKapua() {
-        super(BundleResponseMessage.class, BundleResponsePayload.class);
+    @Inject
+    public TranslatorAppBundleKuraKapua(DeviceManagementSetting deviceManagementSetting, DeviceBundleFactory deviceBundleFactory) {
+        super(deviceManagementSetting, BundleResponseMessage.class, BundleResponsePayload.class);
+        this.deviceBundleFactory = deviceBundleFactory;
     }
 
     @Override
     protected BundleResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
         try {
-            TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, BundleMetrics.APP_ID, BundleMetrics.APP_VERSION);
+            translatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, BundleMetrics.APP_ID, BundleMetrics.APP_VERSION);
 
             return new BundleResponseChannel();
         } catch (Exception e) {
@@ -80,8 +83,6 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
      * @since 1.0.0
      */
     private DeviceBundles translate(KuraBundles kuraBundles) {
-        DeviceBundleFactory deviceBundleFactory = LOCATOR.getFactory(DeviceBundleFactory.class);
-
         DeviceBundles deviceBundles = deviceBundleFactory.newBundleListResult();
         List<DeviceBundle> deviceBundlesList = deviceBundles.getBundles();
 

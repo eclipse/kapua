@@ -69,17 +69,17 @@ public class CORSResponseFilter implements Filter {
     private final AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
     private final EndpointInfoService endpointInfoService = locator.getService(EndpointInfoService.class);
     private final EndpointInfoFactory endpointInfoFactory = locator.getFactory(EndpointInfoFactory.class);
-
+    private final KapuaRestFiltersSetting kapuaRestFiltersSetting = locator.getComponent(KapuaRestFiltersSetting.class);
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> refreshTask;
 
     private Multimap<String, KapuaId> allowedOrigins = HashMultimap.create();
-    private final List<String> allowedSystemOrigins = KapuaRestFiltersSetting.getInstance().getList(String.class, KapuaRestFiltersSettingKeys.API_CORS_ORIGINS_ALLOWED);
+    private final List<String> allowedSystemOrigins = kapuaRestFiltersSetting.getList(String.class, KapuaRestFiltersSettingKeys.API_CORS_ORIGINS_ALLOWED);
 
     @Override
     public void init(FilterConfig filterConfig) {
         logger.info("Initializing with FilterConfig: {}...", filterConfig);
-        int intervalSecs = KapuaRestFiltersSetting.getInstance().getInt(KapuaRestFiltersSettingKeys.API_CORS_REFRESH_INTERVAL, 60);
+        int intervalSecs = kapuaRestFiltersSetting.getInt(KapuaRestFiltersSettingKeys.API_CORS_REFRESH_INTERVAL, 60);
         initRefreshThread(intervalSecs);
         logger.info("Initializing with FilterConfig: {}... DONE!", filterConfig);
     }
@@ -104,6 +104,7 @@ public class CORSResponseFilter implements Filter {
         KapuaId scopeId = KapuaSecurityUtils.getSession() != null ? KapuaSecurityUtils.getSession().getScopeId() : null;
         String origin = httpRequest.getHeader(HttpHeaders.ORIGIN);
         String fetchSite = httpRequest.getHeader(HttpHeaders.SEC_FETCH_SITE);
+        String errorMessage = null;
 
         if (Strings.isNullOrEmpty(fetchSite)) {
             logger.warn("Sec-Fetch-Site' header not present in request: {} {}. CORSResponseFilter may produce false positives for this request. User-Agent is: {}", httpRequest.getMethod(), httpRequest.getPathInfo(), httpRequest.getHeader(HttpHeaders.USER_AGENT));
@@ -123,11 +124,10 @@ public class CORSResponseFilter implements Filter {
                     httpResponse.addHeader("Vary", HttpHeaders.ORIGIN);
                 } else {
                     //this log, for clients not supporting sec-fetch-site, logs false positive for same origin CORS. This thing is inevitable considering that here we cannot understand if the request comes from the same origin
-                    if (scopeId != null) {
-                        logger.error("HTTP Origin not allowed: {} for scope: {} for the request path: {} {}", origin, scopeId.toCompactId(), httpRequest.getMethod(), httpRequest.getPathInfo());
-                    } else {
-                        logger.error("HTTP Origin not allowed: {} for the request path: {} {}", origin, httpRequest.getMethod(), httpRequest.getPathInfo());
-                    }
+                    errorMessage = scopeId != null ?
+                            String.format("HTTP Origin not allowed: %s for scope: %s for the request path: %s %s", origin, scopeId.toCompactId(), httpRequest.getMethod(), httpRequest.getPathInfo()) :
+                            String.format("HTTP Origin not allowed: %s for the request path: %s %s", origin, httpRequest.getMethod(), httpRequest.getPathInfo());
+                    logger.error(errorMessage);
                 }
             } else {
                 logger.debug("HTTP sec-fetch-site same-origin detected and allowed. Request: {} {}. User-Agent is: {}", httpRequest.getMethod(), httpRequest.getPathInfo(), httpRequest.getHeader(HttpHeaders.USER_AGENT));
@@ -136,9 +136,6 @@ public class CORSResponseFilter implements Filter {
         int errorCode = httpResponse.getStatus();
         if (errorCode >= 400) {
             // if there's an error code at this point, return it and stop the chain
-            String errorMessage = scopeId != null ?
-                    String.format("HTTP Origin not allowed: %s for scope: %s for the request path: %s %s", origin, scopeId.toCompactId(), httpRequest.getMethod(), httpRequest.getPathInfo()) :
-                    String.format("HTTP Origin not allowed: %s for the request path: %s %s", origin, httpRequest.getMethod(), httpRequest.getPathInfo());
             httpResponse.sendError(errorCode, errorMessage);
             return;
         }

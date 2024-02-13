@@ -17,29 +17,25 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
-import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
+import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
@@ -51,10 +47,12 @@ import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Metric information registry implementation.
@@ -66,37 +64,33 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
 
     private static final Logger LOG = LoggerFactory.getLogger(MetricInfoRegistryServiceImpl.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
-
-
-    private final AccountService accountService;
+    private final StorablePredicateFactory storablePredicateFactory;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final MetricInfoRegistryFacade metricInfoRegistryFacade;
-    private final MessageStoreService messageStoreService;
     private final DatastorePredicateFactory datastorePredicateFactory;
+    private final MessageRepository messageRepository;
+    private final DatastoreSettings datastoreSettings;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
 
-    /**
-     * Default constructor
-     *
-     * @throws ClientInitializationException
-     */
-    public MetricInfoRegistryServiceImpl() throws ClientInitializationException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        accountService = locator.getService(AccountService.class);
-        authorizationService = locator.getService(AuthorizationService.class);
-        permissionFactory = locator.getFactory(PermissionFactory.class);
-        messageStoreService = locator.getService(MessageStoreService.class);
-        datastorePredicateFactory = KapuaLocator.getInstance().getFactory(DatastorePredicateFactory.class);
-
-        MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
-        ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(messageStoreService, accountService);
-        metricInfoRegistryFacade = new MetricInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
-        DatastoreMediator.getInstance().setMetricInfoStoreFacade(metricInfoRegistryFacade);
+    @Inject
+    public MetricInfoRegistryServiceImpl(
+            StorablePredicateFactory storablePredicateFactory,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            DatastorePredicateFactory datastorePredicateFactory,
+            MetricInfoRegistryFacade metricInfoRegistryFacade,
+            MessageRepository messageRepository,
+            DatastoreSettings datastoreSettings) {
+        this.storablePredicateFactory = storablePredicateFactory;
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.datastorePredicateFactory = datastorePredicateFactory;
+        this.metricInfoRegistryFacade = metricInfoRegistryFacade;
+        this.messageRepository = messageRepository;
+        this.datastoreSettings = datastoreSettings;
     }
 
     @Override
@@ -170,7 +164,8 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
         }
     }
 
-    void delete(MetricInfoQuery query)
+    @Override
+    public void delete(MetricInfoQuery query)
             throws KapuaException {
         if (!isServiceEnabled(query.getScopeId())) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
@@ -187,7 +182,8 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
         }
     }
 
-    void delete(KapuaId scopeId, StorableId id)
+    @Override
+    public void delete(KapuaId scopeId, StorableId id)
             throws KapuaException {
         if (!isServiceEnabled(scopeId)) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
@@ -227,24 +223,25 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
         messageQuery.setOffset(0);
         messageQuery.setSortFields(sort);
 
-        RangePredicate messageIdPredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(MetricInfoField.TIMESTAMP, metricInfo.getFirstMessageOn(), null);
+        RangePredicate messageIdPredicate = storablePredicateFactory.newRangePredicate(MetricInfoField.TIMESTAMP, metricInfo.getFirstMessageOn(), null);
         TermPredicate clientIdPredicate = datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, metricInfo.getClientId());
-        ExistsPredicate metricPredicate = STORABLE_PREDICATE_FACTORY.newExistsPredicate(MessageField.METRICS.field(), metricInfo.getName());
+        ExistsPredicate metricPredicate = storablePredicateFactory.newExistsPredicate(MessageField.METRICS.field(), metricInfo.getName());
 
-        AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+        AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
         andPredicate.getPredicates().add(messageIdPredicate);
         andPredicate.getPredicates().add(clientIdPredicate);
         andPredicate.getPredicates().add(metricPredicate);
         messageQuery.setPredicate(andPredicate);
 
-        MessageListResult messageList = messageStoreService.query(messageQuery);
+        MessageListResult messageList = messageRepository.query(messageQuery);
 
         StorableId lastPublishedMessageId = null;
         Date lastPublishedMessageTimestamp = null;
-        if (messageList.getSize() == 1) {
-            lastPublishedMessageId = messageList.getFirstItem().getDatastoreId();
-            lastPublishedMessageTimestamp = messageList.getFirstItem().getTimestamp();
-        } else if (messageList.isEmpty()) {
+        final List<DatastoreMessage> messages = Optional.ofNullable(messageList).map(ml -> ml.getItems()).orElse(new ArrayList<>());
+        if (messages.size() == 1) {
+            lastPublishedMessageId = messages.get(0).getDatastoreId();
+            lastPublishedMessageTimestamp = messages.get(0).getTimestamp();
+        } else if (messages.isEmpty()) {
             // this condition could happens due to the ttl of the messages (so if it happens, it does not necessarily mean there has been an error!)
             LOG.warn("Cannot find last timestamp for the specified client id '{}' - account '{}'", metricInfo.getClientId(), metricInfo.getScopeId());
         } else {
@@ -259,7 +256,7 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
 
     @Override
     public boolean isServiceEnabled(KapuaId scopeId) {
-        return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
+        return !datastoreSettings.getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
     }
 
 }

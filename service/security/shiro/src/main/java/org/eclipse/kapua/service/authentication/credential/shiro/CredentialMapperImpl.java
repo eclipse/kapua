@@ -22,11 +22,17 @@ import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 
 public class CredentialMapperImpl implements CredentialMapper {
-    public CredentialMapperImpl(CredentialFactory credentialFactory) {
+    public CredentialMapperImpl(CredentialFactory credentialFactory,
+                                KapuaAuthenticationSetting setting,
+                                AuthenticationUtils authenticationUtils) {
         this.credentialFactory = credentialFactory;
+        this.setting = setting;
+        this.authenticationUtils = authenticationUtils;
     }
 
     private final CredentialFactory credentialFactory;
+    private final KapuaAuthenticationSetting setting;
+    private final AuthenticationUtils authenticationUtils;
 
     @Override
     public Credential map(CredentialCreator credentialCreator) throws KapuaException {
@@ -53,17 +59,16 @@ public class CredentialMapperImpl implements CredentialMapper {
 
     // Private methods
     private String cryptPassword(String credentialPlainKey) throws KapuaException {
-        return AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey);
+        return authenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey);
     }
 
     private String cryptApiKey(String credentialPlainKey) throws KapuaException {
-        KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
         int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
         String preSeparator = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR);
 
         String hashedValue = credentialPlainKey.substring(0, preLength); // Add the pre in clear text
         hashedValue += preSeparator; // Add separator
-        hashedValue += AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey.substring(preLength, credentialPlainKey.length())); // Bcrypt the rest
+        hashedValue += authenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey.substring(preLength, credentialPlainKey.length())); // Bcrypt the rest
 
         return hashedValue;
     }

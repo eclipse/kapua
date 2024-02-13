@@ -12,22 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.app.core.converter;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-
-import javax.ws.rs.ext.ParamConverter;
-import javax.ws.rs.ext.ParamConverterProvider;
-import javax.ws.rs.ext.Provider;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
 
+import javax.ws.rs.ext.ParamConverter;
+import javax.ws.rs.ext.ParamConverterProvider;
+import javax.ws.rs.ext.Provider;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+
 @Provider
 public class KapuaIdParamConverterProvider implements ParamConverterProvider {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final KapuaIdFactory kapuaIdFactory = locator.getFactory(KapuaIdFactory.class);
+    private final KapuaIdFactory kapuaIdFactory = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class);
 
     @Override
     public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation[] annotations) {

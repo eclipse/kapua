@@ -21,12 +21,10 @@ import org.eclipse.kapua.client.security.bean.AuthContext;
 import org.eclipse.kapua.client.security.metric.AuthMetric;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
@@ -39,7 +37,6 @@ import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnect
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
@@ -54,26 +51,38 @@ public abstract class AuthenticationLogic {
     protected static final Logger logger = LoggerFactory.getLogger(AuthenticationLogic.class);
 
     protected static final String PERMISSION_LOG = "{0}/{1}/{2} - {3}";
-
-    @Inject
-    protected AclCreator aclCreator;
-
     //TODO move to configuration
     protected boolean invalidateCache = true;
 
-    //TODO inject!!!
-    protected AuthMetric authenticationMetric = AuthMetric.getInstance();
-
-    //TODO remove domain object. I cannot import one module just to get a constant
-    protected DeviceConnectionOptionFactory deviceConnectionOptionFactory = KapuaLocator.getInstance().getFactory(DeviceConnectionOptionFactory.class);
-    protected DeviceConnectionOptionService deviceConnectionOptionService = KapuaLocator.getInstance().getService(DeviceConnectionOptionService.class);
-    protected AuthorizationService authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
-    protected DeviceConnectionFactory deviceConnectionFactory = KapuaLocator.getInstance().getFactory(DeviceConnectionFactory.class);
-    protected PermissionFactory permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
-    protected DeviceConnectionService deviceConnectionService = KapuaLocator.getInstance().getService(DeviceConnectionService.class);
-    protected DeviceRegistryService deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
+    protected final AclCreator aclCreator;
+    protected final AuthMetric authenticationMetric;
+    protected final DeviceConnectionOptionFactory deviceConnectionOptionFactory;
+    protected final DeviceConnectionOptionService deviceConnectionOptionService;
+    protected final AuthorizationService authorizationService;
+    protected final DeviceConnectionFactory deviceConnectionFactory;
+    protected final PermissionFactory permissionFactory;
+    protected final DeviceConnectionService deviceConnectionService;
 
     private static final String USER_NOT_AUTHORIZED = "User not authorized!";
+
+    protected AuthenticationLogic(
+            AclCreator aclCreator,
+            AuthMetric authenticationMetric,
+            DeviceConnectionOptionFactory deviceConnectionOptionFactory,
+            DeviceConnectionOptionService deviceConnectionOptionService,
+            AuthorizationService authorizationService,
+            DeviceConnectionFactory deviceConnectionFactory,
+            PermissionFactory permissionFactory,
+            DeviceConnectionService deviceConnectionService) {
+        this.aclCreator = aclCreator;
+        this.authenticationMetric = authenticationMetric;
+        this.deviceConnectionOptionFactory = deviceConnectionOptionFactory;
+        this.deviceConnectionOptionService = deviceConnectionOptionService;
+        this.authorizationService = authorizationService;
+        this.deviceConnectionFactory = deviceConnectionFactory;
+        this.permissionFactory = permissionFactory;
+        this.deviceConnectionService = deviceConnectionService;
+    }
 
     /**
      * Execute the connect logic returning the authorization list (ACL)
@@ -184,13 +193,13 @@ public abstract class AuthenticationLogic {
                 if (deviceConnection.getReservedUserId() == null) {
                     checkConnectionCountByReservedUserId(scopeId, userId, 0);
                     if (!deviceConnection.getAllowUserChange() && !userId.equals(deviceConnection.getUserId())) {
-                        throw new SecurityException(USER_NOT_AUTHORIZED);
+                        throw new SecurityException(USER_NOT_AUTHORIZED + " DeviceConnection cannot change the user to connect!");
                         // TODO manage the error message. is it better to throw a more specific exception or keep it obfuscated for security reason?
                     }
                 } else {
                     checkConnectionCountByReservedUserId(scopeId, deviceConnection.getReservedUserId(), 1);
                     if (!userId.equals(deviceConnection.getReservedUserId())) {
-                        throw new SecurityException(USER_NOT_AUTHORIZED);
+                        throw new SecurityException(USER_NOT_AUTHORIZED + " DeviceConnection must use the Reserved User assigned to connect!");
                         // TODO manage the error message. is it better to throw a more specific exception or keep it obfuscated for security reason?
                     }
                 }
@@ -221,7 +230,7 @@ public abstract class AuthenticationLogic {
 
         Long connectionCountByReservedUserId = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionOptionService.count(query));
         if (connectionCountByReservedUserId != null && connectionCountByReservedUserId > count) {
-            throw new SecurityException(USER_NOT_AUTHORIZED);
+            throw new SecurityException(USER_NOT_AUTHORIZED + " DeviceConnection cannot use this user because its reserved for another DeviceConnection");
             // TODO manage the error message. is it better to throw a more specific exception or keep it obfuscated for security reason?
         }
     }

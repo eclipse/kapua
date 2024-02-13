@@ -19,8 +19,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class AccessInfoXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final AccessInfoFactory ACCESS_INFO_FACTORY = LOCATOR.getFactory(AccessInfoFactory.class);
+    private final AccessInfoFactory accessInfoFactory = KapuaLocator.getInstance().getFactory(AccessInfoFactory.class);
 
     /**
      * Creates a new access info instance
@@ -28,7 +27,7 @@ public class AccessInfoXmlRegistry {
      * @return
      */
     public AccessInfo newAccessInfo() {
-        return ACCESS_INFO_FACTORY.newEntity(null);
+        return accessInfoFactory.newEntity(null);
     }
 
     /**
@@ -37,7 +36,7 @@ public class AccessInfoXmlRegistry {
      * @return
      */
     public AccessInfoCreator newAccessInfoCreator() {
-        return ACCESS_INFO_FACTORY.newCreator(null);
+        return accessInfoFactory.newCreator(null);
     }
 
     /**
@@ -46,10 +45,10 @@ public class AccessInfoXmlRegistry {
      * @return
      */
     public AccessInfoListResult newAccessInfoListResult() {
-        return ACCESS_INFO_FACTORY.newListResult();
+        return accessInfoFactory.newListResult();
     }
 
     public AccessInfoQuery newQuery() {
-        return ACCESS_INFO_FACTORY.newQuery(null);
+        return accessInfoFactory.newQuery(null);
     }
 }

@@ -21,9 +21,14 @@
         </provide>
     </provided>
     <packages>
+        <package>org.eclipse.kapua.service.authentication</package>
         <package>org.eclipse.kapua.commons</package>
         <package>org.eclipse.kapua.message</package>
         <package>org.eclipse.kapua.model.config</package>
+        <package>org.eclipse.kapua.security</package>
+        <package>org.eclipse.kapua.plugin</package>
         <package>org.eclipse.kapua.service</package>
+        <package>org.eclipse.kapua.translator</package>
+        <package>org.eclipse.kapua.transport</package>
     </packages>
 </locator-config>

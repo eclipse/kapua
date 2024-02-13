@@ -24,22 +24,21 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class TriggerDefinitionXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final TriggerDefinitionFactory TRIGGER_DEFINITION_FACTORY = LOCATOR.getFactory(TriggerDefinitionFactory.class);
+    private final TriggerDefinitionFactory triggerDefinitionFactory = KapuaLocator.getInstance().getFactory(TriggerDefinitionFactory.class);
 
     public TriggerDefinition newEntity() {
-        return TRIGGER_DEFINITION_FACTORY.newEntity(null);
+        return triggerDefinitionFactory.newEntity(null);
     }
 
     public TriggerDefinitionCreator newCreator() {
-        return TRIGGER_DEFINITION_FACTORY.newCreator(null);
+        return triggerDefinitionFactory.newCreator(null);
     }
 
     public TriggerDefinitionListResult newListResult() {
-        return TRIGGER_DEFINITION_FACTORY.newListResult();
+        return triggerDefinitionFactory.newListResult();
     }
 
     public TriggerDefinitionQuery newQuery() {
-        return TRIGGER_DEFINITION_FACTORY.newQuery(null);
+        return triggerDefinitionFactory.newQuery(null);
     }
 }

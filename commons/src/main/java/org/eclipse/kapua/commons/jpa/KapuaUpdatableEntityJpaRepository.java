@@ -57,7 +57,10 @@ public class KapuaUpdatableEntityJpaRepository<E extends KapuaUpdatableEntity, C
         }
         em.merge(updatedEntity);
         em.flush();
-        em.refresh(currentEntity);
-        return currentEntity;
+        if (em.contains(currentEntity)) {
+            em.refresh(currentEntity);
+            return currentEntity;
+        }
+        return updatedEntity;
     }
 }

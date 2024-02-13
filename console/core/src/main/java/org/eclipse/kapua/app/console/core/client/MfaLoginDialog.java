@@ -45,11 +45,11 @@ import org.eclipse.kapua.app.console.module.authentication.client.messages.Conso
  */
 public class MfaLoginDialog extends Dialog {
 
-    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
-    private static final ConsoleCredentialMessages CRED_MSGS = GWT.create(ConsoleCredentialMessages.class);
-    private static final ConsoleCoreMessages CORE_MSGS = GWT.create(ConsoleCoreMessages.class);
+    private static final ConsoleMessages CONSOLE_MESSAGES = GWT.create(ConsoleMessages.class);
+    private static final ConsoleCoreMessages CONSOLE_CORE_MESSAGES = GWT.create(ConsoleCoreMessages.class);
+    private static final ConsoleCredentialMessages CONSOLE_CREDENTIAL_MESSAGES = GWT.create(ConsoleCredentialMessages.class);
 
-    private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
+    private static final GwtAuthorizationServiceAsync GWT_AUTHORIZATION_SERVICE = GWT.create(GwtAuthorizationService.class);
 
     private static final String BR = "<br/>";
 
@@ -74,7 +74,7 @@ public class MfaLoginDialog extends Dialog {
         setButtons(""); // don't show OK button
         setIcon(IconHelper.createStyle("user"));
 
-        setHeading(CRED_MSGS.mfaLoginTitle());
+        setHeading(CONSOLE_CREDENTIAL_MESSAGES.mfaLoginTitle());
 
         setModal(true);
         setBodyBorder(true);
@@ -96,29 +96,29 @@ public class MfaLoginDialog extends Dialog {
             }
         };
 
-        Label title = new Label(MSGS.loginDialogMfaTitle());
+        Label title = new Label(CONSOLE_MESSAGES.loginDialogMfaTitle());
         title.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         add(title);
 
         // MFA presentation text
         add(new HTML(BR));
-        add(new Label(MSGS.loginMfa()));
+        add(new Label(CONSOLE_MESSAGES.loginMfa()));
         add(new HTML(BR));
-        add(new Label(MSGS.loginMfa1()));
+        add(new Label(CONSOLE_MESSAGES.loginMfa1()));
         add(new HTML(BR));
 
         // MFA code
         code = new TextField<String>();
-        code.setFieldLabel(MSGS.loginCode());
+        code.setFieldLabel(CONSOLE_MESSAGES.loginCode());
         code.addKeyListener(keyListener);
         add(code);
 
         // checkbox
         trustCheckbox = new CheckBox();
         trustCheckbox.setName("Trustpc");
-        trustCheckbox.setBoxLabel(MSGS.loginDialogMfaBoxLabel());
+        trustCheckbox.setBoxLabel(CONSOLE_MESSAGES.loginDialogMfaBoxLabel());
         trustCheckbox.setLabelSeparator("");
-        trustCheckbox.setToolTip(MSGS.userFormLockedTooltip());
+        trustCheckbox.setToolTip(CONSOLE_MESSAGES.userFormLockedTooltip());
         add(trustCheckbox);
 
         if (this.isVisible()) {
@@ -134,11 +134,11 @@ public class MfaLoginDialog extends Dialog {
         GwtLoginCredential credentials = new GwtLoginCredential(loginDialog.getUsername().getValue(), loginDialog.getPassword().getValue());
         credentials.setAuthenticationCode(code.getValue());
 
-        gwtAuthorizationService.login(credentials, trustCheckbox.getValue(), new AsyncCallback<GwtSession>() {
+        GWT_AUTHORIZATION_SERVICE.login(credentials, trustCheckbox.getValue(), new AsyncCallback<GwtSession>() {
 
             @Override
             public void onFailure(Throwable caught) {
-                ConsoleInfo.display(CORE_MSGS.loginError(), caught.getLocalizedMessage());
+                ConsoleInfo.display(CONSOLE_CORE_MESSAGES.loginError(), caught.getLocalizedMessage());
                 reset();
 
                 // Go back
@@ -174,7 +174,7 @@ public class MfaLoginDialog extends Dialog {
         super.createButtons();
 
         status = new Status();
-        status.setBusy(MSGS.waitMsg());
+        status.setBusy(CONSOLE_MESSAGES.waitMsg());
         status.hide();
         status.setAutoWidth(true);
 
@@ -182,7 +182,7 @@ public class MfaLoginDialog extends Dialog {
         getButtonBar().add(new FillToolItem());
 
         // submit
-        submit = new Button(CORE_MSGS.loginLogin());
+        submit = new Button(CONSOLE_CORE_MESSAGES.loginLogin());
         submit.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override

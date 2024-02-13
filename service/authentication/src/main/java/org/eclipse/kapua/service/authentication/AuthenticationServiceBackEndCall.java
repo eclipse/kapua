@@ -58,7 +58,7 @@ public class AuthenticationServiceBackEndCall {
 
     protected static Logger logger = LoggerFactory.getLogger(AuthenticationServiceBackEndCall.class);
 
-    private AuthMetric authenticationMetric = AuthMetric.getInstance();
+    private AuthMetric authenticationMetric;
 
     @Inject
     private Authenticator authenticator;
@@ -82,6 +82,7 @@ public class AuthenticationServiceBackEndCall {
         credentialFactory = locator.getFactory(CredentialsFactory.class);
         kapuaIdFactory = locator.getFactory(KapuaIdFactory.class);
         userService = locator.getService(UserService.class);
+        authenticationMetric = locator.getComponent(AuthMetric.class);
     }
 
     public AuthResponse brokerConnect(AuthRequest authRequest) {

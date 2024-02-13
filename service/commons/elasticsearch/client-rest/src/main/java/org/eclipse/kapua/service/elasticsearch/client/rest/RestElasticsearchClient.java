@@ -44,7 +44,6 @@ import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
 import org.eclipse.kapua.service.elasticsearch.client.rest.exception.RequestEntityWriteError;
 import org.eclipse.kapua.service.elasticsearch.client.rest.exception.ResponseEntityReadError;
-
 import org.elasticsearch.client.Request;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.ResponseException;
@@ -52,6 +51,7 @@ import org.elasticsearch.client.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.HashMap;
@@ -78,14 +78,17 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     private static final String CLIENT_HITS_MAX_VALUE_EXCEEDED = "Total hits exceeds integer max value";
     private static final String QUERY_CONVERTED_QUERY = "Query - converted query: '{}'";
     private static final String COUNT_CONVERTED_QUERY = "Count - converted query: '{}'";
+    private final MetricsEsClient metricsEsClient;
 
     /**
      * Constructor.
      *
      * @since 1.0.0
      */
-    public RestElasticsearchClient() {
+    @Inject
+    public RestElasticsearchClient(MetricsEsClient metricsEsClient) {
         super("rest");
+        this.metricsEsClient = metricsEsClient;
 
         objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
@@ -106,7 +109,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
 
     @Override
     public void close() {
-        if(client != null) {
+        if (client != null) {
             try {
                 client.close();
             } catch (IOException e) {
@@ -123,7 +126,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         String json = writeRequestFromMap(insertRequestStorableMap);
         Request request = new Request(ElasticsearchKeywords.ACTION_PUT, ElasticsearchResourcePaths.insertType(insertRequest));
         request.setJsonEntity(json);
-        Response insertResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), insertRequest.getTypeDescriptor().getIndex(),"INSERT");
+        Response insertResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), insertRequest.getTypeDescriptor().getIndex(), "INSERT");
 
         if (isRequestSuccessful(insertResponse)) {
             JsonNode responseNode = readResponseAsJsonNode(insertResponse);
@@ -364,7 +367,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         LOG.debug("Find indexes - index prefix: '{}'", indexRequest.getIndex());
         Request request = new Request(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.findIndex(indexRequest.getIndex()));
         request.addParameter("pretty", "true");
-        Response findIndexResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), indexRequest.getIndex(),"INDEX EXIST");
+        Response findIndexResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), indexRequest.getIndex(), "INDEX EXIST");
 
         if (isRequestSuccessful(findIndexResponse)) {
             try {
@@ -475,7 +478,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                     return restAction.call();
                 } catch (RuntimeException e) {
                     if (e.getCause() instanceof TimeoutException) {
-                        MetricsEsClient.getInstance().getTimeoutRetry().inc();
+                        metricsEsClient.getTimeoutRetry().inc();
                         if (retryCount < getClientConfiguration().getRequestConfiguration().getRequestRetryAttemptMax() - 1) {
                             try {
                                 Thread.sleep((long) (getClientConfiguration().getRequestConfiguration().getRequestRetryAttemptWait() * (0.5 + RANDOM.nextFloat() / 2)));
@@ -495,7 +498,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         } catch (Exception e) {
             throw new ClientInternalError(e, "Error in handling REST timeout handler");
         }
-        MetricsEsClient.getInstance().getTimeoutRetryLimitReached().inc();
+        metricsEsClient.getTimeoutRetryLimitReached().inc();
 
         throw new ClientCommunicationException();
     }

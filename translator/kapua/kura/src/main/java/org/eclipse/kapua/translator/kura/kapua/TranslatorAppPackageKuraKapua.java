@@ -14,7 +14,6 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraBundleInfo;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
@@ -23,6 +22,7 @@ import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraRespo
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseCode;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageResponseChannel;
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageResponseMessage;
@@ -37,6 +37,7 @@ import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
 
+import javax.inject.Inject;
 import java.math.BigInteger;
 import java.util.Map;
 
@@ -47,16 +48,18 @@ import java.util.Map;
  */
 public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<PackageResponseChannel, PackageResponsePayload, PackageResponseMessage> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private final DevicePackageFactory devicePackageFactory;
 
-    public TranslatorAppPackageKuraKapua() {
-        super(PackageResponseMessage.class, PackageResponsePayload.class);
+    @Inject
+    public TranslatorAppPackageKuraKapua(DeviceManagementSetting deviceManagementSetting, DevicePackageFactory devicePackageFactory) {
+        super(deviceManagementSetting, PackageResponseMessage.class, PackageResponsePayload.class);
+        this.devicePackageFactory = devicePackageFactory;
     }
 
     @Override
     protected PackageResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
         try {
-            TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, PackageMetrics.APP_ID, PackageMetrics.APP_VERSION);
+            translatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, PackageMetrics.APP_ID, PackageMetrics.APP_VERSION);
 
             return new PackageResponseChannel();
         } catch (Exception e) {
@@ -126,7 +129,6 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
     }
 
     private DevicePackages translate(KuraDeploymentPackages kuraDeploymentPackages) {
-        DevicePackageFactory devicePackageFactory = LOCATOR.getFactory(DevicePackageFactory.class);
         DevicePackages deviceDeploymentPackages = devicePackageFactory.newDeviceDeploymentPackages();
 
         KuraDeploymentPackage[] deploymentPackageArray = kuraDeploymentPackages.getDeploymentPackages();

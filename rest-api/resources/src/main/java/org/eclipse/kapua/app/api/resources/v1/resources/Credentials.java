@@ -18,7 +18,6 @@ import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authentication.credential.Credential;
@@ -29,6 +28,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -45,9 +45,11 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/credentials")
 public class Credentials extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final CredentialService credentialService = locator.getService(CredentialService.class);
-    private final CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
+    @Inject
+    public
+    CredentialService credentialService;
+    @Inject
+    public CredentialFactory credentialFactory;
 
 
     /**
@@ -243,8 +245,8 @@ public class Credentials extends AbstractKapuaResource {
     @POST
     @Path("{credentialId}/_unlock")
     public Response unlock(
-        @PathParam("scopeId") ScopeId scopeId,
-        @PathParam("credentialId") EntityId credentialId) throws KapuaException {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("credentialId") EntityId credentialId) throws KapuaException {
         credentialService.unlock(scopeId, credentialId);
 
         return returnNoContent();

@@ -13,6 +13,7 @@
 package org.eclipse.kapua.commons.event;
 
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreService;
+import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.storage.TxManager;
 
 import java.util.List;
@@ -21,14 +22,16 @@ public class ServiceEventHouseKeeperFactoryImpl implements ServiceEventHouseKeep
 
     private final EventStoreService eventStoreService;
     private final TxManager txManager;
+    private final ServiceEventBus serviceEventBus;
 
-    public ServiceEventHouseKeeperFactoryImpl(EventStoreService eventStoreService, TxManager txManager) {
+    public ServiceEventHouseKeeperFactoryImpl(EventStoreService eventStoreService, TxManager txManager, ServiceEventBus serviceEventBus) {
         this.eventStoreService = eventStoreService;
         this.txManager = txManager;
+        this.serviceEventBus = serviceEventBus;
     }
 
     @Override
     public ServiceEventTransactionalHousekeeper apply(List<ServiceEntry> servicesEntryList) {
-        return new ServiceEventTransactionalHousekeeper(eventStoreService, txManager, servicesEntryList);
+        return new ServiceEventTransactionalHousekeeper(eventStoreService, txManager, serviceEventBus, servicesEntryList);
     }
 }

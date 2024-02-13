@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.model;
 
+import org.eclipse.kapua.service.storable.model.Storable;
+
 /**
  * Insert {@link Request} definition.
  *
@@ -27,7 +29,7 @@ public class InsertRequest extends Request {
      * @param storable       The Object to insert.
      * @since 1.0.0
      */
-    public InsertRequest(String id, TypeDescriptor typeDescriptor, Object storable) {
+    public InsertRequest(String id, TypeDescriptor typeDescriptor, Storable storable) {
         super(id, typeDescriptor, storable);
     }
 }

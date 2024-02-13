@@ -15,11 +15,10 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.endpoint.EndpointInfo;
@@ -30,6 +29,7 @@ import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 import org.eclipse.kapua.service.endpoint.EndpointInfoService;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -46,9 +46,10 @@ import javax.ws.rs.core.Response;
 @Path("{scopeId}/endpointInfos")
 public class EndpointInfos extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final EndpointInfoService endpointInfoService = locator.getService(EndpointInfoService.class);
-    private final EndpointInfoFactory endpointInfoFactory = locator.getFactory(EndpointInfoFactory.class);
+    @Inject
+    public EndpointInfoService endpointInfoService;
+    @Inject
+    public EndpointInfoFactory endpointInfoFactory;
 
     /**
      * Gets the {@link EndpointInfo} list in the scope.

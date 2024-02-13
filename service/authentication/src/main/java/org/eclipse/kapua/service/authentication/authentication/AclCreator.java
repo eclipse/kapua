@@ -12,10 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.authentication;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.kapua.client.security.bean.AclUtils;
 import org.eclipse.kapua.client.security.bean.AuthAcl;
 import org.eclipse.kapua.client.security.bean.AuthAcl.Action;
@@ -23,6 +19,11 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @Order(Ordered.LOWEST_PRECEDENCE)
@@ -44,6 +45,7 @@ public class AclCreator {
 
     protected List<String> authDestinations = new ArrayList<>();
 
+    @Inject
     public AclCreator() {
         addressClassifier = SystemSetting.getInstance().getMessageClassifier();
         addressClassifierEscaped = "\\" + SystemSetting.getInstance().getMessageClassifier();
@@ -96,13 +98,13 @@ public class AclCreator {
     protected AuthAcl createAuthorizationEntry(Action action, String address, StringBuilder aclDestinationsLog) {
         AuthAcl entry = new AuthAcl(address, action);
         aclDestinationsLog.append(AclUtils.isRead(action) ? "r" : "_")
-            .append("/")
-            .append(AclUtils.isWrite(action) ? "w" : "_")
-            .append("/")
-            .append(AclUtils.isAdmin(action) ? "a" : "_")
-            .append(" - ")
-            .append(address)
-            .append("\n");
+                .append("/")
+                .append(AclUtils.isWrite(action) ? "w" : "_")
+                .append("/")
+                .append(AclUtils.isAdmin(action) ? "a" : "_")
+                .append(" - ")
+                .append(address)
+                .append("\n");
         return entry;
     }
 

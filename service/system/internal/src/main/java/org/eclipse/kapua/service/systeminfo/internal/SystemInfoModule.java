@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.systeminfo.internal;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.service.systeminfo.SystemInfoFactory;
 import org.eclipse.kapua.service.systeminfo.SystemInfoService;
 
@@ -21,5 +22,6 @@ public class SystemInfoModule extends AbstractKapuaModule {
     protected void configureModule() {
         bind(SystemInfoService.class).to(SystemInfoServiceImpl.class);
         bind(SystemInfoFactory.class).to(SystemInfoFactoryImpl.class);
+        bind(SystemSetting.class).toInstance(SystemSetting.getInstance());
     }
 }

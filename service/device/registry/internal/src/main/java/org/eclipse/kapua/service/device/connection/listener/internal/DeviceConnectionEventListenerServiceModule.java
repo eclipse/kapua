@@ -17,14 +17,16 @@ import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactory;
 import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
 import org.eclipse.kapua.commons.event.ServiceInspector;
+import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.service.device.connection.listener.DeviceConnectionEventListenerService;
 
 public class DeviceConnectionEventListenerServiceModule extends ServiceEventTransactionalModule implements ServiceModule {
 
-    public DeviceConnectionEventListenerServiceModule(DeviceConnectionEventListenerService deviceConnectionEventListenerService, String eventAddress, ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory) {
+    public DeviceConnectionEventListenerServiceModule(DeviceConnectionEventListenerService deviceConnectionEventListenerService, String eventAddress, ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory,
+                                                      ServiceEventBus serviceEventBus) {
         super(ServiceInspector.getEventBusClients(deviceConnectionEventListenerService, DeviceConnectionEventListenerService.class).toArray(new ServiceEventClientConfiguration[0]),
                 eventAddress,
-                serviceEventTransactionalHousekeeperFactory);
+                serviceEventTransactionalHousekeeperFactory, serviceEventBus);
     }
 
 }

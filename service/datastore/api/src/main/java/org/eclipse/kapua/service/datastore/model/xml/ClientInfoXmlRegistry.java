@@ -27,8 +27,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class ClientInfoXmlRegistry {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final ClientInfoFactory CLIENT_INFO_FACTORY = LOCATOR.getFactory(ClientInfoFactory.class);
+    private final ClientInfoFactory clientInfoFactory = KapuaLocator.getInstance().getFactory(ClientInfoFactory.class);
 
     /**
      * Creates a {@link ClientInfoListResult} instance
@@ -36,7 +35,7 @@ public class ClientInfoXmlRegistry {
      * @return
      */
     public ClientInfoListResult newListResult() {
-        return CLIENT_INFO_FACTORY.newListResult();
+        return clientInfoFactory.newListResult();
     }
 
     /**
@@ -45,6 +44,6 @@ public class ClientInfoXmlRegistry {
      * @return
      */
     public ClientInfoQuery newQuery() {
-        return CLIENT_INFO_FACTORY.newQuery(null);
+        return clientInfoFactory.newQuery(null);
     }
 }

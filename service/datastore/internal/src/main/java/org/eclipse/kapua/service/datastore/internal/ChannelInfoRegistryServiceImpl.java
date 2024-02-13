@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountService;
@@ -25,9 +24,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
-import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
-import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
@@ -35,6 +32,7 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
+import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
@@ -48,10 +46,12 @@ import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Channel info registry implementation
@@ -63,14 +63,13 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
 
     private static final Logger LOG = LoggerFactory.getLogger(ChannelInfoRegistryServiceImpl.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final DatastorePredicateFactory DATASTORE_PREDICATE_FACTORY = LOCATOR.getFactory(DatastorePredicateFactory.class);
-
+    private final DatastorePredicateFactory datastorePredicateFactory;
     private final AccountService accountService;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final ChannelInfoRegistryFacade channelInfoRegistryFacade;
-    private final MessageStoreService messageStoreService;
+    private final MessageRepository messageRepository;
+    private final DatastoreSettings datastoreSettings;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -80,17 +79,22 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
      *
      * @since 1.0.0
      */
-    public ChannelInfoRegistryServiceImpl() {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        accountService = locator.getService(AccountService.class);
-        authorizationService = locator.getService(AuthorizationService.class);
-        permissionFactory = locator.getFactory(PermissionFactory.class);
-        messageStoreService = locator.getService(MessageStoreService.class);
-
-        MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
-        ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(messageStoreService, accountService);
-        channelInfoRegistryFacade = new ChannelInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
-        DatastoreMediator.getInstance().setChannelInfoStoreFacade(channelInfoRegistryFacade);
+    @Inject
+    public ChannelInfoRegistryServiceImpl(
+            DatastorePredicateFactory datastorePredicateFactory,
+            AccountService accountService,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            MessageRepository messageStoreService,
+            ChannelInfoRegistryFacade channelInfoRegistryFacade,
+            DatastoreSettings datastoreSettings) {
+        this.datastorePredicateFactory = datastorePredicateFactory;
+        this.accountService = accountService;
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.messageRepository = messageStoreService;
+        this.channelInfoRegistryFacade = channelInfoRegistryFacade;
+        this.datastoreSettings = datastoreSettings;
     }
 
     @Override
@@ -164,7 +168,8 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
         }
     }
 
-    void delete(KapuaId scopeId, StorableId id)
+    @Override
+    public void delete(KapuaId scopeId, StorableId id)
             throws KapuaException {
         if (!isServiceEnabled(scopeId)) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
@@ -181,7 +186,8 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
         }
     }
 
-    void delete(ChannelInfoQuery query)
+    @Override
+    public void delete(ChannelInfoQuery query)
             throws KapuaException {
         if (!isServiceEnabled(query.getScopeId())) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
@@ -224,24 +230,25 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
         messageQuery.setOffset(0);
         messageQuery.setSortFields(sort);
 
-        RangePredicate messageIdPredicate = DATASTORE_PREDICATE_FACTORY.newRangePredicate(ChannelInfoField.TIMESTAMP, channelInfo.getFirstMessageOn(), null);
-        TermPredicate clientIdPredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, channelInfo.getClientId());
-        TermPredicate channelPredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(MessageField.CHANNEL, channelInfo.getName());
+        RangePredicate messageIdPredicate = datastorePredicateFactory.newRangePredicate(ChannelInfoField.TIMESTAMP, channelInfo.getFirstMessageOn(), null);
+        TermPredicate clientIdPredicate = datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, channelInfo.getClientId());
+        TermPredicate channelPredicate = datastorePredicateFactory.newTermPredicate(MessageField.CHANNEL, channelInfo.getName());
 
-        AndPredicate andPredicate = DATASTORE_PREDICATE_FACTORY.newAndPredicate();
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
         andPredicate.getPredicates().add(messageIdPredicate);
         andPredicate.getPredicates().add(clientIdPredicate);
         andPredicate.getPredicates().add(channelPredicate);
         messageQuery.setPredicate(andPredicate);
 
-        MessageListResult messageList = messageStoreService.query(messageQuery);
+        MessageListResult messageList = messageRepository.query(messageQuery);
+        final List<DatastoreMessage> messages = Optional.ofNullable(messageList).map(ml -> ml.getItems()).orElse(new ArrayList<>());
 
         StorableId lastPublishedMessageId = null;
         Date lastPublishedMessageTimestamp = null;
-        if (messageList.getSize() == 1) {
-            lastPublishedMessageId = messageList.getFirstItem().getDatastoreId();
-            lastPublishedMessageTimestamp = messageList.getFirstItem().getTimestamp();
-        } else if (messageList.isEmpty()) {
+        if (messages.size() == 1) {
+            lastPublishedMessageId = messages.get(0).getDatastoreId();
+            lastPublishedMessageTimestamp = messages.get(0).getTimestamp();
+        } else if (messages.isEmpty()) {
             // this condition could happens due to the ttl of the messages (so if it happens, it does not necessarily mean there has been an error!)
             LOG.warn("Cannot find last timestamp for the specified client id '{}' - account '{}'", channelInfo.getScopeId(), channelInfo.getClientId());
         } else {
@@ -256,7 +263,7 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
 
     @Override
     public boolean isServiceEnabled(KapuaId scopeId) {
-        return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
+        return !datastoreSettings.getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
     }
 
 }

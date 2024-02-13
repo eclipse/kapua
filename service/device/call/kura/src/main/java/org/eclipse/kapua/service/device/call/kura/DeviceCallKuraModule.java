@@ -15,11 +15,15 @@ package org.eclipse.kapua.service.device.call.kura;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.service.device.call.DeviceCallFactory;
 import org.eclipse.kapua.service.device.call.DeviceMessageFactory;
+import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettings;
+
+import javax.inject.Singleton;
 
 public class DeviceCallKuraModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(DeviceCallFactory.class).to(KuraDeviceCallFactoryImpl.class);
-        bind(DeviceMessageFactory.class).to(KuraMessageFactoryImpl.class);
+        bind(DeviceCallFactory.class).to(KuraDeviceCallFactoryImpl.class).in(Singleton.class);
+        bind(DeviceMessageFactory.class).to(KuraMessageFactoryImpl.class).in(Singleton.class);
+        bind(DeviceCallSettings.class).in(Singleton.class);
     }
 }

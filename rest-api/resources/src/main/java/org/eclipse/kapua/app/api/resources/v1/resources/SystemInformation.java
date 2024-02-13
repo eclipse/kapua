@@ -13,10 +13,10 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.systeminfo.SystemInfo;
 import org.eclipse.kapua.service.systeminfo.SystemInfoService;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -24,9 +24,9 @@ import javax.ws.rs.core.MediaType;
 
 @Path("/sys-info")
 public class SystemInformation extends AbstractKapuaResource {
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final SystemInfoService systemInfoService = locator.getService(SystemInfoService.class);
 
+    @Inject
+    public SystemInfoService systemInfoService;
 
     /**
      * Gets the system info.

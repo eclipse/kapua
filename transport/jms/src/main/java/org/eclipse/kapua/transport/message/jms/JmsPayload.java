@@ -27,6 +27,7 @@ import java.util.Base64;
  */
 public class JmsPayload implements TransportPayload {
 
+    //TODO: FIXME: REMOVE: A collaborator in a data class? Behaviour should not be part of a data class!
     private static final int BODY_TOSTRING_LENGTH = JmsClientSetting.getInstance().getInt(JmsClientSettingKeys.PAYLOAD_TOSTRING_LENGTH, 64);
 
     /**

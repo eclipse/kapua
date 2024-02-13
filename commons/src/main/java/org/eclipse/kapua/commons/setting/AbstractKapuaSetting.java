@@ -49,6 +49,10 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
         super(createCompositeSource(configResourceName));
     }
 
+    public void reset(String configResourceName) {
+        super.init(createCompositeSource(configResourceName));
+    }
+
     private static DataConfiguration createCompositeSource(String configResourceName) throws ExceptionInInitializerError {
         CompositeConfiguration compositeConfig = new EnvFriendlyConfiguration();
         compositeConfig.addConfiguration(new SystemConfiguration());

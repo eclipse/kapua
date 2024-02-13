@@ -13,7 +13,6 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsPayload;
@@ -33,6 +32,8 @@ import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
 
+import javax.inject.Inject;
+
 /**
  * {@link Translator} implementation from {@link KuraAppsMessage} to {@link KapuaAppsMessage}
  *
@@ -40,10 +41,12 @@ import org.eclipse.kapua.translator.exception.TranslateException;
  */
 public class TranslatorLifeAppsKuraKapua extends Translator<KuraAppsMessage, KapuaAppsMessage> {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
-    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+    @Inject
+    private AccountService accountService;
+    @Inject
+    private DeviceRegistryService deviceRegistryService;
+    @Inject
+    private TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
 
     @Override
     public KapuaAppsMessage translate(KuraAppsMessage kuraAppsMessage) throws TranslateException {
@@ -52,12 +55,12 @@ public class TranslatorLifeAppsKuraKapua extends Translator<KuraAppsMessage, Kap
             kapuaAppsMessage.setChannel(translate(kuraAppsMessage.getChannel()));
             kapuaAppsMessage.setPayload(translate(kuraAppsMessage.getPayload()));
 
-            Account account = ACCOUNT_SERVICE.findByName(kuraAppsMessage.getChannel().getScope());
+            Account account = accountService.findByName(kuraAppsMessage.getChannel().getScope());
             if (account == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraAppsMessage.getChannel().getScope());
             }
 
-            Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), kuraAppsMessage.getChannel().getClientId());
+            Device device = deviceRegistryService.findByClientId(account.getId(), kuraAppsMessage.getChannel().getClientId());
             if (device == null) {
                 throw new KapuaEntityNotFoundException(Device.class.toString(), kuraAppsMessage.getChannel().getClientId());
             }
@@ -67,7 +70,7 @@ public class TranslatorLifeAppsKuraKapua extends Translator<KuraAppsMessage, Kap
             kapuaAppsMessage.setCapturedOn(kuraAppsMessage.getPayload().getTimestamp());
             kapuaAppsMessage.setSentOn(kuraAppsMessage.getPayload().getTimestamp());
             kapuaAppsMessage.setReceivedOn(kuraAppsMessage.getTimestamp());
-            kapuaAppsMessage.setPosition(TranslatorKuraKapuaUtils.translate(kuraAppsMessage.getPayload().getPosition()));
+            kapuaAppsMessage.setPosition(translatorKuraKapuaUtils.translate(kuraAppsMessage.getPayload().getPosition()));
 
             return kapuaAppsMessage;
         } catch (InvalidChannelException | InvalidPayloadException te) {

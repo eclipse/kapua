@@ -13,8 +13,12 @@
 package org.eclipse.kapua.translator.kura.kapua.inventory;
 
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
+import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
 import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryNoContentResponseMessage;
 import org.eclipse.kapua.translator.Translator;
+
+import javax.inject.Inject;
 
 /**
  * {@link Translator} implementation from {@link KuraResponseMessage} to {@link InventoryNoContentResponseMessage}
@@ -28,7 +32,8 @@ public class TranslatorAppInventoryNoContentKuraKapua extends AbstractTranslator
      *
      * @since 1.5.0
      */
-    public TranslatorAppInventoryNoContentKuraKapua() {
-        super(InventoryNoContentResponseMessage.class);
+    @Inject
+    public TranslatorAppInventoryNoContentKuraKapua(DeviceManagementSetting deviceManagementSetting, DeviceInventoryManagementFactory deviceInventoryManagementFactory) {
+        super(deviceManagementSetting, deviceInventoryManagementFactory, InventoryNoContentResponseMessage.class);
     }
 }

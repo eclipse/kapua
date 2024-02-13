@@ -41,7 +41,7 @@ public class ServiceXmlConfigPropertiesAdaptedTest {
         for (String name : names) {
             for (String[] value : stringValues) {
                 for (ServiceXmlConfigPropertyAdapted.ConfigPropertyType type : configPropertyType) {
-                    ServiceXmlConfigPropertyAdapted[] properties = {null, new ServiceXmlConfigPropertyAdapted(), new ServiceXmlConfigPropertyAdapted(name, type, value)};
+                    ServiceXmlConfigPropertyAdapted[] properties = new ServiceXmlConfigPropertyAdapted[]{null, new ServiceXmlConfigPropertyAdapted(), new ServiceXmlConfigPropertyAdapted(name, type, value)};
                     serviceXmlConfigPropertiesAdapted.setProperties(properties);
                     Assert.assertEquals("Expected and actual values should be the same.", properties, serviceXmlConfigPropertiesAdapted.getProperties());
 

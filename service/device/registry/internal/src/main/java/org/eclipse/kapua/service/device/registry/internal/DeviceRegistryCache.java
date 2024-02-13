@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
+import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
 import org.eclipse.kapua.commons.service.internal.cache.KapuaCacheManager;
 import org.eclipse.kapua.model.KapuaEntity;
@@ -34,10 +35,10 @@ public class DeviceRegistryCache extends EntityCache {
     protected Cache<Serializable, Serializable> deviceByClientIdCache;
     protected Cache<Serializable, Serializable> deviceByConnectionIdCache;
 
-    public DeviceRegistryCache(String idCacheName, String deviceByClientIdCacheName, String deviceByConnectionIdCacheName) {
-        super(idCacheName);
-        deviceByClientIdCache = KapuaCacheManager.getCache(deviceByClientIdCacheName);
-        deviceByConnectionIdCache = KapuaCacheManager.getCache(deviceByConnectionIdCacheName);
+    public DeviceRegistryCache(KapuaCacheManager cacheManager, CommonsMetric commonsMetric, String idCacheName, String deviceByClientIdCacheName, String deviceByConnectionIdCacheName) {
+        super(cacheManager, commonsMetric, idCacheName);
+        deviceByClientIdCache = cacheManager.getCache(deviceByClientIdCacheName);
+        deviceByConnectionIdCache = cacheManager.getCache(deviceByConnectionIdCacheName);
     }
 
     public KapuaEntity getByClientId(KapuaId scopeId, String clientId) {
