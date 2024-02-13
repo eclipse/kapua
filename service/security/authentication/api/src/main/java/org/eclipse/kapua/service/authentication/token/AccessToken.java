@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
@@ -41,8 +42,7 @@ import java.util.Date;
         "refreshToken", //
         "refreshExpiresOn", //
         "invalidatedOn", //
-        "trustKey" , //
-        "tokenIdentifier" //
+        "trustKey"  //
 }, //
         factoryClass = AccessTokenXmlRegistry.class, //
         factoryMethod = "newAccessToken")
@@ -190,7 +190,7 @@ public interface AccessToken extends KapuaUpdatableEntity, Serializable {
      * @return The token id
      * @since 2.0
      */
-    @XmlElement(name = "tokenIdentifier")
+    @XmlTransient
     String getTokenIdentifier();
 
     /**
