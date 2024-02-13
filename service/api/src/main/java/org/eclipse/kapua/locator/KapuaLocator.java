@@ -47,12 +47,18 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
 
     // TODO do we need synchronization?
 
+    private static boolean isBeingCreated;
+
     /**
      * Creates the {@link KapuaLocator} instance,
      *
      * @return
      */
     private static KapuaLocator createInstance() {
+        if (isBeingCreated) {
+            throw new RuntimeException("Already creating a KapuaLocator, avoid nested creation");
+        }
+        isBeingCreated = true;
         try {
             logger.info("initializing Servicelocator instance... ");
             String locatorImplementation = locatorClassName();
@@ -97,6 +103,7 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
     }
 
     public static void clearInstance() {
+        isBeingCreated = false;
         instance = createInstance();
     }
 
