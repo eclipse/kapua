@@ -77,9 +77,8 @@ public class AccountRelativeFinderImpl implements AccountRelativeFinder, KapuaSe
         // Iterate in reverse order to get parent first, then grandparent, etc
         for(int i = splitIds.length - 1; i >= 0; i--) {
             String id = splitIds[i];
-            if(id == null || id.isEmpty() || id.equals(accountIdStr)) {
-                // skip
-            } else {
+
+            if(id != null && !id.isEmpty() && !id.equals(accountIdStr)) {
                 parentAccountIds.add(new KapuaEid(new BigInteger(id)));
             }
         }
