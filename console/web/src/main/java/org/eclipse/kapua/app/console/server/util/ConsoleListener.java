@@ -13,10 +13,7 @@
 package org.eclipse.kapua.app.console.server.util;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.console.ConsoleJAXBContextProvider;
 import org.eclipse.kapua.commons.core.ServiceModuleBundle;
-import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.scheduler.quartz.SchedulerServiceInit;
 import org.slf4j.Logger;
@@ -36,15 +33,6 @@ public class ConsoleListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(final ServletContextEvent event) {
-        try {
-            LOG.info("Initialize Console JABContext Provider...");
-            JAXBContextProvider consoleProvider = new ConsoleJAXBContextProvider();
-            XmlUtil.setContextProvider(consoleProvider);
-            LOG.info("Initialize Console JABContext Provider... DONE!");
-        } catch (Exception e) {
-            LOG.error("Initialize Console JABContext Provider... ERROR! Error: {}", e.getMessage(), e);
-            throw new ExceptionInInitializerError(e);
-        }
         // Start Quartz scheduler
         try {
             LOG.info("Starting Quartz scheduler...");

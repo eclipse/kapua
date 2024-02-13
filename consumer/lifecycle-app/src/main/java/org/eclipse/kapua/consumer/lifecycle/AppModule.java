@@ -15,8 +15,8 @@ package org.eclipse.kapua.consumer.lifecycle;
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
-import org.eclipse.kapua.service.camel.xml.ServiceJAXBContextLoader;
-import org.eclipse.kapua.service.camel.xml.ServiceJAXBContextLoaderProvider;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -24,7 +24,6 @@ import javax.inject.Singleton;
 public class AppModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(ServiceJAXBContextLoader.class).toProvider(ServiceJAXBContextLoaderProvider.class).asEagerSingleton();
         bind(DatabaseCheckUpdate.class).asEagerSingleton();
         bind(MetricsLifecycle.class).in(Singleton.class);
     }
@@ -41,4 +40,11 @@ public class AppModule extends AbstractKapuaModule {
         return "lifecycle";
     }
 
+    @Provides
+    @Singleton
+    JAXBContextProvider jaxbContextProvider() {
+        final JAXBContextProvider jaxbContextProvider = new LifecycleJAXBContextProvider();
+        XmlUtil.setContextProvider(jaxbContextProvider);
+        return jaxbContextProvider;
+    }
 }
