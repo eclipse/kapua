@@ -271,6 +271,38 @@ public class DockerSteps {
             synchronized (this) {
                 this.wait(WAIT_FOR_JOB_ENGINE);
             }
+
+        } catch (Exception e) {
+            logger.error("Error while starting base docker environment: {}", e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    @Given("start rest-API container and dependencies")
+    public void startApiDockerEnvironment() throws Exception {
+        logger.info("Starting rest-api docker environment...");
+        stopFullDockerEnvironmentInternal();
+        try {
+            removeNetwork();
+            createNetwork();
+
+            startDBContainer(BasicSteps.DB_CONTAINER_NAME);
+            synchronized (this) {
+                this.wait(WAIT_FOR_DB);
+            }
+
+            startEventBrokerContainer(BasicSteps.EVENTS_BROKER_CONTAINER_NAME);
+            synchronized (this) {
+                this.wait(WAIT_FOR_EVENTS_BROKER);
+            }
+
+            startJobEngineContainer(BasicSteps.JOB_ENGINE_CONTAINER_NAME);
+            synchronized (this) {
+                this.wait(WAIT_FOR_JOB_ENGINE);
+            }
+
+            startAPIContainer("Api");
+
         } catch (Exception e) {
             logger.error("Error while starting base docker environment: {}", e.getMessage(), e);
             throw e;
@@ -358,6 +390,8 @@ public class DockerSteps {
     @Given("Stop full docker environment")
     public void stopFullDockerEnvironment() throws DockerException, InterruptedException, SQLException {
         stopFullDockerEnvironmentInternal();
+        removeContainer("Api");
+        removeContainer("/Api");
     }
 
     @Given("Stop base docker environment")
@@ -479,6 +513,19 @@ public class DockerSteps {
         DockerUtil.getDockerClient().connectToNetwork(containerId, networkId);
         containerMap.put("db", containerId);
         logger.info("DB container started: {}", containerId);
+    }
+
+    @And("Start API container with name {string}")
+    public void startAPIContainer(String name) throws DockerException, InterruptedException {
+        logger.info("Starting API container...");
+        ContainerConfig dbConfig = getApiContainerConfig();
+        ContainerCreation dbContainerCreation = DockerUtil.getDockerClient().createContainer(dbConfig, name);
+        String containerId = dbContainerCreation.id();
+
+        DockerUtil.getDockerClient().startContainer(containerId);
+        DockerUtil.getDockerClient().connectToNetwork(containerId, networkId);
+        containerMap.put("api", containerId);
+        logger.info("API container started: {}", containerId);
     }
 
     @And("Start ES container with name {string}")
@@ -767,6 +814,29 @@ public class DockerSteps {
                         "DB_PORT_3306_TCP_PORT=3306"
                 )
                 .image("kapua/kapua-sql:" + KAPUA_VERSION)
+                .build();
+    }
+
+    private ContainerConfig getApiContainerConfig() {
+        final Map<String, List<PortBinding>> portBindings = new HashMap<>();
+        addHostPort(ALL_IP, portBindings, 8080, 8081);
+        addHostPort(ALL_IP, portBindings, 8443, 8443);
+        final HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).build();
+
+        String[] ports = {
+                String.valueOf(8080),
+                String.valueOf(8443)
+        };
+
+        return ContainerConfig.builder()
+                .hostConfig(hostConfig)
+                .exposedPorts(ports)
+                .env(
+                        "CRYPTO_SECRET_KEY=kapuaTestsKey!!!",
+                        "KAPUA_DISABLE_DATASTORE=false",
+                        "SWAGGER=true"
+                )
+                .image("kapua/kapua-api:" + KAPUA_VERSION)
                 .build();
     }
 
