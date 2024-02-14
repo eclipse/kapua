@@ -157,7 +157,7 @@ public abstract class ElasticsearchRepository<
 
             return elasticsearchClientProviderInstance.getElasticsearchClient().count(getDescriptor(indexName), query);
         } catch (ClientException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 
