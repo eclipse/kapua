@@ -28,7 +28,7 @@
         <!-- Implemented Interface-->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-service-utils-api</artifactId>
+            <artifactId>kapua-service-commons-utils-api</artifactId>
         </dependency>
 
         <!-- Internal Dependencies-->

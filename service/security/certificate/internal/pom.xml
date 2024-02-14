@@ -37,5 +37,9 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-service-commons-utils-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-service-commons-utils-internal</artifactId>
+        </dependency>
     </dependencies>
 </project>
