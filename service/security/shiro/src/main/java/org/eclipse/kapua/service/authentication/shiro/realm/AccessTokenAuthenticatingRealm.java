@@ -22,7 +22,6 @@ import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaParsingException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -143,8 +142,6 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
                     .map(s -> (String) s)
                     .orElseThrow(() -> new ShiroException("Missing tokenIdentifier in jwt token"));
             accessToken = KapuaSecurityUtils.doPrivileged(() -> accessTokenService.findByTokenId(tokenIdentifier));
-        } catch (KapuaParsingException e) {
-            throw new MalformedAccessTokenException();
         } catch (KapuaException ke) {
             throw new AuthenticationException();
         }

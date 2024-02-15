@@ -385,7 +385,12 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     @Override
     public AccessToken refreshAccessToken(String tokenId, String refreshToken) throws KapuaException {
         Date now = new Date();
-        AccessToken expiredAccessToken = KapuaSecurityUtils.doPrivileged(() -> findAccessToken(tokenId));
+        AccessToken expiredAccessToken;
+        try {
+            expiredAccessToken = findAccessToken(tokenId);
+        } catch (AuthenticationException e) {
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.REFRESH_ERROR, "");
+        }
         if (expiredAccessToken == null) {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.REFRESH_ERROR, "");
         } else if (expiredAccessToken.getInvalidatedOn() != null && now.after(expiredAccessToken.getInvalidatedOn())) {
