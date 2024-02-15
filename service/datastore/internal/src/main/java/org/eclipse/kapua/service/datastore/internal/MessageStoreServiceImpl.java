@@ -23,7 +23,6 @@ import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -59,12 +58,11 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceImpl.class);
 
     private MetricsDatastore metrics;
-    protected AccountService accountService;
     protected AuthorizationService authorizationService;
     protected PermissionFactory permissionFactory;
 
-    protected final Integer maxLimitValue;
     protected final Integer maxEntriesOnDelete;
+    protected final Integer maxResultWindowValue;
     protected final MessageStoreFacade messageStoreFacade;
 
     @Inject
@@ -82,8 +80,8 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
         this.authorizationService = authorizationService;
         this.metrics = metricsDatastore;
         this.messageStoreFacade = messageStoreFacade;
-        maxLimitValue = datastoreSettings.getInt(DatastoreSettingsKey.MAX_LIMIT_VALUE);
         maxEntriesOnDelete = datastoreSettings.getInt(DatastoreSettingsKey.CONFIG_MAX_ENTRIES_ON_DELETE);
+        maxResultWindowValue = datastoreSettings.getInt(DatastoreSettingsKey.MAX_RESULT_WINDOW_VALUE);
     }
 
     @Override
@@ -96,19 +94,15 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
             metrics.getMessage().inc();
             return messageStoreFacade.store(message, datastoreId, true);
         } catch (ConfigurationException e) {
-            logger.error("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ", e);
             metrics.getConfigurationError().inc();
             throw e;
         } catch (KapuaIllegalArgumentException e) {
-            logger.error("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ", e);
             metrics.getValidationError().inc();
             throw e;
         } catch (ClientCommunicationException e) {
-            logger.error("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ", e);
             metrics.getCommunicationError().inc();
             throw new DatastoreCommunicationException(datastoreId, e);
         } catch (Exception e) {
-            logger.error("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ", e);
             metrics.getGenericError().inc();
             logException(e);
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
@@ -164,8 +158,10 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
     public MessageListResult query(MessageQuery query)
             throws KapuaException {
         checkDataAccess(query.getScopeId(), Actions.read);
-        if (query.getLimit() != null) {
-            ArgumentValidator.numRange(query.getLimit(), 0, maxLimitValue, "limit");
+        if (query.getLimit() != null && query.getOffset() != null) {
+            ArgumentValidator.notNegative(query.getLimit(), "limit");
+            ArgumentValidator.notNegative(query.getOffset(), "offset");
+            ArgumentValidator.numLessThenOrEqual(query.getLimit() + query.getOffset(), maxResultWindowValue, "limit + offset");
         }
         try {
             return messageStoreFacade.query(query);

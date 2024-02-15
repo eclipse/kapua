@@ -886,13 +886,18 @@ public class DatastoreSteps extends TestBase {
     }
 
     @When("I query for the current account messages with limit {int} and offset {int} and store them as {string}")
-    public void queryMessageWithOffsetAndLimit(int limit, int offset, String lstKey) throws KapuaException {
+    public void queryMessageWithOffsetAndLimit(int limit, int offset, String lstKey) throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         MessageQuery tmpQuery = createBaseMessageQuery(account.getId(), limit);
         tmpQuery.setOffset(offset);
         tmpQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
-        MessageListResult tmpList = messageStoreService.query(tmpQuery);
-        stepData.put(lstKey, tmpList);
+        primeException();
+        try {
+            MessageListResult tmpList = messageStoreService.query(tmpQuery);
+            stepData.put(lstKey, tmpList);
+        } catch (KapuaException e) {
+            verifyException(e);
+        }
     }
 
     @When("I query for the current account clients with limit {int} and offset {int} and store them as {string}")
