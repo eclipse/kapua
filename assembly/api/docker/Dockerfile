@@ -45,6 +45,8 @@ ENV JAVA_OPTS "-Dapi.cors.origins.allowed=\${API_CORS_ORIGINS_ALLOWED} \
                -Djob.engine.client.auth.mode=access_token \
                -Dcipher.key=\${CIPHER_KEY} \
                -Dcrypto.secret.key=\${CRYPTO_SECRET_KEY} \
+               -Dauthentication.token.expire.after=\${AUTH_TOKEN_TTL} \
+               -Dauthentication.refresh.token.expire.after=\${REFRESH_AUTH_TOKEN_TTL} \
                \${JETTY_DEBUG_OPTS} \
                \${JETTY_JMX_OPTS}"
 
