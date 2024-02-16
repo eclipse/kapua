@@ -73,6 +73,7 @@ public class DockerSteps {
     private static final String LIFECYCLE_CONSUMER_IMAGE = "kapua-consumer-lifecycle";
     private static final String TELEMETRY_CONSUMER_IMAGE = "kapua-consumer-telemetry";
     private static final String AUTH_SERVICE_IMAGE = "kapua-service-authentication";
+    private static final String API_IMAGE = "kapua-api";
     private static final List<String> DEFAULT_DEPLOYMENT_CONTAINERS_NAME;
     private static final List<String> DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME;
     private static final int WAIT_COUNT = 120;//total wait time = 240 secs (120 * 2000ms)
@@ -104,6 +105,7 @@ public class DockerSteps {
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.LIFECYCLE_CONSUMER_CONTAINER_NAME);
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.AUTH_SERVICE_CONTAINER_NAME);
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.MESSAGE_BROKER_CONTAINER_NAME);
+        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.API_CONTAINER_NAME);
         DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME = new ArrayList<>();
         DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.JOB_ENGINE_CONTAINER_NAME);
         DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.EVENTS_BROKER_CONTAINER_NAME);
@@ -278,8 +280,8 @@ public class DockerSteps {
         }
     }
 
-    @Given("start rest-API container and dependencies") //TODO: insert TTL token and refresh as input parameter
-    public void startApiDockerEnvironment() throws Exception {
+    @Given("start rest-API container and dependencies with auth token TTL {string}ms and refresh token TTL {string}ms")
+    public void startApiDockerEnvironment(String tokenTTL, String refreshTokenTTL) throws Exception {
         logger.info("Starting rest-api docker environment...");
         stopFullDockerEnvironmentInternal();
         try {
@@ -301,7 +303,7 @@ public class DockerSteps {
                 this.wait(WAIT_FOR_JOB_ENGINE);
             }
 
-            startAPIContainer("Api");
+            startAPIContainer(BasicSteps.API_CONTAINER_NAME, tokenTTL, refreshTokenTTL);
             synchronized (this) {
                 this.wait(WAIT_FOR_JOB_ENGINE);
             }
@@ -393,8 +395,6 @@ public class DockerSteps {
     @Given("Stop full docker environment")
     public void stopFullDockerEnvironment() throws DockerException, InterruptedException, SQLException {
         stopFullDockerEnvironmentInternal();
-        removeContainer("Api");
-        removeContainer("/Api");
     }
 
     @Given("Stop base docker environment")
@@ -412,8 +412,6 @@ public class DockerSteps {
         removeContainers(DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME);
         printContainersNames("Remove additional containers");
         removeContainers(DEFAULT_DEPLOYMENT_CONTAINERS_NAME);
-        removeContainer("Api");
-        removeContainer("/Api");
         printContainersNames("Remove containers DONE");
         listAllImages("Stop full docker environment");
     }
@@ -521,9 +519,9 @@ public class DockerSteps {
     }
 
     @And("Start API container with name {string}")
-    public void startAPIContainer(String name) throws DockerException, InterruptedException {
+    public void startAPIContainer(String name, String tokenTTL, String refreshTokenTTL) throws DockerException, InterruptedException {
         logger.info("Starting API container...");
-        ContainerConfig dbConfig = getApiContainerConfig();
+        ContainerConfig dbConfig = getApiContainerConfig(tokenTTL, refreshTokenTTL);
         ContainerCreation dbContainerCreation = DockerUtil.getDockerClient().createContainer(dbConfig, name);
         String containerId = dbContainerCreation.id();
 
@@ -822,7 +820,7 @@ public class DockerSteps {
                 .build();
     }
 
-    private ContainerConfig getApiContainerConfig() {
+    private ContainerConfig getApiContainerConfig(String tokenTTL, String refreshTokenTTL) {
         final Map<String, List<PortBinding>> portBindings = new HashMap<>();
         addHostPort(ALL_IP, portBindings, 8080, 8081);
         addHostPort(ALL_IP, portBindings, 8443, 8443);
@@ -840,11 +838,11 @@ public class DockerSteps {
                         "CRYPTO_SECRET_KEY=kapuaTestsKey!!!",
                         "KAPUA_DISABLE_DATASTORE=false",
                         //now I set very little TTL access token to help me in the test scenarios
-                        "AUTH_TOKEN_TTL=3000",
-                        "REFRESH_AUTH_TOKEN_TTL=2000",
+                        "AUTH_TOKEN_TTL=" + tokenTTL,
+                        "REFRESH_AUTH_TOKEN_TTL=" + refreshTokenTTL,
                         "SWAGGER=true"
                 )
-                .image("kapua/kapua-api:" + KAPUA_VERSION)
+                .image("kapua/" + API_IMAGE + ":" + KAPUA_VERSION)
                 .build();
     }
 

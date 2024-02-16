@@ -142,11 +142,15 @@ public class RestClientSteps {
 
     @When("REST {string} call at {string} with JSON {string}")
     public void restCall(String method, String resource, String json) throws Exception {
+        restCallInternal(method, resource, json, true);
+    }
+
+    public void restCallInternal(String method, String resource, String json, boolean authenticateCall) throws Exception {
         // Create an instance of HttpClient
         HttpClient httpClient = HttpClient.newHttpClient();
         String host = (String) stepData.get("host");
         String port = (String) stepData.get("port");
-        String tokenId = (String) stepData.get(TOKEN_ID);
+
         resource = insertStepData(resource);
         // Define the URL you want to send the GET request to
         String url = "http://" + host + ":" + port + resource;
@@ -156,7 +160,8 @@ public class RestClientSteps {
                 .header("Accept-Language", "UTF-8")
                 .header("accept", "application/json");
 
-        if (tokenId != null) {
+        if (authenticateCall) {
+            String tokenId = (String) stepData.get(TOKEN_ID);
             baseBuilder.setHeader("Authorization", "Bearer " + tokenId);
         }
 
@@ -199,9 +204,7 @@ public class RestClientSteps {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("refreshToken", refreshToken);
         jsonObject.put("tokenId", tokenId);
-        stepData.remove(TOKEN_ID); //just to prevent the insertion of "bearer: jwt" in the next call
-        restCall("POST", resource, jsonObject.toString());
-        stepData.put(TOKEN_ID, tokenId);
+        restCallInternal("POST", resource, jsonObject.toString(), false);
     }
 
     @When("I refresh access token using refresh token {string} and jwt {string}")
@@ -215,7 +218,7 @@ public class RestClientSteps {
         refreshToken();
     }
 
-    @And("I extract {string} from the response in the key {string}")
+    @And("I extract {string} from the response and I save it in the key {string}")
     public void exctractFromResponse(String field, String key) throws JsonProcessingException {
         String response = (String) stepData.get(REST_RESPONSE);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -295,8 +298,8 @@ public class RestClientSteps {
 
     @Given("^An authenticated user$")
     public void anAuthenticationToken() throws Exception {
-        restCall("POST", "/v1/authentication/user",
-                "{\"password\": \"kapua-password\", \"username\": \"kapua-sys\"}");
+        restCallInternal("POST", "/v1/authentication/user",
+                "{\"password\": \"kapua-password\", \"username\": \"kapua-sys\"}", false);
         restResponseContainingAccessToken();
     }
 
