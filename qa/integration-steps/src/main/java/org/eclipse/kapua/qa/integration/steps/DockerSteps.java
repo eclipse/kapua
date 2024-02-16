@@ -278,7 +278,7 @@ public class DockerSteps {
         }
     }
 
-    @Given("start rest-API container and dependencies")
+    @Given("start rest-API container and dependencies") //TODO: insert TTL token and refresh as input parameter
     public void startApiDockerEnvironment() throws Exception {
         logger.info("Starting rest-api docker environment...");
         stopFullDockerEnvironmentInternal();
@@ -302,6 +302,9 @@ public class DockerSteps {
             }
 
             startAPIContainer("Api");
+            synchronized (this) {
+                this.wait(WAIT_FOR_JOB_ENGINE);
+            }
 
         } catch (Exception e) {
             logger.error("Error while starting base docker environment: {}", e.getMessage(), e);
@@ -409,6 +412,8 @@ public class DockerSteps {
         removeContainers(DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME);
         printContainersNames("Remove additional containers");
         removeContainers(DEFAULT_DEPLOYMENT_CONTAINERS_NAME);
+        removeContainer("Api");
+        removeContainer("/Api");
         printContainersNames("Remove containers DONE");
         listAllImages("Stop full docker environment");
     }
@@ -834,6 +839,9 @@ public class DockerSteps {
                 .env(
                         "CRYPTO_SECRET_KEY=kapuaTestsKey!!!",
                         "KAPUA_DISABLE_DATASTORE=false",
+                        //now I set very little TTL access token to help me in the test scenarios
+                        "AUTH_TOKEN_TTL=3000",
+                        "REFRESH_AUTH_TOKEN_TTL=2000",
                         "SWAGGER=true"
                 )
                 .image("kapua/kapua-api:" + KAPUA_VERSION)
