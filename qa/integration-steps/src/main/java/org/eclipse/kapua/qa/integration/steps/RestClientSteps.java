@@ -154,14 +154,14 @@ public class RestClientSteps {
         HttpRequest.Builder baseBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Accept-Language", "UTF-8")
-                .header("Content-Type", "application/json; charset=utf-8");
+                .header("accept", "application/json");
 
         if (tokenId != null) {
             baseBuilder.setHeader("Authorization", "Bearer " + tokenId);
         }
 
         if (method.equals("POST")) {
-            baseBuilder.setHeader("Accept", "application/json");
+            baseBuilder.setHeader("Content-Type", "application/json");
             baseBuilder.POST(HttpRequest.BodyPublishers.ofString(json));
         }
         else if (method.equals("GET")) {
