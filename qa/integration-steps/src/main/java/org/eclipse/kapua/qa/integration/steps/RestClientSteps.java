@@ -12,7 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.integration.steps;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.guice.ScenarioScoped;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -23,6 +27,7 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserListResult;
+import org.jose4j.json.internal.json_simple.JSONObject;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +38,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 
 @ScenarioScoped
@@ -41,7 +50,8 @@ public class RestClientSteps {
 
     private static final Logger logger = LoggerFactory.getLogger(RestClientSteps.class);
 
-    private static final String TOKEN_ID = "tokenId";
+    private static final String TOKEN_ID = "tokenId"; //jwt
+    private static final String REFRESH_TOKEN = "refreshToken";
     private static final String REST_RESPONSE = "restResponse";
     private static final String REST_RESPONSE_CODE = "restResponseCode";
 
@@ -130,12 +140,97 @@ public class RestClientSteps {
         }
     }
 
+    @When("REST {string} call at {string} with JSON {string}")
+    public void restCall(String method, String resource, String json) throws Exception {
+        // Create an instance of HttpClient
+        HttpClient httpClient = HttpClient.newHttpClient();
+        String host = (String) stepData.get("host");
+        String port = (String) stepData.get("port");
+        String tokenId = (String) stepData.get(TOKEN_ID);
+        resource = insertStepData(resource);
+        // Define the URL you want to send the GET request to
+        String url = "http://" + host + ":" + port + resource;
+
+        HttpRequest.Builder baseBuilder = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Accept-Language", "UTF-8")
+                .header("Content-Type", "application/json; charset=utf-8");
+
+        if (tokenId != null) {
+            baseBuilder.setHeader("Authorization", "Bearer " + tokenId);
+        }
+
+        if (method.equals("POST")) {
+            baseBuilder.setHeader("Accept", "application/json");
+            baseBuilder.POST(HttpRequest.BodyPublishers.ofString(json));
+        }
+        else if (method.equals("GET")) {
+            baseBuilder.GET();
+        }
+
+        // Create an HttpRequest object
+        HttpRequest request = baseBuilder
+                .build();
+
+        try {
+            // Send the request and retrieve the response
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // Print out the response status code
+            System.out.println("Response Code: " + response.statusCode());
+            stepData.put(REST_RESPONSE_CODE, response.statusCode());
+
+            // Print out the response body
+            System.out.println("Response Body: " + response.body());
+            stepData.put(REST_RESPONSE, response.body());
+
+        } catch (Exception e) {
+            // Handle exceptions
+            logger.error("Exception on REST POST call execution: " + resource);
+            throw e;
+        }
+    }
+
+    @When("I refresh last access token")
+    public void refreshToken() throws Exception {
+        String tokenId = (String) stepData.get(TOKEN_ID);
+        String refreshToken = (String) stepData.get(REFRESH_TOKEN);
+        String resource = "/v1/authentication/refresh";
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("refreshToken", refreshToken);
+        jsonObject.put("tokenId", tokenId);
+        stepData.remove(TOKEN_ID); //just to prevent the insertion of "bearer: jwt" in the next call
+        restCall("POST", resource, jsonObject.toString());
+        stepData.put(TOKEN_ID, tokenId);
+    }
+
+    @When("I refresh access token using refresh token {string} and jwt {string}")
+    public void refreshPreciseToken(String refreshToken, String jwt) throws Exception {
+        if (!jwt.isEmpty()) {
+            stepData.put(TOKEN_ID, jwt);
+        }
+        if (!refreshToken.isEmpty()) {
+            stepData.put(REFRESH_TOKEN, refreshToken);
+        }
+        refreshToken();
+    }
+
+    @And("I extract {string} from the response in the key {string}")
+    public void exctractFromResponse(String field, String key) throws JsonProcessingException {
+        String response = (String) stepData.get(REST_RESPONSE);
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonResponse = objectMapper.readTree(response);
+        stepData.put(key,jsonResponse.get(field).toString().replace("\"", ""));
+        String test = (String) stepData.get(key);
+    }
+
     @Then("REST response containing text {string}")
     public void restResponseContaining(String checkStr) throws Exception {
         String restResponse = (String) stepData.get(REST_RESPONSE);
         Assert.assertTrue(String.format("Response %s doesn't include %s.", restResponse, checkStr),
                 restResponse.contains(checkStr));
     }
+
 
     @Then("REST response containing Account")
     public void restResponseContainingAccount() throws Exception {
@@ -161,6 +256,7 @@ public class RestClientSteps {
         AccessToken token = XmlUtil.unmarshalJson(restResponse, AccessToken.class);
         Assert.assertTrue("Token is null.", token.getTokenId() != null);
         stepData.put(TOKEN_ID, token.getTokenId());
+        stepData.put(REFRESH_TOKEN, token.getRefreshToken());
     }
 
     @Then("REST response containing User")
@@ -199,7 +295,7 @@ public class RestClientSteps {
 
     @Given("^An authenticated user$")
     public void anAuthenticationToken() throws Exception {
-        restPostCallWithJson("/v1/authentication/user",
+        restCall("POST", "/v1/authentication/user",
                 "{\"password\": \"kapua-password\", \"username\": \"kapua-sys\"}");
         restResponseContainingAccessToken();
     }

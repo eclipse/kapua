@@ -33,6 +33,7 @@ import org.eclipse.kapua.model.config.metatype.KapuaTobject;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.config.metatype.KapuaToption;
 import org.eclipse.kapua.model.config.metatype.MetatypeXmlRegistry;
+import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundle;
 import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundles;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceComponentConfiguration;
@@ -85,6 +86,8 @@ import org.eclipse.kapua.service.device.management.packages.model.uninstall.Devi
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobListResult;
 import org.eclipse.kapua.service.job.JobXmlRegistry;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.slf4j.Logger;
@@ -191,7 +194,11 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
                     DeviceConfiguration.class,
                     DevicePackages.class,
                     DevicePackageDownloadRequest.class,
-                    DevicePackageUninstallRequest.class
+                    DevicePackageUninstallRequest.class,
+
+                    AccessToken.class,
+                    User.class,
+                    UserListResult.class
             };
             try {
                 Map<String, Object> properties = new HashMap<>(1);
