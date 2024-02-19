@@ -141,6 +141,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     private final Set<CredentialsHandler> credentialsHandlers;
     private final KapuaAuthenticationSetting kapuaAuthenticationSetting;
 
+    private final JwtConsumer jwtConsumer;
+
     @Inject
     public AuthenticationServiceShiroImpl(
             CredentialService credentialService,
@@ -175,6 +177,11 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         this.userService = userService;
         this.credentialsHandlers = credentialsHandlers;
         this.kapuaAuthenticationSetting = kapuaAuthenticationSetting;
+        this.jwtConsumer = new JwtConsumerBuilder()
+                .setSkipAllValidators()
+                .setDisableRequireSignature()
+                .setSkipSignatureVerification()
+                .build();
     }
 
     @Override
@@ -353,17 +360,11 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     }
 
     public AccessToken findAccessToken(String jwt) throws KapuaException {
-        final JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-                .setSkipAllValidators()
-                .setDisableRequireSignature()
-                .setSkipSignatureVerification()
-                .build();
-
         try {
             final JwtContext jwtContext = jwtConsumer.process(jwt);
-            final String tokenIdentified = Optional.ofNullable(jwtContext.getJwtClaims().getClaimValue(AccessTokenAttributes.TOKEN_IDENTIFIER, String.class))
+            final String tokenIdentifier = Optional.ofNullable(jwtContext.getJwtClaims().getClaimValue(AccessTokenAttributes.TOKEN_IDENTIFIER, String.class))
                     .orElseThrow(() -> new AuthenticationException());
-            return KapuaSecurityUtils.doPrivileged(() -> accessTokenService.findByTokenId(tokenIdentified));
+            return KapuaSecurityUtils.doPrivileged(() -> accessTokenService.findByTokenId(tokenIdentifier));
         } catch (InvalidJwtException | MalformedClaimException e) {
             throw new AuthenticationException();
         }
