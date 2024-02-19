@@ -33,6 +33,7 @@ import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.group.Group;
 
 import javax.inject.Inject;
+import java.util.Optional;
 
 public class PermissionMapperImpl implements PermissionMapper {
     private final DomainRegistryService domainService;
@@ -195,7 +196,7 @@ public class PermissionMapperImpl implements PermissionMapper {
                 try {
                     org.eclipse.kapua.service.authorization.domain.Domain domainDefinition = KapuaSecurityUtils.doPrivileged(() -> domainService.findByName(targetPermission.getDomain()));
 
-                    if (!domainDefinition.getGroupable()) {
+                    if (Optional.ofNullable(domainDefinition).map(d -> !d.getGroupable()).orElse(false)) {
                         this.setGroupId(null);
                     }
                 } catch (Exception e) {
