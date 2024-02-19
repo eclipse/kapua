@@ -54,6 +54,7 @@ public class RestClientSteps {
     private static final String REFRESH_TOKEN = "refreshToken";
     private static final String REST_RESPONSE = "restResponse";
     private static final String REST_RESPONSE_CODE = "restResponseCode";
+    private static final String REST_RESPONSE_HEADERS = "restResponseHeaders";
 
     /**
      * Scenario scoped step data.
@@ -145,7 +146,7 @@ public class RestClientSteps {
         restCallInternal(method, resource, json, true);
     }
 
-    public void restCallInternal(String method, String resource, String json, boolean authenticateCall) throws Exception {
+    public void restCallInternal(String method, String resource, String json, boolean authenticateCall, String... additionalHeaders) throws Exception {
         // Create an instance of HttpClient
         HttpClient httpClient = HttpClient.newHttpClient();
         String host = (String) stepData.get("host");
@@ -173,6 +174,18 @@ public class RestClientSteps {
             baseBuilder.GET();
         }
 
+        if (additionalHeaders != null) {
+            if (additionalHeaders.length % 2 != 0) {
+                throw new IllegalArgumentException("Number of additional headers must be even");
+            }
+            for (int i = 0; i < additionalHeaders.length; i += 2) {
+                String name = additionalHeaders[i];
+                String value = additionalHeaders[i + 1];
+                baseBuilder.setHeader(name, value);
+            }
+        }
+
+
         // Create an HttpRequest object
         HttpRequest request = baseBuilder
                 .build();
@@ -189,11 +202,21 @@ public class RestClientSteps {
             System.out.println("Response Body: " + response.body());
             stepData.put(REST_RESPONSE, response.body());
 
+            stepData.put(REST_RESPONSE_HEADERS, response.headers());
+
         } catch (Exception e) {
             // Handle exceptions
             logger.error("Exception on REST POST call execution: " + resource);
             throw e;
         }
+    }
+
+    @When("I try to authenticate with a cross-origin call with origin {string}")
+    public void createCustomCrossOriginCall(String origin) throws Exception {
+        restCallInternal("POST", "/v1/authentication/user",
+                "{\"password\": \"kapua-password\", \"username\": \"kapua-sys\"}", false,
+                com.google.common.net.HttpHeaders.ORIGIN, origin,
+                com.google.common.net.HttpHeaders.SEC_FETCH_SITE, "cross-site");
     }
 
     @When("I refresh last access token")
@@ -234,6 +257,18 @@ public class RestClientSteps {
                 restResponse.contains(checkStr));
     }
 
+    @Then("I expect {string} header in the response with value {string}")
+    public void restResponseHeaderContaining(String headerName,String headerValue) throws Exception {
+        java.net.http.HttpHeaders headers = (java.net.http.HttpHeaders) stepData.get(REST_RESPONSE_HEADERS);
+        String headerValueResponse = headers.firstValue(headerName).orElseThrow(() -> new Exception("The searched header is not present in the response!"));
+        Assert.assertEquals(headerValueResponse, headerValue);
+    }
+
+    @Then("I expect no {string} header in the response")
+    public void restResponseHeaderNotContaining(String headerName) {
+        java.net.http.HttpHeaders headers = (java.net.http.HttpHeaders) stepData.get(REST_RESPONSE_HEADERS);
+        Assert.assertTrue(headers.firstValue(headerName).isEmpty());
+    }
 
     @Then("REST response containing Account")
     public void restResponseContainingAccount() throws Exception {
