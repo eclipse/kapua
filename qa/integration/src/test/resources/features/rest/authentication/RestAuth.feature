@@ -14,7 +14,7 @@
 @rest
 
 Feature: REST API tests for User
-  REST API test of Kapua User API.
+  REST API tests for authentication via login-pw and access token. Refresh access token feature is also covered
 
   @setup
   Scenario: Initialize Jaxb and security context, then start rest-api container and dependencies
@@ -24,6 +24,8 @@ Feature: REST API tests for User
     And start rest-API container and dependencies with auth token TTL "3000"ms and refresh token TTL "2000"ms
 
   Scenario: Simple login with username-pw works and I can call another API endpoint without errors
+  First, the authentication via login-pw is tested.
+  Then, the access token auth. is tested trough the call to the "get user" api call using the previous generated access token
 
     Given Server with host "127.0.0.1" on port "8081"
     Given An authenticated user
@@ -31,7 +33,7 @@ Feature: REST API tests for User
     Then REST response code is 200
     Then REST response contains list of Users
 
-  Scenario: Refresh token is working properly and returns a token that I can use to login
+  Scenario: 'Refresh token' feature is working properly and returns a token that I can use to login
 
     Given Server with host "127.0.0.1" on port "8081"
     Given An authenticated user
@@ -44,7 +46,7 @@ Feature: REST API tests for User
     Then REST response contains list of Users
 
   Scenario: Refresh token, then try to call another api endpoint with the previous "refreshed", now invalidated, token
-    The call should fail because you are using an invalidated token for auth.
+    The call should fail because you are using an invalidated token for auth. when calling the "get user" api
 
     Given Server with host "127.0.0.1" on port "8081"
     Given An authenticated user
@@ -54,7 +56,7 @@ Feature: REST API tests for User
     Then REST response code is 401
     And REST response containing text "The provided access token has been invalidated in the past"
 
-  Scenario: Auth. with access token fails when I wait after the token TTL
+  Scenario: Auth. with access token fails when I wait the token TTL
 
     Given Server with host "127.0.0.1" on port "8081"
     Given An authenticated user
@@ -81,7 +83,7 @@ Feature: REST API tests for User
     Then REST response code is 401
     And REST response containing text "Error while refreshing the AccessToken"
 
-  Scenario: Refresh a token when I await the token refresh TTL
+  Scenario: Refresh a token when I wait the token refresh TTL
 
     Given Server with host "127.0.0.1" on port "8081"
     Given An authenticated user
