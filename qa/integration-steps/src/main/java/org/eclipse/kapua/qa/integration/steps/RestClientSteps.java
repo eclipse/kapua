@@ -185,7 +185,6 @@ public class RestClientSteps {
             }
         }
 
-
         // Create an HttpRequest object
         HttpRequest request = baseBuilder
                 .build();
@@ -211,12 +210,19 @@ public class RestClientSteps {
         }
     }
 
-    @When("I try to authenticate with a cross-origin call with origin {string}")
-    public void createCustomCrossOriginCall(String origin) throws Exception {
+    @When("I try to authenticate with a cross-site call with origin {string}")
+    public void createCustomCrossSiteCall(String origin) throws Exception {
         restCallInternal("POST", "/v1/authentication/user",
                 "{\"password\": \"kapua-password\", \"username\": \"kapua-sys\"}", false,
                 com.google.common.net.HttpHeaders.ORIGIN, origin,
                 com.google.common.net.HttpHeaders.SEC_FETCH_SITE, "cross-site");
+    }
+
+    @When("I try to authenticate with a same-site call")
+    public void createSameOriginCall() throws Exception {
+        restCallInternal("POST", "/v1/authentication/user",
+                "{\"password\": \"kapua-password\", \"username\": \"kapua-sys\"}", false,
+                com.google.common.net.HttpHeaders.SEC_FETCH_SITE, "same-site");
     }
 
     @When("I refresh last access token")
