@@ -15,7 +15,7 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd"
         logicalFilePath="KapuaDB/atht-newTokenIdentifier.xml">
 
     <include relativeToChangelogFile="true" file="../common-properties.xml" />
@@ -30,7 +30,7 @@
         <addUniqueConstraint tableName="atht_access_token"
                              columnNames="token_identifier"
                              constraintName="uc_token_identifier"/>
-        <addNotNullConstraint tableName="atht_access_token" columnDataType="varchar(36)" columnName="token_identifier"/>
+        <addNotNullConstraint tableName="atht_access_token" columnDataType="varchar(36)" columnName="token_identifier" constraintName="token_identifier_not_null"/>
         <createIndex tableName="atht_access_token" indexName="idx_atht_access_token_token_identifier">
             <column name="token_identifier"/>
         </createIndex>
