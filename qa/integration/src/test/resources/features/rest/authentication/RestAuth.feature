@@ -11,7 +11,7 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @env_docker_base
-@rest
+@rest_auth
 
 Feature: REST API tests for User
   REST API tests for authentication via login-pw and access token. Refresh access token feature is also covered

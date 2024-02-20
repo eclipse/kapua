@@ -302,6 +302,17 @@ jobs:
         with:
           tag: '@endpoint'
           needs-docker-images: 'true'
+  test-api-auth:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
+        with:
+          tag: '@rest_auth'
+          needs-docker-images: 'true'
   junit-tests:
     needs: build
     runs-on: ubuntu-latest
