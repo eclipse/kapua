@@ -280,8 +280,8 @@ public class DockerSteps {
         }
     }
 
-    @Given("start rest-API container and dependencies with auth token TTL {string}ms and refresh token TTL {string}ms")
-    public void startApiDockerEnvironment(String tokenTTL, String refreshTokenTTL) throws Exception {
+    @Given("start rest-API container and dependencies with auth token TTL {string}ms and refresh token TTL {string}ms and cors endpoint refresh interval {int}s")
+    public void startApiDockerEnvironment(String tokenTTL, String refreshTokenTTL, int corsEndpointRefreshInterval) throws Exception {
         logger.info("Starting rest-api docker environment...");
         stopFullDockerEnvironmentInternal();
         try {
@@ -303,7 +303,7 @@ public class DockerSteps {
                 this.wait(WAIT_FOR_JOB_ENGINE);
             }
 
-            startAPIContainer(BasicSteps.API_CONTAINER_NAME, tokenTTL, refreshTokenTTL);
+            startAPIContainer(BasicSteps.API_CONTAINER_NAME, tokenTTL, refreshTokenTTL, corsEndpointRefreshInterval);
             synchronized (this) {
                 this.wait(WAIT_FOR_JOB_ENGINE);
             }
@@ -519,9 +519,9 @@ public class DockerSteps {
     }
 
     @And("Start API container with name {string}")
-    public void startAPIContainer(String name, String tokenTTL, String refreshTokenTTL) throws DockerException, InterruptedException {
+    public void startAPIContainer(String name, String tokenTTL, String refreshTokenTTL, int corsEndpointRefreshInterval) throws DockerException, InterruptedException {
         logger.info("Starting API container...");
-        ContainerConfig dbConfig = getApiContainerConfig(tokenTTL, refreshTokenTTL);
+        ContainerConfig dbConfig = getApiContainerConfig(tokenTTL, refreshTokenTTL, corsEndpointRefreshInterval);
         ContainerCreation dbContainerCreation = DockerUtil.getDockerClient().createContainer(dbConfig, name);
         String containerId = dbContainerCreation.id();
 
@@ -820,7 +820,7 @@ public class DockerSteps {
                 .build();
     }
 
-    private ContainerConfig getApiContainerConfig(String tokenTTL, String refreshTokenTTL) {
+    private ContainerConfig getApiContainerConfig(String tokenTTL, String refreshTokenTTL, int corsEndpointRefreshInterval) {
         final Map<String, List<PortBinding>> portBindings = new HashMap<>();
         addHostPort(ALL_IP, portBindings, 8080, 8081);
         addHostPort(ALL_IP, portBindings, 8443, 8443);
@@ -840,6 +840,7 @@ public class DockerSteps {
                         //now I set very little TTL access token to help me in the test scenarios
                         "AUTH_TOKEN_TTL=" + tokenTTL,
                         "REFRESH_AUTH_TOKEN_TTL=" + refreshTokenTTL,
+                        "CORS_ENDPOINTS_REFRESH_INTERVAL=" + corsEndpointRefreshInterval,
                         "SWAGGER=true"
                 )
                 .image("kapua/" + API_IMAGE + ":" + KAPUA_VERSION)

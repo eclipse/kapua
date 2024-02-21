@@ -110,6 +110,7 @@ services:
       - SWAGGER=${KAPUA_SWAGGER_ENABLE:-true}
       - AUTH_TOKEN_TTL=${AUTH_TOKEN_TTL:-1800000}
       - REFRESH_AUTH_TOKEN_TTL=${REFRESH_AUTH_TOKEN_TTL:-18000000}
+      - CORS_ENDPOINTS_REFRESH_INTERVAL=${CORS_ENDPOINTS_REFRESH_INTERVAL:-60}
   job-engine:
     container_name: job-engine
     image: kapua/kapua-job-engine:${IMAGE_VERSION}
