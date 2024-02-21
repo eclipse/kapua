@@ -26,6 +26,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
+import org.eclipse.kapua.service.authentication.user.PasswordResetRequest;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -39,8 +40,16 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/{scopeId}/user/{userId}/credentials")
-public class UserCredentialFiltered extends AbstractKapuaResource {
+/*
+ @deprecated
+ accidentally exposed under:
+ /{scopeId}/user/{userId}/credentials
+ instead of the desired*
+ /{scopeId}/users/{userId}/credentials (notice the plural userS)
+ Remove the match with /user/ in the next release
+ */
+@Path("/{scopeId}/user{plural:|s}/{userId}/credentials")
+public class UsersCredentials extends AbstractKapuaResource {
 
     @Inject
     public CredentialService credentialService;
@@ -126,5 +135,26 @@ public class UserCredentialFiltered extends AbstractKapuaResource {
         credentialCreator.setUserId(userId);
 
         return returnCreated(credentialService.create(credentialCreator));
+    }
+
+    /**
+     * Reset the password for the specific user
+     *
+     * @param scopeId              The {@link ScopeId} of the {@link Credential} to reset.
+     * @param userId               The {@link EntityId} for which to reset the password credential.
+     * @param passwordResetRequest Request for resetting credential password
+     * @return The updated credential.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 2.0.0
+     * @deprecated since 2.0.0 - use POST POST /{scopeId}/users/{userId}/password/_reset instead (see {@link UsersCredentials})
+     */
+    @POST
+    @Path("password/_reset")
+    @Deprecated
+    public Credential unlockCredential(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("userId") EntityId userId,
+            PasswordResetRequest passwordResetRequest) throws KapuaException {
+        return credentialService.adminResetUserPassword(scopeId, userId, passwordResetRequest);
     }
 }
