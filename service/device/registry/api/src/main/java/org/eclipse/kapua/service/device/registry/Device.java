@@ -69,6 +69,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
         "customAttribute4",
         "customAttribute5",
         "extendedProperties",
+        "tamperStatus",
         "tagIds"
 }, factoryClass = DeviceXmlRegistry.class, factoryMethod = "newDevice")
 public interface Device extends KapuaUpdatableEntity {
@@ -603,4 +604,21 @@ public interface Device extends KapuaUpdatableEntity {
      * @since 1.5.0
      */
     void setExtendedProperties(List<DeviceExtendedProperty> extendedProperties);
+
+    /**
+     * Gets the tamper status.
+     *
+     * @return The tamper status.
+     * @since 2.0.0
+     */
+    @XmlElement(name = "tamperStatus")
+    String getTamperStatus();
+
+    /**
+     * Sets the tamper status.
+     *
+     * @param tamperStatus The tamper status.
+     * @since 2.0.0
+     */
+    void setTamperStatus(String tamperStatus);
 }

@@ -12,6 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.lifecycle.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
@@ -48,15 +57,6 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceExtendedProperty
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * {@link DeviceLifeCycleService} implementation.
@@ -125,6 +125,8 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
             deviceCreator.setAcceptEncoding(birthPayload.getAcceptEncoding());
 
             deviceCreator.setExtendedProperties(buildDeviceExtendedPropertyFromBirth(birthPayload.getExtendedProperties()));
+
+            deviceCreator.setTamperStatus(birthPayload.getTamperStatus());
 
             // issue #57
             deviceCreator.setConnectionId(connectionId);
@@ -212,6 +214,8 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
                 device.setAcceptEncoding(birthPayload.getAcceptEncoding());
 
                 device.setExtendedProperties(buildDeviceExtendedPropertyFromBirth(birthPayload.getExtendedProperties()));
+
+                device.setTamperStatus(birthPayload.getTamperStatus());
 
                 // issue #57
                 device.setConnectionId(connectionId);

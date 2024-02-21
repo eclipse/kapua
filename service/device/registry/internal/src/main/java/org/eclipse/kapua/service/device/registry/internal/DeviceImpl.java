@@ -12,20 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceExtendedProperty;
-import org.eclipse.kapua.service.device.registry.DeviceStatus;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
-import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImpl;
-import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
-import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImpl;
-import org.eclipse.kapua.service.tag.Taggable;
-
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
@@ -40,10 +30,20 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceExtendedProperty;
+import org.eclipse.kapua.service.device.registry.DeviceStatus;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImpl;
+import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
+import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImpl;
+import org.eclipse.kapua.service.tag.Taggable;
 
 /**
  * {@link Device} implementation.
@@ -196,6 +196,10 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "dvc_device_extended_properties", joinColumns = @JoinColumn(name = "device_id", referencedColumnName = "id"))
     private List<DeviceExtendedPropertyImpl> extendedProperties;
+
+    @Basic
+    @Column(name = "tamper_status")
+    private String tamperStatus;
 
     /**
      * Constructor
@@ -652,6 +656,16 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
         if (extendedProperties != null) {
             extendedProperties.forEach(dep -> this.extendedProperties.add(DeviceExtendedPropertyImpl.parse(dep)));
         }
+    }
+
+    @Override
+    public String getTamperStatus() {
+        return tamperStatus;
+    }
+
+    @Override
+    public void setTamperStatus(String tamperStatus) {
+        this.tamperStatus = tamperStatus;
     }
 
     @Override
