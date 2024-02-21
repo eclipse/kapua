@@ -146,6 +146,13 @@ public class RestClientSteps {
         restCallInternal(method, resource, json, true);
     }
 
+    @When("REST {string} call at {string} with JSON {string} in cross-site mode with origin {string}")
+    public void restCallCrossSite(String method, String resource, String json, String origin) throws Exception {
+        restCallInternal(method, resource, json, true,
+                com.google.common.net.HttpHeaders.ORIGIN, origin,
+                com.google.common.net.HttpHeaders.SEC_FETCH_SITE, "cross-site");
+    }
+
     public void restCallInternal(String method, String resource, String json, boolean authenticateCall, String... additionalHeaders) throws Exception {
         // Create an instance of HttpClient
         HttpClient httpClient = HttpClient.newHttpClient();
@@ -210,10 +217,10 @@ public class RestClientSteps {
         }
     }
 
-    @When("I try to authenticate with a cross-site call with origin {string}")
-    public void createCustomCrossSiteCall(String origin) throws Exception {
+    @When("I try to authenticate with a cross-site call with origin {string} using json {string}")
+    public void createCustomCrossSiteCall(String origin, String authJson) throws Exception {
         restCallInternal("POST", "/v1/authentication/user",
-                "{\"password\": \"kapua-password\", \"username\": \"kapua-sys\"}", false,
+                authJson, false,
                 com.google.common.net.HttpHeaders.ORIGIN, origin,
                 com.google.common.net.HttpHeaders.SEC_FETCH_SITE, "cross-site");
     }
