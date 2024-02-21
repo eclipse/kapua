@@ -23,7 +23,7 @@ Feature: REST API tests for User
     Given Init Jaxb Context
     And Init Security Context
     #NB: be aware that sub-sequent tests depends on the value of cors endpoint refresh interval that you set here
-    And start rest-API container and dependencies with auth token TTL "10000000"ms and refresh token TTL "20000"ms and cors endpoint refresh interval 1s
+    And start rest-API container and dependencies with auth token TTL "6000"ms and refresh token TTL "20000"ms and cors endpoint refresh interval 1s
 
   Scenario: The auth from a "same-origin" call should not present, in the response headers fields, the values that represent a "success CORS filter auth. attempt"
 
@@ -105,6 +105,24 @@ Feature: REST API tests for User
     And I expect no "Access-Control-Allow-Origin" header in the response
     And I expect no "Access-Control-Allow-Credentials" header in the response
 
+  Scenario: When authentication fails for some reason, CORS headers should still be present in the response (if origin is accepted)
+
+    Given Server with host "127.0.0.1" on port "8081"
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    When I create a CORS filter with schema "https", domain "api-sbx.everyware.io" and port 443
+    Then I wait 2 seconds
+    Given An authenticated user
+    When REST "GET" call at "/v1/_/users?offset=0&limit=50" with JSON "" in cross-site mode with origin "https://api-sbx.everyware.io"
+    Then REST response code is 200
+    And REST response contains list of Users
+    And I expect "Access-Control-Allow-Origin" header in the response with value "https://api-sbx.everyware.io"
+    And I expect "Access-Control-Allow-Credentials" header in the response with value "true"
+    #Now if I wait after token TTL the auth should fail BUT Cors headers should still be present in the response
+    Then I wait 6 seconds
+    When REST "GET" call at "/v1/_/users?offset=0&limit=50" with JSON "" in cross-site mode with origin "https://api-sbx.everyware.io"
+    Then REST response code is 401
+    And I expect "Access-Control-Allow-Origin" header in the response with value "https://api-sbx.everyware.io"
+    And I expect "Access-Control-Allow-Credentials" header in the response with value "true"
 
 
 
