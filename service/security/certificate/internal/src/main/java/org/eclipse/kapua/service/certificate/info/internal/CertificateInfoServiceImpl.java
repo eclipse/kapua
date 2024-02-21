@@ -25,7 +25,6 @@ import org.eclipse.kapua.service.certificate.info.CertificateInfoListResult;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoQuery;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoService;
 import org.eclipse.kapua.service.certificate.internal.CertificateQueryImpl;
-import org.eclipse.kapua.service.utils.KapuaEntityQueryUtil;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -35,12 +34,10 @@ import java.util.List;
 public class CertificateInfoServiceImpl implements CertificateInfoService {
 
     private final CertificateService certificateService;
-    private final KapuaEntityQueryUtil entityQueryUtil;
 
     @Inject
-    public CertificateInfoServiceImpl(CertificateService certificateService, KapuaEntityQueryUtil entityQueryUtil) {
+    public CertificateInfoServiceImpl(CertificateService certificateService) {
         this.certificateService = certificateService;
-        this.entityQueryUtil = entityQueryUtil;
     }
 
     @Override
@@ -59,11 +56,8 @@ public class CertificateInfoServiceImpl implements CertificateInfoService {
 
         CertificateQuery certificateQuery = new CertificateQueryImpl(query);
 
-        // Transform the query for the includeInherited option
-        final KapuaQuery finalQuery = entityQueryUtil.transformInheritedQuery(certificateQuery);
-
         CertificateInfoListResult publicCertificates = new CertificateInfoListResultImpl();
-        publicCertificates.addItem(certificateService.query(finalQuery).getFirstItem());
+        publicCertificates.addItem(certificateService.query(certificateQuery).getFirstItem());
 
         return publicCertificates;
     }

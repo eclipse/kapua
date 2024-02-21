@@ -12,31 +12,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.utils.internal;
 
-import javax.validation.constraints.NotNull;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountRelativeFinder;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.KapuaForwardableEntityAttributes;
-import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaForwardableEntityQuery;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.OrPredicate;
-import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.utils.KapuaEntityQueryUtil;
 
+import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
+
 /**
- * Base {@code interface} for all {@link KapuaService}s that are managing {@link KapuaNamedEntity}es.
+ * Implementation of converter between {@link KapuaForwardableEntityQuery} and {@link KapuaQuery}
  *
- * @param <E> Type of the {@link KapuaNamedEntity} being managed.
- * @since 1.0.0
+ * @since 2.0.0
  */
 public class KapuaEntityQueryUtilImpl implements KapuaEntityQueryUtil {
 
     private final AccountRelativeFinder accountRelativeFinder;
 
+    @Inject
     public KapuaEntityQueryUtilImpl(AccountRelativeFinder accountRelativeFinder) {
         this.accountRelativeFinder = accountRelativeFinder;
     }
@@ -44,7 +43,7 @@ public class KapuaEntityQueryUtilImpl implements KapuaEntityQueryUtil {
     @Override
     public KapuaQuery transformInheritedQuery(@NotNull KapuaForwardableEntityQuery query) throws KapuaException {
         // Transform only if this option is enabled
-        if(!query.getIncludeInherited()) {
+        if (!query.getIncludeInherited()) {
             return query;
         }
 
@@ -57,7 +56,7 @@ public class KapuaEntityQueryUtilImpl implements KapuaEntityQueryUtil {
         query.setScopeId(KapuaId.ANY);
         OrPredicate forwardableAncestorPreds = query.orPredicate();
 
-        for(KapuaId id : accountRelativeFinder.findParentIds(scopeId)) {
+        for (KapuaId id : accountRelativeFinder.findParentIds(scopeId)) {
             AndPredicate scopedForwardablePred = query.andPredicate(query.attributePredicate(KapuaEntityAttributes.SCOPE_ID, id));
             scopedForwardablePred = scopedForwardablePred.and(query.attributePredicate(KapuaForwardableEntityAttributes.FORWARDABLE, true));
 

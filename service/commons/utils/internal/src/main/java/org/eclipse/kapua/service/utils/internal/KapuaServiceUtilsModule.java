@@ -12,25 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.utils.internal;
 
-import javax.inject.Singleton;
-
-import org.eclipse.kapua.commons.configuration.AccountRelativeFinder;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.service.utils.KapuaEntityQueryUtil;
 
-import com.google.inject.Provides;
+import javax.inject.Singleton;
 
 public class KapuaServiceUtilsModule extends AbstractKapuaModule {
 
     @Override
     protected void configureModule() {
+        bind(KapuaEntityQueryUtil.class).to(KapuaEntityQueryUtilImpl.class).in(Singleton.class);
         // nothing to do here
     }
-
-    @Provides
-    @Singleton
-    KapuaEntityQueryUtil kapuaEntityQueryUtil(AccountRelativeFinder accountRelativeFinder) {
-        return new KapuaEntityQueryUtilImpl(accountRelativeFinder);
-    }
-
 }

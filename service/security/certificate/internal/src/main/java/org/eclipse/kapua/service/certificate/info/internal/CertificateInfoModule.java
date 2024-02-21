@@ -12,15 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.info.internal;
 
-import javax.inject.Singleton;
-
+import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.service.certificate.CertificateService;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoFactory;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoService;
-import org.eclipse.kapua.service.utils.KapuaEntityQueryUtil;
 
-import com.google.inject.Provides;
+import javax.inject.Singleton;
 
 public class CertificateInfoModule extends AbstractKapuaModule {
     @Override
@@ -32,12 +30,10 @@ public class CertificateInfoModule extends AbstractKapuaModule {
     @Provides
     @Singleton
     CertificateInfoService certificateInfoService(
-            CertificateService certificateService,
-            KapuaEntityQueryUtil entityQueryUtil) {
+            CertificateService certificateService) {
 
         return new CertificateInfoServiceImpl(
-                certificateService,
-                entityQueryUtil
+                certificateService
         );
     }
 }
