@@ -24,9 +24,24 @@ components:
       required: true
   schemas:
     jobTrigger:
+      description: Trigger for the Job
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaNamedEntity'
         - type: object
+          properties:
+            startsOn:
+              type: string
+              format: 'date-time'
+            endsOn:
+              type: string
+              format: 'date-time'
+            triggerDefinitionId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            triggerProperties:
+              type: array
+              items:
+                $ref: '../triggerDefinition/triggerDefinition.yaml#/components/schemas/triggerProperty'
           example:
             type: trigger
             id: OlIPEFS4MYU
@@ -51,6 +66,7 @@ components:
                 propertyType: org.eclipse.kapua.model.id.KapuaId
                 propertyValue: AQ
     jobTriggerCreator:
+      description: An object that contains the informations needed to create a Job Trigger
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaNamedEntityCreator'
         - type: object
@@ -78,6 +94,7 @@ components:
             propertyType: java.lang.String
             propertyValue: '* * * * * ? *'
     jobTriggerListResult:
+      description: List of Triggers for a Job
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
         - type: object
@@ -152,4 +169,3 @@ components:
                   - name: scopeId
                     propertyType: org.eclipse.kapua.model.id.KapuaId
                     propertyValue: AQ
-
