@@ -145,7 +145,14 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
         } else {
             if (deviceConfigurationStoreService.isServiceEnabled(scopeId) &&
                     deviceConfigurationStoreService.isApplicationEnabled(scopeId, deviceId)) {
-                return deviceConfigurationStoreService.getConfigurations(scopeId, deviceId);
+                if (configurationComponentPid == null) {
+                    return deviceConfigurationStoreService.getConfigurations(scopeId, deviceId);
+                } else {
+                    DeviceConfiguration deviceConfigurationReturned = deviceConfigurationFactory.newConfigurationInstance();
+                    DeviceComponentConfiguration componentConfiguration = deviceConfigurationStoreService.getConfigurations(scopeId, deviceId, configurationComponentPid);
+                    deviceConfigurationReturned.addComponentConfiguration(componentConfiguration);
+                    return deviceConfigurationReturned;
+                }
             } else {
                 throw new DeviceNeverConnectedException(deviceId);
             }
