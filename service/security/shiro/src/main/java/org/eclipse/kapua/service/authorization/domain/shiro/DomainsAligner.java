@@ -13,8 +13,8 @@
 package org.eclipse.kapua.service.authorization.domain.shiro;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.populators.DataPopulator;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.locator.initializers.KapuaInitializingMethod;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionRepository;
@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class DomainsAligner implements DataPopulator {
+public class DomainsAligner {
     private final TxManager txManager;
     private final DomainRepository domainRepository;
     private final AccessPermissionRepository accessPermissionRepository;
@@ -53,7 +53,7 @@ public class DomainsAligner implements DataPopulator {
         this.knownDomains = knownDomains;
     }
 
-    @Override
+    @KapuaInitializingMethod(priority = 20)
     public void populate() {
         logger.info("Domain alignment commencing. Found {} domain declarations in wiring", knownDomains.size());
         final Map<String, Domain> knownDomainsByName = knownDomains

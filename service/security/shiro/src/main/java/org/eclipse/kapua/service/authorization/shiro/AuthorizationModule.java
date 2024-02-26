@@ -31,7 +31,6 @@ import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.jpa.NamedCacheFactory;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.model.domains.Domains;
-import org.eclipse.kapua.commons.populators.DataPopulator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
@@ -178,8 +177,9 @@ public class AuthorizationModule extends AbstractKapuaModule {
                 eventModuleName);
     }
 
-    @ProvidesIntoSet
-    DataPopulator domainsPopulator(
+    @Provides
+    @Singleton
+    DomainsAligner domainsAligner(
             KapuaJpaTxManagerFactory jpaTxManagerFactory,
             DomainRepository domainRepository,
             AccessPermissionRepository accessPermissionRepository,
