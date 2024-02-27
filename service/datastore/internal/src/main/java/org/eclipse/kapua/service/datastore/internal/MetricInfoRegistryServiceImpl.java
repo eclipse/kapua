@@ -65,12 +65,14 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
     private static final Logger LOG = LoggerFactory.getLogger(MetricInfoRegistryServiceImpl.class);
 
     private final StorablePredicateFactory storablePredicateFactory;
+
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final MetricInfoRegistryFacade metricInfoRegistryFacade;
     private final DatastorePredicateFactory datastorePredicateFactory;
     private final MessageRepository messageRepository;
     private final DatastoreSettings datastoreSettings;
+    protected final Integer maxResultWindowValue;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -91,6 +93,7 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
         this.metricInfoRegistryFacade = metricInfoRegistryFacade;
         this.messageRepository = messageRepository;
         this.datastoreSettings = datastoreSettings;
+        maxResultWindowValue = datastoreSettings.getInt(DatastoreSettingsKey.MAX_RESULT_WINDOW_VALUE);
     }
 
     @Override
@@ -132,6 +135,12 @@ public class MetricInfoRegistryServiceImpl implements MetricInfoRegistryService 
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
         checkDataAccess(query.getScopeId(), Actions.read);
+        if (query.getLimit() != null && query.getOffset() != null) {
+            ArgumentValidator.notNegative(query.getLimit(), "limit");
+            ArgumentValidator.notNegative(query.getOffset(), "offset");
+            ArgumentValidator.numLessThenOrEqual(query.getLimit() + query.getOffset(), maxResultWindowValue, "limit + offset");
+        }
+
         try {
             MetricInfoListResult result = metricInfoRegistryFacade.query(query);
             if (result != null && query.getFetchAttributes().contains(MetricInfoField.TIMESTAMP_FULL.field())) {

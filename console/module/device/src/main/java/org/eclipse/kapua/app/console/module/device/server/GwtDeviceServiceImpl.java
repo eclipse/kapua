@@ -12,6 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.server;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
+
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
@@ -71,12 +77,6 @@ import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
 
 /**
  * The server side implementation of the Device RPC service.
@@ -254,6 +254,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 pairs.add(new GwtGroupedNVPair(DEV_HW, "devModelId", device.getModelId()));
                 pairs.add(new GwtGroupedNVPair(DEV_HW, "devModelName", device.getModelName()));
                 pairs.add(new GwtGroupedNVPair(DEV_HW, "devSerialNumber", device.getSerialNumber()));
+                pairs.add(new GwtGroupedNVPair(DEV_HW, "devTamperStatus", device.getTamperStatus()));
 
                 pairs.add(new GwtGroupedNVPair(DEV_SW, "devFirmwareVersion", device.getFirmwareVersion()));
                 pairs.add(new GwtGroupedNVPair(DEV_SW, "devBiosVersion", device.getBiosVersion()));

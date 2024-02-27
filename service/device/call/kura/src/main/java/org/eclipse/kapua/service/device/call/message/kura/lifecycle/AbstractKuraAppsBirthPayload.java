@@ -240,6 +240,14 @@ public class AbstractKuraAppsBirthPayload extends AbstractKuraLifecyclePayload i
      * @since 1.0.0
      */
     protected static final String DEFAULT_APPLICATION_FRAMEWORK = "Kura";
+
+    /**
+     * {@link Device} tamper status.
+     *
+     * @since 2.0.0
+     */
+    protected static final String TAMPER_STATUS = "tamper_status";
+
     private static final long serialVersionUID = 5490945197263668115L;
 
 
@@ -283,6 +291,7 @@ public class AbstractKuraAppsBirthPayload extends AbstractKuraLifecyclePayload i
      * @param modemImsi                   {@link Device} modem IMSI.
      * @param modemIccid                  {@link Device} modem ICCID.
      * @param extendedProperties          {@link Device} extended properties.
+     * @param tamperStatus                {@link Device} tamper status.
      * @since 1.0.0
      */
     public AbstractKuraAppsBirthPayload(String uptime,
@@ -312,7 +321,8 @@ public class AbstractKuraAppsBirthPayload extends AbstractKuraLifecyclePayload i
                                         String modemImei,
                                         String modemImsi,
                                         String modemIccid,
-                                        String extendedProperties) {
+                                        String extendedProperties,
+                                        String tamperStatus) {
         super();
 
         if (uptime != null) {
@@ -398,6 +408,9 @@ public class AbstractKuraAppsBirthPayload extends AbstractKuraLifecyclePayload i
         }
         if (extendedProperties != null) {
             getMetrics().put(EXTENDED_PROPERTIES, extendedProperties);
+        }
+        if (tamperStatus != null) {
+            getMetrics().put(TAMPER_STATUS, tamperStatus);
         }
     }
 
@@ -711,6 +724,16 @@ public class AbstractKuraAppsBirthPayload extends AbstractKuraLifecyclePayload i
      */
     public String getExtendedProperties() {
         return (String) getMetrics().get(EXTENDED_PROPERTIES);
+    }
+
+    /**
+     * Gets the {@link Device} tamper status.
+     *
+     * @return The {@link Device} extended properties.
+     * @since 2.0.0
+     */
+    public String getTamperStatus() {
+        return (String) getMetrics().get(TAMPER_STATUS);
     }
 
 

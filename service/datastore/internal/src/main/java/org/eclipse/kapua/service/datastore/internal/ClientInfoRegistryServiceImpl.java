@@ -63,7 +63,7 @@ import java.util.Optional;
 public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClientInfoRegistryServiceImpl.class);
-
+    protected final Integer maxResultWindowValue;
     private final StorablePredicateFactory storablePredicateFactory;
     private final AccountService accountService;
     private final AuthorizationService authorizationService;
@@ -97,6 +97,7 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
         this.clientInfoRegistryFacade = clientInfoRegistryFacade;
         this.messageRepository = messageRepository;
         this.datastoreSettings = datastoreSettings;
+        this.maxResultWindowValue = datastoreSettings.getInt(DatastoreSettingsKey.MAX_RESULT_WINDOW_VALUE);
     }
 
     @Override
@@ -135,8 +136,13 @@ public class ClientInfoRegistryServiceImpl implements ClientInfoRegistryService 
 
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
-
+        if (query.getLimit() != null && query.getOffset() != null) {
+            ArgumentValidator.notNegative(query.getLimit(), "limit");
+            ArgumentValidator.notNegative(query.getOffset(), "offset");
+            ArgumentValidator.numLessThenOrEqual(query.getLimit() + query.getOffset(), maxResultWindowValue, "limit + offset");
+        }
         checkAccess(query.getScopeId(), Actions.read);
+
         try {
             ClientInfoListResult result = clientInfoRegistryFacade.query(query);
             if (result != null && query.getFetchAttributes().contains(ClientInfoField.TIMESTAMP.field())) {

@@ -40,7 +40,7 @@ public class MessageListener extends ClientMessageListener {
 
     protected static Logger logger = LoggerFactory.getLogger(MessageListener.class);
 
-    private static final Map<String, ResponseContainer<?>> CALLBACKS = new ConcurrentHashMap<>();//is not needed the synchronization
+    private final Map<String, ResponseContainer<?>> callbacks;//is not needed the synchronization
     private static ObjectMapper mapper = new ObjectMapper();
     private static ObjectReader reader = mapper.reader();//check if it's thread safe
 
@@ -48,7 +48,9 @@ public class MessageListener extends ClientMessageListener {
 
     @Inject
     public MessageListener(MetricsClientSecurity metricsClientSecurity) {
+        logger.debug("Starting MessageListener");
         this.metrics = metricsClientSecurity;
+        callbacks = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -75,7 +77,8 @@ public class MessageListener extends ClientMessageListener {
     }
 
     private <R extends Response> void updateResponseContainer(R response) throws JMSException, IOException {
-        ResponseContainer<R> responseContainer = (ResponseContainer<R>) CALLBACKS.get(response.getRequestId());
+        logger.debug("update callback {} on instance {}, map size: {}", response.getRequestId(), this, callbacks.size());
+        ResponseContainer<R> responseContainer = (ResponseContainer<R>) callbacks.get(response.getRequestId());
         if (responseContainer == null) {
             //internal error
             logger.error("Cannot find request container for requestId {}", response.getRequestId());
@@ -99,11 +102,13 @@ public class MessageListener extends ClientMessageListener {
     }
 
     public void registerCallback(String requestId, ResponseContainer<?> responseContainer) {
-        CALLBACKS.put(requestId, responseContainer);
+        callbacks.put(requestId, responseContainer);
+        logger.debug("registered callback {} on instance {}, map size: {}", requestId, this, callbacks.size());
     }
 
     public void removeCallback(String requestId) {
-        CALLBACKS.remove(requestId);
+        callbacks.remove(requestId);
+        logger.debug("removed callback {} from instance {}, map size: {}", requestId, this, callbacks.size());
     }
 
 }

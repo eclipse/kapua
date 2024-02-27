@@ -52,6 +52,7 @@ public class KapuaBirthMessageTest {
             "~~osVersion=osV-1" +
             "~~partNumber=part-1" +
             "~~serialNumber=SN-123" +
+            "~~tamperStatus=NOT_TAMPERED" +
             "~~totalMemory=4" +
             "~~uptime=12";
 
@@ -165,7 +166,8 @@ public class KapuaBirthMessageTest {
                         "      \"propertyName\": \"propertyValue\"\n" +
                         "    }\n" +
                         "  }\n" +
-                        "}"
+                        "}",
+                "NOT_TAMPERED"
         );
     }
 }

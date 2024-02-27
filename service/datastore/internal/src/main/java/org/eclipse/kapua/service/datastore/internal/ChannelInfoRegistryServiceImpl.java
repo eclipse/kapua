@@ -62,15 +62,14 @@ import java.util.Optional;
 public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ChannelInfoRegistryServiceImpl.class);
-
     private final DatastorePredicateFactory datastorePredicateFactory;
+    protected final Integer maxResultWindowValue;
     private final AccountService accountService;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final ChannelInfoRegistryFacade channelInfoRegistryFacade;
     private final MessageRepository messageRepository;
     private final DatastoreSettings datastoreSettings;
-
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
 
@@ -89,12 +88,13 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
             ChannelInfoRegistryFacade channelInfoRegistryFacade,
             DatastoreSettings datastoreSettings) {
         this.datastorePredicateFactory = datastorePredicateFactory;
-        this.accountService = accountService;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.messageRepository = messageStoreService;
         this.channelInfoRegistryFacade = channelInfoRegistryFacade;
         this.datastoreSettings = datastoreSettings;
+        this.accountService = accountService;
+        this.maxResultWindowValue = datastoreSettings.getInt(DatastoreSettingsKey.MAX_RESULT_WINDOW_VALUE);
     }
 
     @Override
@@ -134,8 +134,13 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
 
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
-
         checkDataAccess(query.getScopeId(), Actions.read);
+        if (query.getLimit() != null && query.getOffset() != null) {
+            ArgumentValidator.notNegative(query.getLimit(), "limit");
+            ArgumentValidator.notNegative(query.getOffset(), "offset");
+            ArgumentValidator.numLessThenOrEqual(query.getLimit() + query.getOffset(), maxResultWindowValue, "limit + offset");
+        }
+
         try {
             ChannelInfoListResult result = channelInfoRegistryFacade.query(query);
             if (result != null && query.getFetchAttributes().contains(ChannelInfoField.TIMESTAMP.field())) {

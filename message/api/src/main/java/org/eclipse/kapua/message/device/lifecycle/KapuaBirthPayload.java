@@ -498,4 +498,20 @@ public interface KapuaBirthPayload extends KapuaLifecyclePayload {
      * @since 1.5.0
      */
     void setExtendedProperties(String extendedProperties);
+
+    /**
+     * Gets the tamper status
+     *
+     * @return The tamper status.
+     * @since 2.0.0
+     */
+    String getTamperStatus();
+
+    /**
+     * Sets the tamper status.
+     *
+     * @param tamperStatus The tamper status.
+     * @since 1.5.0
+     */
+    void setTamperStatus(String tamperStatus);
 }

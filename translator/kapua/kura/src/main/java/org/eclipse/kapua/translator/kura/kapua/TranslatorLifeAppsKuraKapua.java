@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
@@ -31,8 +33,6 @@ import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
-
-import javax.inject.Inject;
 
 /**
  * {@link Translator} implementation from {@link KuraAppsMessage} to {@link KapuaAppsMessage}
@@ -117,7 +117,8 @@ public class TranslatorLifeAppsKuraKapua extends Translator<KuraAppsMessage, Kap
                 kuraAppsPayload.getModemImei(),
                 kuraAppsPayload.getModemImsi(),
                 kuraAppsPayload.getModemIccid(),
-                kuraAppsPayload.getExtendedProperties());
+                kuraAppsPayload.getExtendedProperties(),
+                kuraAppsPayload.getTamperStatus());
     }
 
     @Override

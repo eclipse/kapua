@@ -73,6 +73,7 @@ paths:
                   groupName: Hardware Info
                   name: CPU Cores
                   value: 4
+              tamperStatus: NOT_TAMPERED
               tagIds: [ ]
         required: true
       responses:

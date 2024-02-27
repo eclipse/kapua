@@ -61,6 +61,7 @@ public class DeviceCreatorImpl extends AbstractKapuaUpdatableEntityCreator<Devic
     private String customAttribute4;
     private String customAttribute5;
     private List<DeviceExtendedProperty> extendedProperties;
+    private String tamperStatus;
     private Set<KapuaId> tagIds;
 
     /**
@@ -360,6 +361,16 @@ public class DeviceCreatorImpl extends AbstractKapuaUpdatableEntityCreator<Devic
     @Override
     public void setExtendedProperties(List<DeviceExtendedProperty> extendedProperties) {
         this.extendedProperties = extendedProperties;
+    }
+
+    @Override
+    public String getTamperStatus() {
+        return tamperStatus;
+    }
+
+    @Override
+    public void setTamperStatus(String tamperStatus) {
+        this.tamperStatus = tamperStatus;
     }
 
     @Override

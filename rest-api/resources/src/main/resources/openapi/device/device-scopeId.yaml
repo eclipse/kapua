@@ -94,6 +94,7 @@ paths:
                         connectionIp: 127.0.0.1
                         applicationIdentifiers: heaterPROV-V2DEPLOY-V2VPNCLIENT-V2CONF-V1CERT-V1ASSET-V1CMD-V1
                         acceptEncoding: gzip
+                        tamperStatus: NOT_TAMPERED
                         tagIds: []
                 with-fetch-attributes:
                   value:
@@ -158,6 +159,7 @@ paths:
                           connectionIp: 127.0.0.1
                           applicationIdentifiers: heaterPROV-V2DEPLOY-V2VPNCLIENT-V2CONF-V1CERT-V1ASSET-V1CMD-V1
                           acceptEncoding: gzip
+                          tamperStatus: NOT_TAMPERED
                           tagIds: []
 
         401:
