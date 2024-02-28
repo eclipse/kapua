@@ -1,7 +1,7 @@
 openapi: 3.0.3
 
 info:
-  title: Eclipse Kapua REST API - MfaOptions
+  title: Eclipse Kapua REST API - User MFA
   version: '1.0'
   contact:
     name: Eclipse Kapua Dev Team
@@ -12,17 +12,14 @@ info:
     url: https://www.eclipse.org/legal/epl-2.0
 
 paths:
-  /{scopeId}/users/{userId}/mfa/disableTrust:
+  /{scopeId}/user/mfa/disableTrust:
     delete:
-      deprecated: true
-      description: This resource is deprecated and will be removed in future releases. Please use DELETE /{scopeId}/user/mfa/disableTrust instead.
       tags:
         - User - Mfa
       summary: Disable trusted machine for a MfaOption
-      operationId: userMfaOptionDisableTrust
+      operationId: mfaOptionDisableTrust
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
-        - $ref: './user.yaml#/components/parameters/userId'
       responses:
         204:
           description: The trusted machine has been disabled for the User

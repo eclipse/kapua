@@ -29,11 +29,6 @@ import javax.inject.Singleton;
 public class MfaOptionFactoryImpl implements MfaOptionFactory {
 
     @Override
-    public MfaOptionCreatorImpl newCreator(KapuaId scopeId, KapuaId userId, String mfaSecretKey) {
-        return new MfaOptionCreatorImpl(scopeId, userId, mfaSecretKey);
-    }
-
-    @Override
     public MfaOptionListResult newListResult() {
         return new MfaOptionListResultImpl();
     }
@@ -41,11 +36,6 @@ public class MfaOptionFactoryImpl implements MfaOptionFactory {
     @Override
     public MfaOption newEntity(KapuaId scopeId) {
         return new MfaOptionImpl(scopeId);
-    }
-
-    @Override
-    public MfaOption newMfaOption(KapuaId scopeId, KapuaId userId, String mfaSecretKey) {
-        return new MfaOptionImpl(scopeId, userId, mfaSecretKey);
     }
 
     @Override
@@ -65,5 +55,12 @@ public class MfaOptionFactoryImpl implements MfaOptionFactory {
         } catch (Exception e) {
             throw new KapuaEntityCloneException(e, MfaOption.TYPE, mfaOption);
         }
+    }
+
+    @Override
+    public MfaOptionCreator newCreator(KapuaId scopeId, KapuaId userId) {
+        final MfaOptionCreatorImpl res = new MfaOptionCreatorImpl(scopeId);
+        res.setUserId(userId);
+        return res;
     }
 }

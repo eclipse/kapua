@@ -1,28 +1,22 @@
 openapi: 3.0.3
 
 info:
-  title: Eclipse Kapua REST API - MfaOptions
+  title: Everyware Cloud REST API - User Credentials
   version: '1.0'
   contact:
-    name: Eclipse Kapua Dev Team
-    url: https://eclipse.org/kapua
-    email: kapua-dev@eclipse.org
-  license:
-    name: Eclipse Public License 2.0
-    url: https://www.eclipse.org/legal/epl-2.0
+    name: Eurotech
+    url: https://www.eurotech.com
+
 
 paths:
-  /{scopeId}/users/{userId}/mfa:
+  /{scopeId}/user/mfa:
     get:
-      deprecated: true
-      description: This resource is deprecated and will be removed in future releases. Please use GET /{scopeId}/user/mfa instead.
       tags:
         - User - Mfa
       summary: Get the MfaOption of this User
-      operationId: userMfaOptionGet
+      operationId: mfaOptionGet
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
-        - $ref: './user.yaml#/components/parameters/userId'
       responses:
         200:
           description: The details of the desired MfaOption
@@ -39,15 +33,12 @@ paths:
         500:
           $ref: '../openapi.yaml#/components/responses/kapuaError'
     post:
-      deprecated: true
-      description: This resource is deprecated and will be removed in future releases. Please use POST /{scopeId}/user/mfa instead.
       tags:
         - User - Mfa
-      summary: Create a new MfaOption
-      operationId: userMfaOptionCreate
+      summary: Activates MFA for the current user
+      operationId: mfaOptionCreate
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
-        - $ref: './user.yaml#/components/parameters/userId'
       responses:
         201:
           description: The MfaOption that has just been created
@@ -64,15 +55,12 @@ paths:
         500:
           $ref: '../openapi.yaml#/components/responses/kapuaError'
     delete:
-      deprecated: true
-      description: This resource is deprecated and will be removed in future releases. Please use DELETE /{scopeId}/user/mfa instead.
       tags:
         - User - Mfa
       summary: Delete a single MfaOption
-      operationId: userMfaOptionDelete
+      operationId: mfaOptionDelete
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
-        - $ref: './user.yaml#/components/parameters/userId'
       responses:
         204:
           description: The MfaOption has been deleted

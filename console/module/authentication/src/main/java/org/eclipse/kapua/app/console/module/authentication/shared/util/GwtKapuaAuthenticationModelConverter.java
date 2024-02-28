@@ -153,7 +153,7 @@ public class GwtKapuaAuthenticationModelConverter {
     public static MfaOptionCreator convertMfaCredentialOptionsCreator(GwtMfaCredentialOptionsCreator gwtMfaCredentialOptionsCreator) {
         KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtMfaCredentialOptionsCreator.getScopeId());
         KapuaId userId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtMfaCredentialOptionsCreator.getUserId());
-        return MFA_OPTION_FACTORY.newCreator(scopeId, userId, "authKey");
+        return MFA_OPTION_FACTORY.newCreator(scopeId, userId);
     }
 
 }

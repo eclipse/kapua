@@ -82,18 +82,12 @@ public class ScratchCodeImplTest {
     public void scratchCodeImplScratchCodeParameterTest() throws KapuaException {
         Mockito.when(scratchCode.getCode()).thenReturn("code");
         Mockito.when(scratchCode.getMfaOptionId()).thenReturn(KapuaId.ONE);
-        Mockito.when(scratchCode.getModifiedBy()).thenReturn(KapuaId.ONE);
-        Mockito.when(scratchCode.getModifiedOn()).thenReturn(modifiedOn);
-        Mockito.when(scratchCode.getOptlock()).thenReturn(10);
 
         ScratchCodeImpl scratchCodeImpl = new ScratchCodeImpl(scratchCode);
 
         Assert.assertNull("Null expected.", scratchCodeImpl.getScopeId());
         Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, scratchCodeImpl.getMfaOptionId());
         Assert.assertEquals("Expected and actual values should be the same.", "code", scratchCodeImpl.getCode());
-        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, scratchCodeImpl.getModifiedBy());
-        Assert.assertEquals("Expected and actual values should be the same.", modifiedOn, scratchCodeImpl.getModifiedOn());
-        Assert.assertEquals("Expected and actual values should be the same.", 10, scratchCodeImpl.getOptlock());
     }
 
 

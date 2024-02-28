@@ -17,8 +17,9 @@ paths:
       tags:
         - Authentication
       summary: MFA Login - User, Password and authenticationCode/trustKey
-      description: This resoruce is deprecated and will be removed in future releases. Please make use of /authentication/user and properties in UsernamePasswordCredentials.
+      description: This resource is deprecated and will be removed in future releases. Please make use of /authentication/user and properties in UsernamePasswordCredentials.
       operationId: authenticationMfaUser
+      deprecated: true
       parameters:
         - name: enableTrust
           in: query

@@ -30,6 +30,7 @@ import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
+import org.eclipse.kapua.commons.util.qr.QRCodeBuilder;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
@@ -218,13 +219,13 @@ public class AuthenticationModule extends AbstractKapuaModule {
             MfaOptionRepository mfaOptionRepository,
             AccountService accountService,
             ScratchCodeRepository scratchCodeRepository,
-            ScratchCodeFactory scratchCodeFactory,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             UserService userService,
             KapuaJpaTxManagerFactory jpaTxManagerFactory,
             KapuaAuthenticationSetting kapuaAuthenticationSetting,
-            AuthenticationUtils authenticationUtils) {
+            AuthenticationUtils authenticationUtils,
+            QRCodeBuilder qrCodeBuilder) {
         int trustKeyDuration = kapuaAuthenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TRUST_KEY_DURATION);
 
         return new MfaOptionServiceImpl(
@@ -234,11 +235,11 @@ public class AuthenticationModule extends AbstractKapuaModule {
                 mfaOptionRepository,
                 accountService,
                 scratchCodeRepository,
-                scratchCodeFactory,
                 authorizationService,
                 permissionFactory,
                 userService,
-                authenticationUtils
+                authenticationUtils,
+                qrCodeBuilder
         );
     }
 
@@ -248,16 +249,13 @@ public class AuthenticationModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             ScratchCodeRepository scratchCodeRepository,
-            ScratchCodeFactory scratchCodeFactory,
             KapuaJpaTxManagerFactory jpaTxManagerFactory,
             AuthenticationUtils authenticationUtils) {
         return new ScratchCodeServiceImpl(
                 authorizationService,
                 permissionFactory,
                 jpaTxManagerFactory.create("kapua-authentication"),
-                scratchCodeRepository,
-                scratchCodeFactory,
-                authenticationUtils);
+                scratchCodeRepository);
     }
 
     @Provides

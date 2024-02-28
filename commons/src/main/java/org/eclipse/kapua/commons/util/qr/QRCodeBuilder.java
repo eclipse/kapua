@@ -10,15 +10,10 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.credential.mfa;
+package org.eclipse.kapua.commons.util.qr;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
+import java.net.URI;
 
-/**
- * {@link ScratchCode} predicates used to build query predicates.
- */
-public class ScratchCodeAttributes extends KapuaUpdatableEntityAttributes {
-
-    public static final String MFA_OPTION_ID = "mfaOptionId";
-    public static final String CODE = "scratchCode";
+public interface QRCodeBuilder {
+    String generateQRCode(URI uri);
 }
