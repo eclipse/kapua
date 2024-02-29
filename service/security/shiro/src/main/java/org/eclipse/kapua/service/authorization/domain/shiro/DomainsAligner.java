@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -42,7 +43,8 @@ public class DomainsAligner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
-    public DomainsAligner(TxManager txManager,
+    public DomainsAligner(@Named("authorizationTxManager")
+                          TxManager txManager,
                           DomainRepository domainRepository,
                           AccessPermissionRepository accessPermissionRepository, RolePermissionRepository rolePermissionRepository,
                           Set<Domain> knownDomains) {
