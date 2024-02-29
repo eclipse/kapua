@@ -1835,8 +1835,7 @@ public class DatastoreSteps extends TestBase {
 
         primeException();
         try {
-            String[] indexes = DatastoreUtils.convertToDataIndexes(getDataIndexesByAccount(getCurrentScopeId()), KapuaDateUtils.parseDate(fromDate).toInstant(),
-                    KapuaDateUtils.parseDate(toDate).toInstant());
+            String[] indexes = DatastoreUtils.convertToDataIndexes(getDataIndexesByAccount(getCurrentScopeId()), KapuaDateUtils.parseDate(fromDate).toInstant(), KapuaDateUtils.parseDate(toDate).toInstant(), null);
             elasticsearchClient.deleteIndexes(indexes);
         } catch (Exception ex) {
             verifyException(ex);

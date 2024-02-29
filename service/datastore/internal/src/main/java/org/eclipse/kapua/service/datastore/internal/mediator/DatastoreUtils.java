@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
@@ -337,21 +338,32 @@ public class DatastoreUtils {
      * Return the list of the data indexes between start and windowEnd instant by scope id.
      * Only the indexes that will be *FULLY* included in the list (i.e. with a starting date ON OR AFTER the window start AND
      * the end date ON OR BEFORE the window end will be returned
+     * Only indexes matching Kapua data index name pattern will be inserted inside the result list, namely this format:
+     *
+     * [<prefix>-]-data-message-YYYY-ww
+     * or
+     * [<prefix>-]-data-message-YYYY-ww-ee
+     * or
+     * [<prefix>-]-data-message-YYYY-ww-ee-HH
      *
      * @param indexes
      * @param windowStart
      * @param windowEnd
+     * @param scopeId
      * @return The list of the data indexes between start and end
      * @throws DatastoreException
      */
-    public static String[] convertToDataIndexes(@NotNull String[] indexes, Instant windowStart, Instant windowEnd) throws DatastoreException {
+    public static String[] convertToDataIndexes(@NotNull String[] indexes, Instant windowStart, Instant windowEnd, KapuaId scopeId) throws DatastoreException {
+        boolean skipTemporalValidation = false;
         if (windowStart == null && windowEnd == null) {
-            return indexes;
+            skipTemporalValidation = true;
         }
-
         List<String> result = new ArrayList<>();
         for (String index : indexes) {
             if (index == null) {
+                continue;
+            }
+            if (scopeId != null && (!validatePrefixIndex(index, scopeId))) {
                 continue;
             }
             String strippedIndex = stripPrefixAndAccount(index);
@@ -380,9 +392,18 @@ public class DatastoreUtils {
                     indexWidth = 1;
                     break;
             }
-
+            TemporalAccessor temporalAccessor;
             try {
-                TemporalAccessor temporalAccessor = formatter.parse(strippedIndex);
+                temporalAccessor = formatter.parse(strippedIndex);
+            } catch (DateTimeParseException e) {
+                //unable to parse...the format is not right so don't add this index into result-set
+                continue;
+            }
+            if (skipTemporalValidation) { //this index passed format validation...proceed to next index
+                result.add(index);
+                continue;
+            }
+            try {
                 Instant indexStart = LocalDateTime.of(
                         temporalAccessor.get(ChronoField.YEAR),
                         temporalAccessor.get(ChronoField.MONTH_OF_YEAR),
@@ -403,6 +424,11 @@ public class DatastoreUtils {
             }
         }
         return result.toArray(new String[0]);
+    }
+
+    private static boolean validatePrefixIndex(@NotNull String index,@NotNull KapuaId scopeId) {
+        String genericIndexFormat = getDataIndexName(scopeId);
+        return index.startsWith(genericIndexFormat.substring(0, genericIndexFormat.length() - 1));
     }
 
     private static boolean isIndexFullyAfterInstant(@NotNull Instant indexStart, @NotNull Instant indexEnd, @NotNull Instant checkpoint) {
