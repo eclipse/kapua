@@ -244,7 +244,7 @@ public class Users extends AbstractKapuaResource {
      * @return The newly created {@link MfaOption} object.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.4.0
-     * @deprecated since 2.0.0 - use POST {scopeId}/user/mfa instead (see {@link UserCredential})
+     * @deprecated since 2.0.0 - use POST {scopeId}/user/mfa instead (see {@link UserCredentials})
      */
     @POST
     @Path("{userId}/mfa")
@@ -288,7 +288,7 @@ public class Users extends AbstractKapuaResource {
      * @return HTTP 200 if operation has completed successfully.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.4.0
-     * @deprecated since 2.0.0 - use DELETE {scopeId}/user/mfa instead (see {@link UserCredential})
+     * @deprecated since 2.0.0 - use DELETE {scopeId}/user/mfa instead (see {@link UserCredentials})
      */
     @DELETE
     @Deprecated
@@ -309,7 +309,7 @@ public class Users extends AbstractKapuaResource {
      * @return HTTP 200 if operation has completed successfully.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.4.0
-     * @deprecated since 2.0.0 - use DELETE {scopeId}/user/mfa/disableTrust instead (see {@link UserCredential})
+     * @deprecated since 2.0.0 - use DELETE {scopeId}/user/mfa/disableTrust instead (see {@link UserCredentials})
      */
     @DELETE
     @Deprecated
