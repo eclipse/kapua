@@ -18,6 +18,7 @@ import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
+import org.eclipse.kapua.app.console.module.data.shared.util.KapuaGwtDataModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
@@ -132,8 +133,9 @@ public class DataExporterServlet extends HttpServlet {
 
             query.setPredicate(predicate);
             MessageListResult result;
+            long totalCount = 0;
+            totalCount = KapuaGwtDataModelConverter.countEsDataCap10k(MESSAGE_STORE_SERVICE, query);
 
-            long totalCount = MESSAGE_STORE_SERVICE.count(query);
             long totalOffset = 0;
             query.setLimit(250);
             int maxRows = MAX_PAGE_SIZE * MAX_PAGES;

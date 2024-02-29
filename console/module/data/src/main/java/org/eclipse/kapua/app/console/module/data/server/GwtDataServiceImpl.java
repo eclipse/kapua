@@ -251,6 +251,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     }
 
+    //TODO : is this method even called somewhere in the code or could we deprecate it?
     @Override
     public PagingLoadResult<GwtTopic> findTopicsList(PagingLoadConfig config, GwtDataChannelInfoQuery query) throws GwtKapuaException {
         List<GwtTopic> channelInfoList = new ArrayList<GwtTopic>();
@@ -268,7 +269,8 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 }
                 channelInfoQuery.setLimit(-1);
                 channelInfoQuery.setOffset(0);
-                totalLength = (int) channelInfoService.count(channelInfoQuery);
+
+                totalLength = (int) KapuaGwtDataModelConverter.countEsDataCap10k(channelInfoService, channelInfoQuery);
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
@@ -491,10 +493,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
         messages = getMessagesList(query, headers);
         try {
-            totalLength = (int) messageService.count(query);
-            if (totalLength > 10000) {
-                totalLength = 10000;
-            }
+            totalLength = (int) KapuaGwtDataModelConverter.countEsDataCap10k(messageService, query);
         } catch (KapuaException e) {
             KapuaExceptionHandler.handle(e);
         }
