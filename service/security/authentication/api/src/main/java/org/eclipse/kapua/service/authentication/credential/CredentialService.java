@@ -17,6 +17,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
+import org.eclipse.kapua.service.authentication.user.PasswordResetRequest;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 /**
@@ -70,9 +71,9 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
     /**
      * Returns the minimum password length according to account setting and system default
      *
-     * @param scopeId           The id of the Account to check the setting
-     * @return                  The minimum required password length
-     * @throws KapuaException   When something goes wrong
+     * @param scopeId The id of the Account to check the setting
+     * @return The minimum required password length
+     * @throws KapuaException When something goes wrong
      */
     int getMinimumPasswordLength(KapuaId scopeId) throws KapuaException;
 
@@ -80,9 +81,9 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
     /**
      * Check if the provided password meets all the password's requirements. Return exception if requirements not fulfilled.
      *
-     * @param scopeId:          The scope ID in which to perform the check
-     * @param plainPassword:    Password to check requirement for
-     * @throws KapuaException   When something goes wrong
+     * @param scopeId:       The scope ID in which to perform the check
+     * @param plainPassword: Password to check requirement for
+     * @throws KapuaException When something goes wrong
      */
     void validatePassword(KapuaId scopeId, String plainPassword) throws KapuaException;
 
@@ -91,10 +92,20 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
      * Return the {@link Credential} within the provided scopeId with the provided credentialId.
      * The returned object contains the field credentialKey filled with the actual value.
      *
-     * @param scopeId         The scope ID in which to perform the find
-     * @param credentialId    The ID of the credential to find
-     * @return                The searched Credential
+     * @param scopeId      The scope ID in which to perform the find
+     * @param credentialId The ID of the credential to find
+     * @return The searched Credential
      * @throws KapuaException When something goes wrong
      */
     Credential findWithKey(KapuaId scopeId, KapuaId credentialId) throws KapuaException;
+
+    /**
+     * Reset the password of a user, according to the given {@link PasswordResetRequest}
+     *
+     * @param scopeId              scope of the {@link Credential} in which to change the password
+     * @param userId               id of the {@link Credential} to change the password
+     * @param passwordResetRequest request for resetting password
+     * @return The updated credential
+     */
+    Credential adminResetUserPassword(KapuaId scopeId, KapuaId userId, PasswordResetRequest passwordResetRequest) throws KapuaException;
 }

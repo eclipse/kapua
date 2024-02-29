@@ -19,6 +19,7 @@ import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.common.BasicSteps;
@@ -78,12 +79,12 @@ public class AuthenticationServiceSteps extends TestBase {
         super(stepData);
     }
 
-    @Before(value="@env_docker or @env_docker_base or @env_none", order=10)
+    @Before(value = "@env_docker or @env_docker_base or @env_none", order = 10)
     public void beforeScenarioNone(Scenario scenario) throws KapuaException {
         updateScenario(scenario);
     }
 
-    @After(value="@setup")
+    @After(value = "@setup")
     public void setServices() {
         locator = KapuaLocator.getInstance();
         credentialService = locator.getService(CredentialService.class);
@@ -158,14 +159,14 @@ public class AuthenticationServiceSteps extends TestBase {
 
     @When("I check that service configuration {string} matches value {string}")
     public void checkConfigValue(String key, String value) {
-        Map<String, Object> configValues = (Map<String, Object>)stepData.get("configValues");
+        Map<String, Object> configValues = (Map<String, Object>) stepData.get("configValues");
         Object configValue = configValues.get(key);
         Assert.assertEquals(value, configValue);
     }
 
     @When("I check that service configuration {string} has no value")
     public void checkNullConfigValue(String key) {
-        Map<String, Object> configValues = (Map<String, Object>)stepData.get("configValues");
+        Map<String, Object> configValues = (Map<String, Object>) stepData.get("configValues");
         Object configValue = configValues.get(key);
         Assert.assertEquals(configValue, null);
     }
@@ -211,7 +212,7 @@ public class AuthenticationServiceSteps extends TestBase {
         passwordChangeRequest.setNewPassword(newPassword);
 
         try {
-            userCredentialsService.changePassword(passwordChangeRequest);
+            userCredentialsService.changePassword(KapuaSecurityUtils.getSession().getScopeId(), KapuaSecurityUtils.getSession().getUserId(), passwordChangeRequest);
         } catch (Exception ex) {
             verifyException(ex);
         }

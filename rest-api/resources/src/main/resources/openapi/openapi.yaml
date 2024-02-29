@@ -441,15 +441,26 @@ paths:
   /{scopeId}/user/mfa/disableTrust:
     $ref: './userMfa/userMfa-scopeId-disableTrust.yaml#/paths/~1{scopeId}~1user~1mfa~1disableTrust'
   ### User Credentials ###
+  ### User Credentials self managing ###
   /{scopeId}/user/credentials/password:
-    $ref: './userCredentials/userCredentials-scopeId.yaml#/paths/~1{scopeId}~1user~1credentials~1password'
+    $ref: './userCredentials/user-credentials-password.yaml#/paths/~1{scopeId}~1user~1credentials~1password'
   /{scopeId}/user/credentials/{credentialId}/_reset:
-    $ref: './userCredentials/userCredentials-scopeId-credentialId-_reset.yaml#/paths/~1{scopeId}~1user~1credentials~1{credentialId}~1_reset'
-  ### User Credentials Filtered ###
+    $ref: './userCredentials/user-credentials-credentialId-_reset.yaml#/paths/~1{scopeId}~1user~1credentials~1{credentialId}~1_reset'
+  /user/credentials/password:
+    $ref: './userCredentials/user-credentials-password.yaml#/paths/~1user~1credentials~1password'
+  /user/credentials/{credentialId}/_reset:
+    $ref: './userCredentials/user-credentials-credentialId-_reset.yaml#/paths/~1user~1credentials~1{credentialId}~1_reset'
+  ### Admin view on User Credentials ###
   /{scopeId}/user/{userId}/credentials/:
-    $ref: './userCredentialsFiltered/credential-scopeId.yaml#/paths/~1{scopeId}~1user~1{userId}~1credentials'
+    $ref: './usersCredentials/users-credentials-scopeId-userId.yaml#/paths/~1{scopeId}~1user~1{userId}~1credentials'
+  /{scopeId}/users/{userId}/credentials/:
+    $ref: './usersCredentials/users-credentials-scopeId-userId.yaml#/paths/~1{scopeId}~1users~1{userId}~1credentials'
   /{scopeId}/user/{userId}/credentials/_count:
-    $ref: './userCredentialsFiltered/credential-scopeId-_count.yaml#/paths/~1{scopeId}~1user~1{userId}~1credentials~1_count'
+    $ref: './usersCredentials/users-credentials-scopeId-userId-_count.yaml#/paths/~1{scopeId}~1user~1{userId}~1credentials~1_count'
+  /{scopeId}/users/{userId}/credentials/_count:
+    $ref: './usersCredentials/users-credentials-scopeId-userId-_count.yaml#/paths/~1{scopeId}~1users~1{userId}~1credentials~1_count'
+  /{scopeId}/users/{userId}/credentials/password/_reset:
+    $ref: './usersCredentials/users-credentials-scopeId-userId-password-_reset.yaml#/paths/~1{scopeId}~1users~1{userId}~1credentials~1password~1_reset'
   ### User Profile ###
   /{scopeId}/user/profile/:
     $ref: './userProfile/userProfile-scopeId.yaml#/paths/~1{scopeId}~1user~1profile~1'
@@ -1019,9 +1030,9 @@ components:
       $ref: './userMfa/userMfa.yaml#/components/schemas/mfaOptionCreationResponse'
     ### User Credentials Entities ###
     passwordChangeRequest:
-      $ref: './userCredentials/userCredentials.yaml#/components/schemas/passwordChangeRequest'
+      $ref: './userCredentials/user-credentials.yaml#/components/schemas/passwordChangeRequest'
     passwordResetRequest:
-      $ref: './userCredentials/userCredentials.yaml#/components/schemas/passwordResetRequest'
+      $ref: './userCredentials/user-credentials.yaml#/components/schemas/passwordResetRequest'
     ### User Profile Entities ###
     userProfile:
       $ref: './userProfile/userProfile.yaml#/components/schemas/userProfile'

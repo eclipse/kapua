@@ -42,6 +42,7 @@ import org.eclipse.kapua.service.authentication.exception.DuplicatedPasswordCred
 import org.eclipse.kapua.service.authentication.shiro.CredentialServiceConfigurationManager;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
+import org.eclipse.kapua.service.authentication.user.PasswordResetRequest;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.storage.TxManager;
@@ -69,6 +70,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
     private final KapuaAuthenticationSetting kapuaAuthenticationSetting;
     private final CredentialMapper credentialMapper;
     private final PasswordValidator passwordValidator;
+    private final PasswordResetter passwordResetter;
 
     public CredentialServiceImpl(
             CredentialServiceConfigurationManager serviceConfigurationManager,
@@ -79,11 +81,13 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
             CredentialFactory credentialFactory,
             CredentialMapper credentialMapper,
             PasswordValidator passwordValidator,
-            KapuaAuthenticationSetting kapuaAuthenticationSetting) {
+            KapuaAuthenticationSetting kapuaAuthenticationSetting,
+            PasswordResetter passwordResetter) {
         super(txManager, serviceConfigurationManager, Domains.CREDENTIAL, authorizationService, permissionFactory);
         this.credentialRepository = credentialRepository;
         this.credentialFactory = credentialFactory;
         this.kapuaAuthenticationSetting = kapuaAuthenticationSetting;
+        this.passwordResetter = passwordResetter;
         try {
             random = SecureRandom.getInstance("SHA1PRNG");
         } catch (NoSuchAlgorithmException e) {
@@ -403,5 +407,16 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
                 .orElse(null);
     }
 
+    @Override
+    public Credential adminResetUserPassword(KapuaId scopeId, KapuaId userId, PasswordResetRequest passwordResetRequest) throws KapuaException {
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(userId, "userId");
+        ArgumentValidator.notNull(passwordResetRequest, "passwordResetRequest");
+        ArgumentValidator.notNull(passwordResetRequest.getNewPassword(), "passwordResetRequest.netPassword");
+        // Check Access
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.write, scopeId));
 
+        return txManager.execute(tx -> passwordResetter.resetPassword(tx, scopeId, userId, false, passwordResetRequest));
+    }
 }

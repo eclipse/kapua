@@ -21,6 +21,8 @@ import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialRepository;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapper;
+import org.eclipse.kapua.service.authentication.credential.shiro.PasswordResetter;
+import org.eclipse.kapua.service.authentication.credential.shiro.PasswordResetterImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidator;
 import org.eclipse.kapua.service.authentication.user.UserCredentialsFactory;
 import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
@@ -43,6 +45,16 @@ public class UserCredentialsModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
+    PasswordResetter passwordResetter(
+            CredentialFactory credentialFactory,
+            CredentialRepository credentialRepository,
+            CredentialMapper credentialMapper,
+            PasswordValidator passwordValidator) {
+        return new PasswordResetterImpl(credentialFactory, credentialRepository, credentialMapper, passwordValidator);
+    }
+
+    @Provides
+    @Singleton
     UserCredentialsService userCredentialsService(
             AuthenticationService authenticationService,
             AuthorizationService authorizationService,
@@ -53,8 +65,7 @@ public class UserCredentialsModule extends AbstractKapuaModule {
             KapuaJpaTxManagerFactory txManagerFactory,
             UserService userService,
             CredentialRepository credentialRepository,
-            CredentialMapper credentialMapper,
-            PasswordValidator passwordValidator) {
+            PasswordResetter passwordResetter) {
         return new UserCredentialsServiceImpl(
                 authenticationService,
                 authorizationService,
@@ -65,7 +76,6 @@ public class UserCredentialsModule extends AbstractKapuaModule {
                 txManagerFactory.create("kapua-authorization"),
                 userService,
                 credentialRepository,
-                credentialMapper,
-                passwordValidator);
+                passwordResetter);
     }
 }

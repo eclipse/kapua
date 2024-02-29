@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.authentication.user.shiro;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.KapuaRuntimeErrorCodes;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -26,12 +25,8 @@ import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
-import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialRepository;
-import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapper;
-import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidator;
+import org.eclipse.kapua.service.authentication.credential.shiro.PasswordResetter;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
@@ -42,7 +37,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Singleton;
@@ -64,8 +58,7 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
     private final TxManager txManager;
     private final UserService userService;
     private final CredentialRepository credentialRepository;
-    private final CredentialMapper credentialMapper;
-    private final PasswordValidator passwordValidator;
+    private final PasswordResetter passwordResetter;
 
     public UserCredentialsServiceImpl(
             AuthenticationService authenticationService,
@@ -75,8 +68,7 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
             TxManager txManager,
             UserService userService,
             CredentialRepository credentialRepository,
-            CredentialMapper credentialMapper,
-            PasswordValidator passwordValidator) {
+            PasswordResetter passwordResetter) {
         this.authenticationService = authenticationService;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
@@ -86,37 +78,29 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
         this.txManager = txManager;
         this.userService = userService;
         this.credentialRepository = credentialRepository;
-        this.credentialMapper = credentialMapper;
-        this.passwordValidator = passwordValidator;
+        this.passwordResetter = passwordResetter;
     }
 
     @Override
-    public Credential changePassword(PasswordChangeRequest passwordChangeRequest) throws KapuaException {
+    public Credential changePassword(KapuaId scopeId, KapuaId userId, PasswordChangeRequest passwordChangeRequest) throws KapuaException {
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(userId, "userId");
         ArgumentValidator.notNull(passwordChangeRequest.getNewPassword(), "passwordChangeRequest.newPassword");
         ArgumentValidator.notNull(passwordChangeRequest.getCurrentPassword(), "passwordChangeRequest.currentPassword");
 
-        final User user = Optional.ofNullable(
-                KapuaSecurityUtils.doPrivileged(() -> userService.find(KapuaSecurityUtils.getSession().getScopeId(), KapuaSecurityUtils.getSession().getUserId())
-                )
-        ).orElseThrow(() -> new KapuaEntityNotFoundException(User.TYPE, KapuaSecurityUtils.getSession().getUserId()));
+        final User user = Optional.ofNullable(KapuaSecurityUtils.doPrivileged(() -> userService.find(scopeId, userId))
+        ).orElseThrow(() -> new KapuaEntityNotFoundException(User.TYPE, userId));
         return txManager.execute(tx -> {
-            UsernamePasswordCredentials usernamePasswordCredentials = credentialsFactory.newUsernamePasswordCredentials(user.getName(), passwordChangeRequest.getCurrentPassword());
+            final UsernamePasswordCredentials usernamePasswordCredentials = credentialsFactory.newUsernamePasswordCredentials(user.getName(), passwordChangeRequest.getCurrentPassword());
             try {
                 authenticationService.verifyCredentials(usernamePasswordCredentials);
             } catch (KapuaAuthenticationException e) {
                 throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INCORRECT_CURRENT_PASSWORD);
             }
-
-            CredentialListResult credentials = credentialRepository.findByUserId(tx, KapuaSecurityUtils.getSession().getScopeId(), KapuaSecurityUtils.getSession().getUserId());
-            Credential passwordCredential = credentials.getItems().stream()
-                    .filter(credential -> credential.getCredentialType().equals(CredentialType.PASSWORD))
-                    .findAny()
-                    .orElseThrow(() -> new IllegalStateException("User does not have any credential of type password"));
-
-            PasswordResetRequest passwordResetRequest = userCredentialsFactory.newPasswordResetRequest();
+            final PasswordResetRequest passwordResetRequest = userCredentialsFactory.newPasswordResetRequest();
             passwordResetRequest.setNewPassword(passwordChangeRequest.getNewPassword());
             try {
-                return doResetPassword(tx, KapuaSecurityUtils.getSession().getScopeId(), passwordCredential.getId(), passwordResetRequest);
+                return passwordResetter.resetPassword(tx, scopeId, userId, true, passwordResetRequest);
             } catch (KapuaIllegalArgumentException ignored) {
                 throw new KapuaIllegalArgumentException("passwordChangeRequest.newPassword", passwordChangeRequest.getNewPassword());
             }
@@ -131,35 +115,9 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
         ArgumentValidator.notNull(credentialId, "credentialId");
         ArgumentValidator.notNull(passwordResetRequest.getNewPassword(), "passwordResetRequest.newPassword");
 
-        // Check access
+        // Check accessauth
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.write, scopeId));
 
-        return txManager.execute(tx -> {
-            return doResetPassword(tx, scopeId, credentialId, passwordResetRequest);
-        });
-    }
-
-    private Credential doResetPassword(TxContext tx, KapuaId scopeId, KapuaId credentialId, PasswordResetRequest passwordResetRequest) throws KapuaException {
-        Credential credential = credentialRepository.find(tx, scopeId, credentialId)
-                .orElseThrow(() -> new KapuaEntityNotFoundException(Credential.TYPE, credentialId));
-
-        if (credential.getCredentialType() != CredentialType.PASSWORD) {
-            throw new KapuaException(KapuaRuntimeErrorCodes.SERVICE_OPERATION_NOT_SUPPORTED);
-        }
-        String plainNewPassword = passwordResetRequest.getNewPassword();
-        try {
-            passwordValidator.validatePassword(tx, credential.getScopeId(), plainNewPassword);
-        } catch (KapuaIllegalArgumentException ignored) {
-            throw new KapuaIllegalArgumentException("passwordResetRequest.newPassword", plainNewPassword);
-        }
-
-        final Credential toPersists = credentialMapper.map(credentialFactory.newCreator(scopeId,
-                credential.getUserId(),
-                CredentialType.PASSWORD,
-                plainNewPassword,
-                CredentialStatus.ENABLED,
-                null));
-        credentialRepository.delete(tx, scopeId, credentialId);
-        return credentialRepository.create(tx, toPersists);
+        return txManager.execute(tx -> passwordResetter.resetPassword(tx, scopeId, credentialId, passwordResetRequest));
     }
 }

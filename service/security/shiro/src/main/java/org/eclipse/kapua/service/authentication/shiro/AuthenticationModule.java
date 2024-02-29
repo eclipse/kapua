@@ -62,6 +62,7 @@ import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImplJ
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapper;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapperImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
+import org.eclipse.kapua.service.authentication.credential.shiro.PasswordResetter;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidator;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidatorImpl;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
@@ -287,7 +288,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
             KapuaJpaTxManagerFactory jpaTxManagerFactory,
             CredentialMapper credentialMapper,
             PasswordValidator passwordValidator,
-            KapuaAuthenticationSetting kapuaAuthenticationSetting) {
+            KapuaAuthenticationSetting kapuaAuthenticationSetting,
+            PasswordResetter passwordResetter) {
         return new CredentialServiceImpl(serviceConfigurationManager,
                 authorizationService,
                 permissionFactory,
@@ -296,7 +298,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
                 credentialFactory,
                 credentialMapper,
                 passwordValidator,
-                kapuaAuthenticationSetting);
+                kapuaAuthenticationSetting,
+                passwordResetter);
     }
 
     @Provides
