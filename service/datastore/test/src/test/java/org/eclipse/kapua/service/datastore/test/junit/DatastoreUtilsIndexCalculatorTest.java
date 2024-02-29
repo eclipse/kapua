@@ -102,6 +102,8 @@ public class DatastoreUtilsIndexCalculatorTest {
         performTest(sdf.parse("17/12/2018 13:12 +0100"), null, buildExpectedResult("1", 52, 2018, 52, 2018, null));
 
         performNullIndexTest(sdf.parse("02/01/2017 13:12 +0100"), sdf.parse("09/01/2017 13:12 +0100"));
+
+        performFormatValidationTest(null, null);
     }
 
     @Test
@@ -182,6 +184,32 @@ public class DatastoreUtilsIndexCalculatorTest {
 
         String[] index = DatastoreUtils.convertToDataIndexes(new String[]{null, null}, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null, null);
         compareResult(null, index);
+    }
+// // YYYY-ww-ee-HH
+    private void performFormatValidationTest(Date startDate, Date endDate) throws DatastoreException {
+        String[] indexes = {
+                "1-data-message-2017-01-02",
+                "1-data-message-2017-01-03",
+                "2-data-message-2017-01-02",
+                "asdasdasdssd",
+                "1-data-message-2021-01-01-01-01",
+                "1-data-message-2021-01",
+                "1-data-message-2021-99",
+                "1-data-message-21-01",
+                "1-data-message-2024-08-08-12",
+                "1-data-message-2024-08-07-12",
+                "1-data-message-2024-23-07-17",
+                "1-data-message-2024-23-07-17_migrated"
+        };
+        String[] expectedIndexesRes = {
+                "1-data-message-2017-01-02",
+                "1-data-message-2017-01-03",
+                "1-data-message-2021-01",
+                "1-data-message-2024-08-07-12",
+                "1-data-message-2024-23-07-17"
+        };
+        String[] index = datastoreUtils.convertToDataIndexes(indexes, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null, KapuaId.ONE);
+        compareResult(index, expectedIndexesRes);
     }
 
     private String[] buildExpectedResult(String scopeId, int startWeek, int startYear, int endWeek, int endYear, int[] weekCountByYear) {
