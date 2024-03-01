@@ -163,6 +163,8 @@ public class GuiceLocatorImpl extends KapuaLocator {
         return servicesList;
     }
 
+    final Map<Integer, List<AbstractMap.SimpleEntry<Method, Object>>> initMethods = new HashMap<>();
+
     /**
      * Initializes the {@link KapuaLocator} with the given resource name configuration.
      *
@@ -205,7 +207,6 @@ public class GuiceLocatorImpl extends KapuaLocator {
         }
         // KapuaModule will be removed as soon as bindings will be moved to local modules
         kapuaModules.add(new KapuaModule(locatorConfigName));
-        final Map<Integer, List<AbstractMap.SimpleEntry<Method, Object>>> initMethods = new HashMap<>();
 
         kapuaModules.add(new AbstractModule() {
             private boolean hasKapuaInitializingMethodAnnotation(Method method) {
@@ -252,19 +253,9 @@ public class GuiceLocatorImpl extends KapuaLocator {
         } catch (Throwable t) {
             throw new RuntimeException(t);
         }
-        initMethods.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByKey())
-                .forEachOrdered(kv -> kv.getValue().stream().forEach(methodAndObject -> {
-                    try {
-                        LOG.info("Running initializer with priority {} on 'class'.'method': '{}'.'{}'", kv.getKey(), methodAndObject.getValue().getClass().getName(), methodAndObject.getKey().getName());
-                        methodAndObject.getKey().invoke(methodAndObject.getValue());
-                    } catch (Throwable e) {
-                        throw new RuntimeException(e);
-                    }
-                }));
+
         // Scan XmlSerializable
-        Set<Class<?>> xmlSerializableClasses = reflections.getTypesAnnotatedWith(XmlRootElement.class);
+        final Set<Class<?>> xmlSerializableClasses = reflections.getTypesAnnotatedWith(XmlRootElement.class);
         List<Class<?>> loadedXmlSerializables = new ArrayList<>();
         List<Class<?>> excludedXmlSerializables = new ArrayList<>();
         for (Class<?> xmlSerializableClass : xmlSerializableClasses) {
@@ -278,6 +269,21 @@ public class GuiceLocatorImpl extends KapuaLocator {
         ServiceModuleJaxbClassConfig.setSerializables(loadedXmlSerializables);
         // Print loaded stuff
         printLoadedXmlSerializableConfiguration(locatorConfigName, locatorConfig, loadedXmlSerializables, excludedXmlSerializables);
+    }
+
+    @Override
+    protected void runInitializers() {
+        initMethods.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEachOrdered(kv -> kv.getValue().stream().forEach(methodAndObject -> {
+                    try {
+                        LOG.info("Running initializer with priority {} on 'class'.'method': '{}'.'{}'", kv.getKey(), methodAndObject.getValue().getClass().getName(), methodAndObject.getKey().getName());
+                        methodAndObject.getKey().invoke(methodAndObject.getValue());
+                    } catch (Throwable e) {
+                        throw new RuntimeException(e);
+                    }
+                }));
     }
 
     /**
