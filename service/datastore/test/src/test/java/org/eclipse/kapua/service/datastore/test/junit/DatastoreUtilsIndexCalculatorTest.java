@@ -103,8 +103,38 @@ public class DatastoreUtilsIndexCalculatorTest {
         performTest(sdf.parse("17/12/2018 13:12 +0100"), null, buildExpectedResult("1", 52, 2018, 52, 2018, null));
 
         performNullIndexTest(sdf.parse("02/01/2017 13:12 +0100"), sdf.parse("09/01/2017 13:12 +0100"));
+    }
 
-        performFormatValidationTest(null, null);
+    @Test
+    public void indexesFormatValidation() throws DatastoreException, ParseException {
+        String[] indexes = {
+                "1-data-message-2017-01-02",
+                "1-data-message-2017-01-03",
+                "2-data-message-2017-01-02",
+                "asdasdasdssd",
+                "1-data-message-2021-01-01-01-01",
+                "1-data-message-2021-01",
+                "1-data-message-2021-99",
+                "1-data-message-21-01",
+                "1-data-message-2024-08-08-12",
+                "1-data-log-2024-08-08-12",
+                "1-data-message-2024-08-07-12",
+                "1-data-message-2024-23-07-17",
+                "1-data-message-2024-23-07-17_migrated"
+        };
+        String[] correctFormatIndexesWhenScopeid1 = {
+                "1-data-message-2017-01-02", //second day of first week in 2017
+                "1-data-message-2017-01-03",
+                "1-data-message-2021-01",
+                "1-data-message-2024-08-07-12",
+                "1-data-message-2024-23-07-17"
+        };
+
+        performFormatValidationTest(null, null, indexes, correctFormatIndexesWhenScopeid1);
+        performFormatValidationTest(sdf.parse("01/01/2024 13:12 +0100"), null , indexes, new String[]{"1-data-message-2024-08-07-12", "1-data-message-2024-23-07-17"});
+        performFormatValidationTest(null, sdf.parse("04/01/2017 13:12 +0100"),indexes, new String[]{"1-data-message-2017-01-02","1-data-message-2017-01-03"});
+        performFormatValidationTest(sdf.parse("01/01/2017 13:12 +0100"), sdf.parse("01/01/2018 13:12 +0100"),indexes, new String[]{"1-data-message-2017-01-02", "1-data-message-2017-01-03"});
+        performFormatValidationTest(sdf.parse("01/01/2018 13:12 +0100"), sdf.parse("01/01/2022 13:12 +0100"),indexes, new String[]{"1-data-message-2021-01"});
     }
 
     @Test
@@ -187,30 +217,9 @@ public class DatastoreUtilsIndexCalculatorTest {
         compareResult(null, index);
     }
 // // YYYY-ww-ee-HH
-    private void performFormatValidationTest(Date startDate, Date endDate) throws DatastoreException {
-        String[] indexes = {
-                "1-data-message-2017-01-02",
-                "1-data-message-2017-01-03",
-                "2-data-message-2017-01-02",
-                "asdasdasdssd",
-                "1-data-message-2021-01-01-01-01",
-                "1-data-message-2021-01",
-                "1-data-message-2021-99",
-                "1-data-message-21-01",
-                "1-data-message-2024-08-08-12",
-                "1-data-message-2024-08-07-12",
-                "1-data-message-2024-23-07-17",
-                "1-data-message-2024-23-07-17_migrated"
-        };
-        String[] expectedIndexesRes = {
-                "1-data-message-2017-01-02",
-                "1-data-message-2017-01-03",
-                "1-data-message-2021-01",
-                "1-data-message-2024-08-07-12",
-                "1-data-message-2024-23-07-17"
-        };
-        String[] index = datastoreUtils.convertToDataIndexes(indexes, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null, KapuaId.ONE);
-        compareResult(index, expectedIndexesRes);
+    private void performFormatValidationTest(Date startDate, Date endDate, String[] inputIndexes, String[] expectedIndexes) throws DatastoreException {
+        String[] index = datastoreUtils.convertToDataIndexes(inputIndexes, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null, KapuaId.ONE);
+        compareResult(index,expectedIndexes);
     }
 
     private String[] buildExpectedResult(String scopeId, int startWeek, int startYear, int endWeek, int endYear, int[] weekCountByYear) {
