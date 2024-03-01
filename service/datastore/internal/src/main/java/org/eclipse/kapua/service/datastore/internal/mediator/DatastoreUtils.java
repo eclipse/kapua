@@ -346,11 +346,11 @@ public class DatastoreUtils {
      * the end date ON OR BEFORE the window end will be returned
      * Only indexes matching Kapua data index name pattern will be inserted inside the result list, namely this format:
      *
-     * [<prefix>-]-data-message-YYYY-ww
+     * "scopeID-data-message-YYYY-ww"
      * or
-     * [<prefix>-]-data-message-YYYY-ww-ee
+     * "scopeID-data-message-YYYY-ww-ee"
      * or
-     * [<prefix>-]-data-message-YYYY-ww-ee-HH
+     * "scopeID-data-message-YYYY-ww-ee-HH"
      *
      * @param indexes
      * @param windowStart
