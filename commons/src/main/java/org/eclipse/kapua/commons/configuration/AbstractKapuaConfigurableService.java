@@ -406,9 +406,10 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param metadata        The {@link KapuaTmetadata} to process.
      * @param excludeDisabled Whether to exclude disabled {@link KapuaTocd}s and {@link KapuaTad}s.
      * @return The processed {@link KapuaTocd}.
+     * @throws KapuaException
      * @since 1.3.0
      */
-    private KapuaTocd processMetadata(KapuaTmetadata metadata, KapuaId scopeId, boolean excludeDisabled) {
+    private KapuaTocd processMetadata(KapuaTmetadata metadata, KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
         if (metadata != null && metadata.getOCD() != null && !metadata.getOCD().isEmpty()) {
             for (KapuaTocd ocd : metadata.getOCD()) {
                 if (ocd.getId() != null && ocd.getId().equals(pid) && isServiceEnabled(scopeId)) {
