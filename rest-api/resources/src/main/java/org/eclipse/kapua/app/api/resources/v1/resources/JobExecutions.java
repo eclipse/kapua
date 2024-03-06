@@ -127,7 +127,11 @@ public class JobExecutions extends AbstractKapuaResource {
             @PathParam("jobId") EntityId jobId,
             JobExecutionQuery query) throws KapuaException {
         query.setScopeId(scopeId);
-        query.setPredicate(query.attributePredicate(JobExecutionAttributes.JOB_ID, jobId));
+        final AndPredicate andPredicate = query.andPredicate(
+            query.attributePredicate(JobExecutionAttributes.JOB_ID, jobId),
+            query.getPredicate()
+        );
+        query.setPredicate(andPredicate);
         return jobExecutionService.query(query);
     }
 
