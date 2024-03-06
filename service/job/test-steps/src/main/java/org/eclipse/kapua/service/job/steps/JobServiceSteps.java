@@ -390,6 +390,15 @@ public class JobServiceSteps extends JobServiceTestBase {
         }
     }
 
+    @When("I query for the job with term match {string}")
+    public void iQueryForTheJobMatchTerm(String matchTerm) throws Exception {
+        JobQuery tmpQuery = jobFactory.newQuery(getCurrentScopeId());
+
+        tmpQuery.setPredicate(tmpQuery.matchPredicate(matchTerm));
+
+        updateCount(() -> jobService.query(tmpQuery).getSize());
+    }
+
     @Given("I prepare a job with name {string} and description {string}")
     public void iPrepareAJobWithNameAndDescription(String name, String description) {
         JobCreator jobCreator = jobFactory.newCreator(SYS_SCOPE_ID);

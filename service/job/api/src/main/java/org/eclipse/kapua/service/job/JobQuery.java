@@ -29,4 +29,15 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = JobXmlRegistry.class, factoryMethod = "newQuery")
 public interface JobQuery extends KapuaQuery {
+
+    /**
+     * Instantiates a new {@link JobMatchPredicate}.
+     *
+     * @param matchTerm The term to use to match.
+     * @param <T>       The type of the term
+     * @return The newly instantiated {@link JobMatchPredicate}.
+     * @since 2.0.0
+     */
+    <T> JobMatchPredicate<T> matchPredicate(T matchTerm);
+
 }

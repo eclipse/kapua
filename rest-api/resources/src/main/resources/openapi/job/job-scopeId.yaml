@@ -25,6 +25,16 @@ paths:
           description: The job name to filter results
           schema:
             type: string
+        - name: matchTerm
+          in: query
+          description: |
+            A term to match on different fields. Every entity whose at least one of the specified fields starts with this value will be matched.
+            Matches on the following fields:
+
+            - NAME
+            - DESCRIPTION
+          schema:
+            type: string
         - $ref: '../openapi.yaml#/components/parameters/sortParam'
         - $ref: '../openapi.yaml#/components/parameters/sortDir'
         - $ref: '../openapi.yaml#/components/parameters/limit'
