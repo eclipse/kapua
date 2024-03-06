@@ -21,7 +21,6 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.matcher.Matchers;
-import com.google.inject.multibindings.Multibinder;
 import com.google.inject.multibindings.ProvidesIntoSet;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
@@ -62,8 +61,6 @@ public class KapuaModule extends AbstractKapuaModule {
     private static final String SERVICE_RESOURCE = "locator.xml";
 
     private final String resourceName;
-
-    private Multibinder<ServiceModule> serviceModulesBindings;
 
     public KapuaModule(final String resourceName) {
         this.resourceName = resourceName;
