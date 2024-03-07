@@ -106,6 +106,38 @@ public class DatastoreUtilsIndexCalculatorTest {
     }
 
     @Test
+    public void indexesFormatValidation() throws DatastoreException, ParseException {
+        String[] indexes = {
+                "1-data-message-2017-01-02",
+                "1-data-message-2017-01-03",
+                "2-data-message-2017-01-02",
+                "asdasdasdssd",
+                "1-data-message-2021-01-01-01-01",
+                "1-data-message-2021-01",
+                "1-data-message-2021-99",
+                "1-data-message-21-01",
+                "1-data-message-2024-08-08-12",
+                "1-data-log-2024-08-08-12",
+                "1-data-message-2024-08-07-12",
+                "1-data-message-2024-23-07-17",
+                "1-data-message-2024-23-07-17_migrated"
+        };
+        String[] correctFormatIndexesWhenScopeid1 = {
+                "1-data-message-2017-01-02", //second day of first week in 2017
+                "1-data-message-2017-01-03",
+                "1-data-message-2021-01",
+                "1-data-message-2024-08-07-12",
+                "1-data-message-2024-23-07-17"
+        };
+
+        performFormatValidationTest(null, null, indexes, correctFormatIndexesWhenScopeid1);
+        performFormatValidationTest(sdf.parse("01/01/2024 13:12 +0100"), null , indexes, new String[]{"1-data-message-2024-08-07-12", "1-data-message-2024-23-07-17"});
+        performFormatValidationTest(null, sdf.parse("04/01/2017 13:12 +0100"),indexes, new String[]{"1-data-message-2017-01-02","1-data-message-2017-01-03"});
+        performFormatValidationTest(sdf.parse("01/01/2017 13:12 +0100"), sdf.parse("01/01/2018 13:12 +0100"),indexes, new String[]{"1-data-message-2017-01-02", "1-data-message-2017-01-03"});
+        performFormatValidationTest(sdf.parse("01/01/2018 13:12 +0100"), sdf.parse("01/01/2022 13:12 +0100"),indexes, new String[]{"1-data-message-2021-01"});
+    }
+
+    @Test
     public void dataIndexNameByScopeId() {
         Assert.assertEquals("1-data-message-*", datastoreUtils.getDataIndexName(KapuaId.ONE));
     }
@@ -159,7 +191,7 @@ public class DatastoreUtilsIndexCalculatorTest {
                 calEndDate != null ? calEndDate.get(Calendar.WEEK_OF_YEAR) : "Infinity",
                 calEndDate != null ? calEndDate.get(Calendar.DAY_OF_WEEK) : "Infinity");
 
-        String[] index = datastoreUtils.convertToDataIndexes(getDataIndexesByAccount(KapuaEid.ONE), startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null);
+        String[] index = datastoreUtils.convertToDataIndexes(getDataIndexesByAccount(KapuaEid.ONE), startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null, null);
         compareResult(expectedIndexes, index);
     }
 
@@ -181,8 +213,14 @@ public class DatastoreUtilsIndexCalculatorTest {
                 calEndDate != null ? calEndDate.get(Calendar.WEEK_OF_YEAR) : "Infinity",
                 calEndDate != null ? calEndDate.get(Calendar.DAY_OF_WEEK) : "Infinity");
 
-        String[] index = datastoreUtils.convertToDataIndexes(new String[]{null, null}, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null);
+        String[] index = datastoreUtils.convertToDataIndexes(new String[]{null, null}, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null, null);
         compareResult(null, index);
+    }
+
+
+    private void performFormatValidationTest(Date startDate, Date endDate, String[] inputIndexes, String[] expectedIndexes) throws DatastoreException {
+        String[] index = datastoreUtils.convertToDataIndexes(inputIndexes, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null, KapuaId.ONE);
+        compareResult(index,expectedIndexes);
     }
 
     private String[] buildExpectedResult(String scopeId, int startWeek, int startYear, int endWeek, int endYear, int[] weekCountByYear) {

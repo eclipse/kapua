@@ -1593,7 +1593,7 @@ public class DatastoreSteps extends TestBase {
         primeException();
         try {
             String[] indexes = KapuaLocator.getInstance().getComponent(DatastoreUtils.class).convertToDataIndexes(getDataIndexesByAccount(getCurrentScopeId()), KapuaDateUtils.parseDate(fromDate).toInstant(),
-                    KapuaDateUtils.parseDate(toDate).toInstant());
+                    KapuaDateUtils.parseDate(toDate).toInstant(), null);
             elasticsearchClient.deleteIndexes(indexes);
         } catch (Exception ex) {
             verifyException(ex);
