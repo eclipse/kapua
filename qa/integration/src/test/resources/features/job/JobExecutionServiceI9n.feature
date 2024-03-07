@@ -128,6 +128,26 @@ Scenario: Query for executions of a specific job
     When I query for the execution items for the current job
     Then I count 3
 
+
+Scenario: Query for executions of a specific job using start date
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    * I configure the job service
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+    * I create a job with the name "TestJob"
+    * A regular job execution item
+    * A regular job execution item
+    * A regular job execution item
+    * A regular job execution item
+
+    When I query for the execution items for the current job starting from date in the future
+    Then I count 0
+
+    When I query for the execution items for the current job starting from date in the past
+    Then I count 4
+
 Scenario: Job execution factory sanity checks
 
     And I test the sanity of the job execution factory
