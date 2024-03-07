@@ -90,6 +90,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.storage.TxContext;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -143,7 +144,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
                                                      EventStoreFactory eventStoreFactory,
                                                      EventStoreRecordRepository eventStoreRecordRepository,
                                                      ServiceEventBus serviceEventBus,
-                                                     KapuaAuthenticationSetting kapuaAuthenticationSetting
+                                                     KapuaAuthenticationSetting kapuaAuthenticationSetting,
+                                                     @Named("eventsModuleName") String eventModuleName
     ) throws ServiceEventBusException {
         return new AuthenticationServiceModule(
                 credentialService,
@@ -160,7 +162,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
                         txManagerFactory.create("kapua-authentication"),
                         serviceEventBus
                 ),
-                serviceEventBus);
+                serviceEventBus,
+                eventModuleName);
     }
 
     @ProvidesIntoSet

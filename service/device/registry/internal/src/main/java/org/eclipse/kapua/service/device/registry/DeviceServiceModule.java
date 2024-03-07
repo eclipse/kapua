@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactory;
 import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
@@ -22,13 +19,18 @@ import org.eclipse.kapua.commons.event.ServiceInspector;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 
+import java.util.Arrays;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 public class DeviceServiceModule extends ServiceEventTransactionalModule {
 
     public DeviceServiceModule(DeviceConnectionService deviceConnectionService,
                                DeviceRegistryService deviceRegistryService,
                                KapuaDeviceRegistrySettings deviceRegistrySettings,
                                ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory,
-                               ServiceEventBus serviceEventBus) {
+                               ServiceEventBus serviceEventBus,
+                               String eventModuleName) {
         super(Arrays.asList(ServiceInspector.getEventBusClients(deviceRegistryService, DeviceRegistryService.class),
                                 ServiceInspector.getEventBusClients(deviceConnectionService, DeviceConnectionService.class)
                         )
@@ -37,6 +39,7 @@ public class DeviceServiceModule extends ServiceEventTransactionalModule {
                         .collect(Collectors.toList())
                         .toArray(new ServiceEventClientConfiguration[0]),
                 deviceRegistrySettings.getString(KapuaDeviceRegistrySettingKeys.DEVICE_EVENT_ADDRESS),
+                eventModuleName + "-" + UUID.randomUUID().toString(),
                 serviceEventTransactionalHousekeeperFactory,
                 serviceEventBus);
     }

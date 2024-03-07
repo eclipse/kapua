@@ -34,4 +34,11 @@ public class AppModule extends AbstractKapuaModule {
     String metricModuleName() {
         return MetricsAuthentication.SERVICE_AUTHENTICATION;
     }
+
+    @Provides
+    @Named("eventsModuleName")
+    String eventModuleName() {
+        return "authentication";
+    }
+
 }

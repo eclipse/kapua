@@ -34,4 +34,11 @@ public class AppModule extends AbstractKapuaModule {
     String metricModuleName() {
         return MetricsTelemetry.CONSUMER_TELEMETRY;
     }
+
+    @Provides
+    @Named("eventsModuleName")
+    String eventModuleName() {
+        return "telemetry";
+    }
+
 }

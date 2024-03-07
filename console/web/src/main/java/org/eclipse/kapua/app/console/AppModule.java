@@ -28,4 +28,10 @@ public class AppModule extends AbstractKapuaModule {
     String metricModuleName() {
         return "web-console";
     }
+
+    @Provides
+    @Named("eventsModuleName")
+    String eventModuleName() {
+        return "console";
+    }
 }

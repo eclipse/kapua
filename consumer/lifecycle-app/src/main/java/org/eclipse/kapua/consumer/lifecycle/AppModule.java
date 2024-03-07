@@ -34,4 +34,11 @@ public class AppModule extends AbstractKapuaModule {
     String metricModuleName() {
         return MetricsLifecycle.CONSUMER_LIFECYCLE;
     }
+
+    @Provides
+    @Named("eventsModuleName")
+    String eventModuleName() {
+        return "lifecycle";
+    }
+
 }

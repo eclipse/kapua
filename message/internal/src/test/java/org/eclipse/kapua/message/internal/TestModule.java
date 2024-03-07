@@ -38,6 +38,12 @@ public class TestModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Named(value = "eventsModuleName")
+    String eventsModuleName() {
+        return "test";
+    }
+
+    @Provides
     @Singleton
     ServiceEventBusDriver serviceEventBusDriver() {
         return new ServiceEventBusDriver() {

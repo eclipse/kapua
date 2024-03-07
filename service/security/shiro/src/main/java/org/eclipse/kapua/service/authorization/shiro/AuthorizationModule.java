@@ -155,7 +155,8 @@ public class AuthorizationModule extends AbstractKapuaModule {
                                              EventStoreFactory eventStoreFactory,
                                              EventStoreRecordRepository eventStoreRecordRepository,
                                              ServiceEventBus serviceEventBus,
-                                             KapuaAuthorizationSetting kapuaAuthorizationSetting
+                                             KapuaAuthorizationSetting kapuaAuthorizationSetting,
+                                             @Named("eventsModuleName") String eventModuleName
     ) throws ServiceEventBusException {
         return new AuthorizationServiceModule(
                 accessInfoService,
@@ -173,7 +174,8 @@ public class AuthorizationModule extends AbstractKapuaModule {
                         ),
                         txManagerFactory.create("kapua-authorization"),
                         serviceEventBus
-                ), serviceEventBus);
+                ), serviceEventBus,
+                eventModuleName);
     }
 
     @ProvidesIntoSet

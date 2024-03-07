@@ -52,6 +52,12 @@ public class AppModule extends AbstractKapuaModule {
     }
 
     @Provides
+    @Named("eventsModuleName")
+    String eventModuleName() {
+        return "telemetry";
+    }
+
+    @Provides
     @Singleton
     @Named("brokerHost")
     String brokerHost(BrokerHostResolver brokerHostResolver) {

@@ -39,4 +39,11 @@ public class AppModule extends AbstractKapuaModule {
     String metricModuleName() {
         return "rest-api";
     }
+
+    @Provides
+    @Named("eventsModuleName")
+    String eventModuleName() {
+        return "rest_api";
+    }
+
 }

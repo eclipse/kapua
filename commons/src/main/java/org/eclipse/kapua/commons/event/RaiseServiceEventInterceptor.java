@@ -136,7 +136,7 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
             Class<?> wrappedClass = ((KapuaService) invocation.getThis()).getClass().getSuperclass(); // this object should be not null
             Class<?>[] implementedClass = wrappedClass.getInterfaces();
             // assuming that the KapuaService implemented is specified by the first implementing interface
-            String serviceInterfaceName = implementedClass[0].getName();
+            String serviceInterfaceName = implementedClass[0].getSimpleName();
             // String splittedServiceInterfaceName[] = serviceInterfaceName.split("\\.");
             // String serviceName = splittedServiceInterfaceName.length > 0 ? splittedServiceInterfaceName[splittedServiceInterfaceName.length-1] : "";
             // String cleanedServiceName = serviceName.substring(0, serviceName.length()-"Service".length()).toLowerCase();
