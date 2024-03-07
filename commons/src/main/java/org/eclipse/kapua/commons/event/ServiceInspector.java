@@ -12,28 +12,28 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.event.ListenServiceEvent;
 import org.eclipse.kapua.event.RaiseServiceEvent;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.service.KapuaService;
-
-import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ServiceInspector {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceInspector.class);
 
-    private ServiceInspector() {}
+    private ServiceInspector() {
+    }
 
     public static <T extends KapuaService> List<ServiceEventClientConfiguration> getEventBusClients(KapuaService aService, Class<T> clazz) {
 
@@ -83,26 +83,26 @@ public class ServiceInspector {
                     KapuaRuntimeException.internalError(e1, String.format("Unable to get the annotated method: annotation %s", ListenServiceEvent.class));
                 }
 
-                for (ListenServiceEvent listenAnnotation:listenAnnotations) {
+                for (ListenServiceEvent listenAnnotation : listenAnnotations) {
                     final Method listenerMethod = enhancedMethod;
                     configurations.add(
-                        new ServiceEventClientConfiguration(
-                                listenAnnotation.fromAddress(),
-                                clazz.getName(),
-                                serviceEvent -> {
-                                    try {
-                                        listenerMethod.invoke(aService, serviceEvent);
-                                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                                        throw KapuaException.internalError(e, String.format("Error invoking method %s", method.getName()));
-                                    }
-                                }));
+                            new ServiceEventClientConfiguration(
+                                    listenAnnotation.fromAddress(),
+                                    clazz.getSimpleName(),
+                                    serviceEvent -> {
+                                        try {
+                                            listenerMethod.invoke(aService, serviceEvent);
+                                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                                            throw KapuaException.internalError(e, String.format("Error invoking method %s", method.getName()));
+                                        }
+                                    }));
                 }
             }
             if (!ArrayUtils.isEmpty(raiseAnnotations)) {
                 configurations.add(
                         new ServiceEventClientConfiguration(
                                 null,
-                                clazz.getName(),
+                                clazz.getSimpleName(),
                                 null));
             }
         }
@@ -122,7 +122,7 @@ public class ServiceInspector {
                 if (!candidate.getReturnType().equals(method.getReturnType())) {
                     continue;
                 }
-                if(!Arrays.equals(method.getParameterTypes(), candidate.getParameterTypes())) {
+                if (!Arrays.equals(method.getParameterTypes(), candidate.getParameterTypes())) {
                     continue;
                 }
 

@@ -25,6 +25,7 @@ import org.eclipse.kapua.service.authorization.shiro.setting.KapuaAuthorizationS
 import org.eclipse.kapua.service.authorization.shiro.setting.KapuaAuthorizationSettingKeys;
 
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class AuthorizationServiceModule extends ServiceEventTransactionalModule {
@@ -35,7 +36,8 @@ public class AuthorizationServiceModule extends ServiceEventTransactionalModule 
                                       GroupService groupService,
                                       KapuaAuthorizationSetting kapuaAuthorizationSettings,
                                       ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory,
-                                      ServiceEventBus serviceEventBus) {
+                                      ServiceEventBus serviceEventBus,
+                                      String eventModuleName) {
         super(Arrays.asList(
                                 ServiceInspector.getEventBusClients(accessInfoService, AccessInfoService.class),
                                 ServiceInspector.getEventBusClients(roleService, RoleService.class),
@@ -47,6 +49,7 @@ public class AuthorizationServiceModule extends ServiceEventTransactionalModule 
                         .collect(Collectors.toList())
                         .toArray(new ServiceEventClientConfiguration[0]),
                 kapuaAuthorizationSettings.getString(KapuaAuthorizationSettingKeys.AUTHORIZATION_EVENT_ADDRESS),
+                eventModuleName + "-" + UUID.randomUUID().toString(),
                 serviceEventTransactionalHousekeeperFactory,
                 serviceEventBus);
     }

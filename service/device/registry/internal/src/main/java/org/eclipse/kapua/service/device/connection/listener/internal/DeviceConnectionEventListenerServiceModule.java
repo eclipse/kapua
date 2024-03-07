@@ -20,12 +20,16 @@ import org.eclipse.kapua.commons.event.ServiceInspector;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.service.device.connection.listener.DeviceConnectionEventListenerService;
 
+import java.util.UUID;
+
 public class DeviceConnectionEventListenerServiceModule extends ServiceEventTransactionalModule implements ServiceModule {
 
     public DeviceConnectionEventListenerServiceModule(DeviceConnectionEventListenerService deviceConnectionEventListenerService, String eventAddress, ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory,
-                                                      ServiceEventBus serviceEventBus) {
+                                                      ServiceEventBus serviceEventBus,
+                                                      String eventModuleName) {
         super(ServiceInspector.getEventBusClients(deviceConnectionEventListenerService, DeviceConnectionEventListenerService.class).toArray(new ServiceEventClientConfiguration[0]),
                 eventAddress,
+                eventModuleName + "-" + UUID.randomUUID().toString(),
                 serviceEventTransactionalHousekeeperFactory, serviceEventBus);
     }
 

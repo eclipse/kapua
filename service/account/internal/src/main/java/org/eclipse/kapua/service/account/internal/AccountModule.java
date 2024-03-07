@@ -87,7 +87,8 @@ public class AccountModule extends AbstractKapuaModule implements Module {
                                        EventStoreFactory eventStoreFactory,
                                        EventStoreRecordRepository eventStoreRecordRepository,
                                        ServiceEventBus serviceEventBus,
-                                       KapuaAccountSetting kapuaAccountSetting
+                                       KapuaAccountSetting kapuaAccountSetting,
+                                       @Named("eventsModuleName") String eventModuleName
     ) throws ServiceEventBusException {
         return new AccountServiceModule(
                 accountService,
@@ -103,7 +104,8 @@ public class AccountModule extends AbstractKapuaModule implements Module {
                         txManagerFactory.create("kapua-account"),
                         serviceEventBus
                 ),
-                serviceEventBus);
+                serviceEventBus,
+                eventModuleName);
     }
 
     @Provides

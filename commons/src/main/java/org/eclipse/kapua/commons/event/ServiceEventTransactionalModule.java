@@ -157,7 +157,7 @@ public abstract class ServiceEventTransactionalModule implements ServiceModule {
                 return config;
             } else {
                 // config for @ListenServiceEvent
-                String subscriberName = config.getClientName() + (clientId == null ? "" : "_" + clientId);
+                String subscriberName = config.getClientName() + (clientId == null ? "" : "-" + clientId);
                 LOGGER.debug("Adding config for @ListenServiceEvent - address: {}, name: {}, listener: {}", config.getAddress(), subscriberName, config.getEventListener());
                 return new ServiceEventClientConfiguration(config.getAddress(), subscriberName, config.getEventListener());
             }

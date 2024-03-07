@@ -29,4 +29,11 @@ public class AppModule extends AbstractKapuaModule {
     String metricModuleName() {
         return "job-engine";
     }
+
+    @Provides
+    @Named("eventsModuleName")
+    String eventModuleName() {
+        return "job_engine";
+    }
+
 }

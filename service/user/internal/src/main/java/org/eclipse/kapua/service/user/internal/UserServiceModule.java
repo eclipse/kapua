@@ -21,12 +21,16 @@ import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.setting.KapuaUserSetting;
 import org.eclipse.kapua.service.user.internal.setting.KapuaUserSettingKeys;
 
+import java.util.UUID;
+
 public class UserServiceModule extends ServiceEventTransactionalModule {
 
     public UserServiceModule(UserService userService, KapuaUserSetting kapuaUserSetting, ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory,
-                             ServiceEventBus serviceEventBus) {
+                             ServiceEventBus serviceEventBus,
+                             String eventModuleName) {
         super(ServiceInspector.getEventBusClients(userService, UserService.class).toArray(new ServiceEventClientConfiguration[0]),
                 kapuaUserSetting.getString(KapuaUserSettingKeys.USER_EVENT_ADDRESS),
+                eventModuleName + "-" + UUID.randomUUID().toString(),
                 serviceEventTransactionalHousekeeperFactory, serviceEventBus);
     }
 }

@@ -51,7 +51,8 @@ public class DeviceConnectionEventListenerModule extends AbstractKapuaModule imp
                                                                        @Named("DeviceRegistryTransactionManager") TxManager txManager,
                                                                        EventStoreFactory eventStoreFactory,
                                                                        EventStoreRecordRepository eventStoreRecordRepository,
-                                                                       ServiceEventBus serviceEventBus
+                                                                       ServiceEventBus serviceEventBus,
+                                                                       @Named("eventsModuleName") String eventModuleName
     ) throws ServiceEventBusException {
 
         String address = kapuaDeviceRegistrySettings.getString(KapuaDeviceRegistrySettingKeys.DEVICE_EVENT_ADDRESS);
@@ -69,6 +70,7 @@ public class DeviceConnectionEventListenerModule extends AbstractKapuaModule imp
                         txManager,
                         serviceEventBus
                 ),
-                serviceEventBus);
+                serviceEventBus,
+                eventModuleName);
     }
 }

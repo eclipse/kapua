@@ -303,9 +303,9 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
                 String subscriptionStr = String.format("$SYS/EVT/%s", subscription.getAddress());
                 // create a bunch of sessions to allow parallel event processing
                 LOGGER.info("Subscribing to address {} - name {} ...", subscriptionStr, subscription.getName());
+                final Session jmsSession = jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+                Topic jmsTopic = jmsSession.createTopic(subscriptionStr);
                 for (int i = 0; i < consumerPoolSize; i++) {
-                    final Session jmsSession = jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                    Topic jmsTopic = jmsSession.createTopic(subscriptionStr);
                     MessageConsumer jmsConsumer = jmsSession.createSharedDurableConsumer(jmsTopic, subscription.getName());
                     jmsConsumer.setMessageListener(message -> {
                         try {

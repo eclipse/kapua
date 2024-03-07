@@ -23,10 +23,15 @@ public class TestConfigModule extends AbstractKapuaModule {
 
     }
 
-
     @Provides
     @Named("metricModuleName")
     String metricModuleName() {
         return "qa-tests";
+    }
+
+    @Provides
+    @Named("eventsModuleName")
+    String eventModuleName() {
+        return "qa_tests";
     }
 }
