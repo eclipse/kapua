@@ -14,15 +14,13 @@ info:
 paths:
   /{scopeId}/users/{userId}/mfa:
     get:
-      deprecated: true
-      description: This resource is deprecated and will be removed in future releases. Please use GET /{scopeId}/user/mfa instead.
       tags:
-        - User - Mfa
+        - Users - Mfa
       summary: Get the MfaOption of this User
       operationId: userMfaOptionGet
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
-        - $ref: './user.yaml#/components/parameters/userId'
+        - $ref: '../user/user.yaml#/components/parameters/userId'
       responses:
         200:
           description: The details of the desired MfaOption
@@ -42,12 +40,12 @@ paths:
       deprecated: true
       description: This resource is deprecated and will be removed in future releases. Please use POST /{scopeId}/user/mfa instead.
       tags:
-        - User - Mfa
+        - Users - Mfa
       summary: Create a new MfaOption
       operationId: userMfaOptionCreate
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
-        - $ref: './user.yaml#/components/parameters/userId'
+        - $ref: '../user/user.yaml#/components/parameters/userId'
       responses:
         201:
           description: The MfaOption that has just been created
@@ -64,15 +62,13 @@ paths:
         500:
           $ref: '../openapi.yaml#/components/responses/kapuaError'
     delete:
-      deprecated: true
-      description: This resource is deprecated and will be removed in future releases. Please use DELETE /{scopeId}/user/mfa instead.
       tags:
-        - User - Mfa
+        - Users - Mfa
       summary: Delete a single MfaOption
       operationId: userMfaOptionDelete
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
-        - $ref: './user.yaml#/components/parameters/userId'
+        - $ref: '../user/user.yaml#/components/parameters/userId'
       responses:
         204:
           description: The MfaOption has been deleted

@@ -19,14 +19,10 @@ import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
-import org.eclipse.kapua.service.authentication.credential.mfa.shiro.MfaOptionCreatorImpl;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -55,8 +51,6 @@ public class Users extends AbstractKapuaResource {
     public UserService userService;
     @Inject
     public UserFactory userFactory;
-    @Inject
-    public MfaOptionService mfaOptionService;
 
     /**
      * Gets the {@link User} list in the scope.
@@ -232,94 +226,6 @@ public class Users extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("userId") EntityId userId) throws KapuaException {
         userService.delete(scopeId, userId);
-
-        return returnNoContent();
-    }
-
-    /**
-     * Creates a new {@link MfaOption} for the user specified by the "userId" path parameter.
-     *
-     * @param scopeId The {@link ScopeId} in which to create the {@link MfaOption}
-     * @param userId  The {@link EntityId} of the User to which the {@link MfaOption} belongs
-     * @return The newly created {@link MfaOption} object.
-     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
-     * @since 1.4.0
-     * @deprecated since 2.0.0 - use POST {scopeId}/user/mfa instead (see {@link UserCredentials})
-     */
-    @POST
-    @Path("{userId}/mfa")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Deprecated
-    public Response createMfa(
-            @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("userId") EntityId userId) throws KapuaException {
-        return returnCreated(mfaOptionService.create(new MfaOptionCreatorImpl(scopeId, userId)));
-    }
-
-    /**
-     * Returns the {@link MfaOption} of the user specified by the "userId" path parameter.
-     *
-     * @param scopeId The {@link ScopeId} of the requested {@link MfaOption}
-     * @param userId  The {@link EntityId} of the User to which the {@link MfaOption} belongs
-     * @return The requested {@link MfaOption} object.
-     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
-     * @since 1.4.0
-     */
-    @GET
-    @Path("{userId}/mfa")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public MfaOption findMfa(
-            @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("userId") EntityId userId) throws KapuaException {
-        MfaOption mfaOption = mfaOptionService.findByUserId(scopeId, userId);
-        if (mfaOption == null) {
-            throw new KapuaEntityNotFoundException(MfaOption.TYPE, "MfaOption");  // TODO: not sure "MfaOption" it's the best value to return here
-        }
-
-        return mfaOption;
-    }
-
-    /**
-     * Deletes the {@link MfaOption} of the user specified by the "userId" path parameter.
-     *
-     * @param scopeId The {@link ScopeId} of the requested {@link MfaOption}
-     * @param userId  The {@link EntityId} of the User to which the {@link MfaOption} belongs
-     * @return HTTP 200 if operation has completed successfully.
-     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
-     * @since 1.4.0
-     * @deprecated since 2.0.0 - use DELETE {scopeId}/user/mfa instead (see {@link UserCredentials})
-     */
-    @DELETE
-    @Deprecated
-    @Path("{userId}/mfa")
-    public Response deleteMfa(
-            @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("userId") EntityId userId) throws KapuaException {
-        mfaOptionService.deleteByUserId(scopeId, KapuaSecurityUtils.getSession().getUserId());
-
-        return returnNoContent();
-    }
-
-    /**
-     * Disable trusted machine for a given {@link MfaOption}.
-     *
-     * @param scopeId The ScopeId of the requested {@link MfaOption}.
-     * @param userId  The {@link EntityId} of the User to which the {@link MfaOption} belongs
-     * @return HTTP 200 if operation has completed successfully.
-     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
-     * @since 1.4.0
-     * @deprecated since 2.0.0 - use DELETE {scopeId}/user/mfa/disableTrust instead (see {@link UserCredentials})
-     */
-    @DELETE
-    @Deprecated
-    @Path("{userId}/mfa/disableTrust")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response disableTrust(
-            @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("userId") EntityId userId) throws KapuaException {
-        mfaOptionService.disableTrustByUserId(scopeId, userId);
 
         return returnNoContent();
     }

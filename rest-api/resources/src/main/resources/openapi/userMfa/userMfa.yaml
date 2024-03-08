@@ -7,8 +7,6 @@ info:
     name: Eurotech
     url: https://www.eurotech.com
 
-paths: { }
-
 components:
   schemas:
     mfaOption:
@@ -125,3 +123,62 @@ components:
             createdBy: "AQ"
             scratchCode: "20795182"
             mfaOptionId: "Tu4UpgmN0A4"
+
+paths:
+  /user/mfa:
+    get:
+      tags:
+        - User - Mfa
+      summary: Get the MfaOption of this User
+      operationId: mfaOptionGet
+      responses:
+        200:
+          description: The details of the desired MfaOption
+          content:
+            application/json:
+              schema:
+                $ref: '../userMfa/userMfa.yaml#/components/schemas/mfaOption'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    post:
+      tags:
+        - User - Mfa
+      summary: Activates MFA for the current user
+      operationId: mfaOptionCreate
+      responses:
+        201:
+          description: The MfaOption that has just been created
+          content:
+            application/json:
+              schema:
+                $ref: '../userMfa/userMfa.yaml#/components/schemas/mfaOptionCreationResponse'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      tags:
+        - User - Mfa
+      summary: Delete a single MfaOption
+      operationId: mfaOptionDelete
+      responses:
+        204:
+          description: The MfaOption has been deleted
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
