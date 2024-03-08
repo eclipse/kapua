@@ -17,14 +17,15 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.account.AccountListResult;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
- * Service to retrieve all child accounts for a given scope
+ * Service to retrieve relative accounts for a given scope
  *
  * @since 2.0.0
  */
-public interface AccountChildrenFinder extends KapuaService {
+public interface AccountRelativeFinder extends KapuaService {
 
     /**
      * @param scopeId       The scope id - must be provided
@@ -33,4 +34,11 @@ public interface AccountChildrenFinder extends KapuaService {
      * @throws KapuaException
      */
     AccountListResult findChildren(KapuaId scopeId, Optional<KapuaId> targetScopeId) throws KapuaException;
+
+    /**
+     * @param accountId    The id of the account to lookup
+     * @return             The list of parent ids for the target account
+     * @throws KapuaException
+     */
+    List<KapuaId> findParentIds(KapuaId accountId) throws KapuaException;
 }

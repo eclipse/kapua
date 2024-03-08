@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.internal;
 
-import org.eclipse.kapua.commons.model.query.AbstractKapuaNamedQuery;
+import org.eclipse.kapua.commons.model.query.AbstractKapuaForwardableEntityQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.certificate.CertificateQuery;
@@ -22,9 +22,7 @@ import org.eclipse.kapua.service.certificate.CertificateQuery;
  *
  * @since 1.0.0
  */
-public class CertificateQueryImpl extends AbstractKapuaNamedQuery implements CertificateQuery {
-
-    private Boolean includeInherited = Boolean.FALSE;
+public class CertificateQueryImpl extends AbstractKapuaForwardableEntityQuery implements CertificateQuery {
 
     /**
      * Constructor.
@@ -54,15 +52,5 @@ public class CertificateQueryImpl extends AbstractKapuaNamedQuery implements Cer
      */
     public CertificateQueryImpl(KapuaQuery query) {
         super(query);
-    }
-
-    @Override
-    public Boolean getIncludeInherited() {
-        return includeInherited;
-    }
-
-    @Override
-    public void setIncludeInherited(Boolean includeInherited) {
-        this.includeInherited = includeInherited;
     }
 }

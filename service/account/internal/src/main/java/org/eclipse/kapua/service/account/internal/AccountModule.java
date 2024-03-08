@@ -15,7 +15,7 @@ package org.eclipse.kapua.service.account.internal;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.multibindings.ProvidesIntoSet;
-import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.AccountRelativeFinder;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
@@ -71,10 +71,10 @@ public class AccountModule extends AbstractKapuaModule implements Module {
 
     @Provides
     @Singleton
-    AccountChildrenFinder accountChildrenFinder(
+    AccountRelativeFinder accountRelativeFinder(
             AccountFactory accountFactory,
             AccountService accountService) {
-        return new AccountChildrenFinderImpl(
+        return new AccountRelativeFinderImpl(
                 accountFactory,
                 accountService);
     }
@@ -132,7 +132,7 @@ public class AccountModule extends AbstractKapuaModule implements Module {
     ServiceConfigurationManager accountServiceConfigurationManager(
             AccountFactory factory,
             RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder,
+            AccountRelativeFinder accountRelativeFinder,
             AccountRepository accountRepository,
             KapuaJpaRepositoryConfiguration jpaRepoConfig,
             EntityCacheFactory entityCacheFactory
@@ -145,7 +145,7 @@ public class AccountModule extends AbstractKapuaModule implements Module {
                                 entityCacheFactory.createCache("AbstractKapuaConfigurableServiceCacheId")
                         ),
                         rootUserTester,
-                        accountChildrenFinder,
+                        accountRelativeFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
                                 accountRepository)

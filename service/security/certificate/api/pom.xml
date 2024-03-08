@@ -36,6 +36,10 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-service-commons-utils-api</artifactId>
+        </dependency>
     </dependencies>
 
 

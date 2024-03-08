@@ -12,14 +12,28 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.info.internal;
 
+import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.service.certificate.CertificateService;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoFactory;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoService;
+
+import javax.inject.Singleton;
 
 public class CertificateInfoModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(CertificateInfoFactory.class).to(CertificateInfoFactoryImpl.class);
-        bind(CertificateInfoService.class).to(CertificateInfoServiceImpl.class);
+    }
+
+
+    @Provides
+    @Singleton
+    CertificateInfoService certificateInfoService(
+            CertificateService certificateService) {
+
+        return new CertificateInfoServiceImpl(
+                certificateService
+        );
     }
 }

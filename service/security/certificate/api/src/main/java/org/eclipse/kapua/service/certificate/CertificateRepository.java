@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
-import org.eclipse.kapua.storage.KapuaNamedEntityRepository;
+import org.eclipse.kapua.service.utils.KapuaForwardableEntityRepository;
 
 public interface CertificateRepository
-        extends KapuaNamedEntityRepository<Certificate, CertificateListResult> {
+        extends KapuaForwardableEntityRepository<Certificate, CertificateListResult> {
 }

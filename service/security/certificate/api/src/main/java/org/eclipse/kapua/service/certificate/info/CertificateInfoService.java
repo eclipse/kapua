@@ -36,6 +36,8 @@ public interface CertificateInfoService extends KapuaEntityService<CertificateIn
      * @return
      * @throws KapuaException
      * @since 1.1.0
+     * @deprecated Since 2.0.0 Use the query method with CertificateQuery.setIncludeInherited(true) instead
      */
+    @Deprecated
     List<CertificateInfo> findAncestorsCertificates(KapuaId scopeId, CertificateUsage usage) throws KapuaException;
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2024, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,10 +10,19 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate.info;
+package org.eclipse.kapua.model;
 
-import org.eclipse.kapua.service.utils.KapuaForwardableEntityRepository;
+import javax.xml.bind.annotation.XmlElement;
 
-public interface CertificateInfoRepository
-        extends KapuaForwardableEntityRepository<CertificateInfo, CertificateInfoListResult> {
+/**
+ * {@link KapuaForwardableEntity} definition.
+ *
+ * @since 2.0.0
+ */
+public interface KapuaForwardableEntity extends KapuaNamedEntity {
+
+    @XmlElement(name = "forwardable")
+    Boolean getForwardable();
+
+    void setForwardable(Boolean forwardable);
 }

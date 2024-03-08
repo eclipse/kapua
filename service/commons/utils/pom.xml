@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (c) 2020, 2022 Eurotech and/or its affiliates and others
+    Copyright (c) 2024, 2022 Eurotech and/or its affiliates and others
 
     This program and the accompanying materials are made
     available under the terms of the Eclipse Public License 2.0
@@ -17,17 +17,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>kapua-service</artifactId>
+        <artifactId>kapua-service-commons</artifactId>
         <groupId>org.eclipse.kapua</groupId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kapua-service-commons</artifactId>
+    <artifactId>kapua-service-commons-utils</artifactId>
     <packaging>pom</packaging>
 
     <modules>
-        <module>elasticsearch</module>
-        <module>storable</module>
-        <module>utils</module>
+        <module>api</module>
+        <module>internal</module>
     </modules>
+
 </project>
