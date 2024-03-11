@@ -56,17 +56,20 @@ public class KapuaEntityQueryUtilImpl implements KapuaEntityQueryUtil {
         query.setScopeId(KapuaId.ANY);
         OrPredicate forwardableAncestorPreds = query.orPredicate();
 
-        for (KapuaId id : accountRelativeFinder.findParentIds(scopeId)) {
-            AndPredicate scopedForwardablePred = query.andPredicate(query.attributePredicate(KapuaEntityAttributes.SCOPE_ID, id));
-            scopedForwardablePred = scopedForwardablePred.and(query.attributePredicate(KapuaForwardableEntityAttributes.FORWARDABLE, true));
+        if (scopeId != null) {
+            for (KapuaId id : accountRelativeFinder.findParentIds(scopeId)) {
+                AndPredicate scopedForwardablePred = query.andPredicate(query.attributePredicate(KapuaEntityAttributes.SCOPE_ID, id));
+                scopedForwardablePred = scopedForwardablePred.and(query.attributePredicate(KapuaForwardableEntityAttributes.FORWARDABLE, true));
 
-            forwardableAncestorPreds = forwardableAncestorPreds.or(scopedForwardablePred);
+                forwardableAncestorPreds = forwardableAncestorPreds.or(scopedForwardablePred);
+            }
+
+            // include the original scope (which doesn't need to be forwardable)
+            forwardableAncestorPreds = forwardableAncestorPreds.or(query.attributePredicate(KapuaEntityAttributes.SCOPE_ID, scopeId));
+
+            // Use the original query predicate AND the forwardable parent scopes
+            query.setPredicate(newPred.and(forwardableAncestorPreds));
         }
-        // include the original scope (which doesn't need to be forwardable)
-        forwardableAncestorPreds = forwardableAncestorPreds.or(query.attributePredicate(KapuaEntityAttributes.SCOPE_ID, scopeId));
-
-        // Use the original query predicate AND the forwardable parent scopes
-        query.setPredicate(newPred.and(forwardableAncestorPreds));
 
         // Disable this option so that it does not get transformed again in case of subsequent calls to this function
         query.setIncludeInherited(false);
