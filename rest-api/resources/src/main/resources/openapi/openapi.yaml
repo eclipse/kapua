@@ -463,7 +463,9 @@ paths:
     $ref: './usersCredentials/users-credentials-scopeId-userId-password-_reset.yaml#/paths/~1{scopeId}~1users~1{userId}~1credentials~1password~1_reset'
   ### User Profile ###
   /{scopeId}/user/profile/:
-    $ref: './userProfile/userProfile-scopeId.yaml#/paths/~1{scopeId}~1user~1profile~1'
+    $ref: './userProfile/userProfile.yaml#/paths/~1{scopeId}~1user~1profile~1'
+  /user/profile/:
+    $ref: './userProfile/userProfile.yaml#/paths/~1user~1profile~1'
 
 components:
   parameters:

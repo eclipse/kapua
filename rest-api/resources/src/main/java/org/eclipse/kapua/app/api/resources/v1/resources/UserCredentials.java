@@ -50,7 +50,7 @@ public class UserCredentials extends AbstractKapuaResource {
      * @return The updated {@link Credential}
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      */
-    @Path("credentials/password")
+    @Path("password")
     @POST
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
