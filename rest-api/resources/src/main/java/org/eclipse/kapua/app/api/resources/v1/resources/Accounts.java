@@ -44,7 +44,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("{scopeId}/accounts")
+/*
+@deprecated
+accidentally exposed under:
+        /{scopeId}/accounts/....
+Where the scopeId has no meaning of the current user (the one from the session will always be used)
+Remove the match with /{scopeId}/... in the next release
+ */
+@Path("{scopeId: (\\w+)?}{path:|/}accounts")
 public class Accounts extends AbstractKapuaResource {
 
     @Inject

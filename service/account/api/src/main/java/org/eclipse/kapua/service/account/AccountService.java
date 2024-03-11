@@ -13,6 +13,8 @@
 package org.eclipse.kapua.service.account;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.KapuaNamedEntityUpdateRequest;
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
@@ -21,6 +23,8 @@ import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * {@link Account} {@link KapuaEntityService}.
@@ -31,6 +35,27 @@ public interface AccountService extends KapuaEntityService<Account, AccountCreat
         KapuaUpdatableEntityService<Account>,
         KapuaNamedEntityService<Account>,
         KapuaConfigurableService {
+
+    /**
+     * Updates the given {@link KapuaUpdatableEntity}.
+     *
+     * @return The updated {@link KapuaUpdatableEntity}.
+     * @throws KapuaException
+     * @since 1.0.0
+     */
+    Account updateCurrentAccount(@NotNull CurrentAccountUpdateRequest request) throws KapuaException;
+
+    @XmlRootElement(name = "account")
+    public static class CurrentAccountUpdateRequest extends KapuaNamedEntityUpdateRequest {
+        /**
+         * Gets the {@link Organization}.
+         *
+         * @return The {@link Organization}.
+         * @since 1.0.0
+         */
+        @XmlElement(name = "organization")
+        public Organization organization;
+    }
 
     /**
      * Finds the {@link Account} by the {@link Account#getId()}.

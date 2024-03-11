@@ -47,6 +47,7 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSetting;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.mapstruct.factory.Mappers;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -62,6 +63,8 @@ public class AccountModule extends AbstractKapuaModule implements Module {
     protected void configureModule() {
         bind(AccountFactory.class).to(AccountFactoryImpl.class).in(Singleton.class);
         bind(KapuaAccountSetting.class).in(Singleton.class);
+        bind(AccountMapper.class).toInstance(Mappers.getMapper(AccountMapper.class));
+
     }
 
     @ProvidesIntoSet
@@ -116,14 +119,16 @@ public class AccountModule extends AbstractKapuaModule implements Module {
                                   AuthorizationService authorizationService,
                                   @Named("AccountServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
                                   EventStorer eventStorer,
-                                  KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+                                  KapuaJpaTxManagerFactory jpaTxManagerFactory,
+                                  AccountMapper accountMapper) {
         return new AccountServiceImpl(
                 jpaTxManagerFactory.create("kapua-account"),
                 accountRepository,
                 permissionFactory,
                 authorizationService,
                 serviceConfigurationManager,
-                eventStorer);
+                eventStorer,
+                accountMapper);
     }
 
     @Provides

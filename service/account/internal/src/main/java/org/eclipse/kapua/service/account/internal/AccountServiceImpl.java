@@ -63,6 +63,7 @@ public class AccountServiceImpl
     private static final String NO_EXPIRATION_DATE_SET = "no expiration date set";
     private final AccountRepository accountRepository;
     private final EventStorer eventStorer;
+    private final AccountMapper accountMapper;
 
     /**
      * Injectable constructor
@@ -81,10 +82,12 @@ public class AccountServiceImpl
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             ServiceConfigurationManager serviceConfigurationManager,
-            EventStorer eventStorer) {
+            EventStorer eventStorer,
+            AccountMapper accountMapper) {
         super(txManager, serviceConfigurationManager, Domains.ACCOUNT, authorizationService, permissionFactory);
         this.accountRepository = accountRepository;
         this.eventStorer = eventStorer;
+        this.accountMapper = accountMapper;
     }
 
     @Override
@@ -150,6 +153,24 @@ public class AccountServiceImpl
             String parentAccountPath = parentAccount.getParentAccountPath() + "/" + createdAccount.getId();
             createdAccount.setParentAccountPath(parentAccountPath);
             return accountRepository.update(tx, createdAccount);
+        });
+    }
+
+    @Override
+    public Account updateCurrentAccount(CurrentAccountUpdateRequest request) throws KapuaException {
+        ArgumentValidator.notNull(request.organization, "request.organization");
+        ArgumentValidator.match(request.organization.getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "request.organization.email");
+
+        final KapuaId accountId = KapuaSecurityUtils.getSession().getScopeId();
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, Actions.write, accountId));
+
+        return txManager.execute(tx -> {
+            // Check existence
+            Account oldAccount = accountRepository.find(tx, KapuaId.ANY, accountId)
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(Account.TYPE, accountId));
+            accountMapper.merge(oldAccount, request);
+            //kinda redundant, as dirt check would pick this anyway
+            return accountRepository.update(tx, oldAccount);
         });
     }
 
