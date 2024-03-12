@@ -148,7 +148,7 @@ public class DatastoreUtils {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(hashCode);
     }
 
-    private String normalizeIndexName(String name) {
+    protected String normalizeIndexName(String name) {
         String normName = null;
         try {
             checkIdxAliasName(name);
@@ -433,7 +433,7 @@ public class DatastoreUtils {
     }
 
     private boolean validatePrefixIndex(@NotNull String index,@NotNull KapuaId scopeId) {
-        String genericIndexFormat = getDataIndexName(scopeId);
+        String genericIndexFormat = getIndexName(scopeId);
         return index.startsWith(genericIndexFormat.substring(0, genericIndexFormat.length() - 1));
     }
 
@@ -445,8 +445,18 @@ public class DatastoreUtils {
         return !indexStart.isAfter(checkpoint) && !indexEnd.isAfter(checkpoint);
     }
 
-    private String stripPrefixAndAccount(@NotNull String index) {
+    protected String stripPrefixAndAccount(@NotNull String index) {
         return StringUtils.substringAfter(index, "-data-message-");
+    }
+
+    /**
+     * Gets the format of the index for the given scopeID
+     * Needs to be overridden if the format changes for another "class" of indexes
+     *
+     *
+     */
+    public String getIndexName(KapuaId scopeId) {
+        return getDataIndexName(scopeId);
     }
 
     /**
