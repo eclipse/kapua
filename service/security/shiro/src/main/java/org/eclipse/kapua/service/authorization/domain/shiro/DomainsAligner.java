@@ -13,8 +13,8 @@
 package org.eclipse.kapua.service.authorization.domain.shiro;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.populators.DataPopulator;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.locator.initializers.KapuaInitializingMethod;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionRepository;
@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -33,7 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class DomainsAligner implements DataPopulator {
+public class DomainsAligner {
     private final TxManager txManager;
     private final DomainRepository domainRepository;
     private final AccessPermissionRepository accessPermissionRepository;
@@ -42,7 +43,8 @@ public class DomainsAligner implements DataPopulator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
-    public DomainsAligner(TxManager txManager,
+    public DomainsAligner(@Named("authorizationTxManager")
+                          TxManager txManager,
                           DomainRepository domainRepository,
                           AccessPermissionRepository accessPermissionRepository, RolePermissionRepository rolePermissionRepository,
                           Set<Domain> knownDomains) {
@@ -53,7 +55,7 @@ public class DomainsAligner implements DataPopulator {
         this.knownDomains = knownDomains;
     }
 
-    @Override
+    @KapuaInitializingMethod(priority = 20)
     public void populate() {
         logger.info("Domain alignment commencing. Found {} domain declarations in wiring", knownDomains.size());
         final Map<String, Domain> knownDomainsByName = knownDomains

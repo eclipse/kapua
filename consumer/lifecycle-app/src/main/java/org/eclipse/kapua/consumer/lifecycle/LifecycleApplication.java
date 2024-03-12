@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.lifecycle;
 
-import org.eclipse.kapua.service.camel.setting.ServiceSettingKey;
 import org.eclipse.kapua.service.security.SecurityUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -38,11 +37,8 @@ public class LifecycleApplication {
     }
 
     public static void main(String[] args) {
-        //statically set parameters
-        System.setProperty(ServiceSettingKey.JAXB_CONTEXT_CLASS_NAME.key(), LifecycleJAXBContextProvider.class.getName());
         //org.springframework.context.ApplicationContext is not needed now so don't keep the SpringApplication.run return
         SpringApplication.run(LifecycleApplication.class, args);
-
     }
 
 }

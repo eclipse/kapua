@@ -16,7 +16,6 @@ import org.eclipse.kapua.app.api.core.KapuaSerializableBodyWriter;
 import org.eclipse.kapua.app.api.core.ListBodyWriter;
 import org.eclipse.kapua.app.api.core.MoxyJsonConfigContextResolver;
 import org.eclipse.kapua.commons.rest.errors.ExceptionConfigurationProvider;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.guice.GuiceLocatorImpl;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -72,9 +71,6 @@ public class RestApisApplication extends ResourceConfig {
             @Override
             public void onStartup(Container container) {
                 ServiceLocator serviceLocator = container.getApplicationHandler().getInjectionManager().getInstance(ServiceLocator.class);
-
-                RestApiJAXBContextProvider provider = serviceLocator.createAndInitialize(RestApiJAXBContextProvider.class);
-                XmlUtil.setContextProvider(provider);
                 final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
                 if (kapuaLocator instanceof GuiceLocatorImpl) {
                     GuiceBridge.getGuiceBridge().initializeGuiceBridge(serviceLocator);

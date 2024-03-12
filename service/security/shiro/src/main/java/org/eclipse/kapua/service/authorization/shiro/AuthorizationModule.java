@@ -31,7 +31,6 @@ import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.jpa.NamedCacheFactory;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.model.domains.Domains;
-import org.eclipse.kapua.commons.populators.DataPopulator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
@@ -97,10 +96,10 @@ import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImplJpaR
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionServiceImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
 import org.eclipse.kapua.service.authorization.shiro.setting.KapuaAuthorizationSetting;
+import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.Set;
 
 public class AuthorizationModule extends AbstractKapuaModule {
     @Override
@@ -122,6 +121,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
         bind(KapuaAuthorizationSetting.class).in(Singleton.class);
         bind(PermissionValidator.class).in(Singleton.class);
         bind(PermissionMapper.class).to(PermissionMapperImpl.class).in(Singleton.class);
+        bind(DomainsAligner.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet
@@ -178,21 +178,13 @@ public class AuthorizationModule extends AbstractKapuaModule {
                 eventModuleName);
     }
 
-    @ProvidesIntoSet
-    DataPopulator domainsPopulator(
-            KapuaJpaTxManagerFactory jpaTxManagerFactory,
-            DomainRepository domainRepository,
-            AccessPermissionRepository accessPermissionRepository,
-            RolePermissionRepository rolePermissionRepository,
-            Set<Domain> declaredDomains
+    @Provides
+    @Singleton
+    @Named("authorizationTxManager")
+    TxManager authorizationTxManager(
+            KapuaJpaTxManagerFactory jpaTxManagerFactory
     ) {
-        return new DomainsAligner(
-                jpaTxManagerFactory.create("kapua-authorization"),
-                domainRepository,
-                accessPermissionRepository,
-                rolePermissionRepository,
-                declaredDomains
-        );
+        return jpaTxManagerFactory.create("kapua-authorization");
     }
 
     @Provides

@@ -14,6 +14,7 @@
 package org.eclipse.kapua.service.authentication.shiro.registration;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.locator.initializers.KapuaInitializingMethod;
 import org.eclipse.kapua.plugin.sso.openid.JwtProcessor;
 import org.eclipse.kapua.plugin.sso.openid.OpenIDLocator;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
@@ -37,6 +38,7 @@ import java.util.Set;
 public class RegistrationServiceImpl implements RegistrationService, AutoCloseable {
 
     private final JwtProcessor jwtProcessor;
+    private final Set<RegistrationProcessorProvider> registrationProcessorProvider;
 
     private final List<RegistrationProcessor> processors = new ArrayList<>();
 
@@ -47,6 +49,11 @@ public class RegistrationServiceImpl implements RegistrationService, AutoCloseab
         this.authenticationSetting = authenticationSetting;
         jwtProcessor = openIDLocator.getProcessor();
 
+        this.registrationProcessorProvider = registrationProcessorProvider;
+    }
+
+    @KapuaInitializingMethod
+    public void addProcessors() {
         for (RegistrationProcessorProvider provider : registrationProcessorProvider) {
             processors.addAll(provider.createAll());
         }
