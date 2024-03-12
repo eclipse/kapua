@@ -14,15 +14,13 @@ info:
 paths:
   /{scopeId}/users/{userId}/mfa/disableTrust:
     delete:
-      deprecated: true
-      description: This resource is deprecated and will be removed in future releases. Please use DELETE /{scopeId}/user/mfa/disableTrust instead.
       tags:
-        - User - Mfa
+        - Users - Mfa
       summary: Disable trusted machine for a MfaOption
       operationId: userMfaOptionDisableTrust
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
-        - $ref: './user.yaml#/components/parameters/userId'
+        - $ref: '../user/user.yaml#/components/parameters/userId'
       responses:
         204:
           description: The trusted machine has been disabled for the User

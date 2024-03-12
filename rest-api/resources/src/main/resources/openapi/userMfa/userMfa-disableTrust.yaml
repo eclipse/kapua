@@ -12,14 +12,12 @@ info:
     url: https://www.eclipse.org/legal/epl-2.0
 
 paths:
-  /{scopeId}/user/mfa/disableTrust:
+  /user/mfa/disableTrust:
     delete:
       tags:
         - User - Mfa
       summary: Disable trusted machine for a MfaOption
       operationId: mfaOptionDisableTrust
-      parameters:
-        - $ref: '../openapi.yaml#/components/parameters/scopeId'
       responses:
         204:
           description: The trusted machine has been disabled for the User

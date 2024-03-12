@@ -431,15 +431,16 @@ paths:
     $ref: './user/user-scopeId-_count.yaml#/paths/~1{scopeId}~1users~1_count'
   /{scopeId}/users/_query:
     $ref: './user/user-scopeId-_query.yaml#/paths/~1{scopeId}~1users~1_query'
+  ### Users Mfa ###
   /{scopeId}/users/{userId}/mfa:
-    $ref: './user/user-scopeId-userId-mfa.yaml#/paths/~1{scopeId}~1users~1{userId}~1mfa'
+    $ref: './usersMfa/users-scopeId-userId-mfa.yaml#/paths/~1{scopeId}~1users~1{userId}~1mfa'
   /{scopeId}/users/{userId}/mfa/disableTrust:
-    $ref: './user/user-scopeId-userId-mfa-disableTrust.yaml#/paths/~1{scopeId}~1users~1{userId}~1mfa~1disableTrust'
+    $ref: './usersMfa/users-scopeId-userId-mfa-disableTrust.yaml#/paths/~1{scopeId}~1users~1{userId}~1mfa~1disableTrust'
   ### User Mfa ###
-  /{scopeId}/user/mfa:
-    $ref: './userMfa/userMfa-scopeId.yaml#/paths/~1{scopeId}~1user~1mfa'
-  /{scopeId}/user/mfa/disableTrust:
-    $ref: './userMfa/userMfa-scopeId-disableTrust.yaml#/paths/~1{scopeId}~1user~1mfa~1disableTrust'
+  /user/mfa:
+    $ref: './userMfa/userMfa.yaml#/paths/~1user~1mfa'
+  /user/mfa/disableTrust:
+    $ref: './userMfa/userMfa-disableTrust.yaml#/paths/~1user~1mfa~1disableTrust'
   ### User Credentials ###
   ### User Credentials self managing ###
   /{scopeId}/user/credentials/password:
