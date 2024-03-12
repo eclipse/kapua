@@ -77,7 +77,9 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
                 logger.info("initialize Servicelocator with the default instance... DONE");
                 return locator;
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
+            instance = null;
+            isBeingCreated = false;
             logger.error("Error initializing locator...", e);
             throw e;
         }
