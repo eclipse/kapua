@@ -71,6 +71,7 @@ public class Jobs extends AbstractKapuaResource {
     public JobListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("name") String name,
+            @QueryParam("matchTerm") String matchTerm,
             @QueryParam("sortParam") String sortParam,
             @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("askTotalCount") boolean askTotalCount,
@@ -81,6 +82,9 @@ public class Jobs extends AbstractKapuaResource {
         AndPredicate andPredicate = query.andPredicate();
         if (!Strings.isNullOrEmpty(name)) {
             andPredicate.and(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name));
+        }
+        if (matchTerm != null && !matchTerm.isEmpty()) {
+            andPredicate.and(query.matchPredicate(matchTerm));
         }
         query.setPredicate(andPredicate);
 

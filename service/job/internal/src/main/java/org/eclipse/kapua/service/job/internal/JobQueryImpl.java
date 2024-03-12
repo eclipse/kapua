@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.job.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaNamedQuery;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.JobMatchPredicate;
 import org.eclipse.kapua.service.job.JobQuery;
 
 /**
@@ -31,5 +32,10 @@ public class JobQueryImpl extends AbstractKapuaNamedQuery implements JobQuery {
      */
     public JobQueryImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    @Override
+    public <T> JobMatchPredicate<T> matchPredicate(T matchTerm) {
+        return new JobMatchPredicateImpl<>(matchTerm);
     }
 }
