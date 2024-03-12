@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
@@ -98,7 +97,7 @@ public class UsersMfa extends AbstractKapuaResource {
     public Response deleteMfa(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("userId") EntityId userId) throws KapuaException {
-        mfaOptionService.deleteByUserId(scopeId, KapuaSecurityUtils.getSession().getUserId());
+        mfaOptionService.deleteByUserId(scopeId, userId);
 
         return returnNoContent();
     }
