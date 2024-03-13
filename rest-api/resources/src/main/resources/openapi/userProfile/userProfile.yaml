@@ -7,8 +7,6 @@ info:
     name: Eurotech
     url: https://www.eurotech.com
 
-paths: {}
-
 components:
   schemas:
     userProfile:
@@ -26,3 +24,94 @@ components:
             displayName: "Foo42"
             phoneNumber: "424202424"
             email: "foo@bar.com"
+paths:
+
+  /{scopeId}/user/profile/:
+    get:
+      deprecated: true
+      description: This resource is deprecated and will be removed in future releases. Please make use of /user/profile.
+      tags:
+        - User Profile
+      summary: Get the User Profile
+      operationId: scopeIdUserProfileGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+      responses:
+        200:
+          description: The desired user profile
+          content:
+            application/json:
+              schema:
+                $ref: './userProfile.yaml#/components/schemas/userProfile'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    put:
+      deprecated: true
+      description: Change logged user profile. This resource is deprecated and will be removed in future releases. Please make use of /user/profile.
+      tags:
+        - User Profile
+      summary: Change the User Profile
+      operationId: scopeIdUserProfileUpdate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/userProfile'
+      responses:
+        200:
+          description: The user profile has been updated
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+  /user/profile/:
+    get:
+      tags:
+        - User Profile
+      summary: Get the User Profile
+      operationId: userProfileGet
+      responses:
+        200:
+          description: The desired user profile
+          content:
+            application/json:
+              schema:
+                $ref: './userProfile.yaml#/components/schemas/userProfile'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    put:
+      tags:
+        - User Profile
+      summary: Change the User Profile
+      operationId: userProfileUpdate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/userProfile'
+      responses:
+        200:
+          description: The user profile has been updated
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+      description: Change logged user profile
