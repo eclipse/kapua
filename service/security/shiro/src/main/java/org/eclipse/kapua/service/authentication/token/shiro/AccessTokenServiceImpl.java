@@ -75,6 +75,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         ArgumentValidator.notNull(accessTokenCreator.getTokenId(), "accessTokenCreator.tokenId");
         ArgumentValidator.notNull(accessTokenCreator.getUserId(), "accessTokenCreator.userId");
         ArgumentValidator.notNull(accessTokenCreator.getExpiresOn(), "accessTokenCreator.expiresOn");
+        ArgumentValidator.notNull(accessTokenCreator.getTokenIdentifier(), "accessTokenCreator.tokenIdentifier");
 
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCESS_TOKEN, Actions.write, accessTokenCreator.getScopeId()));
@@ -86,6 +87,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         at.setExpiresOn(accessTokenCreator.getExpiresOn());
         at.setRefreshToken(accessTokenCreator.getRefreshToken());
         at.setRefreshExpiresOn(accessTokenCreator.getRefreshExpiresOn());
+        at.setTokenIdentifier(accessTokenCreator.getTokenIdentifier());
         return txManager.execute(tx -> accessTokenRepository.create(tx, at));
     }
 

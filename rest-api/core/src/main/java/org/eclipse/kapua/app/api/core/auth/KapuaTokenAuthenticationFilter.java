@@ -20,6 +20,9 @@ import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.ExpiredAccessTokenException;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.InvalidatedAccessTokenException;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.MalformedAccessTokenException;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -69,12 +72,31 @@ public class KapuaTokenAuthenticationFilter extends AuthenticatingFilter {
         return (AuthenticationToken) accessTokenCredentials;
     }
 
-    @Override
-    protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
+    protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e,
+                                     ServletRequest request, ServletResponse response) {
         HttpServletResponse httpResponse = WebUtils.toHttp(response);
         httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        // Continue with the filter chain, because CORS headers are still needed in the case when token is not authenticated or expired
+        //now I set a dummy header to propagate the error message to the CORSResponseFilter Class, that eventually will send this error message if CORS filter passes
+        httpResponse.setHeader("exceptionMessagePropagatedToCORS", handleAuthException(e));
+        return false;
+    }
+
+    @Override
+    protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
+        // Continue with the filter chain, because CORS headers are still needed
         return true;
+    }
+
+
+    //with this method we choose what exceptions we want to hide in the response and what we want to show as an error message
+    private String handleAuthException(AuthenticationException ae) {
+        String errorMessageInResponse = "An error occurred during the authentication process with the provided access token";
+        if (ae instanceof MalformedAccessTokenException ||
+                ae instanceof InvalidatedAccessTokenException ||
+                ae instanceof ExpiredAccessTokenException) {
+            errorMessageInResponse = ae.getMessage();
+        }
+        return errorMessageInResponse;
     }
 
 }

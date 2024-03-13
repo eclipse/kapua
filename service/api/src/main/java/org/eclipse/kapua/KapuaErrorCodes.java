@@ -134,4 +134,10 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
      * The service has been disabled
      */
     SERVICE_DISABLED,
+
+    /**
+     * Some parsing failed for some reason
+     * @since 2.0.0
+     */
+    PARSING_ERROR
 }

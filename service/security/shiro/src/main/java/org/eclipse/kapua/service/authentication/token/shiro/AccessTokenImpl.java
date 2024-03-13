@@ -73,6 +73,10 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
     @Transient
     private String trustkey;
 
+    @Basic
+    @Column(name = "token_identifier", updatable = false, nullable = false)
+    private String tokenIdentifier;
+
     /**
      * Constructor.
      *
@@ -91,7 +95,7 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
      * @param expiresOn token expiration {@link Date}
      * @since 1.0.0
      */
-    public AccessTokenImpl(KapuaId scopeId, KapuaId userId, String tokenId, Date expiresOn, String refreshToken, Date refreshExpiresOn) {
+    public AccessTokenImpl(KapuaId scopeId, KapuaId userId, String tokenId, Date expiresOn, String refreshToken, Date refreshExpiresOn, String tokenIdentifier) {
         super(scopeId);
 
         setUserId(userId);
@@ -99,6 +103,7 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
         setExpiresOn(expiresOn);
         setRefreshToken(refreshToken);
         setRefreshExpiresOn(refreshExpiresOn);
+        setTokenIdentifier(tokenIdentifier);
     }
 
     public AccessTokenImpl(KapuaId scopeId) {
@@ -121,6 +126,7 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
         setRefreshToken(accessToken.getRefreshToken());
         setRefreshExpiresOn(accessToken.getRefreshExpiresOn());
         setInvalidatedOn(accessToken.getInvalidatedOn());
+        setTokenIdentifier(accessToken.getTokenId());
     }
 
 
@@ -208,5 +214,15 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
     @Override
     public void setTrustKey(String trustKey) {
         this.trustkey = trustKey;
+    }
+
+    @Override
+    public String getTokenIdentifier() {
+        return tokenIdentifier;
+    }
+
+    @Override
+    public void setTokenIdentifier(String tokenId) {
+        this.tokenIdentifier = tokenId;
     }
 }

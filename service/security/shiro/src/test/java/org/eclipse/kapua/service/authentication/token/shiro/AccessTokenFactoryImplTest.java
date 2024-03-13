@@ -36,7 +36,7 @@ public class AccessTokenFactoryImplTest {
     AccessTokenFactoryImpl accessTokenFactoryImpl;
     KapuaId[] scopeIds;
     KapuaEid[] userIds;
-    String[] tokenIds, refreshTokens;
+    String[] tokenIds, refreshTokens, tokenIdentifiers;
     Date[] expiresOnDates, refreshExpiresOnDates;
     AccessToken accessToken;
     Date modifiedOn, createdOn, invalidatedOn;
@@ -54,6 +54,7 @@ public class AccessTokenFactoryImplTest {
         modifiedOn = new Date();
         createdOn = new Date();
         invalidatedOn = new Date();
+        tokenIdentifiers = new String[]{"a2fe104f-5d03-4a09-a28d-817ebbc85901", "8e075aeb-be2a-49a7-8dec-346760375d19", "e71b2f52-e02e-4e24-9147-96674e3bf599"};
     }
 
     @Test
@@ -64,13 +65,16 @@ public class AccessTokenFactoryImplTest {
                     for (Date expiresOnDate : expiresOnDates) {
                         for (String refreshToken : refreshTokens) {
                             for (Date refreshExpiresOnDate : refreshExpiresOnDates) {
-                                AccessTokenCreatorImpl accessTokenCreatorImpl = accessTokenFactoryImpl.newCreator(scopeId, userId, tokenId, expiresOnDate, refreshToken, refreshExpiresOnDate);
-                                Assert.assertEquals("Expected and actual values should be the same.", scopeId, accessTokenCreatorImpl.getScopeId());
-                                Assert.assertEquals("Expected and actual values should be the same.", userId, accessTokenCreatorImpl.getUserId());
-                                Assert.assertEquals("Expected and actual values should be the same.", tokenId, accessTokenCreatorImpl.getTokenId());
-                                Assert.assertEquals("Expected and actual values should be the same.", expiresOnDate, accessTokenCreatorImpl.getExpiresOn());
-                                Assert.assertEquals("Expected and actual values should be the same.", refreshToken, accessTokenCreatorImpl.getRefreshToken());
-                                Assert.assertEquals("Expected and actual values should be the same.", refreshExpiresOnDate, accessTokenCreatorImpl.getRefreshExpiresOn());
+                                for (String tokenIdenfier : tokenIdentifiers) {
+                                    AccessTokenCreatorImpl accessTokenCreatorImpl = accessTokenFactoryImpl.newCreator(scopeId, userId, tokenId, expiresOnDate, refreshToken, refreshExpiresOnDate, tokenIdenfier);
+                                    Assert.assertEquals("Expected and actual values should be the same.", scopeId, accessTokenCreatorImpl.getScopeId());
+                                    Assert.assertEquals("Expected and actual values should be the same.", userId, accessTokenCreatorImpl.getUserId());
+                                    Assert.assertEquals("Expected and actual values should be the same.", tokenId, accessTokenCreatorImpl.getTokenId());
+                                    Assert.assertEquals("Expected and actual values should be the same.", expiresOnDate, accessTokenCreatorImpl.getExpiresOn());
+                                    Assert.assertEquals("Expected and actual values should be the same.", refreshToken, accessTokenCreatorImpl.getRefreshToken());
+                                    Assert.assertEquals("Expected and actual values should be the same.", refreshExpiresOnDate, accessTokenCreatorImpl.getRefreshExpiresOn());
+                                    Assert.assertEquals("Expected and actual values should be the same.", tokenIdenfier, accessTokenCreatorImpl.getTokenIdentifier());
+                                }
                             }
                         }
                     }

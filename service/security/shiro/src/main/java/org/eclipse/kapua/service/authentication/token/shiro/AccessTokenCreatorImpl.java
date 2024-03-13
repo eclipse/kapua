@@ -34,6 +34,7 @@ public class AccessTokenCreatorImpl extends AbstractKapuaEntityCreator<AccessTok
     private Date expiresOn;
     private String refreshToken;
     private Date refreshExpiresOn;
+    private String tokenIdentifier;
 
     /**
      * Constructor
@@ -94,6 +95,25 @@ public class AccessTokenCreatorImpl extends AbstractKapuaEntityCreator<AccessTok
     @Override
     public void setRefreshExpiresOn(Date refreshExpiresOn) {
         this.refreshExpiresOn = refreshExpiresOn;
+    }
+
+    /**
+     * Get the token identifier
+     *
+     * @since 2.0
+     */
+    public String getTokenIdentifier() {
+        return tokenIdentifier;
+    }
+
+    /**
+     * Sets the token identifier
+     *
+     * @param tokenId the token id to set
+     * @since 2.0
+     */
+    public void setTokenIdentifier(String tokenId) {
+        this.tokenIdentifier=tokenId;
     }
 
 }

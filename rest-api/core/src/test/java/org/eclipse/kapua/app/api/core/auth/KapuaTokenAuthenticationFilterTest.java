@@ -57,9 +57,4 @@ public class KapuaTokenAuthenticationFilterTest {
     public void onAccessDeniedNullRequestTest() throws Exception {
         Assert.assertTrue("True expected.", kapuaTokenAuthenticationFilter.onAccessDenied(null, response));
     }
-
-    @Test(expected = NullPointerException.class)
-    public void onAccessDeniedNullResponseTest() throws Exception {
-        Assert.assertTrue("True expected.", kapuaTokenAuthenticationFilter.onAccessDenied(request, null));
-    }
 }

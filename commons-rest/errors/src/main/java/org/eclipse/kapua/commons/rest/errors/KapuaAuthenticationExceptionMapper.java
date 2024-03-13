@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.rest.errors;
 
+import org.eclipse.kapua.commons.rest.model.errors.ExceptionInfo;
 import org.eclipse.kapua.commons.rest.model.errors.MfaRequiredExceptionInfo;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
@@ -44,6 +45,13 @@ public class KapuaAuthenticationExceptionMapper implements ExceptionMapper<Kapua
             return Response
                     .status(Status.FORBIDDEN)
                     .entity(new MfaRequiredExceptionInfo(Status.FORBIDDEN.getStatusCode(), kapuaAuthenticationException, showStackTrace))
+                    .build();
+        }
+
+        if (kapuaAuthenticationException.getCode().equals(KapuaAuthenticationErrorCodes.REFRESH_ERROR)) {
+            return Response
+                    .status(Status.UNAUTHORIZED)
+                    .entity(new ExceptionInfo(Status.UNAUTHORIZED.getStatusCode(), kapuaAuthenticationException, showStackTrace))
                     .build();
         }
 

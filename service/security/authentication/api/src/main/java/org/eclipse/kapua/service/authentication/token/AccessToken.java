@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
@@ -41,7 +42,7 @@ import java.util.Date;
         "refreshToken", //
         "refreshExpiresOn", //
         "invalidatedOn", //
-        "trustKey" //
+        "trustKey"  //
 }, //
         factoryClass = AccessTokenXmlRegistry.class, //
         factoryMethod = "newAccessToken")
@@ -56,6 +57,7 @@ public interface AccessToken extends KapuaUpdatableEntity, Serializable {
 
     /**
      * Return the token identifier
+     * This represents the content of the JWT token
      *
      * @return the token identifier
      * @since 1.0.0
@@ -180,5 +182,23 @@ public interface AccessToken extends KapuaUpdatableEntity, Serializable {
      * @since 1.4.0
      */
     void setTrustKey(String trustKey);
+
+    /**
+     * Gets the token identifier
+     * This represents an id for the JWT token and is meant to be inserted inside its payload
+     *
+     * @return The token id
+     * @since 2.0
+     */
+    @XmlTransient
+    String getTokenIdentifier();
+
+    /**
+     * Sets the token identifier
+     *
+     * @param tokenId the token id to set
+     * @since 2.0
+     */
+    void setTokenIdentifier(String tokenId);
 
 }
