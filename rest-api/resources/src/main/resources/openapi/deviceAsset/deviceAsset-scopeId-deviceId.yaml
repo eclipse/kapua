@@ -70,20 +70,6 @@ paths:
             application/json:
               schema:
                 $ref: './deviceAsset.yaml#/components/schemas/deviceAssetDefinitions'
-              example:
-                type: deviceAssets
-                deviceAsset:
-                  - name: asset2
-                    channels:
-                      - valueType: integer
-                        name: Channel-1
-                        mode: READ
-                      - valueType: integer
-                        name: Channel-2
-                        mode: WRITE
-                      - valueType: integer
-                        name: Channel-3
-                        mode: READ_WRITE
         400:
           $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
