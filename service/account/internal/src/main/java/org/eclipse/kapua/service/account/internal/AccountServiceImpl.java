@@ -13,6 +13,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
@@ -39,16 +45,12 @@ import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountRepository;
 import org.eclipse.kapua.service.account.AccountService;
+import org.eclipse.kapua.service.account.CurrentAccountUpdateRequest;
 import org.eclipse.kapua.service.account.internal.exception.KapuaAccountErrorCodes;
 import org.eclipse.kapua.service.account.internal.exception.KapuaAccountException;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.storage.TxManager;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * {@link AccountService} implementation.
@@ -68,10 +70,14 @@ public class AccountServiceImpl
     /**
      * Injectable constructor
      *
-     * @param accountRepository           The {@link AccountRepository} instance
-     * @param permissionFactory           The {@link PermissionFactory} instance
-     * @param authorizationService        The {@link AuthorizationService} instance
-     * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance
+     * @param accountRepository
+     *         The {@link AccountRepository} instance
+     * @param permissionFactory
+     *         The {@link PermissionFactory} instance
+     * @param authorizationService
+     *         The {@link AuthorizationService} instance
+     * @param serviceConfigurationManager
+     *         The {@link ServiceConfigurationManager} instance
      * @param eventStorer
      * @since 2.0.0
      */
@@ -113,7 +119,8 @@ public class AccountServiceImpl
             // check if the account collides with the SystemSettingKey#COMMONS_CONTROL_TOPIC_CLASSIFIER
             if (!StringUtils.isEmpty(SystemSetting.getInstance().getMessageClassifier())) {
                 if (SystemSetting.getInstance().getMessageClassifier().equals(accountCreator.getName())) {
-                    throw new KapuaIllegalArgumentException("name", "Reserved account name");// obfuscate this message? or change to something more clear like "the account name collides with some system
+                    throw new KapuaIllegalArgumentException("name",
+                            "Reserved account name");// obfuscate this message? or change to something more clear like "the account name collides with some system
                     // configuration parameter"?
                 }
             }
@@ -129,7 +136,8 @@ public class AccountServiceImpl
                 // parent account never expires no check is needed
                 if (accountCreator.getExpirationDate() == null || parentAccount.getExpirationDate().before(accountCreator.getExpirationDate())) {
                     // if current account expiration date is null it will be obviously after parent expiration date
-                    throw new KapuaIllegalArgumentException(AccountAttributes.EXPIRATION_DATE, accountCreator.getExpirationDate() != null ? accountCreator.getExpirationDate().toString() : NO_EXPIRATION_DATE_SET);
+                    throw new KapuaIllegalArgumentException(AccountAttributes.EXPIRATION_DATE,
+                            accountCreator.getExpirationDate() != null ? accountCreator.getExpirationDate().toString() : NO_EXPIRATION_DATE_SET);
                 }
             }
             // Do create
@@ -170,7 +178,7 @@ public class AccountServiceImpl
                     .orElseThrow(() -> new KapuaEntityNotFoundException(Account.TYPE, accountId));
             accountMapper.merge(oldAccount, request);
             //kinda redundant, as dirt check would pick this anyway
-            return accountRepository.update(tx, oldAccount);
+            return accountRepository.update(tx, oldAccount, oldAccount);
         });
     }
 
@@ -209,7 +217,8 @@ public class AccountServiceImpl
             if (KapuaSecurityUtils.getSession().getScopeId().equals(account.getId())) {
                 // Editing self - aka user that edits its account
                 if ((oldAccount.getExpirationDate() == null && account.getExpirationDate() != null) || //old exp. date was "no expiration" and now the update restricts it
-                        (oldAccount.getExpirationDate() != null && !oldAccount.getExpirationDate().equals(account.getExpirationDate()))) { //old exp. date was some date and the update refers to another date
+                        (oldAccount.getExpirationDate() != null && !oldAccount.getExpirationDate()
+                                .equals(account.getExpirationDate()))) { //old exp. date was some date and the update refers to another date
                     // Editing the expiration date
                     throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "A user cannot modify expiration date of the account in which it's defined");
                 }
@@ -403,10 +412,10 @@ public class AccountServiceImpl
     }
 
     /**
-     * Checks if the current session can retrieve the {@link Account}, by both having an explicit permission or because
-     * it's looking for its own {@link Account}
+     * Checks if the current session can retrieve the {@link Account}, by both having an explicit permission or because it's looking for its own {@link Account}
      *
-     * @param accountId The {@link KapuaId} of the {@link Account} to look for
+     * @param accountId
+     *         The {@link KapuaId} of the {@link Account} to look for
      */
     private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, String domain, Actions action, boolean forwardable) throws KapuaException {
         if (KapuaSecurityUtils.getSession().getScopeId().equals(accountId)) {

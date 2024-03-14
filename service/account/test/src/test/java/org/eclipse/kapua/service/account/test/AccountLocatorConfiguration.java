@@ -12,13 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.test;
 
-import com.codahale.metrics.MetricRegistry;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
-import com.google.inject.name.Names;
-import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountRelativeFinder;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
@@ -48,6 +41,7 @@ import org.eclipse.kapua.service.account.AccountRepository;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
 import org.eclipse.kapua.service.account.internal.AccountImplJpaRepository;
+import org.eclipse.kapua.service.account.internal.AccountMapper;
 import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
@@ -56,16 +50,24 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.mapstruct.factory.Mappers;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
+
+import com.codahale.metrics.MetricRegistry;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import com.google.inject.name.Names;
+
+import io.cucumber.java.Before;
 
 @Singleton
 public class AccountLocatorConfiguration {
 
     /**
-     * Setup DI with Google Guice DI.
-     * Create mocked and non mocked service under test and bind them with Guice.
-     * It is based on custom MockedLocator locator that is meant for sevice unit tests.
+     * Setup DI with Google Guice DI. Create mocked and non mocked service under test and bind them with Guice. It is based on custom MockedLocator locator that is meant for sevice unit tests.
      */
     @Before(value = "@setup", order = 1)
     public void setupDI() {
@@ -105,8 +107,8 @@ public class AccountLocatorConfiguration {
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
                 // Inject actual account related services
-//                final AccountEntityManagerFactory entityManagerFactory = AccountEntityManagerFactory.getInstance();
-//                bind(AccountEntityManagerFactory.class).toInstance(entityManagerFactory);
+                //                final AccountEntityManagerFactory entityManagerFactory = AccountEntityManagerFactory.getInstance();
+                //                bind(AccountEntityManagerFactory.class).toInstance(entityManagerFactory);
                 final AccountFactory accountFactory = new AccountFactoryImpl();
                 bind(AccountFactory.class).toInstance(accountFactory);
                 bind(AccountRelativeFinder.class).toInstance(Mockito.mock(AccountRelativeFinder.class));
@@ -126,7 +128,8 @@ public class AccountLocatorConfiguration {
                                         accountFactory,
                                         accountRepository)
                         ),
-                        new EventStorerImpl(new EventStoreRecordImplJpaRepository(jpaRepoConfig))));
+                        new EventStorerImpl(new EventStoreRecordImplJpaRepository(jpaRepoConfig)),
+                        Mappers.getMapper(AccountMapper.class)));
                 bind(AccountRepository.class).toInstance(new AccountImplJpaRepository(jpaRepoConfig));
             }
         };

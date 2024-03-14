@@ -12,6 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.bind.JAXBContext;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaSerializable;
 import org.eclipse.kapua.app.api.core.model.CountResult;
@@ -77,6 +82,7 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountQuery;
+import org.eclipse.kapua.service.account.CurrentAccountUpdateRequest;
 import org.eclipse.kapua.service.account.xml.AccountParentPathXmlAdapter;
 import org.eclipse.kapua.service.account.xml.AccountXmlRegistry;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
@@ -325,10 +331,6 @@ import org.eclipse.kapua.service.user.profile.UserProfileXmlRegistry;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 
-import javax.xml.bind.JAXBContext;
-import java.util.HashMap;
-import java.util.Map;
-
 public class RestApiJAXBContextProvider implements JAXBContextProvider {
 
     private JAXBContext jaxbContext;
@@ -342,7 +344,7 @@ public class RestApiJAXBContextProvider implements JAXBContextProvider {
             Map<String, Object> properties = new HashMap<>(1);
             properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
 
-            jaxbContext = JAXBContextFactory.createContext(new Class[]{
+            jaxbContext = JAXBContextFactory.createContext(new Class[] {
                     // REST API utility models
                     CountResult.class,
                     SetResult.class,
@@ -398,6 +400,7 @@ public class RestApiJAXBContextProvider implements JAXBContextProvider {
                     KapuaToption.class,
 
                     // Account
+                    CurrentAccountUpdateRequest.class,
                     Account.class,
                     AccountCreator.class,
                     AccountListResult.class,

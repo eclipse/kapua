@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons;
 
-import com.google.inject.Provides;
-import com.google.inject.multibindings.ProvidesIntoSet;
+import javax.inject.Singleton;
+
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.crypto.CryptoUtil;
 import org.eclipse.kapua.commons.crypto.CryptoUtilImpl;
@@ -26,6 +26,8 @@ import org.eclipse.kapua.commons.jpa.EventStorerImpl;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.model.domains.Domains;
+import org.eclipse.kapua.commons.model.mappers.KapuaBaseMapper;
+import org.eclipse.kapua.commons.model.mappers.KapuaBaseMapperImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreService;
@@ -41,7 +43,8 @@ import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.domain.DomainEntry;
 import org.eclipse.kapua.model.query.QueryFactory;
 
-import javax.inject.Singleton;
+import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 
 /**
  * {@code kapua-commons} {@link AbstractKapuaModule}.
@@ -56,6 +59,7 @@ public class CommonsModule extends AbstractKapuaModule {
         bind(CryptoSettings.class).toInstance(new CryptoSettings());
         bind(CryptoUtil.class).to(CryptoUtilImpl.class).in(Singleton.class);
         bind(QRCodeBuilder.class).to(QRCodeBuilderImpl.class).in(Singleton.class);
+        bind(KapuaBaseMapper.class).to(KapuaBaseMapperImpl.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet

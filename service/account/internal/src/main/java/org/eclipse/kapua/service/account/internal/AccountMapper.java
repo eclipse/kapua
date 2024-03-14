@@ -12,45 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdImpl;
+import org.eclipse.kapua.commons.model.mappers.KapuaBaseMapper;
 import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountService;
+import org.eclipse.kapua.service.account.CurrentAccountUpdateRequest;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 
-import java.math.BigInteger;
-
-@Mapper
+@Mapper(uses = KapuaBaseMapper.class, componentModel = MappingConstants.ComponentModel.JSR330, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface AccountMapper {
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "scopeId", ignore = true)
-    @Mapping(target = "createdOn", ignore = true)
-    @Mapping(target = "createdBy", ignore = true)
-    public @interface IgnoreKapuaEntityFields {
-    }
 
-    @Mapping(target = "modifiedOn", ignore = true)
-    @Mapping(target = "modifiedBy", ignore = true)
-    @Mapping(target = "entityAttributes", ignore = true)
-    @Mapping(target = "entityProperties", ignore = true)
-    @IgnoreKapuaEntityFields
-    public @interface IgnoreKapuaUpdatableEntityFields {
-    }
-
-    @Mapping(target = "name", ignore = true)
-    @IgnoreKapuaUpdatableEntityFields
-    public @interface IgnoreKapuaNamedEntityFields {
-    }
-
-    default KapuaId map(BigInteger value) {
-        return new KapuaIdImpl(value);
-    }
-
-    @IgnoreKapuaNamedEntityFields
+    @KapuaBaseMapper.IgnoreKapuaNamedEntityReadonlyFields
     @Mapping(target = "parentAccountPath", ignore = true)
     @Mapping(target = "expirationDate", ignore = true)
     @Mapping(target = "childAccounts", ignore = true)
-    void merge(@MappingTarget Account account, AccountService.CurrentAccountUpdateRequest request);
+    void merge(@MappingTarget Account account, CurrentAccountUpdateRequest request);
 }

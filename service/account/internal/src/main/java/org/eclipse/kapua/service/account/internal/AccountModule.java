@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import com.google.inject.Module;
-import com.google.inject.Provides;
-import com.google.inject.multibindings.ProvidesIntoSet;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.eclipse.kapua.commons.configuration.AccountRelativeFinder;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
@@ -47,10 +47,10 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSetting;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.mapstruct.factory.Mappers;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import com.google.inject.Module;
+import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 
 /**
  * {@code kapua-account-internal} {@link Module} implementation.
@@ -63,7 +63,7 @@ public class AccountModule extends AbstractKapuaModule implements Module {
     protected void configureModule() {
         bind(AccountFactory.class).to(AccountFactoryImpl.class).in(Singleton.class);
         bind(KapuaAccountSetting.class).in(Singleton.class);
-        bind(AccountMapper.class).toInstance(Mappers.getMapper(AccountMapper.class));
+        bind(AccountMapper.class).to(AccountMapperImpl.class).in(Singleton.class);
 
     }
 
@@ -84,14 +84,14 @@ public class AccountModule extends AbstractKapuaModule implements Module {
 
     @ProvidesIntoSet
     ServiceModule accountServiceModule(AccountService accountService,
-                                       AuthorizationService authorizationService,
-                                       PermissionFactory permissionFactory,
-                                       KapuaJpaTxManagerFactory txManagerFactory,
-                                       EventStoreFactory eventStoreFactory,
-                                       EventStoreRecordRepository eventStoreRecordRepository,
-                                       ServiceEventBus serviceEventBus,
-                                       KapuaAccountSetting kapuaAccountSetting,
-                                       @Named("eventsModuleName") String eventModuleName
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            KapuaJpaTxManagerFactory txManagerFactory,
+            EventStoreFactory eventStoreFactory,
+            EventStoreRecordRepository eventStoreRecordRepository,
+            ServiceEventBus serviceEventBus,
+            KapuaAccountSetting kapuaAccountSetting,
+            @Named("eventsModuleName") String eventModuleName
     ) throws ServiceEventBusException {
         return new AccountServiceModule(
                 accountService,
@@ -114,13 +114,13 @@ public class AccountModule extends AbstractKapuaModule implements Module {
     @Provides
     @Singleton
     AccountService accountService(AccountRepository accountRepository,
-                                  AccountFactory accountFactory,
-                                  PermissionFactory permissionFactory,
-                                  AuthorizationService authorizationService,
-                                  @Named("AccountServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
-                                  EventStorer eventStorer,
-                                  KapuaJpaTxManagerFactory jpaTxManagerFactory,
-                                  AccountMapper accountMapper) {
+            AccountFactory accountFactory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            @Named("AccountServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
+            EventStorer eventStorer,
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            AccountMapper accountMapper) {
         return new AccountServiceImpl(
                 jpaTxManagerFactory.create("kapua-account"),
                 accountRepository,
