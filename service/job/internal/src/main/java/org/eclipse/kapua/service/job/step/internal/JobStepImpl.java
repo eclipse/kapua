@@ -52,7 +52,7 @@ public class JobStepImpl extends AbstractKapuaNamedEntity implements JobStep {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "eid", column = @Column(name = "job_step_definition_id", nullable = false, updatable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "job_step_definition_id", nullable = false, updatable = true))
     })
     private KapuaEid jobStepDefinitionId;
 
