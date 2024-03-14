@@ -27,6 +27,27 @@ components:
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntity'
         - type: object
+          properties:
+            startedOn:
+              description: The moment when the job execution started
+              type: string
+              format: 'date-time'
+            endedOn:
+              description: The moment when the job execution ended
+              type: string
+              format: 'date-time'
+            log:
+              description: logs for the job execution
+              type: string
+            jobId:
+              description: job id for this job execution
+              $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            targetIds:
+              type: array
+              items:
+                allOf:
+                - $ref: '../openapi.yaml#/components/schemas/jobTarget'
+                - description: The IDs of job target
           example:
             type: jobExecution
             id: GTh9xBWezHY
