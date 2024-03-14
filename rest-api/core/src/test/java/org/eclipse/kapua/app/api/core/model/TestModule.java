@@ -37,4 +37,11 @@ public class TestModule extends AbstractKapuaModule {
     String metricModuleName() {
         return "unit-tests";
     }
+
+    @Provides
+    @Named("eventsModuleName")
+    String eventModuleName() {
+        return "unit_tests";
+    }
+
 }

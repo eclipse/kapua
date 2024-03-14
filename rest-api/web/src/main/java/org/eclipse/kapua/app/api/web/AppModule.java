@@ -17,6 +17,8 @@ import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSetting;
 import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSettingKeys;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -38,5 +40,19 @@ public class AppModule extends AbstractKapuaModule {
     @Named("metricModuleName")
     String metricModuleName() {
         return "rest-api";
+    }
+
+    @Provides
+    @Named("eventsModuleName")
+    String eventModuleName() {
+        return "rest_api";
+    }
+
+    @Provides
+    @Singleton
+    JAXBContextProvider jaxbContextProvider() {
+        final JAXBContextProvider jaxbContextProvider = new RestApiJAXBContextProvider();
+        XmlUtil.setContextProvider(jaxbContextProvider);
+        return jaxbContextProvider;
     }
 }

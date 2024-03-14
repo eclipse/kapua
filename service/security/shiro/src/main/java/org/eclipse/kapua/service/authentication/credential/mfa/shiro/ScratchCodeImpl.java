@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
-import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @Entity(name = "ScratchCode")
 @Table(name = "atht_scratch_code")
-public class ScratchCodeImpl extends AbstractKapuaUpdatableEntity implements ScratchCode {
+public class ScratchCodeImpl extends AbstractKapuaEntity implements ScratchCode {
 
     private static final long serialVersionUID = -2785931432917205759L;
 

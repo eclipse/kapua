@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -57,12 +58,20 @@ public abstract class ServiceEventTransactionalModule implements ServiceModule {
             String internalAddress,
             ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory,
             ServiceEventBus serviceEventBus) {
-        this.serviceEventClientConfigurations = serviceEventClientConfigurations;
-        this.internalAddress = internalAddress;
-        this.houseKeeperFactory = serviceEventTransactionalHousekeeperFactory;
-        this.serviceEventBus = serviceEventBus;
+        this(serviceEventClientConfigurations, internalAddress, UUID.randomUUID().toString(), serviceEventTransactionalHousekeeperFactory, serviceEventBus);
     }
 
+    public ServiceEventTransactionalModule(
+            ServiceEventClientConfiguration[] serviceEventClientConfigurations,
+            String internalAddress,
+            String uniqueClientId,
+            ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory,
+            ServiceEventBus serviceEventBus) {
+        this.serviceEventBus = serviceEventBus;
+        this.serviceEventClientConfigurations = appendClientId(uniqueClientId, serviceEventClientConfigurations);
+        this.internalAddress = internalAddress;
+        this.houseKeeperFactory = serviceEventTransactionalHousekeeperFactory;
+    }
 
     @Override
     public void start() throws KapuaException {
@@ -148,7 +157,7 @@ public abstract class ServiceEventTransactionalModule implements ServiceModule {
                 return config;
             } else {
                 // config for @ListenServiceEvent
-                String subscriberName = config.getClientName() + (clientId == null ? "" : "_" + clientId);
+                String subscriberName = config.getClientName() + (clientId == null ? "" : "-" + clientId);
                 LOGGER.debug("Adding config for @ListenServiceEvent - address: {}, name: {}, listener: {}", config.getAddress(), subscriberName, config.getEventListener());
                 return new ServiceEventClientConfiguration(config.getAddress(), subscriberName, config.getEventListener());
             }

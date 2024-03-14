@@ -181,5 +181,11 @@ public enum KapuaAuthenticationErrorCodes implements KapuaErrorCode {
     /**
      * When changing password, the value inserted for current password is incorrect
      */
-    INCORRECT_CURRENT_PASSWORD
+    INCORRECT_CURRENT_PASSWORD,
+    /**
+     * Authentication error
+     *
+     * @since 1.0.0
+     */
+    MFA_ERROR
 }

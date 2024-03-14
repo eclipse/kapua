@@ -51,6 +51,8 @@ paths:
             application/json:
               schema:
                 $ref: './user.yaml#/components/schemas/userListResult'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -106,6 +108,8 @@ paths:
                   description: An User created providing all the information
                   value:
                     $ref: './user.yaml#/components/examples/user/value'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

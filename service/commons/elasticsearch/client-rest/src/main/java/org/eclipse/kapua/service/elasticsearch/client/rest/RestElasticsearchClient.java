@@ -32,6 +32,7 @@ import org.eclipse.kapua.service.elasticsearch.client.exception.ClientErrorCodes
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInternalError;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientLimitsExceededException;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateResponse;
 import org.eclipse.kapua.service.elasticsearch.client.model.IndexRequest;
@@ -302,10 +303,15 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         Response queryResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), typeDescriptor.getIndex(), "COUNT");
 
         long totalCount = 0;
+        String totalRelation = null;
         if (isRequestSuccessful(queryResponse)) {
             JsonNode responseNode = readResponseAsJsonNode(queryResponse);
 
             totalCount = responseNode.path(ElasticsearchKeywords.KEY_HITS).path(ElasticsearchKeywords.KEY_TOTAL).path(ElasticsearchKeywords.KEY_VALUE).asLong();
+            totalRelation = responseNode.path(ElasticsearchKeywords.KEY_HITS).path(ElasticsearchKeywords.KEY_TOTAL).path(ElasticsearchKeywords.KEY_RELATION).asText();
+            if (totalRelation != null && totalRelation.equals("gte")) {
+                throw new ClientLimitsExceededException("MAX_RESULT_WINDOW overflow, unable to count precise number of documents stored in ES (more than 10k)");
+            }
             if (totalCount > Integer.MAX_VALUE) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_HITS_MAX_VALUE_EXCEEDED);
             }

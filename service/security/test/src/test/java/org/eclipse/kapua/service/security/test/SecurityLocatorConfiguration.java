@@ -20,7 +20,8 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.configuration.AccountRelativeFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
@@ -48,7 +49,9 @@ import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFacto
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImplJpaRepository;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapperImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
+import org.eclipse.kapua.service.authentication.credential.shiro.PasswordResetterImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidatorImpl;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.CredentialServiceConfigurationManagerImpl;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
@@ -149,7 +152,8 @@ public class SecurityLocatorConfiguration {
                         new GroupImplJpaRepository(jpaRepoConfig)
                 ));
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
-                bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
+                final CredentialFactoryImpl credentialFactory = new CredentialFactoryImpl();
+                bind(CredentialFactory.class).toInstance(credentialFactory);
                 final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         Mockito.mock(RootUserTester.class),
@@ -161,9 +165,13 @@ public class SecurityLocatorConfiguration {
                             mockPermissionFactory,
                             new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-authorization"),
                             new CredentialImplJpaRepository(jpaRepoConfig),
-                            new CredentialFactoryImpl(),
-                            new CredentialMapperImpl(new CredentialFactoryImpl(), new KapuaAuthenticationSetting(), new AuthenticationUtils(SecureRandom.getInstance("SHA1PRNG"), new KapuaCryptoSetting())),
-                            new PasswordValidatorImpl(credentialServiceConfigurationManager), new KapuaAuthenticationSetting()));
+                            credentialFactory,
+                            new CredentialMapperImpl(credentialFactory, new KapuaAuthenticationSetting(), new AuthenticationUtils(SecureRandom.getInstance("SHA1PRNG"), new KapuaCryptoSetting())),
+                            new PasswordValidatorImpl(credentialServiceConfigurationManager), new KapuaAuthenticationSetting(),
+                            new PasswordResetterImpl(credentialFactory,
+                                    new CredentialImplJpaRepository(new KapuaJpaRepositoryConfiguration()),
+                                    new CredentialMapperImpl(credentialFactory, new KapuaAuthenticationSetting(), authenticationUtils(new KapuaCryptoSetting())),
+                                    new PasswordValidatorImpl(credentialServiceConfigurationManager))));
                 } catch (NoSuchAlgorithmException e) {
                     throw new RuntimeException(e);
                 }
@@ -171,8 +179,8 @@ public class SecurityLocatorConfiguration {
                 bind(UserFactory.class).toInstance(userFactory);
                 final RootUserTester rootUserTester = Mockito.mock(RootUserTester.class);
                 bind(RootUserTester.class).toInstance(rootUserTester);
-                final AccountChildrenFinder accountChildrenFinder = Mockito.mock(AccountChildrenFinder.class);
-                bind(AccountChildrenFinder.class).toInstance(accountChildrenFinder);
+                final AccountRelativeFinder accountRelativeFinder = Mockito.mock(AccountRelativeFinder.class);
+                bind(AccountRelativeFinder.class).toInstance(accountRelativeFinder);
                 bind(UserService.class).toInstance(new UserServiceImpl(
                         Mockito.mock(ServiceConfigurationManager.class),
                         mockedAuthorization,
@@ -187,4 +195,15 @@ public class SecurityLocatorConfiguration {
         Injector injector = Guice.createInjector(module);
         mockedLocator.setInjector(injector);
     }
+
+    AuthenticationUtils authenticationUtils(KapuaCryptoSetting kapuaCryptoSetting) {
+        final SecureRandom random;
+        try {
+            random = SecureRandom.getInstance("SHA1PRNG");
+        } catch (NoSuchAlgorithmException e) {
+            throw new KapuaRuntimeException(KapuaAuthenticationErrorCodes.CREDENTIAL_CRYPT_ERROR, e);
+        }
+        return new AuthenticationUtils(random, kapuaCryptoSetting);
+    }
+
 }

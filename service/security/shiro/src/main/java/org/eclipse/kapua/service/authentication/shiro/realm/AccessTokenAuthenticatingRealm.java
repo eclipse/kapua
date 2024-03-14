@@ -17,28 +17,45 @@ import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.ExpiredCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.subject.Subject;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.shiro.AccessTokenCredentialsImpl;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.ExpiredAccessTokenException;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.InvalidatedAccessTokenException;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.JwtCertificateNotFoundException;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.MalformedAccessTokenException;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenAttributes;
-import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
-import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
+import org.eclipse.kapua.service.certificate.CertificateAttributes;
+import org.eclipse.kapua.service.certificate.CertificateStatus;
+import org.eclipse.kapua.service.certificate.info.CertificateInfo;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoFactory;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoQuery;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoService;
+import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.consumer.ErrorCodes;
+import org.jose4j.jwt.consumer.InvalidJwtException;
+import org.jose4j.jwt.consumer.JwtConsumer;
+import org.jose4j.jwt.consumer.JwtConsumerBuilder;
+import org.jose4j.jwt.consumer.JwtContext;
 
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * {@link AccessTokenCredentials} based {@link AuthenticatingRealm} implementation.
@@ -51,11 +68,11 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
      * Realm name.
      */
     public static final String REALM_NAME = "accessTokenAuthenticatingRealm";
-
-
+    private final CertificateInfoFactory certificateInfoFactory = KapuaLocator.getInstance().getFactory(CertificateInfoFactory.class);
+    private final CertificateInfoService certificateInfoService = KapuaLocator.getInstance().getService(CertificateInfoService.class);
     private final AccessTokenService accessTokenService = KapuaLocator.getInstance().getService(AccessTokenService.class);
-    private final AccessTokenFactory accessTokenFactory = KapuaLocator.getInstance().getFactory(AccessTokenFactory.class);
     private final UserService userService = KapuaLocator.getInstance().getService(UserService.class);
+    private final KapuaAuthenticationSetting authenticationSetting = KapuaLocator.getInstance().getComponent(KapuaAuthenticationSetting.class);
 
     /**
      * Constructor
@@ -64,9 +81,7 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
      */
     public AccessTokenAuthenticatingRealm() {
         setName(REALM_NAME);
-
-        CredentialsMatcher credentialsMatcher = new AccessTokenCredentialsMatcher();
-        setCredentialsMatcher(credentialsMatcher);
+        setCredentialsMatcher(new AllowAllCredentialsMatcher());
     }
 
     @Override
@@ -74,25 +89,61 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
             throws AuthenticationException {
         // Extract credentials
         AccessTokenCredentialsImpl token = (AccessTokenCredentialsImpl) authenticationToken;
-        String tokenTokenId = token.getTokenId();
+        // Token data
+        String jwt = token.getTokenId();
 
-        Date now = new Date();
+        //verify validity of this token
+        final JwtClaims jwtClaims;
+        try {
+            String issuer = authenticationSetting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_ISSUER);
+
+            CertificateInfoQuery certificateInfoQuery = certificateInfoFactory.newQuery(null);
+            certificateInfoQuery.setPredicate(
+                    certificateInfoQuery.andPredicate(
+                            certificateInfoQuery.attributePredicate(CertificateAttributes.USAGE_NAME, "JWT"),
+                            certificateInfoQuery.attributePredicate(CertificateAttributes.STATUS, CertificateStatus.VALID)
+                    )
+            );
+            certificateInfoQuery.setSortCriteria(certificateInfoQuery.fieldSortCriteria(CertificateAttributes.CREATED_BY, SortOrder.DESCENDING));
+            certificateInfoQuery.setIncludeInherited(true);
+            certificateInfoQuery.setLimit(1);
+
+            CertificateInfo certificateInfo = KapuaSecurityUtils.doPrivileged(() -> certificateInfoService.query(certificateInfoQuery)).getFirstItem();
+
+            if (certificateInfo == null) {
+                throw new JwtCertificateNotFoundException();
+            }
+            // Set validator
+            JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+                    .setVerificationKey(CertificateUtils.stringToCertificate(certificateInfo.getCertificate()).getPublicKey()) // Set public key
+                    .setExpectedIssuer(issuer) // Set expected issuer
+                    .setRequireIssuedAt() // Set require reserved claim: iat
+                    .setRequireExpirationTime() // Set require reserved claim: exp
+                    .setRequireSubject() // // Set require reserved claim: sub
+                    .build();
+            // This validates JWT
+            final JwtContext jwtContext = jwtConsumer.process(jwt);
+            jwtClaims = jwtContext.getJwtClaims();
+        // FIXME: JWT cert. could be cached to speed-up validation process
+        } catch (KapuaException ke) {
+            throw new AuthenticationException();
+        } catch (InvalidJwtException e) {
+            if (e.hasErrorCode(ErrorCodes.EXPIRED)) {
+                throw new ExpiredAccessTokenException();
+            } else {
+                throw new MalformedAccessTokenException();
+            }
+        }
+
         // Find accessToken
         final AccessToken accessToken;
         try {
-            AccessTokenQuery accessTokenQuery = accessTokenFactory.newQuery(null);
-            AndPredicate andPredicate = accessTokenQuery.andPredicate(
-                    accessTokenQuery.attributePredicate(AccessTokenAttributes.EXPIRES_ON, new java.sql.Timestamp(now.getTime()), Operator.GREATER_THAN_OR_EQUAL),
-                    accessTokenQuery.attributePredicate(AccessTokenAttributes.INVALIDATED_ON, null, Operator.IS_NULL),
-                    accessTokenQuery.attributePredicate(AccessTokenAttributes.TOKEN_ID, tokenTokenId)
-            );
-            accessTokenQuery.setPredicate(andPredicate);
-            accessTokenQuery.setLimit(1);
-            accessToken = KapuaSecurityUtils.doPrivileged(() -> accessTokenService.query(accessTokenQuery).getFirstItem());
-        } catch (AuthenticationException ae) {
-            throw ae;
-        } catch (Exception e) {
-            throw new ShiroException("Unexpected error while looking for the access token!", e);
+            final String tokenIdentifier = Optional.ofNullable(jwtClaims.getClaimValue(AccessTokenAttributes.TOKEN_IDENTIFIER))
+                    .map(s -> (String) s)
+                    .orElseThrow(() -> new ShiroException("Missing tokenIdentifier in jwt token"));
+            accessToken = KapuaSecurityUtils.doPrivileged(() -> accessTokenService.findByTokenId(tokenIdentifier));
+        } catch (KapuaException ke) {
+            throw new AuthenticationException();
         }
 
         // Check existence
@@ -101,10 +152,11 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
         }
 
         // Check validity
-        if ((accessToken.getExpiresOn() != null && accessToken.getExpiresOn().before(now)) ||
-                (accessToken.getInvalidatedOn() != null && accessToken.getInvalidatedOn().before(now))) {
-            throw new ExpiredCredentialsException();
+        Date now = new Date();
+        if (accessToken.getInvalidatedOn() != null && accessToken.getInvalidatedOn().before(now)) {
+            throw new InvalidatedAccessTokenException();
         }
+
         // Get the associated user by name
         final User user;
         try {
@@ -119,7 +171,9 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
         // Check account
         Account account = checkAccount(user.getScopeId());
         // BuildAuthenticationInfo
-        return new SessionAuthenticationInfo(getName(),
+        return new SessionAuthenticationInfo(
+                jwtClaims,
+                getName(),
                 account,
                 user,
                 accessToken);
@@ -144,4 +198,5 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
     public boolean supports(AuthenticationToken authenticationToken) {
         return authenticationToken instanceof AccessTokenCredentialsImpl;
     }
+
 }

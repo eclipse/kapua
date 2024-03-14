@@ -36,7 +36,7 @@ public interface AccessTokenFactory extends KapuaEntityFactory<AccessToken, Acce
      * @return The newly instantiated {@link AccessTokenCreator}.
      * @since 1.0.0
      */
-    AccessTokenCreator newCreator(KapuaId scopeId, KapuaId userId, String tokenId, Date expiresOn, String refreshToken, Date refreshExpiresOn);
+    AccessTokenCreator newCreator(KapuaId scopeId, KapuaId userId, String tokenId, Date expiresOn, String refreshToken, Date refreshExpiresOn, String tokenIdentifier);
 
     /**
      * Instantiates a new {@link LoginInfo}

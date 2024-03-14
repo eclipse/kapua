@@ -28,4 +28,10 @@ public class TestModule extends AbstractKapuaModule {
     String metricModuleName() {
         return "test";
     }
+
+    @Provides
+    @Named(value = "eventsModuleName")
+    String eventsModuleName() {
+        return "test";
+    }
 }

@@ -26,8 +26,6 @@ public class MfaOptionCreatorImplTest {
     KapuaId[] scopeIds;
     KapuaId[] userIds;
     KapuaId[] newUserIds;
-    String[] mfaSecretKeys;
-    String[] newMfaSecretKeys;
     MfaOptionCreatorImpl mfaOptionCreatorImpl1;
     MfaOptionCreatorImpl mfaOptionCreatorImpl2;
 
@@ -36,9 +34,7 @@ public class MfaOptionCreatorImplTest {
         scopeIds = new KapuaId[]{null, KapuaId.ONE};
         userIds = new KapuaId[]{null, KapuaId.ONE};
         newUserIds = new KapuaId[]{null, KapuaId.ANY};
-        mfaSecretKeys = new String[]{null, "", "!!mfaSecretKey-1", "#1(newMfa.,/SecretKey)9--99", "!$$ 1-2 key//", "mfa_key(....)<00>"};
-        newMfaSecretKeys = new String[]{null, "", "new_mfaSecret,Key-1", "#1(new...MfaSecretKey)999", "!$$ 1-2 key", "mfa_key<00>"};
-        mfaOptionCreatorImpl1 = new MfaOptionCreatorImpl(KapuaId.ONE, KapuaId.ONE, "mfaSecretKey");
+        mfaOptionCreatorImpl1 = new MfaOptionCreatorImpl(KapuaId.ONE, KapuaId.ONE);
         mfaOptionCreatorImpl2 = new MfaOptionCreatorImpl(KapuaId.ONE);
     }
 
@@ -46,12 +42,9 @@ public class MfaOptionCreatorImplTest {
     public void mfaOptionCreatorImplScopeIdUserIdSecretKeyParametersTest() {
         for (KapuaId scopeId : scopeIds) {
             for (KapuaId userId : userIds) {
-                for (String mfaSecretKey : mfaSecretKeys) {
-                    MfaOptionCreatorImpl mfaOptionCreatorImpl = new MfaOptionCreatorImpl(scopeId, userId, mfaSecretKey);
-                    Assert.assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionCreatorImpl.getScopeId());
-                    Assert.assertEquals("Expected and actual values should be the same.", userId, mfaOptionCreatorImpl.getUserId());
-                    Assert.assertEquals("Expected and actual values should be the same.", mfaSecretKey, mfaOptionCreatorImpl.getMfaSecretKey());
-                }
+                MfaOptionCreatorImpl mfaOptionCreatorImpl = new MfaOptionCreatorImpl(scopeId, userId);
+                Assert.assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionCreatorImpl.getScopeId());
+                Assert.assertEquals("Expected and actual values should be the same.", userId, mfaOptionCreatorImpl.getUserId());
             }
         }
     }
@@ -62,7 +55,6 @@ public class MfaOptionCreatorImplTest {
             MfaOptionCreatorImpl mfaOptionCreatorImpl = new MfaOptionCreatorImpl(scopeId);
             Assert.assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionCreatorImpl.getScopeId());
             Assert.assertNull("Null expected.", mfaOptionCreatorImpl.getUserId());
-            Assert.assertNull("Null expected.", mfaOptionCreatorImpl.getMfaSecretKey());
         }
     }
 
@@ -74,17 +66,6 @@ public class MfaOptionCreatorImplTest {
 
             mfaOptionCreatorImpl2.setUserId(newUserId);
             Assert.assertEquals("Expected and actual values should be the same.", newUserId, mfaOptionCreatorImpl2.getUserId());
-        }
-    }
-
-    @Test
-    public void setAndGetMfaSecretKeyTest() {
-        for (String newMfaSecretKey : newMfaSecretKeys) {
-            mfaOptionCreatorImpl1.setMfaSecretKey(newMfaSecretKey);
-            Assert.assertEquals("Expected and actual values should be the same.", newMfaSecretKey, mfaOptionCreatorImpl1.getMfaSecretKey());
-
-            mfaOptionCreatorImpl2.setMfaSecretKey(newMfaSecretKey);
-            Assert.assertEquals("Expected and actual values should be the same.", newMfaSecretKey, mfaOptionCreatorImpl2.getMfaSecretKey());
         }
     }
 }

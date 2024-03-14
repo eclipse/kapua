@@ -42,7 +42,7 @@ public class SessionAuthenticationInfoTest {
     @Test
     public void sessionAuthenticationInfoTest() {
         for (String realmName : realmNames) {
-            SessionAuthenticationInfo sessionAuthenticationInfo = new SessionAuthenticationInfo(realmName, account, user, accessToken);
+            SessionAuthenticationInfo sessionAuthenticationInfo = new SessionAuthenticationInfo(null, realmName, account, user, accessToken);
             Assert.assertEquals("Expected and actual values should be the same.", user, sessionAuthenticationInfo.getUser());
             Assert.assertEquals("Expected and actual values should be the same.", account, sessionAuthenticationInfo.getAccount());
             Assert.assertEquals("Expected and actual values should be the same.", realmName, sessionAuthenticationInfo.getRealmName());
@@ -54,7 +54,7 @@ public class SessionAuthenticationInfoTest {
 
     @Test
     public void sessionAuthenticationInfoNullNameTest() {
-        SessionAuthenticationInfo sessionAuthenticationInfo = new SessionAuthenticationInfo(null, account, user, accessToken);
+        SessionAuthenticationInfo sessionAuthenticationInfo = new SessionAuthenticationInfo(null, null, account, user, accessToken);
         Assert.assertEquals("Expected and actual values should be the same.", user, sessionAuthenticationInfo.getUser());
         Assert.assertEquals("Expected and actual values should be the same.", account, sessionAuthenticationInfo.getAccount());
         Assert.assertNull("Null expected.", sessionAuthenticationInfo.getRealmName());
@@ -71,7 +71,7 @@ public class SessionAuthenticationInfoTest {
     @Test
     public void sessionAuthenticationInfoNullAccountTest() {
         for (String realmName : realmNames) {
-            SessionAuthenticationInfo sessionAuthenticationInfo = new SessionAuthenticationInfo(realmName, null, user, accessToken);
+            SessionAuthenticationInfo sessionAuthenticationInfo = new SessionAuthenticationInfo(null, realmName, null, user, accessToken);
             Assert.assertEquals("Expected and actual values should be the same.", user, sessionAuthenticationInfo.getUser());
             Assert.assertNull("Null expected.", sessionAuthenticationInfo.getAccount());
             Assert.assertEquals("Expected and actual values should be the same.", realmName, sessionAuthenticationInfo.getRealmName());
@@ -84,7 +84,7 @@ public class SessionAuthenticationInfoTest {
     @Test
     public void sessionAuthenticationInfoNullUserTest() {
         for (String realmName : realmNames) {
-            SessionAuthenticationInfo sessionAuthenticationInfo = new SessionAuthenticationInfo(realmName, account, null, accessToken);
+            SessionAuthenticationInfo sessionAuthenticationInfo = new SessionAuthenticationInfo(null, realmName, account, null, accessToken);
             Assert.assertNull("Null expected.", sessionAuthenticationInfo.getUser());
             Assert.assertEquals("Expected and actual values should be the same.", account, sessionAuthenticationInfo.getAccount());
             Assert.assertEquals("Expected and actual values should be the same.", realmName, sessionAuthenticationInfo.getRealmName());
@@ -102,7 +102,7 @@ public class SessionAuthenticationInfoTest {
     @Test
     public void sessionAuthenticationInfoNullAccessTokenTest() {
         for (String realmName : realmNames) {
-            SessionAuthenticationInfo sessionAuthenticationInfo = new SessionAuthenticationInfo(realmName, account, user, null);
+            SessionAuthenticationInfo sessionAuthenticationInfo = new SessionAuthenticationInfo(null, realmName, account, user, null);
             Assert.assertEquals("Expected and actual values should be the same.", user, sessionAuthenticationInfo.getUser());
             Assert.assertEquals("Expected and actual values should be the same.", account, sessionAuthenticationInfo.getAccount());
             Assert.assertEquals("Expected and actual values should be the same.", realmName, sessionAuthenticationInfo.getRealmName());

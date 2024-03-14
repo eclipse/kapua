@@ -34,6 +34,8 @@ paths:
                   $ref: './jobTarget.yaml#/components/examples/jobTargetSuccess'
                 Failed processed Job Target:
                   $ref: './jobTarget.yaml#/components/examples/jobTargetFailed'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -54,6 +56,8 @@ paths:
       responses:
         204:
           description: The Job Target has been deleted
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

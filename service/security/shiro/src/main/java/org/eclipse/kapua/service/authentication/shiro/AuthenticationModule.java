@@ -30,6 +30,7 @@ import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
+import org.eclipse.kapua.commons.util.qr.QRCodeBuilder;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
@@ -61,6 +62,7 @@ import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImplJ
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapper;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapperImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
+import org.eclipse.kapua.service.authentication.credential.shiro.PasswordResetter;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidator;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidatorImpl;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
@@ -88,6 +90,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.storage.TxContext;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -141,7 +144,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
                                                      EventStoreFactory eventStoreFactory,
                                                      EventStoreRecordRepository eventStoreRecordRepository,
                                                      ServiceEventBus serviceEventBus,
-                                                     KapuaAuthenticationSetting kapuaAuthenticationSetting
+                                                     KapuaAuthenticationSetting kapuaAuthenticationSetting,
+                                                     @Named("eventsModuleName") String eventModuleName
     ) throws ServiceEventBusException {
         return new AuthenticationServiceModule(
                 credentialService,
@@ -158,7 +162,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
                         txManagerFactory.create("kapua-authentication"),
                         serviceEventBus
                 ),
-                serviceEventBus);
+                serviceEventBus,
+                eventModuleName);
     }
 
     @ProvidesIntoSet
@@ -218,13 +223,13 @@ public class AuthenticationModule extends AbstractKapuaModule {
             MfaOptionRepository mfaOptionRepository,
             AccountService accountService,
             ScratchCodeRepository scratchCodeRepository,
-            ScratchCodeFactory scratchCodeFactory,
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             UserService userService,
             KapuaJpaTxManagerFactory jpaTxManagerFactory,
             KapuaAuthenticationSetting kapuaAuthenticationSetting,
-            AuthenticationUtils authenticationUtils) {
+            AuthenticationUtils authenticationUtils,
+            QRCodeBuilder qrCodeBuilder) {
         int trustKeyDuration = kapuaAuthenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TRUST_KEY_DURATION);
 
         return new MfaOptionServiceImpl(
@@ -234,11 +239,11 @@ public class AuthenticationModule extends AbstractKapuaModule {
                 mfaOptionRepository,
                 accountService,
                 scratchCodeRepository,
-                scratchCodeFactory,
                 authorizationService,
                 permissionFactory,
                 userService,
-                authenticationUtils
+                authenticationUtils,
+                qrCodeBuilder
         );
     }
 
@@ -248,16 +253,13 @@ public class AuthenticationModule extends AbstractKapuaModule {
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
             ScratchCodeRepository scratchCodeRepository,
-            ScratchCodeFactory scratchCodeFactory,
             KapuaJpaTxManagerFactory jpaTxManagerFactory,
             AuthenticationUtils authenticationUtils) {
         return new ScratchCodeServiceImpl(
                 authorizationService,
                 permissionFactory,
                 jpaTxManagerFactory.create("kapua-authentication"),
-                scratchCodeRepository,
-                scratchCodeFactory,
-                authenticationUtils);
+                scratchCodeRepository);
     }
 
     @Provides
@@ -289,7 +291,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
             KapuaJpaTxManagerFactory jpaTxManagerFactory,
             CredentialMapper credentialMapper,
             PasswordValidator passwordValidator,
-            KapuaAuthenticationSetting kapuaAuthenticationSetting) {
+            KapuaAuthenticationSetting kapuaAuthenticationSetting,
+            PasswordResetter passwordResetter) {
         return new CredentialServiceImpl(serviceConfigurationManager,
                 authorizationService,
                 permissionFactory,
@@ -298,7 +301,8 @@ public class AuthenticationModule extends AbstractKapuaModule {
                 credentialFactory,
                 credentialMapper,
                 passwordValidator,
-                kapuaAuthenticationSetting);
+                kapuaAuthenticationSetting,
+                passwordResetter);
     }
 
     @Provides

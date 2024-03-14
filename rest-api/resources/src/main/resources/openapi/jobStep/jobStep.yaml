@@ -23,10 +23,33 @@ components:
         $ref: '../openapi.yaml#/components/schemas/kapuaId'
       required: true
   schemas:
+    jobStepProperty:
+      description: Property of a Job's Step
+      allOf:
+        - type: object
+          properties:
+            name:
+              type: string
+            propertyType:
+              type: string
+            propertyValue:
+              type: string
     jobStep:
+      description: Step of the Job
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaNamedEntity'
         - type: object
+          properties:
+            jobId:
+              type: string
+            jobStepDefinitionId:
+              type: string
+            stepIndex:
+              type: integer
+            stepProperties:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/jobStepProperty'
           example:
             type: jobStep
             id: BL2MaF-ldS0

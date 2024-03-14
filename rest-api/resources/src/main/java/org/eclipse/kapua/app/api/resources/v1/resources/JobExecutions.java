@@ -12,6 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -36,17 +47,6 @@ import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetListResult;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
-
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 
 @Path("{scopeId}/jobs/{jobId}/executions")
 public class JobExecutions extends AbstractKapuaResource {
@@ -128,7 +128,11 @@ public class JobExecutions extends AbstractKapuaResource {
             @PathParam("jobId") EntityId jobId,
             JobExecutionQuery query) throws KapuaException {
         query.setScopeId(scopeId);
-        query.setPredicate(query.attributePredicate(JobExecutionAttributes.JOB_ID, jobId));
+        final AndPredicate andPredicate = query.andPredicate(
+            query.attributePredicate(JobExecutionAttributes.JOB_ID, jobId),
+            query.getPredicate()
+        );
+        query.setPredicate(andPredicate);
         return jobExecutionService.query(query);
     }
 

@@ -36,6 +36,7 @@ import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientCommunicationException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
 import org.eclipse.kapua.storage.TxManager;
@@ -183,7 +184,9 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
             return messageStoreFacade.count(query);
         } catch (Exception e) {
             logException(e);
-            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
+            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR,
+                    e.getCause() != null && (e.getCause() instanceof ClientException) ? e.getCause() : e, //in case where there is a ClientException I just want this as a cause and not the runtime exception
+                    e.getMessage());
         }
     }
 

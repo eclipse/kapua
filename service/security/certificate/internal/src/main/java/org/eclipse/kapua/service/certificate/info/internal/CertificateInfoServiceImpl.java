@@ -55,7 +55,6 @@ public class CertificateInfoServiceImpl implements CertificateInfoService {
         ArgumentValidator.notNull(query, "query");
 
         CertificateQuery certificateQuery = new CertificateQueryImpl(query);
-        certificateQuery.setIncludeInherited(((CertificateInfoQuery) query).getIncludeInherited());
 
         CertificateInfoListResult publicCertificates = new CertificateInfoListResultImpl();
         publicCertificates.addItem(certificateService.query(certificateQuery).getFirstItem());

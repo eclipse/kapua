@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.steps;
 
+import java.util.Calendar;
+import java.util.Date;
+import javax.inject.Inject;
+
 import com.google.inject.Singleton;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -23,6 +27,7 @@ import io.cucumber.java.en.When;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.service.job.Job;
@@ -41,8 +46,6 @@ import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
 
 @Singleton
 public class JobExecutionServiceSteps extends JobServiceTestBase {
@@ -165,22 +168,51 @@ public class JobExecutionServiceSteps extends JobServiceTestBase {
         }
     }
 
-//    @And("I query for the execution items for the current job and I count {int} or more")
-//    public void iQueryForTheExecutionItemsForTheCurrentJobAndICountOrMore(int numberOfExecutions) throws Exception {
-//        Job job = (Job) stepData.get("Job");
-//        JobExecutionQuery tmpQuery = jobExecutionFactory.newQuery(getCurrentScopeId());
-//        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobExecutionAttributes.JOB_ID, job.getId(), AttributePredicate.Operator.EQUAL));
-//        primeException();
-//        try {
-//            stepData.remove(JOB_EXECUTION_LIST);
-//            JobExecutionListResult resultList = jobExecutionService.query(tmpQuery);
-//            stepData.put(JOB_EXECUTION_LIST, resultList);
-//            stepData.updateCount(resultList.getSize());
-//            Assert.assertTrue(resultList.getSize() >= numberOfExecutions);
-//        } catch (KapuaException ex) {
-//            verifyException(ex);
-//        }
-//    }
+
+    @Then("I query for the execution items for the current job starting from date in the future")
+    public void queryExecutionsForJobWithStartDateInFuture() throws Exception {
+        final Date startDate = createDateInFuture();
+        queryExecutionsForJobWithStartDate(startDate);
+    }
+
+
+    @Then("I query for the execution items for the current job starting from date in the past")
+    public void queryExecutionsForJobWithStartDateInPast() throws Exception {
+        final Date startDate = createDateInPast();
+        queryExecutionsForJobWithStartDate(startDate);
+    }
+
+
+    private void queryExecutionsForJobWithStartDate(Date startDate) throws Exception {
+        final Job job = (Job) stepData.get("Job");
+        final JobExecutionQuery tmpQuery = jobExecutionFactory.newQuery(getCurrentScopeId());
+        final AndPredicate andPredicate = tmpQuery.andPredicate(tmpQuery.attributePredicate(JobExecutionAttributes.JOB_ID, job.getId()));
+        andPredicate.and(tmpQuery.attributePredicate(JobExecutionAttributes.STARTED_ON, startDate, AttributePredicate.Operator.GREATER_THAN_OR_EQUAL));
+        tmpQuery.setPredicate(andPredicate);
+        primeException();
+        try {
+            stepData.remove(JOB_EXECUTION_LIST);
+            JobExecutionListResult resultList = jobExecutionService.query(tmpQuery);
+            stepData.put(JOB_EXECUTION_LIST, resultList);
+            stepData.updateCount(resultList.getSize());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+
+    private Date createDateInFuture() {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 7);
+        return calendar.getTime();
+    }
+
+
+    private Date createDateInPast() {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -7);
+        return calendar.getTime();
+    }
 
     @Then("I query for the execution items for the current job and I count {int} finished within {int} second(s)")
     public void queryExecutionsForJob(int numberOfExecutions, int timeout) throws Exception {

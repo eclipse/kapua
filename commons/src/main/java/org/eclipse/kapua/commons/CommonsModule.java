@@ -27,13 +27,13 @@ import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
-import org.eclipse.kapua.commons.populators.DataPopulator;
-import org.eclipse.kapua.commons.populators.DataPopulatorRunner;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreService;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.commons.util.qr.QRCodeBuilder;
+import org.eclipse.kapua.commons.util.qr.QRCodeBuilderImpl;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.domain.Actions;
@@ -52,21 +52,10 @@ public class CommonsModule extends AbstractKapuaModule {
 
     @Override
     protected void configureModule() {
-        bind(DataPopulatorRunner.class).in(Singleton.class);
         bind(QueryFactory.class).to(QueryFactoryImpl.class).in(Singleton.class);
         bind(CryptoSettings.class).toInstance(new CryptoSettings());
         bind(CryptoUtil.class).to(CryptoUtilImpl.class).in(Singleton.class);
-    }
-
-    @ProvidesIntoSet
-    //Guice does not like to inject empty sets, so in order to always have a valid DataPopulatorRunner here is a placeholder, good-for-nothing populator implementation
-    public DataPopulator noopDataPopulator() {
-        return new DataPopulator() {
-            @Override
-            public void populate() {
-                //Noop
-            }
-        };
+        bind(QRCodeBuilder.class).to(QRCodeBuilderImpl.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet

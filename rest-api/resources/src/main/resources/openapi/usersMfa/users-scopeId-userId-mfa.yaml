@@ -1,0 +1,103 @@
+openapi: 3.0.3
+
+info:
+  title: Eclipse Kapua REST API - MfaOptions
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/users/{userId}/mfa:
+    get:
+      tags:
+        - Users - Mfa
+      summary: Get the MfaOption of this User
+      operationId: userMfaOptionGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../user/user.yaml#/components/parameters/userId'
+      responses:
+        200:
+          description: The details of the desired MfaOption
+          content:
+            application/json:
+              schema:
+                $ref: '../userMfa/userMfa.yaml#/components/schemas/mfaOption'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    post:
+      deprecated: true
+      description: This resource is deprecated and will be removed in future releases. Please use POST /{scopeId}/user/mfa instead.
+      tags:
+        - Users - Mfa
+      summary: Create a new MfaOption
+      operationId: userMfaOptionCreate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../user/user.yaml#/components/parameters/userId'
+      responses:
+        201:
+          description: The MfaOption that has just been created
+          content:
+            application/json:
+              schema:
+                $ref: '../userMfa/userMfa.yaml#/components/schemas/mfaOptionCreationResponse'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          description: The operation is forbidden for some reason
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '../openapi.yaml#/components/schemas/InternalUserOnlyExceptionInfo'
+                  - $ref: '../openapi.yaml#/components/responses/subjectUnauthorized/content/application~1json/schema'
+                  - $ref: '../openapi.yaml#/components/schemas/SelfManagedOnlyExceptionInfo'
+            application/xml:
+              schema:
+                oneOf:
+                  - $ref: '../openapi.yaml#/components/schemas/InternalUserOnlyExceptionInfo'
+                  - $ref: '../openapi.yaml#/components/responses/subjectUnauthorized/content/application~1xml/schema'
+                  - $ref: '../openapi.yaml#/components/schemas/SelfManagedOnlyExceptionInfo'
+                xml:
+                  name: 'InternalUserOnlyExceptionInfo'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      tags:
+        - Users - Mfa
+      summary: Delete a single MfaOption
+      operationId: userMfaOptionDelete
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../user/user.yaml#/components/parameters/userId'
+      responses:
+        204:
+          description: The MfaOption has been deleted
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

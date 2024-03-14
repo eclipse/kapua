@@ -33,7 +33,7 @@ import java.util.Date;
 public class AccessTokenFactoryImpl implements AccessTokenFactory {
 
     @Override
-    public AccessTokenCreatorImpl newCreator(KapuaId scopeId, KapuaId userId, String tokenId, Date expiresOn, String refreshToken, Date refreshExpiresOn) {
+    public AccessTokenCreatorImpl newCreator(KapuaId scopeId, KapuaId userId, String tokenId, Date expiresOn, String refreshToken, Date refreshExpiresOn, String tokenIdentifier) {
         AccessTokenCreatorImpl accessTokenCreator = new AccessTokenCreatorImpl(scopeId);
 
         accessTokenCreator.setUserId(userId);
@@ -41,6 +41,7 @@ public class AccessTokenFactoryImpl implements AccessTokenFactory {
         accessTokenCreator.setExpiresOn(expiresOn);
         accessTokenCreator.setRefreshToken(refreshToken);
         accessTokenCreator.setRefreshExpiresOn(refreshExpiresOn);
+        accessTokenCreator.setTokenIdentifier(tokenIdentifier);
 
         return accessTokenCreator;
     }

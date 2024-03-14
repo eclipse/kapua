@@ -431,23 +431,42 @@ paths:
     $ref: './user/user-scopeId-_count.yaml#/paths/~1{scopeId}~1users~1_count'
   /{scopeId}/users/_query:
     $ref: './user/user-scopeId-_query.yaml#/paths/~1{scopeId}~1users~1_query'
+  ### Users Mfa ###
   /{scopeId}/users/{userId}/mfa:
-    $ref: './user/user-scopeId-userId-mfa.yaml#/paths/~1{scopeId}~1users~1{userId}~1mfa'
+    $ref: './usersMfa/users-scopeId-userId-mfa.yaml#/paths/~1{scopeId}~1users~1{userId}~1mfa'
   /{scopeId}/users/{userId}/mfa/disableTrust:
-    $ref: './user/user-scopeId-userId-mfa-disableTrust.yaml#/paths/~1{scopeId}~1users~1{userId}~1mfa~1disableTrust'
+    $ref: './usersMfa/users-scopeId-userId-mfa-disableTrust.yaml#/paths/~1{scopeId}~1users~1{userId}~1mfa~1disableTrust'
+  ### User Mfa ###
+  /user/mfa:
+    $ref: './userMfa/userMfa.yaml#/paths/~1user~1mfa'
+  /user/mfa/disableTrust:
+    $ref: './userMfa/userMfa-disableTrust.yaml#/paths/~1user~1mfa~1disableTrust'
   ### User Credentials ###
+  ### User Credentials self managing ###
   /{scopeId}/user/credentials/password:
-    $ref: './userCredentials/userCredentials-scopeId.yaml#/paths/~1{scopeId}~1user~1credentials~1password'
+    $ref: './userCredentials/user-credentials-password.yaml#/paths/~1{scopeId}~1user~1credentials~1password'
   /{scopeId}/user/credentials/{credentialId}/_reset:
-    $ref: './userCredentials/userCredentials-scopeId-credentialId-_reset.yaml#/paths/~1{scopeId}~1user~1credentials~1{credentialId}~1_reset'
-  ### User Credentials Filtered ###
+    $ref: './userCredentials/user-credentials-credentialId-_reset.yaml#/paths/~1{scopeId}~1user~1credentials~1{credentialId}~1_reset'
+  /user/credentials/password:
+    $ref: './userCredentials/user-credentials-password.yaml#/paths/~1user~1credentials~1password'
+  /user/credentials/{credentialId}/_reset:
+    $ref: './userCredentials/user-credentials-credentialId-_reset.yaml#/paths/~1user~1credentials~1{credentialId}~1_reset'
+  ### Admin view on User Credentials ###
   /{scopeId}/user/{userId}/credentials/:
-    $ref: './userCredentialsFiltered/credential-scopeId.yaml#/paths/~1{scopeId}~1user~1{userId}~1credentials'
+    $ref: './usersCredentials/users-credentials-scopeId-userId.yaml#/paths/~1{scopeId}~1user~1{userId}~1credentials'
+  /{scopeId}/users/{userId}/credentials/:
+    $ref: './usersCredentials/users-credentials-scopeId-userId.yaml#/paths/~1{scopeId}~1users~1{userId}~1credentials'
   /{scopeId}/user/{userId}/credentials/_count:
-    $ref: './userCredentialsFiltered/credential-scopeId-_count.yaml#/paths/~1{scopeId}~1user~1{userId}~1credentials~1_count'
+    $ref: './usersCredentials/users-credentials-scopeId-userId-_count.yaml#/paths/~1{scopeId}~1user~1{userId}~1credentials~1_count'
+  /{scopeId}/users/{userId}/credentials/_count:
+    $ref: './usersCredentials/users-credentials-scopeId-userId-_count.yaml#/paths/~1{scopeId}~1users~1{userId}~1credentials~1_count'
+  /{scopeId}/users/{userId}/credentials/password/_reset:
+    $ref: './usersCredentials/users-credentials-scopeId-userId-password-_reset.yaml#/paths/~1{scopeId}~1users~1{userId}~1credentials~1password~1_reset'
   ### User Profile ###
   /{scopeId}/user/profile/:
-    $ref: './userProfile/userProfile-scopeId.yaml#/paths/~1{scopeId}~1user~1profile~1'
+    $ref: './userProfile/userProfile.yaml#/paths/~1{scopeId}~1user~1profile~1'
+  /user/profile/:
+    $ref: './userProfile/userProfile.yaml#/paths/~1user~1profile~1'
 
 components:
   parameters:
@@ -603,16 +622,181 @@ components:
               type: string
           required:
             - name
-    ### Other Base Entities ###
-    kapuaError:
-      description: The base object to represent an Error
+    ### Errors - schemas ###
+    exceptionInfo:
+      description: The base object to represent an Error. Every '*exceptionInfo' object in the codebase extends this, adding some fields if needed
       properties:
+        type:
+          type: string
+          description: the exact type of exceptionInfo object
         message:
           type: string
           description: An extended description of the error that occurred when performing the operation
         kapuaErrorCode:
           type: string
-          description: An human readable error code that can be used to
+          description: An human readable error code used in the platform
+        httpErrorCode:
+          type: string
+          description: The http error code for this response
+      example:
+        type: "exceptionInfo"
+        httpErrorCode: 500
+        message: "Operation not allowed: This account cannot be deleted. Delete its child first.."
+        kapuaErrorCode: "OPERATION_NOT_ALLOWED"
+    subjectUnauthorizedExceptionInfo:
+      description: The object to represent the fact that the subject requesting the resource has not the required permissions
+      allOf:
+        - $ref: '#/components/schemas/exceptionInfo'
+        - properties:
+            permission:
+              $ref: './accessInfo/accessInfo.yaml#/components/schemas/permission'
+      example:
+        type: "subjectUnauthorizedExceptionInfo"
+        httpErrorCode: 403
+        message: "User does not have permission to perform this action. Required permission: user:read:1:*."
+        kapuaErrorCode: "SUBJECT_UNAUTHORIZED"
+        permission:
+            domain: "user"
+            action: "read"
+            targetScopeId: "AQ"
+            forwardable: false
+    entityNotFoundExceptionInfo:
+      description: The object to represent the fact that an entity has not been found
+      allOf:
+        - $ref: '#/components/schemas/exceptionInfo'
+        - properties:
+            entityType:
+              description: The type of the entity that could not be found
+              type: string
+            entityId:
+              description: The ID of the entity that could not be found
+              type: string
+      example:
+        type: "entityNotFoundExceptionInfo"
+        httpErrorCode: 404
+        message: "The entity of type user with id/name 742 was not found."
+        kapuaErrorCode: "ENTITY_NOT_FOUND"
+        entityType: "user"
+        entityId: "AuY"
+    illegalArgumentExceptionInfo:
+      description: An illegal value has been passed to the operation
+      allOf:
+        - $ref: '#/components/schemas/exceptionInfo'
+        - properties:
+            argumentName:
+              description: The name of the argument who holds an illegal value
+              type: string
+            argumentValue:
+              description: The illegal value passed to the operation
+              type: string
+      example:
+        type: "illegalArgumentExceptionInfo"
+        httpErrorCode: 400
+        message: "An illegal value was provided for the argument user.email: thisIsNotAnEmailAtAll"
+        kapuaErrorCode: "ILLEGAL_ARGUMENT"
+        argumentName: "user.email"
+        argumentValue: "thisIsNotAnEmailAtAll"
+    illegalNullArgumentExceptionInfo:
+      description: An illegal null argument has been passed to the operation
+      allOf:
+        - $ref: '#/components/schemas/exceptionInfo'
+        - properties:
+            argumentName:
+              type: string
+              description: The name of the argument who holds an illegal null value
+      example:
+        type: "illegalNullArgumentExceptionInfo"
+        httpErrorCode: 400
+        message: "An illegal value was provided for the argument user.email: null"
+        kapuaErrorCode: "ILLEGAL_NULL_ARGUMENT"
+        argumentName: "user.email"
+    ServiceConfigurationLimitExceededExceptionInfo:
+      description: The update of the configuration for the service exceeds available resources of the current scope
+      allOf:
+        - $ref: '#/components/schemas/exceptionInfo'
+        - properties:
+            scopeId:
+              description: The scope for which limit has been exceeded
+              $ref: '#/components/schemas/kapuaId'
+            servicePid:
+              type: string
+              description: The Pid of the service
+            limitExceededBy:
+              type: string
+              description: The amount of excess
+      example:
+        type: "ServiceConfigurationLimitExceededExceptionInfo"
+        httpErrorCode: 400
+        message: "The maximum of resources for the org.eclipse.kapua.service.account.AccountService service for the account 2 has been exceeded. The resource limit is exceeded by 3."
+        kapuaErrorCode: "LIMIT_EXCEEDED"
+        scopeId: 2
+        servicePid: "org.eclipse.kapua.service.account.AccountService"
+        limitExceededBy: 3
+    ServiceConfigurationParentLimitExceededExceptionInfo:
+      description: The update of the configuration for the service exceeds available resources of the parent scope
+      allOf:
+        - $ref: '#/components/schemas/exceptionInfo'
+        - properties:
+            parentScopeId:
+              description: The parent scope for which limit has been exceeded
+              $ref: '#/components/schemas/kapuaId'
+            servicePid:
+              type: string
+              description: The Pid of the service
+            limitExceededBy:
+              type: string
+              description: The amount of excess
+      example:
+        type: "ServiceConfigurationLimitExceededExceptionInfo"
+        httpErrorCode: 400
+        message: "The maximum of resources for the org.eclipse.kapua.service.account.AccountService service for the parent account 2 has been exceeded."
+        kapuaErrorCode: "PARENT_LIMIT_EXCEEDED"
+        scopeId: 2
+        servicePid: "org.eclipse.kapua.service.account.AccountService"
+        limitExceededBy: 3
+    entityUniquenessExceptionInfo:
+      description: The object to represent the fact that an Entity with the same unique fields is already present in the system
+      allOf:
+        - $ref: '#/components/schemas/exceptionInfo'
+        - properties:
+            entityType:
+              type: string
+              description: The type of the entity
+            uniquesFieldValues:
+              type: array
+              description: map of fields and associated values that should be unique in the system
+              items:
+                type: string
+      example:
+        type: "entityUniquenessExceptionInfo"
+        httpErrorCode: 409
+        message: "Error: [scopeId=1, schema=mqtt, dns=10.200.12.148, port=1883]"
+        kapuaErrorCode: "ENTITY_UNIQUENESS"
+        entityType: "endpointInfo"
+        uniquesFieldValues:
+          - "scopeId=1"
+          - "schema=mqtt"
+          - "dns=10.200.12.148"
+          - "port=1883"
+    InternalUserOnlyExceptionInfo:
+      description: the operation is reserved only to users with 'userType' INTERNAL
+      allOf:
+        - $ref: '#/components/schemas/exceptionInfo'
+      example:
+        type: "InternalUserOnlyExceptionInfo"
+        httpErrorCode: 403
+        message: "This operation is reserved only for Users of type INTERNAL."
+        kapuaErrorCode: "INTERNAL_USER_ONLY"
+    SelfManagedOnlyExceptionInfo:
+      description: the operation can only be performed on the user which is currently authenticated
+      allOf:
+        - $ref: '#/components/schemas/exceptionInfo'
+      example:
+        type: "SelfManagedOnlyExceptionInfo"
+        httpErrorCode: 403
+        message: "This operation can be performed only on the current logged User."
+        kapuaErrorCode: "SELF_MANAGED_ONLY"
+    ### Other Base Entities ###
     kapuaListResult:
       description: A container for all the Entities List
       type: object
@@ -642,6 +826,7 @@ components:
           type: array
           items:
             type: string
+
     ### Schema used in different yaml definitions, placed here for problems with swagger reference resolution ###
     action:
       type: string
@@ -1007,15 +1192,16 @@ components:
       $ref: './user/user.yaml#/components/schemas/userCreator'
     userListResult:
       $ref: './user/user.yaml#/components/schemas/userListResult'
+    ### User MFA Entities ###
     mfaOption:
-      $ref: './user/user.yaml#/components/schemas/mfaOption'
-    mfaOptionCreator:
-      $ref: './user/user.yaml#/components/schemas/mfaOptionCreator'
+      $ref: './userMfa/userMfa.yaml#/components/schemas/mfaOption'
+    mfaOptionCreationResponse:
+      $ref: './userMfa/userMfa.yaml#/components/schemas/mfaOptionCreationResponse'
     ### User Credentials Entities ###
     passwordChangeRequest:
-      $ref: './userCredentials/userCredentials.yaml#/components/schemas/passwordChangeRequest'
+      $ref: './userCredentials/user-credentials.yaml#/components/schemas/passwordChangeRequest'
     passwordResetRequest:
-      $ref: './userCredentials/userCredentials.yaml#/components/schemas/passwordResetRequest'
+      $ref: './userCredentials/user-credentials.yaml#/components/schemas/passwordResetRequest'
     ### User Profile Entities ###
     userProfile:
       $ref: './userProfile/userProfile.yaml#/components/schemas/userProfile'
@@ -1040,67 +1226,61 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/setResult'
-    ### Errors ###
-    kapuaError:
-      description: An error occurred while performing the request
+    ### Errors - responses ###
+    kapuaError: #Base 500 response
+      description: An internal error occurred while performing the request
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/kapuaError'
-    entityNotFound:
+            $ref: '#/components/schemas/exceptionInfo'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/exceptionInfo'
+    entityNotFound: #Base 404 response
       description: The desired entity could not be found
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: '#/components/responses/kapuaError/content/application~1json/schema'
-              - properties:
-                  entityType:
-                    description: The type of the entity that could not be found
-                    type: string
-                  entityId:
-                    description: The ID of the entity that could not be found
-                    type: string
-    illegalArgument:
-      description: An illegal value has been passes to the operation
+            $ref: '#/components/schemas/entityNotFoundExceptionInfo'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/entityNotFoundExceptionInfo'
+    illegalArgument: #Base 400 response
+      description: An illegal argument has been passed to the operation
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: '#/components/schemas/kapuaError'
-              - properties:
-                  argumentName:
-                    description: The name of the argument who holds an illegal value
-                    type: string
-                  argumentValue:
-                    description: The illegal value passed to the operation
-                    type: string
-    illegalNullArgument:
-      description: An illegal null argument has been passed to the operation
-      content:
-        application/json:
+            oneOf:
+              - $ref: '#/components/schemas/illegalArgumentExceptionInfo'
+              - $ref: '#/components/schemas/illegalNullArgumentExceptionInfo'
+        application/xml:
           schema:
-            allOf:
-              - $ref: '#/components/schemas/kapuaError'
-              - properties:
-                  argumentName:
-                    type: string
-                    description: The name of the argument who holds an illegal null value
-    subjectUnauthorized:
+            oneOf:
+              - $ref: '#/components/schemas/illegalArgumentExceptionInfo'
+              - $ref: '#/components/schemas/illegalNullArgumentExceptionInfo'
+            xml:
+              name: 'illegalArgumentExceptionInfo'
+    subjectUnauthorized: #Base 403 response
       description: The user performing the operation does not have the required permissions
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: '#/components/schemas/kapuaError'
-              - properties:
-                  permission:
-                    description: The permission that is required to perform the operation, and that the current user is missing
-                    type: string
-    unauthenticated:
-      description: The provided AccessToken could not be found, or no AccessToken has been provided
-    entityUniqueness:
+            $ref: '#/components/schemas/subjectUnauthorizedExceptionInfo'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/subjectUnauthorizedExceptionInfo'
+    unauthenticated: #Base 401 response
+      description: The authentication failed for some reason. If this was done via an Access Token, it could be expired or invalidated
+    entityUniqueness: #Base 404 response
       description: An Entity with the same unique fields is already present in the system
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/entityUniquenessExceptionInfo'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/entityUniquenessExceptionInfo'
+  # Security schemes
   securitySchemes:
     kapuaToken:
       description: The default AccessToken Security Scheme. A [JWT](https://jwt.io) is used to represent the claims of a user

@@ -222,6 +222,31 @@ Feature: Job service CRUD tests
     Then I count 15
     Then I logout
 
+  Scenario: Query for jobs using match term parameter
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the job service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
+    Given I prepare a job with name "job1" and description "descriptionjob"
+    When I create a new job entity from the existing creator
+    Given I prepare a job with name "thisisajob" and description "foo"
+    When I create a new job entity from the existing creator
+    Given I prepare a job with name "blow" and description "job"
+    When I create a new job entity from the existing creator
+    And I query for the job with term match "job"
+    Then I count 2
+    Given I prepare a job with name "job2" and description "descriptionjob2"
+    When I create a new job entity from the existing creator
+    And I query for the job with term match "description"
+    Then I count 2
+    Given I prepare a job with name "job3" and description "descriptionjob3"
+    When I create a new job entity from the existing creator
+    And I query for the job with term match "job"
+    Then I count 4
+    Then I logout
+
   Scenario: Job factory sanity checks
 
     When I test the sanity of the job factory

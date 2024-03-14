@@ -18,17 +18,18 @@ import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.user.User;
+import org.jose4j.jwt.JwtClaims;
 
 /**
  * Kapua {@link AuthenticationInfo} implementation
  *
  * @since 1.0
- *
  */
 public class SessionAuthenticationInfo implements AuthenticationInfo {
 
     private static final long serialVersionUID = -8682457531010599453L;
 
+    private final JwtClaims jwtClaims;
     private String realmName;
     private Account account;
     private User user;
@@ -42,14 +43,21 @@ public class SessionAuthenticationInfo implements AuthenticationInfo {
      * @param user
      * @param accessToken
      */
-    public SessionAuthenticationInfo(String realmName,
+    public SessionAuthenticationInfo(
+            JwtClaims jwtClaims,
+            String realmName,
             Account account,
             User user,
             AccessToken accessToken) {
+        this.jwtClaims = jwtClaims;
         this.realmName = realmName;
         this.account = account;
         this.user = user;
         this.accessToken = accessToken;
+    }
+
+    public JwtClaims getJwtClaims() {
+        return jwtClaims;
     }
 
     /**

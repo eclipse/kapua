@@ -103,11 +103,11 @@ public interface AuthenticationService extends KapuaService {
 
     /**
      * Gets the {@link AccessToken} identified by its {@link AccessToken#getTokenId()}.
-     * Expired {@link AccessToken}s are excluded.
+     * In other words, given the JWT it returns the respective Access Token entity
      *
      * @param tokenId The {@link AccessToken#getTokenId()} to look for.
      * @return The found {@link AccessToken} or {@code null} if not present.
-     * @throws KapuaException
+     * @throws KapuaException if the provided tokenId (JWT) is not valid in its header or payload content
      * @since 1.0.0
      */
     AccessToken findAccessToken(String tokenId) throws KapuaException;

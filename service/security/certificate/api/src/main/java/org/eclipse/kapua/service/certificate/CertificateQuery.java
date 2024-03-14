@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
+import org.eclipse.kapua.model.query.KapuaForwardableEntityQuery;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.certificate.info.CertificateInfo;
 import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,8 +31,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newQuery")
-public interface CertificateQuery extends KapuaQuery {
+public interface CertificateQuery extends KapuaForwardableEntityQuery {
 
+    @Override
     /**
      * Gets whether or not to get also inherited {@link CertificateInfo}s
      *
@@ -42,6 +43,7 @@ public interface CertificateQuery extends KapuaQuery {
     @XmlElement(name = "includeInherited")
     Boolean getIncludeInherited();
 
+    @Override
     /**
      * Sets whether or not to get also inherited {@link CertificateInfo}s
      *

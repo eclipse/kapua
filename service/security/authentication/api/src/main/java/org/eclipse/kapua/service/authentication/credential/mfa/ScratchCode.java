@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.mfa;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = ScratchCodeXmlRegistry.class, //
         factoryMethod = "newScratchCode") //
-public interface ScratchCode extends KapuaUpdatableEntity {
+public interface ScratchCode extends KapuaEntity {
 
     String TYPE = "scratchCode";
 

@@ -33,6 +33,8 @@ paths:
             application/json:
               schema:
                 $ref: './jobTarget.yaml#/components/schemas/jobTargetListResult'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -61,6 +63,8 @@ paths:
             application/json:
               schema:
                 $ref: '../job/job.yaml#/components/schemas/job'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

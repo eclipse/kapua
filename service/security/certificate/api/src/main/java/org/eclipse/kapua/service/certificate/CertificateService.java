@@ -35,5 +35,13 @@ public interface CertificateService extends KapuaEntityService<Certificate, Cert
 
     Certificate generate(CertificateGenerator generator) throws KapuaException;
 
+    /**
+     * @param scopeId
+     * @param usage
+     * @return
+     * @throws KapuaException
+     * @deprecated Since 2.0.0 Use the query method with CertificateQuery.setIncludeInherited(true) instead
+     */
+    @Deprecated
     List<Certificate> findAncestorsCertificates(KapuaId scopeId, CertificateUsage usage) throws KapuaException;
 }

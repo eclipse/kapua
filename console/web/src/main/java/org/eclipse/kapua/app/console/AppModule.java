@@ -14,8 +14,11 @@ package org.eclipse.kapua.app.console;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 public class AppModule extends AbstractKapuaModule {
     @Override
@@ -27,5 +30,19 @@ public class AppModule extends AbstractKapuaModule {
     @Named("metricModuleName")
     String metricModuleName() {
         return "web-console";
+    }
+
+    @Provides
+    @Named("eventsModuleName")
+    String eventModuleName() {
+        return "console";
+    }
+
+    @Provides
+    @Singleton
+    JAXBContextProvider jaxbContextProvider() {
+        final JAXBContextProvider jaxbContextProvider = new ConsoleJAXBContextProvider();
+        XmlUtil.setContextProvider(jaxbContextProvider);
+        return jaxbContextProvider;
     }
 }

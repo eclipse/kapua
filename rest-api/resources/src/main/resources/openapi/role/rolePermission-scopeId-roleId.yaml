@@ -43,6 +43,8 @@ paths:
             application/json:
               schema:
                 $ref: './role.yaml#/components/schemas/rolePermissionListResult'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -87,6 +89,8 @@ paths:
                   domain: domain
                   action: read
                   forwardable: true
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

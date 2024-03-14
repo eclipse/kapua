@@ -21,5 +21,7 @@
     <include relativeToChangelogFile="true" file="./device-add-clob-ip-if-columns.xml"/>
     <include relativeToChangelogFile="true" file="./device_connection-add_auth_type_column.xml"/>
     <include relativeToChangelogFile="true" file="./device_tamper-status.xml"/>
+    <include relativeToChangelogFile="true" file="./device-client_id_binary.xml"/>
+    <include relativeToChangelogFile="true" file="./device_connection-client_id_binary.xml"/>
 
 </databaseChangeLog>

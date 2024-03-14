@@ -71,7 +71,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
 
 
     //TODO: make final as soon as deprecated constructors are removed
-    private AccountChildrenFinder accountChildrenFinder;
+    private AccountRelativeFinder accountRelativeFinder;
     private F factory;
     //TODO: remove as soon as deprecated constructors are removed
     private final Class<F> factoryClass;
@@ -109,7 +109,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
      * @param abstractCacheFactory The {@link CacheFactory} that handles caching of the entities
      * @since 1.2.0
-     * @deprecated Since 2.0.0. Please use {@link #AbstractKapuaConfigurableResourceLimitedService(String, Domain, EntityManagerFactory, EntityCacheFactory, KapuaEntityFactory, PermissionFactory, AuthorizationService, AccountChildrenFinder, RootUserTester)} This constructor may be removed in a next release
+     * @deprecated Since 2.0.0. Please use {@link #AbstractKapuaConfigurableResourceLimitedService(String, Domain, EntityManagerFactory, EntityCacheFactory, KapuaEntityFactory, PermissionFactory, AuthorizationService, AccountRelativeFinder, RootUserTester)} This constructor may be removed in a next release
      */
     @Deprecated
     protected AbstractKapuaConfigurableResourceLimitedService(
@@ -127,7 +127,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
         */
         this.factoryClass = factoryClass;
         this.factory = null;
-        this.accountChildrenFinder = null;
+        this.accountRelativeFinder = null;
     }
 
     /**
@@ -149,12 +149,12 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
                                                               F factory,
                                                               PermissionFactory permissionFactory,
                                                               AuthorizationService authorizationService,
-                                                              AccountChildrenFinder accountChildrenFinder,
+                                                              AccountRelativeFinder accountRelativeFinder,
                                                               RootUserTester rootUserTester) {
         super(pid, domain, entityManagerFactory, abstractCacheFactory, permissionFactory, authorizationService, rootUserTester);
         this.factory = factory;
         this.factoryClass = null; //TODO: not needed for this construction path, remove as soon as the deprecated constructor is removed
-        this.accountChildrenFinder = accountChildrenFinder;
+        this.accountRelativeFinder = accountRelativeFinder;
     }
 
     @Override
@@ -244,7 +244,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
             // Current used entities
             long currentUsedEntities = this.count(countQuery);
 
-            final KapuaListResult<Account> childAccounts = txManager.execute(tx -> getAccountChildrenFinder().findChildren(scopeId, Optional.ofNullable(targetScopeId)));
+            final KapuaListResult<Account> childAccounts = txManager.execute(tx -> getAccountRelativeFinder().findChildren(scopeId, Optional.ofNullable(targetScopeId)));
             // Resources assigned to children
             long childCount = 0;
             for (Account childAccount : childAccounts.getItems()) {
@@ -285,14 +285,14 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
      * This instance should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
      * therefore fetching of the required instance is demanded to this artificial getter.
      *
-     * @return The instantiated (hopefully) {@link AccountChildrenFinder} instance
+     * @return The instantiated (hopefully) {@link AccountRelativeFinder} instance
      */
-    private AccountChildrenFinder getAccountChildrenFinder() {
-        if (accountChildrenFinder == null) {
+    private AccountRelativeFinder getAccountRelativeFinder() {
+        if (accountRelativeFinder == null) {
             KapuaLocator locator = KapuaLocator.getInstance();
-            this.accountChildrenFinder = locator.getService(AccountChildrenFinder.class);
+            this.accountRelativeFinder = locator.getService(AccountRelativeFinder.class);
         }
 
-        return accountChildrenFinder;
+        return accountRelativeFinder;
     }
 }

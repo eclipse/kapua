@@ -56,6 +56,8 @@ paths:
       responses:
         204:
           description: The message has been sent successfully
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

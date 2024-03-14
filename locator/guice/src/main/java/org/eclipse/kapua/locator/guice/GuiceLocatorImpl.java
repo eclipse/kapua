@@ -13,14 +13,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.Binding;
 import com.google.inject.ConfigurationException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.google.inject.Module;
 import com.google.inject.Stage;
 import com.google.inject.TypeLiteral;
+import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.name.Names;
+import com.google.inject.spi.InjectionListener;
+import com.google.inject.spi.TypeEncounter;
+import com.google.inject.spi.TypeListener;
 import com.google.inject.util.Modules;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
@@ -28,6 +34,7 @@ import org.eclipse.kapua.commons.core.ServiceModuleJaxbClassConfig;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
+import org.eclipse.kapua.locator.initializers.KapuaInitializingMethod;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
 import org.reflections.Reflections;
@@ -39,11 +46,15 @@ import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -152,6 +163,8 @@ public class GuiceLocatorImpl extends KapuaLocator {
         return servicesList;
     }
 
+    final Map<Integer, List<AbstractMap.SimpleEntry<Method, Object>>> initMethods = new HashMap<>();
+
     /**
      * Initializes the {@link KapuaLocator} with the given resource name configuration.
      *
@@ -171,9 +184,9 @@ public class GuiceLocatorImpl extends KapuaLocator {
         );
         Set<Class<? extends AbstractKapuaModule>> kapuaModuleClasses = reflections.getSubTypesOf(AbstractKapuaModule.class);
         // Instantiate Kapua modules
-        List<AbstractKapuaModule> kapuaModules = new ArrayList<>();
+        List<Module> kapuaModules = new ArrayList<>();
         List<Class<? extends AbstractKapuaModule>> excludedKapuaModules = new ArrayList<>();
-        List<AbstractKapuaModule> overridingModules = new ArrayList<>();
+        List<Module> overridingModules = new ArrayList<>();
         for (Class<? extends AbstractKapuaModule> moduleClazz : kapuaModuleClasses) {
             final boolean parameterlessConstructorExist = Arrays.stream(moduleClazz.getDeclaredConstructors()).anyMatch(c -> c.getParameterTypes().length == 0);
             if (!parameterlessConstructorExist) {
@@ -194,6 +207,43 @@ public class GuiceLocatorImpl extends KapuaLocator {
         }
         // KapuaModule will be removed as soon as bindings will be moved to local modules
         kapuaModules.add(new KapuaModule(locatorConfigName));
+
+        kapuaModules.add(new AbstractModule() {
+            private boolean hasKapuaInitializingMethodAnnotation(Method method) {
+                Annotation[] declaredAnnotations = method.getAnnotations();
+                return Arrays.stream(declaredAnnotations).anyMatch(a -> a.annotationType().equals(KapuaInitializingMethod.class));
+            }
+
+            @Override
+            protected void configure() {
+                bindListener(new AbstractMatcher<TypeLiteral<?>>() {
+                    @Override
+                    public boolean matches(TypeLiteral<?> typeLiteral) {
+                        return Arrays.stream(typeLiteral.getRawType().getDeclaredMethods()).anyMatch(m -> hasKapuaInitializingMethodAnnotation(m));
+                    }
+                }, new TypeListener() {
+                    @Override
+                    public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
+                        encounter.register(new InjectionListener<I>() {
+                            @Override
+                            public void afterInjection(I injectee) {
+                                Arrays.stream(injectee.getClass().getDeclaredMethods())
+                                        .flatMap(m -> {
+                                            return Arrays.stream(m.getAnnotations())
+                                                    .filter(a -> a.annotationType().equals(KapuaInitializingMethod.class))
+                                                    .map(a -> new AbstractMap.SimpleEntry<>(m, (KapuaInitializingMethod) a));
+                                        })
+                                        .forEach(kv -> {
+                                            final int priority = kv.getValue().priority();
+                                            initMethods.computeIfAbsent(priority, k -> new ArrayList<>());
+                                            initMethods.get(priority).add(new AbstractMap.SimpleEntry<>(kv.getKey(), injectee));
+                                        });
+                            }
+                        });
+                    }
+                });
+            }
+        });
         // Print loaded stuff
         final Stage stage = getStage();
         printLoadedKapuaModuleConfiguration(locatorConfigName, locatorConfig, kapuaModules, overridingModules, excludedKapuaModules, stage);
@@ -205,7 +255,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
         }
 
         // Scan XmlSerializable
-        Set<Class<?>> xmlSerializableClasses = reflections.getTypesAnnotatedWith(XmlRootElement.class);
+        final Set<Class<?>> xmlSerializableClasses = reflections.getTypesAnnotatedWith(XmlRootElement.class);
         List<Class<?>> loadedXmlSerializables = new ArrayList<>();
         List<Class<?>> excludedXmlSerializables = new ArrayList<>();
         for (Class<?> xmlSerializableClass : xmlSerializableClasses) {
@@ -219,6 +269,21 @@ public class GuiceLocatorImpl extends KapuaLocator {
         ServiceModuleJaxbClassConfig.setSerializables(loadedXmlSerializables);
         // Print loaded stuff
         printLoadedXmlSerializableConfiguration(locatorConfigName, locatorConfig, loadedXmlSerializables, excludedXmlSerializables);
+    }
+
+    @Override
+    protected void runInitializers() {
+        initMethods.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEachOrdered(kv -> kv.getValue().stream().forEach(methodAndObject -> {
+                    try {
+                        LOG.info("Running initializer with priority {} on 'class'.'method': '{}'.'{}'", kv.getKey(), methodAndObject.getValue().getClass().getName(), methodAndObject.getKey().getName());
+                        methodAndObject.getKey().invoke(methodAndObject.getValue());
+                    } catch (Throwable e) {
+                        throw new RuntimeException(e);
+                    }
+                }));
     }
 
     /**
@@ -269,8 +334,8 @@ public class GuiceLocatorImpl extends KapuaLocator {
     private void printLoadedKapuaModuleConfiguration(
             @NotNull String resourceName,
             @NotNull LocatorConfig locatorConfig,
-            @NotNull List<AbstractKapuaModule> kapuaModules,
-            @NotNull List<AbstractKapuaModule> overridingModules,
+            @NotNull List<Module> kapuaModules,
+            @NotNull List<Module> overridingModules,
             @NotNull List<Class<? extends AbstractKapuaModule>> excludedKapuaModules, Stage stage) {
         ConfigurationPrinter configurationPrinter =
                 ConfigurationPrinter
@@ -287,7 +352,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
         // Loaded modules
         configurationPrinter.openSection("Loaded Kapua Modules");
         if (!kapuaModules.isEmpty()) {
-            for (AbstractKapuaModule kapuaModule : kapuaModules.stream().sorted(Comparator.comparing(a -> a.getClass().getName())).collect(Collectors.toList())) {
+            for (Module kapuaModule : kapuaModules.stream().sorted(Comparator.comparing(a -> a.getClass().getName())).collect(Collectors.toList())) {
                 configurationPrinter.addSimpleParameter(kapuaModule.getClass().getName());
             }
         } else {
@@ -297,7 +362,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
         // Loaded modules
         configurationPrinter.openSection("Overriding Kapua Modules");
         if (!overridingModules.isEmpty()) {
-            for (AbstractKapuaModule kapuaModule : overridingModules.stream().sorted(Comparator.comparing(a -> a.getClass().getName())).collect(Collectors.toList())) {
+            for (Module kapuaModule : overridingModules.stream().sorted(Comparator.comparing(a -> a.getClass().getName())).collect(Collectors.toList())) {
                 configurationPrinter.addSimpleParameter(kapuaModule.getClass().getName());
             }
         } else {

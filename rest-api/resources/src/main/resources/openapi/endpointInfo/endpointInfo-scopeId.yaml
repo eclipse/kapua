@@ -35,6 +35,8 @@ paths:
             application/json:
               schema:
                 $ref: './endpointInfo.yaml#/components/schemas/endpointInfoListResult'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -62,6 +64,8 @@ paths:
             application/json:
               schema:
                 $ref: './endpointInfo.yaml#/components/schemas/endpointInfo'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

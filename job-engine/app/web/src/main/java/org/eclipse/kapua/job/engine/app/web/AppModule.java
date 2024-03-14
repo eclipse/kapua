@@ -15,8 +15,12 @@ package org.eclipse.kapua.job.engine.app.web;
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.job.engine.app.web.jaxb.JobEngineJAXBContextProvider;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 public class AppModule extends AbstractKapuaModule {
     @Override
@@ -28,5 +32,19 @@ public class AppModule extends AbstractKapuaModule {
     @Named("metricModuleName")
     String metricModuleName() {
         return "job-engine";
+    }
+
+    @Provides
+    @Named("eventsModuleName")
+    String eventModuleName() {
+        return "job_engine";
+    }
+
+    @Provides
+    @Singleton
+    JAXBContextProvider jaxbContextProvider() {
+        final JAXBContextProvider jaxbContextProvider = new JobEngineJAXBContextProvider();
+        XmlUtil.setContextProvider(jaxbContextProvider);
+        return jaxbContextProvider;
     }
 }

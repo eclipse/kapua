@@ -75,6 +75,7 @@ public class BasicSteps extends TestBase {
     public static final String TELEMETRY_CONSUMER_CONTAINER_NAME = "telemetry-consumer";
     public static final String LIFECYCLE_CONSUMER_CONTAINER_NAME = "lifecycle-consumer";
     public static final String AUTH_SERVICE_CONTAINER_NAME = "auth-service";
+    public static final String API_CONTAINER_NAME = "rest-api";
     public static final int JOB_ENGINE_CONTAINER_PORT = 8080;
 
     public static final String LAST_CREDENTIAL_ID = "LastCredentialId";

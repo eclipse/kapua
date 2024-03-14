@@ -13,8 +13,8 @@
 package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
-import org.eclipse.kapua.commons.jpa.KapuaUpdatableEntityJpaRepository;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
@@ -22,7 +22,7 @@ import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeReposi
 import org.eclipse.kapua.storage.TxContext;
 
 public class ScratchCodeImplJpaRepository
-        extends KapuaUpdatableEntityJpaRepository<ScratchCode, ScratchCodeImpl, ScratchCodeListResult>
+        extends KapuaEntityJpaRepository<ScratchCode, ScratchCodeImpl, ScratchCodeListResult>
         implements ScratchCodeRepository {
 
     public ScratchCodeImplJpaRepository(KapuaJpaRepositoryConfiguration jpaRepoConfig) {

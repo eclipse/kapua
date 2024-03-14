@@ -25,6 +25,8 @@ paths:
       responses:
         204:
           description: The Job Engine has received the Resume Execution request
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -46,6 +48,8 @@ paths:
       responses:
         204:
           description: The Job Engine has received the Stop Execution request
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

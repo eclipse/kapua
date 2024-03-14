@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.tag.internal;
 
 import com.google.inject.Provides;
 import com.google.inject.multibindings.ProvidesIntoSet;
-import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.AccountRelativeFinder;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
@@ -71,7 +71,7 @@ public class TagModule extends AbstractKapuaModule {
     ServiceConfigurationManager tagServiceConfigurationManager(
             TagFactory factory,
             RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder,
+            AccountRelativeFinder accountRelativeFinder,
             TagRepository tagRepository,
             EntityCacheFactory entityCacheFactory
     ) {
@@ -83,7 +83,7 @@ public class TagModule extends AbstractKapuaModule {
                                 entityCacheFactory.createCache("AbstractKapuaConfigurableServiceCacheId")
                         ),
                         rootUserTester,
-                        accountChildrenFinder,
+                        accountRelativeFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
                                 tagRepository

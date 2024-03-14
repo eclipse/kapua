@@ -28,6 +28,8 @@ paths:
             application/json:
               schema:
                 $ref: './serviceConfiguration.yaml#/components/schemas/componentConfigurations'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -57,6 +59,25 @@ paths:
             application/json:
               schema:
                 $ref: './serviceConfiguration.yaml#/components/schemas/componentConfiguration'
+        400:
+          description: An illegal argument has been passed to the operation OR the resource cannot be updated for limits imposed on it (in this scope or parent scope)
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '../openapi.yaml#/components/schemas/ServiceConfigurationLimitExceededExceptionInfo'
+                  - $ref: '../openapi.yaml#/components/responses/illegalArgument/content/application~1json/schema'
+                  - $ref: '../openapi.yaml#/components/schemas/ServiceConfigurationParentLimitExceededExceptionInfo'
+                  - $ref: '../openapi.yaml#/components/schemas/exceptionInfo'
+            application/xml:
+              schema:
+                oneOf:
+                  - $ref: '../openapi.yaml#/components/schemas/ServiceConfigurationLimitExceededExceptionInfo'
+                  - $ref: '../openapi.yaml#/components/responses/illegalArgument/content/application~1xml/schema'
+                  - $ref: '../openapi.yaml#/components/schemas/ServiceConfigurationParentLimitExceededExceptionInfo'
+                  - $ref: '../openapi.yaml#/components/schemas/exceptionInfo'
+                xml:
+                  name: 'ServiceConfigurationLimitExceededExceptionInfo'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

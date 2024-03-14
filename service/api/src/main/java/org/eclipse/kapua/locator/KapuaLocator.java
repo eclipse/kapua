@@ -55,10 +55,6 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
      * @return
      */
     private static KapuaLocator createInstance() {
-        if (isBeingCreated) {
-            throw new RuntimeException("Already creating a KapuaLocator, avoid nested creation");
-        }
-        isBeingCreated = true;
         try {
             logger.info("initializing Servicelocator instance... ");
             String locatorImplementation = locatorClassName();
@@ -81,7 +77,9 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
                 logger.info("initialize Servicelocator with the default instance... DONE");
                 return locator;
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
+            instance = null;
+            isBeingCreated = false;
             logger.error("Error initializing locator...", e);
             throw e;
         }
@@ -97,14 +95,24 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
      */
     public static KapuaLocator getInstance() {
         if (instance == null) {
+            if (isBeingCreated) {
+                throw new RuntimeException("Already creating a KapuaLocator, avoid nested creation");
+            }
+            isBeingCreated = true;
             instance = createInstance();
+            isBeingCreated = false;
+            instance.runInitializers();
         }
         return instance;
     }
 
+    protected void runInitializers() {
+        //If your locator instance needs to run initializing methods (database populators, cache initializers, etc.), do it in an override of this method.
+    }
+
     public static void clearInstance() {
+        instance = null;
         isBeingCreated = false;
-        instance = createInstance();
     }
 
     /**

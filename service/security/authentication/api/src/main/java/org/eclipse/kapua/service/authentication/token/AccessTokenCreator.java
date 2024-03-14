@@ -33,7 +33,8 @@ import java.util.Date;
         "userId",
         "expiresOn",
         "refreshToken",
-        "refreshExpiresOn"
+        "refreshExpiresOn",
+        "tokenIdentifier"
 }, //
         factoryClass = AccessTokenXmlRegistry.class, //
         factoryMethod = "newAccessTokenCreator")
@@ -41,6 +42,7 @@ public interface AccessTokenCreator extends KapuaEntityCreator<AccessToken> {
 
     /**
      * Gets the token id
+     * This represents the content of the JWT token
      *
      * @return The token id
      * @since 1.0
@@ -121,4 +123,24 @@ public interface AccessTokenCreator extends KapuaEntityCreator<AccessToken> {
      * @since 1.0
      */
     void setRefreshExpiresOn(Date refreshExpiresOn);
+
+    /**
+     * Gets the token identifier
+     * This represents an id for the JWT token and is meant to be inserted inside its payload
+     *
+     * @return The token id
+     * @since 2.0
+     */
+    @XmlElement(name = "tokenIdentifier")
+    String getTokenIdentifier();
+
+    /**
+     * Sets the token identifier
+     *
+     * @param tokenId the token id to set
+     * @since 2.0
+     */
+    void setTokenIdentifier(String tokenId);
+
+
 }

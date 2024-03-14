@@ -19,5 +19,11 @@ import java.util.Optional;
 
 public interface AccessTokenRepository
         extends KapuaUpdatableEntityRepository<AccessToken, AccessTokenListResult> {
+
+    /**
+     * Finds by token IDENTIFIER the access token
+     *
+     * @return The Access Token identified by the provided tokenId
+     */
     Optional<AccessToken> findByTokenId(TxContext tx, String tokenId);
 }

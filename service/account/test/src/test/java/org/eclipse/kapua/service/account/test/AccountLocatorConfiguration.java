@@ -20,7 +20,7 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.AccountRelativeFinder;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
@@ -109,7 +109,7 @@ public class AccountLocatorConfiguration {
 //                bind(AccountEntityManagerFactory.class).toInstance(entityManagerFactory);
                 final AccountFactory accountFactory = new AccountFactoryImpl();
                 bind(AccountFactory.class).toInstance(accountFactory);
-                bind(AccountChildrenFinder.class).toInstance(Mockito.mock(AccountChildrenFinder.class));
+                bind(AccountRelativeFinder.class).toInstance(Mockito.mock(AccountRelativeFinder.class));
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 final AccountRepository accountRepository = new AccountImplJpaRepository(jpaRepoConfig);
                 bind(AccountService.class).toInstance(new AccountServiceImpl(
@@ -121,7 +121,7 @@ public class AccountLocatorConfiguration {
                                 AccountService.class.getName(),
                                 new ServiceConfigImplJpaRepository(jpaRepoConfig),
                                 Mockito.mock(RootUserTester.class),
-                                Mockito.mock(AccountChildrenFinder.class),
+                                Mockito.mock(AccountRelativeFinder.class),
                                 new UsedEntitiesCounterImpl(
                                         accountFactory,
                                         accountRepository)
