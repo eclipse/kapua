@@ -34,6 +34,8 @@ paths:
             application/json:
               schema:
                 $ref: './tag.yaml#/components/schemas/tagListResult'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -61,6 +63,8 @@ paths:
             application/json:
               schema:
                 $ref: './tag.yaml#/components/schemas/tag'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

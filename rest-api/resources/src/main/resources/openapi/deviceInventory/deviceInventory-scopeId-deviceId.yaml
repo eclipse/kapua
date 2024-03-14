@@ -29,6 +29,8 @@ paths:
             application/json:
               schema:
                 $ref: './deviceInventory.yaml#/components/schemas/deviceInventory'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -54,6 +56,8 @@ paths:
             application/json:
               schema:
                 $ref: './deviceInventory.yaml#/components/schemas/deviceInventoryBundles'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -80,6 +84,8 @@ paths:
       responses:
         204:
           description: The inventory bundle has been started
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -106,6 +112,8 @@ paths:
       responses:
         204:
           description: The inventory bundle has been stopped
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -131,6 +139,8 @@ paths:
             application/json:
               schema:
                 $ref: './deviceInventory.yaml#/components/schemas/deviceInventoryContainers'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -157,6 +167,8 @@ paths:
       responses:
         204:
           description: The inventory container has been started
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -183,6 +195,8 @@ paths:
       responses:
         204:
           description: The inventory container has been stopped
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -208,6 +222,8 @@ paths:
             application/json:
               schema:
                 $ref: './deviceInventory.yaml#/components/schemas/deviceInventorySystemPackages'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -233,6 +249,8 @@ paths:
             application/json:
               schema:
                 $ref: './deviceInventory.yaml#/components/schemas/deviceInventoryDeploymentPackages'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

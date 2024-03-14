@@ -43,6 +43,8 @@ paths:
             application/json:
               schema:
                 $ref: './account.yaml#/components/schemas/accountListResult'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -71,6 +73,8 @@ paths:
             application/json:
               schema:
                 $ref: './account.yaml#/components/schemas/account'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

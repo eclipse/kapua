@@ -29,6 +29,8 @@ paths:
             application/json:
               schema:
                 $ref: './role.yaml#/components/schemas/rolePermission'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -49,6 +51,8 @@ paths:
       responses:
         204:
           description: The RolePermission has been deleted
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

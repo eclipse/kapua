@@ -29,6 +29,8 @@ paths:
             application/json:
               schema:
                 $ref: './group.yaml#/components/schemas/groupListResult'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

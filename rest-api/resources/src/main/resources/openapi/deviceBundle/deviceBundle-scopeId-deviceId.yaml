@@ -31,6 +31,8 @@ paths:
             application/json:
               schema:
                 $ref: './deviceBundle.yaml#/components/schemas/deviceBundles'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

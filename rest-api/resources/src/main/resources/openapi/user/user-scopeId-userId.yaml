@@ -28,6 +28,8 @@ paths:
             application/json:
               schema:
                 $ref: './user.yaml#/components/schemas/user'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -67,6 +69,8 @@ paths:
             application/json:
               schema:
                 $ref: './user.yaml#/components/schemas/user'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -86,6 +90,8 @@ paths:
       responses:
         204:
           description: The User has been deleted
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
