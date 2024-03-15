@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.job.execution;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -46,6 +47,7 @@ public interface JobExecution extends KapuaUpdatableEntity {
      * @return
      * @since 1.0.0
      */
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     KapuaId getJobId();
 
     /**
@@ -58,6 +60,7 @@ public interface JobExecution extends KapuaUpdatableEntity {
      * @return
      * @since 1.0.0
      */
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     Date getStartedOn();
 
     /**
@@ -70,6 +73,7 @@ public interface JobExecution extends KapuaUpdatableEntity {
      * @return
      * @since 1.0.0
      */
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     Date getEndedOn();
 
     /**
