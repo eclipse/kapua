@@ -11,7 +11,7 @@ info:
     name: Eclipse Public License 2.0
     url: https://www.eclipse.org/legal/epl-2.0
 
-paths: {}
+paths: { }
 
 components:
   parameters:
@@ -27,48 +27,15 @@ components:
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaNamedEntity'
         - description: |
-            An object that holds all the informations pertaining an Account, including the details about the Contacts of that account.\
+            An object that holds all the information pertaining an Account, including the details about the Contacts of that account.\
             In Kapua an Account is the container of all other resources (Users, Devices, etc.), and is the equivalent of the concept of Tenant.\
             Every entity in Kapua will have a `scopeId` property, that holds the ID of the Account who holds that entity.
           type: object
           properties:
             organization:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: The Name of the Organization
-                addressLine1:
-                  type: string
-                  description: First line of the Address for the Organization
-                addressLine2:
-                  type: string
-                  description: Second line of the Address for the Organization
-                addressLine3:
-                  type: string
-                  description: Third line of the Address for the Organization
-                zipPostCode:
-                  type: string
-                  description: The Zip / Postcode for the Organization
-                city:
-                  type: string
-                  description: The City of the Organization
-                stateProvinceCounty:
-                  type: string
-                  description: The State / Province / County of the Organization
-                country:
-                  type: string
-                  description: The Country of the Organization
-                personName:
-                  type: string
-                  description: The Name of the Person listed as a Contact for the Organization
-                email:
-                  type: string
-                  description: The Email Address of the Person listed as a Contact for the Organization
-                phoneNumber:
-                  type: string
-                  description: The Phone Number of the Person listed as a Contact for the Organization
-              description: An object containing all the informations related to the Organization who holds the account
+              allOf:
+                - description: An object containing all the information related to the Organization who holds the account
+                - $ref: '#/components/schemas/organization'
             expirationDate:
               type: string
               format: 'date-time'
@@ -76,11 +43,11 @@ components:
             parentAccountPath:
               type: string
               description: The full Scope ID Hierarchy for the Account
-#            childAccounts:
-#              type: array
-#              items:
-#                $ref: '#/components/schemas/account'
-#              description: A list of Accounts available in the current Scope
+          #            childAccounts:
+          #              type: array
+          #              items:
+          #                $ref: '#/components/schemas/account'
+          #              description: A list of Accounts available in the current Scope
           example:
             type: account
             id: LgJHjS2jvdE
@@ -105,6 +72,91 @@ components:
               stateProvinceCounty: Green County, GC
               zipPostCode: '00100'
             parentAccountPath: /1/3315290947379772881
+    organization:
+      type: object
+      description: An object with all the information needed to create a new Account
+      required:
+        name
+        email
+      properties:
+        name:
+          type: string
+          description: The Name of the Organization
+        personName:
+          type: string
+          description: The Name of the Person listed as a Contact for the Organization
+        email:
+          type: string
+          format: email
+          description: The Email Address of the Person listed as a Contact for the Organization
+        phoneNumber:
+          type: string
+          description: The Phone Number of the Person listed as a Contact for the Organization
+        addressLine1:
+          type: string
+          description: First line of the Address for the Organization
+        addressLine2:
+          type: string
+          description: Second line of the Address for the Organization
+        addressLine3:
+          type: string
+          description: Third line of the Address for the Organization
+        zipPostCode:
+          type: string
+          description: The Zip / Postcode for the Organization
+        city:
+          type: string
+          description: The City of the Organization
+        stateProvinceCounty:
+          type: string
+          description: The State / Province / County of the Organization
+        country:
+          type: string
+          description: The Country of the Organization
+      example:
+        name: ACME Inc.
+        personName: Wile Ethelbert Coyote
+        email: wile.coyote@acme.inc
+        phoneNumber: +1 (555) 123 4567
+        addressLine1: 123 Looney Tunes Drive
+        addressLine2: Block 1
+        addressLine3: Apartment 25
+        zipPostCode: '00100'
+        city: Somewhere City
+        stateProvinceCounty: Green County, GC
+        country: United States
+    accountUpdateRequest:
+      description: |
+        An object that holds all the information necessary to update an Account, including the details about the Contacts of that account.\
+        In Kapua an Account is the container of all other resources (Users, Devices, etc.), and is the equivalent of the concept of Tenant.\
+        Every entity in Kapua will have a `scopeId` property, that holds the ID of the Account who holds that entity.
+      properties:
+        description:
+          type: string
+        expirationDate:
+          type: string
+          format: 'date-time'
+          description: The Expiration date and time for the Account. If empty, the Account has no expiration
+        optlock:
+          $ref: '../openapi.yaml#/components/schemas/optlock'
+        organization:
+          $ref: '#/components/schemas/organization'
+      example:
+        description: Acme Inc.'s Account
+        optlock: 2
+        expirationDate: '2019-12-31T00:00:00.000Z'
+        organization:
+          name: ACME Inc.
+          personName: Wile Ethelbert Coyote
+          email: wile.coyote@acme.inc
+          phoneNumber: +1 (555) 123 4567
+          addressLine1: 123 Looney Tunes Drive
+          addressLine2: Block 1
+          addressLine3: Apartment 25
+          zipPostCode: '00100'
+          city: Somewhere City
+          stateProvinceCounty: Green County, GC
+          country: United States
     accountCreator:
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaNamedEntityCreator'

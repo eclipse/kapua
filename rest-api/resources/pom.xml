@@ -100,5 +100,9 @@
             <artifactId>guice-grapher</artifactId>
             <version>${guice.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-commons-rest-errors</artifactId>
+        </dependency>
     </dependencies>
 </project>

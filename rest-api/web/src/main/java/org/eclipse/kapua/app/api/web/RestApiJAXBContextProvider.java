@@ -82,6 +82,7 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountQuery;
+import org.eclipse.kapua.service.account.AccountUpdateRequest;
 import org.eclipse.kapua.service.account.CurrentAccountUpdateRequest;
 import org.eclipse.kapua.service.account.xml.AccountParentPathXmlAdapter;
 import org.eclipse.kapua.service.account.xml.AccountXmlRegistry;
@@ -401,6 +402,7 @@ public class RestApiJAXBContextProvider implements JAXBContextProvider {
 
                     // Account
                     CurrentAccountUpdateRequest.class,
+                    AccountUpdateRequest.class,
                     Account.class,
                     AccountCreator.class,
                     AccountListResult.class,

@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.account.internal;
 
 import org.eclipse.kapua.commons.model.mappers.KapuaBaseMapper;
 import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountUpdateRequest;
 import org.eclipse.kapua.service.account.CurrentAccountUpdateRequest;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -29,4 +30,9 @@ public interface AccountMapper {
     @Mapping(target = "expirationDate", ignore = true)
     @Mapping(target = "childAccounts", ignore = true)
     void merge(@MappingTarget Account account, CurrentAccountUpdateRequest request);
+
+    @KapuaBaseMapper.IgnoreKapuaNamedEntityReadonlyFields
+    @Mapping(target = "parentAccountPath", ignore = true)
+    @Mapping(target = "childAccounts", ignore = true)
+    void merge(@MappingTarget Account account, AccountUpdateRequest request);
 }

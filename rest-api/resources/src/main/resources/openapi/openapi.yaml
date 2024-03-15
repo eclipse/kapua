@@ -95,12 +95,14 @@ paths:
   ### Accounts ###
   /{scopeId}/accounts:
     $ref: './accounts/accounts-scopeId.yaml#/paths/~1{scopeId}~1accounts'
-  /{scopeId}/accounts/{accountId}:
-    $ref: './accounts/accounts-scopeId-accountId.yaml#/paths/~1{scopeId}~1accounts~1{accountId}'
   /{scopeId}/accounts/_count:
     $ref: './accounts/accounts-scopeId-_count.yaml#/paths/~1{scopeId}~1accounts~1_count'
   /{scopeId}/accounts/_query:
     $ref: './accounts/accounts-scopeId-_query.yaml#/paths/~1{scopeId}~1accounts~1_query'
+  /{scopeId}/accounts/{accountId}:
+    $ref: './accounts/accounts-accountId.yaml#/paths/~1{scopeId}~1accounts~1{accountId}'
+  /accounts/{accountId}:
+    $ref: './accounts/accounts-accountId.yaml#/paths/~1accounts~1{accountId}'
   ### Credential ###
   /{scopeId}/credentials:
     $ref: './credential/credential-scopeId.yaml#/paths/~1{scopeId}~1credentials'

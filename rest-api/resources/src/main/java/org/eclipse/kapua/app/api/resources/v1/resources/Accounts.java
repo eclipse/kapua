@@ -14,11 +14,9 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -26,10 +24,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.CountResult;
-import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
@@ -45,13 +41,6 @@ import org.eclipse.kapua.service.account.AccountService;
 
 import com.google.common.base.Strings;
 
-/*
-@deprecated
-accidentally exposed under:
-        /{scopeId}/accounts/....
-Where the scopeId has no meaning of the current user (the one from the session will always be used)
-Remove the match with /{scopeId}/... in the next release
- */
 @Path("{scopeId}/accounts")
 public class Accounts extends AbstractKapuaResource {
 
@@ -84,7 +73,8 @@ public class Accounts extends AbstractKapuaResource {
      */
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public AccountListResult simpleQuery(@PathParam("scopeId") ScopeId scopeId, //
+    public AccountListResult simpleQuery(
+            @PathParam("scopeId") ScopeId scopeId, //
             @QueryParam("name") String name, //
             @QueryParam("recursive") boolean recursive, //
             @QueryParam("sortParam") String sortParam,
@@ -166,10 +156,10 @@ public class Accounts extends AbstractKapuaResource {
      * Creates a new Account based on the information provided in AccountCreator parameter.
      *
      * @param scopeId
-     *         The {@link ScopeId} in which to create the {@link Account}
+     *         The {@link ScopeId} in which to create the {@link org.eclipse.kapua.service.account.Account}
      * @param accountCreator
-     *         Provides the information for the new {@link Account} to be created.
-     * @return The newly created {@link Account} object.
+     *         Provides the information for the new {@link org.eclipse.kapua.service.account.Account} to be created.
+     * @return The newly created {@link org.eclipse.kapua.service.account.Account} object.
      * @throws KapuaException
      *         Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
@@ -185,85 +175,4 @@ public class Accounts extends AbstractKapuaResource {
 
         return returnCreated(accountService.create(accountCreator));
     }
-
-    /**
-     * Returns the Account specified by the "accountId" path parameter.
-     *
-     * @param scopeId
-     *         The {@link ScopeId} of the requested {@link Account}.
-     * @param accountId
-     *         The id of the requested Account.
-     * @return The requested Account object.
-     * @throws KapuaException
-     *         Whenever something bad happens. See specific {@link KapuaService} exceptions.
-     * @since 1.0.0
-     */
-
-    @GET
-    @Path("{accountId}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Account find(
-            @PathParam("scopeId") ScopeId scopeId, //
-            @PathParam("accountId") EntityId accountId) throws KapuaException {
-        Account account = accountService.find(scopeId, accountId);
-
-        if (account == null) {
-            throw new KapuaEntityNotFoundException(Account.TYPE, accountId);
-        }
-
-        return account;
-    }
-
-    /**
-     * Updates the Account based on the information provided in the Account parameter.
-     *
-     * @param scopeId
-     *         The ScopeId of the requested {@link Account}.
-     * @param accountId
-     *         The id of the requested {@link Account}
-     * @param account
-     *         The modified Account whose attributed need to be updated.
-     * @return The updated account.
-     * @throws KapuaException
-     *         Whenever something bad happens. See specific {@link KapuaService} exceptions.
-     * @since 1.0.0
-     */
-
-    @PUT
-    @Path("{accountId}")
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Account update(
-            @PathParam("scopeId") ScopeId scopeId, //
-            @PathParam("accountId") EntityId accountId, //
-            Account account) throws KapuaException {
-        account.setScopeId(scopeId);
-        account.setId(accountId);
-
-        return accountService.update(account);
-    }
-
-    /**
-     * Deletes the Account specified by the "accountId" path parameter.
-     *
-     * @param scopeId
-     *         The ScopeId of the requested {@link Account}.
-     * @param accountId
-     *         The id of the Account to be deleted.
-     * @return HTTP 200 if operation has completed successfully.
-     * @throws KapuaException
-     *         Whenever something bad happens. See specific {@link KapuaService} exceptions.
-     * @since 1.0.0
-     */
-
-    @DELETE
-    @Path("{accountId}")
-    public Response deleteAccount(
-            @PathParam("scopeId") ScopeId scopeId, //
-            @PathParam("accountId") EntityId accountId) throws KapuaException {
-        accountService.delete(scopeId, accountId);
-
-        return returnNoContent();
-    }
-
 }
