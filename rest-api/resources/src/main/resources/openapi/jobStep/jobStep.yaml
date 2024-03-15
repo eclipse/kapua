@@ -47,9 +47,9 @@ components:
             stepIndex:
               type: integer
             stepProperties:
-              type: object
-              allOf:
-                - $ref: '#/components/schemas/jobStepProperty'
+              type: array
+              items:
+                $ref: '#/components/schemas/jobStepProperty'
           example:
             type: jobStep
             id: BL2MaF-ldS0
