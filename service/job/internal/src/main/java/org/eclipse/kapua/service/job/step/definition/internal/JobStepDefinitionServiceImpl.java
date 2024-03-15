@@ -116,7 +116,7 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
         ArgumentValidator.notNull(stepDefinitionId, "stepDefinitionId");
 
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, KapuaId.ANY));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, scopeId));
 
         // Do find
         return txManager.execute(tx -> repository.find(tx, scopeId, stepDefinitionId))
@@ -133,7 +133,7 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
             Optional<JobStepDefinition> jobStepDefinition = repository.findByName(tx, name);
             if (jobStepDefinition.isPresent()) {
                 // Check Access
-                authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, KapuaId.ANY));
+                authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, jobStepDefinition.get().getScopeId()));
             }
             return jobStepDefinition;
         }).orElse(null);
@@ -144,7 +144,7 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, KapuaId.ANY));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
         // Do query
         return txManager.execute(tx -> repository.query(tx, query));
     }
@@ -154,7 +154,7 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, KapuaId.ANY));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, query.getScopeId()));
         // Do query
         return txManager.execute(tx -> repository.count(tx, query));
     }
