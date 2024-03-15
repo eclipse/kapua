@@ -35,4 +35,7 @@ public interface AccountMapper {
     @Mapping(target = "parentAccountPath", ignore = true)
     @Mapping(target = "childAccounts", ignore = true)
     void merge(@MappingTarget Account account, AccountUpdateRequest request);
+
+    //For backward compatibility only
+    AccountUpdateRequest map(Account account);
 }

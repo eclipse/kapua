@@ -32,7 +32,6 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -168,7 +167,8 @@ public class AccountServiceImpl
 
     @Override
     public Account update(Account account) throws KapuaException {
-        throw new KapuaServiceDisabledException("fuck");
+        final AccountUpdateRequest request = accountMapper.map(account);
+        return updateAccount(account.getId(), request);
     }
 
     @Override
