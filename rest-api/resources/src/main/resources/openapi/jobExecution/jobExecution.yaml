@@ -44,10 +44,10 @@ components:
               $ref: '../openapi.yaml#/components/schemas/kapuaId'
             targetIds:
               type: array
+              description: the IDs of the job target
               items:
                 allOf:
-                - $ref: '../openapi.yaml#/components/schemas/jobTarget'
-                - description: The IDs of job target
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
           example:
             type: jobExecution
             id: GTh9xBWezHY
