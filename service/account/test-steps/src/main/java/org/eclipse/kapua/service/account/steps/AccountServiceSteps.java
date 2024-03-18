@@ -13,15 +13,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.steps;
 
-import com.google.inject.Singleton;
-import io.cucumber.datatable.DataTable;
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
-import io.cucumber.java.Scenario;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
@@ -49,23 +52,21 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.Organization;
 import org.junit.Assert;
 
-import javax.inject.Inject;
-import java.math.BigInteger;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import com.google.inject.Singleton;
+
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 /**
  * Implementation of Gherkin steps used in AccountService.feature scenarios.
  * <p>
- * MockedLocator is used for Location Service. Mockito is used to mock other
- * services that the Account services dependent on. Dependent services are:
- * - Authorization Service
+ * MockedLocator is used for Location Service. Mockito is used to mock other services that the Account services dependent on. Dependent services are: - Authorization Service
  */
 @Singleton
 public class AccountServiceSteps extends TestBase {
@@ -240,7 +241,6 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-
     @Given("I create {int} accounts with organization name {string}")
     public void createANumberOfChildrenForAccountWithOrganizationName(int num, String name) throws Exception {
         for (int i = 0; i < num; i++) {
@@ -295,19 +295,6 @@ public class AccountServiceSteps extends TestBase {
             primeException();
             accountService.update(account);
         } catch (KapuaEntityNotFoundException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("I change the account {string} name to {string}")
-    public void changeAccountName(String accName, String name) throws Exception {
-        Account tmpAcc = accountService.findByName(accName);
-        tmpAcc.setName(name);
-
-        try {
-            primeException();
-            accountService.update(tmpAcc);
-        } catch (KapuaException ex) {
             verifyException(ex);
         }
     }
@@ -500,14 +487,14 @@ public class AccountServiceSteps extends TestBase {
         Map<String, Object> valueMap = new HashMap<>();
 
         switch (type) {
-            case "integer":
-                valueMap.put(name, Integer.valueOf(value));
-                break;
-            case "string":
-                valueMap.put(name, value);
-                break;
-            default:
-                break;
+        case "integer":
+            valueMap.put(name, Integer.valueOf(value));
+            break;
+        case "string":
+            valueMap.put(name, value);
+            break;
+        default:
+            break;
         }
         valueMap.put("infiniteChildEntities", true);
 
@@ -721,8 +708,10 @@ public class AccountServiceSteps extends TestBase {
     /**
      * Create a user creator object. The creator is pre-filled with default data.
      *
-     * @param parentId Id of the parent account
-     * @param name     The name of the account
+     * @param parentId
+     *         Id of the parent account
+     * @param name
+     *         The name of the account
      * @return The newly created account creator object.
      */
     private AccountCreator prepareRegularAccountCreator(KapuaId parentId, String name) {
@@ -744,12 +733,11 @@ public class AccountServiceSteps extends TestBase {
     }
 
     /**
-     * Create account in privileged mode as kapua-sys user.
-     * Account is created in scope specified by scopeId in cucAccount parameter.
-     * This is not accountId, but account under which it is created. AccountId itself
-     * is created automatically.
+     * Create account in privileged mode as kapua-sys user. Account is created in scope specified by scopeId in cucAccount parameter. This is not accountId, but account under which it is created.
+     * AccountId itself is created automatically.
      *
-     * @param cucAccount basic data about account
+     * @param cucAccount
+     *         basic data about account
      * @return Kapua Account object
      */
     private Account createAccount(CucAccount cucAccount) throws Exception {
@@ -773,8 +761,10 @@ public class AccountServiceSteps extends TestBase {
     /**
      * Create account creator.
      *
-     * @param name    account name
-     * @param scopeId acount scope id
+     * @param name
+     *         account name
+     * @param scopeId
+     *         acount scope id
      * @return
      */
     private AccountCreator accountCreatorCreator(String name, BigInteger scopeId, Date expiration) {

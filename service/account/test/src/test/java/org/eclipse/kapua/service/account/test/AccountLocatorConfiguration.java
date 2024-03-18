@@ -28,6 +28,7 @@ import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.metric.MetricsServiceImpl;
+import org.eclipse.kapua.commons.model.mappers.KapuaBaseMapperImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.commons.service.internal.cache.CacheManagerProvider;
@@ -41,7 +42,7 @@ import org.eclipse.kapua.service.account.AccountRepository;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
 import org.eclipse.kapua.service.account.internal.AccountImplJpaRepository;
-import org.eclipse.kapua.service.account.internal.AccountMapper;
+import org.eclipse.kapua.service.account.internal.AccountMapperImpl;
 import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
@@ -50,7 +51,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.mapstruct.factory.Mappers;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
@@ -114,6 +114,7 @@ public class AccountLocatorConfiguration {
                 bind(AccountRelativeFinder.class).toInstance(Mockito.mock(AccountRelativeFinder.class));
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 final AccountRepository accountRepository = new AccountImplJpaRepository(jpaRepoConfig);
+                final AccountMapperImpl accountMapper = new AccountMapperImpl(new KapuaBaseMapperImpl());
                 bind(AccountService.class).toInstance(new AccountServiceImpl(
                         new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-account"),
                         new AccountImplJpaRepository(jpaRepoConfig),
@@ -129,7 +130,7 @@ public class AccountLocatorConfiguration {
                                         accountRepository)
                         ),
                         new EventStorerImpl(new EventStoreRecordImplJpaRepository(jpaRepoConfig)),
-                        Mappers.getMapper(AccountMapper.class)));
+                        accountMapper));
                 bind(AccountRepository.class).toInstance(new AccountImplJpaRepository(jpaRepoConfig));
             }
         };

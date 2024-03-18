@@ -37,5 +37,7 @@ public interface AccountMapper {
     void merge(@MappingTarget Account account, AccountUpdateRequest request);
 
     //For backward compatibility only
-    AccountUpdateRequest map(Account account);
+    AccountUpdateRequest mapChildUpdate(Account account);
+
+    CurrentAccountUpdateRequest mapCurrentUpdate(Account account);
 }

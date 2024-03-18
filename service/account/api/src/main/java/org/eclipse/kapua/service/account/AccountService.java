@@ -49,7 +49,7 @@ public interface AccountService extends KapuaEntityService<Account, AccountCreat
      * @throws KapuaException
      * @since 1.0.0
      */
-    Account updateAccount(KapuaId accountId, @NotNull AccountUpdateRequest request) throws KapuaException;
+    Account updateChildAccount(KapuaId accountId, @NotNull AccountUpdateRequest request) throws KapuaException;
 
     /**
      * Finds the {@link Account} by the {@link Account#getId()}.

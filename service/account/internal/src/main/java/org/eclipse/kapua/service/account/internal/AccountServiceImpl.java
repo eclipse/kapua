@@ -167,12 +167,27 @@ public class AccountServiceImpl
 
     @Override
     public Account update(Account account) throws KapuaException {
-        final AccountUpdateRequest request = accountMapper.map(account);
-        return updateAccount(account.getId(), request);
+        if (KapuaSecurityUtils.getSession().getScopeId().equals(account.getId())) {
+            return doUpdateCurrentAccount(accountMapper.mapCurrentUpdate(account));
+        }
+        return doUpdateChildAccount(account.getId(), accountMapper.mapChildUpdate(account));
     }
 
     @Override
     public Account updateCurrentAccount(CurrentAccountUpdateRequest request) throws KapuaException {
+        return doUpdateCurrentAccount(request);
+    }
+
+    @Override
+    public Account updateChildAccount(KapuaId accountId, AccountUpdateRequest request) throws KapuaException {
+        if (KapuaSecurityUtils.getSession().getScopeId().equals(accountId)) {
+            // Editing self should be done via updateCurrentAccount api
+            throw new KapuaException(KapuaRuntimeErrorCodes.SERVICE_OPERATION_NOT_SUPPORTED, null, "Cannot update the current account via this method");
+        }
+        return doUpdateChildAccount(accountId, request);
+    }
+
+    private Account doUpdateCurrentAccount(CurrentAccountUpdateRequest request) throws KapuaException {
         ArgumentValidator.notNull(request.organization, "request.organization");
         ArgumentValidator.match(request.organization.getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "request.organization.email");
 
@@ -189,16 +204,11 @@ public class AccountServiceImpl
         });
     }
 
-    @Override
-    public Account updateAccount(KapuaId accountId, AccountUpdateRequest request) throws KapuaException {
+    private Account doUpdateChildAccount(KapuaId accountId, AccountUpdateRequest request) throws KapuaException {
         // Argument validation
         ArgumentValidator.notNull(accountId, "accountId");
         ArgumentValidator.notNull(request.organization, "account.organization");
         ArgumentValidator.match(request.organization.getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "account.organization.email");
-        if (KapuaSecurityUtils.getSession().getScopeId().equals(accountId)) {
-            // Editing self should be done via updateCurrentAccount api
-            throw new KapuaException(KapuaRuntimeErrorCodes.SERVICE_OPERATION_NOT_SUPPORTED, null, "Cannot update the current account via this method");
-        }
 
         return txManager.execute(tx -> {
             // Check existence

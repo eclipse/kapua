@@ -88,7 +88,7 @@ public class Account extends AbstractKapuaResource {
     public org.eclipse.kapua.service.account.Account update(
             @PathParam("accountId") EntityId accountId, //
             AccountUpdateRequest request) throws KapuaException {
-        return accountService.updateAccount(accountId, request);
+        return accountService.updateChildAccount(accountId, request);
     }
 
     /**
