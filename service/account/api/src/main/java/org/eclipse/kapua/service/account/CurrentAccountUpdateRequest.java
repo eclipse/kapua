@@ -23,7 +23,6 @@ public class CurrentAccountUpdateRequest extends KapuaNamedEntityUpdateRequest {
     /**
      * Gets the {@link Organization}.
      *
-     * @return The {@link Organization}.
      * @since 1.0.0
      */
     @XmlElement(name = "organization")
