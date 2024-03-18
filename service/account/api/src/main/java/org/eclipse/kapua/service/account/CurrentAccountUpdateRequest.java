@@ -27,4 +27,5 @@ public class CurrentAccountUpdateRequest extends KapuaNamedEntityUpdateRequest {
      */
     @XmlElement(name = "organization")
     public Organization organization;
+
 }
