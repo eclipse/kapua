@@ -12,7 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.model;
 
+import java.util.Properties;
+
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * {@link KapuaUpdatableEntityUpdateRequest} definition.
@@ -23,4 +26,16 @@ public class KapuaUpdatableEntityUpdateRequest {
 
     @XmlElement(name = "optlock")
     public int optlock;
+
+    /**
+     * Introduces only for retrocompatibility to an outdated model
+     */
+    @XmlTransient
+    public Properties entityAttributes;
+
+    /**
+     * Introduces only for retrocompatibility to an outdated model
+     */
+    @XmlTransient
+    public Properties entityProperties;
 }
