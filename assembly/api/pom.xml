@@ -284,6 +284,36 @@
                             </arguments>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>Substitute project version if needed</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>awk</executable>
+                            <arguments>
+                                <argument>{ gsub(/version: .*/, "version: ${commons.version}-${commons.build.number}"); print }</argument>
+                                <argument>${project.build.directory}/tmp/openapi.yaml</argument>
+                            </arguments>
+                            <outputFile>${project.build.directory}/tmp/openapi.yaml.tmp</outputFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Replace original file with the one with the modified version</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>mv</executable>
+                            <arguments>
+                                <argument>${project.build.directory}/tmp/openapi.yaml.tmp</argument>
+                                <argument>${project.build.directory}/tmp/openapi.yaml</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
                 </executions>
             </plugin>
             <plugin>
