@@ -18,8 +18,7 @@ Feature: Account Job Service Integration Tests
 
   @setup
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Creating Jobs Under Account That Allows Infinite Child Devices
   Login as kapua-sys, create an account

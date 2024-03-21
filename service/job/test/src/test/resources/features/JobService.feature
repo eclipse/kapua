@@ -20,8 +20,7 @@ Feature: Job service CRUD tests
   @setup
   @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Create a valid job entry
   Creating a role entry with specified name only. Once created, search for it - it should have been created.

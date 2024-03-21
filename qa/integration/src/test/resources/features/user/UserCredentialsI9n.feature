@@ -19,8 +19,7 @@ Feature: Feature file for testing Password user credential
 
   @setup
   Scenario: Init Security Context for all scenarios
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Create a valid user with valid password credential
   Creating a new user "kapua-a" in kapua-sys account with valid password credential.
@@ -92,8 +91,8 @@ Feature: Feature file for testing Password user credential
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
     But I expect the exception "PasswordLengthException" with the text "*"
     Then I add credentials
-      | name    | password            | enabled |
-      | kapua-a | ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#T   | true    |
+      | name    | password                                                                                                                                                                                                                                                         | enabled |
+      | kapua-a | ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#T | true    |
     And An exception was thrown
     And I logout
 

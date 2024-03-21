@@ -16,30 +16,29 @@
 
 Feature: User Coupling
 
-@setup
+  @setup
   Scenario: Start docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start full docker environment
 
   Scenario: Test LOOSE user coupling on single connection
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Account
-      | name        | scopeId |
-      | test-acc-1  | 1       |
+      | name       | scopeId |
+      | test-acc-1 | 1       |
     And A full set of device privileges for account "test-acc-1"
     And The default connection coupling mode for account "test-acc-1" is set to "LOOSE"
     And Such a set of privileged users for account "test-acc-1"
-      | name        | password        | displayName  | status  |
-      | test-user-1 | KeepCalm123.    | Test User 1  | ENABLED |
-      | test-user-2 | KeepCalm123.    | Test User 2  | ENABLED |
+      | name        | password     | displayName | status  |
+      | test-user-1 | KeepCalm123. | Test User 1 | ENABLED |
+      | test-user-2 | KeepCalm123. | Test User 2 | ENABLED |
     And Devices such as
       | clientId | displayName | modelId         | serialNumber |
       | device-1 | testGateway | ReliaGate 10-20 | 12341234ABC  |
     And The following device connections
-      | scope       | clientId   | user        | userCouplingMode |
-      | test-acc-1  | device-1   | test-user-1 | LOOSE            |
+      | scope      | clientId | user        | userCouplingMode |
+      | test-acc-1 | device-1 | test-user-1 | LOOSE            |
 
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
@@ -59,20 +58,20 @@ Feature: User Coupling
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Account
-      | name        | scopeId |
-      | test-acc-1  | 1       |
+      | name       | scopeId |
+      | test-acc-1 | 1       |
     And A full set of device privileges for account "test-acc-1"
     And The default connection coupling mode for account "test-acc-1" is set to "LOOSE"
     And Such a set of privileged users for account "test-acc-1"
-      | name        | password        | displayName  | status  |
-      | test-user-1 | KeepCalm123.    | Test User 1  | ENABLED |
-      | test-user-2 | KeepCalm123.    | Test User 2  | ENABLED |
+      | name        | password     | displayName | status  |
+      | test-user-1 | KeepCalm123. | Test User 1 | ENABLED |
+      | test-user-2 | KeepCalm123. | Test User 2 | ENABLED |
     And Devices such as
       | clientId | displayName | modelId         | serialNumber |
       | device-1 | testGateway | ReliaGate 10-20 | 12341234ABC  |
     And The following device connections
-      | scope       | clientId   | user        | reservedUser |
-      | test-acc-1  | device-1   | test-user-1 | test-user-1  |
+      | scope      | clientId | user        | reservedUser |
+      | test-acc-1 | device-1 | test-user-1 | test-user-1  |
 
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
@@ -99,20 +98,20 @@ Feature: User Coupling
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Account
-      | name        | scopeId |
-      | test-acc-1  | 1       |
+      | name       | scopeId |
+      | test-acc-1 | 1       |
     And A full set of device privileges for account "test-acc-1"
     And The default connection coupling mode for account "test-acc-1" is set to "LOOSE"
     And Such a set of privileged users for account "test-acc-1"
-      | name        | displayName  | status  |
-      | test-user-1 | Test User 1  | ENABLED |
-      | test-user-2 | Test User 2  | ENABLED |
+      | name        | displayName | status  |
+      | test-user-1 | Test User 1 | ENABLED |
+      | test-user-2 | Test User 2 | ENABLED |
     And Devices such as
       | clientId | displayName | modelId         | serialNumber |
       | device-1 | testGateway | ReliaGate 10-20 | 12341234ABC  |
     And The following device connections
-      | scope       | clientId   | user        | userCouplingMode |
-      | test-acc-1  | device-1   | test-user-1 | STRICT           |
+      | scope      | clientId | user        | userCouplingMode |
+      | test-acc-1 | device-1 | test-user-1 | STRICT           |
 
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
@@ -133,20 +132,20 @@ Feature: User Coupling
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Account
-      | name        | scopeId |
-      | test-acc-1  | 1       |
+      | name       | scopeId |
+      | test-acc-1 | 1       |
     And A full set of device privileges for account "test-acc-1"
     And The default connection coupling mode for account "test-acc-1" is set to "LOOSE"
     And Such a set of privileged users for account "test-acc-1"
-      | name        | displayName  | status  |
-      | test-user-1 | Test User 1  | ENABLED |
-      | test-user-2 | Test User 2  | ENABLED |
+      | name        | displayName | status  |
+      | test-user-1 | Test User 1 | ENABLED |
+      | test-user-2 | Test User 2 | ENABLED |
     And Devices such as
       | clientId | displayName | modelId         | serialNumber |
       | device-1 | testGateway | ReliaGate 10-20 | 12341234ABC  |
     And The following device connections
-      | scope       | clientId   | user        | userCouplingMode |
-      | test-acc-1  | device-1   | test-user-1 | STRICT           |
+      | scope      | clientId | user        | userCouplingMode |
+      | test-acc-1 | device-1 | test-user-1 | STRICT           |
 
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
@@ -176,25 +175,25 @@ Feature: User Coupling
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Account
-      | name        | scopeId |
-      | test-acc-1  | 1       |
+      | name       | scopeId |
+      | test-acc-1 | 1       |
     And A full set of device privileges for account "test-acc-1"
     And The default connection coupling mode for account "test-acc-1" is set to "LOOSE"
     And Such a set of privileged users for account "test-acc-1"
-      | name        | displayName  | status  |
-      | test-user-1 | Test User 1  | ENABLED |
-      | test-user-2 | Test User 2  | ENABLED |
-      | test-user-3 | Test User 3  | ENABLED |
+      | name        | displayName | status  |
+      | test-user-1 | Test User 1 | ENABLED |
+      | test-user-2 | Test User 2 | ENABLED |
+      | test-user-3 | Test User 3 | ENABLED |
     And Devices such as
       | clientId | displayName | modelId         | serialNumber |
       | device-1 | testGateway | ReliaGate 10-20 | 12341234ABC  |
       | device-2 | testGateway | ReliaGate 10-20 | 12341234ABD  |
       | device-3 | testGateway | ReliaGate 10-20 | 12341234ABE  |
     And The following device connections
-      | scope       | clientId   | user        | userCouplingMode |
-      | test-acc-1  | device-1   | test-user-1 | LOOSE            |
-      | test-acc-1  | device-2   | test-user-2 | LOOSE            |
-      | test-acc-1  | device-3   | test-user-3 | LOOSE            |
+      | scope      | clientId | user        | userCouplingMode |
+      | test-acc-1 | device-1 | test-user-1 | LOOSE            |
+      | test-acc-1 | device-2 | test-user-2 | LOOSE            |
+      | test-acc-1 | device-3 | test-user-3 | LOOSE            |
 
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
@@ -298,25 +297,25 @@ Feature: User Coupling
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Account
-      | name        | scopeId |
-      | test-acc-1  | 1       |
+      | name       | scopeId |
+      | test-acc-1 | 1       |
     And A full set of device privileges for account "test-acc-1"
     And The default connection coupling mode for account "test-acc-1" is set to "LOOSE"
     And Such a set of privileged users for account "test-acc-1"
-      | name        | displayName  | status  |
-      | test-user-1 | Test User 1  | ENABLED |
-      | test-user-2 | Test User 2  | ENABLED |
-      | test-user-3 | Test User 3  | ENABLED |
+      | name        | displayName | status  |
+      | test-user-1 | Test User 1 | ENABLED |
+      | test-user-2 | Test User 2 | ENABLED |
+      | test-user-3 | Test User 3 | ENABLED |
     And Devices such as
       | clientId | displayName | modelId         | serialNumber |
       | device-1 | testGateway | ReliaGate 10-20 | 12341234ABC  |
       | device-2 | testGateway | ReliaGate 10-20 | 12341234ABD  |
       | device-3 | testGateway | ReliaGate 10-20 | 12341234ABE  |
     And The following device connections
-      | scope       | clientId   | user        |
-      | test-acc-1  | device-1   | test-user-1 |
-      | test-acc-1  | device-2   | test-user-2 |
-      | test-acc-1  | device-3   | test-user-3 |
+      | scope      | clientId | user        |
+      | test-acc-1 | device-1 | test-user-1 |
+      | test-acc-1 | device-2 | test-user-2 |
+      | test-acc-1 | device-3 | test-user-3 |
 
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
@@ -1418,6 +1417,6 @@ Feature: User Coupling
     And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-3" within 10 seconds
     Then I stop the simulator
 
-@teardown
+  @teardown
   Scenario: Stop docker environment
     Given Stop full docker environment

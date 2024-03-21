@@ -20,8 +20,7 @@ Feature: User Service
   @setup
   @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Creating user
   Create user with all User entity fields set and persist it in database. Then try to

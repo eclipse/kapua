@@ -18,8 +18,7 @@ Feature: Datastore tests
 
   @setup
   Scenario: Start full docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start full docker environment
 
   Scenario: Delete items by date ranges
@@ -924,10 +923,10 @@ Feature: Datastore tests
       | test-client-1 | test_topic/1/2/3 |
       | test-client-1 | test_topic/1/2/3 |
     And I set the following metrics with messages from the list "TestMessages"
-      | message | metric       | type   | value |
-      | 0       | dotted.metric.first | double | 123   |
+      | message | metric               | type   | value |
+      | 0       | dotted.metric.first  | double | 123   |
       | 1       | dotted.metric.second | double | 123   |
-      | 2       | dotted.metric.third | bool | true   |
+      | 2       | dotted.metric.third  | bool   | true  |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for the current account metrics and store them as "AccountMetrics"
@@ -958,10 +957,10 @@ Feature: Datastore tests
       | test-client-1 | test_topic/1/2/3 |
       | test-client-1 | test_topic/1/2/3 |
     And I set the following metrics with messages from the list "TestMessages"
-      | message | metric       | type   | value |
-      | 0       | dotted.metric.first | double | 123   |
+      | message | metric               | type   | value |
+      | 0       | dotted.metric.first  | double | 123   |
       | 1       | dotted.metric.second | double | 123   |
-      | 2       | dotted.metric.third | bool | true   |
+      | 2       | dotted.metric.third  | bool   | true  |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for the current account metrics and store them as "AccountMetrics"
@@ -999,10 +998,10 @@ Feature: Datastore tests
       | test-client-1 | test_topic/1/2/3 |
       | test-client-1 | test_topic/1/2/3 |
     And I set the following metrics with messages from the list "TestMessages"
-      | message | metric       | type   | value |
+      | message | metric                 | type   | value |
       | 0       | dotted.$metric$.first  | double | 123   |
       | 1       | dotted.metric$$.second | double | 123   |
-      | 2       | dotted.$$$metric.third | bool | true   |
+      | 2       | dotted.$$$metric.third | bool   | true  |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for the current account metrics and store them as "AccountMetrics"
@@ -1010,7 +1009,7 @@ Feature: Datastore tests
     When I create message query for following metrics
       | dotted.$metric$.first  |
       | dotted.metric$$.second |
-      | dotted.$$$metric.third  |
+      | dotted.$$$metric.third |
     And I count data messages for more metrics
     Then I count 3 data messages
     And No assertion error was thrown

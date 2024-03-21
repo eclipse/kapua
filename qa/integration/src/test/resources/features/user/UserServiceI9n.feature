@@ -19,8 +19,7 @@ Feature: User Service Integration
 
   @setup
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start base docker environment
 
   Scenario: Deleting user in account that is lower in hierarchy

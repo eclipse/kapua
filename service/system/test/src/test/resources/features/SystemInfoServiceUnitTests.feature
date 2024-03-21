@@ -18,8 +18,7 @@ Feature: System Info
   @setup
   @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
 
   Scenario: Retrieve the system info, then check if everything match with provided properties.

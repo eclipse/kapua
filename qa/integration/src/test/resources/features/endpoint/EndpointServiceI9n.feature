@@ -16,10 +16,9 @@
 Feature: Endpoint Info Service Integration Tests
   Integration test scenarios for Endpoint Info service
 
-@setup
+  @setup
   Scenario: Start full docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start full docker environment
 
   Scenario: Creating Valid Endpoint
@@ -857,9 +856,9 @@ Feature: Endpoint Info Service Integration Tests
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities | 5     |
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I create user with name "user1"
     And I add credentials
       | name  | password      | enabled |
@@ -891,9 +890,9 @@ Feature: Endpoint Info Service Integration Tests
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities | 5     |
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I create user with name "user1"
     And I add credentials
       | name  | password      | enabled |
@@ -904,7 +903,7 @@ Feature: Endpoint Info Service Integration Tests
     And I create the following role permissions
       | scopeId | actionName |
       | 1       | read       |
-      | 1       | write       |
+      | 1       | write      |
       | 1       | delete     |
     And I add access role "test_role" to user "user1"
     And I logout
@@ -927,9 +926,9 @@ Feature: Endpoint Info Service Integration Tests
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities | 5     |
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I create user with name "user1" in account "kapua-sub"
     And I add credentials
       | name  | password      | enabled |
@@ -955,6 +954,6 @@ Feature: Endpoint Info Service Integration Tests
     And I delete all CORS filters
     And I logout
 
-@teardown
+  @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment

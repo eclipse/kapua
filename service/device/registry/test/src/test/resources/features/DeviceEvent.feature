@@ -16,19 +16,18 @@
 
 
 Feature: Device Event CRUD tests
-    The Device Event service is responsible for handling the incoming device
-    events.
+  The Device Event service is responsible for handling the incoming device
+  events.
 
-@setup
-@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
-Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+  @setup
+  @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+  Scenario: Initialize test environment
+    Given Init Security Context
 
-Scenario: Create a regular event
-    Create a regular event. The event should not be null and should
-    have a regular entity ID. Also the event entity shoould match the event
-    creator parameters.
+  Scenario: Create a regular event
+  Create a regular event. The event should not be null and should
+  have a regular entity ID. Also the event entity shoould match the event
+  creator parameters.
 
     Given A device named "first"
     When I search for a device with the remembered ID
@@ -38,9 +37,9 @@ Scenario: Create a regular event
     Then No exception was thrown
     And The event matches the creator parameters
 
-Scenario: Create an event with a null scope ID
-    It should be impossible to create an event with a null scope ID. Such attempt
-    must raise an exception.
+  Scenario: Create an event with a null scope ID
+  It should be impossible to create an event with a null scope ID. Such attempt
+  must raise an exception.
 
     Given A device named "first"
     And A device named "second"
@@ -49,8 +48,8 @@ Scenario: Create an event with a null scope ID
     When A "CREATE" event from device "first"
     Then An exception was thrown
 
-Scenario: Find an event by its ID
-    It must be possible to find an event entity based on the event ID.
+  Scenario: Find an event by its ID
+  It must be possible to find an event entity based on the event ID.
 
     Given A device named "first"
     And A device named "second"
@@ -58,9 +57,9 @@ Scenario: Find an event by its ID
     When I search for an event with the remembered ID
     Then The event matches the creator parameters
 
-Scenario: Find a non existing event
-    Searching for an event with a non existing entity ID should return null. No
-    exception must be thrown.
+  Scenario: Find a non existing event
+  Searching for an event with a non existing entity ID should return null. No
+  exception must be thrown.
 
     Given A device named "first"
     And A device named "second"
@@ -68,8 +67,8 @@ Scenario: Find a non existing event
     When I search for an event with a random ID
     Then There is no such event
 
-Scenario: Delete an existing event
-    It must be possible to delete an existing event entity from the database.
+  Scenario: Delete an existing event
+  It must be possible to delete an existing event entity from the database.
 
     Given A device named "first"
     And A device named "second"
@@ -80,9 +79,9 @@ Scenario: Delete an existing event
     And I search for an event with the remembered ID
     Then There is no such event
 
-Scenario: Delete a non existent event
-    Trying to delete a non existent event (no matching entity ID) must cause an
-    exception to be thrown.
+  Scenario: Delete a non existent event
+  Trying to delete a non existent event (no matching entity ID) must cause an
+  exception to be thrown.
 
     Given A device named "first"
     And A device named "second"
@@ -91,9 +90,9 @@ Scenario: Delete a non existent event
     When I delete an event with a random ID
     Then An exception was thrown
 
-Scenario: Count events in empty scope
-    Counting events in an empty (non existing) scope must return a count of 0.
-    No exception should be thrown.
+  Scenario: Count events in empty scope
+  Counting events in an empty (non existing) scope must return a count of 0.
+  No exception should be thrown.
 
     Given A device named "first"
     And A device named "second"
@@ -101,8 +100,8 @@ Scenario: Count events in empty scope
     When I count events for scope 42
     Then I count 0
 
-Scenario: Basic Device Event queries
-    It must be possible to perform basic event entity queries.
+  Scenario: Basic Device Event queries
+  It must be possible to perform basic event entity queries.
 
     Given A device named "first"
     And A device named "second"
@@ -114,12 +113,12 @@ Scenario: Basic Device Event queries
     When I query for "WRITE" events
     Then I find 10 device events
 
-Scenario: Event factory sanity checks
+  Scenario: Event factory sanity checks
     Then All device event factory functions must return non null objects
 
-Scenario: Event service domain check
+  Scenario: Event service domain check
     Then The device event domain data can be updated
 
-@teardown
-Scenario: Reset Security Context for all scenarios
+  @teardown
+  Scenario: Reset Security Context for all scenarios
     Given Reset Security Context
