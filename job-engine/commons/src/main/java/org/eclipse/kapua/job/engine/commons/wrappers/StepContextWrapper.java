@@ -12,7 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.commons.wrappers;
 
-import com.google.common.base.Strings;
+import java.io.Serializable;
+import java.util.Properties;
+
+import javax.batch.runtime.BatchStatus;
+import javax.batch.runtime.Metric;
+import javax.batch.runtime.context.StepContext;
+import javax.xml.bind.DatatypeConverter;
+import javax.xml.bind.JAXBException;
+
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
@@ -20,13 +28,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.xml.sax.SAXException;
 
-import javax.batch.runtime.BatchStatus;
-import javax.batch.runtime.Metric;
-import javax.batch.runtime.context.StepContext;
-import javax.xml.bind.DatatypeConverter;
-import javax.xml.bind.JAXBException;
-import java.io.Serializable;
-import java.util.Properties;
+import com.google.common.base.Strings;
 
 /**
  * {@link StepContextWrapper} wraps the {@link StepContext} and offers utility methods around it.
@@ -38,10 +40,12 @@ public class StepContextWrapper {
     private final KapuaIdFactory kapuaIdFactory;
 
     private StepContext stepContext;
+    private final XmlUtil xmlUtil;
 
-    public StepContextWrapper(KapuaIdFactory kapuaIdFactory, StepContext stepContext) {
+    public StepContextWrapper(KapuaIdFactory kapuaIdFactory, StepContext stepContext, XmlUtil xmlUtil) {
         this.kapuaIdFactory = kapuaIdFactory;
         this.stepContext = stepContext;
+        this.xmlUtil = xmlUtil;
     }
 
     public int getStepIndex() {
@@ -93,7 +97,7 @@ public class StepContextWrapper {
                 }
             } else {
                 try {
-                    stepProperty = XmlUtil.unmarshal(stepPropertyString, type);
+                    stepProperty = xmlUtil.unmarshal(stepPropertyString, type);
                 } catch (JAXBException | SAXException e) {
                     throw new KapuaIllegalArgumentException(stepPropertyName, stepPropertyString);
                 }

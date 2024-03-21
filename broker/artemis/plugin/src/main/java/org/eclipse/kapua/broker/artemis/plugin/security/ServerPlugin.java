@@ -12,7 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.artemis.plugin.security;
 
-import com.codahale.metrics.Timer.Context;
+import java.util.Base64;
+import java.util.Map;
+
 import org.apache.activemq.artemis.api.core.ActiveMQException;
 import org.apache.activemq.artemis.api.core.ActiveMQExceptionType;
 import org.apache.activemq.artemis.api.core.Message;
@@ -45,7 +47,6 @@ import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -58,12 +59,10 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionServ
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Base64;
-import java.util.Map;
+import com.codahale.metrics.Timer.Context;
 
 /**
- * Server Plugin implementation.
- * This plugin does session cleanup on disconnection and enrich the message context with Kapua session infos.
+ * Server Plugin implementation. This plugin does session cleanup on disconnection and enrich the message context with Kapua session infos.
  */
 public class ServerPlugin implements ActiveMQServerPlugin {
 
@@ -146,9 +145,6 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             // Setup service events
             ServiceModuleBundle app = KapuaLocator.getInstance().getComponent(ServiceModuleBundle.class);
             app.startup();
-
-            // Setup JAXB Context
-            XmlUtil.setContextProvider(new BrokerJAXBContextProvider());
         } catch (Exception e) {
             logger.error("Error while initializing {} plugin: {}", this.getClass().getName(), e.getMessage(), e);
         }
@@ -219,7 +215,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
      */
     @Override
     public void beforeSend(ServerSession session, Transaction tx, Message message, boolean direct,
-                           boolean noAutoCreateQueue) throws ActiveMQException {
+            boolean noAutoCreateQueue) throws ActiveMQException {
         String address = message.getAddress();
         int messageSize = message.getEncodeSize();
         SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextWithCacheFallback(pluginUtility.getConnectionId(session.getRemotingConnection()));

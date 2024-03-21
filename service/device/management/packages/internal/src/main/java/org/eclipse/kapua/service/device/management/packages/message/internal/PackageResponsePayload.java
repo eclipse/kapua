@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.message.internal;
 
+import java.util.Optional;
+
+import javax.validation.constraints.NotNull;
+
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -24,9 +28,6 @@ import org.eclipse.kapua.service.device.management.packages.model.download.Devic
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallOperation;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOperation;
 
-import javax.validation.constraints.NotNull;
-import java.util.Optional;
-
 /**
  * {@link DevicePackages} {@link KapuaResponsePayload} implementation.
  *
@@ -37,6 +38,7 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
     private static final long serialVersionUID = -2100712552502696907L;
 
     private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private final XmlUtil xmlUtil = KapuaLocator.getInstance().getComponent(XmlUtil.class);
 
     /**
      * Set the package download operation identifier
@@ -130,7 +132,8 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
      * Gets the {@link DevicePackages} from the {@link #getBody()}.
      *
      * @return The {@link DevicePackages} from the {@link #getBody()}.
-     * @throws Exception if reading {@link #getBody()} errors.
+     * @throws Exception
+     *         if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
     public Optional<DevicePackages> getDevicePackages() throws Exception {
@@ -139,18 +142,20 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
         }
 
         String bodyString = new String(getBody(), charEncoding);
-        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DevicePackages.class));
+        return Optional.ofNullable(xmlUtil.unmarshal(bodyString, DevicePackages.class));
     }
 
     /**
      * Sets the {@link DevicePackages} in the {@link #getBody()}.
      *
-     * @param devicePackages The {@link DevicePackages} in the {@link #getBody()}.
-     * @throws Exception if writing errors.
+     * @param devicePackages
+     *         The {@link DevicePackages} in the {@link #getBody()}.
+     * @throws Exception
+     *         if writing errors.
      * @since 1.5.0
      */
     public void setDeploymentPackages(@NotNull DevicePackages devicePackages) throws Exception {
-        String bodyString = XmlUtil.marshal(devicePackages);
+        String bodyString = xmlUtil.marshal(devicePackages);
         setBody(bodyString.getBytes(charEncoding));
     }
 
@@ -158,7 +163,8 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
      * Gets the {@link DevicePackageInstallOperation} from the {@link #getBody()}.
      *
      * @return The {@link DevicePackageInstallOperation} from the {@link #getBody()}.
-     * @throws Exception if reading {@link #getBody()} errors.
+     * @throws Exception
+     *         if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
     public Optional<DevicePackageInstallOperation> getDevicePackageInstallOperation() throws Exception {
@@ -167,18 +173,20 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
         }
 
         String bodyString = new String(getBody(), charEncoding);
-        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DevicePackageInstallOperation.class));
+        return Optional.ofNullable(xmlUtil.unmarshal(bodyString, DevicePackageInstallOperation.class));
     }
 
     /**
      * Sets the {@link DevicePackageInstallOperation} in the {@link #getBody()}.
      *
-     * @param devicePackageInstallOperation The {@link DevicePackages} in the {@link #getBody()}.
-     * @throws Exception if writing errors.
+     * @param devicePackageInstallOperation
+     *         The {@link DevicePackages} in the {@link #getBody()}.
+     * @throws Exception
+     *         if writing errors.
      * @since 1.5.0
      */
     public void setDevicePackageInstallOperations(@NotNull DevicePackageInstallOperation devicePackageInstallOperation) throws Exception {
-        String bodyString = XmlUtil.marshal(devicePackageInstallOperation);
+        String bodyString = xmlUtil.marshal(devicePackageInstallOperation);
         setBody(bodyString.getBytes(charEncoding));
     }
 
@@ -186,7 +194,8 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
      * Gets the {@link DevicePackageUninstallOperation} from the {@link #getBody()}.
      *
      * @return The {@link DevicePackageUninstallOperation} from the {@link #getBody()}.
-     * @throws Exception if reading {@link #getBody()} errors.
+     * @throws Exception
+     *         if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
     public Optional<DevicePackageUninstallOperation> getDevicePackageUninstallOperation() throws Exception {
@@ -195,18 +204,20 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
         }
 
         String bodyString = new String(getBody(), charEncoding);
-        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DevicePackageUninstallOperation.class));
+        return Optional.ofNullable(xmlUtil.unmarshal(bodyString, DevicePackageUninstallOperation.class));
     }
 
     /**
      * Sets the {@link DevicePackageUninstallOperation} in the {@link #getBody()}.
      *
-     * @param devicePackageUninstallOperation The {@link DevicePackages} in the {@link #getBody()}.
-     * @throws Exception if writing errors.
+     * @param devicePackageUninstallOperation
+     *         The {@link DevicePackages} in the {@link #getBody()}.
+     * @throws Exception
+     *         if writing errors.
      * @since 1.5.0
      */
     public void setDevicePackageUninstallOperations(@NotNull DevicePackageUninstallOperation devicePackageUninstallOperation) throws Exception {
-        String bodyString = XmlUtil.marshal(devicePackageUninstallOperation);
+        String bodyString = xmlUtil.marshal(devicePackageUninstallOperation);
         setBody(bodyString.getBytes(charEncoding));
     }
 }

@@ -12,8 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.commons.operation;
 
+import java.util.List;
+
+import javax.batch.api.chunk.AbstractItemWriter;
+import javax.batch.runtime.context.JobContext;
+import javax.batch.runtime.context.StepContext;
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaOptimisticLockingException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobContextWrapper;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
@@ -25,12 +33,6 @@ import org.eclipse.kapua.service.job.targets.JobTargetService;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.batch.api.chunk.AbstractItemWriter;
-import javax.batch.runtime.context.JobContext;
-import javax.batch.runtime.context.StepContext;
-import javax.inject.Inject;
-import java.util.List;
 
 /**
  * Default {@link TargetWriter} implementation.
@@ -46,17 +48,19 @@ public class DefaultTargetWriter extends AbstractItemWriter implements TargetWri
     @Inject
     private JobTargetService jobTargetService;
     @Inject
-    KapuaIdFactory kapuaIdFactory;
+    private KapuaIdFactory kapuaIdFactory;
     @Inject
-    JobContext jobContext;
+    private JobContext jobContext;
     @Inject
-    StepContext stepContext;
+    private StepContext stepContext;
+    @Inject
+    private XmlUtil xmlUtil;
 
     @Override
     public void writeItems(List<Object> items) throws Exception {
 
-        JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
-        StepContextWrapper stepContextWrapper = new StepContextWrapper(kapuaIdFactory, stepContext);
+        JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext, xmlUtil);
+        StepContextWrapper stepContextWrapper = new StepContextWrapper(kapuaIdFactory, stepContext, xmlUtil);
 
         JobLogger jobLogger = jobContextWrapper.getJobLogger();
         jobLogger.setClassLog(LOG);
@@ -73,7 +77,8 @@ public class DefaultTargetWriter extends AbstractItemWriter implements TargetWri
             JobTarget jobTarget = KapuaSecurityUtils.doPrivileged(() -> jobTargetService.find(processedJobTarget.getScopeId(), processedJobTarget.getId()));
 
             if (jobTarget == null) {
-                jobLogger.warn("Target {} has not been found. Likely the target or job has been deleted when it was running... Status was: {}", processedJobTarget.getId(), processedJobTarget.getStatus());
+                jobLogger.warn("Target {} has not been found. Likely the target or job has been deleted when it was running... Status was: {}", processedJobTarget.getId(),
+                        processedJobTarget.getStatus());
                 continue;
             }
 

@@ -12,13 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.test;
 
-import com.codahale.metrics.MetricRegistry;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
-import com.google.inject.name.Names;
-import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.crypto.CryptoUtil;
@@ -30,6 +23,7 @@ import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.metric.MetricsServiceImpl;
 import org.eclipse.kapua.commons.service.internal.cache.CacheManagerProvider;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
@@ -37,6 +31,7 @@ import org.eclipse.kapua.message.internal.KapuaMessageFactoryImpl;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
+import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
@@ -61,13 +56,20 @@ import org.eclipse.kapua.translator.jms.kura.JmsKuraTranslatorsModule;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
+import com.codahale.metrics.MetricRegistry;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import com.google.inject.name.Names;
+
+import io.cucumber.java.Before;
+
 @Singleton
 public class TranslatorLocatorConfiguration {
 
     /**
-     * Setup DI with Google Guice DI.
-     * Create mocked and non mocked service under test and bind them with Guice.
-     * It is based on custom MockedLocator locator that is meant for sevice unit tests.
+     * Setup DI with Google Guice DI. Create mocked and non mocked service under test and bind them with Guice. It is based on custom MockedLocator locator that is meant for sevice unit tests.
      */
     @Before(value = "@setup", order = 1)
     public void setupDI() {
@@ -77,6 +79,7 @@ public class TranslatorLocatorConfiguration {
 
             @Override
             protected void configure() {
+                bind(JAXBContextProvider.class).toInstance(new TestJAXBContextProvider());
                 bind(CommonsMetric.class).toInstance(Mockito.mock(CommonsMetric.class));
                 bind(SystemSetting.class).toInstance(SystemSetting.getInstance());
                 bind(DomainRegistryService.class).toInstance(Mockito.mock(DomainRegistryService.class));

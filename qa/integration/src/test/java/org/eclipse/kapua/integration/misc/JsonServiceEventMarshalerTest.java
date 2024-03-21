@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.misc;
 
+import java.io.StringWriter;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.event.JsonServiceEventMarshaler;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
@@ -24,33 +26,23 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.io.StringWriter;
-
-
 @Category(JUnitTests.class)
 public class JsonServiceEventMarshalerTest {
 
     ServiceEvent serviceEvent;
-    JsonServiceEventMarshaler jsonServiceEventMarshaler;
     StringWriter stringWriter;
 
     @Before
     public void createInstanceOfClasses() {
         serviceEvent = new ServiceEvent();
-        jsonServiceEventMarshaler = new JsonServiceEventMarshaler();
         stringWriter = new StringWriter();
-    }
-
-    @Test(expected = ServiceEventBusException.class)
-    public void marshalJsonWithNullContextTest() throws Exception {
-        jsonServiceEventMarshaler.marshal(null);
     }
 
     @Test
     public void marshalJsonWithoutContextTest() throws ServiceEventBusException {
         stringWriter.write("{\n}");
         String expectedValues = stringWriter.toString();
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
+        final JsonServiceEventMarshaler jsonServiceEventMarshaler = new JsonServiceEventMarshaler(new XmlUtil(new TestJAXBContextProvider()));
         Assert.assertEquals("Expected and actual values should be the same!", expectedValues, jsonServiceEventMarshaler.marshal(serviceEvent));
     }
 
@@ -71,18 +63,13 @@ public class JsonServiceEventMarshalerTest {
         serviceEvent.setStatus(ServiceEvent.EventStatus.SENT);
         serviceEvent.setNote("note");
 
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
+        final JsonServiceEventMarshaler jsonServiceEventMarshaler = new JsonServiceEventMarshaler(new XmlUtil(new TestJAXBContextProvider()));
         Assert.assertEquals("Expected and actual values should be the same!", expectedValues, jsonServiceEventMarshaler.marshal(serviceEvent));
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void unmarshalJsonWithNullContextTest() throws Exception {
-        jsonServiceEventMarshaler.unmarshal(null);
     }
 
     @Test
     public void unmarshalJsonWithContextTest() throws KapuaException {
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
+        final JsonServiceEventMarshaler jsonServiceEventMarshaler = new JsonServiceEventMarshaler(new XmlUtil(new TestJAXBContextProvider()));
         ServiceEvent elements = jsonServiceEventMarshaler.unmarshal("{\n" +
                 "   \"id\" : \"id\",\n" +
                 "   \"contextId\" : \"contextId\",\n" +
@@ -99,6 +86,7 @@ public class JsonServiceEventMarshalerTest {
 
     @Test
     public void getContentTypeTest() {
+        final JsonServiceEventMarshaler jsonServiceEventMarshaler = new JsonServiceEventMarshaler(new XmlUtil(new TestJAXBContextProvider()));
         Assert.assertEquals("Expected and actual values should be the same!", "application/json", jsonServiceEventMarshaler.getContentType());
     }
 }

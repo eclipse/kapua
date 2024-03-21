@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration.message.internal;
 
+import java.util.Optional;
+
+import javax.validation.constraints.NotNull;
+
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
@@ -19,9 +23,6 @@ import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagem
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
-
-import javax.validation.constraints.NotNull;
-import java.util.Optional;
 
 /**
  * {@link DeviceConfiguration} {@link KapuaRequestPayload} implementation.
@@ -33,12 +34,14 @@ public class ConfigurationRequestPayload extends KapuaPayloadImpl implements Kap
     private static final long serialVersionUID = 1400605735748313538L;
 
     private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private final XmlUtil xmlUtil = KapuaLocator.getInstance().getComponent(XmlUtil.class);
 
     /**
      * Gets the {@link DeviceConfiguration}from the {@link #getBody()}.
      *
      * @return The {@link DeviceConfiguration}from the {@link #getBody()}.
-     * @throws Exception if reading {@link #getBody()} errors.
+     * @throws Exception
+     *         if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
     public Optional<DeviceConfiguration> getDeviceConfigurations() throws Exception {
@@ -47,18 +50,20 @@ public class ConfigurationRequestPayload extends KapuaPayloadImpl implements Kap
         }
 
         String bodyString = new String(getBody(), charEncoding);
-        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceConfiguration.class));
+        return Optional.ofNullable(xmlUtil.unmarshal(bodyString, DeviceConfiguration.class));
     }
 
     /**
      * Sets the {@link DeviceConfiguration} in the {@link #getBody()}.
      *
-     * @param deviceConfiguration The {@link DeviceConfiguration}.
-     * @throws Exception if writing errors.
+     * @param deviceConfiguration
+     *         The {@link DeviceConfiguration}.
+     * @throws Exception
+     *         if writing errors.
      * @since 1.5.0
      */
     public void setDeviceConfigurations(@NotNull DeviceConfiguration deviceConfiguration) throws Exception {
-        String bodyString = XmlUtil.marshal(deviceConfiguration);
+        String bodyString = xmlUtil.marshal(deviceConfiguration);
         setBody(bodyString.getBytes(charEncoding));
     }
 }

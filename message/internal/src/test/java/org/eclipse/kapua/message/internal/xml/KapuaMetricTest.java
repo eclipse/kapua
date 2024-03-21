@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.xml;
 
+import java.math.BigDecimal;
+
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.internal.MessageJAXBContextProvider;
 import org.eclipse.kapua.message.xml.XmlAdaptedMetric;
@@ -21,15 +23,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.math.BigDecimal;
-
-
 @Category(JUnitTests.class)
 public class KapuaMetricTest {
 
     private static final String NEWLINE = System.lineSeparator();
 
-    private static final byte[] BYTES = {'b', 'y', 't', 'e', 's'};
+    private static final byte[] BYTES = { 'b', 'y', 't', 'e', 's' };
 
     private static final String BASE64_BYTES = "Ynl0ZXM=";
 
@@ -41,9 +40,11 @@ public class KapuaMetricTest {
             "   <value>value</value>" + NEWLINE +
             "</metric>" + NEWLINE;
 
+    private XmlUtil xmlUtil;
+
     @Before
     public void before() throws Exception {
-        XmlUtil.setContextProvider(new MessageJAXBContextProvider());
+        xmlUtil = new XmlUtil(new MessageJAXBContextProvider());
     }
 
     @Test
@@ -214,7 +215,7 @@ public class KapuaMetricTest {
     // public void marshallMetric() throws Exception {
     // KapuaMetric kapuaMetric = new KapuaMetric("name", "string", "value");
     // StringWriter strWriter = new StringWriter();
-    // XmlUtil.marshal(kapuaMetric, strWriter);
+    // xmlUtil.marshal(kapuaMetric, strWriter);
     // assertEquals(METRIC_XML_STR, strWriter.toString());
     // }
 }

@@ -12,17 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.app.web;
 
-import com.google.inject.Provides;
-import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
-import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.job.engine.app.web.jaxb.JobEngineJAXBContextProvider;
-
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.job.engine.app.web.jaxb.JobEngineJAXBContextProvider;
+
+import com.google.inject.Provides;
+
 public class AppModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
         bind(DatabaseCheckUpdate.class).asEagerSingleton();
@@ -43,8 +44,6 @@ public class AppModule extends AbstractKapuaModule {
     @Provides
     @Singleton
     JAXBContextProvider jaxbContextProvider() {
-        final JAXBContextProvider jaxbContextProvider = new JobEngineJAXBContextProvider();
-        XmlUtil.setContextProvider(jaxbContextProvider);
-        return jaxbContextProvider;
+        return new JobEngineJAXBContextProvider();
     }
 }

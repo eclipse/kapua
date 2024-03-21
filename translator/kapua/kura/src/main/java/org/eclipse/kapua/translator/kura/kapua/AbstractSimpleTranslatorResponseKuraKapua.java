@@ -13,7 +13,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.UnsupportedEncodingException;
+
+import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
@@ -34,9 +38,7 @@ import org.eclipse.kapua.translator.exception.InvalidBodyException;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
-import javax.inject.Inject;
-import javax.validation.constraints.NotNull;
-import java.io.UnsupportedEncodingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * {@link org.eclipse.kapua.translator.Translator} {@code abstract} implementation for {@link KuraResponseMessage} to {@link KapuaResponseMessage}
@@ -52,6 +54,8 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
     @Inject
     private ObjectMapper jsonMapper;
     @Inject
+    private XmlUtil xmlUtil;
+    @Inject
     private GenericRequestFactory genericRequestFactory;
 
     private final Class<TO_M> messageClazz;
@@ -60,8 +64,10 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
     /**
      * Constructor.
      *
-     * @param messageClazz The {@link Class} of the {@link KapuaResponseMessage}. It must have a 0-arguments constructor.
-     * @param payloadClazz The {@link Class} of the {@link KapuaResponsePayload}. It must have a 0-arguments constructor.
+     * @param messageClazz
+     *         The {@link Class} of the {@link KapuaResponseMessage}. It must have a 0-arguments constructor.
+     * @param payloadClazz
+     *         The {@link Class} of the {@link KapuaResponsePayload}. It must have a 0-arguments constructor.
      * @since 1.0.0
      */
     public AbstractSimpleTranslatorResponseKuraKapua(DeviceManagementSetting deviceManagementSetting, Class<TO_M> messageClazz, Class<TO_P> payloadClazz) {
@@ -125,19 +131,24 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
      * <p>
      * The encoding is fetched from {@link DeviceManagementSettingKey#CHAR_ENCODING}.
      *
-     * @param bytesToRead The {@link KapuaResponsePayload#getBody()}
-     * @param returnAs    The {@link Class} to read as.
-     * @param <T>         The type of the return.
+     * @param bytesToRead
+     *         The {@link KapuaResponsePayload#getBody()}
+     * @param returnAs
+     *         The {@link Class} to read as.
+     * @param <T>
+     *         The type of the return.
      * @return Returns the given {@code byte[]} as the given {@link Class}
-     * @throws InvalidBodyEncodingException See {@link #readBodyAsString(byte[], String)}
-     * @throws InvalidBodyContentException  If the given {@code byte[]} is not representing the given {@code returnAs} parameter or is not correctly formatted.
+     * @throws InvalidBodyEncodingException
+     *         See {@link #readBodyAsString(byte[], String)}
+     * @throws InvalidBodyContentException
+     *         If the given {@code byte[]} is not representing the given {@code returnAs} parameter or is not correctly formatted.
      * @since 1.5.0
      */
     protected <T> T readXmlBodyAs(@NotNull byte[] bytesToRead, @NotNull Class<T> returnAs) throws InvalidBodyException {
         String bodyString = readBodyAsString(bytesToRead, charEncoding);
 
         try {
-            return XmlUtil.unmarshal(bodyString, returnAs);
+            return xmlUtil.unmarshal(bodyString, returnAs);
         } catch (Exception e) {
             throw new InvalidBodyContentException(e, returnAs, bytesToRead);
         }
@@ -146,12 +157,17 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
     /**
      * Reads the given {@code byte[]} as the requested {@code returnAs} parameter.
      *
-     * @param bytesToRead The {@link KapuaResponsePayload#getBody()}
-     * @param returnAs    The {@link Class} to read as.
-     * @param <T>         The type of the return.
+     * @param bytesToRead
+     *         The {@link KapuaResponsePayload#getBody()}
+     * @param returnAs
+     *         The {@link Class} to read as.
+     * @param <T>
+     *         The type of the return.
      * @return Returns the given {@code byte[]} as the given {@link Class}
-     * @throws InvalidBodyEncodingException See {@link #readBodyAsString(byte[], String)}
-     * @throws InvalidBodyContentException  If the given {@code byte[]} is not representing the given {@code returnAs} parameter or is not correctly formatted.
+     * @throws InvalidBodyEncodingException
+     *         See {@link #readBodyAsString(byte[], String)}
+     * @throws InvalidBodyContentException
+     *         If the given {@code byte[]} is not representing the given {@code returnAs} parameter or is not correctly formatted.
      * @since 1.5.0
      */
     protected <T> T readJsonBodyAs(@NotNull byte[] bytesToRead, @NotNull Class<T> returnAs) throws InvalidBodyException {
@@ -167,10 +183,13 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
     /**
      * Reads the given {@code byte[]} with the given encoding into a {@link String}.
      *
-     * @param body     The {@code byte[]} to read.
-     * @param encoding The target encoding
+     * @param body
+     *         The {@code byte[]} to read.
+     * @param encoding
+     *         The target encoding
      * @return The {@link String} representing the {@code byte[]}.
-     * @throws InvalidBodyEncodingException if the given {@code byte[]} cannot be read using the given encoding.
+     * @throws InvalidBodyEncodingException
+     *         if the given {@code byte[]} cannot be read using the given encoding.
      * @see String#String(byte[], String)
      */
     protected String readBodyAsString(@NotNull byte[] body, @NotNull String encoding) throws InvalidBodyEncodingException {

@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.keystore.internal.message.response;
 
+import java.util.Optional;
+
+import javax.validation.constraints.NotNull;
+
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
@@ -24,9 +28,6 @@ import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
-import javax.validation.constraints.NotNull;
-import java.util.Optional;
-
 /**
  * {@link DeviceKeystore} {@link KapuaResponsePayload} implementation.
  *
@@ -37,12 +38,14 @@ public class KeystoreResponsePayload extends KapuaResponsePayloadImpl implements
     private static final long serialVersionUID = 4380715272822080425L;
 
     private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private final XmlUtil xmlUtil = KapuaLocator.getInstance().getComponent(XmlUtil.class);
 
     /**
      * Gets the {@link DeviceKeystores} from the {@link #getBody()}.
      *
      * @return The {@link DeviceKeystores} from the {@link #getBody()}.
-     * @throws Exception if reading {@link #getBody()} errors.
+     * @throws Exception
+     *         if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
     public Optional<DeviceKeystores> getKeystores() throws Exception {
@@ -51,18 +54,20 @@ public class KeystoreResponsePayload extends KapuaResponsePayloadImpl implements
         }
 
         String bodyString = new String(getBody(), charEncoding);
-        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceKeystores.class));
+        return Optional.ofNullable(xmlUtil.unmarshal(bodyString, DeviceKeystores.class));
     }
 
     /**
      * Sets the {@link DeviceKeystores} in the {@link #getBody()}.
      *
-     * @param keystores The {@link DeviceKeystores} in the {@link #getBody()}.
-     * @throws Exception if writing errors.
+     * @param keystores
+     *         The {@link DeviceKeystores} in the {@link #getBody()}.
+     * @throws Exception
+     *         if writing errors.
      * @since 1.5.0
      */
     public void setKeystores(@NotNull DeviceKeystores keystores) throws Exception {
-        String bodyString = XmlUtil.marshal(keystores);
+        String bodyString = xmlUtil.marshal(keystores);
         setBody(bodyString.getBytes(charEncoding));
     }
 
@@ -70,7 +75,8 @@ public class KeystoreResponsePayload extends KapuaResponsePayloadImpl implements
      * Gets the {@link DeviceKeystoreItems} from the {@link #getBody()}.
      *
      * @return The {@link DeviceKeystoreItems} from the {@link #getBody()}.
-     * @throws Exception if reading {@link #getBody()} errors.
+     * @throws Exception
+     *         if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
     public Optional<DeviceKeystoreItems> getKeystoreItems() throws Exception {
@@ -79,18 +85,20 @@ public class KeystoreResponsePayload extends KapuaResponsePayloadImpl implements
         }
 
         String bodyString = new String(getBody(), charEncoding);
-        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceKeystoreItems.class));
+        return Optional.ofNullable(xmlUtil.unmarshal(bodyString, DeviceKeystoreItems.class));
     }
 
     /**
      * Sets the {@link DeviceKeystoreItems} in the {@link #getBody()}.
      *
-     * @param keystoreItems The {@link DeviceKeystoreItems} in the {@link #getBody()}.
-     * @throws Exception if writing errors.
+     * @param keystoreItems
+     *         The {@link DeviceKeystoreItems} in the {@link #getBody()}.
+     * @throws Exception
+     *         if writing errors.
      * @since 1.5.0
      */
     public void setKeystoreItems(@NotNull DeviceKeystoreItems keystoreItems) throws Exception {
-        String bodyString = XmlUtil.marshal(keystoreItems);
+        String bodyString = xmlUtil.marshal(keystoreItems);
         setBody(bodyString.getBytes(charEncoding));
     }
 
@@ -98,7 +106,8 @@ public class KeystoreResponsePayload extends KapuaResponsePayloadImpl implements
      * Gets the {@link DeviceKeystoreItem} from the {@link #getBody()}.
      *
      * @return The {@link DeviceKeystoreItem} from the {@link #getBody()}.
-     * @throws Exception if reading {@link #getBody()} errors.
+     * @throws Exception
+     *         if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
     public Optional<DeviceKeystoreItem> getKeystoreItem() throws Exception {
@@ -107,18 +116,20 @@ public class KeystoreResponsePayload extends KapuaResponsePayloadImpl implements
         }
 
         String bodyString = new String(getBody(), charEncoding);
-        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceKeystoreItem.class));
+        return Optional.ofNullable(xmlUtil.unmarshal(bodyString, DeviceKeystoreItem.class));
     }
 
     /**
      * Sets the {@link DeviceKeystoreItem} in the {@link #getBody()}.
      *
-     * @param keystoreItem The {@link DeviceKeystoreItem} in the {@link #getBody()}.
-     * @throws Exception if writing errors.
+     * @param keystoreItem
+     *         The {@link DeviceKeystoreItem} in the {@link #getBody()}.
+     * @throws Exception
+     *         if writing errors.
      * @since 1.5.0
      */
     public void setKeystoreItem(@NotNull DeviceKeystoreItem keystoreItem) throws Exception {
-        String bodyString = XmlUtil.marshal(keystoreItem);
+        String bodyString = xmlUtil.marshal(keystoreItem);
         setBody(bodyString.getBytes(charEncoding));
     }
 
@@ -126,7 +137,8 @@ public class KeystoreResponsePayload extends KapuaResponsePayloadImpl implements
      * Gets the {@link DeviceKeystoreCSR} from the {@link #getBody()}.
      *
      * @return The {@link DeviceKeystoreCSR} from the {@link #getBody()}.
-     * @throws Exception if reading {@link #getBody()} errors.
+     * @throws Exception
+     *         if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
     public Optional<DeviceKeystoreCSR> getCSR() throws Exception {
@@ -135,18 +147,20 @@ public class KeystoreResponsePayload extends KapuaResponsePayloadImpl implements
         }
 
         String bodyString = new String(getBody(), charEncoding);
-        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceKeystoreCSR.class));
+        return Optional.ofNullable(xmlUtil.unmarshal(bodyString, DeviceKeystoreCSR.class));
     }
 
     /**
      * Sets the {@link DeviceKeystoreCSR} in the {@link #getBody()}.
      *
-     * @param deviceCSR The {@link DeviceKeystoreCSR} in the {@link #getBody()}.
-     * @throws Exception if writing errors.
+     * @param deviceCSR
+     *         The {@link DeviceKeystoreCSR} in the {@link #getBody()}.
+     * @throws Exception
+     *         if writing errors.
      * @since 1.5.0
      */
     public void setCSR(@NotNull DeviceKeystoreCSR deviceCSR) throws Exception {
-        String bodyString = XmlUtil.marshal(deviceCSR);
+        String bodyString = xmlUtil.marshal(deviceCSR);
         setBody(bodyString.getBytes(charEncoding));
     }
 }

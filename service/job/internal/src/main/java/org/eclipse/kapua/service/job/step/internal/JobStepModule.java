@@ -12,10 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.internal;
 
-import com.google.inject.Provides;
+import javax.inject.Singleton;
+
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -26,9 +28,10 @@ import org.eclipse.kapua.service.job.step.JobStepRepository;
 import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionRepository;
 
-import javax.inject.Singleton;
+import com.google.inject.Provides;
 
 public class JobStepModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
         bind(JobStepFactory.class).to(JobStepFactoryImpl.class);
@@ -43,14 +46,15 @@ public class JobStepModule extends AbstractKapuaModule {
     @Provides
     @Singleton
     JobStepService jobStepService(AuthorizationService authorizationService,
-                                  PermissionFactory permissionFactory,
-                                  JobStepRepository jobStepRepository,
-                                  JobStepFactory jobStepFactory,
-                                  JobExecutionService jobExecutionService,
-                                  JobExecutionFactory jobExecutionFactory,
-                                  JobStepDefinitionRepository jobStepDefinitionRepository,
-                                  QueryFactory queryFactory,
-                                  KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+            PermissionFactory permissionFactory,
+            JobStepRepository jobStepRepository,
+            JobStepFactory jobStepFactory,
+            JobExecutionService jobExecutionService,
+            JobExecutionFactory jobExecutionFactory,
+            JobStepDefinitionRepository jobStepDefinitionRepository,
+            QueryFactory queryFactory,
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            XmlUtil xmlUtil) {
         return new JobStepServiceImpl(authorizationService,
                 permissionFactory,
                 jpaTxManagerFactory.create("kapua-job"),
@@ -58,7 +62,8 @@ public class JobStepModule extends AbstractKapuaModule {
                 jobStepFactory,
                 jobExecutionService,
                 jobExecutionFactory,
-                jobStepDefinitionRepository
+                jobStepDefinitionRepository,
+                xmlUtil
         );
     }
 }

@@ -12,15 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.xml;
 
-import com.google.inject.Provides;
-import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-
 import javax.inject.Named;
 
+import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProviderBase;
+
+import com.google.inject.Provides;
+
 public class TestConfigModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
-
+        bind(JAXBContextProvider.class).toInstance(new JAXBContextProviderBase());
     }
 
     @Provides

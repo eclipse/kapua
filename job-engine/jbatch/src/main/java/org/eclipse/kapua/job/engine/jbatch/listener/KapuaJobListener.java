@@ -12,8 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.jbatch.listener;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import java.util.Timer;
+
+import javax.batch.api.listener.AbstractJobListener;
+import javax.batch.api.listener.JobListener;
+import javax.batch.runtime.BatchRuntime;
+import javax.batch.runtime.context.JobContext;
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
@@ -48,18 +62,6 @@ import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.batch.api.listener.AbstractJobListener;
-import javax.batch.api.listener.JobListener;
-import javax.batch.runtime.BatchRuntime;
-import javax.batch.runtime.context.JobContext;
-import javax.inject.Inject;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import java.util.Timer;
-
 /**
  * {@link JobListener} implementations.
  * <p>
@@ -92,13 +94,15 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
     private QueuedJobExecutionCheckTaskFactory queuedJobExecutionCheckTaskFactory;
     @Inject
     private JbatchDriver jbatchDriver;
+    @Inject
+    private XmlUtil xmlUtil;
 
     /**
-     * Before starting the actual {@link org.eclipse.kapua.service.job.Job} processing, create the {@link JobExecution} to track progress and
-     * check if there are other {@link JobExecution}s running with the same {@link JobExecution#getTargetIds()}.
+     * Before starting the actual {@link org.eclipse.kapua.service.job.Job} processing, create the {@link JobExecution} to track progress and check if there are other {@link JobExecution}s running
+     * with the same {@link JobExecution#getTargetIds()}.
      * <p>
-     * If there are {@link JobExecution} running with matching {@link JobTargetSublist} the current  {@link JobExecution} is stopped.
-     * According to the {@link JobStartOptions#getEnqueue()} parameter, the {@link JobExecution} can be:
+     * If there are {@link JobExecution} running with matching {@link JobTargetSublist} the current  {@link JobExecution} is stopped. According to the {@link JobStartOptions#getEnqueue()} parameter,
+     * the {@link JobExecution} can be:
      * <ul>
      * <li>if ({@code enqueue} = {@code false}) then {@link JobAlreadyRunningException} is {@code throw}n </li>
      * <li>if ({@code enqueue} = {@code true}) then a new {@link QueuedJobExecution} is created</li>
@@ -106,7 +110,7 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
      */
     @Override
     public void beforeJob() throws Exception {
-        JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
+        JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext, xmlUtil);
 
         JobLogger jobLogger = jobContextWrapper.getJobLogger();
         jobLogger.setClassLog(LOG);
@@ -221,7 +225,7 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
      */
     @Override
     public void afterJob() throws Exception {
-        JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
+        JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext, xmlUtil);
         JobLogger jobLogger = jobContextWrapper.getJobLogger();
 
         jobLogger.info("Running after job...");
@@ -253,15 +257,20 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
     /**
      * Creates the {@link JobExecution} from the data in the {@link JobContextWrapper}.
      * <p>
-     * If the {@link org.eclipse.kapua.service.job.Job} has started without a defined set of {@link JobStartOptions#getTargetIdSublist()}
-     * all {@link org.eclipse.kapua.service.job.targets.JobTarget}s will be added to the {@link JobExecution#getTargetIds()}.
+     * If the {@link org.eclipse.kapua.service.job.Job} has started without a defined set of {@link JobStartOptions#getTargetIdSublist()} all {@link org.eclipse.kapua.service.job.targets.JobTarget}s
+     * will be added to the {@link JobExecution#getTargetIds()}.
      *
-     * @param scopeId           The {@link Job#getScopeId()}
-     * @param jobId             The {@link Job#getId()}
-     * @param jobTargetSublist  The {@link JobStartOptions#getTargetIdSublist()} of the targeted items
-     * @param jBatchExecutionId The {@link JobContext#getExecutionId()}
+     * @param scopeId
+     *         The {@link Job#getScopeId()}
+     * @param jobId
+     *         The {@link Job#getId()}
+     * @param jobTargetSublist
+     *         The {@link JobStartOptions#getTargetIdSublist()} of the targeted items
+     * @param jBatchExecutionId
+     *         The {@link JobContext#getExecutionId()}
      * @return The newly created {@link JobExecution}
-     * @throws KapuaException If any error happens during the processing
+     * @throws KapuaException
+     *         If any error happens during the processing
      * @since 1.1.0
      */
     private JobExecution createJobExecution(KapuaId scopeId, KapuaId jobId, JobTargetSublist jobTargetSublist, Long jBatchExecutionId) throws KapuaException {
@@ -300,23 +309,29 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
     /**
      * Checks if there are other {@link JobExecution}s running in this moment.
      * <p>
-     * First it checks for an execution running from the {@link BatchRuntime}.
-     * This will return the jBatch execution ids that are currently active.
+     * First it checks for an execution running from the {@link BatchRuntime}. This will return the jBatch execution ids that are currently active.
      * <p>
      * If 0, no {@link JobExecution} is currently running, returns {@code null}.
      * <p>
      * If greater than 0, it checks if the running {@link JobExecution} has a subset of {@link org.eclipse.kapua.service.job.targets.JobTarget}s compatible with the current {@link JobTargetSublist}.
-     * If the current {@link JobTargetSublist} doesn't match {@link org.eclipse.kapua.service.job.targets.JobTarget}s of any other running JobExecution, returns the current running {@link JobExecution}.
+     * If the current {@link JobTargetSublist} doesn't match {@link org.eclipse.kapua.service.job.targets.JobTarget}s of any other running JobExecution, returns the current running
+     * {@link JobExecution}.
      * <p>
      * In other all other cases returns {@code null}.
      *
-     * @param scopeId               The current {@link JobExecution#getScopeId()}.
-     * @param jobId                 The current {@link JobExecution#getJobId()}.
-     * @param currentJobExecutionId The current {@link JobExecution#getId()}.
-     * @param jobName               The current {@link JobContextWrapper#getJobName()}.
-     * @param jobTargetIdSubset     The current {@link JobExecution#getTargetIds()} }.
+     * @param scopeId
+     *         The current {@link JobExecution#getScopeId()}.
+     * @param jobId
+     *         The current {@link JobExecution#getJobId()}.
+     * @param currentJobExecutionId
+     *         The current {@link JobExecution#getId()}.
+     * @param jobName
+     *         The current {@link JobContextWrapper#getJobName()}.
+     * @param jobTargetIdSubset
+     *         The current {@link JobExecution#getTargetIds()} }.
      * @return The other running {@link JobExecution} or {@code null} if there is no other running {@link JobExecution}.
-     * @throws KapuaException If any error happens during the processing.
+     * @throws KapuaException
+     *         If any error happens during the processing.
      * @since 1.1.0
      */
     private JobExecution getAnotherJobExecutionRunning(KapuaId scopeId, KapuaId jobId, KapuaId currentJobExecutionId, String jobName, Set<KapuaId> jobTargetIdSubset) throws KapuaException {
@@ -345,15 +360,20 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
     }
 
     /**
-     * Creates a new {@link QueuedJobExecution} when the current {@link JobExecution} cannot be started
-     * due to another running {@link JobExecution} and the {@link JobStartOptions#getEnqueue()} is {@code true}.
+     * Creates a new {@link QueuedJobExecution} when the current {@link JobExecution} cannot be started due to another running {@link JobExecution} and the {@link JobStartOptions#getEnqueue()} is
+     * {@code true}.
      *
-     * @param scopeId               The current {@link JobExecution#getScopeId()}
-     * @param jobId                 The current {@link JobExecution#getJobId()}
-     * @param jobExecutionId        The current {@link JobExecution#getId()}
-     * @param runningJobExecutionId The current running {@link JobExecution#getId()}
+     * @param scopeId
+     *         The current {@link JobExecution#getScopeId()}
+     * @param jobId
+     *         The current {@link JobExecution#getJobId()}
+     * @param jobExecutionId
+     *         The current {@link JobExecution#getId()}
+     * @param runningJobExecutionId
+     *         The current running {@link JobExecution#getId()}
      * @return The newly created {@link QueuedJobExecution}
-     * @throws KapuaException If any error happens during the processing.
+     * @throws KapuaException
+     *         If any error happens during the processing.
      */
     private QueuedJobExecution enqueueJobExecution(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId, KapuaId runningJobExecutionId) throws KapuaException {
 

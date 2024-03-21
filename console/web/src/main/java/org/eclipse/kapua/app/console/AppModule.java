@@ -12,15 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console;
 
-import com.google.inject.Provides;
-import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
-
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+
+import com.google.inject.Provides;
+
 public class AppModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
 
@@ -41,8 +42,6 @@ public class AppModule extends AbstractKapuaModule {
     @Provides
     @Singleton
     JAXBContextProvider jaxbContextProvider() {
-        final JAXBContextProvider jaxbContextProvider = new ConsoleJAXBContextProvider();
-        XmlUtil.setContextProvider(jaxbContextProvider);
-        return jaxbContextProvider;
+        return new ConsoleJAXBContextProvider();
     }
 }

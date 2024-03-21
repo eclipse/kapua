@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
+import java.io.StringWriter;
+import java.util.Map;
+
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
@@ -21,10 +24,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.io.StringWriter;
-import java.util.Map;
-
-
 @Category(JUnitTests.class)
 public class KapuaPayloadTest {
 
@@ -32,9 +31,11 @@ public class KapuaPayloadTest {
 
     private static final String KAPUA_PAYLOAD_XML_STR = "missing";
 
+    private XmlUtil xmlUtil;
+
     @Before
     public void before() throws Exception {
-        XmlUtil.setContextProvider(new MessageJAXBContextProvider());
+        xmlUtil = new XmlUtil(new MessageJAXBContextProvider());
     }
 
     @Test
@@ -51,7 +52,7 @@ public class KapuaPayloadTest {
         byte[] body = kapuaPayload.getBody();
         Assert.assertEquals("value1", properties.get("key1"));
         Assert.assertEquals("value2", properties.get("key2"));
-        Assert.assertArrayEquals(new byte[]{'b', 'o', 'd', 'y'}, body);
+        Assert.assertArrayEquals(new byte[] { 'b', 'o', 'd', 'y' }, body);
     }
 
     @Test
@@ -78,7 +79,7 @@ public class KapuaPayloadTest {
         KapuaMessageUtil.populatePayload(kapuaPayload);
 
         StringWriter strWriter = new StringWriter();
-        XmlUtil.marshal(kapuaPayload, strWriter);
+        xmlUtil.marshal(kapuaPayload, strWriter);
         Assert.assertEquals(KAPUA_PAYLOAD_XML_STR, strWriter.toString());
     }
 }
