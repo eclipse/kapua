@@ -12,15 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.jbatch.driver.utils;
 
-import com.ibm.jbatch.jsl.model.Batchlet;
-import com.ibm.jbatch.jsl.model.Chunk;
-import com.ibm.jbatch.jsl.model.ItemProcessor;
-import com.ibm.jbatch.jsl.model.ItemReader;
-import com.ibm.jbatch.jsl.model.ItemWriter;
-import com.ibm.jbatch.jsl.model.JSLProperties;
-import com.ibm.jbatch.jsl.model.Listener;
-import com.ibm.jbatch.jsl.model.Listeners;
-import com.ibm.jbatch.jsl.model.Property;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.JAXBException;
+
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.commons.model.JobStepPropertiesOverrides;
@@ -35,14 +37,15 @@ import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.JAXBException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.ibm.jbatch.jsl.model.Batchlet;
+import com.ibm.jbatch.jsl.model.Chunk;
+import com.ibm.jbatch.jsl.model.ItemProcessor;
+import com.ibm.jbatch.jsl.model.ItemReader;
+import com.ibm.jbatch.jsl.model.ItemWriter;
+import com.ibm.jbatch.jsl.model.JSLProperties;
+import com.ibm.jbatch.jsl.model.Listener;
+import com.ibm.jbatch.jsl.model.Listeners;
+import com.ibm.jbatch.jsl.model.Property;
 
 /**
  * {@link JobDefinitionBuildUtils} utility class.
@@ -53,10 +56,14 @@ import java.util.Map;
  */
 public class JobDefinitionBuildUtils {
 
-    private JobDefinitionBuildUtils() {
+    private final XmlUtil xmlUtil;
+
+    @Inject
+    private JobDefinitionBuildUtils(XmlUtil xmlUtil) {
+        this.xmlUtil = xmlUtil;
     }
 
-    public static Listeners buildListener() {
+    public Listeners buildListener() {
         Listener jslListener = new Listener();
         jslListener.setRef(KapuaJobListener.class.getName());
 
@@ -66,7 +73,7 @@ public class JobDefinitionBuildUtils {
         return listeners;
     }
 
-    public static JSLProperties buildJobProperties(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull JobStartOptions jobStartOptions) throws JAXBException {
+    public JSLProperties buildJobProperties(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull JobStartOptions jobStartOptions) throws JAXBException {
 
         List<Property> jslPropertyList = new ArrayList<>();
 
@@ -85,13 +92,13 @@ public class JobDefinitionBuildUtils {
         // Job target sublist
         Property targetSublistProperty = new Property();
         targetSublistProperty.setName(JobContextPropertyNames.JOB_TARGET_SUBLIST);
-        targetSublistProperty.setValue(XmlUtil.marshal(new JobTargetSublist(jobStartOptions.getTargetIdSublist())));
+        targetSublistProperty.setValue(xmlUtil.marshal(new JobTargetSublist(jobStartOptions.getTargetIdSublist())));
         jslPropertyList.add(targetSublistProperty);
 
         // Job Step Properties overrides
         Property stepPropertiesOverrides = new Property();
         stepPropertiesOverrides.setName(JobContextPropertyNames.JOB_STEP_PROPERTIES_OVERRIDES);
-        stepPropertiesOverrides.setValue(XmlUtil.marshal(new JobStepPropertiesOverrides(jobStartOptions.getStepPropertiesOverrides())));
+        stepPropertiesOverrides.setValue(xmlUtil.marshal(new JobStepPropertiesOverrides(jobStartOptions.getStepPropertiesOverrides())));
         jslPropertyList.add(stepPropertiesOverrides);
 
         // Resumed job execution

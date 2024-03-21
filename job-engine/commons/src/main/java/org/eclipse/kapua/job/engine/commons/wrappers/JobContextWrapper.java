@@ -12,7 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.commons.wrappers;
 
-import com.google.common.base.Strings;
+import java.util.Properties;
+
+import javax.batch.runtime.BatchStatus;
+import javax.batch.runtime.context.JobContext;
+import javax.xml.bind.JAXBException;
+
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.commons.exception.ReadJobPropertyException;
@@ -26,10 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import javax.batch.runtime.BatchStatus;
-import javax.batch.runtime.context.JobContext;
-import javax.xml.bind.JAXBException;
-import java.util.Properties;
+import com.google.common.base.Strings;
 
 /**
  * {@link JobContextWrapper} wraps the {@link JobContext} and offers utility methods around it.
@@ -40,18 +42,21 @@ public class JobContextWrapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(JobContextWrapper.class);
 
-    private JobContext jobContext;
+    private final JobContext jobContext;
+    private final XmlUtil xmlUtil;
 
     /**
      * Constructor from the {@code inject}ed {@link JobContext}.
      * <p>
      * Wraps the given {@link JobContext}
      *
-     * @param jobContext The {@link JobContext} to wrap.
+     * @param jobContext
+     *         The {@link JobContext} to wrap.
      * @since 1.1.0
      */
-    public JobContextWrapper(JobContext jobContext) {
+    public JobContextWrapper(JobContext jobContext, XmlUtil xmlUtil) {
         this.jobContext = jobContext;
+        this.xmlUtil = xmlUtil;
     }
 
     /**
@@ -86,7 +91,7 @@ public class JobContextWrapper {
         String jobTargetSublistString = getProperties().getProperty(JobContextPropertyNames.JOB_TARGET_SUBLIST);
 
         try {
-            return XmlUtil.unmarshal(jobTargetSublistString, JobTargetSublist.class);
+            return xmlUtil.unmarshal(jobTargetSublistString, JobTargetSublist.class);
         } catch (JAXBException | SAXException e) {
             throw new ReadJobPropertyException(e, JobContextPropertyNames.JOB_TARGET_SUBLIST, jobTargetSublistString);
         }
@@ -102,7 +107,7 @@ public class JobContextWrapper {
         String jobStepPropertiesOverrides = getProperties().getProperty(JobContextPropertyNames.JOB_STEP_PROPERTIES_OVERRIDES);
 
         try {
-            return XmlUtil.unmarshal(jobStepPropertiesOverrides, JobStepPropertiesOverrides.class);
+            return xmlUtil.unmarshal(jobStepPropertiesOverrides, JobStepPropertiesOverrides.class);
         } catch (JAXBException | SAXException e) {
             throw new ReadJobPropertyException(e, JobContextPropertyNames.JOB_STEP_PROPERTIES_OVERRIDES, jobStepPropertiesOverrides);
         }
@@ -172,7 +177,8 @@ public class JobContextWrapper {
     /**
      * Sets the {@link JobTransientUserData}
      *
-     * @param jobTransientUserData The {@link JobTransientUserData}.
+     * @param jobTransientUserData
+     *         The {@link JobTransientUserData}.
      * @since 1.1.0
      */
     public <J extends JobTransientUserData> void setJobTransientUserData(J jobTransientUserData) {
@@ -218,7 +224,8 @@ public class JobContextWrapper {
     }
 
     /**
-     * @param data {@link JobContext#setTransientUserData(Object)}.
+     * @param data
+     *         {@link JobContext#setTransientUserData(Object)}.
      * @see JobContext#setTransientUserData(Object).
      * @since 1.0.0
      */
@@ -272,7 +279,8 @@ public class JobContextWrapper {
     }
 
     /**
-     * @param status {@link JobContext#setExitStatus(String)}.
+     * @param status
+     *         {@link JobContext#setExitStatus(String)}.
      * @see JobContext#setExitStatus(String)
      * @since 1.0.0
      */
@@ -293,7 +301,8 @@ public class JobContextWrapper {
     /**
      * Sets the current {@link JobExecution#getId()}.
      *
-     * @param kapuaExecutionId The current {@link JobExecution#getId()}.
+     * @param kapuaExecutionId
+     *         The current {@link JobExecution#getId()}.
      * @since 1.0.0
      */
     public void setKapuaExecutionId(KapuaId kapuaExecutionId) {

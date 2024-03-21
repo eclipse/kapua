@@ -12,27 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.integration.steps;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.cucumber.guice.ScenarioScoped;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.common.StepData;
-import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.authentication.token.AccessToken;
-import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserListResult;
-import org.jose4j.json.internal.json_simple.JSONObject;
-import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -44,6 +23,31 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.qa.common.StepData;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserListResult;
+import org.jose4j.json.internal.json_simple.JSONObject;
+import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.cucumber.guice.ScenarioScoped;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 @ScenarioScoped
 public class RestClientSteps {
@@ -176,8 +180,7 @@ public class RestClientSteps {
         if (method.equals("POST")) {
             baseBuilder.setHeader("Content-Type", "application/json");
             baseBuilder.POST(HttpRequest.BodyPublishers.ofString(json));
-        }
-        else if (method.equals("GET")) {
+        } else if (method.equals("GET")) {
             baseBuilder.GET();
         }
 
@@ -259,7 +262,7 @@ public class RestClientSteps {
         String response = (String) stepData.get(REST_RESPONSE);
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonResponse = objectMapper.readTree(response);
-        stepData.put(key,jsonResponse.get(field).toString().replace("\"", ""));
+        stepData.put(key, jsonResponse.get(field).toString().replace("\"", ""));
         String test = (String) stepData.get(key);
     }
 
@@ -271,7 +274,7 @@ public class RestClientSteps {
     }
 
     @Then("I expect {string} header in the response with value {string}")
-    public void restResponseHeaderContaining(String headerName,String headerValue) throws Exception {
+    public void restResponseHeaderContaining(String headerName, String headerValue) throws Exception {
         java.net.http.HttpHeaders headers = (java.net.http.HttpHeaders) stepData.get(REST_RESPONSE_HEADERS);
         String headerValueResponse = headers.firstValue(headerName).orElseThrow(() -> new Exception("The searched header is not present in the response!"));
         Assert.assertEquals(headerValueResponse, headerValue);
@@ -286,7 +289,7 @@ public class RestClientSteps {
     @Then("REST response containing Account")
     public void restResponseContainingAccount() throws Exception {
         String restResponse = (String) stepData.get(REST_RESPONSE);
-        Account account = XmlUtil.unmarshalJson(restResponse, Account.class);
+        Account account = KapuaLocator.getInstance().getComponent(XmlUtil.class).unmarshalJson(restResponse, Account.class);
         KapuaId accId = account.getId();
         System.out.println("Account Id = " + accId);
         stepData.put("lastAccountId", accId.toStringId());
@@ -304,7 +307,7 @@ public class RestClientSteps {
     @Then("REST response containing AccessToken")
     public void restResponseContainingAccessToken() throws Exception {
         String restResponse = (String) stepData.get(REST_RESPONSE);
-        AccessToken token = XmlUtil.unmarshalJson(restResponse, AccessToken.class);
+        AccessToken token = KapuaLocator.getInstance().getComponent(XmlUtil.class).unmarshalJson(restResponse, AccessToken.class);
         Assert.assertTrue("Token is null.", token.getTokenId() != null);
         stepData.put(TOKEN_ID, token.getTokenId());
         stepData.put(REFRESH_TOKEN, token.getRefreshToken());
@@ -313,21 +316,21 @@ public class RestClientSteps {
     @Then("REST response containing User")
     public void restResponseContainingUser() throws Exception {
         String restResponse = (String) stepData.get(REST_RESPONSE);
-        User user = XmlUtil.unmarshalJson(restResponse, User.class);
+        User user = KapuaLocator.getInstance().getComponent(XmlUtil.class).unmarshalJson(restResponse, User.class);
         stepData.put("lastUserCompactId", user.getId().toCompactId());
     }
 
     @Then("REST response contains list of Users")
     public void restResponseContainsUsers() throws Exception {
         String restResponse = (String) stepData.get(REST_RESPONSE);
-        UserListResult userList = XmlUtil.unmarshalJson(restResponse, UserListResult.class);
+        UserListResult userList = KapuaLocator.getInstance().getComponent(XmlUtil.class).unmarshalJson(restResponse, UserListResult.class);
         Assert.assertFalse("Retrieved user list should NOT be empty.", userList.isEmpty());
     }
 
     @Then("REST response doesn't contain User")
     public void restResponseDoesntContainUser() throws Exception {
         String restResponse = (String) stepData.get(REST_RESPONSE);
-        User user = XmlUtil.unmarshalJson(restResponse, User.class);
+        User user = KapuaLocator.getInstance().getComponent(XmlUtil.class).unmarshalJson(restResponse, User.class);
         Assert.assertTrue("There should be NO User retrieved.", user == null);
     }
 
@@ -340,7 +343,7 @@ public class RestClientSteps {
     @Then("^REST response contains limitExceed field with value (true|false)$")
     public void restResponseContainsLimitExceedValueWithValue(String value) throws Exception {
         String restResponse = (String) stepData.get(REST_RESPONSE);
-        UserListResult userList = XmlUtil.unmarshalJson(restResponse, UserListResult.class);
+        UserListResult userList = KapuaLocator.getInstance().getComponent(XmlUtil.class).unmarshalJson(restResponse, UserListResult.class);
         Assert.assertEquals(Boolean.parseBoolean(value), userList.isLimitExceeded());
     }
 
@@ -359,10 +362,10 @@ public class RestClientSteps {
     }
 
     /**
-     * Take input parameter and replace its $var$ with value of var that is stored
-     * in step data.
+     * Take input parameter and replace its $var$ with value of var that is stored in step data.
      *
-     * @param template string that gets parameters replaced with value
+     * @param template
+     *         string that gets parameters replaced with value
      * @return string with inserted parameter values
      */
     private String insertStepData(String template) {

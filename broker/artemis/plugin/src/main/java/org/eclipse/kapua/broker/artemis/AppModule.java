@@ -12,8 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.artemis;
 
-import com.google.inject.Provides;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.broker.artemis.plugin.security.BrokerJAXBContextProvider;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
 import org.eclipse.kapua.broker.artemis.plugin.utils.BrokerHostResolver;
@@ -25,11 +28,12 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import com.google.inject.Provides;
 
 public class AppModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
         bind(DatabaseCheckUpdate.class).asEagerSingleton();
@@ -64,7 +68,6 @@ public class AppModule extends AbstractKapuaModule {
         return brokerHostResolver.getBrokerHost();
     }
 
-
     @Singleton
     @Provides
     BrokerIdResolver brokerIdResolver(BrokerSetting brokerSettings) throws KapuaException {
@@ -75,5 +78,11 @@ public class AppModule extends AbstractKapuaModule {
     @Provides
     BrokerHostResolver brokerHostResolver(BrokerSetting brokerSettings) throws KapuaException {
         return new DefaultBrokerHostResolver(brokerSettings.getString(BrokerSettingKey.BROKER_HOST));
+    }
+
+    @Provides
+    @Singleton
+    JAXBContextProvider jaxbContextProvider() {
+        return new BrokerJAXBContextProvider();
     }
 }

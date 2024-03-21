@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.xml;
 
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
@@ -21,11 +25,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
-
 
 @Category(JUnitTests.class)
 public class KapuaMetricsMapAdapterTest {
@@ -44,9 +43,11 @@ public class KapuaMetricsMapAdapterTest {
                     "   </metrics>" + NEWLINE +
                     "</payload>" + NEWLINE;
 
+    private XmlUtil xmlUtil;
+
     @Before
     public void before() throws Exception {
-        XmlUtil.setContextProvider(new MessageJAXBContextProvider());
+        xmlUtil = new XmlUtil(new MessageJAXBContextProvider());
     }
 
     @Test
@@ -58,7 +59,7 @@ public class KapuaMetricsMapAdapterTest {
         metricsMap.setMetrics(metrics);
 
         StringWriter strWriter = new StringWriter();
-        XmlUtil.marshal(metricsMap, strWriter);
+        xmlUtil.marshal(metricsMap, strWriter);
         Assert.assertEquals(METRICS_XML_STR, strWriter.toString());
     }
 
@@ -69,7 +70,7 @@ public class KapuaMetricsMapAdapterTest {
         metrics.put(String.valueOf("key1"), String.valueOf("value1"));
         metricsMap.setMetrics(metrics);
 
-        KapuaPayload metricsMapResp = XmlUtil.unmarshal(METRICS_XML_STR, KapuaPayload.class);
+        KapuaPayload metricsMapResp = xmlUtil.unmarshal(METRICS_XML_STR, KapuaPayload.class);
         Assert.assertEquals(metricsMap.getMetrics().get("key1"), metricsMapResp.getMetrics().get("key1"));
     }
 

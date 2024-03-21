@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration.message.event.internal;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.commons.message.event.KapuaEventPayloadImpl;
@@ -20,9 +23,6 @@ import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagem
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.message.event.DeviceConfigurationEventPayload;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * {@link DeviceConfigurationEventPayload} implementation.
@@ -34,6 +34,7 @@ public class DeviceConfigurationEventPayloadImpl extends KapuaEventPayloadImpl i
     private static final long serialVersionUID = 1400605735748313538L;
 
     private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private final XmlUtil xmlUtil = KapuaLocator.getInstance().getComponent(XmlUtil.class);
 
     @Override
     public List<DeviceComponentConfiguration> getDeviceComponentConfigurations() throws Exception {
@@ -42,12 +43,12 @@ public class DeviceConfigurationEventPayloadImpl extends KapuaEventPayloadImpl i
         }
 
         String bodyString = new String(getBody(), charEncoding);
-        return XmlUtil.unmarshal(bodyString, DeviceConfiguration.class).getComponentConfigurations();
+        return xmlUtil.unmarshal(bodyString, DeviceConfiguration.class).getComponentConfigurations();
     }
 
     @Override
     public void setDeviceComponentConfigurations(DeviceConfiguration deviceConfiguration) throws Exception {
-        String bodyString = XmlUtil.marshal(deviceConfiguration);
+        String bodyString = xmlUtil.marshal(deviceConfiguration);
         setBody(bodyString.getBytes(charEncoding));
     }
 }

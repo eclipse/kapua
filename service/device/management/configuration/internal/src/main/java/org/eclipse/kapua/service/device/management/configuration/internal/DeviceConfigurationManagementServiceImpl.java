@@ -12,7 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration.internal;
 
-import com.google.common.base.Strings;
+import java.util.Date;
+
+import javax.inject.Singleton;
+import javax.xml.bind.JAXBException;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.model.domains.Domains;
@@ -44,9 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import javax.inject.Singleton;
-import javax.xml.bind.JAXBException;
-import java.util.Date;
+import com.google.common.base.Strings;
 
 /**
  * {@link DeviceConfigurationManagementService} implementation.
@@ -63,15 +65,17 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
     private static final String DEVICE_ID = "deviceId";
 
     private final DeviceConfigurationStoreService deviceConfigurationStoreService;
+    private final XmlUtil xmlUtil;
 
     public DeviceConfigurationManagementServiceImpl(TxManager txManager,
-                                                    AuthorizationService authorizationService,
-                                                    PermissionFactory permissionFactory,
-                                                    DeviceEventService deviceEventService,
-                                                    DeviceEventFactory deviceEventFactory,
-                                                    DeviceRegistryService deviceRegistryService,
-                                                    DeviceConfigurationFactory deviceConfigurationFactory,
-                                                    DeviceConfigurationStoreService deviceConfigurationStoreService) {
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            DeviceEventService deviceEventService,
+            DeviceEventFactory deviceEventFactory,
+            DeviceRegistryService deviceRegistryService,
+            DeviceConfigurationFactory deviceConfigurationFactory,
+            DeviceConfigurationStoreService deviceConfigurationStoreService,
+            XmlUtil xmlUtil) {
         super(txManager,
                 authorizationService,
                 permissionFactory,
@@ -81,6 +85,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
         );
         this.deviceConfigurationFactory = deviceConfigurationFactory;
         this.deviceConfigurationStoreService = deviceConfigurationStoreService;
+        this.xmlUtil = xmlUtil;
     }
 
     @Override
@@ -121,14 +126,16 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
             try {
                 responseMessage = configurationDeviceCallBuilder.send();
             } catch (Exception e) {
-                LOG.error("Error while getting DeviceConfiguration with id {} and DeviceComponentConfiguration id {} for Device {}. Error: {}", configurationId, configurationComponentPid, deviceId, e.getMessage(), e);
+                LOG.error("Error while getting DeviceConfiguration with id {} and DeviceComponentConfiguration id {} for Device {}. Error: {}", configurationId, configurationComponentPid, deviceId,
+                        e.getMessage(), e);
                 throw e;
             }
 
             // Create event
             createDeviceEvent(scopeId, deviceId, configurationRequestMessage, responseMessage);
             // Check response
-            DeviceConfiguration onlineDeviceConfiguration = checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceConfigurations().orElse(deviceConfigurationFactory.newConfigurationInstance()));
+            DeviceConfiguration onlineDeviceConfiguration = checkResponseAcceptedOrThrowError(responseMessage,
+                    () -> responseMessage.getPayload().getDeviceConfigurations().orElse(deviceConfigurationFactory.newConfigurationInstance()));
             // Store config and return
             if (deviceConfigurationStoreService.isServiceEnabled(scopeId) &&
                     deviceConfigurationStoreService.isApplicationEnabled(scopeId, deviceId)) {
@@ -222,7 +229,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
         try {
             put(scopeId,
                     deviceId,
-                    XmlUtil.unmarshal(xmlDeviceConfig, DeviceConfigurationImpl.class),
+                    xmlUtil.unmarshal(xmlDeviceConfig, DeviceConfigurationImpl.class),
                     timeout);
         } catch (JAXBException | SAXException e) {
             throw new KapuaIllegalArgumentException("xmlDeviceConfig", xmlDeviceConfig);

@@ -12,11 +12,28 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.jbatch.driver;
 
-import com.ibm.jbatch.container.jsl.ExecutionElement;
-import com.ibm.jbatch.container.jsl.ModelSerializerFactory;
-import com.ibm.jbatch.container.servicesmanager.ServicesManagerImpl;
-import com.ibm.jbatch.jsl.model.JSLJob;
-import com.ibm.jbatch.jsl.model.Step;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.stream.Collectors;
+
+import javax.batch.operations.JobExecutionNotRunningException;
+import javax.batch.operations.JobOperator;
+import javax.batch.operations.JobSecurityException;
+import javax.batch.operations.NoSuchJobException;
+import javax.batch.operations.NoSuchJobExecutionException;
+import javax.batch.operations.NoSuchJobInstanceException;
+import javax.batch.runtime.JobExecution;
+import javax.batch.runtime.JobInstance;
+import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.eclipse.kapua.KapuaException;
@@ -50,26 +67,11 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.batch.operations.JobExecutionNotRunningException;
-import javax.batch.operations.JobOperator;
-import javax.batch.operations.JobSecurityException;
-import javax.batch.operations.NoSuchJobException;
-import javax.batch.operations.NoSuchJobExecutionException;
-import javax.batch.operations.NoSuchJobInstanceException;
-import javax.batch.runtime.JobExecution;
-import javax.batch.runtime.JobInstance;
-import javax.inject.Inject;
-import javax.validation.constraints.NotNull;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.stream.Collectors;
+import com.ibm.jbatch.container.jsl.ExecutionElement;
+import com.ibm.jbatch.container.jsl.ModelSerializerFactory;
+import com.ibm.jbatch.container.servicesmanager.ServicesManagerImpl;
+import com.ibm.jbatch.jsl.model.JSLJob;
+import com.ibm.jbatch.jsl.model.Step;
 
 /**
  * Driver class for Java Batch API
@@ -90,23 +92,28 @@ public class JbatchDriver {
     private final JobStepFactory jobStepFactory;
 
     @Inject
-    public JbatchDriver(JobOperator jobOperator, JobExecutionService jobExecutionService, JobStepService jobStepService, JobStepFactory jobStepFactory, JobStepDefinitionService jobStepDefinitionService) {
+    public JbatchDriver(JobOperator jobOperator, JobExecutionService jobExecutionService, JobStepService jobStepService, JobStepFactory jobStepFactory,
+            JobStepDefinitionService jobStepDefinitionService, JobDefinitionBuildUtils jobDefinitionBuildUtils) {
         this.jobOperator = jobOperator;
         this.jobExecutionService = jobExecutionService;
         this.jobStepService = jobStepService;
         this.jobStepFactory = jobStepFactory;
         this.jobStepDefinitionService = jobStepDefinitionService;
+        this.jobDefinitionBuildUtils = jobDefinitionBuildUtils;
     }
 
     private final JobStepDefinitionService jobStepDefinitionService;
+    private final JobDefinitionBuildUtils jobDefinitionBuildUtils;
 
     /**
      * Builds the jBatch job name from the {@link Job#getScopeId()} and the {@link Job#getId()}.
      * <p>
      * Format is: job-{scopeIdShort}-{jobIdShort}
      *
-     * @param scopeId The scopeId of the {@link Job}
-     * @param jobId   The id of the {@link Job}
+     * @param scopeId
+     *         The scopeId of the {@link Job}
+     * @param jobId
+     *         The id of the {@link Job}
      * @return The jBatch {@link Job} name
      * @since 1.0.0
      */
@@ -117,18 +124,27 @@ public class JbatchDriver {
     /**
      * Starts a jBatch job with data sourced from the Kapua {@link Job} definition.
      * <p>
-     * It builds the XML jBatch job definition using the {@link JSLJob} model definition.
-     * The generated XML is store in the {@link SystemUtils#getJavaIoTmpDir()} since the default configuration of jBatch requires a path name to start the jBatch job
+     * It builds the XML jBatch job definition using the {@link JSLJob} model definition. The generated XML is store in the {@link SystemUtils#getJavaIoTmpDir()} since the default configuration of
+     * jBatch requires a path name to start the jBatch job
      *
-     * @param scopeId         The scopeId of the {@link Job}
-     * @param jobId           The id of the {@link Job}
-     * @param jobStartOptions The {@link JobStartOptions} for this start {@link org.eclipse.kapua.service.job.Job} request.
-     * @throws CannotBuildJobDefDriverException     if the creation of the {@link JSLJob} fails
-     * @throws CannotCreateTmpDirDriverException    if the temp directory for storing the XML job definition file cannot be created
-     * @throws CannotCleanJobDefFileDriverException if the XML job definition file cannot be deleted, when existing
-     * @throws CannotWriteJobDefFileDriverException if the XML job definition file cannot be created and written in the tmp directory
-     * @throws JobExecutionIsRunningDriverException if the jBatch job has another {@link JobExecution} running
-     * @throws JobStartingDriverException           if invoking {@link JobOperator#start(String, Properties)} throws an {@link Exception}
+     * @param scopeId
+     *         The scopeId of the {@link Job}
+     * @param jobId
+     *         The id of the {@link Job}
+     * @param jobStartOptions
+     *         The {@link JobStartOptions} for this start {@link org.eclipse.kapua.service.job.Job} request.
+     * @throws CannotBuildJobDefDriverException
+     *         if the creation of the {@link JSLJob} fails
+     * @throws CannotCreateTmpDirDriverException
+     *         if the temp directory for storing the XML job definition file cannot be created
+     * @throws CannotCleanJobDefFileDriverException
+     *         if the XML job definition file cannot be deleted, when existing
+     * @throws CannotWriteJobDefFileDriverException
+     *         if the XML job definition file cannot be created and written in the tmp directory
+     * @throws JobExecutionIsRunningDriverException
+     *         if the jBatch job has another {@link JobExecution} running
+     * @throws JobStartingDriverException
+     *         if invoking {@link JobOperator#start(String, Properties)} throws an {@link Exception}
      * @since 1.0.0
      */
     public void startJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull JobStartOptions jobStartOptions)
@@ -153,14 +169,14 @@ public class JbatchDriver {
                 Step jslStep = new Step();
                 JobStepDefinition jobStepDefinition = jobStepDefinitionService.find(KapuaId.ANY, jobStep.getJobStepDefinitionId());
                 switch (jobStepDefinition.getStepType()) {
-                    case GENERIC:
-                        jslStep.setBatchlet(JobDefinitionBuildUtils.buildGenericStep(jobStepDefinition));
-                        break;
-                    case TARGET:
-                        jslStep.setChunk(JobDefinitionBuildUtils.buildChunkStep(jobStepDefinition));
-                        break;
-                    default:
-                        throw new KapuaIllegalArgumentException(jobStepDefinition.getStepType().name(), "jobStepDefinition.stepType");
+                case GENERIC:
+                    jslStep.setBatchlet(JobDefinitionBuildUtils.buildGenericStep(jobStepDefinition));
+                    break;
+                case TARGET:
+                    jslStep.setChunk(JobDefinitionBuildUtils.buildChunkStep(jobStepDefinition));
+                    break;
+                default:
+                    throw new KapuaIllegalArgumentException(jobStepDefinition.getStepType().name(), "jobStepDefinition.stepType");
                 }
 
                 jslStep.setId("step-" + jobStep.getStepIndex());
@@ -178,8 +194,8 @@ public class JbatchDriver {
             jslJob.setRestartable("true");
             jslJob.setId(jobName);
             jslJob.setVersion("1.0");
-            jslJob.setProperties(JobDefinitionBuildUtils.buildJobProperties(scopeId, jobId, jobStartOptions));
-            jslJob.setListeners(JobDefinitionBuildUtils.buildListener());
+            jslJob.setProperties(jobDefinitionBuildUtils.buildJobProperties(scopeId, jobId, jobStartOptions));
+            jslJob.setListeners(jobDefinitionBuildUtils.buildListener());
             jslJob.getExecutionElements().addAll(jslExecutionElements);
 
             jobXmlDefinition = ModelSerializerFactory.createJobModelSerializer().serializeModel(jslJob);
@@ -214,17 +230,21 @@ public class JbatchDriver {
     /**
      * Stops completely the jBatch job.
      * <p>
-     * First invokes the {@link JobOperator#stop(long)} on the running execution, which stop the running execution.
-     * Secondly, according to the {@link JobEngineSettingKeys#JOB_ENGINE_STOP_WAIT_CHECK} value, it waits asynchronously the complete stop of the job
-     * to be able to invoke {@link JobOperator#abandon(long)} which terminate the jBatch Job.
+     * First invokes the {@link JobOperator#stop(long)} on the running execution, which stop the running execution. Secondly, according to the {@link JobEngineSettingKeys#JOB_ENGINE_STOP_WAIT_CHECK}
+     * value, it waits asynchronously the complete stop of the job to be able to invoke {@link JobOperator#abandon(long)} which terminate the jBatch Job.
      * <p>
      * A jBatch job cannot be resumed after this method is invoked on it.
      *
-     * @param scopeId              The scopeId of the {@link Job}
-     * @param jobId                The id of the {@link Job}
-     * @param toStopJobExecutionId The optional {@link org.eclipse.kapua.service.job.execution.JobExecution#getId()} to stop.
-     * @throws ExecutionNotFoundDriverException   when there isn't a corresponding job execution in jBatch tables
-     * @throws ExecutionNotRunningDriverException when the corresponding job execution is not running.
+     * @param scopeId
+     *         The scopeId of the {@link Job}
+     * @param jobId
+     *         The id of the {@link Job}
+     * @param toStopJobExecutionId
+     *         The optional {@link org.eclipse.kapua.service.job.execution.JobExecution#getId()} to stop.
+     * @throws ExecutionNotFoundDriverException
+     *         when there isn't a corresponding job execution in jBatch tables
+     * @throws ExecutionNotRunningDriverException
+     *         when the corresponding job execution is not running.
      * @since 1.0.0
      */
     public void stopJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, KapuaId toStopJobExecutionId) throws JbatchDriverException, KapuaException {
@@ -285,14 +305,15 @@ public class JbatchDriver {
         }
     }
 
-
     /**
      * Checks whether or not the {@link Job} identified by the parametersis in a running status.
      * <p>
      * jBatch {@link Job} running statuses are listed in {@link JbatchJobRunningStatuses}
      *
-     * @param scopeId The scopeId of the {@link Job}
-     * @param jobId   The id of the {@link Job}
+     * @param scopeId
+     *         The scopeId of the {@link Job}
+     * @param jobId
+     *         The id of the {@link Job}
      * @return {@code true} if the jBatch {@link Job} is running, {@code false} otherwise.
      * @since 1.0.0
      */
@@ -305,9 +326,12 @@ public class JbatchDriver {
      * <p>
      * The cleanup is required when deleting a {@link Job} to avoid stale data to be left in the jBatch tables.
      *
-     * @param scopeId The {@link Job#getScopeId()}
-     * @param jobId   The {@link Job#getId()}
-     * @throws CleanJobDataDriverException if the cleanup produces an error
+     * @param scopeId
+     *         The {@link Job#getScopeId()}
+     * @param jobId
+     *         The {@link Job#getId()}
+     * @throws CleanJobDataDriverException
+     *         if the cleanup produces an error
      * @since 1.0.0
      */
     public void cleanJobData(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) throws CleanJobDataDriverException {
@@ -345,7 +369,8 @@ public class JbatchDriver {
             try {
                 jobExecutions.addAll(getJbatchJobExecutions(ji));
             } catch (NoSuchJobInstanceException nsjie) {
-                LOG.warn("Error while getting JobExecutions by JobInstance: {}. Exception: {}: {}. Continuing with other JobInstances", ji.getInstanceId(), nsjie.getClass().getSimpleName(), nsjie.getMessage());
+                LOG.warn("Error while getting JobExecutions by JobInstance: {}. Exception: {}: {}. Continuing with other JobInstances", ji.getInstanceId(), nsjie.getClass().getSimpleName(),
+                        nsjie.getMessage());
             } catch (NullPointerException npe) {
                 LOG.error("Unexpected NPE!", npe);
             }
@@ -358,7 +383,8 @@ public class JbatchDriver {
         try {
             return jobOperator.getJobExecutions(jobInstance);
         } catch (NoSuchJobInstanceException nsjie) {
-            LOG.warn("Error while getting JobExecutions by JobInstance: {}. Exception {}: {}. Ignoring exception...", jobInstance.getInstanceId(), nsjie.getClass().getSimpleName(), nsjie.getMessage());
+            LOG.warn("Error while getting JobExecutions by JobInstance: {}. Exception {}: {}. Ignoring exception...", jobInstance.getInstanceId(), nsjie.getClass().getSimpleName(),
+                    nsjie.getMessage());
             // This exception is thrown when there is no job instance, this means that the job never run before
             // So we can ignore it and return an empty `List<>`
         }

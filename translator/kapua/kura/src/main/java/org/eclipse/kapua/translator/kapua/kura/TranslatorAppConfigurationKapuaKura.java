@@ -13,6 +13,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import org.eclipse.kapua.commons.configuration.metatype.Password;
 import org.eclipse.kapua.commons.configuration.metatype.TadImpl;
 import org.eclipse.kapua.commons.configuration.metatype.TiconImpl;
@@ -37,12 +44,6 @@ import org.eclipse.kapua.service.device.management.configuration.message.interna
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * {@link org.eclipse.kapua.translator.Translator} implementation from {@link ConfigurationRequestMessage} to {@link KuraRequestMessage}
  *
@@ -52,6 +53,8 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
 
     @Inject
     protected DeviceConfigurationFactory deviceConfigurationFactory;
+    @Inject
+    private XmlUtil xmlUtil;
 
     @Override
     protected KuraRequestChannel translateChannel(ConfigurationRequestChannel kapuaChannel) throws InvalidChannelException {
@@ -94,7 +97,7 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
                 KuraDeviceConfiguration kuraDeviceConfiguration = translate(kapuaDeviceConfiguration);
                 byte[] body;
                 try {
-                    body = XmlUtil.marshal(kuraDeviceConfiguration).getBytes();
+                    body = xmlUtil.marshal(kuraDeviceConfiguration).getBytes();
                 } catch (Exception e) {
                     throw new InvalidPayloadException(e, kapuaPayload);
                 }

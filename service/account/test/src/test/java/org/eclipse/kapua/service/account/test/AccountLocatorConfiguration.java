@@ -33,10 +33,12 @@ import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.commons.service.internal.cache.CacheManagerProvider;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
+import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountRepository;
 import org.eclipse.kapua.service.account.AccountService;
@@ -127,7 +129,8 @@ public class AccountLocatorConfiguration {
                                 Mockito.mock(AccountRelativeFinder.class),
                                 new UsedEntitiesCounterImpl(
                                         accountFactory,
-                                        accountRepository)
+                                        accountRepository),
+                                new XmlUtil(new TestJAXBContextProvider())
                         ),
                         new EventStorerImpl(new EventStoreRecordImplJpaRepository(jpaRepoConfig)),
                         accountMapper));

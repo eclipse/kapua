@@ -12,20 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * Utility class to instantiate object through reflection
  *
  * @since 1.0
+ * @deprecated since 2.0.0 - Use wiring instead
  */
+@Deprecated
 public class ClassUtil {
 
     protected static final Logger logger = LoggerFactory.getLogger(ClassUtil.class);
@@ -53,8 +55,10 @@ public class ClassUtil {
      *
      * @param clazz
      * @param defaultInstance
-     * @param parameterTypes  constructor parameters type
-     * @param parameters      constructor parameters value
+     * @param parameterTypes
+     *         constructor parameters type
+     * @param parameters
+     *         constructor parameters value
      * @return
      * @throws KapuaException
      */
@@ -70,10 +74,9 @@ public class ClassUtil {
             } catch (ClassNotFoundException e) {
                 throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, String.format(CANNOT_LOAD_INSTANCE_ERROR_MSG, clazz, clazzToInstantiate));
             }
-        } else if (defaultInstance!=null) {
+        } else if (defaultInstance != null) {
             logger.info("Initializing instance of. Instantiate default instance {} ...", defaultInstance);
-        }
-        else {
+        } else {
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, String.format(CANNOT_LOAD_INSTANCE_ERROR_MSG, clazz, clazzToInstantiate));
         }
         if (parameterTypes == null || parameterTypes.length <= 0) {

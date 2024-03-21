@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.inventory.internal.message;
 
+import java.util.Optional;
+
+import javax.validation.constraints.NotNull;
+
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
@@ -24,9 +28,6 @@ import org.eclipse.kapua.service.device.management.inventory.model.packages.Devi
 import org.eclipse.kapua.service.device.management.inventory.model.system.DeviceInventorySystemPackages;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
-import javax.validation.constraints.NotNull;
-import java.util.Optional;
-
 /**
  * {@link DeviceInventory} {@link KapuaResponsePayload} implementation.
  *
@@ -37,12 +38,14 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
     private static final long serialVersionUID = 4380715272822080425L;
 
     private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private final XmlUtil xmlUtil = KapuaLocator.getInstance().getComponent(XmlUtil.class);
 
     /**
      * Gets the {@link DeviceInventory} from the {@link #getBody()}.
      *
      * @return The {@link DeviceInventory} from the {@link #getBody()}.
-     * @throws Exception if reading {@link #getBody()} errors.
+     * @throws Exception
+     *         if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
     public Optional<DeviceInventory> getDeviceInventory() throws Exception {
@@ -51,18 +54,20 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
         }
 
         String bodyString = new String(getBody(), charEncoding);
-        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceInventory.class));
+        return Optional.ofNullable(xmlUtil.unmarshal(bodyString, DeviceInventory.class));
     }
 
     /**
      * Sets the {@link DeviceInventory} in the {@link #getBody()}.
      *
-     * @param deviceInventory The {@link DeviceInventory} in the {@link #getBody()}.
-     * @throws Exception if writing errors.
+     * @param deviceInventory
+     *         The {@link DeviceInventory} in the {@link #getBody()}.
+     * @throws Exception
+     *         if writing errors.
      * @since 1.5.0
      */
     public void setDeviceInventory(@NotNull DeviceInventory deviceInventory) throws Exception {
-        String bodyString = XmlUtil.marshal(deviceInventory);
+        String bodyString = xmlUtil.marshal(deviceInventory);
         setBody(bodyString.getBytes(charEncoding));
     }
 
@@ -70,7 +75,8 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
      * Gets the {@link DeviceInventoryBundles} from the {@link #getBody()}.
      *
      * @return The {@link DeviceInventoryBundles} from the {@link #getBody()}.
-     * @throws Exception if reading {@link #getBody()} errors.
+     * @throws Exception
+     *         if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
     public Optional<DeviceInventoryBundles> getDeviceInventoryBundles() throws Exception {
@@ -79,18 +85,20 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
         }
 
         String bodyString = new String(getBody(), charEncoding);
-        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceInventoryBundles.class));
+        return Optional.ofNullable(xmlUtil.unmarshal(bodyString, DeviceInventoryBundles.class));
     }
 
     /**
      * Sets the {@link DeviceInventoryBundles} in the {@link #getBody()}.
      *
-     * @param inventoryBundles The {@link DeviceInventoryBundles} in the {@link #getBody()}.
-     * @throws Exception if writing errors.
+     * @param inventoryBundles
+     *         The {@link DeviceInventoryBundles} in the {@link #getBody()}.
+     * @throws Exception
+     *         if writing errors.
      * @since 1.5.0
      */
     public void setDeviceInventoryBundles(@NotNull DeviceInventoryBundles inventoryBundles) throws Exception {
-        String bodyString = XmlUtil.marshal(inventoryBundles);
+        String bodyString = xmlUtil.marshal(inventoryBundles);
         setBody(bodyString.getBytes(charEncoding));
     }
 
@@ -98,7 +106,8 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
      * Gets the {@link DeviceInventoryContainers} from the {@link #getBody()}.
      *
      * @return The {@link DeviceInventoryContainers} from the {@link #getBody()}.
-     * @throws Exception if reading {@link #getBody()} errors.
+     * @throws Exception
+     *         if reading {@link #getBody()} errors.
      * @since 2.0.0
      */
     public Optional<DeviceInventoryContainers> getDeviceInventoryContainers() throws Exception {
@@ -107,18 +116,20 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
         }
 
         String bodyString = new String(getBody(), charEncoding);
-        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceInventoryContainers.class));
+        return Optional.ofNullable(xmlUtil.unmarshal(bodyString, DeviceInventoryContainers.class));
     }
 
     /**
      * Sets the {@link DeviceInventoryContainers} in the {@link #getBody()}.
      *
-     * @param inventoryContainers The {@link DeviceInventoryContainers} in the {@link #getBody()}.
-     * @throws Exception if writing errors.
+     * @param inventoryContainers
+     *         The {@link DeviceInventoryContainers} in the {@link #getBody()}.
+     * @throws Exception
+     *         if writing errors.
      * @since 2.0.0
      */
     public void setDeviceInventoryContainers(@NotNull DeviceInventoryContainers inventoryContainers) throws Exception {
-        String bodyString = XmlUtil.marshal(inventoryContainers);
+        String bodyString = xmlUtil.marshal(inventoryContainers);
         setBody(bodyString.getBytes(charEncoding));
     }
 
@@ -126,7 +137,8 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
      * Gets the {@link DeviceInventorySystemPackages} from the {@link #getBody()}.
      *
      * @return The {@link DeviceInventorySystemPackages} from the {@link #getBody()}.
-     * @throws Exception if reading {@link #getBody()} errors.
+     * @throws Exception
+     *         if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
     public Optional<DeviceInventorySystemPackages> getDeviceInventorySystemPackages() throws Exception {
@@ -135,18 +147,20 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
         }
 
         String bodyString = new String(getBody(), charEncoding);
-        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceInventorySystemPackages.class));
+        return Optional.ofNullable(xmlUtil.unmarshal(bodyString, DeviceInventorySystemPackages.class));
     }
 
     /**
      * Sets the {@link DeviceInventorySystemPackages} in the {@link #getBody()}.
      *
-     * @param systemPackages The {@link DeviceInventorySystemPackages} in the {@link #getBody()}.
-     * @throws Exception if writing errors.
+     * @param systemPackages
+     *         The {@link DeviceInventorySystemPackages} in the {@link #getBody()}.
+     * @throws Exception
+     *         if writing errors.
      * @since 1.5.0
      */
     public void setDeviceInventorySystemPackages(@NotNull DeviceInventorySystemPackages systemPackages) throws Exception {
-        String bodyString = XmlUtil.marshal(systemPackages);
+        String bodyString = xmlUtil.marshal(systemPackages);
         setBody(bodyString.getBytes(charEncoding));
     }
 
@@ -154,7 +168,8 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
      * Gets the {@link DeviceInventoryPackages} from the {@link #getBody()}.
      *
      * @return The {@link DeviceInventoryPackages} from the {@link #getBody()}.
-     * @throws Exception if reading {@link #getBody()} errors.
+     * @throws Exception
+     *         if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
     public Optional<DeviceInventoryPackages> getDeviceInventoryPackages() throws Exception {
@@ -163,18 +178,20 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
         }
 
         String bodyString = new String(getBody(), charEncoding);
-        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceInventoryPackages.class));
+        return Optional.ofNullable(xmlUtil.unmarshal(bodyString, DeviceInventoryPackages.class));
     }
 
     /**
      * Sets the {@link DeviceInventoryPackages} in the {@link #getBody()}.
      *
-     * @param packages The {@link DeviceInventoryPackages} in the {@link #getBody()}.
-     * @throws Exception if writing errors.
+     * @param packages
+     *         The {@link DeviceInventoryPackages} in the {@link #getBody()}.
+     * @throws Exception
+     *         if writing errors.
      * @since 1.5.0
      */
     public void setDeviceInventoryPackages(@NotNull DeviceInventoryPackages packages) throws Exception {
-        String bodyString = XmlUtil.marshal(packages);
+        String bodyString = xmlUtil.marshal(packages);
         setBody(bodyString.getBytes(charEncoding));
     }
 }

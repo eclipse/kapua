@@ -12,8 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
-import com.google.inject.Provides;
-import com.google.inject.multibindings.ProvidesIntoSet;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
@@ -31,6 +37,7 @@ import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
 import org.eclipse.kapua.commons.util.qr.QRCodeBuilder;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
@@ -90,14 +97,11 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.storage.TxContext;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Map;
-import java.util.Optional;
+import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 
 public class AuthenticationModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
         bind(KapuaAuthenticationSetting.class).in(Singleton.class);
@@ -137,15 +141,15 @@ public class AuthenticationModule extends AbstractKapuaModule {
 
     @ProvidesIntoSet
     public ServiceModule authenticationServiceModule(AccessTokenService accessTokenService,
-                                                     CredentialService credentialService,
-                                                     AuthorizationService authorizationService,
-                                                     PermissionFactory permissionFactory,
-                                                     KapuaJpaTxManagerFactory txManagerFactory,
-                                                     EventStoreFactory eventStoreFactory,
-                                                     EventStoreRecordRepository eventStoreRecordRepository,
-                                                     ServiceEventBus serviceEventBus,
-                                                     KapuaAuthenticationSetting kapuaAuthenticationSetting,
-                                                     @Named("eventsModuleName") String eventModuleName
+            CredentialService credentialService,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            KapuaJpaTxManagerFactory txManagerFactory,
+            EventStoreFactory eventStoreFactory,
+            EventStoreRecordRepository eventStoreRecordRepository,
+            ServiceEventBus serviceEventBus,
+            KapuaAuthenticationSetting kapuaAuthenticationSetting,
+            @Named("eventsModuleName") String eventModuleName
     ) throws ServiceEventBusException {
         return new AuthenticationServiceModule(
                 credentialService,
@@ -186,7 +190,6 @@ public class AuthenticationModule extends AbstractKapuaModule {
         return new AccessTokenCredentialsHandler();
     }
 
-
     @Provides
     @Singleton
     PasswordValidator passwordValidator(CredentialServiceConfigurationManager credentialServiceConfigurationManager) {
@@ -196,7 +199,7 @@ public class AuthenticationModule extends AbstractKapuaModule {
     @Provides
     @Singleton
     CredentialMapper credentialMapper(CredentialFactory credentialFactory, KapuaAuthenticationSetting kapuaAuthenticationSetting,
-                                      AuthenticationUtils authenticationUtils) {
+            AuthenticationUtils authenticationUtils) {
         return new CredentialMapperImpl(credentialFactory, kapuaAuthenticationSetting, authenticationUtils);
     }
 
@@ -317,17 +320,20 @@ public class AuthenticationModule extends AbstractKapuaModule {
             RootUserTester rootUserTester,
             KapuaJpaRepositoryConfiguration jpaRepoConfig,
             KapuaAuthenticationSetting kapuaAuthenticationSetting,
-            EntityCacheFactory entityCacheFactory) {
+            EntityCacheFactory entityCacheFactory,
+            XmlUtil xmlUtil) {
         final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
                 new CachingServiceConfigRepository(
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         entityCacheFactory.createCache("AbstractKapuaConfigurableServiceCacheId")
                 ),
                 rootUserTester,
-                kapuaAuthenticationSetting);
+                kapuaAuthenticationSetting,
+                xmlUtil);
 
         final ServiceConfigurationManagerCachingWrapper cached = new ServiceConfigurationManagerCachingWrapper(credentialServiceConfigurationManager);
         return new CredentialServiceConfigurationManager() {
+
             @Override
             public int getSystemMinimumPasswordLength() {
                 return credentialServiceConfigurationManager.getSystemMinimumPasswordLength();

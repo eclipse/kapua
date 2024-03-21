@@ -12,6 +12,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.client;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status.Family;
+import javax.xml.bind.JAXBException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
@@ -55,22 +72,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status.Family;
-import javax.xml.bind.JAXBException;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 /**
  * {@link JobEngineService} remote client implementation.
  *
@@ -82,6 +83,7 @@ public class JobEngineServiceClient implements JobEngineService {
     private static final Logger LOG = LoggerFactory.getLogger(JobEngineServiceClient.class);
 
     private final WebTarget jobEngineTarget;
+    private final XmlUtil xmlUtil;
 
     /**
      * Constructor.
@@ -89,7 +91,8 @@ public class JobEngineServiceClient implements JobEngineService {
      * @since 1.5.0
      */
     @Inject
-    public JobEngineServiceClient(JobEngineClientSetting jobEngineClientSetting) {
+    public JobEngineServiceClient(JobEngineClientSetting jobEngineClientSetting, XmlUtil xmlUtil) {
+        this.xmlUtil = xmlUtil;
         Client jobEngineClient =
                 ClientBuilder
                         .newClient()
@@ -117,7 +120,7 @@ public class JobEngineServiceClient implements JobEngineService {
     public void startJob(KapuaId scopeId, KapuaId jobId, JobStartOptions jobStartOptions) throws KapuaException {
         try {
             String path = String.format("start-with-options/%s/%s", scopeId.toCompactId(), jobId.toCompactId());
-            String jobStartOptionsJson = XmlUtil.marshalJson(jobStartOptions);
+            String jobStartOptionsJson = xmlUtil.marshalJson(jobStartOptions);
             LOG.debug("POST {} - Content: {}", path, jobStartOptionsJson);
 
             Response response = getPreparedRequest(path).post(Entity.json(jobStartOptionsJson));
@@ -138,7 +141,7 @@ public class JobEngineServiceClient implements JobEngineService {
 
             String responseText = checkResponse("GET", path, response);
 
-            IsJobRunningResponse isRunningJobResponse = XmlUtil.unmarshalJson(responseText, IsJobRunningResponse.class);
+            IsJobRunningResponse isRunningJobResponse = xmlUtil.unmarshalJson(responseText, IsJobRunningResponse.class);
             return isRunningJobResponse.isRunning();
         } catch (ClientErrorException | JAXBException | SAXException e) {
             throw KapuaException.internalError(e);
@@ -150,7 +153,7 @@ public class JobEngineServiceClient implements JobEngineService {
         try {
             MultipleJobIdRequest multipleJobIdRequest = new MultipleJobIdRequest();
             multipleJobIdRequest.setJobIds(jobIds);
-            String requestBody = XmlUtil.marshalJson(multipleJobIdRequest);
+            String requestBody = xmlUtil.marshalJson(multipleJobIdRequest);
 
             String path = String.format("is-running/%s", scopeId.toCompactId());
             LOG.debug("POST {} - Content {}", path, requestBody);
@@ -159,7 +162,7 @@ public class JobEngineServiceClient implements JobEngineService {
 
             String responseText = checkResponse("POST", path, response);
 
-            IsJobRunningMultipleResponse isJobRunningMultipleResponse = XmlUtil.unmarshalJson(responseText, IsJobRunningMultipleResponse.class);
+            IsJobRunningMultipleResponse isJobRunningMultipleResponse = xmlUtil.unmarshalJson(responseText, IsJobRunningMultipleResponse.class);
 
             return isJobRunningMultipleResponse.getList()
                     .stream()
@@ -227,11 +230,11 @@ public class JobEngineServiceClient implements JobEngineService {
     // Private methods
 
     /**
-     * Prepares the request from the {@link WebTarget} with
-     * {@link WebTarget#request(MediaType...)} set to {@link MediaType#APPLICATION_JSON_TYPE} and
-     * {@link Invocation.Builder#accept(MediaType...)} set to {@link MediaType#APPLICATION_JSON_TYPE}.
+     * Prepares the request from the {@link WebTarget} with {@link WebTarget#request(MediaType...)} set to {@link MediaType#APPLICATION_JSON_TYPE} and {@link Invocation.Builder#accept(MediaType...)}
+     * set to {@link MediaType#APPLICATION_JSON_TYPE}.
      *
-     * @param path The path of the request.
+     * @param path
+     *         The path of the request.
      * @return The {@link Invocation.Builder}.
      * @since 2.0.0
      */
@@ -244,11 +247,15 @@ public class JobEngineServiceClient implements JobEngineService {
     /**
      * Checks the {@link Response} for errors.
      *
-     * @param method   The request method. Used for logging purposes.
-     * @param path     The request path. Used for logging purposes.
-     * @param response The {@link Response} to check.
+     * @param method
+     *         The request method. Used for logging purposes.
+     * @param path
+     *         The request path. Used for logging purposes.
+     * @param response
+     *         The {@link Response} to check.
      * @return The body of the request in {@link String} format.
-     * @throws KapuaException The proper {@link KapuaException} if needed.
+     * @throws KapuaException
+     *         The proper {@link KapuaException} if needed.
      * @since 2.0.0
      */
     private String checkResponse(String method, String path, Response response) throws KapuaException {
@@ -267,7 +274,8 @@ public class JobEngineServiceClient implements JobEngineService {
     /**
      * Parses the {@link Response} content to rebuld the original {@link JobEngineException}
      *
-     * @param responseText The {@link Response} content.
+     * @param responseText
+     *         The {@link Response} content.
      * @return The correct KapuaException.
      * @since 1.5.0
      */
@@ -277,10 +285,11 @@ public class JobEngineServiceClient implements JobEngineService {
                 throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, "JobEngine returned an error but no message was given");
             }
 
-            ExceptionInfo exceptionInfo = XmlUtil.unmarshalJson(responseText, ExceptionInfo.class);
+            ExceptionInfo exceptionInfo = xmlUtil.unmarshalJson(responseText, ExceptionInfo.class);
 
             if (exceptionInfo == null) {
-                throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, "Job Engine returned an not-empty response but it was not deserializable as an ExceptionInfo. Content returned: " + responseText);
+                throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR,
+                        "Job Engine returned an not-empty response but it was not deserializable as an ExceptionInfo. Content returned: " + responseText);
             }
 
             if (exceptionInfo.getKapuaErrorCode() == null) {
@@ -288,45 +297,45 @@ public class JobEngineServiceClient implements JobEngineService {
             }
 
             switch (exceptionInfo.getKapuaErrorCode()) {
-                case "ENTITY_NOT_FOUND":
-                    EntityNotFoundExceptionInfo entityNotFoundExceptionInfo = XmlUtil.unmarshalJson(responseText, EntityNotFoundExceptionInfo.class);
-                    return new KapuaEntityNotFoundException(entityNotFoundExceptionInfo.getEntityType(), entityNotFoundExceptionInfo.getEntityId());
-                case "CANNOT_CLEANUP_JOB_DATA":
-                case "CANNOT_CLEANUP_JOB_DATA_WITH_CAUSE":
-                    CleanJobDataExceptionInfo cleanJobDataExceptionInfo = XmlUtil.unmarshalJson(responseText, CleanJobDataExceptionInfo.class);
-                    return new CleanJobDataException(cleanJobDataExceptionInfo.getScopeId(), cleanJobDataExceptionInfo.getJobId());
-                case "JOB_ALREADY_RUNNING":
-                    JobAlreadyRunningExceptionInfo jobAlreadyRunningExceptionInfo = XmlUtil.unmarshalJson(responseText, JobAlreadyRunningExceptionInfo.class);
-                    return new JobAlreadyRunningException(jobAlreadyRunningExceptionInfo.getScopeId(),
-                            jobAlreadyRunningExceptionInfo.getJobId(),
-                            jobAlreadyRunningExceptionInfo.getExecutionId(),
-                            jobAlreadyRunningExceptionInfo.getJobTargetIdSubset());
-                case "JOB_TARGET_INVALID":
-                    JobInvalidTargetExceptionInfo jobInvalidTargetExceptionInfo = XmlUtil.unmarshalJson(responseText, JobInvalidTargetExceptionInfo.class);
-                    return new JobInvalidTargetException(jobInvalidTargetExceptionInfo.getScopeId(), jobInvalidTargetExceptionInfo.getJobId(), jobInvalidTargetExceptionInfo.getJobTargetIdSubset());
-                case "JOB_STEP_MISSING":
-                    JobMissingStepExceptionInfo jobMissingStepExceptionInfo = XmlUtil.unmarshalJson(responseText, JobMissingStepExceptionInfo.class);
-                    return new JobMissingStepException(jobMissingStepExceptionInfo.getScopeId(), jobMissingStepExceptionInfo.getJobId());
-                case "JOB_TARGET_MISSING":
-                    JobMissingTargetExceptionInfo jobMissingTargetExceptionInfo = XmlUtil.unmarshalJson(responseText, JobMissingTargetExceptionInfo.class);
-                    return new JobMissingTargetException(jobMissingTargetExceptionInfo.getScopeId(), jobMissingTargetExceptionInfo.getJobId());
-                case "JOB_NOT_RUNNING":
-                    JobNotRunningExceptionInfo jobNotRunningExceptionInfo = XmlUtil.unmarshalJson(responseText, JobNotRunningExceptionInfo.class);
-                    return new JobNotRunningException(jobNotRunningExceptionInfo.getScopeId(), jobNotRunningExceptionInfo.getJobId());
-                case "JOB_RESUMING":
-                    JobResumingExceptionInfo jobResumingExceptionInfo = XmlUtil.unmarshalJson(responseText, JobResumingExceptionInfo.class);
-                    return new JobResumingException(jobResumingExceptionInfo.getScopeId(), jobResumingExceptionInfo.getJobId(), jobResumingExceptionInfo.getExecutionId());
-                case "JOB_RUNNING":
-                    JobRunningExceptionInfo jobRunningExceptionInfo = XmlUtil.unmarshalJson(responseText, JobRunningExceptionInfo.class);
-                    return new JobRunningException(jobRunningExceptionInfo.getScopeId(), jobRunningExceptionInfo.getJobId());
-                case "JOB_STARTING":
-                    JobStartingExceptionInfo jobStartingExceptionInfo = XmlUtil.unmarshalJson(responseText, JobStartingExceptionInfo.class);
-                    return new JobStartingException(jobStartingExceptionInfo.getScopeId(), jobStartingExceptionInfo.getJobId());
-                case "JOB_STOPPING":
-                    JobStoppingExceptionInfo jobStoppingExceptionInfo = XmlUtil.unmarshalJson(responseText, JobStoppingExceptionInfo.class);
-                    return new JobStoppingException(jobStoppingExceptionInfo.getScopeId(), jobStoppingExceptionInfo.getJobId(), jobStoppingExceptionInfo.getExecutionId());
-                default:
-                    return KapuaException.internalError(exceptionInfo.getMessage());
+            case "ENTITY_NOT_FOUND":
+                EntityNotFoundExceptionInfo entityNotFoundExceptionInfo = xmlUtil.unmarshalJson(responseText, EntityNotFoundExceptionInfo.class);
+                return new KapuaEntityNotFoundException(entityNotFoundExceptionInfo.getEntityType(), entityNotFoundExceptionInfo.getEntityId());
+            case "CANNOT_CLEANUP_JOB_DATA":
+            case "CANNOT_CLEANUP_JOB_DATA_WITH_CAUSE":
+                CleanJobDataExceptionInfo cleanJobDataExceptionInfo = xmlUtil.unmarshalJson(responseText, CleanJobDataExceptionInfo.class);
+                return new CleanJobDataException(cleanJobDataExceptionInfo.getScopeId(), cleanJobDataExceptionInfo.getJobId());
+            case "JOB_ALREADY_RUNNING":
+                JobAlreadyRunningExceptionInfo jobAlreadyRunningExceptionInfo = xmlUtil.unmarshalJson(responseText, JobAlreadyRunningExceptionInfo.class);
+                return new JobAlreadyRunningException(jobAlreadyRunningExceptionInfo.getScopeId(),
+                        jobAlreadyRunningExceptionInfo.getJobId(),
+                        jobAlreadyRunningExceptionInfo.getExecutionId(),
+                        jobAlreadyRunningExceptionInfo.getJobTargetIdSubset());
+            case "JOB_TARGET_INVALID":
+                JobInvalidTargetExceptionInfo jobInvalidTargetExceptionInfo = xmlUtil.unmarshalJson(responseText, JobInvalidTargetExceptionInfo.class);
+                return new JobInvalidTargetException(jobInvalidTargetExceptionInfo.getScopeId(), jobInvalidTargetExceptionInfo.getJobId(), jobInvalidTargetExceptionInfo.getJobTargetIdSubset());
+            case "JOB_STEP_MISSING":
+                JobMissingStepExceptionInfo jobMissingStepExceptionInfo = xmlUtil.unmarshalJson(responseText, JobMissingStepExceptionInfo.class);
+                return new JobMissingStepException(jobMissingStepExceptionInfo.getScopeId(), jobMissingStepExceptionInfo.getJobId());
+            case "JOB_TARGET_MISSING":
+                JobMissingTargetExceptionInfo jobMissingTargetExceptionInfo = xmlUtil.unmarshalJson(responseText, JobMissingTargetExceptionInfo.class);
+                return new JobMissingTargetException(jobMissingTargetExceptionInfo.getScopeId(), jobMissingTargetExceptionInfo.getJobId());
+            case "JOB_NOT_RUNNING":
+                JobNotRunningExceptionInfo jobNotRunningExceptionInfo = xmlUtil.unmarshalJson(responseText, JobNotRunningExceptionInfo.class);
+                return new JobNotRunningException(jobNotRunningExceptionInfo.getScopeId(), jobNotRunningExceptionInfo.getJobId());
+            case "JOB_RESUMING":
+                JobResumingExceptionInfo jobResumingExceptionInfo = xmlUtil.unmarshalJson(responseText, JobResumingExceptionInfo.class);
+                return new JobResumingException(jobResumingExceptionInfo.getScopeId(), jobResumingExceptionInfo.getJobId(), jobResumingExceptionInfo.getExecutionId());
+            case "JOB_RUNNING":
+                JobRunningExceptionInfo jobRunningExceptionInfo = xmlUtil.unmarshalJson(responseText, JobRunningExceptionInfo.class);
+                return new JobRunningException(jobRunningExceptionInfo.getScopeId(), jobRunningExceptionInfo.getJobId());
+            case "JOB_STARTING":
+                JobStartingExceptionInfo jobStartingExceptionInfo = xmlUtil.unmarshalJson(responseText, JobStartingExceptionInfo.class);
+                return new JobStartingException(jobStartingExceptionInfo.getScopeId(), jobStartingExceptionInfo.getJobId());
+            case "JOB_STOPPING":
+                JobStoppingExceptionInfo jobStoppingExceptionInfo = xmlUtil.unmarshalJson(responseText, JobStoppingExceptionInfo.class);
+                return new JobStoppingException(jobStoppingExceptionInfo.getScopeId(), jobStoppingExceptionInfo.getJobId(), jobStoppingExceptionInfo.getExecutionId());
+            default:
+                return KapuaException.internalError(exceptionInfo.getMessage());
             }
         } catch (JAXBException | SAXException e) {
             return KapuaException.internalError(e);

@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.message.internal;
 
+import java.util.Optional;
+
+import javax.validation.constraints.NotNull;
+
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
@@ -19,9 +23,6 @@ import org.eclipse.kapua.service.device.management.commons.message.response.Kapu
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
-
-import javax.validation.constraints.NotNull;
-import java.util.Optional;
 
 /**
  * {@link DeviceAssets} {@link KapuaResponsePayload} implementation.
@@ -33,12 +34,14 @@ public class AssetResponsePayload extends KapuaResponsePayloadImpl implements Ka
     private static final long serialVersionUID = -9087980446970521618L;
 
     private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private final XmlUtil xmlUtil = KapuaLocator.getInstance().getComponent(XmlUtil.class);
 
     /**
      * Gets the {@link DeviceAssets} from the {@link #getBody()}.
      *
      * @return The {@link DeviceAssets} from the {@link #getBody()}.
-     * @throws Exception if reading {@link #getBody()} errors.
+     * @throws Exception
+     *         if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
     public Optional<DeviceAssets> getDeviceAssets() throws Exception {
@@ -47,18 +50,20 @@ public class AssetResponsePayload extends KapuaResponsePayloadImpl implements Ka
         }
 
         String bodyString = new String(getBody(), charEncoding);
-        return Optional.of(XmlUtil.unmarshal(bodyString, DeviceAssets.class));
+        return Optional.of(xmlUtil.unmarshal(bodyString, DeviceAssets.class));
     }
 
     /**
      * Sets the {@link DeviceAssets} in the {@link #getBody()}.
      *
-     * @param deviceAssets The {@link DeviceAssets} in the {@link #getBody()}.
-     * @throws Exception if writing errors.
+     * @param deviceAssets
+     *         The {@link DeviceAssets} in the {@link #getBody()}.
+     * @throws Exception
+     *         if writing errors.
      * @since 1.5.0
      */
     public void setDeviceAssets(@NotNull DeviceAssets deviceAssets) throws Exception {
-        String bodyString = XmlUtil.marshal(deviceAssets);
+        String bodyString = xmlUtil.marshal(deviceAssets);
         setBody(bodyString.getBytes(charEncoding));
     }
 

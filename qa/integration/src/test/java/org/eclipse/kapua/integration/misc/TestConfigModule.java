@@ -12,14 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.misc;
 
-import com.google.inject.Provides;
-import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-
 import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
+
+import com.google.inject.Provides;
 
 public class TestConfigModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
+        bind(JAXBContextProvider.class).to(TestJAXBContextProvider.class).in(Singleton.class);
 
     }
 

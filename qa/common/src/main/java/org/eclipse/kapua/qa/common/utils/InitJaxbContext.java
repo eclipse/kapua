@@ -13,8 +13,6 @@
 package org.eclipse.kapua.qa.common.utils;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +20,7 @@ import io.cucumber.guice.ScenarioScoped;
 import io.cucumber.java.en.Given;
 
 @ScenarioScoped
+//TODO: REMOVE ME
 public class InitJaxbContext {
 
     private static final Logger logger = LoggerFactory.getLogger(InitJaxbContext.class);
@@ -29,7 +28,7 @@ public class InitJaxbContext {
     @Given("^Init Jaxb Context$")
     public void initJAXBContext() throws KapuaException {
         logger.info("Initializing Test JAXB context...");
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
+        //        XmlUtil.setContextProvider(new TestJAXBContextProvider());
         logger.info("Initializing Test JAXB context... DONE");
     }
 }
