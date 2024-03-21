@@ -17,8 +17,7 @@ Feature: Account User Service Integration Tests
 
   @setup
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Creating Users Under Account That Allows Infinite Child Users
   Login as kapua-sys, create an account

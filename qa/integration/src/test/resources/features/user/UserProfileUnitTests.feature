@@ -18,8 +18,7 @@ Feature: User Credential
 
   @setup
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Change User Profile correctly
   Create a user, login with it, change the user profile and then check if the operation is performed correctly.

@@ -16,10 +16,9 @@
 
 Feature: Access Info Service CRUD tests
 
-@setup
-Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+  @setup
+  Scenario: Initialize test environment
+    Given Init Security Context
 
   Scenario: Simple create
   Create a simple access info entry. Only a user is supplied. The entry must
@@ -28,16 +27,16 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 1
     When I configure the user service for the account with the id 1
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     When I configure the role service for the account with the id 42
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     When I create the access info entity
     Then No exception was thrown
     And An access info entity was created
@@ -51,15 +50,15 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 1
     When I configure the user service for the account with the id 1
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name | actions             |
+      | test | read,write, execute |
     And The permissions "read, write, execute"
     When I create the access info entity
     Then No exception was thrown
@@ -76,15 +75,15 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 1
     When I configure the user service for the account with the id 1
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name | actions             |
+      | test | read,write, execute |
     And The permissions "read, write, execute"
     And The role "test_role_1"
     When I create the access info entity
@@ -104,15 +103,15 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 1
     When I configure the user service for the account with the id 1
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name | actions             |
+      | test | read,write, execute |
     And The permissions "read, write, execute"
     And An invalid role ID
     Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type role with id/name "
@@ -127,9 +126,9 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 1
     When I configure the user service for the account with the id 1
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
@@ -147,9 +146,9 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 1
     When I configure the user service for the account with the id 1
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
@@ -166,9 +165,9 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 1
     When I configure the user service for the account with the id 1
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
@@ -187,9 +186,9 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 1
     When I configure the user service for the account with the id 1
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
@@ -207,15 +206,15 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 1
     When I configure the user service for the account with the id 1
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name | actions             |
+      | test | read,write, execute |
     And The permissions "read, write, execute"
     And The role "test_role_1"
     And I create the access info entity
@@ -235,9 +234,9 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 1
     When I configure the user service for the account with the id 1
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
@@ -255,9 +254,9 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 1
     When I configure the user service for the account with the id 1
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
@@ -275,9 +274,9 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 10
     When I configure the user service for the account with the id 10
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
@@ -286,16 +285,16 @@ Scenario: Initialize test environment
     Then I create the access info entity
     Given Scope with ID 20
     When I configure the user service for the account with the id 20
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     Then I create the access info entity
     Then I create the access info entity
     Given Scope with ID 30
     When I configure the user service for the account with the id 30
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     Then I create the access info entity
     When I count the access info entities for scope 10
     Then I count 3
@@ -314,9 +313,9 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 1
     When I configure the user service for the account with the id 1
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
@@ -343,9 +342,9 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 1
     When I configure the user service for the account with the id 1
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
@@ -360,13 +359,13 @@ Scenario: Initialize test environment
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name | actions             |
+      | test | read,write, execute |
     Given Scope with ID 10
     When I configure the user service for the account with the id 10
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
@@ -375,9 +374,9 @@ Scenario: Initialize test environment
     And I create the permissions
     Given Scope with ID 20
     When I configure the user service for the account with the id 20
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u2 | Kapua User 2 | kapua_u2@kapua.com | +386 31 323 555 |
@@ -396,15 +395,15 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 10
     When I configure the user service for the account with the id 10
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name | actions             |
+      | test | read,write, execute |
     When I create the access info entity
     And The permissions "read, write, execute"
     And I create the permissions
@@ -418,15 +417,15 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 10
     When I configure the user service for the account with the id 10
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name | actions             |
+      | test | read,write, execute |
     When I create the access info entity
     And The permissions "read, write, execute"
     And I create the permissions
@@ -444,15 +443,15 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 10
     When I configure the user service for the account with the id 10
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name | actions             |
+      | test | read,write, execute |
     When I create the access info entity
     And The permission "read"
     And I create the permission
@@ -470,15 +469,15 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 10
     When I configure the user service for the account with the id 10
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name | actions             |
+      | test | read,write, execute |
     When I create the access info entity
     Then No exception was thrown
     Given The permissions "read, write, execute"
@@ -495,15 +494,15 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 10
     When I configure the user service for the account with the id 10
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name | actions             |
+      | test | read,write, execute |
     When I create the access info entity
     And The permissions "read, write, execute"
     And The role "test_role_1"
@@ -518,15 +517,15 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 10
     When I configure the user service for the account with the id 10
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name | actions             |
+      | test | read,write, execute |
     When I create the access info entity
     And The permissions "read, write, execute"
     And The role "test_role_1"
@@ -541,15 +540,15 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 10
     When I configure the user service for the account with the id 10
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name | actions             |
+      | test | read,write, execute |
     When I create the access info entity
     And The permissions "read, write, execute"
     And The role "test_role_1"
@@ -566,12 +565,12 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 10
     When I configure the user service for the account with the id 10
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name | actions             |
+      | test | read,write, execute |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
@@ -586,9 +585,9 @@ Scenario: Initialize test environment
 
     Given Scope with ID 20
     When I configure the user service for the account with the id 20
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u2 | Kapua User 2 | kapua_u2@kapua.com | +386 31 323 555 |
@@ -601,9 +600,9 @@ Scenario: Initialize test environment
 
     Given Scope with ID 30
     When I configure the user service for the account with the id 30
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u3 | Kapua User 3 | kapua_u3@kapua.com | +386 31 323 555 |
@@ -628,12 +627,12 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 10
     When I configure the user service for the account with the id 10
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name | actions             |
+      | test | read,write, execute |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
@@ -661,16 +660,16 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 10
     When I configure the user service for the account with the id 10
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     When I configure the role service for the account with the id 10
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name | actions             |
+      | test | read,write, execute |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
@@ -690,21 +689,21 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 10
     When I configure the user service for the account with the id 10
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I create the domain
-      | name        | actions             |
-      | test        | read,write, execute |
+      | name | actions             |
+      | test | read,write, execute |
     And I have the following user
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And The permissions "read, write, execute"
     Given Scope with ID 20
     When I configure the role service for the account with the id 20
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And The role "test_role_1"
     Given Scope with ID 10
     Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type role with id/name "
@@ -725,6 +724,6 @@ Scenario: Initialize test environment
     Then I can compare access role objects
     Then I can compare access permission objects
 
-@teardown
-Scenario: Reset Security Context for all scenarios
-  Given Reset Security Context
+  @teardown
+  Scenario: Reset Security Context for all scenarios
+    Given Reset Security Context

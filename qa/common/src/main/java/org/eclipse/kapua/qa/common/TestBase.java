@@ -12,14 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common;
 
-import io.cucumber.java.Scenario;
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.util.RandomUtils;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.account.Account;
-import org.junit.Assert;
-
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -29,6 +21,15 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.Callable;
+
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.util.RandomUtils;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.account.Account;
+import org.junit.Assert;
+
+import io.cucumber.java.Scenario;
 
 public class TestBase {
 
@@ -112,10 +113,11 @@ public class TestBase {
     }
 
     /**
-     * Check the exception that was caught. In case the exception was expected the type and message is shown in the cucumber logs.
-     * Otherwise the exception is rethrown failing the test and dumping the stack trace to help resolving problems.
+     * Check the exception that was caught. In case the exception was expected the type and message is shown in the cucumber logs. Otherwise the exception is rethrown failing the test and dumping the
+     * stack trace to help resolving problems.
      *
-     * @param ex
+     * +     * @param ex
+     *
      * @throws Exception
      */
     public void verifyException(Exception ex) throws Exception {
@@ -152,7 +154,6 @@ public class TestBase {
         stepData.put("AssertError", assetError);
     }
 
-
     public Date parseDateString(String date) {
         DateFormat df = new SimpleDateFormat("dd/mm/yyyy");
         Date expDate = null;
@@ -163,17 +164,17 @@ public class TestBase {
         }
         // Special keywords for date
         switch (date.trim().toLowerCase()) {
-            case "yesterday":
-                expDate = Date.from(now.minus(Duration.ofDays(1)));
-                break;
-            case "today":
-                expDate = Date.from(now);
-                break;
-            case "tomorrow":
-                expDate = Date.from(now.plus(Duration.ofDays(1)));
-                break;
-            case "null":
-                break;
+        case "yesterday":
+            expDate = Date.from(now.minus(Duration.ofDays(1)));
+            break;
+        case "today":
+            expDate = Date.from(now);
+            break;
+        case "tomorrow":
+            expDate = Date.from(now.plus(Duration.ofDays(1)));
+            break;
+        case "null":
+            break;
         }
 
         // Not one of the special cases. Just parse the date.

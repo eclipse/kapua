@@ -17,17 +17,16 @@
 Feature: Device Broker connection ip with config file
   Device Service integration scenarios with running broker service.
 
-@setup
+  @setup
   Scenario: Start full docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And System property "broker.host" with value "null"
     And Start full docker environment
 
   Scenario: Send BIRTH message and then DC message while broker ip is set by config file
-    Effectively this is connect and disconnect of Kura device.
-    Basic birth - death scenario. Scenario includes check that broker server ip
-    is correctly set with config file.
+  Effectively this is connect and disconnect of Kura device.
+  Basic birth - death scenario. Scenario includes check that broker server ip
+  is correctly set with config file.
 
     When I start the Kura Mock
     And Device birth message is sent
@@ -37,6 +36,6 @@ Feature: Device Broker connection ip with config file
     And I logout
     And Device death message is sent
 
-@teardown
+  @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment

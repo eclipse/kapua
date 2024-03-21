@@ -18,11 +18,10 @@ Feature: Scheduler Service
   Scenario: Create scheduler with valid schedule name
   Creating scheduler with valid schedule name property.
 
-@setup
-@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+  @setup
+  @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Create scheduler with valid schedule name
   Creating scheduler with valid schedule name property.
@@ -238,6 +237,6 @@ Feature: Scheduler Service
     And I try to delete last created trigger
     Then An exception was thrown
 
-@teardown
+  @teardown
   Scenario: Reset Security Context for all scenarios
     Given Reset Security Context

@@ -12,18 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.extras.migrator.encryption.job;
 
-import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.job.step.JobStep;
-import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.step.JobStep;
+import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
 /**
  * {@link JobStep} implementation.
@@ -49,7 +50,8 @@ public class JobStepMigrator extends AbstractKapuaNamedEntity implements JobStep
     /**
      * Clone constructor.
      *
-     * @param jobStep The {@link JobStep} to clone.
+     * @param jobStep
+     *         The {@link JobStep} to clone.
      * @since 2.0.0
      */
     public JobStepMigrator(JobStep jobStep) {

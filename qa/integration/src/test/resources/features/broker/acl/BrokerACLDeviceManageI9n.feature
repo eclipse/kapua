@@ -44,10 +44,9 @@ Feature: Broker ACL tests
   ACL_DATA_ACC_CLI = {0}.{1}.>
   ACL_CTRL_ACC_NOTIFY = $EDC.{0}.*.*.NOTIFY.{1}.>
 
-@setup
+  @setup
   Scenario: Start full docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start full docker environment
 
 #
@@ -201,6 +200,6 @@ Feature: Broker ACL tests
     And clients are disconnected
     And Mqtt Device is stoped
 
-@teardown
+  @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment

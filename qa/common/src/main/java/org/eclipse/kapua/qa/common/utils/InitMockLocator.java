@@ -13,22 +13,26 @@
 package org.eclipse.kapua.qa.common.utils;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.cucumber.guice.ScenarioScoped;
 import io.cucumber.java.en.Given;
 
+/**
+ * This is pretty much a noop class, useful only as a basic step to initialize test scenarios configuring the locator (e.g.: annotating the scenario with
+ * [at]KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator") in order to use the mocked locator instead of the full one
+ */
 @ScenarioScoped
-//TODO: REMOVE ME
-public class InitJaxbContext {
+public class InitMockLocator {
 
-    private static final Logger logger = LoggerFactory.getLogger(InitJaxbContext.class);
+    private static final Logger logger = LoggerFactory.getLogger(InitMockLocator.class);
 
-    @Given("^Init Jaxb Context$")
+    @Given("^Init Mock Locator$")
     public void initJAXBContext() throws KapuaException {
-        logger.info("Initializing Test JAXB context...");
-        //        XmlUtil.setContextProvider(new TestJAXBContextProvider());
-        logger.info("Initializing Test JAXB context... DONE");
+        logger.info("Initializing Mock locator...");
+        KapuaLocator.getInstance();
+        logger.info("Initializing Mock Locator... DONE");
     }
 }

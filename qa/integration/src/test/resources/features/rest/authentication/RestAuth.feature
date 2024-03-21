@@ -18,8 +18,7 @@ Feature: REST API tests for User
 
   @setup
   Scenario: Initialize Jaxb and security context, then start rest-api container and dependencies
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     #NB: be aware that sub-sequent tests depends on the value of TTL that you set here
     And start rest-API container and dependencies with auth token TTL "3000"ms and refresh token TTL "2000"ms and cors endpoint refresh interval 60s
 
@@ -46,7 +45,7 @@ Feature: REST API tests for User
     Then REST response contains list of Users
 
   Scenario: Refresh token, then try to call another api endpoint with the previous "refreshed", now invalidated, token
-    The call should fail because you are using an invalidated token for auth. when calling the "get user" api
+  The call should fail because you are using an invalidated token for auth. when calling the "get user" api
 
     Given Server with host "127.0.0.1" on port "8081"
     Given An authenticated user

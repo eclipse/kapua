@@ -19,8 +19,7 @@ Feature: Account Service Tests
 
   @setup
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Creating A Valid Account
   Login as kapua-sys, create an account with all valid fields
