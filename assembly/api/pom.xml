@@ -293,7 +293,17 @@
                         <configuration>
                             <executable>awk</executable>
                             <arguments>
-                                <argument>{ gsub(/version: .*/, "version: ${commons.version}-${commons.build.number}"); print }</argument>
+                                <argument>
+                                    <![CDATA[
+                                        {
+                                            if (!subbed && /version:/) {
+                                                gsub(/version: .*/, "version: ${commons.version}-${commons.build.number}")
+                                                subbed = 1
+                                            }
+                                            print
+                                        }
+                                    ]]>
+                                </argument>
                                 <argument>${project.build.directory}/tmp/openapi.yaml</argument>
                             </arguments>
                             <outputFile>${project.build.directory}/tmp/openapi.yaml.tmp</outputFile>
