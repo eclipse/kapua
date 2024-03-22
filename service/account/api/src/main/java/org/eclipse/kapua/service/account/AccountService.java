@@ -12,15 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account;
 
+import javax.validation.constraints.NotNull;
+
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaNamedEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * {@link Account} {@link KapuaEntityService}.
@@ -33,9 +34,28 @@ public interface AccountService extends KapuaEntityService<Account, AccountCreat
         KapuaConfigurableService {
 
     /**
+     * Updates the given {@link KapuaUpdatableEntity}.
+     *
+     * @return The updated {@link KapuaUpdatableEntity}.
+     * @throws KapuaException
+     * @since 1.0.0
+     */
+    Account updateCurrentAccount(@NotNull CurrentAccountUpdateRequest request) throws KapuaException;
+
+    /**
+     * Updates the given {@link KapuaUpdatableEntity}.
+     *
+     * @return The updated {@link KapuaUpdatableEntity}.
+     * @throws KapuaException
+     * @since 1.0.0
+     */
+    Account updateChildAccount(KapuaId accountId, @NotNull AccountUpdateRequest request) throws KapuaException;
+
+    /**
      * Finds the {@link Account} by the {@link Account#getId()}.
      *
-     * @param id The {@link Account#getId()}.
+     * @param id
+     *         The {@link Account#getId()}.
      * @return The {@link Account} found or {@code null}.
      * @throws KapuaException
      */
@@ -47,7 +67,8 @@ public interface AccountService extends KapuaEntityService<Account, AccountCreat
     /**
      * Returns an {@link AccountListResult} of direct children {@link Account}s of the given {@link Account#getId()}.
      *
-     * @param scopeId The {@link Account#getId()}.
+     * @param scopeId
+     *         The {@link Account#getId()}.
      * @return The {@link AccountListResult} of direct children {@link Account}s.
      * @throws KapuaException
      */

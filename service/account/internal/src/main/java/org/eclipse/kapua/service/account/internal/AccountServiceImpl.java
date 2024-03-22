@@ -13,6 +13,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
+import java.util.Date;
+import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
@@ -20,6 +26,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.KapuaRuntimeErrorCodes;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EventStorer;
@@ -39,16 +46,12 @@ import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountRepository;
 import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.account.internal.exception.KapuaAccountErrorCodes;
-import org.eclipse.kapua.service.account.internal.exception.KapuaAccountException;
+import org.eclipse.kapua.service.account.AccountUpdateRequest;
+import org.eclipse.kapua.service.account.CurrentAccountUpdateRequest;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * {@link AccountService} implementation.
@@ -63,14 +66,19 @@ public class AccountServiceImpl
     private static final String NO_EXPIRATION_DATE_SET = "no expiration date set";
     private final AccountRepository accountRepository;
     private final EventStorer eventStorer;
+    private final AccountMapper accountMapper;
 
     /**
      * Injectable constructor
      *
-     * @param accountRepository           The {@link AccountRepository} instance
-     * @param permissionFactory           The {@link PermissionFactory} instance
-     * @param authorizationService        The {@link AuthorizationService} instance
-     * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance
+     * @param accountRepository
+     *         The {@link AccountRepository} instance
+     * @param permissionFactory
+     *         The {@link PermissionFactory} instance
+     * @param authorizationService
+     *         The {@link AuthorizationService} instance
+     * @param serviceConfigurationManager
+     *         The {@link ServiceConfigurationManager} instance
      * @param eventStorer
      * @since 2.0.0
      */
@@ -81,10 +89,12 @@ public class AccountServiceImpl
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             ServiceConfigurationManager serviceConfigurationManager,
-            EventStorer eventStorer) {
+            EventStorer eventStorer,
+            AccountMapper accountMapper) {
         super(txManager, serviceConfigurationManager, Domains.ACCOUNT, authorizationService, permissionFactory);
         this.accountRepository = accountRepository;
         this.eventStorer = eventStorer;
+        this.accountMapper = accountMapper;
     }
 
     @Override
@@ -110,7 +120,8 @@ public class AccountServiceImpl
             // check if the account collides with the SystemSettingKey#COMMONS_CONTROL_TOPIC_CLASSIFIER
             if (!StringUtils.isEmpty(SystemSetting.getInstance().getMessageClassifier())) {
                 if (SystemSetting.getInstance().getMessageClassifier().equals(accountCreator.getName())) {
-                    throw new KapuaIllegalArgumentException("name", "Reserved account name");// obfuscate this message? or change to something more clear like "the account name collides with some system
+                    throw new KapuaIllegalArgumentException("name",
+                            "Reserved account name");// obfuscate this message? or change to something more clear like "the account name collides with some system
                     // configuration parameter"?
                 }
             }
@@ -126,7 +137,8 @@ public class AccountServiceImpl
                 // parent account never expires no check is needed
                 if (accountCreator.getExpirationDate() == null || parentAccount.getExpirationDate().before(accountCreator.getExpirationDate())) {
                     // if current account expiration date is null it will be obviously after parent expiration date
-                    throw new KapuaIllegalArgumentException(AccountAttributes.EXPIRATION_DATE, accountCreator.getExpirationDate() != null ? accountCreator.getExpirationDate().toString() : NO_EXPIRATION_DATE_SET);
+                    throw new KapuaIllegalArgumentException(AccountAttributes.EXPIRATION_DATE,
+                            accountCreator.getExpirationDate() != null ? accountCreator.getExpirationDate().toString() : NO_EXPIRATION_DATE_SET);
                 }
             }
             // Do create
@@ -155,81 +167,104 @@ public class AccountServiceImpl
 
     @Override
     public Account update(Account account) throws KapuaException {
-        // Argument validation
-        ArgumentValidator.notNull(account.getId(), "account.id");
-        ArgumentValidator.notEmptyOrNull(account.getName(), "account.name");
-        ArgumentValidator.match(account.getName(), CommonsValidationRegex.NAME_REGEXP, "account.name");
-        ArgumentValidator.notNull(account.getOrganization(), "account.organization");
-        ArgumentValidator.match(account.getOrganization().getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "account.organization.email");
-
-        // Check Access
         if (KapuaSecurityUtils.getSession().getScopeId().equals(account.getId())) {
-            // Editing self
-            authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, Actions.write, account.getId()));
-        } else {
-            // Editing child
-            authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, Actions.write, account.getScopeId()));
+            return doUpdateCurrentAccount(accountMapper.mapCurrentUpdate(account));
         }
+        return doUpdateChildAccount(account.getId(), accountMapper.mapChildUpdate(account));
+    }
 
-        if (account.getExpirationDate() != null) {
-            SystemSetting setting = SystemSetting.getInstance();
-            //check if the updated account is an admin account
-            if (setting.getString(SystemSettingKey.SYS_ADMIN_ACCOUNT).equals(account.getName())) {
-                //throw exception if trying to set an expiration date for an admin account
-                throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "Admin account cannot have an expiration date set");
-            }
+    @Override
+    public Account updateCurrentAccount(CurrentAccountUpdateRequest request) throws KapuaException {
+        return doUpdateCurrentAccount(request);
+    }
+
+    @Override
+    public Account updateChildAccount(KapuaId accountId, AccountUpdateRequest request) throws KapuaException {
+        if (KapuaSecurityUtils.getSession().getScopeId().equals(accountId)) {
+            // Editing self should be done via updateCurrentAccount api
+            throw new KapuaException(KapuaRuntimeErrorCodes.SERVICE_OPERATION_NOT_SUPPORTED, null, "Cannot update the current account via this method");
         }
+        return doUpdateChildAccount(accountId, request);
+    }
+
+    private Account doUpdateCurrentAccount(CurrentAccountUpdateRequest request) throws KapuaException {
+        ArgumentValidator.notNull(request.organization, "request.organization");
+        ArgumentValidator.match(request.organization.getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "request.organization.email");
+
+        final KapuaId accountId = KapuaSecurityUtils.getSession().getScopeId();
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, Actions.write, accountId));
 
         return txManager.execute(tx -> {
             // Check existence
-            Account oldAccount = accountRepository.find(tx, KapuaId.ANY, account.getId())
-                    .orElseThrow(() -> new KapuaEntityNotFoundException(Account.TYPE, account.getId()));
-            // Check if user tries to change expiration date of the account in which it is defined (the account is not the admin one considering previous checks)
-            if (KapuaSecurityUtils.getSession().getScopeId().equals(account.getId())) {
-                // Editing self - aka user that edits its account
-                if ((oldAccount.getExpirationDate() == null && account.getExpirationDate() != null) || //old exp. date was "no expiration" and now the update restricts it
-                        (oldAccount.getExpirationDate() != null && !oldAccount.getExpirationDate().equals(account.getExpirationDate()))) { //old exp. date was some date and the update refers to another date
-                    // Editing the expiration date
-                    throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "A user cannot modify expiration date of the account in which it's defined");
-                }
-            }
-            // Check that expiration date is no later than parent expiration date
-            Optional<Account> parentAccount = Optional.empty();
-            if (oldAccount.getScopeId() != null) {
-                parentAccount = accountRepository.find(tx, KapuaId.ANY, oldAccount.getScopeId());
-            }
+            Account oldAccount = accountRepository.find(tx, KapuaId.ANY, accountId)
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(Account.TYPE, accountId));
+            accountMapper.merge(oldAccount, request);
+            //kinda redundant, as dirt check would pick this anyway
+            return accountRepository.update(tx, oldAccount, oldAccount);
+        });
+    }
 
-            if (parentAccount.flatMap(pa -> Optional.ofNullable(pa.getExpirationDate())).isPresent()) {
-                // if parent account never expires no check is needed
-                if (account.getExpirationDate() == null || parentAccount.get().getExpirationDate().before(account.getExpirationDate())) {
-                    // if current account expiration date is null it will be obviously after parent expiration date
-                    throw new KapuaIllegalArgumentException(AccountAttributes.EXPIRATION_DATE, account.getExpirationDate() != null ? account.getExpirationDate().toString() : NO_EXPIRATION_DATE_SET);
-                }
-            }
+    private Account doUpdateChildAccount(KapuaId accountId, AccountUpdateRequest request) throws KapuaException {
+        // Argument validation
+        ArgumentValidator.notNull(accountId, "accountId");
+        ArgumentValidator.notNull(request.organization, "account.organization");
+        ArgumentValidator.match(request.organization.getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "account.organization.email");
 
-            if (account.getExpirationDate() != null) {
-                // check that expiration date is after all the children account
-                // if expiration date is null it means the account never expires, so it will be obviously later its children
-                AccountListResult childrenAccounts = accountRepository.findChildAccountsRecursive(tx, account.getParentAccountPath());
-                // if child account expiration date is null it will be obviously after current account expiration date
-                if (childrenAccounts.getItems().stream().anyMatch(childAccount -> childAccount.getExpirationDate() == null || childAccount.getExpirationDate().after(account.getExpirationDate()))) {
-                    throw new KapuaIllegalArgumentException(AccountAttributes.EXPIRATION_DATE, account.getExpirationDate() != null ? account.getExpirationDate().toString() : NO_EXPIRATION_DATE_SET);
-                }
-            }
-            // Verify unchanged parent account ID and parent account path
-            if (!Objects.equals(oldAccount.getScopeId(), account.getScopeId())) {
-                throw new KapuaIllegalArgumentException("account.scopeId", account.getScopeId().toStringId());
-            }
-            if (!oldAccount.getParentAccountPath().equals(account.getParentAccountPath())) {
-                throw new KapuaIllegalArgumentException("account.parentAccountPath", account.getParentAccountPath());
-            }
-            if (!oldAccount.getName().equals(account.getName())) {
-                throw new KapuaIllegalArgumentException("account.name", account.getName());
-            }
+        return txManager.execute(tx -> {
+            // Check existence
+            final Account account = accountRepository.find(tx, KapuaId.ANY, accountId)
+                    .orElseThrow(() -> new KapuaEntityNotFoundException(Account.TYPE, accountId));
+
+            // Editing child
+            authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, Actions.write, account.getScopeId()));
+
+            validateExpirationDate(tx, account, request);
+
+            accountMapper.merge(account, request);
 
             // Do update
-            return accountRepository.update(tx, account);
+            return accountRepository.update(tx, account, account);
         });
+    }
+
+    private void validateExpirationDate(TxContext tx, Account oldAccount, AccountUpdateRequest request) throws KapuaException {
+        if (request.expirationDate != null) {
+            SystemSetting setting = SystemSetting.getInstance();
+            //check if the updated account is an admin account
+            if (setting.getString(SystemSettingKey.SYS_ADMIN_ACCOUNT).equals(oldAccount.getName())) {
+                //throw exception if trying to set an expiration date for an admin account
+                throw new KapuaException(KapuaRuntimeErrorCodes.SERVICE_OPERATION_NOT_SUPPORTED, null, "Admin account cannot have an expiration date set");
+            }
+        }
+        // Check that expiration date is no later than parent expiration date
+        final Optional<Date> parentAccountExpiration = Optional.ofNullable(oldAccount.getScopeId())
+                .flatMap(scopeId -> accountRepository.find(tx, KapuaId.ANY, scopeId))
+                .flatMap(parentAccount -> Optional.ofNullable(parentAccount.getExpirationDate()));
+
+        if (parentAccountExpiration.isPresent()) {
+            // if parent account never expires no check is needed
+            if (request.expirationDate == null || parentAccountExpiration.get().before(request.expirationDate)) {
+                // if current account expiration date is null it will be obviously after parent expiration date
+                //TODO: FIXME: toString of a java.util.Date? Without locale nor timezone?
+                throw new KapuaIllegalArgumentException(AccountAttributes.EXPIRATION_DATE, request.expirationDate != null ? request.expirationDate.toString() : NO_EXPIRATION_DATE_SET);
+            }
+        }
+        final boolean expirationDateChanged = request.expirationDate != null
+                && (
+                oldAccount.getExpirationDate() == null
+                        || !oldAccount.getExpirationDate().equals(request.expirationDate
+                )
+        );
+        if (expirationDateChanged) {
+            // check that expiration date is after all the children account
+            // if expiration date is null it means the account never expires, so it will be obviously later its children
+            final AccountListResult childrenAccounts = accountRepository.findChildAccountsRecursive(tx, oldAccount.getParentAccountPath());
+            // if child account expiration date is null it will be obviously after current account expiration date
+            if (childrenAccounts.getItems().stream().anyMatch(childAccount -> childAccount.getExpirationDate() == null || childAccount.getExpirationDate().after(request.expirationDate))) {
+                //TODO: FIXME: toString of a java.util.Date? Without locale nor timezone?
+                throw new KapuaIllegalArgumentException(AccountAttributes.EXPIRATION_DATE, request.expirationDate != null ? request.expirationDate.toString() : NO_EXPIRATION_DATE_SET);
+            }
+        }
     }
 
     @Override
@@ -239,11 +274,10 @@ public class AccountServiceImpl
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(accountId, KapuaEntityAttributes.ENTITY_ID);
         // Check Access
-        Actions action = Actions.delete;
-        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, action, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, Actions.delete, scopeId));
         // Check if it has children
         if (!findChildAccountsTrusted(accountId).isEmpty()) {
-            throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "This account cannot be deleted. Delete its child first.");
+            throw new KapuaException(KapuaRuntimeErrorCodes.SERVICE_OPERATION_NOT_SUPPORTED, null, "This account cannot be deleted. Delete its child first.");
         }
 
         txManager.execute(
@@ -256,11 +290,11 @@ public class AccountServiceImpl
                     // do not allow deletion of the kapua admin account
                     SystemSetting settings = SystemSetting.getInstance();
                     if (settings.getString(SystemSettingKey.SYS_PROVISION_ACCOUNT_NAME).equals(account.getName())) {
-                        throw new KapuaIllegalAccessException(action.name());
+                        throw new KapuaIllegalAccessException(Actions.delete.name());
                     }
 
                     if (settings.getString(SystemSettingKey.SYS_ADMIN_USERNAME).equals(account.getName())) {
-                        throw new KapuaIllegalAccessException(action.name());
+                        throw new KapuaIllegalAccessException(Actions.delete.name());
                     }
 
                     return accountRepository.delete(tx, account);
@@ -284,7 +318,7 @@ public class AccountServiceImpl
         }
 
         // Check Access
-        checkAccountPermission(scopeId, accountId, Domains.ACCOUNT, Actions.read);
+        checkAccountPermission(scopeId, accountId, Actions.read);
 
         // Do find
         return txManager.execute(tx -> accountRepository.find(tx, scopeId, accountId))
@@ -302,7 +336,7 @@ public class AccountServiceImpl
 
         // Check Access
         if (account != null) {
-            checkAccountPermission(account.getScopeId(), account.getId(), Domains.ACCOUNT, Actions.read);
+            checkAccountPermission(account.getScopeId(), account.getId(), Actions.read);
         }
 
         // Return result
@@ -320,7 +354,7 @@ public class AccountServiceImpl
 
         // Check access
         if (account != null) {
-            checkAccountPermission(account.getScopeId(), account.getId(), Domains.ACCOUNT, Actions.read);
+            checkAccountPermission(account.getScopeId(), account.getId(), Actions.read);
         }
 
         // Return result
@@ -339,7 +373,7 @@ public class AccountServiceImpl
                     .orElseThrow(() -> new KapuaEntityNotFoundException(Account.TYPE, scopeId));
 
             // Check access
-            checkAccountPermission(account.getScopeId(), account.getId(), Domains.ACCOUNT, Actions.read, true);
+            checkAccountPermission(account.getScopeId(), account.getId(), Actions.read, true);
 
             // Do find
             return accountRepository.findChildAccountsRecursive(tx, account.getParentAccountPath());
@@ -377,23 +411,23 @@ public class AccountServiceImpl
         return txManager.execute(tx -> accountRepository.query(tx, new AccountQueryImpl(accountId)));
     }
 
-    private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, String domain, Actions action) throws KapuaException {
-        checkAccountPermission(scopeId, accountId, domain, action, false);
+    private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, Actions action) throws KapuaException {
+        checkAccountPermission(scopeId, accountId, action, false);
     }
 
     /**
-     * Checks if the current session can retrieve the {@link Account}, by both having an explicit permission or because
-     * it's looking for its own {@link Account}
+     * Checks if the current session can retrieve the {@link Account}, by both having an explicit permission or because it's looking for its own {@link Account}
      *
-     * @param accountId The {@link KapuaId} of the {@link Account} to look for
+     * @param accountId
+     *         The {@link KapuaId} of the {@link Account} to look for
      */
-    private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, String domain, Actions action, boolean forwardable) throws KapuaException {
+    private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, Actions action, boolean forwardable) throws KapuaException {
         if (KapuaSecurityUtils.getSession().getScopeId().equals(accountId)) {
             // I'm looking for myself, so let's check if I have the correct permission
-            authorizationService.checkPermission(permissionFactory.newPermission(domain, action, accountId, null, forwardable));
+            authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, action, accountId, null, forwardable));
         } else {
             // I'm looking for another account, so I need to check the permission on the account scope
-            authorizationService.checkPermission(permissionFactory.newPermission(domain, action, scopeId, null, forwardable));
+            authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, action, scopeId, null, forwardable));
         }
     }
 }

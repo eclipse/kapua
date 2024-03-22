@@ -28,7 +28,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './account.yaml#/components/schemas/accountListResult'
+                $ref: './accounts.yaml#/components/schemas/accountListResult'
         400:
           $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:

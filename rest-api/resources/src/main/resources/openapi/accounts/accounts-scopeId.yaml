@@ -42,7 +42,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './account.yaml#/components/schemas/accountListResult'
+                $ref: './accounts.yaml#/components/schemas/accountListResult'
         400:
           $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
@@ -64,7 +64,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './account.yaml#/components/schemas/accountCreator'
+              $ref: './accounts.yaml#/components/schemas/accountCreator'
         required: true
       responses:
         201:
@@ -72,7 +72,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './account.yaml#/components/schemas/account'
+                $ref: './accounts.yaml#/components/schemas/account'
         400:
           $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:

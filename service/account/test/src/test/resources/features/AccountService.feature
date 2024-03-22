@@ -126,23 +126,6 @@ Feature: User Account Service
     When I delete a random account
     Then An exception was thrown
 
-
-Scenario: Change the account parent Id
-    The account service must not allow the account parent Id to be changed.
-
-    Given I create a generic account with name "test_acc_123"
-    And I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument account.scopeId: 2"
-    When I change the scope Id for account "test_acc_123" to 2
-    Then An exception was thrown
-
-  Scenario: Change the account parent path
-  It must not be possible to change the account parent path. Any try should result in an exception.
-
-    Given I create a generic account with name "test_acc_11"
-    And I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument account.parentAccountPath: /1/"
-    When I change the parent path for account "test_acc_11"
-    Then An exception was thrown
-
   Scenario: Check account properties
   It must be possible to set arbitrary account properties.
 
@@ -197,16 +180,6 @@ Scenario: Change the account parent Id
     Given I create 9 accounts with organization name "test_org"
     When I query for all accounts that have the system account as parent
     Then The returned value is 9
-
-  Scenario: Account name must not be mutable
-  It must be impossible to change an existing account name. When tried, an exception must
-  be thrown and the original account must be unchanged.
-
-    Given I create a generic account with name "test_acc"
-    And I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument account.name: test_acc_new"
-    When I change the account "test_acc" name to "test_acc_new"
-    Then An exception was thrown
-    And Account "test_acc" exists
 
   @teardown
   Scenario: Reset Security Context for all scenarios

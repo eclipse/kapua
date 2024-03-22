@@ -12,13 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.test;
 
-import com.codahale.metrics.MetricRegistry;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
-import com.google.inject.name.Names;
-import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountRelativeFinder;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
@@ -35,6 +28,7 @@ import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.metric.MetricsServiceImpl;
+import org.eclipse.kapua.commons.model.mappers.KapuaBaseMapperImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.commons.service.internal.cache.CacheManagerProvider;
@@ -48,6 +42,7 @@ import org.eclipse.kapua.service.account.AccountRepository;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
 import org.eclipse.kapua.service.account.internal.AccountImplJpaRepository;
+import org.eclipse.kapua.service.account.internal.AccountMapperImpl;
 import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
@@ -59,13 +54,20 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
+import com.codahale.metrics.MetricRegistry;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import com.google.inject.name.Names;
+
+import io.cucumber.java.Before;
+
 @Singleton
 public class AccountLocatorConfiguration {
 
     /**
-     * Setup DI with Google Guice DI.
-     * Create mocked and non mocked service under test and bind them with Guice.
-     * It is based on custom MockedLocator locator that is meant for sevice unit tests.
+     * Setup DI with Google Guice DI. Create mocked and non mocked service under test and bind them with Guice. It is based on custom MockedLocator locator that is meant for sevice unit tests.
      */
     @Before(value = "@setup", order = 1)
     public void setupDI() {
@@ -105,13 +107,14 @@ public class AccountLocatorConfiguration {
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
                 // Inject actual account related services
-//                final AccountEntityManagerFactory entityManagerFactory = AccountEntityManagerFactory.getInstance();
-//                bind(AccountEntityManagerFactory.class).toInstance(entityManagerFactory);
+                //                final AccountEntityManagerFactory entityManagerFactory = AccountEntityManagerFactory.getInstance();
+                //                bind(AccountEntityManagerFactory.class).toInstance(entityManagerFactory);
                 final AccountFactory accountFactory = new AccountFactoryImpl();
                 bind(AccountFactory.class).toInstance(accountFactory);
                 bind(AccountRelativeFinder.class).toInstance(Mockito.mock(AccountRelativeFinder.class));
                 final KapuaJpaRepositoryConfiguration jpaRepoConfig = new KapuaJpaRepositoryConfiguration();
                 final AccountRepository accountRepository = new AccountImplJpaRepository(jpaRepoConfig);
+                final AccountMapperImpl accountMapper = new AccountMapperImpl(new KapuaBaseMapperImpl());
                 bind(AccountService.class).toInstance(new AccountServiceImpl(
                         new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-account"),
                         new AccountImplJpaRepository(jpaRepoConfig),
@@ -126,7 +129,8 @@ public class AccountLocatorConfiguration {
                                         accountFactory,
                                         accountRepository)
                         ),
-                        new EventStorerImpl(new EventStoreRecordImplJpaRepository(jpaRepoConfig))));
+                        new EventStorerImpl(new EventStoreRecordImplJpaRepository(jpaRepoConfig)),
+                        accountMapper));
                 bind(AccountRepository.class).toInstance(new AccountImplJpaRepository(jpaRepoConfig));
             }
         };
