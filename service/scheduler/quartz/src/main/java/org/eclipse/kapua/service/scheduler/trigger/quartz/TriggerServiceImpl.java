@@ -12,6 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import javax.inject.Singleton;
+import javax.validation.constraints.NotNull;
+
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -40,16 +50,6 @@ import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Singleton;
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * {@link TriggerService} implementation.
@@ -219,7 +219,7 @@ public class TriggerServiceImpl implements TriggerService {
             }
 
             // Check duplicate name
-            if (triggerRepository.countEntitiesWithNameInScope(tx, adapted.getId(), adapted.getName()) > 0) {
+            if (triggerRepository.countOtherEntitiesWithNameInScope(tx, adapted.getScopeId(), adapted.getId(), adapted.getName()) > 0) {
                 throw new KapuaDuplicateNameException(adapted.getName());
             }
             // Check dates
