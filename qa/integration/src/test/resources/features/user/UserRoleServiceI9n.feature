@@ -1230,9 +1230,6 @@ Feature: User role service integration tests
     And I login as user with name "SubUser" and password "User@10031995"
     And I create an account with name "TestAccount", organization name "Organization" and email address "organization@org.com"
     And I find account with name "TestAccount"
-    And I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument account.name: TestAccount1"
-    When I change the account "TestAccount" name to "TestAccount1"
-    Then An exception was thrown
     When I delete account "TestAccount"
     And No exception was thrown
     And I logout

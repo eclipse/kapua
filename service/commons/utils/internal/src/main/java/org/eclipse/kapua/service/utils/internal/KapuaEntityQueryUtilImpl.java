@@ -50,7 +50,9 @@ public class KapuaEntityQueryUtilImpl implements KapuaEntityQueryUtil {
         KapuaId scopeId = query.getScopeId();
 
         // Replacement predicate root
-        AndPredicate newPred = query.andPredicate(query.getPredicate());
+        AndPredicate newPred = query.getPredicate() != null ?
+                query.andPredicate(query.getPredicate()) :
+                query.andPredicate();
 
         // Create predicate to query ancestor accounts for entities that are forwardable
         query.setScopeId(KapuaId.ANY);

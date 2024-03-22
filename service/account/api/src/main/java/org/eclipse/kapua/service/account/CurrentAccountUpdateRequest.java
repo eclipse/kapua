@@ -10,21 +10,21 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.account.internal.exception;
+package org.eclipse.kapua.service.account;
 
-import org.eclipse.kapua.KapuaErrorCode;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * {@link KapuaAccountException} {@link KapuaErrorCode} implementation.
- *
- * @since 1.0.0
- */
-public enum KapuaAccountErrorCodes implements KapuaErrorCode {
+import org.eclipse.kapua.model.KapuaNamedEntityUpdateRequest;
+
+@XmlRootElement(name = "account")
+public class CurrentAccountUpdateRequest extends KapuaNamedEntityUpdateRequest {
 
     /**
-     * Operation not allowed
+     * Gets the {@link Organization}.
      *
      * @since 1.0.0
      */
-    OPERATION_NOT_ALLOWED
+    @XmlElement(name = "organization")
+    public Organization organization;
 }

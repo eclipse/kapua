@@ -1,0 +1,187 @@
+openapi: 3.0.3
+
+info:
+  title: Eclipse Kapua REST API - Accounts
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/accounts/{accountId}:
+    get:
+      deprecated: true
+      description: Deprecated. User the version without the /{scopeId} prefix.
+        Get the details of a given Account, according to the `accountId` path parameter.
+      tags:
+        - Account
+      summary: Get a single Account
+      operationId: deprecatedAccountGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './accounts.yaml#/components/parameters/accountId'
+      responses:
+        200:
+          description: The details of the desired Account
+          content:
+            application/json:
+              schema:
+                $ref: './accounts.yaml#/components/schemas/account'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    put:
+      deprecated: true
+      description: Deprecated. User the version without the /{scopeId} prefix.
+        Update the details of a given Account, according to the `accountId` path parameter. Please note that some fields may be readonly for integrity purposes.
+      tags:
+        - Account
+      summary: Update a single Account
+      operationId: deprecatedAccountUpdate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './accounts.yaml#/components/parameters/accountId'
+      requestBody:
+        description: An object containing the new properties for the Account to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './accounts.yaml#/components/schemas/accountUpdateRequest'
+      responses:
+        200:
+          description: The details of the updated Account
+          content:
+            application/json:
+              schema:
+                $ref: './accounts.yaml#/components/schemas/account'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      deprecated: true
+      description: Deprecated. User the version without the /{scopeId} prefix.
+        Delete the given account, according to the `accountId` path parameter.
+      tags:
+        - Account
+      summary: Delete a single Account
+      operationId: deprecatedAccountDelete
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './accounts.yaml#/components/parameters/accountId'
+      responses:
+        204:
+          description: The Account has been deleted
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+  /accounts/{accountId}:
+    get:
+      description: Get the details of a given Account, according to the `accountId` path parameter.
+      tags:
+        - Account
+      summary: Get a single Account
+      operationId: accountGet
+      parameters:
+        - $ref: './accounts.yaml#/components/parameters/accountId'
+      responses:
+        200:
+          description: The details of the desired Account
+          content:
+            application/json:
+              schema:
+                $ref: './accounts.yaml#/components/schemas/account'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    put:
+      tags:
+        - Account
+      summary: Update a single Account
+      operationId: accountUpdate
+      parameters:
+        - $ref: './accounts.yaml#/components/parameters/accountId'
+      requestBody:
+        description: An object containing the new properties for the Account to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './accounts.yaml#/components/schemas/accountUpdateRequest'
+      responses:
+        200:
+          description: The details of the updated Account
+          content:
+            application/json:
+              schema:
+                $ref: './accounts.yaml#/components/schemas/account'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        422:
+          description: Cannot update the current account via this method. Use PUT /account to do so.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '../openapi.yaml#/components/responses/kapuaError/content/application~1json/schema'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      description: Delete the given account, according to the `accountId` path parameter.
+      tags:
+        - Account
+      summary: Delete a single Account
+      operationId: accountDelete
+      parameters:
+        - $ref: './accounts.yaml#/components/parameters/accountId'
+      responses:
+        204:
+          description: The Account has been deleted
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

@@ -97,6 +97,7 @@
         <javax-json.version>1.0.4</javax-json.version>
         <javax-persistence.version>2.1.1</javax-persistence.version>
         <javax-servlet-api.version>3.1.0</javax-servlet-api.version>
+        <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <javax-validation-api.version>2.0.1.Final</javax-validation-api.version>
         <jakarta-ws-rs-api.version>2.1.6</jakarta-ws-rs-api.version>
         <jakarta-xml-bind-api.version>2.3.3</jakarta-xml-bind-api.version>
@@ -172,6 +173,7 @@
         <sql-maven-plugin.version>1.5</sql-maven-plugin.version>
         <surefire.version>3.0.0-M7</surefire.version>
 
+        <org.hibernate.hibernate-jpamodelgen.version>5.5.4.Final</org.hibernate.hibernate-jpamodelgen.version>
         <!-- Docker configuration -->
         <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
@@ -2121,6 +2123,12 @@
             </dependency>
 
             <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${org.mapstruct.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.glassfish.hk2</groupId>
                 <artifactId>hk2-api</artifactId>
                 <version>${hk2-api.version}</version>
@@ -2680,7 +2688,7 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-jpamodelgen</artifactId>
-                <version>5.5.4.Final</version>
+                <version>${org.hibernate.hibernate-jpamodelgen.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
