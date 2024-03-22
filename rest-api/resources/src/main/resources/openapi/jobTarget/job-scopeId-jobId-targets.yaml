@@ -21,6 +21,7 @@ paths:
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: '../job/job.yaml#/components/parameters/jobId'
+        - $ref: '../jobTarget/jobTarget.yaml#/components/parameters/jobTargetStatus'
         - $ref: '../openapi.yaml#/components/parameters/sortParam'
         - $ref: '../openapi.yaml#/components/parameters/sortDir'
         - $ref: '../openapi.yaml#/components/parameters/limit'
