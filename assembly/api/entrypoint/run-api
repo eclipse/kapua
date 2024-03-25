@@ -1,0 +1,33 @@
+#!/bin/sh
+################################################################################
+#    Copyright (c) 2024, 2022 Red Hat Inc and others
+#
+#    This program and the accompanying materials are made
+#    available under the terms of the Eclipse Public License 2.0
+#    which is available at https://www.eclipse.org/legal/epl-2.0/
+#
+#    SPDX-License-Identifier: EPL-2.0
+#
+#    Contributors:
+#        Red Hat Inc - initial API and implementation
+#        Eurotech
+################################################################################
+
+openapiFile=webapps/root/doc/openapi.yaml;
+
+# Replace the version and the build number in the openapi file
+awk -v version="$1" -v build_number="$2" '{
+    if (!subbed && /version:/) {
+        gsub(/version: .*/, "version: " version "-" build_number)
+        subbed = 1
+    }
+    print
+}' "$openapiFile" > "$openapiFile.tmp"
+
+mv "$openapiFile.tmp" "$openapiFile"
+
+# Shift the positional parameters to remove the first two
+shift 2
+
+# Continue with startup
+exec /var/opt/jetty/run-jetty "$@"
