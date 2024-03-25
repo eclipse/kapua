@@ -1592,7 +1592,7 @@ public class DatastoreSteps extends TestBase {
     public void deleteIndexesBetweenDates(String fromDate, String toDate) throws Exception {
         primeException();
         try {
-            String[] indexes = KapuaLocator.getInstance().getComponent(DatastoreUtils.class).convertToDataIndexes(getDataIndexesByAccount(getCurrentScopeId()), KapuaDateUtils.parseDate(fromDate).toInstant(),
+            String[] indexes = KapuaLocator.getInstance().getComponent(DatastoreUtils.class).filterIndexesTemporalWindow(getDataIndexesByAccount(getCurrentScopeId()), KapuaDateUtils.parseDate(fromDate).toInstant(),
                     KapuaDateUtils.parseDate(toDate).toInstant(), null);
             elasticsearchClient.deleteIndexes(indexes);
         } catch (Exception ex) {
