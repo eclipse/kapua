@@ -136,6 +136,10 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
         KapuaSession.createFrom(kapuaEvent.getScopeId(), kapuaEvent.getUserId());
     }
 
+    public Boolean isConnected() {
+        return eventBusJMSConnectionBridge.isConnected();
+    }
+
     /**
      * Stop the event bus
      *
@@ -209,9 +213,15 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
         private Connection jmsConnection;
         private Map<String, SenderPool> senders = new HashMap<>();
         private ExceptionListenerImpl exceptionListener;
+        private Boolean connected;
 
         public EventBusJMSConnectionBridge() {
             this.exceptionListener = new ExceptionListenerImpl();
+            connected = Boolean.FALSE;
+        }
+
+        Boolean isConnected() {
+            return connected;
         }
 
         void start() throws JMSException, NamingException, ServiceEventBusException {
@@ -230,6 +240,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
 
             jmsConnection = jmsConnectionFactory.createConnection(eventbusUsername, eventbusPassword);
             jmsConnection.setExceptionListener(exceptionListener);
+            connected = Boolean.TRUE;
             jmsConnection.start();
         }
 
@@ -239,6 +250,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
         }
 
         private void closeConnection() {
+            connected = Boolean.FALSE;
             try {
                 if (jmsConnection != null) {
                     exceptionListener.stop();
@@ -436,6 +448,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
 
             @Override
             public void onException(JMSException e) {
+                connected = Boolean.FALSE;
                 LOGGER.error("EventBus Listener {} -  Connection thrown exception: {}", this, e.getMessage(), e);
                 commonsMetric.getEventBusConnectionError().inc();
                 int i = 1;
