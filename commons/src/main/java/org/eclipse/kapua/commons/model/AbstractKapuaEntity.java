@@ -43,6 +43,7 @@ import java.util.Date;
 @Access(AccessType.FIELD)
 public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
 
+    private static final long serialVersionUID = -4118374896320453309L;
     @EmbeddedId
     @AttributeOverrides({
             @AttributeOverride(name = "eid", column = @Column(name = "id", nullable = false, updatable = false))
@@ -51,7 +52,7 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "eid", column = @Column(name = "scope_id", nullable = false, updatable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "scope_id", nullable = true, updatable = false))
     })
     protected KapuaEid scopeId;
 

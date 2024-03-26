@@ -37,11 +37,13 @@ import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobRepository;
 import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
+import org.eclipse.kapua.storage.TxManager;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 public class JobModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
         bind(JobFactory.class).to(JobFactoryImpl.class);
@@ -54,21 +56,30 @@ public class JobModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
+    @Named("jobTxManager")
+    TxManager jobTxManager(
+            KapuaJpaTxManagerFactory jpaTxManagerFactory
+    ) {
+        return jpaTxManagerFactory.create("kapua-job");
+    }
+
+    @Provides
+    @Singleton
     JobService jobService(
             @Named("JobServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
             JobEngineService jobEngineService,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
+            @Named("jobTxManager") TxManager txManager,
             JobRepository jobRepository,
-            TriggerService triggerService,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+            TriggerService triggerService) {
 
         return new JobServiceImpl(
                 serviceConfigurationManager,
                 jobEngineService,
                 permissionFactory,
                 authorizationService,
-                jpaTxManagerFactory.create("kapua-job"),
+                txManager,
                 jobRepository,
                 triggerService
         );
