@@ -25,7 +25,8 @@ public class AppModule extends AbstractKapuaModule {
 
     @Override
     protected void configureModule() {
-        bind(DatabaseCheckUpdate.class).asEagerSingleton();
+        bind(DatabaseCheckUpdate.class).in(Singleton.class);
+        bind(JAXBContextProvider.class).to(TelemetryJAXBContextProvider.class).in(Singleton.class);
         bind(MetricsTelemetry.class).in(Singleton.class);
     }
 
@@ -39,11 +40,5 @@ public class AppModule extends AbstractKapuaModule {
     @Named("eventsModuleName")
     String eventModuleName() {
         return "telemetry";
-    }
-
-    @Provides
-    @Singleton
-    JAXBContextProvider jaxbContextProvider() {
-        return new TelemetryJAXBContextProvider();
     }
 }

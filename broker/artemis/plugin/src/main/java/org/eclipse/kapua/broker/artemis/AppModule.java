@@ -36,7 +36,8 @@ public class AppModule extends AbstractKapuaModule {
 
     @Override
     protected void configureModule() {
-        bind(DatabaseCheckUpdate.class).asEagerSingleton();
+        bind(DatabaseCheckUpdate.class).in(Singleton.class);
+        bind(JAXBContextProvider.class).to(BrokerJAXBContextProvider.class).in(Singleton.class);
         bind(BrokerSetting.class).in(Singleton.class);
         bind(BrokerIdentity.class).in(Singleton.class);
     }
@@ -78,11 +79,5 @@ public class AppModule extends AbstractKapuaModule {
     @Provides
     BrokerHostResolver brokerHostResolver(BrokerSetting brokerSettings) throws KapuaException {
         return new DefaultBrokerHostResolver(brokerSettings.getString(BrokerSettingKey.BROKER_HOST));
-    }
-
-    @Provides
-    @Singleton
-    JAXBContextProvider jaxbContextProvider() {
-        return new BrokerJAXBContextProvider();
     }
 }

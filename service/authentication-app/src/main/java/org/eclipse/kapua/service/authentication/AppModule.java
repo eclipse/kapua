@@ -26,7 +26,8 @@ public class AppModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(MetricsAuthentication.class).in(Singleton.class);
-        bind(DatabaseCheckUpdate.class).asEagerSingleton();
+        bind(DatabaseCheckUpdate.class).in(Singleton.class);
+        bind(JAXBContextProvider.class).to(AuthenticationJAXBContextProvider.class).in(Singleton.class);
     }
 
     @Provides
@@ -39,11 +40,5 @@ public class AppModule extends AbstractKapuaModule {
     @Named("eventsModuleName")
     String eventModuleName() {
         return "authentication";
-    }
-
-    @Provides
-    @Singleton
-    JAXBContextProvider jaxbContextProvider() {
-        return new AuthenticationJAXBContextProvider();
     }
 }

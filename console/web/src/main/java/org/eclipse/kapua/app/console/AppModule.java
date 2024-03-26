@@ -13,7 +13,6 @@
 package org.eclipse.kapua.app.console;
 
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
@@ -24,7 +23,7 @@ public class AppModule extends AbstractKapuaModule {
 
     @Override
     protected void configureModule() {
-
+        bind(JAXBContextProvider.class).to(ConsoleJAXBContextProvider.class).in(Singleton.class);
     }
 
     @Provides
@@ -37,11 +36,5 @@ public class AppModule extends AbstractKapuaModule {
     @Named("eventsModuleName")
     String eventModuleName() {
         return "console";
-    }
-
-    @Provides
-    @Singleton
-    JAXBContextProvider jaxbContextProvider() {
-        return new ConsoleJAXBContextProvider();
     }
 }
