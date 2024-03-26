@@ -26,7 +26,8 @@ public class AppModule extends AbstractKapuaModule {
 
     @Override
     protected void configureModule() {
-        bind(DatabaseCheckUpdate.class).asEagerSingleton();
+        bind(DatabaseCheckUpdate.class).in(Singleton.class);
+        bind(JAXBContextProvider.class).to(JobEngineJAXBContextProvider.class).in(Singleton.class);
     }
 
     @Provides
@@ -39,11 +40,5 @@ public class AppModule extends AbstractKapuaModule {
     @Named("eventsModuleName")
     String eventModuleName() {
         return "job_engine";
-    }
-
-    @Provides
-    @Singleton
-    JAXBContextProvider jaxbContextProvider() {
-        return new JobEngineJAXBContextProvider();
     }
 }

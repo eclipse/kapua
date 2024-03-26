@@ -25,7 +25,8 @@ public class AppModule extends AbstractKapuaModule {
 
     @Override
     protected void configureModule() {
-        bind(DatabaseCheckUpdate.class).asEagerSingleton();
+        bind(DatabaseCheckUpdate.class).in(Singleton.class);
+        bind(JAXBContextProvider.class).to(LifecycleJAXBContextProvider.class).in(Singleton.class);
         bind(MetricsLifecycle.class).in(Singleton.class);
     }
 
@@ -39,11 +40,5 @@ public class AppModule extends AbstractKapuaModule {
     @Named("eventsModuleName")
     String eventModuleName() {
         return "lifecycle";
-    }
-
-    @Provides
-    @Singleton
-    JAXBContextProvider jaxbContextProvider() {
-        return new LifecycleJAXBContextProvider();
     }
 }

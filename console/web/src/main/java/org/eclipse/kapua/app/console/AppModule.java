@@ -24,7 +24,7 @@ public class AppModule extends AbstractKapuaModule {
 
     @Override
     protected void configureModule() {
-
+        bind(JAXBContextProvider.class).to(ConsoleJAXBContextProvider.class).in(Singleton.class);
     }
 
     @Provides
@@ -37,11 +37,5 @@ public class AppModule extends AbstractKapuaModule {
     @Named("eventsModuleName")
     String eventModuleName() {
         return "console";
-    }
-
-    @Provides
-    @Singleton
-    JAXBContextProvider jaxbContextProvider() {
-        return new ConsoleJAXBContextProvider();
     }
 }
