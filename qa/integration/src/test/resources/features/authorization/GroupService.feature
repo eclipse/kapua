@@ -16,10 +16,9 @@
 
 Feature: Group Service tests
 
-@setup
-Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+  @setup
+  Scenario: Initialize test environment
+    Given Init Security Context
 
   Scenario: Count groups in a blank database
   The default group table must be empty.
@@ -1052,6 +1051,6 @@ Scenario: Initialize test environment
     And No exception was thrown
     And I logout
 
-@teardown
-Scenario: Reset Security Context for all scenarios
-  Given Reset Security Context
+  @teardown
+  Scenario: Reset Security Context for all scenarios
+    Given Reset Security Context

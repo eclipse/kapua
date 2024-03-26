@@ -12,8 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import com.google.inject.Provides;
-import com.google.inject.multibindings.ProvidesIntoSet;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigImplJpaRepository;
@@ -25,6 +26,7 @@ import org.eclipse.kapua.commons.jpa.EntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.model.domains.Domains;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.domain.DomainEntry;
@@ -53,10 +55,11 @@ import org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClie
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
 import org.eclipse.kapua.storage.TxContext;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 
 public class DatastoreModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
         bind(DatastoreSettings.class).in(Singleton.class);
@@ -136,7 +139,8 @@ public class DatastoreModule extends AbstractKapuaModule {
             RootUserTester rootUserTester,
             KapuaJpaRepositoryConfiguration jpaRepoConfig,
             DatastoreSettings datastoreSettings,
-            EntityCacheFactory entityCacheFactory
+            EntityCacheFactory entityCacheFactory,
+            XmlUtil xmlUtil
     ) {
         return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerImpl(
                 MessageStoreService.class.getName(),
@@ -144,8 +148,10 @@ public class DatastoreModule extends AbstractKapuaModule {
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         entityCacheFactory.createCache("AbstractKapuaConfigurableServiceCacheId")
                 ),
-                rootUserTester
+                rootUserTester,
+                xmlUtil
         ) {
+
             @Override
             public boolean isServiceEnabled(TxContext txContext, KapuaId scopeId) {
                 return !datastoreSettings.getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);

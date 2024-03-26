@@ -17,10 +17,9 @@
 
 Feature: Datastore tests
 
-@setup
+  @setup
   Scenario: Start full docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start full docker environment
 
   Scenario: Simple positive scenario for creating default - weekly index
@@ -198,6 +197,6 @@ Feature: Datastore tests
     And REST response containing "-2018-01" with prefix account "LastAccount"
     And I delete all indices
 
-@teardown
+  @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment

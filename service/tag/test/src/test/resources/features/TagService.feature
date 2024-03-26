@@ -18,11 +18,10 @@ Feature: Tag Service
   used to attach tags to Devices, but could be used to tag any kapua entity, like
   User for example.
 
-@setup
-@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+  @setup
+  @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Creating Unique Tag Without Description
   Create a tag with unique name without description. Kapua should not return any error.
@@ -455,6 +454,6 @@ Feature: Tag Service
     When I assign tag "Tag1" to device "Device1"
     Then An exception was thrown
 
-@teardown
+  @teardown
   Scenario: Reset Security Context for all scenarios
     Given Reset Security Context

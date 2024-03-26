@@ -19,15 +19,14 @@ Feature: Device Broker Integration
   Each Scenario starts with BIRTH of device and then the communication over MQTT
   between device and Kapua.
 
-@setup
+  @setup
   Scenario: Start full docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start full docker environment
 
   Scenario: Send BIRTH message and then DC message
-    Effectively this is connect and disconnect of Kura device.
-    Basic birth - death scenario.
+  Effectively this is connect and disconnect of Kura device.
+  Basic birth - death scenario.
 
     When I start the Kura Mock
     And Device birth message is sent
@@ -71,6 +70,6 @@ Feature: Device Broker Integration
     And I wait 3 seconds
     Then Clients from group "stealing-link-group" are connected
 
-@teardown
+  @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment

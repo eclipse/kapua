@@ -15,33 +15,32 @@
 @env_docker
 
 Feature: Device Broker Cluster tests
-    Test functionality for distributed Stealing link scenarios. This is case for
-    cluster of brokers where CONNECT messages get forwarded form one broker to
-    others in cluster and by this disconnecting client form other brokers.
-    Tests also include connecting client with same id.
+  Test functionality for distributed Stealing link scenarios. This is case for
+  cluster of brokers where CONNECT messages get forwarded form one broker to
+  others in cluster and by this disconnecting client form other brokers.
+  Tests also include connecting client with same id.
 
-@setup
+  @setup
   Scenario: Start full docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start full docker environment
 
-    Scenario: Positive scenario without stealing link
-        Connect first client and send BIRTH message. Then connect two more
-        clients with different client ids. After that all clients should be connected.
-        This is pure positive scenario.
+  Scenario: Positive scenario without stealing link
+  Connect first client and send BIRTH message. Then connect two more
+  clients with different client ids. After that all clients should be connected.
+  This is pure positive scenario.
 
     Given Client with name "client-1" with client id "client-1" user "kapua-broker" password "kapua-password" is connected
-        And topic "$EDC/kapua-sys/client-1/MQTT/BIRTH" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-1"
-        And I wait 2 seconds
-        And Client with name "client-2" with client id "client-2" user "kapua-broker" password "kapua-password" is connected
-        And Client with name "client-3" with client id "client-3" user "kapua-broker" password "kapua-password" is connected
+    And topic "$EDC/kapua-sys/client-1/MQTT/BIRTH" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-1"
+    And I wait 2 seconds
+    And Client with name "client-2" with client id "client-2" user "kapua-broker" password "kapua-password" is connected
+    And Client with name "client-3" with client id "client-3" user "kapua-broker" password "kapua-password" is connected
     Then Client named "client-1" is connected
-        And Client named "client-2" is connected
-        And Client named "client-3" is connected
+    And Client named "client-2" is connected
+    And Client named "client-3" is connected
     Then Disconnect client with name "client-1"
-        And Disconnect client with name "client-2"
-        And Disconnect client with name "client-3"
+    And Disconnect client with name "client-2"
+    And Disconnect client with name "client-3"
 
 #TODO look for a different implementation since the CONNECT message is no more used by the broker to detect the stealing link
 #may be this test is no more needed?
@@ -80,22 +79,22 @@ Feature: Device Broker Cluster tests
 #        And Disconnect client with name "client-2"
 #        And Disconnect client with name "client-3"
 
-    Scenario: Negative scenario when client connects twice with same client id
-        Connect first client and send BIRTH message and CONNECT message. Then
-        connect another client with same client id and send CONNECT message.
-        This disconnects first client.
+  Scenario: Negative scenario when client connects twice with same client id
+  Connect first client and send BIRTH message and CONNECT message. Then
+  connect another client with same client id and send CONNECT message.
+  This disconnects first client.
 
     Given Client with name "client-1-1" with client id "client-1" user "kapua-broker" password "kapua-password" is connected
-        And topic "$EDC/kapua-sys/client-1/MQTT/BIRTH" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-1-1"
-        And topic "$EDC/kapua-sys/client-1/MQTT/CONNECT" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-1-1"
-        And I wait 2 seconds
-        And Client with name "client-1-2" with client id "client-1" user "kapua-broker" password "kapua-password" is connected
-        And I wait 2 seconds
+    And topic "$EDC/kapua-sys/client-1/MQTT/BIRTH" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-1-1"
+    And topic "$EDC/kapua-sys/client-1/MQTT/CONNECT" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-1-1"
+    And I wait 2 seconds
+    And Client with name "client-1-2" with client id "client-1" user "kapua-broker" password "kapua-password" is connected
+    And I wait 2 seconds
     Then Client named "client-1-1" is not connected
-        And Client named "client-1-2" is connected
+    And Client named "client-1-2" is connected
     Then Disconnect client with name "client-1-1"
-        And Disconnect client with name "client-1-2"
+    And Disconnect client with name "client-1-2"
 
-@teardown
+  @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment

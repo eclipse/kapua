@@ -12,8 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag.internal;
 
-import com.google.inject.Provides;
-import com.google.inject.multibindings.ProvidesIntoSet;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.eclipse.kapua.commons.configuration.AccountRelativeFinder;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
@@ -27,6 +28,7 @@ import org.eclipse.kapua.commons.jpa.EntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.model.domains.Domains;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.domain.DomainEntry;
@@ -36,10 +38,11 @@ import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagRepository;
 import org.eclipse.kapua.service.tag.TagService;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 
 public class TagModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
         bind(TagFactory.class).to(TagFactoryImpl.class);
@@ -73,7 +76,8 @@ public class TagModule extends AbstractKapuaModule {
             RootUserTester rootUserTester,
             AccountRelativeFinder accountRelativeFinder,
             TagRepository tagRepository,
-            EntityCacheFactory entityCacheFactory
+            EntityCacheFactory entityCacheFactory,
+            XmlUtil xmlUtil
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
@@ -87,7 +91,8 @@ public class TagModule extends AbstractKapuaModule {
                         new UsedEntitiesCounterImpl(
                                 factory,
                                 tagRepository
-                        )));
+                        ),
+                        xmlUtil));
     }
 
     @Provides

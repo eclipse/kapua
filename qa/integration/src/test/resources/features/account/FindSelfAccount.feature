@@ -17,10 +17,9 @@
 Feature: Self account find feature
   Finding self accounts require a different logic to be applied to the permission
 
-@setup
-Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+  @setup
+  Scenario: Initialize test environment
+    Given Init Security Context
 
   Scenario: Find self account by id
     When I login as user with name "kapua-sys" and password "kapua-password"
@@ -42,8 +41,8 @@ Scenario: Initialize test environment
       | name      | password          | enabled |
       | test-user | ToManySecrets123# | true    |
     And Add permissions to the last created user
-      | domain    | action |
-      | account   | read   |
+      | domain  | action |
+      | account | read   |
     Given I login as user with name "test-user" and password "ToManySecrets123#"
     And I look for my account by id
     Then I am able to read my account info
@@ -68,8 +67,8 @@ Scenario: Initialize test environment
       | name      | password          | enabled |
       | test-user | ToManySecrets123# | true    |
     And Add permissions to the last created user
-      | domain    | action |
-      | account   | read   |
+      | domain  | action |
+      | account | read   |
     Given I login as user with name "test-user" and password "ToManySecrets123#"
     And I look for my account by id and scope id
     Then I am able to read my account info
@@ -94,12 +93,12 @@ Scenario: Initialize test environment
       | name      | password          | enabled |
       | test-user | ToManySecrets123# | true    |
     And Add permissions to the last created user
-      | domain    | action |
-      | account   | read   |
+      | domain  | action |
+      | account | read   |
     Given I login as user with name "test-user" and password "ToManySecrets123#"
     And I look for my account by name
     Then I am able to read my account info
 
-@teardown
-Scenario: Reset Security Context for all scenarios
-  Given Reset Security Context
+  @teardown
+  Scenario: Reset Security Context for all scenarios
+    Given Reset Security Context

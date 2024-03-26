@@ -18,8 +18,10 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.crypto.CryptoUtil;
 import org.eclipse.kapua.commons.crypto.CryptoUtilImpl;
 import org.eclipse.kapua.commons.crypto.setting.CryptoSettings;
+import org.eclipse.kapua.commons.event.JsonServiceEventMarshaler;
 import org.eclipse.kapua.commons.event.ServiceEventBusDriver;
 import org.eclipse.kapua.commons.event.ServiceEventMarshaler;
+import org.eclipse.kapua.commons.event.XmlServiceEventMarshaler;
 import org.eclipse.kapua.commons.event.jms.JMSServiceEventBus;
 import org.eclipse.kapua.commons.jpa.EventStorer;
 import org.eclipse.kapua.commons.jpa.EventStorerImpl;
@@ -36,6 +38,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.qr.QRCodeBuilder;
 import org.eclipse.kapua.commons.util.qr.QRCodeBuilderImpl;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.domain.Actions;
@@ -60,6 +63,7 @@ public class CommonsModule extends AbstractKapuaModule {
         bind(CryptoUtil.class).to(CryptoUtilImpl.class).in(Singleton.class);
         bind(QRCodeBuilder.class).to(QRCodeBuilderImpl.class).in(Singleton.class);
         bind(KapuaBaseMapper.class).to(KapuaBaseMapperImpl.class).in(Singleton.class);
+        bind(XmlUtil.class).in(Singleton.class);
     }
 
     @ProvidesIntoSet
@@ -85,22 +89,25 @@ public class CommonsModule extends AbstractKapuaModule {
         return new JMSServiceEventBus(systemSetting, commonsMetric, serviceEventMarshaler);
     }
 
+    /**
+     * Very basic mechanism to switch between the XML and JSON implementations provided - if you need a third option, just use an OverridingModule and redefine this wiring completely.
+     */
     @Provides
     @Singleton
-    ServiceEventMarshaler serviceEventMarshaler(SystemSetting systemSetting) throws ClassNotFoundException, InstantiationException, IllegalAccessException, ServiceEventBusException {
+    ServiceEventMarshaler serviceEventMarshaler(XmlUtil xmlUtil) throws ServiceEventBusException {
         final String messageSerializer = SystemSetting.getInstance().getString(SystemSettingKey.EVENT_BUS_MESSAGE_SERIALIZER);
-        // initialize event bus marshaler
-        final Class<?> messageSerializerClazz = Class.forName(messageSerializer);
-        if (ServiceEventMarshaler.class.isAssignableFrom(messageSerializerClazz)) {
-            return (ServiceEventMarshaler) messageSerializerClazz.newInstance();
-        } else {
-            throw new ServiceEventBusException(String.format("Wrong message serializer Object type ('%s')!", messageSerializerClazz));
+        if (XmlServiceEventMarshaler.class.getName().equals(messageSerializer)) {
+            return new XmlServiceEventMarshaler(xmlUtil);
         }
+        if (JsonServiceEventMarshaler.class.getName().equals(messageSerializer)) {
+            return new JsonServiceEventMarshaler(xmlUtil);
+        }
+        throw new ServiceEventBusException(String.format("Wrong message serializer Object type ('%s')!", messageSerializer));
     }
 
     @Provides
     @Singleton
-    ServiceEventBus serviceEventBus(ServiceEventBusDriver serviceEventBusDriver) throws ServiceEventBusException {
+    ServiceEventBus serviceEventBus(ServiceEventBusDriver serviceEventBusDriver) {
         return serviceEventBusDriver.getEventBus();
     }
 }

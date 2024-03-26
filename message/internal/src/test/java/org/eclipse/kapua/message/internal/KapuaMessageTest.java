@@ -13,6 +13,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
+import java.io.StringWriter;
+import java.math.BigInteger;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
+import java.util.UUID;
+
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.KapuaChannel;
@@ -26,14 +33,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.io.StringWriter;
-import java.math.BigInteger;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.UUID;
-
-
 @Category(JUnitTests.class)
 public class KapuaMessageTest {
 
@@ -46,10 +45,11 @@ public class KapuaMessageTest {
     private Date sentDate = Date.from(referenceDate.plusSeconds(10).toInstant());
 
     private Date receivedDate = Date.from(referenceDate.plusMinutes(1).toInstant());
+    private XmlUtil xmlUtil;
 
     @Before
     public void before() throws Exception {
-        XmlUtil.setContextProvider(new MessageJAXBContextProvider());
+        xmlUtil = new XmlUtil(new MessageJAXBContextProvider());
     }
 
     @Test
@@ -113,7 +113,7 @@ public class KapuaMessageTest {
         KapuaMessageUtil.populateKapuaMessage(kapuaMessage, referenceDate);
 
         StringWriter strWriter = new StringWriter();
-        XmlUtil.marshal(kapuaMessage, strWriter);
+        xmlUtil.marshal(kapuaMessage, strWriter);
         Assert.assertEquals(KAPUA_MESSAGE_XML_STR, strWriter.toString());
     }
 

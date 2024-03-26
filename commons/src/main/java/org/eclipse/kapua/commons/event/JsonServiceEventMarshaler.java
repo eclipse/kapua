@@ -12,13 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
+import javax.inject.Inject;
+import javax.xml.bind.JAXBException;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.xml.sax.SAXException;
-
-import javax.xml.bind.JAXBException;
 
 /**
  * Json {@link ServiceEventMarshaler} implementation.
@@ -28,6 +29,12 @@ import javax.xml.bind.JAXBException;
 public class JsonServiceEventMarshaler implements ServiceEventMarshaler {
 
     public static final String CONTENT_TYPE_JSON = "application/json";
+    private final XmlUtil xmlUtil;
+
+    @Inject
+    public JsonServiceEventMarshaler(XmlUtil xmlUtil) {
+        this.xmlUtil = xmlUtil;
+    }
 
     @Override
     public String getContentType() {
@@ -37,7 +44,7 @@ public class JsonServiceEventMarshaler implements ServiceEventMarshaler {
     @Override
     public ServiceEvent unmarshal(String message) throws KapuaException {
         try {
-            return XmlUtil.unmarshalJson(message, ServiceEvent.class);
+            return xmlUtil.unmarshalJson(message, ServiceEvent.class);
         } catch (JAXBException | SAXException e) {
             throw new ServiceEventBusException(e);
         }
@@ -46,7 +53,7 @@ public class JsonServiceEventMarshaler implements ServiceEventMarshaler {
     @Override
     public String marshal(ServiceEvent kapuaEvent) throws ServiceEventBusException {
         try {
-            return XmlUtil.marshalJson(kapuaEvent);
+            return xmlUtil.marshalJson(kapuaEvent);
         } catch (JAXBException e) {
             throw new ServiceEventBusException(e);
         }

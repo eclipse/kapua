@@ -20,10 +20,9 @@ Feature: Device Management Keystore Service Tests
   # Setup
   #
 
-@setup
+  @setup
   Scenario: Start full docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start full docker environment
 
   #
@@ -228,6 +227,6 @@ Feature: Device Management Keystore Service Tests
     Then KuraMock is disconnected
     And I logout
 
-@teardown
+  @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment

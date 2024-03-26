@@ -16,10 +16,10 @@
 Feature: Access Groups
   This feature file contains Unit tests for Access Groups (CRUD tests).
 
-@setup
-@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+  @setup
+  @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
   Scenario: Initialize test environment
-    Given Init Jaxb Context
+    Given Init Mock Locator
 
   Scenario: Creating a valid Access Group with unique name
   Create an Access Group with valid name. Once created, search for it - it should have been created.

@@ -12,8 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.internal;
 
-import com.google.inject.Provides;
-import com.google.inject.multibindings.ProvidesIntoSet;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.eclipse.kapua.commons.configuration.AccountRelativeFinder;
 import org.eclipse.kapua.commons.configuration.CachingServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
@@ -27,6 +28,7 @@ import org.eclipse.kapua.commons.jpa.EntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.KapuaJpaRepositoryConfiguration;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.commons.model.domains.Domains;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
@@ -38,10 +40,11 @@ import org.eclipse.kapua.service.job.JobRepository;
 import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 
 public class JobModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
         bind(JobFactory.class).to(JobFactoryImpl.class);
@@ -83,7 +86,8 @@ public class JobModule extends AbstractKapuaModule {
             AccountRelativeFinder accountRelativeFinder,
             JobRepository jobRepository,
             KapuaJpaRepositoryConfiguration jpaRepoConfig,
-            EntityCacheFactory entityCacheFactory
+            EntityCacheFactory entityCacheFactory,
+            XmlUtil xmlUtil
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
@@ -97,7 +101,8 @@ public class JobModule extends AbstractKapuaModule {
                         new UsedEntitiesCounterImpl(
                                 factory,
                                 jobRepository
-                        )));
+                        ),
+                        xmlUtil));
 
     }
 

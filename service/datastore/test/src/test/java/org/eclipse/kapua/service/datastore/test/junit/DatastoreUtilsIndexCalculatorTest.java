@@ -12,22 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.test.junit;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.util.KapuaDateUtils;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
-import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
-import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,6 +20,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.util.KapuaDateUtils;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Category(JUnitTests.class)
 public class DatastoreUtilsIndexCalculatorTest {
@@ -44,11 +41,6 @@ public class DatastoreUtilsIndexCalculatorTest {
 
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm Z");
     private DatastoreUtils datastoreUtils = new DatastoreUtils(new DatastoreSettings());
-
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        XmlUtil.setContextProvider(new DatastoreJAXBContextProvider());
-    }
 
     @Test
     public void testIndex() throws KapuaException, ParseException {
@@ -131,10 +123,10 @@ public class DatastoreUtilsIndexCalculatorTest {
         };
 
         performFormatValidationTest(null, null, indexes, correctFormatIndexesWhenScopeid1);
-        performFormatValidationTest(sdf.parse("01/01/2024 13:12 +0100"), null , indexes, new String[]{"1-data-message-2024-08-07-12", "1-data-message-2024-23-07-17"});
-        performFormatValidationTest(null, sdf.parse("04/01/2017 13:12 +0100"),indexes, new String[]{"1-data-message-2017-01-02","1-data-message-2017-01-03"});
-        performFormatValidationTest(sdf.parse("01/01/2017 13:12 +0100"), sdf.parse("01/01/2018 13:12 +0100"),indexes, new String[]{"1-data-message-2017-01-02", "1-data-message-2017-01-03"});
-        performFormatValidationTest(sdf.parse("01/01/2018 13:12 +0100"), sdf.parse("01/01/2022 13:12 +0100"),indexes, new String[]{"1-data-message-2021-01"});
+        performFormatValidationTest(sdf.parse("01/01/2024 13:12 +0100"), null, indexes, new String[] { "1-data-message-2024-08-07-12", "1-data-message-2024-23-07-17" });
+        performFormatValidationTest(null, sdf.parse("04/01/2017 13:12 +0100"), indexes, new String[] { "1-data-message-2017-01-02", "1-data-message-2017-01-03" });
+        performFormatValidationTest(sdf.parse("01/01/2017 13:12 +0100"), sdf.parse("01/01/2018 13:12 +0100"), indexes, new String[] { "1-data-message-2017-01-02", "1-data-message-2017-01-03" });
+        performFormatValidationTest(sdf.parse("01/01/2018 13:12 +0100"), sdf.parse("01/01/2022 13:12 +0100"), indexes, new String[] { "1-data-message-2021-01" });
     }
 
     @Test
@@ -191,7 +183,8 @@ public class DatastoreUtilsIndexCalculatorTest {
                 calEndDate != null ? calEndDate.get(Calendar.WEEK_OF_YEAR) : "Infinity",
                 calEndDate != null ? calEndDate.get(Calendar.DAY_OF_WEEK) : "Infinity");
 
-        String[] index = datastoreUtils.convertToDataIndexes(getDataIndexesByAccount(KapuaEid.ONE), startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null, null);
+        String[] index = datastoreUtils.convertToDataIndexes(getDataIndexesByAccount(KapuaEid.ONE), startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null,
+                null);
         compareResult(expectedIndexes, index);
     }
 
@@ -213,14 +206,13 @@ public class DatastoreUtilsIndexCalculatorTest {
                 calEndDate != null ? calEndDate.get(Calendar.WEEK_OF_YEAR) : "Infinity",
                 calEndDate != null ? calEndDate.get(Calendar.DAY_OF_WEEK) : "Infinity");
 
-        String[] index = datastoreUtils.convertToDataIndexes(new String[]{null, null}, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null, null);
+        String[] index = datastoreUtils.convertToDataIndexes(new String[] { null, null }, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null, null);
         compareResult(null, index);
     }
 
-
     private void performFormatValidationTest(Date startDate, Date endDate, String[] inputIndexes, String[] expectedIndexes) throws DatastoreException {
         String[] index = datastoreUtils.convertToDataIndexes(inputIndexes, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null, KapuaId.ONE);
-        compareResult(index,expectedIndexes);
+        compareResult(index, expectedIndexes);
     }
 
     private String[] buildExpectedResult(String scopeId, int startWeek, int startYear, int endWeek, int endYear, int[] weekCountByYear) {
@@ -253,6 +245,6 @@ public class DatastoreUtilsIndexCalculatorTest {
     }
 
     private String[] getDataIndexesByAccount(KapuaId scopeId) {
-        return buildExpectedResult("1", 1, 2015, 52, 2018, new int[]{53, 52, 52, 52});
+        return buildExpectedResult("1", 1, 2015, 52, 2018, new int[] { 53, 52, 52, 52 });
     }
 }

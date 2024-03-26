@@ -36,6 +36,7 @@ import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreServiceImpl;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.domain.Actions;
@@ -140,7 +141,8 @@ public class AccountModule extends AbstractKapuaModule implements Module {
             AccountRelativeFinder accountRelativeFinder,
             AccountRepository accountRepository,
             KapuaJpaRepositoryConfiguration jpaRepoConfig,
-            EntityCacheFactory entityCacheFactory
+            EntityCacheFactory entityCacheFactory,
+            XmlUtil xmlUtil
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
                 new ResourceLimitedServiceConfigurationManagerImpl(
@@ -153,7 +155,8 @@ public class AccountModule extends AbstractKapuaModule implements Module {
                         accountRelativeFinder,
                         new UsedEntitiesCounterImpl(
                                 factory,
-                                accountRepository)
+                                accountRepository),
+                        xmlUtil
                 ));
     }
 

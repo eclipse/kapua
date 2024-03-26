@@ -12,13 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.test;
 
-import com.codahale.metrics.MetricRegistry;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
-import com.google.inject.name.Names;
-import io.cucumber.java.Before;
 import org.eclipse.kapua.commons.configuration.AccountRelativeFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
@@ -34,11 +27,13 @@ import org.eclipse.kapua.commons.metric.MetricsServiceImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.internal.cache.CacheManagerProvider;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
+import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
@@ -89,6 +84,15 @@ import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.codahale.metrics.MetricRegistry;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import com.google.inject.name.Names;
+
+import io.cucumber.java.Before;
 
 @Singleton
 public class JobLocatorConfiguration {
@@ -174,7 +178,8 @@ public class JobLocatorConfiguration {
                         new JobStepFactoryImpl(),
                         jobExecutionService,
                         new JobExecutionFactoryImpl(),
-                        new JobStepDefinitionImplJpaRepository(jpaRepoConfig)
+                        new JobStepDefinitionImplJpaRepository(jpaRepoConfig),
+                        new XmlUtil(new TestJAXBContextProvider())
                 ));
                 bind(JobStepFactory.class).toInstance(new JobStepFactoryImpl());
                 bind(JobTargetService.class).toInstance(new JobTargetServiceImpl(

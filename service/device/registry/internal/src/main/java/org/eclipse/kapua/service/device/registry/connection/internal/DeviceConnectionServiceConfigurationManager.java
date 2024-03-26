@@ -12,11 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.internal;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerImpl;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
@@ -28,11 +34,6 @@ import org.eclipse.kapua.service.device.registry.KapuaDeviceRegistrySettings;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.storage.TxContext;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * {@link DeviceConnection} {@link ServiceConfigurationManager} implementation.
@@ -49,10 +50,14 @@ public class DeviceConnectionServiceConfigurationManager extends ServiceConfigur
     /**
      * Constructor.
      *
-     * @param serviceConfigRepository           The {@link ServiceConfigRepository} instance.
-     * @param rootUserTester                    The {@link RootUserTester} instance.
-     * @param availableDeviceConnectionAdapters The {@link Map} of available {@link DeviceConnectionCredentialAdapter}.
-     * @param kapuaMetatypeFactory              The {@link KapuaMetatypeFactory} instance.
+     * @param serviceConfigRepository
+     *         The {@link ServiceConfigRepository} instance.
+     * @param rootUserTester
+     *         The {@link RootUserTester} instance.
+     * @param availableDeviceConnectionAdapters
+     *         The {@link Map} of available {@link DeviceConnectionCredentialAdapter}.
+     * @param kapuaMetatypeFactory
+     *         The {@link KapuaMetatypeFactory} instance.
      * @since 2.0.0
      */
     public DeviceConnectionServiceConfigurationManager(
@@ -60,8 +65,9 @@ public class DeviceConnectionServiceConfigurationManager extends ServiceConfigur
             RootUserTester rootUserTester,
             Map<String, DeviceConnectionCredentialAdapter> availableDeviceConnectionAdapters,
             KapuaMetatypeFactory kapuaMetatypeFactory,
-            KapuaDeviceRegistrySettings kapuaDeviceRegistrySettings) {
-        super(DeviceConnectionService.class.getName(), serviceConfigRepository, rootUserTester);
+            KapuaDeviceRegistrySettings kapuaDeviceRegistrySettings,
+            XmlUtil xmlUtil) {
+        super(DeviceConnectionService.class.getName(), serviceConfigRepository, rootUserTester, xmlUtil);
 
         this.availableDeviceConnectionAdapters = availableDeviceConnectionAdapters;
         this.kapuaMetatypeFactory = kapuaMetatypeFactory;
@@ -76,9 +82,12 @@ public class DeviceConnectionServiceConfigurationManager extends ServiceConfigur
      *     <li>to insert dynamic {@link KapuaToption} for 'deviceConnectionAuthenticationType' {@link KapuaTad}</li>
      * </ul>
      *
-     * @param txContext       The {@link TxContext}.
-     * @param scopeId         The scope {@link KapuaId}.
-     * @param excludeDisabled Whether to exclude disabled {@link KapuaTocd}s and {@link KapuaTad}s.
+     * @param txContext
+     *         The {@link TxContext}.
+     * @param scopeId
+     *         The scope {@link KapuaId}.
+     * @param excludeDisabled
+     *         Whether to exclude disabled {@link KapuaTocd}s and {@link KapuaTad}s.
      * @return The {@link DeviceConnectionService} {@link KapuaTocd}.
      * @throws KapuaException
      * @since 2.0.0
@@ -117,7 +126,8 @@ public class DeviceConnectionServiceConfigurationManager extends ServiceConfigur
     /**
      * Looks for the {@link KapuaTad} with 'deviceConnectionAuthenticationType' {@link KapuaTad#getId()}.
      *
-     * @param deviceConnectionServiceConfigDefinition The {@link DeviceConnectionService} {@link KapuaTad}.
+     * @param deviceConnectionServiceConfigDefinition
+     *         The {@link DeviceConnectionService} {@link KapuaTad}.
      * @return The {@link Optional} {@link KapuaTad}
      * @since 2.0.0
      */
