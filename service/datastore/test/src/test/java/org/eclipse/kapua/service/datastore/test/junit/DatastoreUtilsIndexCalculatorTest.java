@@ -191,7 +191,7 @@ public class DatastoreUtilsIndexCalculatorTest {
                 calEndDate != null ? calEndDate.get(Calendar.WEEK_OF_YEAR) : "Infinity",
                 calEndDate != null ? calEndDate.get(Calendar.DAY_OF_WEEK) : "Infinity");
 
-        String[] index = datastoreUtils.convertToDataIndexes(getDataIndexesByAccount(KapuaEid.ONE), startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null, null);
+        String[] index = datastoreUtils.filterIndexesTemporalWindow(getDataIndexesByAccount(KapuaEid.ONE), startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null, null);
         compareResult(expectedIndexes, index);
     }
 
@@ -213,13 +213,13 @@ public class DatastoreUtilsIndexCalculatorTest {
                 calEndDate != null ? calEndDate.get(Calendar.WEEK_OF_YEAR) : "Infinity",
                 calEndDate != null ? calEndDate.get(Calendar.DAY_OF_WEEK) : "Infinity");
 
-        String[] index = datastoreUtils.convertToDataIndexes(new String[]{null, null}, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null, null);
+        String[] index = datastoreUtils.filterIndexesTemporalWindow(new String[]{null, null}, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null, null);
         compareResult(null, index);
     }
 
 
     private void performFormatValidationTest(Date startDate, Date endDate, String[] inputIndexes, String[] expectedIndexes) throws DatastoreException {
-        String[] index = datastoreUtils.convertToDataIndexes(inputIndexes, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null, KapuaId.ONE);
+        String[] index = datastoreUtils.filterIndexesTemporalWindow(inputIndexes, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null, KapuaId.ONE);
         compareResult(index,expectedIndexes);
     }
 

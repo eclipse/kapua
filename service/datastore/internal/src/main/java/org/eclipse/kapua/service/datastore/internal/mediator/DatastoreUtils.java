@@ -13,10 +13,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.mediator;
 
-import com.google.common.hash.Hashing;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
+import org.eclipse.kapua.service.elasticsearch.client.AbstractStoreUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
@@ -25,23 +25,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
-import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAccessor;
-import java.time.temporal.WeekFields;
-import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -49,44 +37,17 @@ import java.util.regex.Pattern;
  *
  * @since 1.0.0
  */
-public class DatastoreUtils {
+public class DatastoreUtils extends AbstractStoreUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(DatastoreUtils.class);
     private final DatastoreSettings datastoreSettings;
-
-    private enum IndexType {CHANNEL, CLIENT, METRIC}
-
     @Inject
     public DatastoreUtils(DatastoreSettings datastoreSettings) {
+        super();
         this.datastoreSettings = datastoreSettings;
-        dataIndexFormatterWeek = new DateTimeFormatterBuilder()
-                .parseDefaulting(WeekFields.ISO.dayOfWeek(), 1)
-                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
-                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-                .appendPattern("YYYY-ww")
-                .toFormatter(KapuaDateUtils.getLocale())
-                .withLocale(KapuaDateUtils.getLocale())
-                .withResolverStyle(ResolverStyle.STRICT)
-                .withZone(KapuaDateUtils.getTimeZone());
-        dataIndexFormatterDay = new DateTimeFormatterBuilder()
-                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
-                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-                .appendPattern("YYYY-ww-ee")
-                .toFormatter(KapuaDateUtils.getLocale())
-                .withLocale(KapuaDateUtils.getLocale())
-                .withResolverStyle(ResolverStyle.STRICT)
-                .withZone(KapuaDateUtils.getTimeZone());
-        dataIndexFormatterHour = new DateTimeFormatterBuilder()
-                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-                .appendPattern("YYYY-ww-ee-HH")
-                .toFormatter(KapuaDateUtils.getLocale())
-                .withLocale(KapuaDateUtils.getLocale())
-                .withResolverStyle(ResolverStyle.STRICT)
-                .withZone(KapuaDateUtils.getTimeZone());
     }
+
+    private enum IndexType {CHANNEL, CLIENT, METRIC}
 
     private static final char SPECIAL_DOT = '.';
     private static final String SPECIAL_DOT_ESC = "$2e";
@@ -96,9 +57,6 @@ public class DatastoreUtils {
 
     private static final String UNKNOWN_TYPE = "Unknown type [%s]";
     private static final String TYPE_CANNOT_BE_CONVERTED = "Type [%s] cannot be converted to Double!";
-
-    public static final CharSequence ILLEGAL_CHARS = "\"\\/*?<>|,. ";
-
     public static final String CLIENT_METRIC_TYPE_STRING = "string";
     public static final String CLIENT_METRIC_TYPE_INTEGER = "integer";
     public static final String CLIENT_METRIC_TYPE_LONG = "long";
@@ -123,43 +81,6 @@ public class DatastoreUtils {
 
     public static final String DATASTORE_DATE_FORMAT = "8" + KapuaDateUtils.ISO_DATE_PATTERN; // example 2017-01-24T11:22:10.999Z
 
-    private final DateTimeFormatter dataIndexFormatterWeek;
-    private final DateTimeFormatter dataIndexFormatterDay;
-    private final DateTimeFormatter dataIndexFormatterHour;
-
-    /**
-     * Return the hash code for the provided components (typically components are a sequence of account - client id - channel ...)
-     *
-     * @param components
-     * @return
-     */
-    public String getHashCode(String... components) {
-        String concatString = "";
-        for (String str : components) {
-            concatString = concatString.concat(str);
-        }
-
-        byte[] hashCode = Hashing.sha256()
-                .hashString(concatString, StandardCharsets.UTF_8)
-                .asBytes();
-
-        // ES 5.2 FIX
-        // return Base64.encodeBytes(hashCode);
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(hashCode);
-    }
-
-    private String normalizeIndexName(String name) {
-        String normName = null;
-        try {
-            checkIdxAliasName(name);
-            normName = name;
-        } catch (IllegalArgumentException exc) {
-            LOG.trace(exc.getMessage(), exc);
-            normName = name.toLowerCase().replace(ILLEGAL_CHARS, "_");
-            checkIdxAliasName(normName);
-        }
-        return normName;
-    }
 
     /**
      * Normalize the metric name to be compliant to Kapua/Elasticserach constraints.<br>
@@ -204,54 +125,7 @@ public class DatastoreUtils {
     }
 
     /**
-     * Check the index alias correctness.<br>
-     * The alias cnnot be null, starts with '_', contains uppercase character or contains {@link DatastoreUtils#ILLEGAL_CHARS}
-     *
-     * @param alias
-     * @since 1.0.0
-     */
-    public void checkIdxAliasName(String alias) {
-        if (alias == null || alias.isEmpty()) {
-            throw new IllegalArgumentException(String.format("Alias name cannot be %s", alias == null ? "null" : "empty"));
-        }
-        if (alias.startsWith("_")) {
-            throw new IllegalArgumentException(String.format("Alias name cannot start with _"));
-        }
-        for (int i = 0; i < alias.length(); i++) {
-            if (Character.isUpperCase(alias.charAt(i))) {
-                throw new IllegalArgumentException(String.format("Alias name cannot contain uppercase chars [found %s]", alias.charAt(i)));
-            }
-        }
-        if (alias.contains(ILLEGAL_CHARS)) {
-            throw new IllegalArgumentException(String.format("Alias name cannot contain special chars [found oneof %s]", ILLEGAL_CHARS));
-        }
-    }
-
-    /**
-     * Check the index name ({@link DatastoreUtils#checkIdxAliasName(String index)}
-     *
-     * @param index
-     * @since 1.0.0
-     */
-    public void checkIdxName(String index) {
-        checkIdxAliasName(index);
-    }
-
-    /**
-     * Normalize the index alias name and replace the '-' with '_'
-     *
-     * @param alias
-     * @return The normalized index alias
-     * @since 1.0.0
-     */
-    public String normalizeIndexAliasName(String alias) {
-        String aliasName = normalizeIndexName(alias);
-        aliasName = aliasName.replace("-", "_");
-        return aliasName;
-    }
-
-    /**
-     * Normalize the account index name and and the suffix '-*'
+     * Get the data index for the specified scopeId
      *
      * @param scopeId
      * @return
@@ -331,16 +205,6 @@ public class DatastoreUtils {
     }
 
     /**
-     * Normalize the index ({@link DatastoreUtils#normalizeIndexName(String index)}
-     *
-     * @param index
-     * @return
-     */
-    public String normalizedIndexName(String index) {
-        return normalizeIndexName(index);
-    }
-
-    /**
      * Return the list of the data indexes between start and windowEnd instant by scope id.
      * Only the indexes that will be *FULLY* included in the list (i.e. with a starting date ON OR AFTER the window start AND
      * the end date ON OR BEFORE the window end will be returned
@@ -359,93 +223,20 @@ public class DatastoreUtils {
      * @return The list of the data indexes between start and end
      * @throws DatastoreException
      */
-    public String[] convertToDataIndexes(@NotNull String[] indexes, Instant windowStart, Instant windowEnd, KapuaId scopeId) throws DatastoreException {
-        boolean skipTemporalValidation = false;
-        if (windowStart == null && windowEnd == null) {
-            skipTemporalValidation = true;
+    public String[] filterIndexesTemporalWindow(@NotNull String[] indexes, Instant windowStart, Instant windowEnd, KapuaId scopeId) throws DatastoreException {
+        try {
+            return super.filterIndexesTemporalWindow(indexes, windowStart, windowEnd, scopeId);
+        } catch (Exception ex) {
+            throw new DatastoreException(KapuaErrorCodes.ILLEGAL_ARGUMENT, ex);
         }
-        List<String> result = new ArrayList<>();
-        for (String index : indexes) {
-            if (index == null) {
-                continue;
-            }
-            if (scopeId != null && (!validatePrefixIndex(index, scopeId))) {
-                continue;
-            }
-            String strippedIndex = stripPrefixAndAccount(index);
-            int fragments = strippedIndex.split("-").length;
-            DateTimeFormatter formatter;
-            ChronoUnit indexUnit;
-            int indexWidth;
-            switch (fragments) {
-                case 2:
-                default:
-                    // YYYY-ww
-                    formatter = dataIndexFormatterWeek;
-                    indexUnit = ChronoUnit.DAYS;
-                    indexWidth = 7;
-                    break;
-                case 3:
-                    // YYYY-ww-ee
-                    formatter = dataIndexFormatterDay;
-                    indexUnit = ChronoUnit.DAYS;
-                    indexWidth = 1;
-                    break;
-                case 4:
-                    // YYYY-ww-ee-HH
-                    formatter = dataIndexFormatterHour;
-                    indexUnit = ChronoUnit.HOURS;
-                    indexWidth = 1;
-                    break;
-            }
-            TemporalAccessor temporalAccessor;
-            try {
-                temporalAccessor = formatter.parse(strippedIndex);
-            } catch (DateTimeParseException e) {
-                //unable to parse...the format is not right so don't add this index into result-set
-                continue;
-            }
-            if (skipTemporalValidation) { //this index passed format validation...proceed to next index
-                result.add(index);
-                continue;
-            }
-            try {
-                Instant indexStart = LocalDateTime.of(
-                        temporalAccessor.get(ChronoField.YEAR),
-                        temporalAccessor.get(ChronoField.MONTH_OF_YEAR),
-                        temporalAccessor.get(ChronoField.DAY_OF_MONTH),
-                        temporalAccessor.get(ChronoField.HOUR_OF_DAY),
-                        temporalAccessor.get(ChronoField.MINUTE_OF_HOUR),
-                        temporalAccessor.get(ChronoField.SECOND_OF_MINUTE)
-                ).toInstant(ZoneOffset.UTC);
-                Instant indexEnd = indexStart.plus(indexWidth, indexUnit).minusNanos(1);
-
-                if (windowStart == null && isIndexFullyBeforeInstant(indexStart, indexEnd, windowEnd) ||
-                        (windowEnd == null && isIndexFullyAfterInstant(indexStart, indexEnd, windowStart)) ||
-                        (windowStart != null && windowEnd != null && isIndexFullyAfterInstant(indexStart, indexEnd, windowStart) && isIndexFullyBeforeInstant(indexStart, indexEnd, windowEnd))) {
-                    result.add(index);
-                }
-            } catch (Exception ex) {
-                throw new DatastoreException(KapuaErrorCodes.ILLEGAL_ARGUMENT, ex);
-            }
-        }
-        return result.toArray(new String[0]);
     }
 
-    private boolean validatePrefixIndex(@NotNull String index,@NotNull KapuaId scopeId) {
+    protected boolean validatePrefixIndex(@NotNull String index,@NotNull KapuaId scopeId) {
         String genericIndexFormat = getDataIndexName(scopeId);
         return index.startsWith(genericIndexFormat.substring(0, genericIndexFormat.length() - 1));
     }
 
-    private boolean isIndexFullyAfterInstant(@NotNull Instant indexStart, @NotNull Instant indexEnd, @NotNull Instant checkpoint) {
-        return !indexStart.isBefore(checkpoint) && !indexEnd.isBefore(checkpoint);
-    }
-
-    private boolean isIndexFullyBeforeInstant(@NotNull Instant indexStart, @NotNull Instant indexEnd, @NotNull Instant checkpoint) {
-        return !indexStart.isAfter(checkpoint) && !indexEnd.isAfter(checkpoint);
-    }
-
-    private String stripPrefixAndAccount(@NotNull String index) {
+    protected String stripPrefixAndAccount(@NotNull String index) {
         return StringUtils.substringAfter(index, "-data-message-");
     }
 
