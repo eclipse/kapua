@@ -28,6 +28,12 @@ ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=100
 
 ENV JOB_ENGINE_BASE_ADDR http://job-engine:8080/v1
 
+ARG COMMONS_VERSION
+ARG COMMONS_BUILD_NUMBER
+
+ENV COMMONS_VERSION ${COMMONS_VERSION}
+ENV COMMONS_BUILD_NUMBER ${COMMONS_BUILD_NUMBER}
+
 ENV JAVA_OPTS "-Dapi.cors.origins.allowed=\${API_CORS_ORIGINS_ALLOWED} \
                -Dcommons.db.schema.update=true \
                -Dlocator.guice.stage=PRODUCTION \
@@ -56,3 +62,5 @@ RUN chown -R 1000:0 /opt/jetty /var/opt/jetty && \
     chmod -R g=u /opt/jetty /var/opt/jetty
 
 USER 1000
+
+ENTRYPOINT /var/opt/jetty/run-api $COMMONS_VERSION $COMMONS_BUILD_NUMBER

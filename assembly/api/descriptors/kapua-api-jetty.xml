@@ -69,5 +69,10 @@
             <source>${project.build.directory}/tmp/openapi.yaml</source>
             <outputDirectory>var/opt/jetty/webapps/root/doc</outputDirectory>
         </file>
+        <file>
+            <source>${project.basedir}/entrypoint/run-api</source>
+            <outputDirectory>var/opt/jetty</outputDirectory>
+            <fileMode>0777</fileMode>
+        </file>
     </files>
 </assembly>

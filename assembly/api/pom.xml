@@ -27,6 +27,8 @@
 
     <properties>
         <swagger-cli.executable>swagger-cli</swagger-cli.executable>
+        <commons.build.number>unknown</commons.build.number>
+        <commons.version>${project.version}</commons.version>
     </properties>
 
     <dependencies>
@@ -284,6 +286,7 @@
                             </arguments>
                         </configuration>
                     </execution>
+
                 </executions>
             </plugin>
             <plugin>
@@ -337,6 +340,10 @@
                                         </assembly>
                                         <dockerFile>${project.basedir}/docker/Dockerfile</dockerFile>
                                         <filter>@</filter>
+                                        <args>
+                                            <COMMONS_VERSION>${commons.version}</COMMONS_VERSION>
+                                            <COMMONS_BUILD_NUMBER>${commons.build.number}</COMMONS_BUILD_NUMBER>
+                                        </args>
                                     </build>
                                 </image>
                             </images>
