@@ -22,6 +22,7 @@ import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.SortOrder;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.execution.JobExecutionAttributes;
@@ -36,6 +37,7 @@ import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetListResult;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
+import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -81,6 +83,7 @@ public class JobTargets extends AbstractKapuaResource {
     public JobTargetListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("jobId") EntityId jobId,
+            @QueryParam("status") JobTargetStatus status,
             @QueryParam("sortParam") String sortParam,
             @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("askTotalCount") boolean askTotalCount,
@@ -88,7 +91,13 @@ public class JobTargets extends AbstractKapuaResource {
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         JobTargetQuery query = jobTargetFactory.newQuery(scopeId);
 
-        query.setPredicate(query.attributePredicate(JobTargetAttributes.JOB_ID, jobId));
+        AndPredicate andPredicate = query.andPredicate(query.attributePredicate(JobExecutionAttributes.JOB_ID, jobId));
+
+        if (status != null) {
+            andPredicate.and(query.attributePredicate(JobTargetAttributes.STATUS, status));
+        }
+
+        query.setPredicate(andPredicate);
 
         if (!Strings.isNullOrEmpty(sortParam)) {
             query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
@@ -98,7 +107,7 @@ public class JobTargets extends AbstractKapuaResource {
         query.setOffset(offset);
         query.setLimit(limit);
 
-        return query(scopeId, jobId, query);
+        return jobTargetService.query(query);
     }
 
     /**

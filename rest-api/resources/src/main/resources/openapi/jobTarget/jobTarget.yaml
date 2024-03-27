@@ -22,6 +22,13 @@ components:
       schema:
         $ref: '../openapi.yaml#/components/schemas/kapuaId'
       required: true
+    jobTargetStatus:
+      name: status
+      in: query
+      description: the status of the job target
+      schema:
+        $ref: '#/components/schemas/jobTargetStatus'
+      required: false
   schemas:
     jobTargetCreator:
       allOf:
