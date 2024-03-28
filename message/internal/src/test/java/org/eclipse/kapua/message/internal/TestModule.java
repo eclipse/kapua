@@ -47,6 +47,9 @@ public class TestModule extends AbstractKapuaModule {
     @Singleton
     ServiceEventBusDriver serviceEventBusDriver() {
         return new ServiceEventBusDriver() {
+
+            private Boolean connected = Boolean.FALSE;
+
             @Override
             public String getType() {
                 return "test";
@@ -54,12 +57,12 @@ public class TestModule extends AbstractKapuaModule {
 
             @Override
             public void start() throws ServiceEventBusException {
-                //Nothing to do!
+                connected = Boolean.TRUE;
             }
 
             @Override
             public void stop() throws ServiceEventBusException {
-                //Nothing to do!
+                connected = Boolean.FALSE;
             }
 
             @Override
@@ -75,6 +78,11 @@ public class TestModule extends AbstractKapuaModule {
                         //Nothing to do!
                     }
                 };
+            }
+
+            @Override
+            public Boolean isConnected() {
+                return connected;
             }
         };
     }

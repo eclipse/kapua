@@ -26,15 +26,10 @@ import javax.inject.Singleton;
 @Singleton
 public class MetricsSecurityPlugin {
 
-    private static final String CONNECTION = "connection";
-    private static final String SESSION = "session";
     private static final String ACL = "acl";
-    private static final String BROKER_CONNECTION = "broker_connection";
     private static final String SESSION_CONTEXT = "session_context";
     private static final String SESSION_CONTEXT_BY_CLIENT = "session_context_by_client";
     private static final String ACTIVE_CONNECTION = "active_connection";
-    private static final String DISK_USAGE = "disk_usage";
-    private static final String TOTAL_CONNECTION = "total_connection";
     private static final String TOTAL_MESSAGE = "total_message";
     private static final String TOTAL_MESSAGE_ACKNOWLEDGED = "total_message_acknowledged";
     private static final String TOTAL_MESSAGE_ADDED = "total_message_added";
@@ -57,12 +52,6 @@ public class MetricsSecurityPlugin {
         metricsService.registerGauge(aclSize, metricModuleName, LoginMetric.COMPONENT_LOGIN, ACL);
         metricsService.registerGauge(activeConnection, metricModuleName, LoginMetric.COMPONENT_LOGIN, ACTIVE_CONNECTION);
 
-        metricsService.registerGauge(() -> server.getSessions().size(), metricModuleName, LoginMetric.COMPONENT_LOGIN, SESSION);
-        metricsService.registerGauge(() -> server.getConnectionCount(), metricModuleName, LoginMetric.COMPONENT_LOGIN, CONNECTION);
-        metricsService.registerGauge(() -> server.getBrokerConnections().size(), metricModuleName, LoginMetric.COMPONENT_LOGIN, BROKER_CONNECTION);
-        //from broker
-        metricsService.registerGauge(() -> server.getDiskStoreUsage(), metricModuleName, LoginMetric.COMPONENT_LOGIN, DISK_USAGE, MetricsLabel.SIZE);
-        metricsService.registerGauge(() -> server.getTotalConnectionCount(), metricModuleName, LoginMetric.COMPONENT_LOGIN, TOTAL_CONNECTION, MetricsLabel.SIZE);
         metricsService.registerGauge(() -> server.getTotalMessageCount(), metricModuleName, LoginMetric.COMPONENT_LOGIN, TOTAL_MESSAGE, MetricsLabel.SIZE);
         metricsService.registerGauge(() -> server.getTotalMessagesAcknowledged(), metricModuleName, LoginMetric.COMPONENT_LOGIN, TOTAL_MESSAGE_ACKNOWLEDGED, MetricsLabel.SIZE);
         metricsService.registerGauge(() -> server.getTotalMessagesAdded(), metricModuleName, LoginMetric.COMPONENT_LOGIN, TOTAL_MESSAGE_ADDED, MetricsLabel.SIZE);
