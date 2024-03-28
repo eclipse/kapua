@@ -28,13 +28,16 @@ public class PublishMetric {
     public static final String PUBLISH = "publish";
 
     public static final String ALLOWED = "allowed";
+    public static final String INTERNAL = "internal";
     public static final String NOT_ALLOWED = "not_allowed";
 
     private final Counter allowedMessages;
+    private final Counter allowedMessagesInternal;
     private final Counter notAllowedMessages;
     private final Timer time;
     // message size
     private final Histogram messageSizeAllowed;
+    private final Histogram messageSizeAllowedInternal;
 
     @Inject
     private PublishMetric(MetricsService metricsService,
@@ -42,10 +45,16 @@ public class PublishMetric {
                           String metricModuleName) {
         // publish/subscribe
         allowedMessages = metricsService.getCounter(metricModuleName, PUBLISH, ALLOWED);
+        allowedMessagesInternal = metricsService.getCounter(metricModuleName, PUBLISH, INTERNAL, ALLOWED);
         notAllowedMessages = metricsService.getCounter(metricModuleName, PUBLISH, NOT_ALLOWED);
         time = metricsService.getTimer(metricModuleName, PUBLISH, MetricsLabel.TIME, MetricsLabel.SECONDS);
         // message size
         messageSizeAllowed = metricsService.getHistogram(metricModuleName, PUBLISH, ALLOWED, MetricsLabel.SIZE, MetricsLabel.BYTES);
+        messageSizeAllowedInternal = metricsService.getHistogram(metricModuleName, PUBLISH, INTERNAL, ALLOWED, MetricsLabel.SIZE, MetricsLabel.BYTES);
+    }
+
+    public Counter getAllowedMessagesInternal() {
+        return allowedMessagesInternal;
     }
 
     public Counter getAllowedMessages() {
@@ -60,8 +69,11 @@ public class PublishMetric {
         return time;
     }
 
+    public Histogram getMessageSizeAllowedInternal() {
+        return messageSizeAllowedInternal;
+    }
+
     public Histogram getMessageSizeAllowed() {
         return messageSizeAllowed;
     }
-
 }

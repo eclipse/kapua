@@ -242,15 +242,16 @@ public class ServerPlugin implements ActiveMQServerPlugin {
                 logger.info("Published message size over threshold. size: {} - destination: {} - account id: {} - username: {} - clientId: {}",
                         messageSize, address, sessionContext.getAccountName(), sessionContext.getUsername(), sessionContext.getClientId());
             }
+            publishMetric.getMessageSizeAllowed().update(messageSize);
         } else {
             if (publishInfoMessageSizeLimit < messageSize) {
                 logger.info("Published message size over threshold. size: {} - destination: {}",
                         messageSize, address);
             }
             message.putBooleanProperty(MessageConstants.HEADER_KAPUA_BROKER_CONTEXT, true);
+            publishMetric.getMessageSizeAllowedInternal().update(messageSize);
         }
         message.putStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC, address);
-        publishMetric.getMessageSizeAllowed().update(messageSize);
         serverContext.getAddressAccessTracker().update(address);
         logger.debug("Published message on address {} from clientId: {} - clientIp: {}", address, sessionContext.getClientId(), sessionContext.getClientIp());
         ActiveMQServerPlugin.super.beforeSend(session, tx, message, direct, noAutoCreateQueue);

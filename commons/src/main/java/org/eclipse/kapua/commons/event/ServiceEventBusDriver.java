@@ -28,4 +28,6 @@ public interface ServiceEventBusDriver {
     public void stop() throws ServiceEventBusException;
 
     public ServiceEventBus getEventBus();
+
+    public Boolean isConnected();
 }
