@@ -23,7 +23,7 @@ paths:
         - $ref: '../job/job.yaml#/components/parameters/jobId'
         - $ref: './jobEngine.yaml#/components/parameters/executionId'
       responses:
-        204:
+        202:
           description: The Job Engine has received the Resume Execution request
         400:
           $ref: '../openapi.yaml#/components/responses/illegalArgument'
