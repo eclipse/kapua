@@ -258,6 +258,13 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                         break;
                 }
             } else {
+                switch (checkType) {
+                case SEND:
+                    publishMetric.getAllowedMessagesInternal().inc();
+                    break;
+                default:
+                    break;
+                }
                 allowed = true;
             }
         }
