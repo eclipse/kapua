@@ -12,6 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBException;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
@@ -21,15 +31,7 @@ import org.eclipse.kapua.commons.rest.model.IsJobRunningResponse;
 import org.eclipse.kapua.commons.rest.model.MultipleJobIdRequest;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
-
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.MediaType;
-import javax.xml.bind.JAXBException;
+import org.eclipse.kapua.job.engine.exception.JobNotRunningException;
 
 @Path("{scopeId}/jobs")
 public class JobEngine extends AbstractKapuaResource {
@@ -49,10 +51,15 @@ public class JobEngine extends AbstractKapuaResource {
 
     @POST
     @Path("{jobId}/_stop")
-    public void stopJob(
+    public Response stopJob(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("jobId") EntityId jobId) throws KapuaException {
-        jobEngineService.stopJob(scopeId, jobId);
+        try {
+            jobEngineService.stopJob(scopeId, jobId);
+            return Response.accepted().build();
+        } catch (JobNotRunningException jobNotRunningException) {
+            return Response.accepted().build();
+        }
     }
 
     @GET
@@ -82,11 +89,16 @@ public class JobEngine extends AbstractKapuaResource {
 
     @POST
     @Path("{jobId}/executions/{executionId}/_stop")
-    public void stopJobExecution(
+    public Response stopJobExecution(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("jobId") EntityId jobId,
             @PathParam("executionId") EntityId executionId) throws KapuaException {
-        jobEngineService.stopJobExecution(scopeId, jobId, executionId);
+        try {
+            jobEngineService.stopJobExecution(scopeId, jobId, executionId);
+            return Response.accepted().build();
+        } catch (JobNotRunningException jobNotRunningException) {
+            return Response.accepted().build();
+        }
     }
 
 }
