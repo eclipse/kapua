@@ -50,7 +50,7 @@ paths:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: '../job/job.yaml#/components/parameters/jobId'
       responses:
-        204:
+        202:
           description: The Stop operation has been received by the Job Engine
         400:
           $ref: '../openapi.yaml#/components/responses/illegalArgument'
