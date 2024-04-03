@@ -48,7 +48,7 @@ public class Client {
         connection.setExceptionListener(new JMSExceptionListner(connectionStatus, clientId));
         connection.setClientID(clientId);
         connection.start();
-        session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         logger.info("AMQP client binding request sender to: {}", requestAddress);
         logger.info("AMQP client binding message listener to: {}", replyAddress);
         consumer = session.createConsumer(session.createQueue(replyAddress));
