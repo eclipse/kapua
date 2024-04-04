@@ -47,6 +47,7 @@ ENV JAVA_OPTS "-Dapi.cors.origins.allowed=\${API_CORS_ORIGINS_ALLOWED} \
                -Dcrypto.secret.key=\${CRYPTO_SECRET_KEY} \
                -Dauthentication.token.expire.after=\${AUTH_TOKEN_TTL} \
                -Dauthentication.refresh.token.expire.after=\${REFRESH_AUTH_TOKEN_TTL} \
+               -Dapi.cors.refresh.interval=\${CORS_ENDPOINTS_REFRESH_INTERVAL} \
                \${JETTY_DEBUG_OPTS} \
                \${JETTY_JMX_OPTS}"
 

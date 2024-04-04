@@ -109,3 +109,6 @@ FROM schdl_trigger;
 
 DELETE
 FROM schdl_trigger_properties;
+
+DELETE
+FROM endp_endpoint_info;

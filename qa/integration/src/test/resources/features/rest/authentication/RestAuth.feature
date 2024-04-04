@@ -21,7 +21,7 @@ Feature: REST API tests for User
     Given Init Jaxb Context
     And Init Security Context
     #NB: be aware that sub-sequent tests depends on the value of TTL that you set here
-    And start rest-API container and dependencies with auth token TTL "3000"ms and refresh token TTL "2000"ms
+    And start rest-API container and dependencies with auth token TTL "3000"ms and refresh token TTL "2000"ms and cors endpoint refresh interval 60s
 
   Scenario: Simple login with username-pw works and I can call another API endpoint without errors
   First, the authentication via login-pw is tested.
