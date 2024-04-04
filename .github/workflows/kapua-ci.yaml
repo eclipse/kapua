@@ -318,6 +318,17 @@ jobs:
         with:
           tag: '@rest_auth'
           needs-docker-images: 'true'
+  test-api-corsfilter:
+    needs: test-endpoint # test suite dependent on the endpoint service (if it has failings it's useless to perform these tests)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Clones Kapua repo inside the runner
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/runTestsTaggedAs
+        with:
+          tag: '@rest_cors'
+          needs-docker-images: 'true'
   junit-tests:
     needs: build
     runs-on: ubuntu-latest
