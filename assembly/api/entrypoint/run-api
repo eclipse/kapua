@@ -1,0 +1,44 @@
+#!/bin/sh
+################################################################################
+#    Copyright (c) 2024, 2022 Red Hat Inc and others
+#
+#    This program and the accompanying materials are made
+#    available under the terms of the Eclipse Public License 2.0
+#    which is available at https://www.eclipse.org/legal/epl-2.0/
+#
+#    SPDX-License-Identifier: EPL-2.0
+#
+#    Contributors:
+#        Red Hat Inc - initial API and implementation
+#        Eurotech
+################################################################################
+
+openapiFile=webapps/root/doc/openapi.yaml;
+
+if [ -n "$COMMONS_VERSION" ]; then
+  # Replace the version and the build number in the openapi file
+  awk -v version="$COMMONS_VERSION" -v build_number="$COMMONS_BUILD_NUMBER" '{
+      if (!subbed && /version:/) {
+          gsub(/version: .*/, "version: " version "-" build_number)
+          subbed = 1
+      }
+      print
+  }' "$openapiFile" > "$openapiFile.tmp";
+
+  mv "$openapiFile.tmp" "$openapiFile";
+fi;
+
+# Append the Java option for commons.version if defined
+if [ -n "$COMMONS_VERSION" ]; then
+  echo "Using commons version: $COMMONS_VERSION";
+  JAVA_OPTS="${JAVA_OPTS} -Dcommons.version=$COMMONS_VERSION"
+fi
+
+# Append the Java option for commons.build.number if defined
+if [ -n "$COMMONS_BUILD_NUMBER" ]; then
+  echo "Using commons build number: $COMMONS_BUILD_NUMBER";
+  JAVA_OPTS="${JAVA_OPTS} -Dcommons.build.number=$COMMONS_BUILD_NUMBER";
+fi
+
+# Continue with startup
+exec /var/opt/jetty/run-jetty "$@";
