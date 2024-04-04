@@ -11,7 +11,7 @@ info:
     name: Eclipse Public License 2.0
     url: https://www.eclipse.org/legal/epl-2.0
 
-paths: { }
+paths: {}
 
 components:
   parameters:
@@ -75,9 +75,6 @@ components:
     organization:
       type: object
       description: An object with all the information needed to create a new Account
-      required:
-        name
-        email
       properties:
         name:
           type: string
@@ -113,6 +110,9 @@ components:
         country:
           type: string
           description: The Country of the Organization
+      required:
+        - name
+        - email
       example:
         name: ACME Inc.
         personName: Wile Ethelbert Coyote

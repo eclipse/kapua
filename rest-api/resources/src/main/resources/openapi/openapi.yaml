@@ -664,10 +664,10 @@ components:
         message: "User does not have permission to perform this action. Required permission: user:read:1:*."
         kapuaErrorCode: "SUBJECT_UNAUTHORIZED"
         permission:
-            domain: "user"
-            action: "read"
-            targetScopeId: "AQ"
-            forwardable: false
+          domain: "user"
+          action: "read"
+          targetScopeId: "AQ"
+          forwardable: false
     entityNotFoundExceptionInfo:
       description: The object to represent the fact that an entity has not been found
       allOf:
@@ -880,12 +880,18 @@ components:
     accessRoleListResult:
       $ref: './accessInfo/accessInfo.yaml#/components/schemas/accessRoleListResult'
     ### Account Entities ###
+    organization:
+      $ref: './accounts/accounts.yaml#/components/schemas/organization'
     account:
       $ref: './accounts/accounts.yaml#/components/schemas/account'
     accountCreator:
       $ref: './accounts/accounts.yaml#/components/schemas/accountCreator'
     accountListResult:
       $ref: './accounts/accounts.yaml#/components/schemas/accountListResult'
+    accountUpdateRequest:
+      $ref: './accounts/accounts.yaml#/components/schemas/accountUpdateRequest'
+    currentAccountUpdateRequest:
+      $ref: './account/account.yaml#/components/schemas/currentAccountUpdateRequest'
     ### Authentication Entities ###
     accessToken:
       $ref: './authentication/authentication.yaml#/components/schemas/accessToken'

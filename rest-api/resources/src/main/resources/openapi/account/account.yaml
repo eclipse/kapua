@@ -23,44 +23,10 @@ components:
           $ref: '../openapi.yaml#/components/schemas/optlock'
         organization:
           type: object
-          required:
-            name
-            email
-          properties:
-            name:
-              type: string
-              description: The Name of the Organization
-            personName:
-              type: string
-              description: The Name of the Person listed as a Contact for the Organization
-            email:
-              type: string
-              format: email
-              description: The Email Address of the Person listed as a Contact for the Organization
-            phoneNumber:
-              type: string
-              description: The Phone Number of the Person listed as a Contact for the Organization
-            addressLine1:
-              type: string
-              description: First line of the Address for the Organization
-            addressLine2:
-              type: string
-              description: Second line of the Address for the Organization
-            addressLine3:
-              type: string
-              description: Third line of the Address for the Organization
-            zipPostCode:
-              type: string
-              description: The Zip / Postcode for the Organization
-            city:
-              type: string
-              description: The City of the Organization
-            stateProvinceCounty:
-              type: string
-              description: The State / Province / County of the Organization
-            country:
-              type: string
-              description: The Country of the Organization
+          $ref: '../accounts/accounts.yaml#/components/schemas/organization'
+      required:
+        - optlock
+        - organization
       example:
         description: Acme Inc.'s Account
         optlock: 2
