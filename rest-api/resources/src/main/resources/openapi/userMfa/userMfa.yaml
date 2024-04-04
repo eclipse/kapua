@@ -33,11 +33,12 @@ components:
       allOf:
         - $ref: '#/components/schemas/mfaOption'
         - type: object
-        - scratchCodes:
-          description: A list of one-use-only tokens to be used for authentication
-          type: array
-          items:
-            $ref: '#/components/schemas/scratchCode'
+          properties:
+            scratchCodes:
+              description: A list of one-use-only tokens to be used for authentication
+              type: array
+              items:
+                $ref: '#/components/schemas/scratchCode'
       example:
         $ref: '#/components/examples/mfaOptionCreationResponse/value'
     scratchCode:
