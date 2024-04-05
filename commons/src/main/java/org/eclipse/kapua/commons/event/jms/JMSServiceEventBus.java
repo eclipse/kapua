@@ -63,6 +63,8 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JMSServiceEventBus.class);
 
+    private static final long WAIT_BETWEEN_RECONNECTION_ATTEMPT = 2000;
+
     private final int producerPoolMinSize;
     private final int producerPoolMaxSize;
     private final int producerPoolBorrowWait;
@@ -156,9 +158,8 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
     }
 
     private void waitBeforeRetry() {
-        // wait a bit
         try {
-            Thread.sleep(2000);// TODO move to configuration
+            Thread.sleep(WAIT_BETWEEN_RECONNECTION_ATTEMPT);
         } catch (InterruptedException e) {
             LOGGER.error("Wait for connect interrupted!", e);
         }
@@ -461,6 +462,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
                         break;
                     } catch (ServiceEventBusException | JMSException e1) {
                         LOGGER.error("EventBus Listener {} - Cannot start new event bus connection... try again...", this, e1);
+                        // wait a bit
                         waitBeforeRetry();
                     }
                     i++;

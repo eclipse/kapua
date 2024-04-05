@@ -379,9 +379,14 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                 SecurityAction.getEntity.name(),
                 EntityType.account.name(),
                 SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_ACCOUNT));
-        EntityResponse accountResponse = serverContext.getAuthServiceClient().getEntity(accountRequest);
-        if (accountResponse != null) {
-            return new AccountInfo(KapuaEid.parseCompactId(accountResponse.getId()), accountResponse.getName());
+        EntityResponse accountResponse;
+        try {
+            accountResponse = serverContext.getAuthServiceClient().getEntity(accountRequest);
+            if (accountResponse != null) {
+                return new AccountInfo(KapuaEid.parseCompactId(accountResponse.getId()), accountResponse.getName());
+            }
+        } catch (JsonProcessingException | JMSException | InterruptedException e) {
+            logger.warn("Error getting scopeId for user admin", e);
         }
         throw new SecurityException("User not authorized! Cannot get Admin Account info!");
     }
@@ -403,9 +408,13 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                 SecurityAction.getEntity.name(),
                 EntityType.user.name(),
                 username);
-        EntityResponse userResponse = serverContext.getAuthServiceClient().getEntity(userRequest);
-        if (userResponse != null && userResponse.getScopeId() != null) {
-            return KapuaEid.parseCompactId(userResponse.getScopeId());
+        try {
+            EntityResponse userResponse = serverContext.getAuthServiceClient().getEntity(userRequest);
+            if (userResponse != null && userResponse.getScopeId() != null) {
+                return KapuaEid.parseCompactId(userResponse.getScopeId());
+            }
+        } catch (JsonProcessingException | JMSException | InterruptedException e) {
+            logger.warn("Error getting scopeId for username {}", username, e);
         }
         throw new SecurityException("User not authorized! Cannot get scopeId for username:" + username);
     }
