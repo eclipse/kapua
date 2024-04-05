@@ -319,7 +319,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
                 final Session jmsSession = jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
                 Topic jmsTopic = jmsSession.createTopic(subscriptionStr);
                 for (int i = 0; i < consumerPoolSize; i++) {
-                    MessageConsumer jmsConsumer = jmsSession.createSharedDurableConsumer(jmsTopic, subscription.getName());
+                    MessageConsumer jmsConsumer = jmsSession.createSharedConsumer(jmsTopic, subscription.getName());
                     jmsConsumer.setMessageListener(message -> {
                         try {
                             if (message instanceof TextMessage) {
