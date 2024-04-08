@@ -34,9 +34,11 @@ import com.spotify.docker.client.messages.Network;
 import com.spotify.docker.client.messages.NetworkConfig;
 import com.spotify.docker.client.messages.NetworkCreation;
 import com.spotify.docker.client.messages.PortBinding;
+
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
+
 import org.eclipse.kapua.commons.core.ServiceModuleBundle;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.common.BasicSteps;
@@ -48,6 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -67,7 +70,7 @@ public class DockerSteps {
     private static final Logger logger = LoggerFactory.getLogger(DockerSteps.class);
 
     private static final String NETWORK_PREFIX = "kapua-net";
-    private static final String KAPUA_VERSION = "2.1.0-SNAPSHOT";
+    private static final String KAPUA_VERSION = "2.1.0-EVENTCLIENTS-SNAPSHOT";
     private static final String ES_IMAGE = "elasticsearch:7.8.1";
     private static final String BROKER_IMAGE = "kapua-broker-artemis";
     private static final String LIFECYCLE_CONSUMER_IMAGE = "kapua-consumer-lifecycle";
@@ -126,7 +129,6 @@ public class DockerSteps {
     private StepData stepData;
 
     private static final String ALL_IP = "0.0.0.0";
-
 
     @Inject
     public DockerSteps(StepData stepData, DBHelper database) {
@@ -696,7 +698,8 @@ public class DockerSteps {
                     try {
                         LogStream logStream = DockerUtil.getDockerClient().logs(container.id(), LogsParam.stdout(), LogsParam.stderr());
                         Logger brokerLogger = LoggerFactory.getLogger(name);
-                        brokerLogger.info("\n===================================================\n START LOG FOR CONTAINER: {} (id: {})\n===================================================", name, container.id());
+                        brokerLogger.info("\n===================================================\n START LOG FOR CONTAINER: {} (id: {})\n===================================================", name,
+                                container.id());
                         StringBuilder builder = new StringBuilder();
                         int i = 0;
                         while (logStream.hasNext()) {
@@ -707,7 +710,8 @@ public class DockerSteps {
                             }
                         }
                         brokerLogger.info(builder.toString());
-                        brokerLogger.info("\n---------------------------------------------------\n END LOG FOR CONTAINER: {} (id: {})\n---------------------------------------------------", name, container.id());
+                        brokerLogger.info("\n---------------------------------------------------\n END LOG FOR CONTAINER: {} (id: {})\n---------------------------------------------------", name,
+                                container.id());
                     } catch (Exception e1) {
                         logger.warn("Cannot print container log for name/id '{}'/'{}'", name, container.id());
                     }
@@ -724,25 +728,33 @@ public class DockerSteps {
      * @param brokerAddr
      * @param brokerIp
      * @param clusterName
-     * @param mqttPort      mqtt port on docker
-     * @param mqttHostPort  mqtt port on docker host
-     * @param mqttsPort     mqtts port on docker
-     * @param mqttsHostPort mqtts port on docker host
-     * @param webPort       web port on docker
-     * @param webHostPort   web port on docker host
-     * @param debugPort     debug port on docker
-     * @param debugHostPort debug port on docker host
-     *                      //     * @param brokerInternalDebugPort
-     * @param dockerImage   full name of image (e.g. "kapua/kapua-broker:" + version)
+     * @param mqttPort
+     *         mqtt port on docker
+     * @param mqttHostPort
+     *         mqtt port on docker host
+     * @param mqttsPort
+     *         mqtts port on docker
+     * @param mqttsHostPort
+     *         mqtts port on docker host
+     * @param webPort
+     *         web port on docker
+     * @param webHostPort
+     *         web port on docker host
+     * @param debugPort
+     *         debug port on docker
+     * @param debugHostPort
+     *         debug port on docker host //     * @param brokerInternalDebugPort
+     * @param dockerImage
+     *         full name of image (e.g. "kapua/kapua-broker:" + version)
      * @return Container configuration for specific boroker instance
      */
     private ContainerConfig getBrokerContainerConfig(String brokerIp,
-                                                     int mqttPort, int mqttHostPort,
-                                                     int mqttInternalPort, int mqttInternalHostPort,
-                                                     int mqttsPort, int mqttsHostPort,
-                                                     int webPort, int webHostPort,
-                                                     int debugPort, int debugHostPort,
-                                                     String dockerImage) {
+            int mqttPort, int mqttHostPort,
+            int mqttInternalPort, int mqttInternalHostPort,
+            int mqttsPort, int mqttsHostPort,
+            int webPort, int webHostPort,
+            int debugPort, int debugHostPort,
+            String dockerImage) {
 
         final Map<String, List<PortBinding>> portBindings = new HashMap<>();
         addHostPort(ALL_IP, portBindings, mqttPort, mqttHostPort);
@@ -767,7 +779,7 @@ public class DockerSteps {
         }
 
         if (debug) {
-//            envVars.add(String.format("ACTIVEMQ_DEBUG_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=%s", debugPort));
+            //            envVars.add(String.format("ACTIVEMQ_DEBUG_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=%s", debugPort));
             envVars.add(String.format("DEBUG_ARGS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:%s", debugPort));
         }
 
@@ -813,7 +825,7 @@ public class DockerSteps {
                         "DB_USER=kapua",
                         "DB_PASSWORD=kapua",
                         //uncomment this line to enable the H@ web console (WARNING enable it only for test and then disable it again!)
-//                        "H2_WEB_OPTS=-web -webAllowOthers -webPort 8181",
+                        //                        "H2_WEB_OPTS=-web -webAllowOthers -webPort 8181",
                         "DB_PORT_3306_TCP_PORT=3306"
                 )
                 .image("kapua/kapua-sql:" + KAPUA_VERSION)
@@ -975,13 +987,17 @@ public class DockerSteps {
     /**
      * Add docker port to host port mapping.
      *
-     * @param host         ip address of host
-     * @param portBindings list ob bindings that gets updated
-     * @param port         docker port
-     * @param hostPort     port on host
+     * @param host
+     *         ip address of host
+     * @param portBindings
+     *         list ob bindings that gets updated
+     * @param port
+     *         docker port
+     * @param hostPort
+     *         port on host
      */
     private void addHostPort(String host, Map<String, List<PortBinding>> portBindings,
-                             int port, int hostPort) {
+            int port, int hostPort) {
 
         List<PortBinding> hostPorts = new ArrayList<>();
         hostPorts.add(PortBinding.of(host, hostPort));
