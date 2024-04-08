@@ -22,8 +22,6 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSetting;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSettingKeys;
 
-import java.util.UUID;
-
 /**
  * {@link AccountService} {@link ServiceModule} implementation.
  *
@@ -40,7 +38,7 @@ public class AccountServiceModule extends ServiceEventTransactionalModule implem
         super(
                 ServiceInspector.getEventBusClients(accountService, AccountService.class).toArray(new ServiceEventClientConfiguration[0]),
                 kapuaAccountSetting.getString(KapuaAccountSettingKeys.ACCOUNT_EVENT_ADDRESS),
-                eventModuleName + "-" + UUID.randomUUID().toString(),
+                eventModuleName,
                 serviceEventHouseKeeperFactory,
                 serviceEventBus);
     }
