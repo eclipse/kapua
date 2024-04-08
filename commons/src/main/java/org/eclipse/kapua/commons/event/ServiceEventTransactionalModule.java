@@ -12,23 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 public abstract class ServiceEventTransactionalModule implements ServiceModule {
 
@@ -52,14 +51,6 @@ public abstract class ServiceEventTransactionalModule implements ServiceModule {
     private final String internalAddress;
     private final ServiceEventHouseKeeperFactory houseKeeperFactory;
     private final ServiceEventBus serviceEventBus;
-
-    public ServiceEventTransactionalModule(
-            ServiceEventClientConfiguration[] serviceEventClientConfigurations,
-            String internalAddress,
-            ServiceEventHouseKeeperFactory serviceEventTransactionalHousekeeperFactory,
-            ServiceEventBus serviceEventBus) {
-        this(serviceEventClientConfigurations, internalAddress, UUID.randomUUID().toString(), serviceEventTransactionalHousekeeperFactory, serviceEventBus);
-    }
 
     public ServiceEventTransactionalModule(
             ServiceEventClientConfiguration[] serviceEventClientConfigurations,
