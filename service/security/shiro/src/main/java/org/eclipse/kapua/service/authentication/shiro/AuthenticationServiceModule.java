@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventHouseKeeperFactory;
 import org.eclipse.kapua.commons.event.ServiceEventTransactionalModule;
@@ -21,10 +24,6 @@ import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
-
-import java.util.Arrays;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class AuthenticationServiceModule extends ServiceEventTransactionalModule {
 
@@ -44,7 +43,7 @@ public class AuthenticationServiceModule extends ServiceEventTransactionalModule
                         .collect(Collectors.toList())
                         .toArray(new ServiceEventClientConfiguration[0]),
                 authenticationSetting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_EVENT_ADDRESS),
-                eventModuleName + "-" + UUID.randomUUID().toString(),
+                eventModuleName,
                 serviceEventTransactionalHousekeeperFactory,
                 serviceEventBus);
     }
