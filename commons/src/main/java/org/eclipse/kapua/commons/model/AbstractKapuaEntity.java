@@ -12,12 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model;
 
-import org.eclipse.kapua.commons.model.id.IdGenerator;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.model.KapuaEntity;
-import org.eclipse.kapua.model.KapuaUpdatableEntity;
-import org.eclipse.kapua.model.id.KapuaId;
+import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -30,8 +26,13 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.io.Serializable;
-import java.util.Date;
+
+import org.eclipse.kapua.commons.model.id.IdGenerator;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * {@link KapuaEntity} {@code abstract} implementation.
@@ -66,8 +67,7 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
     protected KapuaEid createdBy;
 
     /**
-     * Protected default constructor.<br>
-     * Required by JPA.
+     * Protected default constructor.<br> Required by JPA.
      *
      * @since 1.0.0
      */
@@ -78,7 +78,8 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
     /**
      * Constructor.
      *
-     * @param scopeId The scope {@link KapuaId} to set for this {@link KapuaEntity}.
+     * @param scopeId
+     *         The scope {@link KapuaId} to set for this {@link KapuaEntity}.
      * @since 1.0.0
      */
     public AbstractKapuaEntity(KapuaId scopeId) {
@@ -131,7 +132,8 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
     /**
      * Sets the date of creation.
      *
-     * @param createdOn the date of creation.
+     * @param createdOn
+     *         the date of creation.
      * @since 1.0.0
      */
     public void setCreatedOn(Date createdOn) {
@@ -146,7 +148,8 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
     /**
      * Sets the identity {@link KapuaId} who has created this {@link KapuaEntity}
      *
-     * @param createdBy the identity {@link KapuaId} who has created this {@link KapuaEntity}
+     * @param createdBy
+     *         the identity {@link KapuaId} who has created this {@link KapuaEntity}
      * @since 1.0.0
      */
     public void setCreatedBy(KapuaId createdBy) {
@@ -164,5 +167,4 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
         setCreatedBy(KapuaSecurityUtils.getSession().getUserId());
         setCreatedOn(new Date());
     }
-
 }
