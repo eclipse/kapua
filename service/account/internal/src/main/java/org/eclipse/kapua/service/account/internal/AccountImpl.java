@@ -12,10 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.Organization;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -32,9 +31,11 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
+import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.Organization;
 
 /**
  * {@link Account} implementation.
@@ -93,7 +94,8 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
     /**
      * Constructor.
      *
-     * @param scopeId The {@link Account#getScopeId()}.
+     * @param scopeId
+     *         The {@link Account#getScopeId()}.
      * @since 1.0.0
      */
     public AccountImpl(KapuaId scopeId) {
@@ -105,8 +107,10 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
     /**
      * Constructor.
      *
-     * @param scopeId The {@link Account#getScopeId()}.
-     * @param name    The {@link Account#getName()}
+     * @param scopeId
+     *         The {@link Account#getScopeId()}.
+     * @param name
+     *         The {@link Account#getName()}
      * @since 1.0.0
      */
     public AccountImpl(KapuaId scopeId, String name) {
@@ -178,5 +182,22 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
         this.expirationDate = expirationDate;
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof Account)) {
+            return false;
+        }
 
+        final Account that = (Account) object;
+
+        return getId() != null ? getId().equals(that.getId()) : that.getId() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getId() != null ? getId().hashCode() : 0;
+    }
 }
