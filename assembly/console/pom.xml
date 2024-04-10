@@ -92,8 +92,7 @@
             <artifactId>kapua-security-certificate-internal</artifactId>
         </dependency>
 
-        <!-- dependencies added otherwise the unix assembly doesn't know the arctifact
-            to add -->
+        <!-- dependencies added otherwise the unix assembly doesn't know the artifact to add -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-management-all-api</artifactId>

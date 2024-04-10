@@ -111,6 +111,8 @@ services:
       - AUTH_TOKEN_TTL=${AUTH_TOKEN_TTL:-1800000}
       - REFRESH_AUTH_TOKEN_TTL=${REFRESH_AUTH_TOKEN_TTL:-18000000}
       - CORS_ENDPOINTS_REFRESH_INTERVAL=${CORS_ENDPOINTS_REFRESH_INTERVAL:-60}
+      - COMMONS_VERSION
+      - COMMONS_BUILD_NUMBER
   job-engine:
     container_name: job-engine
     image: kapua/kapua-job-engine:${IMAGE_VERSION}
