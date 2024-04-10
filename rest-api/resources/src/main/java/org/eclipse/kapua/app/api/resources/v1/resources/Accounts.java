@@ -79,6 +79,7 @@ public class Accounts extends AbstractKapuaResource {
             @QueryParam("recursive") boolean recursive, //
             @QueryParam("sortParam") String sortParam,
             @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
+            @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("offset") @DefaultValue("0") int offset, //
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
 
@@ -87,6 +88,7 @@ public class Accounts extends AbstractKapuaResource {
         }
 
         AccountQuery query = accountFactory.newQuery(scopeId);
+        query.setAskTotalCount(askTotalCount);
 
         AndPredicate andPredicate = query.andPredicate();
         if (!Strings.isNullOrEmpty(name)) {
