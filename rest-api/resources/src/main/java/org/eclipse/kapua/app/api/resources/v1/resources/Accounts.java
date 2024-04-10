@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -31,8 +34,10 @@ import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.model.query.predicate.MatchPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountAttributes;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
@@ -76,6 +81,7 @@ public class Accounts extends AbstractKapuaResource {
     public AccountListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId, //
             @QueryParam("name") String name, //
+            @QueryParam("matchTerm") String matchTerm,
             @QueryParam("recursive") boolean recursive, //
             @QueryParam("sortParam") String sortParam,
             @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
@@ -94,6 +100,20 @@ public class Accounts extends AbstractKapuaResource {
         }
         if (!Strings.isNullOrEmpty(sortParam)) {
             query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
+        }
+        if (matchTerm != null && !matchTerm.isEmpty()) {
+            andPredicate.and(new MatchPredicate<String>() {
+
+                @Override
+                public List<String> getAttributeNames() {
+                    return Arrays.asList(AccountAttributes.NAME, AccountAttributes.ORGANIZATION_NAME, AccountAttributes.CONTACT_NAME, AccountAttributes.ORGANIZATION_EMAIL);
+                }
+
+                @Override
+                public String getMatchTerm() {
+                    return matchTerm;
+                }
+            });
         }
         query.setPredicate(andPredicate);
 
