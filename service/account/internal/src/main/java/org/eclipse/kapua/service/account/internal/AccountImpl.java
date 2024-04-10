@@ -181,23 +181,4 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
     public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
     }
-
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (!(object instanceof Account)) {
-            return false;
-        }
-
-        final Account that = (Account) object;
-
-        return getId() != null ? getId().equals(that.getId()) : that.getId() == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return getId() != null ? getId().hashCode() : 0;
-    }
 }
