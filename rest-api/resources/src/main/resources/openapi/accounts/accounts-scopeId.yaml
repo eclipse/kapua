@@ -36,6 +36,18 @@ paths:
         - $ref: '../openapi.yaml#/components/parameters/sortDir'
         - $ref: '../openapi.yaml#/components/parameters/limit'
         - $ref: '../openapi.yaml#/components/parameters/offset'
+        - name: matchTerm
+          in: query
+          description: |
+            A term to match on different fields. Every entity whose at least one of the specified fields starts with this value will be matched.
+            Matches on the following fields:
+
+            - NAME
+            - ORGANIZATION_NAME
+            - CONTACT_NAME
+            - ORGANIZATION_EMAIL
+          schema:
+            type: string
       responses:
         200:
           description: The list of the Accounts available in the Scope
