@@ -13,6 +13,7 @@
 package org.eclipse.kapua.client.security;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+
 import org.eclipse.kapua.client.security.amqpclient.Client;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
@@ -44,7 +45,6 @@ public class ServiceClientMessagingImpl implements ServiceClient {
 
     @Override
     public AuthResponse brokerConnect(AuthRequest authRequest) throws InterruptedException, JMSException, JsonProcessingException {//TODO review exception when Kapua code will be linked (throw KapuaException)
-        client.checkAuthServiceConnection();
         String requestId = MessageHelper.getNewRequestId();
         authRequest.setRequestId(requestId);
         authRequest.setAction(SecurityAction.brokerConnect.name());
@@ -60,7 +60,6 @@ public class ServiceClientMessagingImpl implements ServiceClient {
 
     @Override
     public AuthResponse brokerDisconnect(AuthRequest authRequest) throws JMSException, InterruptedException, JsonProcessingException {
-        client.checkAuthServiceConnection();
         String requestId = MessageHelper.getNewRequestId();
         authRequest.setRequestId(requestId);
         authRequest.setAction(SecurityAction.brokerDisconnect.name());
@@ -76,7 +75,6 @@ public class ServiceClientMessagingImpl implements ServiceClient {
 
     @Override
     public EntityResponse getEntity(EntityRequest entityRequest) throws JMSException, InterruptedException, JsonProcessingException {
-        client.checkAuthServiceConnection();
         String requestId = MessageHelper.getNewRequestId();
         entityRequest.setRequestId(requestId);
         ResponseContainer<EntityResponse> responseContainer = ResponseContainer.createAnRegisterNewMessageContainer(messageListener, entityRequest);
