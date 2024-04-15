@@ -12,7 +12,34 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
-import com.google.common.base.MoreObjects;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
+
+import javax.persistence.Embedded;
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.PersistenceException;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.EntityType;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eclipse.kapua.KapuaEntityExistsException;
@@ -39,34 +66,10 @@ import org.eclipse.kapua.storage.TxContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.Embedded;
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
-import javax.persistence.NonUniqueResultException;
-import javax.persistence.PersistenceException;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.EntityType;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Supplier;
+import com.google.common.base.MoreObjects;
 
 public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L extends KapuaListResult<E>> implements KapuaEntityRepository<E, L> {
+
     protected final Class<C> concreteClass;
     protected final String entityName;
     protected final Supplier<? extends L> listSupplier;
@@ -78,10 +81,13 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     private static final String COMPARE_ERROR_MESSAGE = "Trying to compare a non-comparable value";
 
     /**
-     * @param concreteClass The concrete class reifying a {@link KapuaEntity} entity, to be retrieved
+     * @param concreteClass
+     *         The concrete class reifying a {@link KapuaEntity} entity, to be retrieved
      * @param entityName
-     * @param listSupplier  Generator of new, empty lists
-     * @param configuration Repo configuration, see {@link KapuaJpaRepositoryConfiguration} for configurable details
+     * @param listSupplier
+     *         Generator of new, empty lists
+     * @param configuration
+     *         Repo configuration, see {@link KapuaJpaRepositoryConfiguration} for configurable details
      */
     public KapuaEntityJpaRepository(
             Class<C> concreteClass,
@@ -328,19 +334,25 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
      * <p>
      * It can be invoked recursively (i.e. to handle {@link AttributePredicate}s of the {@link AndPredicate}.
      *
-     * @param queryPredicate     The {@link QueryPredicate} to handle.
-     * @param binds              The {@link Map}&lg;{@link String}, {@link Object}&gt; of the query values.
-     * @param cb                 The JPA {@link CriteriaBuilder} of the {@link javax.persistence.Query}.
-     * @param userPermissionRoot The JPA {@link Root} of the {@link javax.persistence.Query}.
-     * @param entityType         The JPA {@link EntityType} of the {@link javax.persistence.Query}.
+     * @param queryPredicate
+     *         The {@link QueryPredicate} to handle.
+     * @param binds
+     *         The {@link Map}&lg;{@link String}, {@link Object}&gt; of the query values.
+     * @param cb
+     *         The JPA {@link CriteriaBuilder} of the {@link javax.persistence.Query}.
+     * @param userPermissionRoot
+     *         The JPA {@link Root} of the {@link javax.persistence.Query}.
+     * @param entityType
+     *         The JPA {@link EntityType} of the {@link javax.persistence.Query}.
      * @return The handled {@link Predicate}
-     * @throws KapuaException If any problem occurs.
+     * @throws KapuaException
+     *         If any problem occurs.
      */
     private <E> Predicate handleKapuaQueryPredicates(@NonNull QueryPredicate queryPredicate,
-                                                     @NonNull Map<ParameterExpression, Object> binds,
-                                                     @NonNull CriteriaBuilder cb,
-                                                     @NonNull Root<E> userPermissionRoot,
-                                                     @NonNull EntityType<E> entityType)
+            @NonNull Map<ParameterExpression, Object> binds,
+            @NonNull CriteriaBuilder cb,
+            @NonNull Root<E> userPermissionRoot,
+            @NonNull EntityType<E> entityType)
             throws KapuaException {
         Predicate predicate = null;
         if (queryPredicate instanceof AttributePredicate) {
@@ -364,10 +376,10 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     }
 
     private <E> Predicate handleAndPredicate(@NonNull AndPredicate andPredicate,
-                                             @NonNull Map<ParameterExpression, Object> binds,
-                                             @NonNull CriteriaBuilder cb,
-                                             @NonNull Root<E> entityRoot,
-                                             @NonNull EntityType<E> entityType)
+            @NonNull Map<ParameterExpression, Object> binds,
+            @NonNull CriteriaBuilder cb,
+            @NonNull Root<E> entityRoot,
+            @NonNull EntityType<E> entityType)
             throws KapuaException {
 
         Predicate[] jpaAndPredicates =
@@ -383,10 +395,10 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     }
 
     private <E> Predicate handleOrPredicate(@NonNull OrPredicate orPredicate,
-                                            @NonNull Map<ParameterExpression, Object> binds,
-                                            @NonNull CriteriaBuilder cb,
-                                            @NonNull Root<E> entityRoot,
-                                            @NonNull EntityType<E> entityType)
+            @NonNull Map<ParameterExpression, Object> binds,
+            @NonNull CriteriaBuilder cb,
+            @NonNull Root<E> entityRoot,
+            @NonNull EntityType<E> entityType)
             throws KapuaException {
 
         Predicate[] jpaOrPredicates =
@@ -401,10 +413,10 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     }
 
     private <E> Predicate[] handlePredicate(@NonNull List<QueryPredicate> orPredicates,
-                                            @NonNull Map<ParameterExpression, Object> binds,
-                                            @NonNull CriteriaBuilder cb,
-                                            @NonNull Root<E> entityRoot,
-                                            @NonNull EntityType<E> entityType) throws KapuaException {
+            @NonNull Map<ParameterExpression, Object> binds,
+            @NonNull CriteriaBuilder cb,
+            @NonNull Root<E> entityRoot,
+            @NonNull EntityType<E> entityType) throws KapuaException {
         Predicate[] jpaOrPredicates = new Predicate[orPredicates.size()];
 
         for (int i = 0; i < orPredicates.size(); i++) {
@@ -415,10 +427,10 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     }
 
     private <E> Predicate handleAttributePredicate(@NonNull AttributePredicate<?> attrPred,
-                                                   @NonNull Map<ParameterExpression, Object> binds,
-                                                   @NonNull CriteriaBuilder cb,
-                                                   @NonNull Root<E> entityRoot,
-                                                   @NonNull EntityType<E> entityType)
+            @NonNull Map<ParameterExpression, Object> binds,
+            @NonNull CriteriaBuilder cb,
+            @NonNull Root<E> entityRoot,
+            @NonNull EntityType<E> entityType)
             throws KapuaException {
         Predicate expr;
         String attrName = attrPred.getAttributeName();
@@ -468,84 +480,84 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
                             .replace(configuration.any, configuration.escape + configuration.any))
                     .orElse(null);
             switch (attrPred.getOperator()) {
-                case LIKE:
-                    ParameterExpression<String> pl = cb.parameter(String.class);
-                    binds.put(pl, configuration.like + escapedAttributeValue + configuration.like);
-                    expr = cb.like(extractAttribute(entityRoot, attrName), pl);
-                    break;
+            case LIKE:
+                ParameterExpression<String> pl = cb.parameter(String.class);
+                binds.put(pl, configuration.like + escapedAttributeValue + configuration.like);
+                expr = cb.like(extractAttribute(entityRoot, attrName), pl);
+                break;
 
-                case LIKE_IGNORE_CASE:
-                    ParameterExpression<String> plci = cb.parameter(String.class);
-                    binds.put(plci, configuration.like + escapedAttributeValue.toLowerCase() + configuration.like);
-                    expr = cb.like(cb.lower(extractAttribute(entityRoot, attrName)), plci);
-                    break;
+            case LIKE_IGNORE_CASE:
+                ParameterExpression<String> plci = cb.parameter(String.class);
+                binds.put(plci, configuration.like + escapedAttributeValue.toLowerCase() + configuration.like);
+                expr = cb.like(cb.lower(extractAttribute(entityRoot, attrName)), plci);
+                break;
 
-                case STARTS_WITH:
-                    ParameterExpression<String> psw = cb.parameter(String.class);
-                    binds.put(psw, escapedAttributeValue + configuration.like);
-                    expr = cb.like(extractAttribute(entityRoot, attrName), psw);
-                    break;
+            case STARTS_WITH:
+                ParameterExpression<String> psw = cb.parameter(String.class);
+                binds.put(psw, escapedAttributeValue + configuration.like);
+                expr = cb.like(extractAttribute(entityRoot, attrName), psw);
+                break;
 
-                case STARTS_WITH_IGNORE_CASE:
-                    ParameterExpression<String> pswci = cb.parameter(String.class);
-                    binds.put(pswci, escapedAttributeValue.toLowerCase() + configuration.like);
-                    expr = cb.like(cb.lower(extractAttribute(entityRoot, attrName)), pswci);
-                    break;
+            case STARTS_WITH_IGNORE_CASE:
+                ParameterExpression<String> pswci = cb.parameter(String.class);
+                binds.put(pswci, escapedAttributeValue.toLowerCase() + configuration.like);
+                expr = cb.like(cb.lower(extractAttribute(entityRoot, attrName)), pswci);
+                break;
 
-                case IS_NULL:
-                    expr = cb.isNull(extractAttribute(entityRoot, attrName));
-                    break;
+            case IS_NULL:
+                expr = cb.isNull(extractAttribute(entityRoot, attrName));
+                break;
 
-                case NOT_NULL:
-                    expr = cb.isNotNull(extractAttribute(entityRoot, attrName));
-                    break;
+            case NOT_NULL:
+                expr = cb.isNotNull(extractAttribute(entityRoot, attrName));
+                break;
 
-                case NOT_EQUAL:
-                    expr = cb.notEqual(extractAttribute(entityRoot, attrName), attributeValue);
-                    break;
+            case NOT_EQUAL:
+                expr = cb.notEqual(extractAttribute(entityRoot, attrName), attributeValue);
+                break;
 
-                case GREATER_THAN:
-                    if (attributeValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
-                        Comparable comparableAttrValue = (Comparable<?>) attributeValue;
-                        Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                        expr = cb.greaterThan(comparableExpression, comparableAttrValue);
-                    } else {
-                        throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, COMPARE_ERROR_MESSAGE);
-                    }
-                    break;
+            case GREATER_THAN:
+                if (attributeValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
+                    Comparable comparableAttrValue = (Comparable<?>) attributeValue;
+                    Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
+                    expr = cb.greaterThan(comparableExpression, comparableAttrValue);
+                } else {
+                    throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, COMPARE_ERROR_MESSAGE);
+                }
+                break;
 
-                case GREATER_THAN_OR_EQUAL:
-                    if (attributeValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
-                        Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                        Comparable comparableAttrValue = (Comparable<?>) attributeValue;
-                        expr = cb.greaterThanOrEqualTo(comparableExpression, comparableAttrValue);
-                    } else {
-                        throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, COMPARE_ERROR_MESSAGE);
-                    }
-                    break;
+            case GREATER_THAN_OR_EQUAL:
+                if (attributeValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
+                    Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
+                    Comparable comparableAttrValue = (Comparable<?>) attributeValue;
+                    expr = cb.greaterThanOrEqualTo(comparableExpression, comparableAttrValue);
+                } else {
+                    throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, COMPARE_ERROR_MESSAGE);
+                }
+                break;
 
-                case LESS_THAN:
-                    if (attributeValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
-                        Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                        Comparable comparableAttrValue = (Comparable<?>) attributeValue;
-                        expr = cb.lessThan(comparableExpression, comparableAttrValue);
-                    } else {
-                        throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, COMPARE_ERROR_MESSAGE);
-                    }
-                    break;
-                case LESS_THAN_OR_EQUAL:
-                    if (attributeValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
-                        Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                        Comparable comparableAttrValue = (Comparable<?>) attributeValue;
-                        expr = cb.lessThanOrEqualTo(comparableExpression, comparableAttrValue);
-                    } else {
-                        throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, COMPARE_ERROR_MESSAGE);
-                    }
-                    break;
+            case LESS_THAN:
+                if (attributeValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
+                    Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
+                    Comparable comparableAttrValue = (Comparable<?>) attributeValue;
+                    expr = cb.lessThan(comparableExpression, comparableAttrValue);
+                } else {
+                    throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, COMPARE_ERROR_MESSAGE);
+                }
+                break;
+            case LESS_THAN_OR_EQUAL:
+                if (attributeValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
+                    Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
+                    Comparable comparableAttrValue = (Comparable<?>) attributeValue;
+                    expr = cb.lessThanOrEqualTo(comparableExpression, comparableAttrValue);
+                } else {
+                    throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, COMPARE_ERROR_MESSAGE);
+                }
+                break;
 
-                case EQUAL:
-                default:
-                    expr = cb.equal(extractAttribute(entityRoot, attrName), attributeValue);
+            case EQUAL:
+            default:
+                expr = cb.equal(extractAttribute(entityRoot, attrName), attributeValue);
             }
         }
         return expr;
@@ -558,8 +570,10 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
      * <p>
      * Filter predicates takes advantage of the dot notation to access {@link Embedded} attributes and nested {@link KapuaEntity}es.
      *
-     * @param entityRoot    The {@link Root} entity from which extract the attribute.
-     * @param attributeName The full attribute name.
+     * @param entityRoot
+     *         The {@link Root} entity from which extract the attribute.
+     * @param attributeName
+     *         The full attribute name.
      * @return The {@link Path} expression that matches the given {@code attributeName} parameter.
      * @since 1.0.0
      */
@@ -582,7 +596,8 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     /**
      * Check if the given {@link PersistenceException} is a SQL constraint violation error.
      *
-     * @param persistenceException {@link PersistenceException} to check.
+     * @param persistenceException
+     *         {@link PersistenceException} to check.
      * @return {@code true} if it is a constraint validation error, {@code false} otherwise.
      * @since 1.0.0
      */
@@ -601,17 +616,17 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
     }
 
     protected Optional<E> doFindByField(@NonNull TxContext txContext,
-                                        @NonNull KapuaId scopeId,
-                                        @NonNull String fieldName,
-                                        @NonNull Object fieldValue) {
+            @NonNull KapuaId scopeId,
+            @NonNull String fieldName,
+            @NonNull Object fieldValue) {
         final List<C> result = doFindAllByField(txContext, scopeId, fieldName, fieldValue);
         switch (result.size()) {
-            case 0:
-                return Optional.empty();
-            case 1:
-                return Optional.of(result.get(0));
-            default:
-                throw new NonUniqueResultException(String.format("Multiple %s results found for field %s with value %s", concreteClass.getName(), fieldName, fieldValue.toString()));
+        case 0:
+            return Optional.empty();
+        case 1:
+            return Optional.of(result.get(0));
+        default:
+            throw new NonUniqueResultException(String.format("Multiple %s results found for field %s with value %s", concreteClass.getName(), fieldName, fieldValue.toString()));
         }
     }
 
@@ -641,7 +656,13 @@ public class KapuaEntityJpaRepository<E extends KapuaEntity, C extends E, L exte
         }
 
         TypedQuery<C> query = em.createQuery(criteriaSelectQuery);
-        query.setParameter(pName.getName(), fieldValue);
+        final Object adaptedFieldValue;
+        if (fieldValue instanceof KapuaId) {
+            adaptedFieldValue = KapuaEid.parseKapuaId((KapuaId) fieldValue);
+        } else {
+            adaptedFieldValue = fieldValue;
+        }
+        query.setParameter(pName.getName(), adaptedFieldValue);
 
         if (pScopeId != null) {
             query.setParameter(pScopeId.getName(), KapuaEid.parseKapuaId(scopeId));
