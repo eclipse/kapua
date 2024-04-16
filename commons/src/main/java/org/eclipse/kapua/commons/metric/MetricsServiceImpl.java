@@ -39,8 +39,6 @@ public class MetricsServiceImpl implements MetricsService {
 
     private static final Logger logger = LoggerFactory.getLogger(MetricsServiceImpl.class);
 
-    public static final String METRICS_NAME_FORMAT = "{0}.{1}.{2}";
-    public static final String METRICS_SHORT_NAME_FORMAT = "{0}.{1}";
     private static final char SEPARATOR = '.';
 
     private MetricRegistry metricRegistry;
@@ -116,24 +114,10 @@ public class MetricsServiceImpl implements MetricsService {
     }
 
     private String getMetricName(String module, String component, String... metricsName) {
-        return MessageFormat.format(METRICS_NAME_FORMAT, module, component, convertToDotNotation(metricsName));
-    }
-
-    /**
-     * Convert the metric names to a concatenated dot separated string
-     *
-     * @param metricsName
-     * @return
-     */
-    private String convertToDotNotation(String... metricsName) {
         StringBuilder builder = new StringBuilder();
-        boolean firstMetricName = true;
+        builder.append(module).append(SEPARATOR).append(component);
         for (String s : metricsName) {
-            if (!firstMetricName) {
-                builder.append(SEPARATOR);
-            }
-            firstMetricName = false;
-            builder.append(s);
+            builder.append(SEPARATOR).append(s);
         }
         return builder.toString();
     }
