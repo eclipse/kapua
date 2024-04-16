@@ -43,10 +43,6 @@ public class MetricsServiceImpl implements MetricsService {
     public static final String METRICS_SHORT_NAME_FORMAT = "{0}.{1}";
     private static final char SEPARATOR = '.';
 
-    enum MetricType {
-        count
-    }
-
     private MetricRegistry metricRegistry;
 
     private JmxReporter jmxReporter;
@@ -78,7 +74,7 @@ public class MetricsServiceImpl implements MetricsService {
 
     @Override
     public Counter getCounter(String module, String component, String... names) {
-        String name = getMetricName(MetricType.count, module, component, names);
+        String name = getMetricName(module, component, names) + SEPARATOR + "count";
         Counter counter = metricRegistry.getCounters().get(name);
         if (counter == null) {
             logger.debug("Creating a Counter: {}", name);
@@ -120,23 +116,7 @@ public class MetricsServiceImpl implements MetricsService {
     }
 
     private String getMetricName(String module, String component, String... metricsName) {
-        return MessageFormat.format(METRICS_NAME_FORMAT, module, component, convertToDotNotation(null, metricsName));
-    }
-
-    /**
-     * Build the metric name based on module, component and metric names
-     *
-     * @param module
-     * @param component
-     * @param metricsName
-     * @return
-     */
-    private String getMetricName(MetricType metricType, String module, String component, String... metricsName) {
-        if (metricsName == null || metricsName.length <= 0) {
-            return MessageFormat.format(METRICS_SHORT_NAME_FORMAT, module, component, metricType != null ? SEPARATOR + metricType.name() : "");
-        } else {
-            return MessageFormat.format(METRICS_NAME_FORMAT, module, component, convertToDotNotation(metricType, metricsName));
-        }
+        return MessageFormat.format(METRICS_NAME_FORMAT, module, component, convertToDotNotation(metricsName));
     }
 
     /**
@@ -145,7 +125,7 @@ public class MetricsServiceImpl implements MetricsService {
      * @param metricsName
      * @return
      */
-    private String convertToDotNotation(MetricType metricType, String... metricsName) {
+    private String convertToDotNotation(String... metricsName) {
         StringBuilder builder = new StringBuilder();
         boolean firstMetricName = true;
         for (String s : metricsName) {
@@ -154,9 +134,6 @@ public class MetricsServiceImpl implements MetricsService {
             }
             firstMetricName = false;
             builder.append(s);
-        }
-        if (metricType != null) {
-            builder.append(SEPARATOR).append(metricType.name());
         }
         return builder.toString();
     }
