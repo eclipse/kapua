@@ -49,7 +49,7 @@ runs:
       run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       shell: bash
     - name: Test execution step
-      run: mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="${{ inputs.tag }}" -pl ${TEST_PROJECTS} verify
+      run: mvn -B -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="${{ inputs.tag }}" -pl ${TEST_PROJECTS} verify
       shell: bash
     - name: Code coverage results upload
       uses: codecov/codecov-action@v4
