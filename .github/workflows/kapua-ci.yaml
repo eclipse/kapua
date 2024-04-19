@@ -319,6 +319,7 @@ jobs:
         with:
           tag: '@rest_auth'
           needs-docker-images: 'true'
+          needs-api-docker-image: 'true'
   test-api-corsfilter:
     needs: test-endpoint # test suite dependent on the endpoint service (if it has failings it's useless to perform these tests)
     runs-on: ubuntu-latest
@@ -330,6 +331,7 @@ jobs:
         with:
           tag: '@rest_cors'
           needs-docker-images: 'true'
+          needs-api-docker-image: 'true'
   junit-tests:
     needs: build
     runs-on: ubuntu-latest

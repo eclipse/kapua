@@ -8,6 +8,10 @@ inputs:
     description: true if this suite needs docker images, false otherwise
     required: false
     default: 'true'
+  needs-api-docker-image:
+    description: true if this suite needs the rest-api docker image, false otherwise
+    required: false
+    default: 'false'
 #outputs:
 runs:
   using: "composite"
@@ -28,14 +32,13 @@ runs:
       with:
         path: ~/.m2/repository
         key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
-    - name: Cache Maven repository
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2/repository
-        key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
     - name: Docker images creation
       if: ${{ inputs.needs-docker-images == 'true' }}
       run: mvn clean install -pl ${APP_PROJECTS} && mvn clean install -Pdocker -f assembly/pom.xml -pl '!:kapua-assembly-api' #api container not used in the tests at all se we don't need to build it here
+      shell: bash
+    - name: Docker rest-api image creation
+      if: ${{ inputs.needs-api-docker-image == 'true' }}
+      run: mvn clean install -Pdocker -pl :kapua-assembly-api
       shell: bash
     - name: Dns look-up containers needed for tests - message-broker
       if: ${{ inputs.needs-docker-images == 'true' }}
