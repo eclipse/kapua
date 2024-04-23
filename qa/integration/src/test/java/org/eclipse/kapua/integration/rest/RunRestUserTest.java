@@ -12,15 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.rest;
 
+import org.junit.runner.RunWith;
+
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
-
-import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = "classpath:features/rest/user/RestUser.feature",
-        glue = {"org.eclipse.kapua.qa.common",
+        glue = { "org.eclipse.kapua.qa.common",
                 "org.eclipse.kapua.qa.integration.steps",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps"
@@ -32,4 +32,5 @@ import org.junit.runner.RunWith;
         monochrome = true)
 
 public class RunRestUserTest {
+
 }
