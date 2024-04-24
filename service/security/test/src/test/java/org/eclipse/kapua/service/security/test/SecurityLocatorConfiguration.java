@@ -12,13 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.security.test;
 
-import com.codahale.metrics.MetricRegistry;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
-import com.google.inject.name.Names;
-import io.cucumber.java.Before;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.configuration.AccountRelativeFinder;
@@ -39,10 +35,12 @@ import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
 import org.eclipse.kapua.commons.service.internal.cache.CacheManagerProvider;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
+import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFactoryImpl;
@@ -84,8 +82,14 @@ import org.eclipse.kapua.service.user.internal.UserServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import com.codahale.metrics.MetricRegistry;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import com.google.inject.name.Names;
+
+import io.cucumber.java.Before;
 
 @Singleton
 public class SecurityLocatorConfiguration {
@@ -157,7 +161,8 @@ public class SecurityLocatorConfiguration {
                 final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         Mockito.mock(RootUserTester.class),
-                        new KapuaAuthenticationSetting());
+                        new KapuaAuthenticationSetting(),
+                        new XmlUtil(new TestJAXBContextProvider()));
                 try {
                     bind(CredentialService.class).toInstance(new CredentialServiceImpl(
                             credentialServiceConfigurationManager,

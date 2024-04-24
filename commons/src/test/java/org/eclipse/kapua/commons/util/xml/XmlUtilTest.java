@@ -12,6 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util.xml;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+
+import javax.xml.bind.JAXBException;
+
 import org.eclipse.kapua.KapuaIllegalStateException;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
@@ -19,33 +25,26 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBException;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-
 @Category(JUnitTests.class)
 public class XmlUtilTest {
 
     @Test
     public void setContextProviderTest() {
-        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
-
-        Assert.assertNotNull(XmlUtil.getContextProvider());
+        new XmlUtil(new XmlUtilTestJAXBContextProvider());
     }
 
     @Test(expected = KapuaIllegalStateException.class)
     public void setContextProviderTestNull() {
-        XmlUtil.setContextProvider(null);
+        final XmlUtil xmlUtil = new XmlUtil(null);
 
-        XmlUtil.getContextProvider();
+        xmlUtil.getContextProvider();
     }
 
     @Test
     public void marshalTest() throws JAXBException {
-        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
+        final XmlUtil xmlUtil = new XmlUtil(new XmlUtilTestJAXBContextProvider());
         XmlUtilTestObject object = XmlUtilTestObject.create();
-        String xmlObject = XmlUtil.marshal(object);
+        String xmlObject = xmlUtil.marshal(object);
 
         Assert.assertNotNull(xmlObject);
         Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -60,11 +59,11 @@ public class XmlUtilTest {
 
     @Test
     public void marshalWriterTest() throws JAXBException, IOException {
-        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
+        final XmlUtil xmlUtil = new XmlUtil(new XmlUtilTestJAXBContextProvider());
         XmlUtilTestObject object = XmlUtilTestObject.create();
 
         try (StringWriter stringWriter = new StringWriter()) {
-            XmlUtil.marshal(object, stringWriter);
+            xmlUtil.marshal(object, stringWriter);
             String xmlObject = stringWriter.toString();
 
             Assert.assertNotNull(xmlObject);
@@ -81,7 +80,7 @@ public class XmlUtilTest {
 
     @Test
     public void unmarshalTest() throws JAXBException, SAXException {
-        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
+        final XmlUtil xmlUtil = new XmlUtil(new XmlUtilTestJAXBContextProvider());
         String xmlObject = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<xmlUtilTestObject>\n" +
                 "   <string>test</string>\n" +
@@ -90,7 +89,7 @@ public class XmlUtilTest {
                 "      <integer>2</integer>\n" +
                 "   </integers>\n" +
                 "</xmlUtilTestObject>\n";
-        XmlUtilTestObject object = XmlUtil.unmarshal(xmlObject, XmlUtilTestObject.class);
+        XmlUtilTestObject object = xmlUtil.unmarshal(xmlObject, XmlUtilTestObject.class);
 
         Assert.assertNotNull(object);
         Assert.assertEquals("test", object.getString());
@@ -102,7 +101,7 @@ public class XmlUtilTest {
 
     @Test
     public void unmarshalReaderTest() throws JAXBException, SAXException {
-        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
+        final XmlUtil xmlUtil = new XmlUtil(new XmlUtilTestJAXBContextProvider());
         String xmlObject = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<xmlUtilTestObject>\n" +
                 "   <string>test</string>\n" +
@@ -113,7 +112,7 @@ public class XmlUtilTest {
                 "</xmlUtilTestObject>\n";
 
         try (StringReader stringReader = new StringReader(xmlObject)) {
-            XmlUtilTestObject object = XmlUtil.unmarshal(stringReader, XmlUtilTestObject.class);
+            XmlUtilTestObject object = xmlUtil.unmarshal(stringReader, XmlUtilTestObject.class);
 
             Assert.assertNotNull(object);
             Assert.assertEquals("test", object.getString());
@@ -124,12 +123,11 @@ public class XmlUtilTest {
         }
     }
 
-
     @Test
     public void marshalJsonTest() throws JAXBException {
-        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
+        final XmlUtil xmlUtil = new XmlUtil(new XmlUtilTestJAXBContextProvider());
         XmlUtilTestObject object = XmlUtilTestObject.create();
-        String jsonObject = XmlUtil.marshalJson(object);
+        String jsonObject = xmlUtil.marshalJson(object);
 
         Assert.assertNotNull(jsonObject);
         Assert.assertEquals("{\n" +
@@ -140,11 +138,11 @@ public class XmlUtilTest {
 
     @Test
     public void marshalWriterJsonTest() throws JAXBException, IOException {
-        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
+        final XmlUtil xmlUtil = new XmlUtil(new XmlUtilTestJAXBContextProvider());
         XmlUtilTestObject object = XmlUtilTestObject.create();
 
         try (StringWriter stringWriter = new StringWriter()) {
-            XmlUtil.marshalJson(object, stringWriter);
+            xmlUtil.marshalJson(object, stringWriter);
             String jsonObject = stringWriter.toString();
 
             Assert.assertNotNull(jsonObject);
@@ -157,12 +155,12 @@ public class XmlUtilTest {
 
     @Test
     public void unmarshalJsonTest() throws JAXBException, SAXException {
-        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
+        final XmlUtil xmlUtil = new XmlUtil(new XmlUtilTestJAXBContextProvider());
         String jsonObject = "{\n" +
                 "   \"string\" : \"test\",\n" +
                 "   \"integers\" : [ 1, 2 ]\n" +
                 "}";
-        XmlUtilTestObject object = XmlUtil.unmarshalJson(jsonObject, XmlUtilTestObject.class);
+        XmlUtilTestObject object = xmlUtil.unmarshalJson(jsonObject, XmlUtilTestObject.class);
 
         Assert.assertNotNull(object);
         Assert.assertEquals("test", object.getString());
@@ -174,14 +172,14 @@ public class XmlUtilTest {
 
     @Test
     public void unmarshalReaderJsonTest() throws JAXBException, SAXException {
-        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
+        final XmlUtil xmlUtil = new XmlUtil(new XmlUtilTestJAXBContextProvider());
         String jsonObject = "{\n" +
                 "   \"string\" : \"test\",\n" +
                 "   \"integers\" : [ 1, 2 ]\n" +
                 "}";
 
         try (StringReader stringReader = new StringReader(jsonObject)) {
-            XmlUtilTestObject object = XmlUtil.unmarshalJson(stringReader, XmlUtilTestObject.class);
+            XmlUtilTestObject object = xmlUtil.unmarshalJson(stringReader, XmlUtilTestObject.class);
 
             Assert.assertNotNull(object);
             Assert.assertEquals("test", object.getString());

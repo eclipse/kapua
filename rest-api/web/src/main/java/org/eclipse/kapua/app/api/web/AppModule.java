@@ -12,21 +12,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.web;
 
-import com.google.inject.Provides;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSetting;
 import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSettingKeys;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import com.google.inject.Provides;
 
 public class AppModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
-        bind(DatabaseCheckUpdate.class).asEagerSingleton();
+        bind(DatabaseCheckUpdate.class).in(Singleton.class);
+        bind(JAXBContextProvider.class).to(RestApiJAXBContextProvider.class).in(Singleton.class);
         bind(KapuaApiCoreSetting.class).in(Singleton.class);
     }
 
@@ -46,13 +48,5 @@ public class AppModule extends AbstractKapuaModule {
     @Named("eventsModuleName")
     String eventModuleName() {
         return "rest_api";
-    }
-
-    @Provides
-    @Singleton
-    JAXBContextProvider jaxbContextProvider() {
-        final JAXBContextProvider jaxbContextProvider = new RestApiJAXBContextProvider();
-        XmlUtil.setContextProvider(jaxbContextProvider);
-        return jaxbContextProvider;
     }
 }

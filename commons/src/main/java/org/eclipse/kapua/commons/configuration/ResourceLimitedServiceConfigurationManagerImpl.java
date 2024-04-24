@@ -13,20 +13,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
+import java.util.Map;
+import java.util.Optional;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.exception.ServiceConfigurationLimitExceededException;
 import org.eclipse.kapua.commons.configuration.exception.ServiceConfigurationParentLimitExceededException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.eclipse.kapua.storage.TxContext;
-
-import java.util.Map;
-import java.util.Optional;
 
 public class ResourceLimitedServiceConfigurationManagerImpl
         extends ServiceConfigurationManagerImpl
@@ -40,8 +41,9 @@ public class ResourceLimitedServiceConfigurationManagerImpl
             ServiceConfigRepository serviceConfigRepository,
             RootUserTester rootUserTester,
             AccountRelativeFinder accountRelativeFinder,
-            UsedEntitiesCounter usedEntitiesCounter) {
-        super(pid, serviceConfigRepository, rootUserTester);
+            UsedEntitiesCounter usedEntitiesCounter,
+            XmlUtil xmlUtil) {
+        super(pid, serviceConfigRepository, rootUserTester, xmlUtil);
         this.accountRelativeFinder = accountRelativeFinder;
         this.usedEntitiesCounter = usedEntitiesCounter;
     }
@@ -67,8 +69,10 @@ public class ResourceLimitedServiceConfigurationManagerImpl
     /**
      * Checks if the given scope {@link KapuaId} can have more entities for this {@link KapuaConfigurableService}.
      *
-     * @param scopeId    The scope {@link KapuaId} to check.
-     * @param entityType The entity type of this {@link KapuaConfigurableService}
+     * @param scopeId
+     *         The scope {@link KapuaId} to check.
+     * @param entityType
+     *         The entity type of this {@link KapuaConfigurableService}
      * @throws KapuaException
      * @since 2.0.0
      */
@@ -82,7 +86,8 @@ public class ResourceLimitedServiceConfigurationManagerImpl
     /**
      * Gets the number of remaining allowed entity for the given scope, according to the {@link KapuaConfigurableService#getConfigValues(KapuaId)}
      *
-     * @param scopeId The scope {@link KapuaId}.
+     * @param scopeId
+     *         The scope {@link KapuaId}.
      * @return The number of entities remaining for the given scope
      * @throws KapuaException
      * @since 1.0.0
@@ -92,13 +97,15 @@ public class ResourceLimitedServiceConfigurationManagerImpl
     }
 
     /**
-     * Gets the number of remaining allowed entity for the given scope, according to the {@link KapuaConfigurableService#getConfigValues(KapuaId)}
-     * excluding a specific scope when checking resources available.
+     * Gets the number of remaining allowed entity for the given scope, according to the {@link KapuaConfigurableService#getConfigValues(KapuaId)} excluding a specific scope when checking resources
+     * available.
      * <p>
      * The exclusion of the scope is required when updating a limit for a target account.
      *
-     * @param scopeId       The scope {@link KapuaId}.
-     * @param targetScopeId The excluded scope {@link KapuaId}.
+     * @param scopeId
+     *         The scope {@link KapuaId}.
+     * @param targetScopeId
+     *         The excluded scope {@link KapuaId}.
      * @return The number of entities remaining for the given scope
      * @throws KapuaException
      * @since 1.0.0
@@ -108,14 +115,16 @@ public class ResourceLimitedServiceConfigurationManagerImpl
     }
 
     /**
-     * Gets the number of remaining allowed entity for the given scope, according to the given {@link KapuaConfigurableService}
-     * excluding a specific scope when checking resources available.
+     * Gets the number of remaining allowed entity for the given scope, according to the given {@link KapuaConfigurableService} excluding a specific scope when checking resources available.
      * <p>
      * The exclusion of the scope is required when updating a limit for a target account.
      *
-     * @param scopeId       The scope {@link KapuaId}.
-     * @param targetScopeId The excluded scope {@link KapuaId}.
-     * @param configuration The configuration to be checked. If not provided will be read from the current service configuration
+     * @param scopeId
+     *         The scope {@link KapuaId}.
+     * @param targetScopeId
+     *         The excluded scope {@link KapuaId}.
+     * @param configuration
+     *         The configuration to be checked. If not provided will be read from the current service configuration
      * @return The number of entities remaining for the given scope
      * @throws KapuaException
      * @since 1.0.0

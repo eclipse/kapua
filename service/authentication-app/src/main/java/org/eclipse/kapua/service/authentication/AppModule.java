@@ -12,20 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
-import com.google.inject.Provides;
-import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
-import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
-
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+
+import com.google.inject.Provides;
+
 public class AppModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
         bind(MetricsAuthentication.class).in(Singleton.class);
-        bind(DatabaseCheckUpdate.class).asEagerSingleton();
+        bind(DatabaseCheckUpdate.class).in(Singleton.class);
+        bind(JAXBContextProvider.class).to(AuthenticationJAXBContextProvider.class).in(Singleton.class);
     }
 
     @Provides
@@ -38,13 +40,5 @@ public class AppModule extends AbstractKapuaModule {
     @Named("eventsModuleName")
     String eventModuleName() {
         return "authentication";
-    }
-
-    @Provides
-    @Singleton
-    JAXBContextProvider jaxbContextProvider() {
-        final JAXBContextProvider jaxbContextProvider = new AuthenticationJAXBContextProvider();
-        XmlUtil.setContextProvider(jaxbContextProvider);
-        return jaxbContextProvider;
     }
 }

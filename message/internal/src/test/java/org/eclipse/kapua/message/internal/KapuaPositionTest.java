@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
+import java.io.StringWriter;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
@@ -20,11 +24,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import java.io.StringWriter;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-
 
 @Category(JUnitTests.class)
 public class KapuaPositionTest {
@@ -43,7 +42,6 @@ public class KapuaPositionTest {
             "~~status=.*" +
             "~~timestamp=.*$";
 
-
     private static final String POSITION_XML_STR = //
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + NEWLINE +
                     "<position>" + NEWLINE +
@@ -58,9 +56,11 @@ public class KapuaPositionTest {
                     "   <timestamp>2017-01-18T12:10:46.238Z</timestamp>" + NEWLINE +
                     "</position>" + NEWLINE;
 
+    private XmlUtil xmlUtil;
+
     @Before
     public void before() throws Exception {
-        XmlUtil.setContextProvider(new MessageJAXBContextProvider());
+        xmlUtil = new XmlUtil(new MessageJAXBContextProvider());
     }
 
     @Test
@@ -104,7 +104,7 @@ public class KapuaPositionTest {
         KapuaMessageUtil.populatePosition(position, referenceDate);
 
         StringWriter strWriter = new StringWriter();
-        XmlUtil.marshal(position, strWriter);
+        xmlUtil.marshal(position, strWriter);
         Assert.assertEquals(POSITION_XML_STR, strWriter.toString());
     }
 }

@@ -17,10 +17,9 @@
 
 Feature: Datastore tests
 
-@setup
+  @setup
   Scenario: Start full docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start full docker environment
 
   Scenario: Create index with specific prefix
@@ -41,6 +40,6 @@ Feature: Datastore tests
 #    And REST response containing text "custom-prefix-1-2018-01"
     And I delete all indices
 
-@teardown
+  @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment

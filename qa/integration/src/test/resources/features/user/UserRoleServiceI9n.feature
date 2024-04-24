@@ -18,8 +18,7 @@ Feature: User role service integration tests
 
   @setup
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start base docker environment
 
   Scenario: Adding existing roles to user

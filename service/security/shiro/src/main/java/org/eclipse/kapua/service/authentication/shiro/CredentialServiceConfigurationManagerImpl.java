@@ -12,11 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigRepository;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerImpl;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
@@ -25,10 +30,6 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticatio
 import org.eclipse.kapua.storage.TxContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 public class CredentialServiceConfigurationManagerImpl extends ServiceConfigurationManagerImpl implements CredentialServiceConfigurationManager {
 
@@ -41,10 +42,12 @@ public class CredentialServiceConfigurationManagerImpl extends ServiceConfigurat
     public CredentialServiceConfigurationManagerImpl(
             ServiceConfigRepository serviceConfigRepository,
             RootUserTester rootUserTester,
-            KapuaAuthenticationSetting kapuaAuthenticationSetting) {
+            KapuaAuthenticationSetting kapuaAuthenticationSetting,
+            XmlUtil xmlUtil) {
         super(CredentialService.class.getName(),
                 serviceConfigRepository,
-                rootUserTester);
+                rootUserTester,
+                xmlUtil);
         this.kapuaAuthenticationSetting = kapuaAuthenticationSetting;
         systemMinimumPasswordLength = fixMinimumPasswordLength();
     }

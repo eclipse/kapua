@@ -12,7 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.internal;
 
-import com.google.common.base.Strings;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import javax.inject.Singleton;
+import javax.xml.bind.DatatypeConverter;
+
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -52,10 +57,7 @@ import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Singleton;
-import javax.xml.bind.DatatypeConverter;
-import java.util.List;
-import java.util.regex.Pattern;
+import com.google.common.base.Strings;
 
 /**
  * {@link JobStepService} implementation.
@@ -73,6 +75,7 @@ public class JobStepServiceImpl implements JobStepService {
     private final JobExecutionService jobExecutionService;
     private final JobExecutionFactory jobExecutionFactory;
     private final JobStepDefinitionRepository jobStepDefinitionRepository;
+    private final XmlUtil xmlUtil;
 
     public JobStepServiceImpl(
             AuthorizationService authorizationService,
@@ -82,7 +85,8 @@ public class JobStepServiceImpl implements JobStepService {
             JobStepFactory jobStepFactory,
             JobExecutionService jobExecutionService,
             JobExecutionFactory jobExecutionFactory,
-            JobStepDefinitionRepository jobStepDefinitionRepository) {
+            JobStepDefinitionRepository jobStepDefinitionRepository,
+            XmlUtil xmlUtil) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.txManager = txManager;
@@ -91,6 +95,7 @@ public class JobStepServiceImpl implements JobStepService {
         this.jobExecutionService = jobExecutionService;
         this.jobExecutionFactory = jobExecutionFactory;
         this.jobStepDefinitionRepository = jobStepDefinitionRepository;
+        this.xmlUtil = xmlUtil;
     }
 
     private final JobServiceSettings jobServiceSettings = new JobServiceSettings();
@@ -112,7 +117,8 @@ public class JobStepServiceImpl implements JobStepService {
         for (JobStepProperty jobStepProperty : jobStepCreator.getStepProperties()) {
             if (jobStepProperty.getPropertyValue() != null) {
                 Integer stepPropertyMaxLength = jobStepProperty.getMaxLength() != null ? jobStepProperty.getMaxLength() : jobStepPropertyValueLengthMax;
-                ArgumentValidator.lengthRange(jobStepProperty.getPropertyValue(), jobStepProperty.getMinLength(), stepPropertyMaxLength, "jobStepCreator.stepProperties[]." + jobStepProperty.getName());
+                ArgumentValidator.lengthRange(jobStepProperty.getPropertyValue(), jobStepProperty.getMinLength(), stepPropertyMaxLength,
+                        "jobStepCreator.stepProperties[]." + jobStepProperty.getName());
             }
         }
 
@@ -185,7 +191,6 @@ public class JobStepServiceImpl implements JobStepService {
             return jobStepRepository.create(tx, jobStep);
         });
     }
-
 
     @Override
     public JobStep update(JobStep jobStep) throws KapuaException {
@@ -360,9 +365,12 @@ public class JobStepServiceImpl implements JobStepService {
     /**
      * Shifts {@link JobStep} matched by the given {@link JobStepQuery} according to the given increment.
      *
-     * @param tx            The {@link TxContext} which is owning the transaction.
-     * @param selectorQuery The selector {@link JobStepQuery}.
-     * @param increment     The increment o apply to the matched {@link JobStep}s
+     * @param tx
+     *         The {@link TxContext} which is owning the transaction.
+     * @param selectorQuery
+     *         The selector {@link JobStepQuery}.
+     * @param increment
+     *         The increment o apply to the matched {@link JobStep}s
      * @throws KapuaException
      * @since 2.0.0
      */
@@ -414,7 +422,8 @@ public class JobStepServiceImpl implements JobStepService {
                     }
 
                     ArgumentValidator.areEqual(jobStepProperty.getPropertyType(), jobStepDefinitionProperty.getPropertyType(), "stepProperties[]." + jobStepProperty.getName());
-                    ArgumentValidator.lengthRange(jobStepProperty.getPropertyValue(), jobStepDefinitionProperty.getMinLength(), jobStepDefinitionProperty.getMaxLength(), "stepProperties[]." + jobStepProperty.getName());
+                    ArgumentValidator.lengthRange(jobStepProperty.getPropertyValue(), jobStepDefinitionProperty.getMinLength(), jobStepDefinitionProperty.getMaxLength(),
+                            "stepProperties[]." + jobStepProperty.getName());
 
                     validateJobStepPropertyValue(jobStepProperty, jobStepDefinitionProperty);
                 }
@@ -422,7 +431,8 @@ public class JobStepServiceImpl implements JobStepService {
         }
     }
 
-    private <C extends Comparable<C>, E extends Enum<E>> void validateJobStepPropertyValue(JobStepProperty jobStepProperty, JobStepProperty jobStepDefinitionProperty) throws KapuaIllegalArgumentException {
+    private <C extends Comparable<C>, E extends Enum<E>> void validateJobStepPropertyValue(JobStepProperty jobStepProperty, JobStepProperty jobStepDefinitionProperty)
+            throws KapuaIllegalArgumentException {
         try {
             Class<?> jobStepDefinitionPropertyClass = Class.forName(jobStepDefinitionProperty.getPropertyType());
 
@@ -445,7 +455,7 @@ public class JobStepServiceImpl implements JobStepService {
                 Class<E> jobStepDefinitionPropertyClassEnum = (Class<E>) jobStepDefinitionPropertyClass;
                 Enum.valueOf(jobStepDefinitionPropertyClassEnum, jobStepProperty.getPropertyValue());
             } else {
-                XmlUtil.unmarshal(jobStepProperty.getPropertyValue(), jobStepDefinitionPropertyClass);
+                xmlUtil.unmarshal(jobStepProperty.getPropertyValue(), jobStepDefinitionPropertyClass);
             }
 
         } catch (KapuaIllegalArgumentException kiae) {

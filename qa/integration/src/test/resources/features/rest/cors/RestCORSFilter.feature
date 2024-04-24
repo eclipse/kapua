@@ -19,9 +19,8 @@ Feature: REST API tests for User
   REST API tests of Kapua CORS filter logic.
 
   @setup
-  Scenario: Initialize Jaxb and security context, then start rest-api container and dependencies
-    Given Init Jaxb Context
-    And Init Security Context
+  Scenario: Initialize security context, then start rest-api container and dependencies
+    Given Init Security Context
     #NB: be aware that sub-sequent tests depends on the value of cors endpoint refresh interval that you set here
     And start rest-API container and dependencies with auth token TTL "6000"ms and refresh token TTL "20000"ms and cors endpoint refresh interval 1s
 
@@ -77,10 +76,10 @@ Feature: REST API tests for User
       | name  | password          | enabled |
       | user1 | ToManySecrets123# | true    |
     And Add permissions to the last created user
-      | domain | action |
-      | endpoint_info   | read   |
-      | endpoint_info   | write  |
-      | user            | read   |
+      | domain        | action |
+      | endpoint_info | read   |
+      | endpoint_info | write  |
+      | user          | read   |
     Then I logout
     When REST POST call at "/v1/authentication/user" with JSON "{\"password\": \"ToManySecrets123#\", \"username\": \"user1\"}"
     Then REST response code is 200

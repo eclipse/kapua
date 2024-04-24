@@ -12,9 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration.internal;
 
-import com.google.inject.Provides;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory;
@@ -25,10 +28,10 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import com.google.inject.Provides;
 
 public class DeviceManagementConfigurationModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
         bind(DeviceConfigurationFactory.class).to(DeviceConfigurationFactoryImpl.class).in(Singleton.class);
@@ -45,7 +48,8 @@ public class DeviceManagementConfigurationModule extends AbstractKapuaModule {
             DeviceRegistryService deviceRegistryService,
             DeviceConfigurationFactory deviceConfigurationFactory,
             DeviceConfigurationStoreService deviceConfigurationStoreService,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory) {
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            XmlUtil xmlUtil) {
         return new DeviceConfigurationManagementServiceImpl(
                 jpaTxManagerFactory.create("kapua-device_management_operation_registry"),
                 authorizationService,
@@ -54,7 +58,8 @@ public class DeviceManagementConfigurationModule extends AbstractKapuaModule {
                 deviceEventFactory,
                 deviceRegistryService,
                 deviceConfigurationFactory,
-                deviceConfigurationStoreService
+                deviceConfigurationStoreService,
+                xmlUtil
         );
     }
 }

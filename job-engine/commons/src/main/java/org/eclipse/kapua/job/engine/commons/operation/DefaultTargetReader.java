@@ -12,8 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.commons.operation;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.batch.api.chunk.AbstractItemReader;
+import javax.batch.runtime.context.JobContext;
+import javax.batch.runtime.context.StepContext;
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobContextWrapper;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
@@ -35,14 +45,6 @@ import org.eclipse.kapua.service.job.targets.JobTargetService;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.batch.api.chunk.AbstractItemReader;
-import javax.batch.runtime.context.JobContext;
-import javax.batch.runtime.context.StepContext;
-import javax.inject.Inject;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Default {@link TargetReader} implementation.
@@ -67,14 +69,16 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
     private JobContext jobContext;
     @Inject
     private StepContext stepContext;
+    @Inject
+    private XmlUtil xmlUtil;
 
     protected List<JobTargetWrapper> wrappedJobTargets = new ArrayList<>();
     protected int jobTargetIndex;
 
     @Override
     public void open(Serializable arg0) throws Exception {
-        JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
-        StepContextWrapper stepContextWrapper = new StepContextWrapper(kapuaIdFactory, stepContext);
+        JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext, xmlUtil);
+        StepContextWrapper stepContextWrapper = new StepContextWrapper(kapuaIdFactory, stepContext, xmlUtil);
 
         JobLogger jobLogger = jobContextWrapper.getJobLogger();
         jobLogger.setClassLog(LOG);
@@ -105,7 +109,7 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
 
     @Override
     public Object readItem() throws Exception {
-        JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
+        JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext, xmlUtil);
 
         JobLogger jobLogger = jobContextWrapper.getJobLogger();
         jobLogger.setClassLog(LOG);
@@ -124,16 +128,20 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
     /**
      * This method apply {@link AttributePredicate}s according to the parameters contained into the {@link JobContextWrapper} and {@link StepContextWrapper}.
      * <p>
-     * When no {@link JobStepIndex} is specified, the methods selects all targets that are set to the current {@link StepContextWrapper#getStepIndex()} and that don't have the
-     * {@link JobTargetStatus} set to {@link JobTargetStatus#PROCESS_OK}.
+     * When no {@link JobStepIndex} is specified, the methods selects all targets that are set to the current {@link StepContextWrapper#getStepIndex()} and that don't have the {@link JobTargetStatus}
+     * set to {@link JobTargetStatus#PROCESS_OK}.
      * <p>
      * When a {@link JobStepIndex} is specified, the methods ignores all targets until the {@link StepContextWrapper#getStepIndex()} doesn't match the {@link JobContextWrapper#getFromStepIndex()}.
      * Then the {@link JobTarget}s will be selected as regularly.
      *
-     * @param jobContextWrapper  The {@link JobContextWrapper} from which extract data
-     * @param stepContextWrapper The {@link StepContextWrapper} from which extract data
-     * @param query              The {@link KapuaQuery} to perform
-     * @param andPredicate       The {@link org.eclipse.kapua.model.query.predicate.AndPredicate} where to apply {@link org.eclipse.kapua.model.query.predicate.QueryPredicate}
+     * @param jobContextWrapper
+     *         The {@link JobContextWrapper} from which extract data
+     * @param stepContextWrapper
+     *         The {@link StepContextWrapper} from which extract data
+     * @param query
+     *         The {@link KapuaQuery} to perform
+     * @param andPredicate
+     *         The {@link org.eclipse.kapua.model.query.predicate.AndPredicate} where to apply {@link org.eclipse.kapua.model.query.predicate.QueryPredicate}
      * @since 1.0.0
      */
     protected void stepIndexFiltering(JobContextWrapper jobContextWrapper, StepContextWrapper stepContextWrapper, KapuaQuery query, AndPredicate andPredicate) {
@@ -156,9 +164,12 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
      * If the {@link JobContextWrapper#getTargetSublist()} has one or more {@link org.eclipse.kapua.model.id.KapuaId}s they will be added to the
      * {@link org.eclipse.kapua.model.query.predicate.AndPredicate} to select only given {@link JobTarget}.
      *
-     * @param jobContextWrapper The {@link JobContextWrapper} from which extract data
-     * @param query             The {@link KapuaQuery} to perform
-     * @param andPredicate      The {@link org.eclipse.kapua.model.query.predicate.AndPredicate} where to apply {@link org.eclipse.kapua.model.query.predicate.QueryPredicate}
+     * @param jobContextWrapper
+     *         The {@link JobContextWrapper} from which extract data
+     * @param query
+     *         The {@link KapuaQuery} to perform
+     * @param andPredicate
+     *         The {@link org.eclipse.kapua.model.query.predicate.AndPredicate} where to apply {@link org.eclipse.kapua.model.query.predicate.QueryPredicate}
      * @since 1.0.0
      */
     protected void targetSublistFiltering(JobContextWrapper jobContextWrapper, KapuaQuery query, AndPredicate andPredicate) {

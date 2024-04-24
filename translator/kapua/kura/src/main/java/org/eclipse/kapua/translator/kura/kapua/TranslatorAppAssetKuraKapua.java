@@ -13,8 +13,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Date;
+
+import javax.inject.Inject;
+
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.service.device.call.kura.model.asset.AssetMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssetChannelMode;
@@ -34,8 +36,8 @@ import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagem
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
-import javax.inject.Inject;
-import java.util.Date;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * {@link org.eclipse.kapua.translator.Translator} implementation from {@link KuraResponseMessage} to {@link AssetResponseMessage}
@@ -45,11 +47,13 @@ import java.util.Date;
 public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<AssetResponseChannel, AssetResponsePayload, AssetResponseMessage> {
 
     private final DeviceAssetFactory deviceAssetFactory;
+    private final XmlUtil xmlUtil;
 
     @Inject
-    public TranslatorAppAssetKuraKapua(DeviceManagementSetting deviceManagementSetting, DeviceAssetFactory deviceAssetFactory) {
+    public TranslatorAppAssetKuraKapua(DeviceManagementSetting deviceManagementSetting, DeviceAssetFactory deviceAssetFactory, XmlUtil xmlUtil) {
         super(deviceManagementSetting, AssetResponseMessage.class, AssetResponsePayload.class);
         this.deviceAssetFactory = deviceAssetFactory;
+        this.xmlUtil = xmlUtil;
     }
 
     @Override
@@ -99,7 +103,7 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
                     deviceAssets.getAssets().add(deviceAsset);
                 });
 
-                assetResponsePayload.setBody(XmlUtil.marshal(deviceAssets).getBytes());
+                assetResponsePayload.setBody(xmlUtil.marshal(deviceAssets).getBytes());
             }
 
             // Return Kapua Payload

@@ -17,8 +17,7 @@ Feature: Account Tag Service Integration Tests
 
   @setup
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Creating Tags Under Account That Allows Infinite Child Devices
   Login as kapua-sys, create an account

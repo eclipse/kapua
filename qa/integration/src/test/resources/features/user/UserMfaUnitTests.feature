@@ -19,8 +19,7 @@ Feature: Feature file for testing Password user credential
 
   @setup
   Scenario: Init Security Context for all scenarios
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Find mfa of the user
   Creating a new user "kapua-a" in kapua-sys account and enabled mfa.
@@ -36,9 +35,9 @@ Feature: Feature file for testing Password user credential
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
-      | domain      | action |
-      | credential  | read   |
-      | credential  | write  |
+      | domain     | action |
+      | credential | read   |
+      | credential | write  |
     And I logout
     And I login as user with name "kapua-a" and password "ToManySecrets123#"
     And I enable mfa

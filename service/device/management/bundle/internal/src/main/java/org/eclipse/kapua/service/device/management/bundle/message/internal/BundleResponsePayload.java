@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle.message.internal;
 
+import java.util.Optional;
+
+import javax.validation.constraints.NotNull;
+
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
@@ -20,9 +24,6 @@ import org.eclipse.kapua.service.device.management.commons.message.response.Kapu
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
-
-import javax.validation.constraints.NotNull;
-import java.util.Optional;
 
 /**
  * {@link DeviceBundle} {@link KapuaResponsePayload} implementation.
@@ -34,12 +35,14 @@ public class BundleResponsePayload extends KapuaResponsePayloadImpl implements K
     private static final long serialVersionUID = 4380715272822080425L;
 
     private final String charEncoding = KapuaLocator.getInstance().getComponent(DeviceManagementSetting.class).getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private final XmlUtil xmlUtil = KapuaLocator.getInstance().getComponent(XmlUtil.class);
 
     /**
      * Gets the {@link DeviceBundles} from the {@link #getBody()}.
      *
      * @return The {@link DeviceBundles} from the {@link #getBody()}.
-     * @throws Exception if reading {@link #getBody()} errors.
+     * @throws Exception
+     *         if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
     public Optional<DeviceBundles> getDeviceBundles() throws Exception {
@@ -48,18 +51,20 @@ public class BundleResponsePayload extends KapuaResponsePayloadImpl implements K
         }
 
         String bodyString = new String(getBody(), charEncoding);
-        return Optional.ofNullable(XmlUtil.unmarshal(bodyString, DeviceBundles.class));
+        return Optional.ofNullable(xmlUtil.unmarshal(bodyString, DeviceBundles.class));
     }
 
     /**
      * Sets the {@link DeviceBundles} in the {@link #getBody()}.
      *
-     * @param deviceBundles The {@link DeviceBundles} in the {@link #getBody()}.
-     * @throws Exception if writing errors.
+     * @param deviceBundles
+     *         The {@link DeviceBundles} in the {@link #getBody()}.
+     * @throws Exception
+     *         if writing errors.
      * @since 1.5.0
      */
     public void setDeviceBundles(@NotNull DeviceBundles deviceBundles) throws Exception {
-        String bodyString = XmlUtil.marshal(deviceBundles);
+        String bodyString = xmlUtil.marshal(deviceBundles);
         setBody(bodyString.getBytes(charEncoding));
     }
 }

@@ -17,10 +17,9 @@
 Feature: Device Broker connection ip not set
   Device Service integration scenarios with running broker service.
 
-@setup
+  @setup
   Scenario: Start full docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And System property "broker.host" with value "null"
     And System property "kapua.config.url" with value "null"
     And Start full docker environment
@@ -36,6 +35,6 @@ Feature: Device Broker connection ip not set
     And Device death message is sent
     And I wait 5 seconds
 
-@teardown
+  @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment
