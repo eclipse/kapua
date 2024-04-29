@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal;
 
+import javax.validation.constraints.NotNull;
+
 import org.eclipse.kapua.commons.jpa.EntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
@@ -21,8 +23,6 @@ import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.event.ServiceEventBusListener;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * {@code abstract} {@link KapuaService} implementation.
@@ -39,12 +39,13 @@ public abstract class AbstractKapuaService implements KapuaService {
     protected final EntityManagerFactory entityManagerFactory;
     protected final EntityManagerSession entityManagerSession;
     protected final EntityCache entityCache;
-    private final ServiceEventBus serviceEventBus = KapuaLocator.getInstance().getComponent(ServiceEventBus.class);
+    private final ServiceEventBus serviceEventBus;
 
     /**
      * Constructor
      *
-     * @param entityManagerFactory The {@link EntityManagerFactory}.
+     * @param entityManagerFactory
+     *         The {@link EntityManagerFactory}.
      * @since 1.0.0
      * @deprecated Since 1.2.0. Please make use of {@link #AbstractKapuaService(EntityManagerFactory, EntityCacheFactory)}. This constructor will be removed in a next release (may be).
      */
@@ -53,16 +54,23 @@ public abstract class AbstractKapuaService implements KapuaService {
         this(entityManagerFactory, null);
     }
 
+    protected AbstractKapuaService(@NotNull EntityManagerFactory entityManagerFactory, EntityCacheFactory entityCacheFactory) {
+        this(entityManagerFactory, entityCacheFactory, KapuaLocator.getInstance().getComponent(ServiceEventBus.class));
+    }
+
     /**
      * Constructor.
      *
-     * @param entityManagerFactory The {@link EntityManagerFactory}.
-     * @param entityCacheFactory   The {@link EntityCacheFactory}.
+     * @param entityManagerFactory
+     *         The {@link EntityManagerFactory}.
+     * @param entityCacheFactory
+     *         The {@link EntityCacheFactory}.
      * @since 1.2.0
      */
-    protected AbstractKapuaService(@NotNull EntityManagerFactory entityManagerFactory, EntityCacheFactory entityCacheFactory) {
+    protected AbstractKapuaService(@NotNull EntityManagerFactory entityManagerFactory, EntityCacheFactory entityCacheFactory, ServiceEventBus serviceEventBus) {
         this.entityManagerFactory = entityManagerFactory;
         this.entityManagerSession = new EntityManagerSession(entityManagerFactory);
+        this.serviceEventBus = serviceEventBus;
 
         if (entityCacheFactory != null) {
             this.entityCache = entityCacheFactory.createCache("Deprecated");
@@ -84,10 +92,14 @@ public abstract class AbstractKapuaService implements KapuaService {
     /**
      * Registers a {@link ServiceEventBusListener} into the {@link org.eclipse.kapua.event.ServiceEventBus}.
      *
-     * @param listener The {@link ServiceEventBusListener} to register.
-     * @param address  The {@link ServiceEventBus} address to subscribe to.
-     * @param clazz    The {@link KapuaService} owner of the {@link ServiceEventBusListener}.
-     * @throws ServiceEventBusException If any error occurs during subscription to the address.
+     * @param listener
+     *         The {@link ServiceEventBusListener} to register.
+     * @param address
+     *         The {@link ServiceEventBus} address to subscribe to.
+     * @param clazz
+     *         The {@link KapuaService} owner of the {@link ServiceEventBusListener}.
+     * @throws ServiceEventBusException
+     *         If any error occurs during subscription to the address.
      * @since 1.0.0kapua-sew
      */
     protected void registerEventListener(@NotNull ServiceEventBusListener listener, @NotNull String address, @NotNull Class<? extends KapuaService> clazz) throws ServiceEventBusException {
