@@ -13,19 +13,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator;
 
+import java.lang.reflect.Type;
+import java.util.ServiceLoader;
+
 import org.eclipse.kapua.KapuaRuntimeErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Type;
-import java.util.ServiceLoader;
-
 /**
- * Interface to load KapuaService instances in a given environment.<br>
- * Implementations of the KapuaServiceLocator can decide whether to return local instances or to acts as a proxy to remote instances.<br>
- * The locator is self initialized, it looks for the proper locator implementation class looking at {@link KapuaLocator#LOCATOR_CLASS_NAME_SYSTEM_PROPERTY} system property or falling back to the
- * {@link KapuaLocator#LOCATOR_CLASS_NAME_ENVIRONMENT_PROPERTY} (if the previous property is not defined).
+ * Interface to load KapuaService instances in a given environment.<br> Implementations of the KapuaServiceLocator can decide whether to return local instances or to acts as a proxy to remote
+ * instances.<br> The locator is self initialized, it looks for the proper locator implementation class looking at {@link KapuaLocator#LOCATOR_CLASS_NAME_SYSTEM_PROPERTY} system property or falling
+ * back to the {@link KapuaLocator#LOCATOR_CLASS_NAME_ENVIRONMENT_PROPERTY} (if the previous property is not defined).
  *
  * @since 1.0
  */
@@ -83,6 +82,7 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
             logger.error("Error initializing locator...", e);
             throw e;
         }
+        logger.error("No locator available");
         // none returned
 
         throw new KapuaRuntimeException(KapuaRuntimeErrorCodes.SERVICE_LOCATOR_UNAVAILABLE);
