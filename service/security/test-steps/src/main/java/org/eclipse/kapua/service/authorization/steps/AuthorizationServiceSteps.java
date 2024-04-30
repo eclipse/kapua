@@ -2031,6 +2031,22 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
+    @When("I search for users assigned to the last role I found users")
+    public void searchUsersForRole(List<CucUser> cucUsers) throws Exception {
+        Role role = (Role) stepData.get("Role");
+        List<KapuaId> userIds = roleService.userIdsByRoleId(getCurrentScopeId(), role.getId());
+        List<String> listUserNames = new ArrayList<>();
+        for (KapuaId id : userIds) {
+            User user = userService.find(getCurrentScopeId(), id);
+            listUserNames.add(user.getName());
+        }
+        for (CucUser user : cucUsers) {
+            Assert.assertTrue(listUserNames.contains(user.getName()));
+            listUserNames.remove(user.getName());
+        }
+        Assert.assertTrue(listUserNames.isEmpty());
+    }
+
     @And("I count the access roles from user in account {string}")
     public void iCountTheAccessRolesFromUserInChildAccount(String accountName) throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
