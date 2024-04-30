@@ -272,14 +272,10 @@ public class Roles extends AbstractKapuaResource {
 
         AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(scopeId);
         accessRoleQuery.setPredicate(accessRoleQuery.attributePredicate(AccessRoleAttributes.ROLE_ID, roleId));
-        accessRoleQuery.setLimit(limit);
-        accessRoleQuery.setOffset(offset);
         AccessRoleListResult accessRoleListResult = accessRoleService.query(accessRoleQuery);
 
         AccessInfoQuery accessInfoQuery = accessInfoFactory.newQuery(scopeId);
         accessInfoQuery.setPredicate(accessInfoQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, accessRoleListResult.getItems().stream().map(AccessRole::getAccessInfoId).collect(Collectors.toList())));
-        accessRoleQuery.setLimit(limit);
-        accessRoleQuery.setOffset(offset);
         AccessInfoListResult accessInfoListResult = accessInfoService.query(accessInfoQuery);
 
         UserQuery userQuery = userFactory.newQuery(scopeId);
