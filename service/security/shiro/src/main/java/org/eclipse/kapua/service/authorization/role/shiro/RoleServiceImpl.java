@@ -21,10 +21,22 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
+import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
+import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
+import org.eclipse.kapua.service.authorization.access.AccessInfoService;
+import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
+import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
+import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
+import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
+import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValidator;
@@ -44,6 +56,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * {@link RoleService} implementation.
@@ -59,6 +73,13 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
     private final RoleRepository roleRepository;
     private final RolePermissionRepository rolePermissionRepository;
     private final PermissionValidator permissionValidator;
+    public AccessRoleFactory accessRoleFactory;
+
+    public AccessInfoFactory accessInfoFactory;
+    public AccessRoleService accessRoleService;
+
+    public AccessInfoService accessInfoService;
+
 
     /**
      * Injectable constructor
@@ -76,6 +97,10 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RolePermissionFactory rolePermissionFactory,
+            AccessRoleFactory accessRoleFactory,
+            AccessInfoFactory accessInfoFactory,
+            AccessRoleService accessRoleService,
+            AccessInfoService accessInfoService,
             ServiceConfigurationManager serviceConfigurationManager,
             TxManager txManager,
             RoleRepository roleRepository,
@@ -83,6 +108,10 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
             PermissionValidator permissionValidator) {
         super(txManager, serviceConfigurationManager, Domains.ROLE, authorizationService, permissionFactory);
         this.rolePermissionFactory = rolePermissionFactory;
+        this.accessRoleFactory = accessRoleFactory;
+        this.accessInfoFactory = accessInfoFactory;
+        this.accessRoleService = accessRoleService;
+        this.accessInfoService = accessInfoService;
         this.roleRepository = roleRepository;
         this.rolePermissionRepository = rolePermissionRepository;
         this.permissionValidator = permissionValidator;
@@ -237,5 +266,17 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
         for (Role r : rolesToDelete.getItems()) {
             delete(r.getScopeId(), r.getId());
         }
+    }
+
+    public List<KapuaId> userIdsByRoleId(KapuaId scopeId, KapuaId roleId) throws KapuaException {
+        AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(scopeId);
+        accessRoleQuery.setPredicate(accessRoleQuery.attributePredicate(AccessRoleAttributes.ROLE_ID, roleId));
+        AccessRoleListResult accessRoleListResult = accessRoleService.query(accessRoleQuery);
+
+        AccessInfoQuery accessInfoQuery = accessInfoFactory.newQuery(scopeId);
+        accessInfoQuery.setPredicate(accessInfoQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, accessRoleListResult.getItems().stream().map(AccessRole::getAccessInfoId).collect(Collectors.toList())));
+        AccessInfoListResult accessInfoListResult = accessInfoService.query(accessInfoQuery);
+
+        return accessInfoListResult.getItems().stream().map(AccessInfo::getUserId).collect(Collectors.toList());
     }
 }
