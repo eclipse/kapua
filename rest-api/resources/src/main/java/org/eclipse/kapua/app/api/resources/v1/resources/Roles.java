@@ -21,20 +21,10 @@ import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.authorization.access.AccessInfo;
-import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
-import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
-import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
-import org.eclipse.kapua.service.authorization.access.AccessInfoService;
-import org.eclipse.kapua.service.authorization.access.AccessRole;
-import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
-import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
-import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
-import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
-import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
@@ -60,7 +50,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Path("{scopeId}/roles")
 public class Roles extends AbstractKapuaResource {
@@ -69,14 +59,6 @@ public class Roles extends AbstractKapuaResource {
     public RoleService roleService;
     @Inject
     public RoleFactory roleFactory;
-    @Inject
-    public AccessRoleService accessRoleService;
-    @Inject
-    public AccessRoleFactory accessRoleFactory;
-    @Inject
-    public AccessInfoService accessInfoService;
-    @Inject
-    public AccessInfoFactory accessInfoFactory;
     @Inject
     public UserService userService;
     @Inject
@@ -268,18 +250,10 @@ public class Roles extends AbstractKapuaResource {
             @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
-        //TODO: #LAYER_VIOLATION - this filtering would be much more efficient, were it done at a more appropriate layer
-
-        AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(scopeId);
-        accessRoleQuery.setPredicate(accessRoleQuery.attributePredicate(AccessRoleAttributes.ROLE_ID, roleId));
-        AccessRoleListResult accessRoleListResult = accessRoleService.query(accessRoleQuery);
-
-        AccessInfoQuery accessInfoQuery = accessInfoFactory.newQuery(scopeId);
-        accessInfoQuery.setPredicate(accessInfoQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, accessRoleListResult.getItems().stream().map(AccessRole::getAccessInfoId).collect(Collectors.toList())));
-        AccessInfoListResult accessInfoListResult = accessInfoService.query(accessInfoQuery);
+        List<KapuaId> usersIds = roleService.userIdsByRoleId(scopeId, roleId);
 
         UserQuery userQuery = userFactory.newQuery(scopeId);
-        userQuery.setPredicate(userQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, accessInfoListResult.getItems().stream().map(AccessInfo::getUserId).collect(Collectors.toList())));
+        userQuery.setPredicate(userQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, usersIds));
         userQuery.setLimit(limit);
         userQuery.setOffset(offset);
         if (!Strings.isNullOrEmpty(sortParam)) {
