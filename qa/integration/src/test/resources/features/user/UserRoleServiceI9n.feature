@@ -1521,6 +1521,38 @@ Feature: User role service integration tests
     And No exception was thrown
     And I logout
 
+  Scenario: testing "userIdsByRoleId" method on a selected role
+    I verify that I can fetch users assigned to a given role using the appropriate method
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And Scope with ID 1
+    And I find a role with name "admin"
+    And I create user with name "TestUser"
+    And I create the access info entity
+    And I add access role "admin" to user "TestUser"
+    And I create user with name "TestUser2"
+    And I create the access info entity
+    And I add access role "admin" to user "TestUser2"
+    And I create user with name "TestUser3"
+    And I create user with name "TestUser4"
+    And I create user with name "TestUser5"
+    When I search for users assigned to the last role I found users
+      | name      |
+      | TestUser  |
+      | TestUser2 |
+      | kapua-sys |
+    And No exception was thrown
+    And I create the access info entity
+    And I add access role "admin" to user "TestUser5"
+    When I search for users assigned to the last role I found users
+      | name      |
+      | TestUser  |
+      | TestUser2 |
+      | TestUser5 |
+      | kapua-sys |
+    And No exception was thrown
+    And I logout
+
   Scenario: Deleting role after adding it to user
   Creating role "test_role" as kapua-sys user, creating user "TestUser".
   Adding role to created user and then deleting it.
