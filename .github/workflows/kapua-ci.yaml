@@ -22,7 +22,8 @@ jobs:
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - run: mvn -v
       - run: mvn -B ${BUILD_OPTS} -DskipTests clean install
-      - run: bash <(curl -s https://codecov.io/bash)
+      - name: Code coverage results upload
+        uses: codecov/codecov-action@v4
   test-brokerAcl:
     needs: build
     runs-on: ubuntu-latest
@@ -422,7 +423,8 @@ jobs:
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' verify
-      - run: bash <(curl -s https://codecov.io/bash)
+      - name: Code coverage results upload
+        uses: codecov/codecov-action@v4
   build-javadoc:
     needs: build
     runs-on: ubuntu-latest
@@ -437,4 +439,5 @@ jobs:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
       - run: mvn -B -DskipTests install javadoc:jar
-      - run: bash <(curl -s https://codecov.io/bash)
+      - name: Code coverage results upload
+        uses: codecov/codecov-action@v4
