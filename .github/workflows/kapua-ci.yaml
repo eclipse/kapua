@@ -16,7 +16,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3 # Cache local Maven repository to reuse dependencies
+      - uses: actions/cache@v4 # Cache local Maven repository to reuse dependencies
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -33,7 +33,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -54,7 +54,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -75,7 +75,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -96,7 +96,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -117,7 +117,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -138,7 +138,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -159,7 +159,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -180,7 +180,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -201,7 +201,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -222,7 +222,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -243,7 +243,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -264,7 +264,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -285,7 +285,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -306,7 +306,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -327,7 +327,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -348,7 +348,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -369,7 +369,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -390,7 +390,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -411,7 +411,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -432,7 +432,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
@@ -453,7 +453,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ github.run_id }}-${{ github.run_number }}-maven-cache
