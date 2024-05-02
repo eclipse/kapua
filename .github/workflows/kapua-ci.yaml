@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v3 # Checks out a copy of the repository on the ubuntu-latest machine
+      - uses: actions/checkout@v4 # Checks out a copy of the repository on the ubuntu-latest machine
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
@@ -39,7 +39,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@brokerAcl'
@@ -50,7 +50,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@tag'
@@ -61,7 +61,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@broker'
@@ -72,7 +72,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@device'
@@ -83,7 +83,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@deviceManagement'
@@ -94,7 +94,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@connection'
@@ -105,7 +105,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@datastore'
@@ -116,7 +116,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@user'
@@ -127,7 +127,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@userIntegrationBase'
@@ -138,7 +138,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@userIntegration'
@@ -149,7 +149,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@security'
@@ -160,7 +160,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@jobs or @scheduler'
@@ -171,7 +171,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@jobsIntegrationBase'
@@ -182,7 +182,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@jobsIntegration'
@@ -193,7 +193,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@account or @translator'
@@ -204,7 +204,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@jobEngineStepDefinitions'
@@ -215,7 +215,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@jobEngineStartOfflineDevice'
@@ -226,7 +226,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@jobEngineStartOnlineDevice'
@@ -237,7 +237,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@jobEngineRestartOfflineDevice'
@@ -248,7 +248,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@jobEngineRestartOnlineDevice'
@@ -259,7 +259,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@jobEngineRestartOnlineDeviceSecondPart'
@@ -270,7 +270,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@jobEngineServiceStop'
@@ -281,7 +281,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@role or @group'
@@ -292,7 +292,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@deviceRegistry'
@@ -303,7 +303,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@endpoint'
@@ -314,7 +314,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@rest_auth'
@@ -325,7 +325,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Clones Kapua repo inside the runner
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: ./.github/actions/runTestsTaggedAs
         with:
           tag: '@rest_cors'
@@ -335,7 +335,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
@@ -361,7 +361,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
