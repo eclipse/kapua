@@ -15,7 +15,7 @@ jobs:
     name: Owasp Dependency Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3 # Checks out a copy of the repository on the ubuntu-latest machine
+      - uses: actions/checkout@v4 # Checks out a copy of the repository on the ubuntu-latest machine
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
