@@ -50,3 +50,5 @@ runs:
       shell: bash
     - name: Code coverage results upload
       uses: codecov/codecov-action@v4
+      secrets:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
