@@ -15,13 +15,13 @@ jobs:
     name: Owasp Dependency Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3 # Checks out a copy of the repository on the ubuntu-latest machine
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4 # Checks out a copy of the repository on the ubuntu-latest machine
+      - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: 11
           cache: 'maven'
-      - uses: actions/cache@v3 # Cache local Maven repository to reuse dependencies
+      - uses: actions/cache@v4 # Cache local Maven repository to reuse dependencies
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
