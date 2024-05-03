@@ -44,6 +44,7 @@ jobs:
         with:
           tag: '@brokerAcl'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-tag:
     needs: build
     runs-on: ubuntu-latest
@@ -55,6 +56,7 @@ jobs:
         with:
           tag: '@tag'
           needs-docker-images: 'false'
+          codecov-token: ${CODECOV_TOKEN}
   test-broker:
     needs: build
     runs-on: ubuntu-latest
@@ -66,6 +68,7 @@ jobs:
         with:
           tag: '@broker'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-device:
     needs: build
     runs-on: ubuntu-latest
@@ -77,6 +80,7 @@ jobs:
         with:
           tag: '@device'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-device-management:
     needs: build
     runs-on: ubuntu-latest
@@ -88,6 +92,7 @@ jobs:
         with:
           tag: '@deviceManagement'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-connection:
     needs: build
     runs-on: ubuntu-latest
@@ -99,6 +104,7 @@ jobs:
         with:
           tag: '@connection'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-datastore:
     needs: build
     runs-on: ubuntu-latest
@@ -110,6 +116,7 @@ jobs:
         with:
           tag: '@datastore'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-user:
     needs: build
     runs-on: ubuntu-latest
@@ -121,6 +128,7 @@ jobs:
         with:
           tag: '@user'
           needs-docker-images: 'false'
+          codecov-token: ${CODECOV_TOKEN}
   test-userIntegrationBase:
     needs: build
     runs-on: ubuntu-latest
@@ -132,6 +140,7 @@ jobs:
         with:
           tag: '@userIntegrationBase'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-userIntegration:
     needs: build
     runs-on: ubuntu-latest
@@ -143,6 +152,7 @@ jobs:
         with:
           tag: '@userIntegration'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-security:
     needs: build
     runs-on: ubuntu-latest
@@ -154,6 +164,7 @@ jobs:
         with:
           tag: '@security'
           needs-docker-images: 'false'
+          codecov-token: ${CODECOV_TOKEN}
   test-jobsAndScheduler:
     needs: build
     runs-on: ubuntu-latest
@@ -165,6 +176,7 @@ jobs:
         with:
           tag: '@jobs or @scheduler'
           needs-docker-images: 'false'
+          codecov-token: ${CODECOV_TOKEN}
   test-jobsIntegrationBase:
     needs: build
     runs-on: ubuntu-latest
@@ -176,6 +188,7 @@ jobs:
         with:
           tag: '@jobsIntegrationBase'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-jobsIntegration:
     needs: build
     runs-on: ubuntu-latest
@@ -187,6 +200,7 @@ jobs:
         with:
           tag: '@jobsIntegration'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-accountAndTranslator:
     needs: build
     runs-on: ubuntu-latest
@@ -198,6 +212,7 @@ jobs:
         with:
           tag: '@account or @translator'
           needs-docker-images: 'false'
+          codecov-token: ${CODECOV_TOKEN}
   test-jobEngineStepDefinitions:
     needs: build
     runs-on: ubuntu-latest
@@ -209,6 +224,7 @@ jobs:
         with:
           tag: '@jobEngineStepDefinitions'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-jobEngineStartOfflineDevice:
     needs: build
     runs-on: ubuntu-latest
@@ -220,6 +236,7 @@ jobs:
         with:
           tag: '@jobEngineStartOfflineDevice'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-jobEngineStartOnlineDevice:
     needs: build
     runs-on: ubuntu-latest
@@ -231,6 +248,7 @@ jobs:
         with:
           tag: '@jobEngineStartOnlineDevice'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-jobEngineRestartOfflineDevice:
     needs: build
     runs-on: ubuntu-latest
@@ -242,6 +260,7 @@ jobs:
         with:
           tag: '@jobEngineRestartOfflineDevice'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-jobEngineRestartOnlineDevice:
     needs: build
     runs-on: ubuntu-latest
@@ -253,6 +272,7 @@ jobs:
         with:
           tag: '@jobEngineRestartOnlineDevice'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-jobEngineRestartOnlineDeviceSecondPart:
     needs: build
     runs-on: ubuntu-latest
@@ -264,6 +284,7 @@ jobs:
         with:
           tag: '@jobEngineRestartOnlineDeviceSecondPart'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-jobEngineServiceStop:
     needs: build
     runs-on: ubuntu-latest
@@ -275,6 +296,7 @@ jobs:
         with:
           tag: '@jobEngineServiceStop'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-RoleAndGroup:
     needs: build
     runs-on: ubuntu-latest
@@ -286,6 +308,7 @@ jobs:
         with:
           tag: '@role or @group'
           needs-docker-images: 'false'
+          codecov-token: ${CODECOV_TOKEN}
   test-deviceRegistry:
     needs: build
     runs-on: ubuntu-latest
@@ -297,6 +320,7 @@ jobs:
         with:
           tag: '@deviceRegistry'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-endpoint:
     needs: build
     runs-on: ubuntu-latest
@@ -308,6 +332,7 @@ jobs:
         with:
           tag: '@endpoint'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-api-auth:
     needs: build
     runs-on: ubuntu-latest
@@ -319,6 +344,7 @@ jobs:
         with:
           tag: '@rest_auth'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   test-api-corsfilter:
     needs: test-endpoint # test suite dependent on the endpoint service (if it has failings it's useless to perform these tests)
     runs-on: ubuntu-latest
@@ -330,6 +356,7 @@ jobs:
         with:
           tag: '@rest_cors'
           needs-docker-images: 'true'
+          codecov-token: ${CODECOV_TOKEN}
   junit-tests:
     needs: build
     runs-on: ubuntu-latest
@@ -356,6 +383,8 @@ jobs:
       - run: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' verify
       - name: Code coverage results upload
         uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
   build-javadoc:
     needs: build
     runs-on: ubuntu-latest

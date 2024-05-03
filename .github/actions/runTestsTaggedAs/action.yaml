@@ -8,6 +8,9 @@ inputs:
     description: true if this suite needs docker images, false otherwise
     required: false
     default: 'true'
+  codecov-token:
+    description: The CodeCov access token to upload results
+    required: true
 #outputs:
 runs:
   using: "composite"
@@ -50,5 +53,3 @@ runs:
       shell: bash
     - name: Code coverage results upload
       uses: codecov/codecov-action@v4
-      secrets:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
