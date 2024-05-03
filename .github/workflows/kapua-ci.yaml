@@ -356,8 +356,6 @@ jobs:
       - run: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' verify
       - name: Code coverage results upload
         uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
   build-javadoc:
     needs: build
     runs-on: ubuntu-latest
