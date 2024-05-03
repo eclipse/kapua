@@ -5,6 +5,8 @@ env:
   BUILD_OPTS: ""
   CONFIG_OVERRIDES: "-Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost -Dcrypto.secret.key=kapuaTestsKey!!!"
   MAVEN_OPTS: "-Xmx4096m"
+  # Secrets
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 jobs:
   build:
