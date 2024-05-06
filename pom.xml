@@ -275,8 +275,13 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${surefire.version}</version>
                     <configuration>
+                        <!--Configuration needed to run the various tests under the codebase. Placed here so no need to pass them via args-->
                         <systemPropertyVariables>
                             <commons.settings.hotswap>true</commons.settings.hotswap>
+                            <commons.db.schema>kapuadb</commons.db.schema>
+                            <crypto.secret.key>kapuaTestsKey!!!</crypto.secret.key>
+                            <broker.host>localhost</broker.host>
+                            <user.timezone>UTC</user.timezone>
                         </systemPropertyVariables>
                     </configuration>
                 </plugin>
