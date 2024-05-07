@@ -19,6 +19,8 @@ import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
+import java.util.List;
+
 /**
  * {@link Role} service definition.
  *
@@ -95,5 +97,16 @@ public interface RoleService extends KapuaEntityService<Role, RoleCreator>,
      */
     @Override
     void delete(KapuaId scopeId, KapuaId roleId) throws KapuaException;
+
+    /**
+     * Return the {@link KapuaId}s of the users who were assigned the given {@link Role} id.
+     *
+     * @param scopeId The scope id in which to search.
+     * @param roleId  The {@link Role} id to search.
+     * @throws KapuaException
+     * @since 2.1.0
+     */
+
+    List<KapuaId> userIdsByRoleId(KapuaId scopeId, KapuaId roleId) throws KapuaException;
 
 }
