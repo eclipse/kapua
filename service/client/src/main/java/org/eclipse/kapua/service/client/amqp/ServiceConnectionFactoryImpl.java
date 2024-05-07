@@ -30,7 +30,11 @@ public class ServiceConnectionFactoryImpl extends JmsConnectionFactory {
     private String clientId;
 
     public ServiceConnectionFactoryImpl(String host, int port, String username, String password, String clientId) {
-        super(username, password, "amqp://" + host + ":" + port);
+        this("amqp", host, port, username, password, clientId);
+    }
+
+    public ServiceConnectionFactoryImpl(String schema, String host, int port, String username, String password, String clientId) {
+        super(username, password, schema + "://" + host + ":" + port);
         this.clientId = clientId;
         logger.info("Created connection factory with client id: {}", this.clientId);
     }
