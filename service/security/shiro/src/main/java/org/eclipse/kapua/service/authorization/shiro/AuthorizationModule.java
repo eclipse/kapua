@@ -230,18 +230,26 @@ public class AuthorizationModule extends AbstractKapuaModule {
     @Provides
     @Singleton
     RoleService roleService(PermissionFactory permissionFactory,
-                            AuthorizationService authorizationService,
-                            RolePermissionFactory rolePermissionFactory,
-                            @Named("RoleServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
-                            RoleRepository roleRepository,
-                            RolePermissionRepository rolePermissionRepository,
-                            KapuaJpaTxManagerFactory jpaTxManagerFactory,
-                            PermissionValidator permissionValidator
+            AuthorizationService authorizationService,
+            RolePermissionFactory rolePermissionFactory,
+            AccessRoleFactory accessRoleFactory,
+            AccessInfoFactory accessInfoFactory,
+            AccessRoleService accessRoleService,
+            AccessInfoService accessInfoService,
+            @Named("RoleServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
+            RoleRepository roleRepository,
+            RolePermissionRepository rolePermissionRepository,
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            PermissionValidator permissionValidator
     ) {
         return new RoleServiceImpl(
                 permissionFactory,
                 authorizationService,
                 rolePermissionFactory,
+                accessRoleFactory,
+                accessInfoFactory,
+                accessRoleService,
+                accessInfoService,
                 serviceConfigurationManager,
                 jpaTxManagerFactory.create("kapua-authorization"),
                 roleRepository,
