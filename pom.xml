@@ -27,14 +27,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Compiler level and JDK for all modules -->
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.toolchain.jdk.version>11</maven.toolchain.jdk.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.toolchain.jdk.version>17</maven.toolchain.jdk.version>
 
         <!-- Kapua Client compiler level and JDK -->
-        <kapua-client.maven.compiler.source>11</kapua-client.maven.compiler.source>
-        <kapua-client.maven.compiler.target>11</kapua-client.maven.compiler.target>
-        <kapua-client.maven.toolchain.jdk.version>11</kapua-client.maven.toolchain.jdk.version>
+        <kapua-client.maven.compiler.source>17</kapua-client.maven.compiler.source>
+        <kapua-client.maven.compiler.target>17</kapua-client.maven.compiler.target>
+        <kapua-client.maven.toolchain.jdk.version>17</kapua-client.maven.toolchain.jdk.version>
 
         <!-- Maven Javadoc Plugin compiler level -->
         <!-- See: https://bugs.openjdk.org/browse/JDK-8212233 -->
@@ -47,10 +47,11 @@
         <console.maven.toolchain.jdk.version>8</console.maven.toolchain.jdk.version>
 
         <!-- Dependencies versions -->
-        <camel.version>3.21.0</camel.version> <!-- latest 3.11.0 -->
-        <spring.version>5.3.23</spring.version> <!-- latest 5.3.8 -->
-        <spring-security.version>5.7.5</spring-security.version> <!-- latest 5.5.1 -->
-        <spring-boot.version>2.5.14</spring-boot.version> <!-- latest 2.5.2 --> <!-- 2.3.x is not fully supported by camel (will be on camel 3.4) -->
+        <camel.version>4.4.2</camel.version>
+        <spring.version>6.1.6</spring.version>
+        <spring-security.version>6.2.4</spring-security.version>
+        <spring-boot.version>3.2.5</spring-boot.version>
+        <qpid-jms-client.version>2.5.0</qpid-jms-client.version>
 
         <aopalliance.version>1.0</aopalliance.version>
         <artemis.version>2.31.2</artemis.version>
@@ -96,7 +97,7 @@
         <javax-inject.version>1</javax-inject.version>
         <javax-json.version>1.0.4</javax-json.version>
         <javax-persistence.version>2.1.1</javax-persistence.version>
-        <javax-servlet-api.version>3.1.0</javax-servlet-api.version>
+        <jakarta.servlet-api.version>6.1.0-M2</jakarta.servlet-api.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <javax-validation-api.version>2.0.1.Final</javax-validation-api.version>
         <jakarta-ws-rs-api.version>2.1.6</jakarta-ws-rs-api.version>
@@ -106,7 +107,7 @@
         <jaxb-impl.version>2.3.6</jaxb-impl.version>
         <jbatch.version>1.0.2</jbatch.version>
         <jersey.version>2.38</jersey.version>
-        <jetty.version>9.4.53.v20231009</jetty.version>
+        <jetty.version>11.0.0</jetty.version>
         <joda.version>2.9.4</joda.version>
         <jolokia-jvm.version>1.3.4</jolokia-jvm.version>
         <jose4j.version>0.7.10</jose4j.version>
@@ -124,11 +125,10 @@
         <opencsv.version>3.7</opencsv.version>
         <paho.version>1.2.1</paho.version>
         <protobuf.version>3.23.2</protobuf.version>
-        <qpid-jms-client.version>1.7.0</qpid-jms-client.version>
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
         <reflections.version>0.10.2</reflections.version>
         <scada-utils.version>0.4.0</scada-utils.version>
-        <shiro.version>1.12.0</shiro.version>
+        <shiro.version>2.0.0</shiro.version>
         <slf4j.version>1.7.33</slf4j.version>
         <snakeyaml.version>2.2</snakeyaml.version>
         <spotify.version>8.15.1</spotify.version>
@@ -2122,9 +2122,9 @@
 
             <!-- REST API -->
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>${javax-servlet-api.version}</version>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>${jakarta.servlet-api.version}</version>
             </dependency>
 
             <dependency>
@@ -2637,6 +2637,11 @@
             </dependency>
 
             <!-- Spring boot -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-properties-migrator</artifactId>
+                <scope>runtime</scope>
+            </dependency>
             <dependency>
                 <groupId>org.apache.camel.springboot</groupId>
                 <artifactId>camel-spring-boot-starter</artifactId>

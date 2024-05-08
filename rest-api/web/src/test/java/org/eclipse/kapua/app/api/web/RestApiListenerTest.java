@@ -19,8 +19,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
-import javax.servlet.ServletContextEvent;
-
+import jakarta.servlet.ServletContextEvent;
 
 @Category(JUnitTests.class)
 public class RestApiListenerTest {

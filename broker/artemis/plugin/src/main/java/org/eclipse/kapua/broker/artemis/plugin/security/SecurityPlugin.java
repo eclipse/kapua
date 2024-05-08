@@ -49,7 +49,8 @@ import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErr
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jms.JMSException;
+import jakarta.jms.JMSException;
+
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.security.auth.Subject;
 import javax.security.auth.login.CredentialException;

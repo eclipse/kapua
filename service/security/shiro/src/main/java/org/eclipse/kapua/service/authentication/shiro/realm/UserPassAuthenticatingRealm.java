@@ -13,11 +13,11 @@
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.apache.shiro.lang.ShiroException;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;

@@ -15,12 +15,12 @@ package org.eclipse.kapua.service.authentication.shiro.realm;
 
 import com.google.common.base.Strings;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.lang.ShiroException;
+import org.apache.shiro.lang.util.Destroyable;
 import org.apache.shiro.realm.AuthenticatingRealm;
-import org.apache.shiro.util.Destroyable;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;

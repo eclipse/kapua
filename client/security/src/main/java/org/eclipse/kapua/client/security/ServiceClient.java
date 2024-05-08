@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security;
 
-import javax.jms.JMSException;
+import jakarta.jms.JMSException;
 
 import org.eclipse.kapua.client.security.bean.EntityRequest;
 import org.eclipse.kapua.client.security.bean.EntityResponse;

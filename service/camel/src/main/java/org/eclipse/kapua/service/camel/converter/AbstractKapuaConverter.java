@@ -42,6 +42,12 @@ import org.eclipse.kapua.transport.message.jms.JmsTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.jms.JMSException;
+
+import javax.inject.Inject;
+import java.util.Base64;
+import java.util.Date;
+
 /**
  * Kapua message converter reference implementation used to convert from Camel incoming messages ({@link JmsMessage}) to a platform specific message type.
  *

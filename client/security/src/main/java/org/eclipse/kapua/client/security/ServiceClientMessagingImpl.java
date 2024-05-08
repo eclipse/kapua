@@ -24,7 +24,7 @@ import org.eclipse.kapua.client.security.bean.ResponseContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jms.JMSException;
+import jakarta.jms.JMSException;
 
 /**
  * Security service. Implementation through AMQP messaging layer.

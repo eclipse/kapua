@@ -22,7 +22,6 @@ import org.mockito.Mockito;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 @Category(JUnitTests.class)
 public class KapuaTokenAuthenticationFilterTest {
 

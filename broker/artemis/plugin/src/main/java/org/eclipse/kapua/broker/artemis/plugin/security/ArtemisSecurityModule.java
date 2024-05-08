@@ -28,9 +28,10 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
+import jakarta.jms.JMSException;
+
 import javax.inject.Named;
 import javax.inject.Singleton;
-import javax.jms.JMSException;
 import java.util.UUID;
 
 public class ArtemisSecurityModule extends AbstractKapuaModule {

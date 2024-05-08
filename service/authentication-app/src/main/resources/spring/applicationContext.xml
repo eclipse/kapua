@@ -16,7 +16,7 @@
        xmlns:camel="http://camel.apache.org/schema/spring"
        xsi:schemaLocation="
            http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans-4.3.xsd
-           http://camel.apache.org/schema/spring https://camel.apache.org/schema/spring/camel-spring-3.3.0.xsd">
+           http://camel.apache.org/schema/spring https://camel.apache.org/schema/spring/camel-spring-4.4.2.xsd">
 
     <!-- Allows us to use system properties as variables in this configuration file -->
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">

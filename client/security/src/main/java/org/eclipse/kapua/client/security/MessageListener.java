@@ -27,10 +27,11 @@ import org.eclipse.kapua.client.security.bean.ResponseContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.jms.JMSException;
-import javax.jms.Message;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

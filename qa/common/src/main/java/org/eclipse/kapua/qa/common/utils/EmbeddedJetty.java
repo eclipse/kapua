@@ -15,7 +15,7 @@ package org.eclipse.kapua.qa.common.utils;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AllowSymLinkAliasChecker;
-import org.eclipse.jetty.webapp.Configuration;
+//import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.slf4j.Logger;
@@ -56,10 +56,10 @@ public class EmbeddedJetty {
         webapp.setWar(warFile.getAbsolutePath());
         webapp.addAliasCheck(new AllowSymLinkAliasChecker());
 
-        Configuration.ClassList classlist = Configuration.ClassList.setServerDefault(jetty);
-        classlist.addBefore(
-                "org.eclipse.jetty.webapp.JettyWebXmlConfiguration",
-                "org.eclipse.jetty.annotations.AnnotationConfiguration" );
+//        Configuration.ClassList classlist = Configuration.ClassList.setServerDefault(jetty);
+//        classlist.addBefore(
+//                "org.eclipse.jetty.webapp.JettyWebXmlConfiguration",
+//                "org.eclipse.jetty.annotations.AnnotationConfiguration" );
 
         webapp.setAttribute(
                 "org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",

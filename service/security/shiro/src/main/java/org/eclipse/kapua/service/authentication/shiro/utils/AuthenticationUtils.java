@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.utils;
 
-import org.apache.shiro.codec.Base64;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.crypto.hash.Sha512Hash;
+import org.apache.shiro.lang.codec.Base64;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.crypto.CryptoUtil;

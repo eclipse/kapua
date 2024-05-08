@@ -14,8 +14,8 @@ package org.eclipse.kapua.client.security;
 
 import java.util.UUID;
 
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
+import jakarta.jms.JMSException;
+import jakarta.jms.TextMessage;
 
 import org.eclipse.kapua.client.security.bean.EntityRequest;
 import org.eclipse.kapua.client.security.bean.MessageConstants;

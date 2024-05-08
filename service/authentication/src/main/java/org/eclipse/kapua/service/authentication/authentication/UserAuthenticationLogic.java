@@ -13,7 +13,8 @@
 package org.eclipse.kapua.service.authentication.authentication;
 
 import com.codahale.metrics.Timer.Context;
-import org.apache.shiro.ShiroException;
+
+import org.apache.shiro.lang.ShiroException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.client.security.bean.AuthAcl;

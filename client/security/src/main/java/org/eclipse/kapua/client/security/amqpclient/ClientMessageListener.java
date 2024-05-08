@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security.amqpclient;
 
-import javax.jms.MessageListener;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
+import jakarta.jms.MessageListener;
+import jakarta.jms.MessageProducer;
+import jakarta.jms.Session;
 
 public abstract class ClientMessageListener implements MessageListener {
 

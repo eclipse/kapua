@@ -14,8 +14,8 @@ package org.eclipse.kapua.service.client.amqp;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.jms.Connection;
-import javax.jms.JMSException;
+import jakarta.jms.Connection;
+import jakarta.jms.JMSException;
 
 import org.apache.qpid.jms.JmsConnectionFactory;
 import org.slf4j.Logger;
