@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal.cache;
 
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 
 import java.io.Serializable;
@@ -26,7 +27,7 @@ public class ComposedKey implements Serializable {
     private Serializable key;
 
     public ComposedKey(KapuaId scopeId, Serializable key) {
-        this.scopeId = scopeId;
+        this.scopeId = KapuaEid.parseKapuaId(scopeId); //This is done in order to cast different implementations of KapuaId into one specific, to avoid problems with serialization
         this.key = key;
     }
 
