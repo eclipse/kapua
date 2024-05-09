@@ -135,7 +135,7 @@ public class EntityCache {
 
     /**
      * Checks that the scopeId of the entity matches the provided one.
-     * This mimics the checks that are performed in the 'find' method of the {@link org.eclipse.kapua.commons.service.internal.ServiceDAO} class.
+     * This mimics the checks that are performed in the 'find' method of the {@link org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository} class.
      *
      * @param scopeId a {@link KapuaId} representing the scopeId
      * @param entity  the {@link KapuaEntity} to be checked
@@ -159,7 +159,7 @@ public class EntityCache {
 
     /**
      * Checks that the scopeId of the entity matches the provided one.
-     * This mimics the checks that are performed in the 'find' method of the {@link org.eclipse.kapua.commons.service.internal.ServiceDAO} class.
+     * This mimics the checks that are performed in the 'find' method of the {@link org.eclipse.kapua.commons.jpa.KapuaEntityJpaRepository} class.
      *
      * @param scopeId a {@link KapuaId} representing the scopeId
      * @param entity  the {@link KapuaListResult} entity to be checked
