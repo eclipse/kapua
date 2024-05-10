@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.internal;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
@@ -27,6 +28,7 @@ import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepRepository;
 import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionRepository;
+import org.eclipse.kapua.storage.TxManager;
 
 import com.google.inject.Provides;
 
@@ -47,6 +49,7 @@ public class JobStepModule extends AbstractKapuaModule {
     @Singleton
     JobStepService jobStepService(AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
+            @Named("jobTxManager") TxManager txManager,
             JobStepRepository jobStepRepository,
             JobStepFactory jobStepFactory,
             JobExecutionService jobExecutionService,
@@ -57,7 +60,7 @@ public class JobStepModule extends AbstractKapuaModule {
             XmlUtil xmlUtil) {
         return new JobStepServiceImpl(authorizationService,
                 permissionFactory,
-                jpaTxManagerFactory.create("kapua-job"),
+                txManager,
                 jobStepRepository,
                 jobStepFactory,
                 jobExecutionService,

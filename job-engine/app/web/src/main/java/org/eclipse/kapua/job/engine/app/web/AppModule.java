@@ -19,6 +19,7 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.job.engine.app.web.jaxb.JobEngineJAXBContextProvider;
+import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionAligner;
 
 import com.google.inject.Provides;
 
@@ -28,6 +29,8 @@ public class AppModule extends AbstractKapuaModule {
     protected void configureModule() {
         bind(DatabaseCheckUpdate.class).in(Singleton.class);
         bind(JAXBContextProvider.class).to(JobEngineJAXBContextProvider.class).in(Singleton.class);
+
+        bind(JobStepDefinitionAligner.class).in(Singleton.class);
     }
 
     @Provides
