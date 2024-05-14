@@ -33,7 +33,8 @@ public class UserMatchPredicateImpl<T> extends AbstractMatchPredicate<T> impleme
                 UserAttributes.PHONE_NUMBER,
                 UserAttributes.DISPLAY_NAME,
                 UserAttributes.EXTERNAL_ID,
-                UserAttributes.DESCRIPTION
+                UserAttributes.DESCRIPTION,
+                UserAttributes.EXTERNAL_USERNAME
         );
         this.matchTerm = matchTerm;
     }
