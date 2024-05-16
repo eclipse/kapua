@@ -32,14 +32,7 @@
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=9">
 
-        <!-- Manage the localization of the console -->
-        <% if (request.getParameter("l") != null) {  %>
-        	<meta name="gwt:property" content="locale=<%=request.getParameter("l")%>">
-        <% } else if (request.getHeader("Accept-Language") != null) { %>
-	        <meta name="gwt:property" content="locale=<%=request.getHeader("Accept-Language").split(",")[0]%>">
-        <% } else { %>
-	        <meta name="gwt:property" content="locale=en">
-	    <% } %>
+        <meta name="gwt:property" content="locale=en">
 
         <!--
             Favicon and title definition
