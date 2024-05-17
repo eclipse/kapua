@@ -80,7 +80,7 @@ public class KapuaIllegalArgumentExceptionTest {
                         "Error: " + name + ", " + value,
                         "An entity with the same name " + name + " already exists.",
                         "An entity with the same external Id " + name + " already exists.",
-                        "Error: " + name + ", " + value,
+                        "Duplicate " + name + " entry for values: " + value,
                         "The current subject is not authorized for " + name + ".",
                         "An illegal value was provided for the argument " + name + ": " + value + ".",
                         "An illegal null value was provided for the argument " + name + ".",
