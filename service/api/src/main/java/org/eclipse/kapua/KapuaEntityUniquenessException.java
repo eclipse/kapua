@@ -24,6 +24,8 @@ import java.util.Map;
  */
 public class KapuaEntityUniquenessException extends KapuaException {
 
+    private static final long serialVersionUID = -5398114226720500553L;
+
     private final String entityType;
     private final List<Map.Entry<String, Object>> uniquesFieldValues;
 
@@ -35,7 +37,7 @@ public class KapuaEntityUniquenessException extends KapuaException {
      * @since 1.0.0
      */
     public KapuaEntityUniquenessException(String entityType, List<Map.Entry<String, Object>> uniquesFieldValues) {
-        super(KapuaErrorCodes.ENTITY_UNIQUENESS, uniquesFieldValues);
+        super(KapuaErrorCodes.ENTITY_UNIQUENESS, entityType, uniquesFieldValues);
 
         this.entityType = entityType;
         this.uniquesFieldValues = uniquesFieldValues;
