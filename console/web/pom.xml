@@ -189,15 +189,7 @@
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
-            <artifactId>reindex-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>lang-mustache-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.elasticsearch.plugin</groupId>
-            <artifactId>percolator-client</artifactId>
         </dependency>
         <!-- log4j2 for ES -->
         <dependency>
