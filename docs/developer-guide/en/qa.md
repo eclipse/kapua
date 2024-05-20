@@ -266,26 +266,7 @@ In ```<properties>```:
 
 ### Running the (integration) tests
 
-Bellow there is a sample command, which is used to run the tests.
-
-```
-mvn verify -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags ~@rest"
-```
-
-First part is clear: mvn verify command runs any integration tests that maven finds in the project. Parameters that follow (kapuadb, hotswap and broker) are neccessary options for all the tests and
-after that we have options for the tests themselves.
-
-Bottom command specifies that JUnit tests should (in this specific case) not be run:
-
-```
--Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests'
-```
-
-And the last part of the command (see bellow) specifies that Rest tests should also be skipped. All other tests will start when executing this command.
-
-```
--Dcucumber.options="--tags ~@rest"
-```
+Refer to the Building section of this document to understand how to execute integration tests locally (tldr: to have instructions for the script we created to automatically execute them)
 
 ### Cucumber reports
 
