@@ -13,7 +13,6 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
@@ -160,11 +159,7 @@ public class Groups extends AbstractKapuaResource {
             @PathParam("groupId") EntityId groupId) throws KapuaException {
         Group group = groupService.find(scopeId, groupId);
 
-        if (group == null) {
-            throw new KapuaEntityNotFoundException(Group.TYPE, groupId);
-        }
-
-        return group;
+        return returnNotNullEntity(group, Group.TYPE, groupId);
     }
 
     /**

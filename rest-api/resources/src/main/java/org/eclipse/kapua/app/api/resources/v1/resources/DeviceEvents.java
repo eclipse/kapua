@@ -214,11 +214,7 @@ public class DeviceEvents extends AbstractKapuaResource {
 
         DeviceEventListResult results = deviceEventService.query(query);
 
-        if (!results.isEmpty()) {
-            return results.getFirstItem();
-        } else {
-            throw new KapuaEntityNotFoundException(DeviceEvent.TYPE, deviceEventId);
-        }
+        return returnNotNullEntity(results.getFirstItem(), DeviceEvent.TYPE, deviceEventId);
     }
 
     /**
