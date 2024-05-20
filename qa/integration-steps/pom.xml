@@ -186,12 +186,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- needed by Elasticsearch -->
-        <dependency>
-            <groupId>org.elasticsearch</groupId>
-            <artifactId>elasticsearch</artifactId>
-        </dependency>
-
         <!-- Embedded Jetty Server for tests -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>

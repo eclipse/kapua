@@ -232,12 +232,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Elasticsearch Dependencies -->
-        <dependency>
-            <groupId>org.elasticsearch</groupId>
-            <artifactId>elasticsearch</artifactId>
-        </dependency>
-
         <!-- Test -->
         <dependency>
             <groupId>org.mockito</groupId>

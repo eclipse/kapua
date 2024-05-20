@@ -221,13 +221,6 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
 
-        <!-- -->
-        <!-- Required by Elasticsearch -->
-        <dependency>
-            <groupId>org.elasticsearch</groupId>
-            <artifactId>elasticsearch</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-to-slf4j</artifactId>
