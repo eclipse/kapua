@@ -13,7 +13,6 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
@@ -186,11 +185,7 @@ public class JobTriggers extends AbstractKapuaResource {
         triggerQuery.setLimit(1);
         TriggerListResult triggerListResult = triggerService.query(triggerQuery);
 
-        if (triggerListResult.isEmpty()) {
-            throw new KapuaEntityNotFoundException(Trigger.TYPE, triggerId);
-        }
-
-        return triggerListResult.getFirstItem();
+        return returnNotNullEntity(triggerListResult.getFirstItem(), Trigger.TYPE, triggerId);
     }
 
     private AndPredicate returnJobIdPredicate(KapuaId jobId, TriggerQuery query) {

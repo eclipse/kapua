@@ -13,10 +13,8 @@
 package org.eclipse.kapua.app.api.core.resources;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.app.api.core.model.StorableEntityId;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.storable.model.id.StorableId;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;

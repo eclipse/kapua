@@ -13,7 +13,6 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
@@ -178,11 +177,7 @@ public class Roles extends AbstractKapuaResource {
             @PathParam("roleId") EntityId roleId) throws KapuaException {
         Role role = roleService.find(scopeId, roleId);
 
-        if (role == null) {
-            throw new KapuaEntityNotFoundException(Role.TYPE, roleId);
-        }
-
-        return role;
+        return returnNotNullEntity(role, Role.TYPE, roleId);
     }
 
     /**
