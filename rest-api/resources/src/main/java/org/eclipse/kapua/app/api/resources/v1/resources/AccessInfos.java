@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
@@ -168,11 +167,7 @@ public class AccessInfos extends AbstractKapuaResource {
             @PathParam("accessInfoId") EntityId accessInfoId) throws KapuaException {
         AccessInfo accessInfo = accessInfoService.find(scopeId, accessInfoId);
 
-        if (accessInfo == null) {
-            throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessInfoId);
-        }
-
-        return accessInfo;
+        return returnNotNullEntity(accessInfo, AccessInfo.TYPE, accessInfoId);
     }
 
     /**
