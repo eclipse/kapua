@@ -13,7 +13,6 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
@@ -170,11 +169,7 @@ public class EndpointInfos extends AbstractKapuaResource {
             @PathParam("endpointInfoId") EntityId endpointInfoId) throws KapuaException {
         EndpointInfo endpointInfo = endpointInfoService.find(scopeId, endpointInfoId);
 
-        if (endpointInfo == null) {
-            throw new KapuaEntityNotFoundException(EndpointInfo.TYPE, endpointInfoId);
-        }
-
-        return endpointInfo;
+        return returnNotNullEntity(endpointInfo,EndpointInfo.TYPE, endpointInfoId);
     }
 
     /**

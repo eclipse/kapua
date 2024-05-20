@@ -183,11 +183,7 @@ public class Users extends AbstractKapuaResource {
             @PathParam("userId") EntityId userId) throws KapuaException {
         User user = userService.find(scopeId, userId);
 
-        if (user == null) {
-            throw new KapuaEntityNotFoundException(User.TYPE, userId);
-        }
-
-        return user;
+        return returnNotNullEntity(user, User.TYPE, userId);
     }
 
     /**
