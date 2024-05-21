@@ -16,39 +16,41 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.net.URI;
 
 /**
- * @author alberto.codutti
+ * @since 1.0.0
  */
 public abstract class AbstractKapuaResource {
 
     /**
-     * Checks if the given entity is {@code null}.
-     * If it is <code>null</code> a {@link WebApplicationException} is raised.
+     * Checks if the given object is {@code null}.
+     * <p>
+     * If it is {@code null} a {@link NotFoundException} {@link WebApplicationException} is raised.
+     * <p>
+     * For {@link KapuaEntity} {@link #returnNotNullEntity(KapuaEntity, String, KapuaId)} is recommended.
+     * This is meant for generic {@link Object}s.
      *
-     * @param entity The {@link KapuaEntity} to check.
-     * @return The entity given if not <code>null</code>.
-     * @throws WebApplicationException with {@link Status#NOT_FOUND} if the entity is <code>null</code>.
-     * @deprecated Since 2.0.0. To leverage {@link ExceptionMapper}s we need to throw {@link org.eclipse.kapua.KapuaEntityNotFoundException}. Please make use of {@link #returnNotNullEntity(Object, String, KapuaId)}
-     * @throws WebApplicationException if given entity is {@code null}
+     * @param object The {@link Object} to check.
+     * @return The given {@link Object} if not {@code null}
+     * @param <T> The type of the given {@link Object}
      * @since 1.0.0
+     * @throws NotFoundException if the given {@link Object} is {@code null}
      */
-    @Deprecated
-    public <T> T returnNotNullEntity(T entity) {
-        if (entity == null) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+    public <T> T returnNotNullEntity(T object) {
+        if (object == null) {
+            throw new NotFoundException("Requested resource not found");
         }
-        return entity;
+
+        return object;
     }
 
     /**
      * Checks id the given {@link KapuaEntity} is {@code null}.
-     * <p>
-     * It replaces {@link #returnNotNullEntity(Object)} which was throwing {@link WebApplicationException} instead of {@link KapuaEntityNotFoundException} which is handled by {@link ExceptionMapper}s.
      *
      * @param entity The {@link KapuaEntity} to check.
      * @param entityType The {@link KapuaEntity#getType()}
