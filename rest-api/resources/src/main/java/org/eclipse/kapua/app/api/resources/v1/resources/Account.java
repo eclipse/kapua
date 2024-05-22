@@ -23,7 +23,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
@@ -62,11 +61,7 @@ public class Account extends AbstractKapuaResource {
             @PathParam("accountId") EntityId accountId) throws KapuaException {
         org.eclipse.kapua.service.account.Account account = accountService.find(accountId);
 
-        if (account == null) {
-            throw new KapuaEntityNotFoundException(org.eclipse.kapua.service.account.Account.TYPE, accountId);
-        }
-
-        return account;
+        return returnNotNullEntity(account, org.eclipse.kapua.service.account.Account.TYPE, accountId);
     }
 
     /**

@@ -13,7 +13,6 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
@@ -173,11 +172,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
 
         ManagementOperationNotificationListResult results = managementOperationNotificationService.query(query);
 
-        if (!results.isEmpty()) {
-            return results.getFirstItem();
-        } else {
-            throw new KapuaEntityNotFoundException(ManagementOperationNotification.TYPE, managementOperationNotificationId);
-        }
+        return returnNotNullEntity(results.getFirstItem(), ManagementOperationNotification.TYPE, managementOperationNotificationId);
     }
 
     /**

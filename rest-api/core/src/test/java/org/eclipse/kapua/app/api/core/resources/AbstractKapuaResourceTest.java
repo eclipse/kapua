@@ -20,15 +20,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.NotFoundException;
 import java.math.BigInteger;
 
 
 @Category(JUnitTests.class)
 public class AbstractKapuaResourceTest {
 
-    private class AbstractKapuaResourceImpl extends AbstractKapuaResource {
+    private class TestKapuaResource extends AbstractKapuaResource {
 
     }
 
@@ -37,7 +36,7 @@ public class AbstractKapuaResourceTest {
 
     @Before
     public void initialize() {
-        abstractKapuaResource = new AbstractKapuaResourceImpl();
+        abstractKapuaResource = new TestKapuaResource();
         objects = new Object[]{new Object(), "", "string", 10, 'c', KapuaId.ONE, new Throwable(), new ScopeId(BigInteger.valueOf(111))};
     }
 
@@ -48,14 +47,9 @@ public class AbstractKapuaResourceTest {
         }
     }
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void returnNotNullEntityNullTest() {
-        try {
-            abstractKapuaResource.returnNotNullEntity(null);
-            Assert.fail("WebApplicationException expected.");
-        } catch (Exception e) {
-            Assert.assertEquals("WebApplicationException expected.", new WebApplicationException(Response.Status.NOT_FOUND).toString(), e.toString());
-        }
+        abstractKapuaResource.returnNotNullEntity(null);
     }
 
     @Test

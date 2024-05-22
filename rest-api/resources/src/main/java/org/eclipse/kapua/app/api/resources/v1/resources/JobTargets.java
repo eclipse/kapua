@@ -13,7 +13,6 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
@@ -181,11 +180,7 @@ public class JobTargets extends AbstractKapuaResource {
         jobTargetQuery.setLimit(1);
         JobTargetListResult jobTargetListResult = jobTargetService.query(jobTargetQuery);
 
-        if (jobTargetListResult.isEmpty()) {
-            throw new KapuaEntityNotFoundException(JobTarget.TYPE, targetId);
-        }
-
-        return jobTargetListResult.getFirstItem();
+        return returnNotNullEntity(jobTargetListResult.getFirstItem(), JobTarget.TYPE, targetId);
     }
 
     @GET
