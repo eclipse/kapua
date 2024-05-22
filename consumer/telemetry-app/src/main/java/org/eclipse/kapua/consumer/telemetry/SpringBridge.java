@@ -15,6 +15,7 @@ package org.eclipse.kapua.consumer.telemetry;
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.camel.application.MetricsCamel;
+import org.eclipse.kapua.service.client.protocol.ProtocolDescriptorProvider;
 import org.eclipse.kapua.service.datastore.internal.MetricsDatastore;
 import org.eclipse.kapua.translator.TranslatorHub;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SpringBridge {
+
     @Bean
     DatabaseCheckUpdate databaseCheckUpdate() {
         return KapuaLocator.getInstance().getComponent(DatabaseCheckUpdate.class);
@@ -46,4 +48,10 @@ public class SpringBridge {
     TranslatorHub translatorHub() {
         return KapuaLocator.getInstance().getComponent(TranslatorHub.class);
     }
+
+    @Bean
+    ProtocolDescriptorProvider protocolDescriptorProvider() {
+        return KapuaLocator.getInstance().getComponent(ProtocolDescriptorProvider.class);
+    }
+
 }

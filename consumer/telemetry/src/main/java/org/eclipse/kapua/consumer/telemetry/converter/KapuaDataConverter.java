@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.telemetry.converter;
 
+import java.util.UUID;
+
+import javax.inject.Inject;
+
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
@@ -21,12 +25,10 @@ import org.eclipse.kapua.service.camel.application.MetricsCamel;
 import org.eclipse.kapua.service.camel.converter.AbstractKapuaConverter;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.client.message.MessageType;
+import org.eclipse.kapua.service.client.protocol.ProtocolDescriptorProvider;
 import org.eclipse.kapua.translator.TranslatorHub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import java.util.UUID;
 
 /**
  * Kapua message converter used to convert data messages.
@@ -40,8 +42,8 @@ public class KapuaDataConverter extends AbstractKapuaConverter {
     private final MetricsTelemetry metrics;
 
     @Inject
-    public KapuaDataConverter(TranslatorHub translatorHub, MetricsCamel metricsCamel, MetricsTelemetry metricsTelemetry) {
-        super(translatorHub, metricsCamel);
+    public KapuaDataConverter(TranslatorHub translatorHub, MetricsCamel metricsCamel, MetricsTelemetry metricsTelemetry, ProtocolDescriptorProvider protocolDescriptorProvider) {
+        super(translatorHub, metricsCamel, protocolDescriptorProvider);
         this.metrics = metricsTelemetry;
     }
 
@@ -51,7 +53,8 @@ public class KapuaDataConverter extends AbstractKapuaConverter {
      * @param exchange
      * @param value
      * @return Message container that contains data message
-     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
+     * @throws KapuaException
+     *         if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
     @Converter
     public CamelKapuaMessage<?> convertToData(Exchange exchange, Object value) throws KapuaException {
