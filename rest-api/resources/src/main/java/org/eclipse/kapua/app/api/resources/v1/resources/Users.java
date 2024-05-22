@@ -13,7 +13,6 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
@@ -180,11 +179,7 @@ public class Users extends AbstractKapuaResource {
             @PathParam("userId") EntityId userId) throws KapuaException {
         User user = userService.find(scopeId, userId);
 
-        if (user == null) {
-            throw new KapuaEntityNotFoundException(User.TYPE, userId);
-        }
-
-        return user;
+        return returnNotNullEntity(user, User.TYPE, userId);
     }
 
     /**

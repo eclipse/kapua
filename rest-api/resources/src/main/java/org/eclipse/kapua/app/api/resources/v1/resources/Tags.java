@@ -13,7 +13,6 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
@@ -168,11 +167,7 @@ public class Tags extends AbstractKapuaResource {
             @PathParam("tagId") EntityId tagId) throws KapuaException {
         Tag tag = tagService.find(scopeId, tagId);
 
-        if (tag == null) {
-            throw new KapuaEntityNotFoundException(Tag.TYPE, tagId);
-        }
-
-        return tag;
+        return returnNotNullEntity(tag, Tag.TYPE, tagId);
     }
 
     /**

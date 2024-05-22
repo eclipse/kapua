@@ -13,7 +13,6 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
@@ -134,10 +133,6 @@ public class Domains extends AbstractKapuaResource {
             @PathParam("domainId") EntityId domainId) throws KapuaException {
         Domain domain = domainRegistryService.find(scopeId, domainId);
 
-        if (domain == null) {
-            throw new KapuaEntityNotFoundException(Domain.TYPE, domainId);
-        }
-
-        return domain;
+        return returnNotNullEntity(domain, Domain.TYPE, domainId);
     }
 }

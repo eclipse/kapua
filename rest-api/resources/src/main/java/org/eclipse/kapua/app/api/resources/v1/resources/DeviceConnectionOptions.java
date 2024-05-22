@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
@@ -53,12 +52,7 @@ public class DeviceConnectionOptions extends AbstractKapuaResource {
             @PathParam("connectionId") EntityId connectionId) throws KapuaException {
         DeviceConnectionOption deviceConnectionOptions = deviceConnectionOptionsService.find(scopeId, connectionId);
 
-        if (deviceConnectionOptions != null) {
-            return deviceConnectionOptions;
-        } else {
-            throw new KapuaEntityNotFoundException(DeviceConnectionOption.TYPE, connectionId);
-        }
-
+        return returnNotNullEntity(deviceConnectionOptions, DeviceConnectionOption.TYPE, connectionId);
     }
 
     /**
