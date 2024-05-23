@@ -12,9 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
-import com.google.inject.Key;
-import com.google.inject.TypeLiteral;
-import com.google.inject.util.Types;
+import java.util.Map;
+
 import org.eclipse.kapua.client.security.metric.AuthMetric;
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -25,6 +24,7 @@ import org.eclipse.kapua.service.authentication.setting.ServiceAuthenticationSet
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.camel.application.MetricsCamel;
+import org.eclipse.kapua.service.client.protocol.ProtocolDescriptorProvider;
 import org.eclipse.kapua.service.device.authentication.api.DeviceConnectionCredentialAdapter;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
@@ -35,7 +35,9 @@ import org.eclipse.kapua.translator.TranslatorHub;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Map;
+import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
+import com.google.inject.util.Types;
 
 /**
  * Guice's injection bridge for Spring.
@@ -129,5 +131,10 @@ public class SpringBridge {
     @Bean
     TranslatorHub translatorHub() {
         return KapuaLocator.getInstance().getComponent(TranslatorHub.class);
+    }
+
+    @Bean
+    ProtocolDescriptorProvider protocolDescriptorProvider() {
+        return KapuaLocator.getInstance().getComponent(ProtocolDescriptorProvider.class);
     }
 }

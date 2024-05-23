@@ -138,7 +138,7 @@
                 <include>${pom.groupId}:kapua-security-registration-api</include>
                 <include>${pom.groupId}:kapua-security-certificate-internal</include>
                 <include>${pom.groupId}:kapua-security-shiro</include>
-                <include>${pom.groupId}:kapua-service-client</include>
+                <!--                <include>${pom.groupId}:kapua-service-client</include>-->
                 <include>${pom.groupId}:kapua-tag-api</include>
                 <include>${pom.groupId}:kapua-tag-internal</include>
                 <include>${pom.groupId}:kapua-user-api</include>

@@ -15,6 +15,7 @@ package org.eclipse.kapua.consumer.lifecycle;
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.camel.application.MetricsCamel;
+import org.eclipse.kapua.service.client.protocol.ProtocolDescriptorProvider;
 import org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceManagementTriggerManagerService;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
 import org.eclipse.kapua.translator.TranslatorHub;
@@ -42,6 +43,11 @@ public class SpringBridge {
     @Bean
     TranslatorHub translatorHub() {
         return KapuaLocator.getInstance().getComponent(TranslatorHub.class);
+    }
+
+    @Bean
+    ProtocolDescriptorProvider protocolDescriptorProvider() {
+        return KapuaLocator.getInstance().getComponent(ProtocolDescriptorProvider.class);
     }
 
     @Bean

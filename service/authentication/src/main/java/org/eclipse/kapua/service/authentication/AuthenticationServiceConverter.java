@@ -12,8 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
+import java.io.IOException;
+
+import javax.inject.Inject;
+
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.jms.JmsMessage;
@@ -22,12 +24,13 @@ import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.bean.EntityRequest;
 import org.eclipse.kapua.service.camel.application.MetricsCamel;
 import org.eclipse.kapua.service.camel.converter.AbstractKapuaConverter;
+import org.eclipse.kapua.service.client.protocol.ProtocolDescriptorProvider;
 import org.eclipse.kapua.translator.TranslatorHub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import java.io.IOException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 
 /**
  * Kapua message converter used to convert authentication messages.
@@ -42,8 +45,8 @@ public class AuthenticationServiceConverter extends AbstractKapuaConverter {
     private final MetricsAuthentication metrics;
 
     @Inject
-    public AuthenticationServiceConverter(TranslatorHub translatorHub, MetricsCamel metricsCamel, MetricsAuthentication metricsAuthentication) {
-        super(translatorHub, metricsCamel);
+    public AuthenticationServiceConverter(TranslatorHub translatorHub, MetricsCamel metricsCamel, MetricsAuthentication metricsAuthentication, ProtocolDescriptorProvider protocolDescriptorProvider) {
+        super(translatorHub, metricsCamel, protocolDescriptorProvider);
         this.metrics = metricsAuthentication;
     }
 
@@ -53,7 +56,8 @@ public class AuthenticationServiceConverter extends AbstractKapuaConverter {
      * @param exchange
      * @param value
      * @return Authorization request bean
-     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
+     * @throws KapuaException
+     *         if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
     @Converter
     public AuthRequest convertToAuthRequest(Exchange exchange, Object value) throws KapuaException {
