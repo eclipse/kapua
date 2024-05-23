@@ -70,7 +70,7 @@ public interface KapuaBaseMapper {
     }
 
     default String map(String value) {
-        return Optional.ofNullable(value).map(String::trim).orElse(null);
+        return Optional.ofNullable(value).map(String::trim).filter(s -> !s.isEmpty()).orElse(null);
     }
 
     default String map(int value) {
