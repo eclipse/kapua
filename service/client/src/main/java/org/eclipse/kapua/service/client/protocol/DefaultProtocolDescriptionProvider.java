@@ -13,6 +13,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.client.protocol;
 
+import java.io.InputStream;
+import java.net.URL;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.inject.Inject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.service.client.message.MessageType;
@@ -24,43 +33,29 @@ import org.eclipse.kapua.service.device.management.message.notification.KapuaNot
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
 /**
  * A default implementation of the {@link ProtocolDescriptorProvider} interface
  * <p>
- * This implementation tries to provide some ready-to-use defaults for the {@link ProtocolDescriptorProvider} system.
- * If nothing else is configured, then the provider will return settings which are targeting Eclipse Kura for
- * all transport names requested.
+ * This implementation tries to provide some ready-to-use defaults for the {@link ProtocolDescriptorProvider} system. If nothing else is configured, then the provider will return settings which are
+ * targeting Eclipse Kura for all transport names requested.
  * </p>
  * <h2>Extra configuration</h2>
  * <p>
- * It is possible to provide a URI to the system using the configuration key {@link ServiceClientSettingKey#CONFIGURATION_URI}
- * which has to point to a standard Java properties file of the following format:
+ * It is possible to provide a URI to the system using the configuration key {@link ServiceClientSettingKey#CONFIGURATION_URI} which has to point to a standard Java properties file of the following
+ * format:
  * </p>
  * <code>
- * transports=foo,bar,baz
- * foo.device.APP=full.qualified.ClassName
- * foo.kapua.APP=full.qualified.ClassName
- * bar.device.APP=full.qualified.ClassName
- * bar.kapua.APP=full.qualified.ClassName
+ * transports=foo,bar,baz foo.device.APP=full.qualified.ClassName foo.kapua.APP=full.qualified.ClassName bar.device.APP=full.qualified.ClassName bar.kapua.APP=full.qualified.ClassName
  * </code>
  * <p>
- * The property {@code transports} holds a comma separated list of all transports by name. For each transport it will
- * look up all keys of {@code<transport>.[device|kapua].<MessageType>}, where {@code MessageType} are all values of
- * the {@link MessageType} enum. The value of each of this key must be a full qualified class name implementing
- * {@link DeviceMessage} for the "device" sub-key and {@link KapuaMessage} for the "kapua" sub-key.
+ * The property {@code transports} holds a comma separated list of all transports by name. For each transport it will look up all keys of {@code<transport>.[device|kapua].<MessageType>}, where
+ * {@code MessageType} are all values of the {@link MessageType} enum. The value of each of this key must be a full qualified class name implementing {@link DeviceMessage} for the "device" sub-key and
+ * {@link KapuaMessage} for the "kapua" sub-key.
  *
  * <h2>Disabling the default fallback</h2>
  * <p>
- * By default this implementation will return first from the configured transport name and then always
- * return a hard coded default provider. If this default provided should not be returned it is possible
- * to disable this by using the settings key {@link ServiceClientSettingKey#DISABLE_DEFAULT_PROTOCOL_DESCRIPTOR}.
+ * By default this implementation will return first from the configured transport name and then always return a hard coded default provider. If this default provided should not be returned it is
+ * possible to disable this by using the settings key {@link ServiceClientSettingKey#DISABLE_DEFAULT_PROTOCOL_DESCRIPTOR}.
  * </p>
  */
 public class DefaultProtocolDescriptionProvider implements ProtocolDescriptorProvider {
@@ -71,9 +66,12 @@ public class DefaultProtocolDescriptionProvider implements ProtocolDescriptorPro
 
     private final Map<String, ProtocolDescriptor> configuration = new HashMap<>();
     private final ProtocolDescriptor defaultDescriptor;
+    private final ServiceClientSetting serviceClientSetting;
 
-    public DefaultProtocolDescriptionProvider() {
-        if (!ServiceClientSetting.getInstance().getBoolean(ServiceClientSettingKey.DISABLE_DEFAULT_PROTOCOL_DESCRIPTOR, false)) {
+    @Inject
+    public DefaultProtocolDescriptionProvider(ServiceClientSetting serviceClientSetting) {
+        this.serviceClientSetting = serviceClientSetting;
+        if (!serviceClientSetting.getBoolean(ServiceClientSettingKey.DISABLE_DEFAULT_PROTOCOL_DESCRIPTOR, false)) {
             defaultDescriptor = createDefaultDescriptor();
         } else {
             defaultDescriptor = null;
@@ -91,8 +89,8 @@ public class DefaultProtocolDescriptionProvider implements ProtocolDescriptorPro
         return configuration.getOrDefault(protocolName, defaultDescriptor);
     }
 
-    private static void loadConfigurations(Map<String, ProtocolDescriptor> configuration) throws Exception {
-        String uri = ServiceClientSetting.getInstance().getString(ServiceClientSettingKey.CONFIGURATION_URI, null);
+    private void loadConfigurations(Map<String, ProtocolDescriptor> configuration) throws Exception {
+        String uri = serviceClientSetting.getString(ServiceClientSettingKey.CONFIGURATION_URI, null);
 
         if (StringUtils.isEmpty(uri)) {
             return;
@@ -122,23 +120,23 @@ public class DefaultProtocolDescriptionProvider implements ProtocolDescriptorPro
         String transportProtocol = p.getProperty(String.format("%s.transport_protocol", transport));
 
         for (MessageType mt : MessageType.values()) {
-                String key = String.format("%s.device.%s", transport, mt.name());
-                String clazzName = p.getProperty(key);
-                if (clazzName != null && !clazzName.isEmpty()) {
-                    Class<? extends DeviceMessage<?, ?>> clazz = (Class<? extends DeviceMessage<?, ?>>) Class.forName(clazzName).asSubclass(DeviceMessage.class);
-                    deviceClasses.put(mt, clazz);
-                } else {
-                    logger.info("No class mapping for key {}", key);
-                }
+            String key = String.format("%s.device.%s", transport, mt.name());
+            String clazzName = p.getProperty(key);
+            if (clazzName != null && !clazzName.isEmpty()) {
+                Class<? extends DeviceMessage<?, ?>> clazz = (Class<? extends DeviceMessage<?, ?>>) Class.forName(clazzName).asSubclass(DeviceMessage.class);
+                deviceClasses.put(mt, clazz);
+            } else {
+                logger.info("No class mapping for key {}", key);
+            }
 
-                key = String.format("%s.kapua.%s", transport, mt.name());
-                clazzName = p.getProperty(key);
-                if (clazzName != null && !clazzName.isEmpty()) {
-                    Class<? extends KapuaMessage<?, ?>> clazz = (Class<? extends KapuaMessage<?, ?>>) Class.forName(clazzName).asSubclass(KapuaMessage.class);
-                    kapuaClasses.put(mt, clazz);
-                } else {
-                    logger.info("No class mapping for key {}", key);
-                }
+            key = String.format("%s.kapua.%s", transport, mt.name());
+            clazzName = p.getProperty(key);
+            if (clazzName != null && !clazzName.isEmpty()) {
+                Class<? extends KapuaMessage<?, ?>> clazz = (Class<? extends KapuaMessage<?, ?>>) Class.forName(clazzName).asSubclass(KapuaMessage.class);
+                kapuaClasses.put(mt, clazz);
+            } else {
+                logger.info("No class mapping for key {}", key);
+            }
         }
 
         return new ProtocolDescriptor(transportProtocol, deviceClasses, kapuaClasses);
