@@ -18,7 +18,7 @@ import java.util.Collection;
 import javax.inject.Singleton;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.core.ClassProvider;
+import org.eclipse.kapua.commons.core.JaxbClassProvider;
 import org.eclipse.kapua.service.device.call.DeviceCallFactory;
 import org.eclipse.kapua.service.device.call.DeviceMessageFactory;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryItem;
@@ -41,9 +41,9 @@ public class DeviceCallKuraModule extends AbstractKapuaModule {
         bind(DeviceCallFactory.class).to(KuraDeviceCallFactoryImpl.class).in(Singleton.class);
         bind(DeviceMessageFactory.class).to(KuraMessageFactoryImpl.class).in(Singleton.class);
         bind(DeviceCallSettings.class).in(Singleton.class);
-        final Multibinder<ClassProvider> classProviderBinder = Multibinder.newSetBinder(binder(), ClassProvider.class);
-        classProviderBinder.addBinding()
-                .toInstance(new ClassProvider() {
+        final Multibinder<JaxbClassProvider> jaxbClassProviderMultibinder = Multibinder.newSetBinder(binder(), JaxbClassProvider.class);
+        jaxbClassProviderMultibinder.addBinding()
+                .toInstance(new JaxbClassProvider() {
 
                     @Override
                     public Collection<Class<?>> getClasses() {

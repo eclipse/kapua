@@ -19,7 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.core.ClassProvider;
+import org.eclipse.kapua.commons.core.JaxbClassProvider;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -42,9 +42,9 @@ public class DeviceManagementPackagesModule extends AbstractKapuaModule {
     protected void configureModule() {
         bind(DevicePackageFactory.class).to(DevicePackageFactoryImpl.class).in(Singleton.class);
         bind(PackageManagementServiceSetting.class).in(Singleton.class);
-        final Multibinder<ClassProvider> classProviderBinder = Multibinder.newSetBinder(binder(), ClassProvider.class);
-        classProviderBinder.addBinding()
-                .toInstance(new ClassProvider() {
+        final Multibinder<JaxbClassProvider> jaxbClassProviderMultibinder = Multibinder.newSetBinder(binder(), JaxbClassProvider.class);
+        jaxbClassProviderMultibinder.addBinding()
+                .toInstance(new JaxbClassProvider() {
 
                     @Override
                     public Collection<Class<?>> getClasses() {

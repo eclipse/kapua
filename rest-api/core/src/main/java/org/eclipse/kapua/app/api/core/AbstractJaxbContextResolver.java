@@ -22,25 +22,23 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.core.ClassProvider;
+import org.eclipse.kapua.commons.core.JaxbClassProvider;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation classes should only add the @Provider and @Produces annotations
- * required by the specific use case.
- *
+ * Implementation classes should only add the @Provider and @Produces annotations required by the specific use case.
  */
 public class AbstractJaxbContextResolver implements ContextResolver<JAXBContext> {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractJaxbContextResolver.class);
 
     private JAXBContext context;
-    private ClassProvider[] providers;
+    private JaxbClassProvider[] providers;
 
-    public AbstractJaxbContextResolver(ClassProvider ... providers) {
+    public AbstractJaxbContextResolver(JaxbClassProvider... providers) {
         this.providers = providers;
     }
 
@@ -51,9 +49,9 @@ public class AbstractJaxbContextResolver implements ContextResolver<JAXBContext>
                 properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
 
                 List<Class<?>> classes = new ArrayList<>();
-                for (ClassProvider provider:providers) {
+                for (JaxbClassProvider provider : providers) {
                     classes.addAll(provider.getClasses());
-                    }
+                }
                 context = JAXBContextFactory.createContext(classes.toArray(new Class<?>[] {}), properties);
                 LOG.debug("Default JAXB context initialized!");
             }

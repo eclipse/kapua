@@ -19,7 +19,7 @@ import java.util.Collection;
  *
  * @since 2.0.0
  */
-public interface ClassProvider {
+public interface JaxbClassProvider {
 
     Collection<Class<?>> getClasses();
 }

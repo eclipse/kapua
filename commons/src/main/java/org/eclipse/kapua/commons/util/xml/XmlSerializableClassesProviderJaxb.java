@@ -19,17 +19,17 @@ import java.util.stream.Collectors;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.kapua.commons.core.ClassProvider;
+import org.eclipse.kapua.commons.core.JaxbClassProvider;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.reflections.Reflections;
 
-public class XmlSerializableClassesProvider implements ClassProvider {
+public class XmlSerializableClassesProviderJaxb implements JaxbClassProvider {
 
     private final ConfigurationPrinter configurationPrinter;
     private Collection<String> includedPackageNames;
     private Collection<String> excludedPackageNames;
 
-    public XmlSerializableClassesProvider(ConfigurationPrinter configurationPrinter,
+    public XmlSerializableClassesProviderJaxb(ConfigurationPrinter configurationPrinter,
             Collection<String> includedPackageNames,
             Collection<String> excludedPackageNames) {
         this.configurationPrinter = configurationPrinter;

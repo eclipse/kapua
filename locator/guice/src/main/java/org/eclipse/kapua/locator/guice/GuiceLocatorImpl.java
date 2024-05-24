@@ -32,9 +32,9 @@ import javax.validation.constraints.NotNull;
 
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.core.ClassProvider;
+import org.eclipse.kapua.commons.core.JaxbClassProvider;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
-import org.eclipse.kapua.commons.util.xml.XmlSerializableClassesProvider;
+import org.eclipse.kapua.commons.util.xml.XmlSerializableClassesProviderJaxb;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.locator.initializers.KapuaInitializingMethod;
@@ -228,10 +228,10 @@ public class GuiceLocatorImpl extends KapuaLocator {
 
             @Override
             protected void configureModule() {
-                final Multibinder<ClassProvider> classProviderBinder = Multibinder.newSetBinder(binder(), ClassProvider.class);
-                classProviderBinder.addBinding()
+                final Multibinder<JaxbClassProvider> jaxbClassProviderMultibinder = Multibinder.newSetBinder(binder(), JaxbClassProvider.class);
+                jaxbClassProviderMultibinder.addBinding()
                         .toInstance(
-                                new XmlSerializableClassesProvider(
+                                new XmlSerializableClassesProviderJaxb(
                                         configurationPrinter,
                                         locatorConfig.getIncludedPackageNames(),
                                         locatorConfig.getExcludedPackageNames()));

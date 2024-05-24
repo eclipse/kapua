@@ -23,7 +23,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.core.ClassProvider;
+import org.eclipse.kapua.commons.core.JaxbClassProvider;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.slf4j.Logger;
@@ -35,10 +35,10 @@ public class JAXBContextProviderImpl implements JAXBContextProvider {
     private final Logger logger = LoggerFactory.getLogger(JAXBContextProviderImpl.class);
 
     private JAXBContext context;
-    private Set<ClassProvider> providers;
+    private Set<JaxbClassProvider> providers;
 
     @Inject
-    public JAXBContextProviderImpl(Set<ClassProvider> providers) {
+    public JAXBContextProviderImpl(Set<JaxbClassProvider> providers) {
         logger.info("Initializing with {} providers", providers.size());
         this.providers = providers;
     }

@@ -25,7 +25,7 @@ import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSetting;
 import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSettingKeys;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.keystore.DeviceKeystoreCertificateInfo;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.core.ClassProvider;
+import org.eclipse.kapua.commons.core.JaxbClassProvider;
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProviderImpl;
@@ -39,11 +39,11 @@ public class AppModule extends AbstractKapuaModule {
     protected void configureModule() {
         bind(DatabaseCheckUpdate.class).in(Singleton.class);
         bind(KapuaApiCoreSetting.class).in(Singleton.class);
-        
+
         bind(JAXBContextProvider.class).to(JAXBContextProviderImpl.class).in(Singleton.class);
-        final Multibinder<ClassProvider> classProviderBinder = Multibinder.newSetBinder(binder(), ClassProvider.class);
-        classProviderBinder.addBinding()
-                .toInstance(new ClassProvider() {
+        final Multibinder<JaxbClassProvider> jaxbClassProviderMultibinder = Multibinder.newSetBinder(binder(), JaxbClassProvider.class);
+        jaxbClassProviderMultibinder.addBinding()
+                .toInstance(new JaxbClassProvider() {
 
                     @Override
                     public Collection<Class<?>> getClasses() {
