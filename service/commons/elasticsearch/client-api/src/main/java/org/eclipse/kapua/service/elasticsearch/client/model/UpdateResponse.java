@@ -38,11 +38,11 @@ public class UpdateResponse extends Response {
      * Positive result constructor (result true)
      *
      * @param id             The id of the result.
-     * @param typeDescriptor The {@link TypeDescriptor}.
+     * @param index          The index.
      * @since 1.0.0
      */
-    public UpdateResponse(String id, TypeDescriptor typeDescriptor) {
-        super(id, typeDescriptor);
+    public UpdateResponse(String id, String index) {
+        super(id, index);
 
         setResult(true);
     }
@@ -51,12 +51,12 @@ public class UpdateResponse extends Response {
      * Negative result constructor (result false)
      *
      * @param id             The id of the result.
-     * @param typeDescriptor The {@link TypeDescriptor}
+     * @param index          The index
      * @param description    The result description of the failure.
      * @since 1.0.0
      */
-    public UpdateResponse(String id, TypeDescriptor typeDescriptor, String description) {
-        this(id, typeDescriptor);
+    public UpdateResponse(String id, String index, String description) {
+        this(id, index);
 
         setResult(false);
         setDescription(description);

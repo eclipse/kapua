@@ -40,24 +40,22 @@ public abstract class DatastoreElasticSearchRepositoryBase<
 
     protected DatastoreElasticSearchRepositoryBase(
             ElasticsearchClientProvider elasticsearchClientProviderInstance,
-            String type,
             Class<T> clazz,
             StorableFactory<T, L, Q> storableFactory,
             StorablePredicateFactory storablePredicateFactory,
             LocalCache<String, Boolean> indexesCache,
             DatastoreSettings datastoreSettings) {
-        super(elasticsearchClientProviderInstance, type, clazz, storableFactory, storablePredicateFactory,
+        super(elasticsearchClientProviderInstance, clazz, storableFactory, storablePredicateFactory,
                 indexesCache);
         this.datastoreSettings = datastoreSettings;
     }
 
     protected DatastoreElasticSearchRepositoryBase(
             ElasticsearchClientProvider elasticsearchClientProviderInstance,
-            String type,
             Class<T> clazz,
             StorableFactory<T, L, Q> storableFactory,
             StorablePredicateFactory storablePredicateFactory, DatastoreSettings datastoreSettings) {
-        super(elasticsearchClientProviderInstance, type, clazz, storableFactory, storablePredicateFactory);
+        super(elasticsearchClientProviderInstance, clazz, storableFactory, storablePredicateFactory);
         this.datastoreSettings = datastoreSettings;
     }
 
