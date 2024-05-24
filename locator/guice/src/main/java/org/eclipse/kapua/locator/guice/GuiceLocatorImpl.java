@@ -13,25 +13,28 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Binding;
-import com.google.inject.ConfigurationException;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.Module;
-import com.google.inject.Stage;
-import com.google.inject.TypeLiteral;
-import com.google.inject.matcher.AbstractMatcher;
-import com.google.inject.name.Names;
-import com.google.inject.spi.InjectionListener;
-import com.google.inject.spi.TypeEncounter;
-import com.google.inject.spi.TypeListener;
-import com.google.inject.util.Modules;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.validation.constraints.NotNull;
+
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.core.ServiceModuleJaxbClassConfig;
+import org.eclipse.kapua.commons.core.ClassProvider;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
+import org.eclipse.kapua.commons.util.xml.XmlSerializableClassesProvider;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.locator.initializers.KapuaInitializingMethod;
@@ -44,23 +47,22 @@ import org.reflections.util.FilterBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import com.google.inject.AbstractModule;
+import com.google.inject.Binding;
+import com.google.inject.ConfigurationException;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.Module;
+import com.google.inject.Stage;
+import com.google.inject.TypeLiteral;
+import com.google.inject.matcher.AbstractMatcher;
+import com.google.inject.multibindings.Multibinder;
+import com.google.inject.name.Names;
+import com.google.inject.spi.InjectionListener;
+import com.google.inject.spi.TypeEncounter;
+import com.google.inject.spi.TypeListener;
+import com.google.inject.util.Modules;
 
 /**
  * {@link Guice} {@link KapuaLocator} implementation.
@@ -168,16 +170,29 @@ public class GuiceLocatorImpl extends KapuaLocator {
     /**
      * Initializes the {@link KapuaLocator} with the given resource name configuration.
      *
-     * @param locatorConfigName The resource name containing the configuration.
+     * @param locatorConfigName
+     *         The resource name containing the configuration.
      * @throws Exception
      * @since 1.0.0
      */
     private void init(String locatorConfigName) throws Exception {
+        // Print loaded stuff
+        final Stage stage = getStage();
+
+        final ConfigurationPrinter configurationPrinter =
+                ConfigurationPrinter
+                        .create()
+                        .withLogger(LOG)
+                        .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
+                        .withTitle("Kapua Locator Configuration")
+                        .addParameter("Resource Name", locatorConfigName)
+                        .addParameter("Stage", stage);
+
         // Read configurations from locator file
         final LocatorConfig locatorConfig = new LocatorConfigurationExtractorImpl(locatorConfigName).fetchLocatorConfig();
         // Scan packages listed in to find KapuaModules
-        Collection<String> packageNames = locatorConfig.getIncludedPackageNames();
-        Reflections reflections = new Reflections(new ConfigurationBuilder()
+        final Collection<String> packageNames = locatorConfig.getIncludedPackageNames();
+        final Reflections reflections = new Reflections(new ConfigurationBuilder()
                 .forPackages(packageNames.toArray(new String[packageNames.size()]))
                 .filterInputsBy(FilterBuilder.parsePackages(packageNames.stream().map(s -> "+" + s).collect(Collectors.joining(", "))))
                 .setScanners(Scanners.SubTypes)
@@ -208,7 +223,24 @@ public class GuiceLocatorImpl extends KapuaLocator {
         // KapuaModule will be removed as soon as bindings will be moved to local modules
         kapuaModules.add(new KapuaModule(locatorConfigName));
 
+        //Add JAXB custom module to the lot
+        kapuaModules.add(new AbstractKapuaModule() {
+
+            @Override
+            protected void configureModule() {
+                final Multibinder<ClassProvider> classProviderBinder = Multibinder.newSetBinder(binder(), ClassProvider.class);
+                classProviderBinder.addBinding()
+                        .toInstance(
+                                new XmlSerializableClassesProvider(
+                                        configurationPrinter,
+                                        locatorConfig.getIncludedPackageNames(),
+                                        locatorConfig.getExcludedPackageNames()));
+                //                bind(JAXBContextProvider.class).to(JAXBContextProviderImpl.class);
+            }
+        });
+
         kapuaModules.add(new AbstractModule() {
+
             private boolean hasKapuaInitializingMethodAnnotation(Method method) {
                 Annotation[] declaredAnnotations = method.getAnnotations();
                 return Arrays.stream(declaredAnnotations).anyMatch(a -> a.annotationType().equals(KapuaInitializingMethod.class));
@@ -217,14 +249,17 @@ public class GuiceLocatorImpl extends KapuaLocator {
             @Override
             protected void configure() {
                 bindListener(new AbstractMatcher<TypeLiteral<?>>() {
+
                     @Override
                     public boolean matches(TypeLiteral<?> typeLiteral) {
                         return Arrays.stream(typeLiteral.getRawType().getDeclaredMethods()).anyMatch(m -> hasKapuaInitializingMethodAnnotation(m));
                     }
                 }, new TypeListener() {
+
                     @Override
                     public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
                         encounter.register(new InjectionListener<I>() {
+
                             @Override
                             public void afterInjection(I injectee) {
                                 Arrays.stream(injectee.getClass().getDeclaredMethods())
@@ -244,31 +279,14 @@ public class GuiceLocatorImpl extends KapuaLocator {
                 });
             }
         });
-        // Print loaded stuff
-        final Stage stage = getStage();
-        printLoadedKapuaModuleConfiguration(locatorConfigName, locatorConfig, kapuaModules, overridingModules, excludedKapuaModules, stage);
+
+        printLoadedKapuaModuleConfiguration(configurationPrinter, locatorConfig, kapuaModules, overridingModules, excludedKapuaModules);
         // Create injector
         try {
             injector = Guice.createInjector(stage, Modules.override(kapuaModules).with(overridingModules));
         } catch (Throwable t) {
             throw new RuntimeException(t);
         }
-
-        // Scan XmlSerializable
-        final Set<Class<?>> xmlSerializableClasses = reflections.getTypesAnnotatedWith(XmlRootElement.class);
-        List<Class<?>> loadedXmlSerializables = new ArrayList<>();
-        List<Class<?>> excludedXmlSerializables = new ArrayList<>();
-        for (Class<?> xmlSerializableClass : xmlSerializableClasses) {
-            if (isExcluded(xmlSerializableClass.getName(), locatorConfig.getExcludedPackageNames()) ||
-                    !xmlSerializableClass.isAnnotationPresent(XmlRootElement.class)) {
-                excludedXmlSerializables.add(xmlSerializableClass);
-                continue;
-            }
-            loadedXmlSerializables.add(xmlSerializableClass);
-        }
-        ServiceModuleJaxbClassConfig.setSerializables(loadedXmlSerializables);
-        // Print loaded stuff
-        printLoadedXmlSerializableConfiguration(locatorConfigName, locatorConfig, loadedXmlSerializables, excludedXmlSerializables);
     }
 
     @Override
@@ -278,7 +296,8 @@ public class GuiceLocatorImpl extends KapuaLocator {
                 .sorted(Map.Entry.comparingByKey())
                 .forEachOrdered(kv -> kv.getValue().stream().forEach(methodAndObject -> {
                     try {
-                        LOG.info("Running initializer with priority {} on 'class'.'method': '{}'.'{}'", kv.getKey(), methodAndObject.getValue().getClass().getName(), methodAndObject.getKey().getName());
+                        LOG.info("Running initializer with priority {} on 'class'.'method': '{}'.'{}'", kv.getKey(), methodAndObject.getValue().getClass().getName(),
+                                methodAndObject.getKey().getName());
                         methodAndObject.getKey().invoke(methodAndObject.getValue());
                     } catch (Throwable e) {
                         throw new RuntimeException(e);
@@ -308,8 +327,10 @@ public class GuiceLocatorImpl extends KapuaLocator {
     /**
      * Checks whether the given {@link Class#getName()} matches one of the excluded {@link Class#getPackage()}
      *
-     * @param className        The {@link Class#getName()} to check.
-     * @param excludedPackages The {@link Collection} of excluded {@link Class#getPackage()}.
+     * @param className
+     *         The {@link Class#getName()} to check.
+     * @param excludedPackages
+     *         The {@link Collection} of excluded {@link Class#getPackage()}.
      * @return {@code true} if matched, {@code false otherwise}
      * @since 2.0.0
      */
@@ -325,173 +346,29 @@ public class GuiceLocatorImpl extends KapuaLocator {
     /**
      * Prints the configuration of the loaded {@link KapuaModule}s.
      *
-     * @param resourceName  The {@link KapuaLocator} configuration resource name.
-     * @param locatorConfig The loaded {@link LocatorConfig}.
-     * @param kapuaModules  The laaded {@link KapuaModule}s
-     * @param stage
+     * @param locatorConfig
+     *         The loaded {@link LocatorConfig}.
+     * @param kapuaModules
+     *         The laaded {@link KapuaModule}s
      * @since 2.0.0
      */
     private void printLoadedKapuaModuleConfiguration(
-            @NotNull String resourceName,
+            @NotNull ConfigurationPrinter configurationPrinter,
             @NotNull LocatorConfig locatorConfig,
             @NotNull List<Module> kapuaModules,
             @NotNull List<Module> overridingModules,
-            @NotNull List<Class<? extends AbstractKapuaModule>> excludedKapuaModules, Stage stage) {
-        ConfigurationPrinter configurationPrinter =
-                ConfigurationPrinter
-                        .create()
-                        .withLogger(LOG)
-                        .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
-                        .withTitle("Kapua Locator Configuration")
-                        .addParameter("Resource Name", resourceName)
-                        .addParameter("Stage", stage);
+            @NotNull List<Class<? extends AbstractKapuaModule>> excludedKapuaModules) {
 
         // Packages
-        addIncludedExcludedPackageConfig(configurationPrinter, locatorConfig);
+        configurationPrinter.logSections("Included packages", locatorConfig.getIncludedPackageNames());
+        configurationPrinter.logSections("Excluded packages", locatorConfig.getExcludedPackageNames());
 
         // Loaded modules
-        configurationPrinter.openSection("Loaded Kapua Modules");
-        if (!kapuaModules.isEmpty()) {
-            for (Module kapuaModule : kapuaModules.stream().sorted(Comparator.comparing(a -> a.getClass().getName())).collect(Collectors.toList())) {
-                configurationPrinter.addSimpleParameter(kapuaModule.getClass().getName());
-            }
-        } else {
-            configurationPrinter.addSimpleParameter("None");
-        }
-        configurationPrinter.closeSection();
-        // Loaded modules
-        configurationPrinter.openSection("Overriding Kapua Modules");
-        if (!overridingModules.isEmpty()) {
-            for (Module kapuaModule : overridingModules.stream().sorted(Comparator.comparing(a -> a.getClass().getName())).collect(Collectors.toList())) {
-                configurationPrinter.addSimpleParameter(kapuaModule.getClass().getName());
-            }
-        } else {
-            configurationPrinter.addSimpleParameter("None");
-        }
-        configurationPrinter.closeSection();
-        // Loaded modules
-        configurationPrinter.openSection("Excluded Kapua Modules");
-        if (!excludedKapuaModules.isEmpty()) {
-            for (Class<? extends AbstractKapuaModule> excludedKapuaModule : sortedClass(excludedKapuaModules)) {
-                configurationPrinter.addSimpleParameter(excludedKapuaModule.getName());
-            }
-        } else {
-            configurationPrinter.addSimpleParameter("None");
-        }
-        configurationPrinter.closeSection();
+        configurationPrinter.logSections("Loaded Kapua Modules", kapuaModules, a -> a.getClass().getName());
+        configurationPrinter.logSections("Overriding Kapua Modules", overridingModules, a -> a.getClass().getName());
+        configurationPrinter.logSections("Excluded Kapua Modules", excludedKapuaModules, a -> a.getClass().getName());
 
         // Print it!
         configurationPrinter.printLog();
-    }
-
-    /**
-     * Prints the configuration of the loaded {@link KapuaModule}s.
-     *
-     * @param resourceName          The {@link KapuaLocator} configuration resource name.
-     * @param locatorConfig         The loaded {@link LocatorConfig}.
-     * @param loadedXmlSerializable The laaded {@link KapuaModule}s
-     * @since 2.0.0
-     */
-    private void printLoadedXmlSerializableConfiguration(@NotNull String resourceName, @NotNull LocatorConfig locatorConfig, @NotNull List<Class<?>> loadedXmlSerializable, @NotNull List<Class<?>> excludedXmlSerializable) {
-        ConfigurationPrinter configurationPrinter =
-                ConfigurationPrinter
-                        .create()
-                        .withLogger(LOG)
-                        .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
-                        .withTitle("Kapua XmlSerializable Configuration")
-                        .addParameter("Resource Name", resourceName);
-
-        // Packages
-        addIncludedExcludedPackageConfig(configurationPrinter, locatorConfig);
-
-        // Loaded modules
-        if (LOG.isDebugEnabled()) {
-            // Printing like this is highly verbose
-            configurationPrinter.openSection("Loaded XmlSerializable Classes");
-            if (!loadedXmlSerializable.isEmpty()) {
-                for (Class<?> xmlSerializableClass : sortedClass(loadedXmlSerializable)) {
-                    configurationPrinter.addSimpleParameter(xmlSerializableClass.getName());
-                }
-            } else {
-                configurationPrinter.addSimpleParameter("None");
-            }
-            configurationPrinter.closeSection();
-        } else {
-            configurationPrinter.addParameter("Loaded XmlSerializable Classes", loadedXmlSerializable.size());
-        }
-
-        // Loaded modules
-        if (LOG.isDebugEnabled()) {
-            // Printing like this is highly verbose
-            configurationPrinter.openSection("Excluded XmlSerializable Classes");
-            if (!excludedXmlSerializable.isEmpty()) {
-                for (Class<?> xmlSerializableClass : sortedClass(excludedXmlSerializable)) {
-                    configurationPrinter.addSimpleParameter(xmlSerializableClass.getName());
-                }
-            } else {
-                configurationPrinter.addSimpleParameter("None");
-            }
-            configurationPrinter.closeSection();
-        } else {
-            configurationPrinter.addParameter("Excluded XmlSerializable Classes", excludedXmlSerializable.size());
-        }
-
-        // Print it!
-        configurationPrinter.printLog();
-    }
-
-    /**
-     * Adds the given {@link ConfigurationPrinter} the configuration of included and excluded packages.
-     *
-     * @param configurationPrinter The {@link ConfigurationPrinter} to add the configuration to.
-     * @param locatorConfig        The {@link LocatorConfig}.
-     * @since 2.0.0
-     */
-    private void addIncludedExcludedPackageConfig(@NotNull ConfigurationPrinter configurationPrinter, @NotNull LocatorConfig locatorConfig) {
-        // Inclusions
-        configurationPrinter.openSection("Included packages");
-        if (!locatorConfig.getIncludedPackageNames().isEmpty()) {
-            for (String includedPackages : sortedComparable(locatorConfig.getIncludedPackageNames())) {
-                configurationPrinter.addSimpleParameter(includedPackages);
-            }
-        } else {
-            configurationPrinter.addSimpleParameter("None");
-        }
-        configurationPrinter.closeSection();
-
-        // Exclusions
-        configurationPrinter.openSection("Excluded packages");
-        if (!locatorConfig.getExcludedPackageNames().isEmpty()) {
-            for (String excludedPackages : sortedComparable(locatorConfig.getExcludedPackageNames())) {
-                configurationPrinter.addSimpleParameter(excludedPackages);
-            }
-        } else {
-            configurationPrinter.addSimpleParameter("None");
-        }
-        configurationPrinter.closeSection();
-    }
-
-    /**
-     * Sorts the given {@link Collection} of {@link Comparable}s according to the natural order.
-     *
-     * @param strings The {@link Collection} to sort.
-     * @param <C>     The type of {@link Comparable}.
-     * @return The sorted {@link Collection}.
-     * @since 2.0.0
-     */
-    private <C extends Comparable<?>> Collection<C> sortedComparable(Collection<C> strings) {
-        return strings.stream().sorted().collect(Collectors.toList());
-    }
-
-    /**
-     * Sorts the given {@link Collection} of {@link Class}es according to the {@link Class#getName()}.
-     *
-     * @param classes The {@link Collection} to sort.
-     * @param <T>     The type of {@link Class}.
-     * @return The sorted {@link Collection}.
-     * @since 2.0.0
-     */
-    private <T extends Class<?>> Collection<T> sortedClass(Collection<T> classes) {
-        return classes.stream().sorted(Comparator.comparing(Class::getName)).collect(Collectors.toList());
     }
 }

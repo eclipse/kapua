@@ -12,13 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.rest.model;
 
-import org.eclipse.kapua.model.id.KapuaId;
-
-import javax.xml.bind.annotation.XmlElementWrapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.eclipse.kapua.model.id.KapuaId;
+
+@XmlRootElement(name = "isJobRunningMultipleResponse")
 public class IsJobRunningMultipleResponse {
 
     private List<IsJobRunningResponse> list = new ArrayList<>();

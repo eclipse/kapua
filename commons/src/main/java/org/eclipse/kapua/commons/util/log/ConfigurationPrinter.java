@@ -12,20 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util.log;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
+
+import javax.validation.constraints.NotNull;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Simple configuration printer.
  * <p>
- * This can be used when starting a component (i.e. {@link KapuaLiquibaseClient}) and print its configuration on a given {@link Logger}
- * to print something like this:
+ * This can be used when starting a component (i.e. {@link KapuaLiquibaseClient}) and print its configuration on a given {@link Logger} to print something like this:
  * <pre>
  * 09:56:07.286 [main] INFO  o.e.k.c.l.KapuaLiquibaseClient - =================== KapuaLiquibaseClient Configuration ===================
  * 09:56:07.293 [main] INFO  o.e.k.c.l.KapuaLiquibaseClient - | Liquibase Version: 3.6.3
@@ -85,14 +87,15 @@ public class ConfigurationPrinter {
      * @return The parent {@link Logger} to be used to {@link #printLog()}
      * @since 1.3.0
      */
-    protected Logger getParentLogger() {
+    public Logger getParentLogger() {
         return parentLogger;
     }
 
     /**
      * Sets the parent {@link Logger} to be used to {@link #printLog()}
      *
-     * @param logger The parent {@link Logger} to be used to {@link #printLog()}
+     * @param logger
+     *         The parent {@link Logger} to be used to {@link #printLog()}
      * @return Itself, to chain method invocation.
      * @since 1.3.0
      */
@@ -114,7 +117,8 @@ public class ConfigurationPrinter {
     /**
      * Sets the {@link LogLevel} to be used to {@link #printLog()}
      *
-     * @param logLevel The {@link LogLevel} to use.
+     * @param logLevel
+     *         The {@link LogLevel} to use.
      * @return Itself, to chain method invocation.
      * @since 1.3.0
      */
@@ -142,7 +146,8 @@ public class ConfigurationPrinter {
      * </pre>
      * according to the {@link #getTitleAlignment()}
      *
-     * @param title The title of the configuration.
+     * @param title
+     *         The title of the configuration.
      * @return Itself, to chain method invocation.
      * @since 1.3.0
      */
@@ -185,7 +190,8 @@ public class ConfigurationPrinter {
      * <p>
      * It defaults to {@link TitleAlignment#CENTER}.
      *
-     * @param titleAlignment The {@link TitleAlignment} to use.
+     * @param titleAlignment
+     *         The {@link TitleAlignment} to use.
      * @return Itself, to chain method invocation.
      * @since 1.3.0
      */
@@ -216,7 +222,8 @@ public class ConfigurationPrinter {
      * |\t{name}
      * </pre>
      *
-     * @param name The name of the {@link ConfigurationHeader}
+     * @param name
+     *         The name of the {@link ConfigurationHeader}
      * @return Itself, to chain method invocation.
      * @since 1.3.0
      */
@@ -233,7 +240,8 @@ public class ConfigurationPrinter {
      * |\t{value}
      * </pre>
      *
-     * @param value The value of the {@link ConfigurationParameter}
+     * @param value
+     *         The value of the {@link ConfigurationParameter}
      * @return Itself, to chain method invocation.
      * @since 1.3.0
      */
@@ -250,7 +258,8 @@ public class ConfigurationPrinter {
      * |\t{name}: {value}
      * </pre>
      *
-     * @param name The name of the {@link ConfigurationParameter}
+     * @param name
+     *         The name of the {@link ConfigurationParameter}
      * @return Itself, to chain method invocation.
      * @since 1.3.0
      */
@@ -266,7 +275,8 @@ public class ConfigurationPrinter {
      *      increaseIndentation();
      * </pre>
      *
-     * @param name The name of the {@link ConfigurationHeader}
+     * @param name
+     *         The name of the {@link ConfigurationHeader}
      * @return Itself, to chain method invocation.
      * @since 1.5.0
      */
@@ -319,8 +329,7 @@ public class ConfigurationPrinter {
     /**
      * Prints the given {@link Configuration}s.
      * <p>
-     * It uses the given {@link #getParentLogger()} or the {@link #LOG} if the former was not provided.
-     * It is advised to always provide it using {@link #withLogger(Logger)}.
+     * It uses the given {@link #getParentLogger()} or the {@link #LOG} if the former was not provided. It is advised to always provide it using {@link #withLogger(Logger)}.
      *
      * @since 1.3.0
      */
@@ -363,20 +372,21 @@ public class ConfigurationPrinter {
      */
     private String buildAlignedTitleFormat() {
         switch (getTitleAlignment()) {
-            case LEFT:
-                return "= {} =====================================";
-            case RIGHT:
-                return "===================================== {} =";
-            case CENTER:
-            default:
-                return "=================== {} ===================";
+        case LEFT:
+            return "= {} =====================================";
+        case RIGHT:
+            return "===================================== {} =";
+        case CENTER:
+        default:
+            return "=================== {} ===================";
         }
     }
 
     /**
      * Prints the given log according to {@link #getLogLevel()}.
      *
-     * @param log The log to print.
+     * @param log
+     *         The log to print.
      * @since 1.3.0
      */
     private void printLogLeveled(String log) {
@@ -386,27 +396,29 @@ public class ConfigurationPrinter {
     /**
      * Prints the given logFormat with the given argument according to {@link #getLogLevel()}.
      *
-     * @param logFormat The log format to print.
-     * @param arg       The argument to populate the format.
+     * @param logFormat
+     *         The log format to print.
+     * @param arg
+     *         The argument to populate the format.
      * @since 1.3.0
      */
     private void printLogLeveled(String logFormat, Object arg) {
         switch (getLogLevel()) {
-            case DEBUG:
-                getParentLogger().debug(logFormat, arg);
-                break;
-            case ERROR:
-                getParentLogger().error(logFormat, arg);
-                break;
-            case INFO:
-                getParentLogger().info(logFormat, arg);
-                break;
-            case TRACE:
-                getParentLogger().trace(logFormat, arg);
-                break;
-            case WARN:
-                getParentLogger().warn(logFormat, arg);
-                break;
+        case DEBUG:
+            getParentLogger().debug(logFormat, arg);
+            break;
+        case ERROR:
+            getParentLogger().error(logFormat, arg);
+            break;
+        case INFO:
+            getParentLogger().info(logFormat, arg);
+            break;
+        case TRACE:
+            getParentLogger().trace(logFormat, arg);
+            break;
+        case WARN:
+            getParentLogger().warn(logFormat, arg);
+            break;
         }
     }
     // Creator
@@ -420,6 +432,36 @@ public class ConfigurationPrinter {
     public static ConfigurationPrinter create() {
         return new ConfigurationPrinter();
     }
+
+    public <R extends Comparable<R>> void logSections(String sectionName, @NotNull Collection<R> sectionDetails) {
+        this.openSection(sectionName);
+
+        if (sectionDetails.isEmpty()) {
+            this.addSimpleParameter("None");
+        } else {
+            sectionDetails
+                    .stream()
+                    .sorted()
+                    .forEach(this::addSimpleParameter);
+        }
+        this.closeSection();
+    }
+
+    public <R, C extends Comparable<C>> void logSections(String sectionName, @NotNull Collection<R> sectionDetails, Function<R, C> converter) {
+        this.openSection(sectionName);
+
+        if (sectionDetails.isEmpty()) {
+            this.addSimpleParameter("None");
+        } else {
+            sectionDetails
+                    .stream()
+                    .map(converter)
+                    .sorted()
+                    .forEach(this::addSimpleParameter);
+        }
+        this.closeSection();
+    }
+
     // Configuration Classes
 
     /**

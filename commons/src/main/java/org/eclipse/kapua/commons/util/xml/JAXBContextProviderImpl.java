@@ -12,11 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util.xml;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
@@ -27,14 +29,17 @@ import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JAXBContextProviderBase implements JAXBContextProvider {
+@Singleton
+public class JAXBContextProviderImpl implements JAXBContextProvider {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JAXBContextProviderBase.class);
+    private final Logger logger = LoggerFactory.getLogger(JAXBContextProviderImpl.class);
 
     private JAXBContext context;
-    private ClassProvider[] providers;
+    private Set<ClassProvider> providers;
 
-    public JAXBContextProviderBase(ClassProvider ... providers) {
+    @Inject
+    public JAXBContextProviderImpl(Set<ClassProvider> providers) {
+        logger.info("Initializing with {} providers", providers.size());
         this.providers = providers;
     }
 
@@ -42,15 +47,15 @@ public class JAXBContextProviderBase implements JAXBContextProvider {
     public JAXBContext getJAXBContext() throws KapuaException {
         try {
             if (context == null) {
-                Map<String, Object> properties = new HashMap<>(1);
+                final Map<String, Object> properties = new HashMap<>();
                 properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
 
-                List<Class<?>> classes = new ArrayList<>();
-                for (ClassProvider provider:providers) {
-                    classes.addAll(provider.getClasses());
-                }
+                final Set<Class<?>> classes = providers
+                        .stream()
+                        .flatMap(p -> p.getClasses().stream())
+                        .collect(Collectors.toSet());
                 context = JAXBContextFactory.createContext(classes.toArray(new Class<?>[] {}), properties);
-                LOG.debug("Default JAXB context initialized!");
+                logger.info("Default JAXB context initialized with {} classes!", classes.size());
             }
             return context;
         } catch (JAXBException e) {

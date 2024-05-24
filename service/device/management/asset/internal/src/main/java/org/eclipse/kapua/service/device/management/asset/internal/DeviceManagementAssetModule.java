@@ -12,35 +12,58 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.internal;
 
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.core.ClassProvider;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreService;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseChannel;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.multibindings.Multibinder;
+
 public class DeviceManagementAssetModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
         bind(DeviceAssetFactory.class).to(DeviceAssetFactoryImpl.class);
+        final Multibinder<ClassProvider> classProviderBinder = Multibinder.newSetBinder(binder(), ClassProvider.class);
+        classProviderBinder.addBinding()
+                .toInstance(new ClassProvider() {
+
+                    @Override
+                    public Collection<Class<?>> getClasses() {
+                        return Arrays.asList(
+                                KapuaRequestMessage.class,
+                                KapuaResponseChannel.class,
+                                KapuaResponseMessage.class
+                        );
+                    }
+                });
     }
 
     @Provides
     @Singleton
     DeviceAssetManagementService deviceAssetManagementService(AuthorizationService authorizationService,
-                                                              PermissionFactory permissionFactory,
-                                                              DeviceEventService deviceEventService,
-                                                              DeviceEventFactory deviceEventFactory,
-                                                              DeviceRegistryService deviceRegistryService,
-                                                              DeviceAssetStoreService deviceAssetStoreService,
-                                                              KapuaJpaTxManagerFactory jpaTxManagerFactory,
-                                                              DeviceAssetFactory deviceAssetFactory) {
+            PermissionFactory permissionFactory,
+            DeviceEventService deviceEventService,
+            DeviceEventFactory deviceEventFactory,
+            DeviceRegistryService deviceRegistryService,
+            DeviceAssetStoreService deviceAssetStoreService,
+            KapuaJpaTxManagerFactory jpaTxManagerFactory,
+            DeviceAssetFactory deviceAssetFactory) {
         return new DeviceAssetManagementServiceImpl(
                 jpaTxManagerFactory.create("kapua-device_management_operation_registry"),
                 authorizationService,

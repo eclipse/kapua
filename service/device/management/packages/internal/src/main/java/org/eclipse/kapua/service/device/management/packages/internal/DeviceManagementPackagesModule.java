@@ -12,28 +12,47 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.internal;
 
-import com.google.inject.Provides;
+import java.util.Arrays;
+import java.util.Collection;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.core.ClassProvider;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
 import org.eclipse.kapua.service.device.management.packages.internal.setting.PackageManagementServiceSetting;
+import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import com.google.inject.Provides;
+import com.google.inject.multibindings.Multibinder;
 
 public class DeviceManagementPackagesModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
         bind(DevicePackageFactory.class).to(DevicePackageFactoryImpl.class).in(Singleton.class);
         bind(PackageManagementServiceSetting.class).in(Singleton.class);
+        final Multibinder<ClassProvider> classProviderBinder = Multibinder.newSetBinder(binder(), ClassProvider.class);
+        classProviderBinder.addBinding()
+                .toInstance(new ClassProvider() {
+
+                    @Override
+                    public Collection<Class<?>> getClasses() {
+                        return Arrays.asList(
+                                DevicePackageInstallRequest.class
+                        );
+                    }
+                });
     }
 
     @Provides
