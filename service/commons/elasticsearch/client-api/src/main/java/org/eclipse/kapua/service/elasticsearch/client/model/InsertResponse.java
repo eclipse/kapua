@@ -24,11 +24,11 @@ public class InsertResponse extends Response {
      * Constructor.
      *
      * @param id             Ihe inserted record id
-     * @param typeDescriptor The {@link TypeDescriptor}.
+     * @param index          The index
      * @since 1.0.0
      */
-    public InsertResponse(String id, TypeDescriptor typeDescriptor) {
-        super(id, typeDescriptor);
+    public InsertResponse(String id, String index) {
+        super(id, index);
     }
 
 }

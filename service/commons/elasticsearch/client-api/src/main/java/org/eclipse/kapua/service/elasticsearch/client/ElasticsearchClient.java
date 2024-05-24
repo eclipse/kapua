@@ -25,7 +25,6 @@ import org.eclipse.kapua.service.elasticsearch.client.model.IndexResponse;
 import org.eclipse.kapua.service.elasticsearch.client.model.InsertRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.InsertResponse;
 import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
-import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
 
@@ -159,57 +158,57 @@ public interface ElasticsearchClient<C extends Closeable> {
      * <p>
      * This method returns the first result found that matches the query.
      *
-     * @param typeDescriptor The {@link TypeDescriptor} to look for.
+     * @param index          The index to look for.
      * @param query          The query to perform.
      * @param clazz          The expected {@link Object#getClass()}
      * @return The first result found that matches the query.
      * @throws ClientException if error occurs while querying.
      * @since 1.0.0
      */
-    <T> T find(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException;
+    <T> T find(String index, Object query, Class<T> clazz) throws ClientException;
 
     /**
      * Finds by query.
      *
-     * @param typeDescriptor The {@link TypeDescriptor} to look for.
+     * @param index          The index to look for.
      * @param query          The query to perform.
      * @param clazz          The expected {@link Object#getClass()}
      * @return The {@link ResultList} that matches the query.
      * @throws ClientException if error occurs while querying.
      * @since 1.0.0
      */
-    <T> ResultList<T> query(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException;
+    <T> ResultList<T> query(String index, Object query, Class<T> clazz) throws ClientException;
 
     /**
      * Counts by query.
      *
-     * @param typeDescriptor The {@link TypeDescriptor} to look for.
+     * @param index          The index to look for.
      * @param query          The query to perform.
      * @return The number of matching results.
      * @throws ClientException if error occurs while counting.
      * @since 1.0.0
      */
-    long count(TypeDescriptor typeDescriptor, Object query) throws ClientException;
+    long count(String index, Object query) throws ClientException;
 
     /**
      * Deletes by id.
      *
-     * @param typeDescriptor The {@link TypeDescriptor} to delete.
+     * @param index          The index to delete.
      * @param id             The id to delete
      * @throws ClientException if error occurs while deleting.
      * @since 1.0.0
      */
-    void delete(TypeDescriptor typeDescriptor, String id) throws ClientException;
+    void delete(String index, String id) throws ClientException;
 
     /**
      * Deletes by query.
      *
-     * @param typeDescriptor The {@link TypeDescriptor} to delete.
+     * @param index          The index to delete.
      * @param query          The query to perform.
      * @throws ClientException if error occurs while deleting.
      * @since 1.0.0
      */
-    void deleteByQuery(TypeDescriptor typeDescriptor, Object query) throws ClientException;
+    void deleteByQuery(String index, Object query) throws ClientException;
     // Indexes / mappings section
 
     /**
@@ -235,22 +234,22 @@ public interface ElasticsearchClient<C extends Closeable> {
     /**
      * Checks if the mapping exists.
      *
-     * @param typeDescriptor The {@link TypeDescriptor} to look for.
+     * @param index The index to look for.
      * @return {@code true} if mapping exists, {@code false} otherwise
      * @throws ClientException if error occurs while checking.
      * @since 1.0.0
      */
-    boolean isMappingExists(TypeDescriptor typeDescriptor) throws ClientException;
+    boolean isMappingExists(String index) throws ClientException;
 
     /**
      * Puts the mapping.
      *
-     * @param typeDescriptor The {@link TypeDescriptor} to put.
+     * @param index          The index to put.
      * @param mapping        The mapping to put.
      * @throws ClientException if error occurs while putting.
      * @since 1.0.0
      */
-    void putMapping(TypeDescriptor typeDescriptor, JsonNode mapping) throws ClientException;
+    void putMapping(String index, JsonNode mapping) throws ClientException;
 
     /**
      * Forces the Elasticsearch to refresh the indexes.

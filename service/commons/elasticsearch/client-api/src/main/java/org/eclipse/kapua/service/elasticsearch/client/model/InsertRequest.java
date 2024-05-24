@@ -25,11 +25,11 @@ public class InsertRequest extends Request {
      * Constructor.
      *
      * @param id             The Object identifier.
-     * @param typeDescriptor The {@link TypeDescriptor}.
+     * @param index          The index.
      * @param storable       The Object to insert.
      * @since 1.0.0
      */
-    public InsertRequest(String id, TypeDescriptor typeDescriptor, Storable storable) {
-        super(id, typeDescriptor, storable);
+    public InsertRequest(String id, String index, Storable storable) {
+        super(id, index, storable);
     }
 }
