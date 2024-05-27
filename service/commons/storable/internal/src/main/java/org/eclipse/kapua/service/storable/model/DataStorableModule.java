@@ -12,11 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.storable.model;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.core.JaxbClassProvider;
+import org.eclipse.kapua.commons.core.SimpleJaxbClassProvider;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 
@@ -28,15 +26,10 @@ public class DataStorableModule extends AbstractKapuaModule {
     protected void configureModule() {
         final Multibinder<JaxbClassProvider> jaxbClassProviderMultibinder = Multibinder.newSetBinder(binder(), JaxbClassProvider.class);
         jaxbClassProviderMultibinder.addBinding()
-                .toInstance(new JaxbClassProvider() {
-
-                    @Override
-                    public Collection<Class<?>> getClasses() {
-                        return Arrays.asList(
+                .toInstance(new SimpleJaxbClassProvider(
                                 SortField.class,
                                 StorableId.class
-                        );
-                    }
-                });
+                        )
+                );
     }
 }

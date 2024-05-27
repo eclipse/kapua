@@ -12,13 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import javax.inject.Singleton;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.core.JaxbClassProvider;
+import org.eclipse.kapua.commons.core.SimpleJaxbClassProvider;
 import org.eclipse.kapua.service.device.call.DeviceCallFactory;
 import org.eclipse.kapua.service.device.call.DeviceMessageFactory;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryItem;
@@ -43,11 +41,7 @@ public class DeviceCallKuraModule extends AbstractKapuaModule {
         bind(DeviceCallSettings.class).in(Singleton.class);
         final Multibinder<JaxbClassProvider> jaxbClassProviderMultibinder = Multibinder.newSetBinder(binder(), JaxbClassProvider.class);
         jaxbClassProviderMultibinder.addBinding()
-                .toInstance(new JaxbClassProvider() {
-
-                    @Override
-                    public Collection<Class<?>> getClasses() {
-                        return Arrays.asList(
+                .toInstance(new SimpleJaxbClassProvider(
                                 KuraInventoryBundle.class,
                                 KuraInventoryBundles.class,
                                 KuraInventoryContainer.class,
@@ -57,8 +51,7 @@ public class DeviceCallKuraModule extends AbstractKapuaModule {
                                 KuraInventoryPackage.class,
                                 KuraInventorySystemPackage.class,
                                 KuraInventorySystemPackages.class
-                        );
-                    }
-                });
+                        )
+                );
     }
 }

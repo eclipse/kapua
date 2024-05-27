@@ -18,6 +18,7 @@ import javax.inject.Singleton;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProviderImpl;
 
 import com.google.inject.Provides;
 
@@ -26,8 +27,10 @@ public class AppModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(DatabaseCheckUpdate.class).in(Singleton.class);
-        bind(JAXBContextProvider.class).to(LifecycleJAXBContextProvider.class).in(Singleton.class);
         bind(MetricsLifecycle.class).in(Singleton.class);
+        // Switching manually-configured JAXBContextProvider to autodiscovery one below
+        // bind(JAXBContextProvider.class).to(LifecycleJAXBContextProvider.class).in(Singleton.class);
+        bind(JAXBContextProvider.class).to(JAXBContextProviderImpl.class).in(Singleton.class);
     }
 
     @Provides

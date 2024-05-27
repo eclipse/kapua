@@ -24,6 +24,7 @@ import javax.xml.bind.JAXBException;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.JaxbClassProvider;
+import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.slf4j.Logger;
@@ -33,6 +34,7 @@ import org.slf4j.LoggerFactory;
 public class JAXBContextProviderImpl implements JAXBContextProvider {
 
     private final Logger logger = LoggerFactory.getLogger(JAXBContextProviderImpl.class);
+    private final ConfigurationPrinter configurationPrinter;
 
     private JAXBContext context;
     private Set<JaxbClassProvider> providers;
@@ -41,6 +43,11 @@ public class JAXBContextProviderImpl implements JAXBContextProvider {
     public JAXBContextProviderImpl(Set<JaxbClassProvider> providers) {
         logger.info("Initializing with {} providers", providers.size());
         this.providers = providers;
+        this.configurationPrinter = ConfigurationPrinter
+                .create()
+                .withLogger(logger)
+                .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
+                .withTitle("Kapua Jaxb Context Resolver");
     }
 
     @Override
@@ -54,6 +61,18 @@ public class JAXBContextProviderImpl implements JAXBContextProvider {
                         .stream()
                         .flatMap(p -> p.getClasses().stream())
                         .collect(Collectors.toSet());
+                if (configurationPrinter.getParentLogger().isDebugEnabled()) {
+                    // Printing like this is highly verbose
+                    configurationPrinter.logSections("Loaded XmlSerializable Classes", classes
+                            .stream()
+                            .map(Class::getName)
+                            .sorted()
+                            .collect(Collectors.toList()));
+                } else {
+                    configurationPrinter.addParameter("Loaded XmlSerializable Classes", classes.size());
+                }
+                // Print it!
+                configurationPrinter.printLog();
                 context = JAXBContextFactory.createContext(classes.toArray(new Class<?>[] {}), properties);
                 logger.info("Default JAXB context initialized with {} classes!", classes.size());
             }

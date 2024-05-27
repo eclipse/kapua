@@ -12,13 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import javax.inject.Singleton;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.core.JaxbClassProvider;
+import org.eclipse.kapua.commons.core.SimpleJaxbClassProvider;
 import org.eclipse.kapua.commons.crypto.CryptoUtil;
 import org.eclipse.kapua.commons.crypto.CryptoUtilImpl;
 import org.eclipse.kapua.commons.crypto.setting.CryptoSettings;
@@ -74,16 +72,10 @@ public class CommonsModule extends AbstractKapuaModule {
 
         final Multibinder<JaxbClassProvider> jaxbClassProviderMultibinder = Multibinder.newSetBinder(binder(), JaxbClassProvider.class);
         jaxbClassProviderMultibinder.addBinding()
-                .toInstance(new JaxbClassProvider() {
-
-                    @Override
-                    public Collection<Class<?>> getClasses() {
-                        return Arrays.asList(
-                                EventStoreRecordCreator.class,
-                                ServiceEvent.class
-                        );
-                    }
-                });
+                .toInstance(new SimpleJaxbClassProvider(
+                        EventStoreRecordCreator.class,
+                        ServiceEvent.class
+                ));
     }
 
     @ProvidesIntoSet

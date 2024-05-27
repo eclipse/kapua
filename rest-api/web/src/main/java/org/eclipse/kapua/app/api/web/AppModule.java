@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.web;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -26,6 +23,7 @@ import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSettingKeys;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.keystore.DeviceKeystoreCertificateInfo;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.core.JaxbClassProvider;
+import org.eclipse.kapua.commons.core.SimpleJaxbClassProvider;
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProviderImpl;
@@ -43,18 +41,12 @@ public class AppModule extends AbstractKapuaModule {
         bind(JAXBContextProvider.class).to(JAXBContextProviderImpl.class).in(Singleton.class);
         final Multibinder<JaxbClassProvider> jaxbClassProviderMultibinder = Multibinder.newSetBinder(binder(), JaxbClassProvider.class);
         jaxbClassProviderMultibinder.addBinding()
-                .toInstance(new JaxbClassProvider() {
-
-                    @Override
-                    public Collection<Class<?>> getClasses() {
-                        return Arrays.asList(
-                                DeviceKeystoreCertificateInfo.class,
-                                JsonGenericRequestMessage.class,
-                                JsonGenericResponseMessage.class,
-                                StorableEntityId.class
-                        );
-                    }
-                });
+                .toInstance(new SimpleJaxbClassProvider(
+                        DeviceKeystoreCertificateInfo.class,
+                        JsonGenericRequestMessage.class,
+                        JsonGenericResponseMessage.class,
+                        StorableEntityId.class
+                ));
     }
 
     @Provides

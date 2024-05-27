@@ -22,7 +22,7 @@ import org.springframework.context.annotation.PropertySource;
 /**
  * Lifecycle application container main class
  */
-@ImportResource({"classpath:spring/applicationContext.xml"})
+@ImportResource({ "classpath:spring/applicationContext.xml" })
 @PropertySource(value = "classpath:spring/application.properties")
 @Import(SpringBridge.class)
 @SpringBootApplication
@@ -40,5 +40,4 @@ public class LifecycleApplication {
         //org.springframework.context.ApplicationContext is not needed now so don't keep the SpringApplication.run return
         SpringApplication.run(LifecycleApplication.class, args);
     }
-
 }

@@ -12,13 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.request.internal;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import javax.inject.Inject;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.core.JaxbClassProvider;
+import org.eclipse.kapua.commons.core.SimpleJaxbClassProvider;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -43,18 +41,13 @@ public class DeviceManagementRequestModule extends AbstractKapuaModule {
 
         final Multibinder<JaxbClassProvider> jaxbClassProviderMultibinder = Multibinder.newSetBinder(binder(), JaxbClassProvider.class);
         jaxbClassProviderMultibinder.addBinding()
-                .toInstance(new JaxbClassProvider() {
-
-                    @Override
-                    public Collection<Class<?>> getClasses() {
-                        return Arrays.asList(
+                .toInstance(new SimpleJaxbClassProvider(
                                 GenericRequestChannel.class,
                                 GenericRequestPayload.class,
                                 GenericResponseChannel.class,
                                 GenericResponsePayload.class
-                        );
-                    }
-                });
+                        )
+                );
 
     }
 
