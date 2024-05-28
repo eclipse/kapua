@@ -27,23 +27,6 @@ import java.util.List;
 public interface IdsPredicate extends StorablePredicate {
 
     /**
-     * Gets the identifier type
-     *
-     * @return The identifier type
-     * @since 1.0.0
-     */
-    String getType();
-
-    /**
-     * Sets the identifier type
-     *
-     * @param type The identifier type
-     * @return Itself, to chain method invocations.
-     * @since 1.3.0
-     */
-    IdsPredicate setType(String type);
-
-    /**
      * Gets the {@link StorableId}s {@link List}.
      *
      * @return The {@link StorableId}s {@link List}.

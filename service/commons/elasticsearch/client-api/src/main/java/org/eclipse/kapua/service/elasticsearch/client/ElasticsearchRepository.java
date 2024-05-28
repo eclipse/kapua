@@ -95,7 +95,7 @@ public abstract class ElasticsearchRepository<
             final Q idsQuery = storableFactory.newQuery(scopeId);
             idsQuery.setLimit(1);
 
-            final IdsPredicate idsPredicate = storablePredicateFactory.newIdsPredicate("typeignored"); //TODO: refactor here removing types at all
+            final IdsPredicate idsPredicate = storablePredicateFactory.newIdsPredicate();
             idsPredicate.addId(id);
             idsQuery.setPredicate(idsPredicate);
 

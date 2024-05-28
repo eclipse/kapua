@@ -50,11 +50,10 @@ public interface StorablePredicateFactory extends KapuaObjectFactory {
     /**
      * Instantiates an {@link IdsPredicate}.
      *
-     * @param typeDescriptor The type descriptor
      * @return The newly instantiated {@link IdsPredicate}
      * @since 1.3.0
      */
-    IdsPredicate newIdsPredicate(String typeDescriptor);
+    IdsPredicate newIdsPredicate();
 
     /**
      * Instantiates a {@link MatchPredicate}.
