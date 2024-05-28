@@ -24,7 +24,6 @@
     <packages>
         <package>org.eclipse.kapua.consumer.lifecycle</package>
         <package>org.eclipse.kapua.commons</package>
-        <package>org.eclipse.kapua.model</package>
         <package>org.eclipse.kapua.job.engine</package>
         <package>org.eclipse.kapua.plugin</package>
         <package>org.eclipse.kapua.security</package>
@@ -32,5 +31,9 @@
         <package>org.eclipse.kapua.service</package>
         <package>org.eclipse.kapua.translator</package>
         <package>org.eclipse.kapua.transport</package>
+        <excludes>
+            <package>org.eclipse.kapua.service.datastore</package>
+            <package>org.eclipse.kapua.job.engine.queue</package>
+        </excludes>
     </packages>
 </locator-config>

@@ -235,7 +235,6 @@ public class GuiceLocatorImpl extends KapuaLocator {
                                         configurationPrinter,
                                         locatorConfig.getIncludedPackageNames(),
                                         locatorConfig.getExcludedPackageNames()));
-                //                bind(JAXBContextProvider.class).to(JAXBContextProviderImpl.class);
             }
         });
 

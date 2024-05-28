@@ -25,6 +25,7 @@ import javax.xml.bind.JAXBException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.JaxbClassProvider;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
+import org.eclipse.kapua.locator.initializers.KapuaInitializingMethod;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.slf4j.Logger;
@@ -39,6 +40,35 @@ public class JAXBContextProviderImpl implements JAXBContextProvider {
     private JAXBContext context;
     private Set<JaxbClassProvider> providers;
 
+    @KapuaInitializingMethod(priority = 15)
+    public void initJaxb() throws KapuaException {
+        final Map<String, Object> properties = new HashMap<>();
+        properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
+        try {
+
+            final Set<Class<?>> classes = providers
+                    .stream()
+                    .flatMap(p -> p.getClasses().stream())
+                    .collect(Collectors.toSet());
+            if (configurationPrinter.getParentLogger().isDebugEnabled()) {
+                // Printing like this is highly verbose
+                configurationPrinter.logSections("Loaded XmlSerializable Classes", classes
+                        .stream()
+                        .map(Class::getName)
+                        .sorted()
+                        .collect(Collectors.toList()));
+            } else {
+                configurationPrinter.addParameter("Loaded XmlSerializable Classes", classes.size());
+            }
+            // Print it!
+            configurationPrinter.printLog();
+            this.context = JAXBContextFactory.createContext(classes.toArray(new Class<?>[] {}), properties);
+            logger.info("Default JAXB context initialized with {} classes!", classes.size());
+        } catch (JAXBException e) {
+            throw KapuaException.internalError(e, "Error creating JAXBContext!");
+        }
+    }
+
     @Inject
     public JAXBContextProviderImpl(Set<JaxbClassProvider> providers) {
         logger.info("Initializing with {} providers", providers.size());
@@ -48,37 +78,11 @@ public class JAXBContextProviderImpl implements JAXBContextProvider {
                 .withLogger(logger)
                 .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
                 .withTitle("Kapua Jaxb Context Resolver");
+
     }
 
     @Override
     public JAXBContext getJAXBContext() throws KapuaException {
-        try {
-            if (context == null) {
-                final Map<String, Object> properties = new HashMap<>();
-                properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
-
-                final Set<Class<?>> classes = providers
-                        .stream()
-                        .flatMap(p -> p.getClasses().stream())
-                        .collect(Collectors.toSet());
-                if (configurationPrinter.getParentLogger().isDebugEnabled()) {
-                    // Printing like this is highly verbose
-                    configurationPrinter.logSections("Loaded XmlSerializable Classes", classes
-                            .stream()
-                            .map(Class::getName)
-                            .sorted()
-                            .collect(Collectors.toList()));
-                } else {
-                    configurationPrinter.addParameter("Loaded XmlSerializable Classes", classes.size());
-                }
-                // Print it!
-                configurationPrinter.printLog();
-                context = JAXBContextFactory.createContext(classes.toArray(new Class<?>[] {}), properties);
-                logger.info("Default JAXB context initialized with {} classes!", classes.size());
-            }
-            return context;
-        } catch (JAXBException e) {
-            throw KapuaException.internalError(e, "Error creating JAXBContext!");
-        }
+        return context;
     }
 }
