@@ -25,8 +25,6 @@ import java.util.List;
  * @since 1.0.0
  */
 public class IdsPredicateImpl extends StorablePredicateImpl implements IdsPredicate {
-
-    private String type;
     private List<StorableId> ids;
 
     /**
@@ -35,30 +33,6 @@ public class IdsPredicateImpl extends StorablePredicateImpl implements IdsPredic
      * @since 1.0.0
      */
     public IdsPredicateImpl() {
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param type The type descriptor.
-     * @since 1.0.0
-     */
-    public IdsPredicateImpl(String type) {
-        this();
-
-        setType(type);
-    }
-
-    @Override
-    public String getType() {
-        return this.type;
-    }
-
-    @Override
-    public IdsPredicate setType(String type) {
-        this.type = type;
-
-        return this;
     }
 
     @Override

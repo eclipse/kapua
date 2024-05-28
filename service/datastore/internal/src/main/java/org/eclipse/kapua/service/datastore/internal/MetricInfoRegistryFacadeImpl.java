@@ -19,7 +19,6 @@ import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationExcept
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
-import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
@@ -201,7 +200,7 @@ public class MetricInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
         MetricInfoQueryImpl idsQuery = new MetricInfoQueryImpl(scopeId);
         idsQuery.setLimit(1);
 
-        IdsPredicate idsPredicate = storablePredicateFactory.newIdsPredicate(MetricInfoSchema.METRIC_TYPE_NAME);
+        IdsPredicate idsPredicate = storablePredicateFactory.newIdsPredicate();
         idsPredicate.addId(id);
         idsQuery.setPredicate(idsPredicate);
 
