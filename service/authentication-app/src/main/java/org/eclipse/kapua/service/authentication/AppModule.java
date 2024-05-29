@@ -18,6 +18,7 @@ import javax.inject.Singleton;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProviderImpl;
 
 import com.google.inject.Provides;
 
@@ -27,7 +28,7 @@ public class AppModule extends AbstractKapuaModule {
     protected void configureModule() {
         bind(MetricsAuthentication.class).in(Singleton.class);
         bind(DatabaseCheckUpdate.class).in(Singleton.class);
-        bind(JAXBContextProvider.class).to(AuthenticationJAXBContextProvider.class).in(Singleton.class);
+        bind(JAXBContextProvider.class).to(JAXBContextProviderImpl.class).in(Singleton.class);
     }
 
     @Provides

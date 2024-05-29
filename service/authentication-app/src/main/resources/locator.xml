@@ -30,5 +30,11 @@
         <package>org.eclipse.kapua.service</package>
         <package>org.eclipse.kapua.translator</package>
         <package>org.eclipse.kapua.transport</package>
+        <excludes>
+            <package>org.eclipse.kapua.service.job</package>
+            <package>org.eclipse.kapua.service.scheduler</package>
+            <package>org.eclipse.kapua.service.datastore</package>
+            <package>org.eclipse.kapua.service.device.management</package>
+        </excludes>
     </packages>
 </locator-config>
