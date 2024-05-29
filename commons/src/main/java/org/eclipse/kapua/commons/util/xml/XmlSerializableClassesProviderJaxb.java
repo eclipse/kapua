@@ -21,20 +21,27 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.kapua.commons.core.JaxbClassProvider;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
+import org.eclipse.kapua.locator.LocatorConfig;
 import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class XmlSerializableClassesProviderJaxb implements JaxbClassProvider {
 
     private final ConfigurationPrinter configurationPrinter;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private Collection<String> includedPackageNames;
     private Collection<String> excludedPackageNames;
 
-    public XmlSerializableClassesProviderJaxb(ConfigurationPrinter configurationPrinter,
-            Collection<String> includedPackageNames,
-            Collection<String> excludedPackageNames) {
-        this.configurationPrinter = configurationPrinter;
-        this.includedPackageNames = includedPackageNames;
-        this.excludedPackageNames = excludedPackageNames;
+    public XmlSerializableClassesProviderJaxb(LocatorConfig locatorConfig) {
+        this.configurationPrinter =
+                ConfigurationPrinter
+                        .create()
+                        .withLogger(logger)
+                        .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
+                        .withTitle("JAXB classes discoverer");
+        this.includedPackageNames = locatorConfig.getIncludedPackageNames();
+        this.excludedPackageNames = locatorConfig.getExcludedPackageNames();
     }
 
     @Override

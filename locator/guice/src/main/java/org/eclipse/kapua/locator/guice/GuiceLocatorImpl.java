@@ -32,9 +32,7 @@ import javax.validation.constraints.NotNull;
 
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.commons.core.JaxbClassProvider;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
-import org.eclipse.kapua.commons.util.xml.XmlSerializableClassesProviderJaxb;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.locator.LocatorConfig;
@@ -58,7 +56,6 @@ import com.google.inject.Module;
 import com.google.inject.Stage;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.AbstractMatcher;
-import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
@@ -223,21 +220,6 @@ public class GuiceLocatorImpl extends KapuaLocator {
         }
         // KapuaModule will be removed as soon as bindings will be moved to local modules
         kapuaModules.add(new KapuaModule(locatorConfig));
-
-        //Add JAXB custom module to the lot
-        kapuaModules.add(new AbstractKapuaModule() {
-
-            @Override
-            protected void configureModule() {
-                final Multibinder<JaxbClassProvider> jaxbClassProviderMultibinder = Multibinder.newSetBinder(binder(), JaxbClassProvider.class);
-                jaxbClassProviderMultibinder.addBinding()
-                        .toInstance(
-                                new XmlSerializableClassesProviderJaxb(
-                                        configurationPrinter,
-                                        locatorConfig.getIncludedPackageNames(),
-                                        locatorConfig.getExcludedPackageNames()));
-            }
-        });
 
         kapuaModules.add(new AbstractModule() {
 

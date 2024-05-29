@@ -27,9 +27,11 @@ import org.eclipse.kapua.commons.core.SimpleJaxbClassProvider;
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProviderImpl;
+import org.eclipse.kapua.commons.util.xml.XmlSerializableClassesProviderJaxb;
+import org.eclipse.kapua.locator.LocatorConfig;
 
 import com.google.inject.Provides;
-import com.google.inject.multibindings.Multibinder;
+import com.google.inject.multibindings.ProvidesIntoSet;
 
 public class AppModule extends AbstractKapuaModule {
 
@@ -38,15 +40,24 @@ public class AppModule extends AbstractKapuaModule {
         bind(DatabaseCheckUpdate.class).in(Singleton.class);
         bind(KapuaApiCoreSetting.class).in(Singleton.class);
 
+        // Switching manually-configured JAXBContextProvider to autodiscovery one below
+        // bind(JAXBContextProvider.class).to(RestApiJAXBContextProvider.class).in(Singleton.class);
         bind(JAXBContextProvider.class).to(JAXBContextProviderImpl.class).in(Singleton.class);
-        final Multibinder<JaxbClassProvider> jaxbClassProviderMultibinder = Multibinder.newSetBinder(binder(), JaxbClassProvider.class);
-        jaxbClassProviderMultibinder.addBinding()
-                .toInstance(new SimpleJaxbClassProvider(
-                        DeviceKeystoreCertificateInfo.class,
-                        JsonGenericRequestMessage.class,
-                        JsonGenericResponseMessage.class,
-                        StorableEntityId.class
-                ));
+    }
+
+    @ProvidesIntoSet
+    JaxbClassProvider jaxbClassesAutoDiscoverer(LocatorConfig locatorConfig) {
+        return new XmlSerializableClassesProviderJaxb(locatorConfig);
+    }
+
+    @ProvidesIntoSet
+    JaxbClassProvider restApiCustomClassesForJaxb(LocatorConfig locatorConfig) {
+        return new SimpleJaxbClassProvider(
+                DeviceKeystoreCertificateInfo.class,
+                JsonGenericRequestMessage.class,
+                JsonGenericResponseMessage.class,
+                StorableEntityId.class
+        );
     }
 
     @Provides
