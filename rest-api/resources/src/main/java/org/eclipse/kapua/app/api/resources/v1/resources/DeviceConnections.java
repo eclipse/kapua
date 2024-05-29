@@ -13,7 +13,6 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
@@ -152,11 +151,7 @@ public class DeviceConnections extends AbstractKapuaResource {
             @PathParam("deviceConnectionId") EntityId deviceConnectionId) throws KapuaException {
         DeviceConnection deviceConnection = deviceConnectionService.find(scopeId, deviceConnectionId);
 
-        if (deviceConnection != null) {
-            return deviceConnection;
-        } else {
-            throw new KapuaEntityNotFoundException(DeviceConnection.TYPE, deviceConnectionId);
-        }
+        return returnNotNullEntity(deviceConnection, DeviceConnection.TYPE, deviceConnectionId);
     }
 
 }

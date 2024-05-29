@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
@@ -162,11 +161,7 @@ public class Credentials extends AbstractKapuaResource {
             @PathParam("credentialId") EntityId credentialId) throws KapuaException {
         Credential credential = credentialService.find(scopeId, credentialId);
 
-        if (credential == null) {
-            throw new KapuaEntityNotFoundException(Credential.TYPE, credentialId);
-        }
-
-        return credential;
+        return returnNotNullEntity(credential, Credential.TYPE, credentialId);
     }
 
     /**

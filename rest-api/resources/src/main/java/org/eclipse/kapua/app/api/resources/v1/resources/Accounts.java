@@ -13,7 +13,6 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
@@ -180,11 +179,7 @@ public class Accounts extends AbstractKapuaResource {
             @PathParam("accountId") EntityId accountId) throws KapuaException {
         Account account = accountService.find(scopeId, accountId);
 
-        if (account == null) {
-            throw new KapuaEntityNotFoundException(Account.TYPE, accountId);
-        }
-
-        return account;
+        return returnNotNullEntity(account, Account.TYPE, accountId);
     }
 
     /**
