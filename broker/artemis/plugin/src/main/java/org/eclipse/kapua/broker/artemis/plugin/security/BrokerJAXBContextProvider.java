@@ -23,6 +23,10 @@ import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 
+/**
+ * @deprecated since 2.1.0 - rely on autodiscovery. Leaving this here for comparison
+ */
+@Deprecated
 public class BrokerJAXBContextProvider implements JAXBContextProvider {
 
     private JAXBContext context;
@@ -33,7 +37,7 @@ public class BrokerJAXBContextProvider implements JAXBContextProvider {
             if (context == null) {
                 Map<String, Object> properties = new HashMap<>(1);
                 properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
-                context = JAXBContextFactory.createContext(new Class<?>[]{
+                context = JAXBContextFactory.createContext(new Class<?>[] {
                         // KapuaEvent
                         ServiceEvent.class,
                 }, properties);
