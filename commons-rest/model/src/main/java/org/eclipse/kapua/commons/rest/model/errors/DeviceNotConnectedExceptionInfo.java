@@ -50,7 +50,7 @@ public class DeviceNotConnectedExceptionInfo extends ExceptionInfo {
      * @since 1.0.0
      */
     public DeviceNotConnectedExceptionInfo(DeviceNotConnectedException deviceNotConnectedException, boolean showStackTrace) {
-        super(500/*Response.Status.INTERNAL_SERVER_ERROR*/, deviceNotConnectedException, showStackTrace);
+        super(400/*Response.Status.BAD_REQUEST*/, deviceNotConnectedException, showStackTrace);
 
         this.deviceId = deviceNotConnectedException.getDeviceId();
         this.connectionStatus = deviceNotConnectedException.getCurrentConnectionStatus();
