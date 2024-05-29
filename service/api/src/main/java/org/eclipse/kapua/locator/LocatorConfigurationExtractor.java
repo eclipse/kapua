@@ -11,9 +11,15 @@
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.locator.guice;
+package org.eclipse.kapua.locator;
 
+/**
+ * Locator configuration parser.
+ *
+ * @since 1.0.0
+ */
 public interface LocatorConfigurationExtractor {
+
     LocatorConfig fetchLocatorConfig();
 
 }

@@ -37,6 +37,7 @@ import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.commons.util.xml.XmlSerializableClassesProviderJaxb;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
+import org.eclipse.kapua.locator.LocatorConfig;
 import org.eclipse.kapua.locator.initializers.KapuaInitializingMethod;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
@@ -221,7 +222,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
             kapuaModules.add(kapuaModule);
         }
         // KapuaModule will be removed as soon as bindings will be moved to local modules
-        kapuaModules.add(new KapuaModule(locatorConfigName));
+        kapuaModules.add(new KapuaModule(locatorConfig));
 
         //Add JAXB custom module to the lot
         kapuaModules.add(new AbstractKapuaModule() {

@@ -13,7 +13,6 @@
  -->
 <!DOCTYPE xml>
 <locator-config>
-    <provided/>
     <packages>
         <package>org.eclipse.kapua.commons.model</package>
         <package>org.eclipse.kapua.message</package>

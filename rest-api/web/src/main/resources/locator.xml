@@ -13,8 +13,6 @@
  -->
 <!DOCTYPE xml>
 <locator-config>
-    <provided>
-    </provided>
     <packages>
         <package>org.eclipse.kapua.app.api.web</package>
         <package>org.eclipse.kapua.app.api.core</package>

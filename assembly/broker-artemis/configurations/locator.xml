@@ -13,13 +13,6 @@
  -->
 <!DOCTYPE xml>
 <locator-config>
-    <provided>
-        <provide>
-            <interceptor>annotation</interceptor>
-            <with>Impl</with>
-        </provide>
-    </provided>
-
     <packages>
         <package>org.eclipse.kapua</package>
     </packages>
