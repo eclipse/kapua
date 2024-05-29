@@ -31,7 +31,7 @@ public class DeviceNotConnectedExceptionMapper implements ExceptionMapper<Device
     public Response toResponse(DeviceNotConnectedException managementRequestContentException) {
         LOG.error("Device Not Connected", managementRequestContentException);
         return Response
-                .status(Status.INTERNAL_SERVER_ERROR)
+                .status(Status.BAD_REQUEST)
                 .entity(new DeviceNotConnectedExceptionInfo(managementRequestContentException))
                 .build();
     }
