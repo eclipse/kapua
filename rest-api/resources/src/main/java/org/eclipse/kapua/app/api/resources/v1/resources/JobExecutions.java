@@ -22,7 +22,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
@@ -184,11 +183,7 @@ public class JobExecutions extends AbstractKapuaResource {
         jobExecutionQuery.setLimit(1);
         JobExecutionListResult jobExecutionListResult = jobExecutionService.query(jobExecutionQuery);
 
-        if (jobExecutionListResult.isEmpty()) {
-            throw new KapuaEntityNotFoundException(JobExecution.TYPE, executionId);
-        }
-
-        return jobExecutionListResult.getFirstItem();
+        return returnNotNullEntity(jobExecutionListResult.getFirstItem(), JobExecution.TYPE, executionId);
     }
 
     @GET
