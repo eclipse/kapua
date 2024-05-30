@@ -348,7 +348,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
         // Loaded modules
         configurationPrinter.logSections("Loaded Kapua Modules", kapuaModules, a -> a.getClass().getName());
         configurationPrinter.logSections("Overriding Kapua Modules", overridingModules, a -> a.getClass().getName());
-        configurationPrinter.logSections("Excluded Kapua Modules", excludedKapuaModules, a -> a.getClass().getName());
+        configurationPrinter.logSections("Excluded Kapua Modules", excludedKapuaModules, a -> a.getName());
 
         // Print it!
         configurationPrinter.printLog();
