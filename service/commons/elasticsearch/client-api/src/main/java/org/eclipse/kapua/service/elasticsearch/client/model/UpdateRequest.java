@@ -25,12 +25,12 @@ public class UpdateRequest extends Request {
      * Constructor.
      *
      * @param id             The Object identifier.
-     * @param typeDescriptor The {@link TypeDescriptor}.
+     * @param index          The index.
      * @param storable       The Object to update.
      * @since 1.0.0
      */
-    public UpdateRequest(String id, TypeDescriptor typeDescriptor, Storable storable) {
-        super(id, typeDescriptor, storable);
+    public UpdateRequest(String id, String index, Storable storable) {
+        super(id, index, storable);
     }
 
 }

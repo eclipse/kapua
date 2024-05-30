@@ -40,7 +40,6 @@ import org.eclipse.kapua.service.elasticsearch.client.model.IndexResponse;
 import org.eclipse.kapua.service.elasticsearch.client.model.InsertRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.InsertResponse;
 import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
-import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
 import org.eclipse.kapua.service.elasticsearch.client.rest.exception.RequestEntityWriteError;
@@ -127,15 +126,14 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         String json = writeRequestFromMap(insertRequestStorableMap);
         Request request = new Request(ElasticsearchKeywords.ACTION_PUT, ElasticsearchResourcePaths.insertType(insertRequest));
         request.setJsonEntity(json);
-        Response insertResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), insertRequest.getTypeDescriptor().getIndex(), "INSERT");
+        Response insertResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), insertRequest.getIndex(), "INSERT");
 
         if (isRequestSuccessful(insertResponse)) {
             JsonNode responseNode = readResponseAsJsonNode(insertResponse);
 
             String id = responseNode.get(ElasticsearchKeywords.KEY_DOC_ID).asText();
             String index = responseNode.get(ElasticsearchKeywords.KEY_DOC_INDEX).asText();
-            String type = responseNode.get(ElasticsearchKeywords.KEY_DOC_TYPE).asText();
-            return new InsertResponse(id, new TypeDescriptor(index, type));
+            return new InsertResponse(id, index);
         } else {
             throw buildExceptionFromUnsuccessfulResponse("Insert", insertResponse);
         }
@@ -151,17 +149,16 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         LOG.debug("Upsert - converted object: '{}'", updateRequestMap);
 
         String json = writeRequestFromMap(updateRequestMap);
-        Request request = new Request(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.upsert(updateRequest.getTypeDescriptor(), updateRequest.getId()));
+        Request request = new Request(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.upsert(updateRequest.getIndex(), updateRequest.getId()));
         request.setJsonEntity(json);
-        Response updateResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), updateRequest.getTypeDescriptor().getIndex(), "UPSERT");
+        Response updateResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), updateRequest.getIndex(), "UPSERT");
 
         if (isRequestSuccessful(updateResponse)) {
             JsonNode responseNode = readResponseAsJsonNode(updateResponse);
 
             String id = responseNode.get(ElasticsearchKeywords.KEY_DOC_ID).asText();
             String index = responseNode.get(ElasticsearchKeywords.KEY_DOC_INDEX).asText();
-            String type = responseNode.get(ElasticsearchKeywords.KEY_DOC_TYPE).asText();
-            return new UpdateResponse(id, new TypeDescriptor(index, type));
+            return new UpdateResponse(id, index);
         } else {
             throw buildExceptionFromUnsuccessfulResponse("Update", updateResponse);
         }
@@ -177,7 +174,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
             bulkOperation.append("{ \"update\": {\"_id\": \"")
                     .append(upsertRequest.getId())
                     .append("\", \"_index\": \"")
-                    .append(upsertRequest.getTypeDescriptor().getIndex())
+                    .append(upsertRequest.getIndex())
                     .append("\"}\n");
 
             bulkOperation.append("{ \"doc\": ");
@@ -203,7 +200,6 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                     }
 
                     String indexName = jsonNode.get(ElasticsearchKeywords.KEY_DOC_INDEX).asText();
-                    String typeName = jsonNode.get(ElasticsearchKeywords.KEY_DOC_TYPE).asText();
                     int responseCode = jsonNode.get(ElasticsearchKeywords.KEY_STATUS).asInt();
                     if (!isRequestSuccessful(responseCode)) {
                         JsonNode failureNode = jsonNode.get(ElasticsearchKeywords.KEY_RESULT);
@@ -215,12 +211,12 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         if (StringUtils.isNotBlank(reason)) {
                             failureMessage = reason;
                         }
-                        bulkResponse.add(new UpdateResponse(metricId, new TypeDescriptor(indexName, typeName), failureMessage));
-                        LOG.info("Upsert failed [{}, {}, {}]", indexName, typeName, failureMessage);
+                        bulkResponse.add(new UpdateResponse(metricId, indexName, failureMessage));
+                        LOG.info("Upsert failed [{}, {}]", indexName, failureMessage);
                         continue;
                     }
-                    bulkResponse.add(new UpdateResponse(metricId, new TypeDescriptor(indexName, typeName)));
-                    LOG.debug("Upsert on channel metric successfully executed [{}.{}, {}]", indexName, typeName, metricId);
+                    bulkResponse.add(new UpdateResponse(metricId, indexName));
+                    LOG.debug("Upsert on channel metric successfully executed [{}, {}]", indexName, metricId);
                 } else {
                     throw new ClientInternalError("Empty JSON response from upsert");
                 }
@@ -232,14 +228,14 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     }
 
     @Override
-    public <T> T find(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException {
-        ResultList<T> result = query(typeDescriptor, query, clazz);
+    public <T> T find(String index, Object query, Class<T> clazz) throws ClientException {
+        ResultList<T> result = query(index, query, clazz);
 
         return result.getResult().isEmpty() ? null : result.getResult().get(0);
     }
 
     @Override
-    public <T> ResultList<T> query(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException {
+    public <T> ResultList<T> query(String index, Object query, Class<T> clazz) throws ClientException {
         JsonNode queryJsonNode = getModelConverter().convertQuery(query);
         LOG.debug(QUERY_CONVERTED_QUERY, queryJsonNode);
 
@@ -249,9 +245,9 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         ArrayNode resultsNode = null;
         String totalRelation = null;
 
-        Request request = new Request(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.search(typeDescriptor));
+        Request request = new Request(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.search(index));
         request.setJsonEntity(json);
-        Response queryResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), typeDescriptor.getIndex(), "QUERY");
+        Response queryResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "QUERY");
 
         if (isRequestSuccessful(queryResponse)) {
             JsonNode responseNode = readResponseAsJsonNode(queryResponse);
@@ -278,10 +274,9 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                 Map<String, Object> object = objectMapper.convertValue(result.get(SchemaKeys.KEY_SOURCE), Map.class);
 
                 String id = result.get(ElasticsearchKeywords.KEY_DOC_ID).asText();
-                String index = result.get(ElasticsearchKeywords.KEY_DOC_INDEX).asText();
-                String type = result.get(ElasticsearchKeywords.KEY_DOC_TYPE).asText();
+                String docIndex = result.get(ElasticsearchKeywords.KEY_DOC_INDEX).asText();
 
-                object.put(ModelContext.TYPE_DESCRIPTOR_KEY, new TypeDescriptor(index, type));
+                object.put(ModelContext.TYPE_DESCRIPTOR_KEY, docIndex);
                 object.put(getModelContext().getIdKeyName(), id);
                 object.put(QueryConverter.QUERY_FETCH_STYLE_KEY, queryFetchStyle);
 
@@ -292,15 +287,15 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     }
 
     @Override
-    public long count(TypeDescriptor typeDescriptor, Object query) throws ClientException {
+    public long count(String index, Object query) throws ClientException {
         JsonNode queryJsonNode = getModelConverter().convertQuery(query);
 
         LOG.debug(COUNT_CONVERTED_QUERY, queryJsonNode);
 
         String json = writeRequestFromJsonNode(queryJsonNode);
-        Request request = new Request(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.search(typeDescriptor));
+        Request request = new Request(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.search(index));
         request.setJsonEntity(json);
-        Response queryResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), typeDescriptor.getIndex(), "COUNT");
+        Response queryResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "COUNT");
 
         long totalCount = 0;
         String totalRelation = null;
@@ -324,10 +319,10 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     }
 
     @Override
-    public void delete(TypeDescriptor typeDescriptor, String id) throws ClientException {
+    public void delete(String index, String id) throws ClientException {
         LOG.debug("Delete - id: '{}'", id);
-        Request request = new Request(ElasticsearchKeywords.ACTION_DELETE, ElasticsearchResourcePaths.id(typeDescriptor, id));
-        Response deleteResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), typeDescriptor.getIndex(), ElasticsearchKeywords.ACTION_DELETE);
+        Request request = new Request(ElasticsearchKeywords.ACTION_DELETE, ElasticsearchResourcePaths.id(index, id));
+        Response deleteResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, ElasticsearchKeywords.ACTION_DELETE);
 
         if (!isRequestSuccessful(deleteResponse) &&
                 !isRequestNotFound(deleteResponse)) {
@@ -336,15 +331,15 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     }
 
     @Override
-    public void deleteByQuery(TypeDescriptor typeDescriptor, Object query) throws ClientException {
+    public void deleteByQuery(String index, Object query) throws ClientException {
         JsonNode queryJsonNode = getModelConverter().convertQuery(query);
 
         LOG.debug(QUERY_CONVERTED_QUERY, queryJsonNode);
 
         String json = writeRequestFromJsonNode(queryJsonNode);
-        Request request = new Request(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.deleteByQuery(typeDescriptor));
+        Request request = new Request(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.deleteByQuery(index));
         request.setJsonEntity(json);
-        Response deleteResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), typeDescriptor.getIndex(), "DELETE BY QUERY");
+        Response deleteResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "DELETE BY QUERY");
 
         if (!isRequestSuccessful(deleteResponse) &&
                 !isRequestNotFound(deleteResponse) &&
@@ -403,10 +398,10 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     }
 
     @Override
-    public boolean isMappingExists(TypeDescriptor typeDescriptor) throws ClientException {
-        LOG.debug("Mapping exists - mapping name: '{} - {}'", typeDescriptor.getIndex(), typeDescriptor.getType());
-        Request request = new Request(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.mapping(typeDescriptor));
-        Response isMappingExistsResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), typeDescriptor.getIndex(), "MAPPING EXIST");
+    public boolean isMappingExists(String index) throws ClientException {
+        LOG.debug("Mapping exists - mapping name: '{}'", index);
+        Request request = new Request(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.mapping(index));
+        Response isMappingExistsResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "MAPPING EXIST");
 
         if (isRequestSuccessful(isMappingExistsResponse)) {
             return true;
@@ -418,13 +413,13 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     }
 
     @Override
-    public void putMapping(TypeDescriptor typeDescriptor, JsonNode mapping) throws ClientException {
-        LOG.debug("Create mapping - object: '{}, index: {}, type: {}'", mapping, typeDescriptor.getIndex(), typeDescriptor.getType());
+    public void putMapping(String index, JsonNode mapping) throws ClientException {
+        LOG.debug("Create mapping - object: '{}, index: {}", mapping, index);
 
         String json = writeRequestFromJsonNode(mapping);
-        Request request = new Request(ElasticsearchKeywords.ACTION_PUT, ElasticsearchResourcePaths.mapping(typeDescriptor));
+        Request request = new Request(ElasticsearchKeywords.ACTION_PUT, ElasticsearchResourcePaths.mapping(index));
         request.setJsonEntity(json);
-        Response createMappingResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), typeDescriptor.getIndex(), "PUT MAPPING");
+        Response createMappingResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "PUT MAPPING");
 
         if (!isRequestSuccessful(createMappingResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Create mapping", createMappingResponse);

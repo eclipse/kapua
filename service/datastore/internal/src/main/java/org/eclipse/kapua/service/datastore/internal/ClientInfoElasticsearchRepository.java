@@ -41,7 +41,6 @@ public class ClientInfoElasticsearchRepository extends DatastoreElasticSearchRep
             DatastoreUtils datastoreUtils,
             DatastoreCacheManager datastoreCacheManager) {
         super(elasticsearchClientProviderInstance,
-                ClientInfoSchema.CLIENT_TYPE_NAME,
                 ClientInfo.class,
                 clientInfoFactory,
                 storablePredicateFactory,

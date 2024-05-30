@@ -19,7 +19,6 @@ import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
-import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
@@ -159,7 +158,7 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractDatastoreFacade imple
         ChannelInfoQueryImpl idsQuery = new ChannelInfoQueryImpl(scopeId);
         idsQuery.setLimit(1);
 
-        IdsPredicate idsPredicate = storablePredicateFactory.newIdsPredicate(ChannelInfoSchema.CHANNEL_TYPE_NAME);
+        IdsPredicate idsPredicate = storablePredicateFactory.newIdsPredicate();
         idsPredicate.addId(id);
         idsQuery.setPredicate(idsPredicate);
 

@@ -31,7 +31,6 @@ import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
 import org.eclipse.kapua.service.elasticsearch.client.model.InsertRequest;
-import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
@@ -56,7 +55,6 @@ public class MessageElasticsearchRepository extends DatastoreElasticSearchReposi
             DatastoreUtils datastoreUtils,
             DatastoreCacheManager datastoreCacheManager) {
         super(elasticsearchClientProviderInstance,
-                MessageSchema.MESSAGE_TYPE_NAME,
                 DatastoreMessage.class,
                 messageStoreFactory,
                 storablePredicateFactory,
@@ -120,8 +118,7 @@ public class MessageElasticsearchRepository extends DatastoreElasticSearchReposi
                 metricsByIndex.get(indexName).putAll(newMetrics);
             }
         }
-        final TypeDescriptor typeDescriptor = getDescriptor(indexName);
-        final InsertRequest insertRequest = new InsertRequest(idExtractor(messageToStore).toString(), typeDescriptor, messageToStore);
+        final InsertRequest insertRequest = new InsertRequest(idExtractor(messageToStore).toString(), indexName, messageToStore);
         return elasticsearchClientProviderInstance.getElasticsearchClient().insert(insertRequest).getId();
     }
 
@@ -140,7 +137,7 @@ public class MessageElasticsearchRepository extends DatastoreElasticSearchReposi
             }
             final ObjectNode metricsMapping = getNewMessageMappingsBuilder(esMetrics);
             logger.trace("Sending dynamic message mappings: {}", metricsMapping);
-            elasticsearchClientProviderInstance.getElasticsearchClient().putMapping(getDescriptor(index), metricsMapping);
+            elasticsearchClientProviderInstance.getElasticsearchClient().putMapping(index, metricsMapping);
         } catch (ClientException | MappingException e) {
             throw new RuntimeException(e);
         }

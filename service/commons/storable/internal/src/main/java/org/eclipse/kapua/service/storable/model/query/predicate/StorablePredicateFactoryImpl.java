@@ -35,8 +35,8 @@ public class StorablePredicateFactoryImpl implements StorablePredicateFactory {
     }
 
     @Override
-    public IdsPredicate newIdsPredicate(String type) {
-        return new IdsPredicateImpl(type);
+    public IdsPredicate newIdsPredicate() {
+        return new IdsPredicateImpl();
     }
 
     @Override
