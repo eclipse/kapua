@@ -8,19 +8,19 @@ We use `gitbook` to build the documentation.
 
 This section instructs how to execute locally project's tests, if you are not interested (for example, considering that these tests are part of the GitHub CI process) you can skip to the next section
 
-#### Build executing unit tests
+#### Executing unit tests
 
-   `mvn clean install -DskipITs -Dcucumber.filter.tags=@env_none `
+   `mvn clean verify -DskipITs -Dcucumber.filter.tags=@env_none`
 
-In this project there are some unit tests made with junit and others with cucumber (read "QA process" for further information)
+In this project there are some unit tests made with junit and others with cucumber (read "QA process" for further information). The above command executes all of them.
 
-#### Build executing unit tests and integration tests
+#### Executing unit tests and integration tests
 
-For the next build option, considering that some cucumber integration tests require access to services deployed in a docker container, first of all, you have to launch these 2 commands in order to build and create the kapua docker images (NB: now make sure the docker daemon is running!)
+For the next build option, considering that some cucumber integration tests require access to services deployed in a docker container, first of all, you have to launch this command in order to build and create the kapua docker images (NB: now make sure the docker daemon is running!)
 
-`mvn clean install -DskipTests -Pconsole,docker`
+`mvn clean install -DskipTests -Pdocker`
 
-Attention: if the kapua containers are already running in your environment, for example in the case of a previous building that terminated abnormally, please stop their execution before proceeding with the next build commands
+Attention: if the kapua containers are already running in your environment, for example in the case of a previous build that terminated abnormally, please stop their execution before proceeding with the next build commands
 
 We created a bash script for the combined launch of integration tests and unit tests.
 Some integration tests communicate with the broker using an alias and, therefore,
@@ -29,9 +29,9 @@ If you want to manually enter this association, execute this command:
 
 `echo "127.0.0.1 message-broker" | sudo tee -a /etc/hosts`
 
-The aforementioned script is located under 'qa' folder and it's called 'RunKapuaTests.sh'.
+The aforementioned script is in qa/RunKapuaTests.sh.
 
-NOTE: It is important to launch the script being in the "Kapua" root folder, in this way all the maven modules will be recognized
+NOTE: It is important to launch the script being in the project root folder, in this way all the maven modules will be recognized
 
 `qa/RunKapuaTests.sh`
 
@@ -121,15 +121,15 @@ of images if needed.
 
 Pushing with default settings:
 
-    mvn -Pdocker deploy
+    mvn -Pdocker deploy -DskipTests
 
 Pushing to a specific docker registry:
 
-    mvn -Pdocker deploy -Ddocker.push.registry=registry.hub.docker.com
+    mvn -Pdocker deploy -Ddocker.push.registry=registry.hub.docker.com -DskipTests
 
 Pushing to a specific docker registry under a specific account:
 
-    mvn -Pdocker deploy -Ddocker.push.registry=registry.hub.docker.com -Ddocker.account=eclipse
+    mvn -Pdocker deploy -Ddocker.push.registry=registry.hub.docker.com -Ddocker.account=eclipse -DskipTests
 
 Don't forget to add the `console` Maven profile to the console above if you're interested in pushing the Web Console image as well.
 
