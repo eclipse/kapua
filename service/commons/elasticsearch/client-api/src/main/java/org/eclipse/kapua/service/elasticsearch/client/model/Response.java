@@ -30,11 +30,11 @@ public abstract class Response implements KapuaSerializable {
     private String id;
 
     /**
-     * The {@link TypeDescriptor}.
+     * The index
      *
      * @since 1.0.0
      */
-    private TypeDescriptor typeDescriptor;
+    private String index;
 
     /**
      * The result of the {@link Response}
@@ -47,12 +47,12 @@ public abstract class Response implements KapuaSerializable {
      * Constructor.
      *
      * @param id             the record id.
-     * @param typeDescriptor The {@link TypeDescriptor}
+     * @param index          the index
      * @since 1.0.0
      */
-    protected Response(String id, TypeDescriptor typeDescriptor) {
+    protected Response(String id, String index) {
         setId(id);
-        setTypeDescriptor(typeDescriptor);
+        setIndex(index);
     }
 
     /**
@@ -75,24 +75,25 @@ public abstract class Response implements KapuaSerializable {
         this.id = id;
     }
 
+
     /**
-     * Gets the {@link TypeDescriptor}.
+     * Sets the index
      *
-     * @return The {@link TypeDescriptor}.
+     * @param index The index
      * @since 1.0.0
      */
-    public TypeDescriptor getTypeDescriptor() {
-        return typeDescriptor;
+    public void setIndex(String index) {
+        this.index = index;
     }
 
     /**
-     * Sets the {@link TypeDescriptor}.
+     * Gets index
      *
-     * @param typeDescriptor The {@link TypeDescriptor}.
+     * @return The index
      * @since 1.0.0
      */
-    public void setTypeDescriptor(TypeDescriptor typeDescriptor) {
-        this.typeDescriptor = typeDescriptor;
+    public String getIndex() {
+        return this.index;
     }
 
     /**

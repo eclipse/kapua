@@ -41,7 +41,6 @@ public class ChannelInfoElasticsearchRepository extends DatastoreElasticSearchRe
             DatastoreUtils datastoreUtils,
             DatastoreCacheManager datastoreCacheManager) {
         super(elasticsearchClientProviderInstance,
-                ChannelInfoSchema.CHANNEL_TYPE_NAME,
                 ChannelInfo.class,
                 channelInfoFactory,
                 storablePredicateFactory,

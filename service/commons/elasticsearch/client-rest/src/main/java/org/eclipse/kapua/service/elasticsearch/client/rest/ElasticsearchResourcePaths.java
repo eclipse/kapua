@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.elasticsearch.client.rest;
 
 import org.eclipse.kapua.service.elasticsearch.client.model.InsertRequest;
-import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 
 import javax.validation.constraints.NotNull;
 
@@ -42,8 +41,8 @@ public class ElasticsearchResourcePaths {
     /**
      * @since 1.0.0
      */
-    public static String deleteByQuery(@NotNull TypeDescriptor typeDescriptor) {
-        return String.format("/%s/_delete_by_query", typeDescriptor.getIndex());
+    public static String deleteByQuery(@NotNull String index) {
+        return String.format("/%s/_delete_by_query", index);
     }
 
     /**
@@ -56,8 +55,8 @@ public class ElasticsearchResourcePaths {
     /**
      * @since 1.0.0
      */
-    public static String id(@NotNull TypeDescriptor typeDescriptor, @NotNull String id) {
-        return String.format("/%s/_doc/%s", typeDescriptor.getIndex(), id);
+    public static String id(@NotNull String index, @NotNull String id) {
+        return String.format("/%s/_doc/%s", index, id);
     }
 
     /**
@@ -69,27 +68,28 @@ public class ElasticsearchResourcePaths {
 
     /**
      * @since 1.0.0
+     * since types have been removed it simply inserts the default "_doc" value in the request path
      */
     public static String insertType(@NotNull InsertRequest request) {
         if (request.getId() != null) {
-            return String.format("%s/%s", type(request.getTypeDescriptor()), request.getId());
+            return String.format("%s/%s", defaultPathDocType(request.getIndex()), request.getId());
         } else {
-            return type(request.getTypeDescriptor());
+            return defaultPathDocType(request.getIndex());
         }
     }
 
     /**
      * @since 1.0.0
      */
-    public static String mapping(@NotNull TypeDescriptor typeDescriptor) {
-        return String.format("/%s/_mapping", typeDescriptor.getIndex());
+    public static String mapping(@NotNull String index) {
+        return String.format("/%s/_mapping", index);
     }
 
     /**
      * @since 1.0.0
      */
-    public static String search(@NotNull TypeDescriptor typeDescriptor) {
-        return String.format("/%s/_search", typeDescriptor.getIndex());
+    public static String search(@NotNull String index) {
+        return String.format("/%s/_search", index);
     }
 
     /**
@@ -102,15 +102,15 @@ public class ElasticsearchResourcePaths {
     /**
      * @since 1.0.0
      */
-    public static String type(@NotNull TypeDescriptor typeDescriptor) {
-        return String.format("/%s/_doc", typeDescriptor.getIndex());
+    public static String defaultPathDocType(@NotNull String index) {
+        return String.format("/%s/_doc", index);
     }
 
     /**
      * @since 1.0.0
      */
-    public static String upsert(@NotNull TypeDescriptor typeDescriptor, @NotNull String id) {
-        return String.format("/%s/_update/%s", typeDescriptor.getIndex(), id);
+    public static String upsert(@NotNull String index, @NotNull String id) {
+        return String.format("/%s/_update/%s", index, id);
     }
 
 }

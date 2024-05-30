@@ -29,11 +29,11 @@ public abstract class Request {
     private String id;
 
     /**
-     * The {@link TypeDescriptor}.
+     * The index
      *
      * @since 1.0.0
      */
-    private TypeDescriptor typeDescriptor;
+    private String index;
 
     /**
      * The Object of the {@link Request}
@@ -43,13 +43,13 @@ public abstract class Request {
     /**
      * Constructor.
      *
-     * @param typeDescriptor The {@link TypeDescriptor}.
+     * @param index          The index.
      * @param storable       the objetc of the request
      * @since 1.0.0
      */
-    protected Request(String id, TypeDescriptor typeDescriptor, Storable storable) {
+    protected Request(String id, String index, Storable storable) {
         setId(id);
-        setTypeDescriptor(typeDescriptor);
+        setIndex(index);
         setStorable(storable);
     }
 
@@ -74,23 +74,23 @@ public abstract class Request {
     }
 
     /**
-     * Gets the {@link TypeDescriptor}.
+     * Gets the Index.
      *
-     * @return The {@link TypeDescriptor}.
+     * @return The index.
      * @since 1.0.0
      */
-    public TypeDescriptor getTypeDescriptor() {
-        return typeDescriptor;
+    public String getIndex() {
+        return index;
     }
 
     /**
-     * Sets the {@link TypeDescriptor}.
+     * Sets the Index.
      *
-     * @param typeDescriptor The {@link TypeDescriptor}.
+     * @param index The index
      * @since 1.0.0
      */
-    public void setTypeDescriptor(TypeDescriptor typeDescriptor) {
-        this.typeDescriptor = typeDescriptor;
+    public void setIndex(String index) {
+        this.index = index;
     }
 
     /**
