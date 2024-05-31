@@ -26,14 +26,14 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class XmlSerializableClassesProviderJaxb implements JaxbClassProvider {
+public class XmlRootAnnotatedJaxbClassesScanner implements JaxbClassProvider {
 
     private final ConfigurationPrinter configurationPrinter;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private Collection<String> includedPackageNames;
     private Collection<String> excludedPackageNames;
 
-    public XmlSerializableClassesProviderJaxb(LocatorConfig locatorConfig) {
+    public XmlRootAnnotatedJaxbClassesScanner(LocatorConfig locatorConfig) {
         this.configurationPrinter =
                 ConfigurationPrinter
                         .create()

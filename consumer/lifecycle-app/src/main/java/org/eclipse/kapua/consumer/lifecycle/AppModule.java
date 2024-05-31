@@ -20,7 +20,7 @@ import org.eclipse.kapua.commons.core.JaxbClassProvider;
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProviderImpl;
-import org.eclipse.kapua.commons.util.xml.XmlSerializableClassesProviderJaxb;
+import org.eclipse.kapua.commons.util.xml.XmlRootAnnotatedJaxbClassesScanner;
 import org.eclipse.kapua.locator.LocatorConfig;
 
 import com.google.inject.Provides;
@@ -39,7 +39,7 @@ public class AppModule extends AbstractKapuaModule {
 
     @ProvidesIntoSet
     JaxbClassProvider jaxbClassesAutoDiscoverer(LocatorConfig locatorConfig) {
-        return new XmlSerializableClassesProviderJaxb(locatorConfig);
+        return new XmlRootAnnotatedJaxbClassesScanner(locatorConfig);
     }
 
     @Provides
