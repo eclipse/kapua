@@ -13,35 +13,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.rest;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.net.ssl.SSLContext;
-
+import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.config.RegistryBuilder;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.apache.http.impl.nio.conn.PoolingNHttpClientConnectionManager;
 import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
+import org.apache.http.nio.conn.NoopIOSessionStrategy;
+import org.apache.http.nio.conn.SchemeIOSessionStrategy;
+import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.http.nio.reactor.IOReactorException;
 import org.apache.http.nio.reactor.IOReactorExceptionHandler;
@@ -59,15 +45,30 @@ import org.eclipse.kapua.service.elasticsearch.client.configuration.Elasticsearc
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientProviderInitException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
-import org.eclipse.kapua.service.elasticsearch.client.rest.ssl.SkipCertificateCheckTrustStrategy;
 import org.eclipse.kapua.service.elasticsearch.client.utils.InetAddressParser;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import javax.net.ssl.SSLContext;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * {@link ElasticsearchClientProvider} REST implementation.
@@ -151,7 +152,6 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
                             .addParameter("Key Store Path", getClientSslConfiguration().getKeyStorePath())
                             .addParameter("Key Store Type", getClientSslConfiguration().getKeyStoreType())
                             .addParameter("Key Store Password", Strings.isNullOrEmpty(getClientSslConfiguration().getKeyStorePassword()) ? "No" : "Yes")
-                            .addParameter("Trust Server Certificate", getClientSslConfiguration().isTrustServiceCertificate())
                             .addParameter("Trust Store Path", getClientSslConfiguration().getTrustStorePath())
                             .addParameter("Trust Store Password", Strings.isNullOrEmpty(getClientSslConfiguration().getTrustStorePassword()) ? "No" : "Yes");
                 }
@@ -371,44 +371,20 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
 
     private HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder, SSLContext sslContext, CredentialsProvider credentialsProvider) {
         try {
-            if (sslContext != null) {
-                httpClientBuilder.setSSLContext(sslContext);
-            }
-
             if (credentialsProvider != null) {
                 httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
             }
-            final DefaultConnectingIOReactor ioReactor;
-            final Optional<Integer> numberOfIOThreads = getClientConfiguration().getNumberOfIOThreads();
-            if (numberOfIOThreads.isPresent()) {
-                ioReactor = new DefaultConnectingIOReactor(
-                        IOReactorConfig.custom().setIoThreadCount(
-                                numberOfIOThreads.get()
-                        ).build()
-                );
+
+            DefaultConnectingIOReactor ioReactor = getDefaultConnectingIOReactor();
+            if (sslContext != null) {
+                //we need to set SSL context inside the connectionManager because it hides SSL settings that are set directly to the builder
+                SSLIOSessionStrategy s = new SSLIOSessionStrategy(sslContext);
+                RegistryBuilder<SchemeIOSessionStrategy> rb = RegistryBuilder.create();
+                rb.register("https", s).register("http", NoopIOSessionStrategy.INSTANCE);
+                httpClientBuilder.setConnectionManager(new PoolingNHttpClientConnectionManager(ioReactor, rb.build()));
             } else {
-                ioReactor = new DefaultConnectingIOReactor();
+                httpClientBuilder.setConnectionManager(new PoolingNHttpClientConnectionManager(ioReactor));
             }
-            ioReactor.setExceptionHandler(new IOReactorExceptionHandler() {
-
-                @Override
-                public boolean handle(IOException e) {
-                    metrics.getException().inc();
-                    LOG.warn("IOReactor encountered a checked exception: {}", e.getMessage(), e);
-                    //return true to note this exception as handled, it will not be re-thrown
-                    return true;
-                }
-
-                @Override
-                public boolean handle(RuntimeException e) {
-                    metrics.getRuntimeException().inc();
-                    LOG.warn("IOReactor encountered a runtime exception: {}", e.getMessage(), e);
-                    //return true to note this exception as handled, it will not be re-thrown
-                    return true;
-                }
-            });
-
-            httpClientBuilder.setConnectionManager(new PoolingNHttpClientConnectionManager(ioReactor));
         } catch (IOReactorException e) {
             throw new RuntimeException(e);
         }
@@ -444,6 +420,46 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
         return restElasticsearchClient;
     }
     // Private methods
+
+    /**
+     * Gets the {@link DefaultConnectingIOReactor}.
+     * This thing is motivated by this https://github.com/eclipse/kapua/pull/3564 (specifically, this issue: https://github.com/elastic/elasticsearch/issues/49124)
+     * Maybe in the future, with future ES versions, the problem will be fixed and this won't be needed anymore
+     * @return The {@link DefaultConnectingIOReactor}.
+     * @since 1.3.0
+     */
+    private DefaultConnectingIOReactor getDefaultConnectingIOReactor() throws IOReactorException {
+        final DefaultConnectingIOReactor ioReactor;
+        final Optional<Integer> numberOfIOThreads = getClientConfiguration().getNumberOfIOThreads();
+        if (numberOfIOThreads.isPresent()) {
+            ioReactor = new DefaultConnectingIOReactor(
+                    IOReactorConfig.custom().setIoThreadCount(
+                            numberOfIOThreads.get()
+                    ).build()
+            );
+        } else {
+            ioReactor = new DefaultConnectingIOReactor();
+        }
+        ioReactor.setExceptionHandler(new IOReactorExceptionHandler() {
+
+            @Override
+            public boolean handle(IOException e) {
+                metrics.getException().inc();
+                LOG.warn("IOReactor encountered a checked exception: {}", e.getMessage(), e);
+                //return true to note this exception as handled, it will not be re-thrown
+                return true;
+            }
+
+            @Override
+            public boolean handle(RuntimeException e) {
+                metrics.getRuntimeException().inc();
+                LOG.warn("IOReactor encountered a runtime exception: {}", e.getMessage(), e);
+                //return true to note this exception as handled, it will not be re-thrown
+                return true;
+            }
+        });
+        return ioReactor;
+    }
 
     /**
      * Gets the {@link ElasticsearchClientConfiguration}.
@@ -505,6 +521,39 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     }
 
     /**
+     * Initializes the {@link TrustStrategy} as per {@link ElasticsearchClientSslConfiguration} with the given {@link SSLContextBuilder}
+     * <p>
+     * Truststore 2 available configurations:
+     * <ol>
+     *     <li>Set the custom trust manager: if {@link ElasticsearchClientSslConfiguration#getTrustStorePath()} is defined</li>
+     *     <li>Use the JVM default truststore: as fallback option</li>
+     * </ol>
+     *
+     * @param sslBuilder 
+     *          The {@link SSLContextBuilder} to use.
+     * @throws ClientInitializationException 
+     *          if {@link KeyStore} cannot be initialized.
+     * @since 1.0.0
+     */
+    private void initTrustStore(SSLContextBuilder sslBuilder) throws ClientInitializationException {
+        ElasticsearchClientSslConfiguration sslConfiguration = getClientSslConfiguration();
+
+        String truststorePath = sslConfiguration.getTrustStorePath();
+        String truststorePassword = sslConfiguration.getTrustStorePassword();
+        LOG.info("ES Rest Client - Truststore path: {}", StringUtils.isNotBlank(truststorePath) ? truststorePath : "None");
+
+        try {
+            if (StringUtils.isNotBlank(truststorePath)) {
+                sslBuilder.loadTrustMaterial(loadKeyStore(truststorePath, truststorePassword), null);
+            } else {
+                sslBuilder.loadTrustMaterial((TrustStrategy) null); //This will load JVM default truststore (with common root certificates in it). Useful for usual production deployment
+            }
+        } catch (NoSuchAlgorithmException | KeyStoreException ltme) {
+            throw new ClientInitializationException(ltme, "Failed to init TrustStore");
+        }
+    }
+
+    /**
      * Loads the {@link KeyStore}  as per {@link ElasticsearchClientSslConfiguration}.
      *
      * @param keystorePath
@@ -523,44 +572,6 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
             return keystore;
         } catch (IOException | KeyStoreException | CertificateException | NoSuchAlgorithmException e) {
             throw new ClientInitializationException(e, "Failed to load KeyStore");
-        }
-    }
-
-    /**
-     * Initializes the {@link TrustStrategy} as per {@link ElasticsearchClientSslConfiguration} with the given {@link SSLContextBuilder}
-     * <p>
-     * Truststore 3 available configurations:
-     * <ol>
-     *     <li>No {@link javax.net.ssl.TrustManager}: if {@link ElasticsearchClientSslConfiguration#isTrustServiceCertificate()} is {@code false}</li>
-     *     <li>Set the custom trust manager: if {@link ElasticsearchClientSslConfiguration#getTrustStorePath()} is defined</li>
-     *     <li>Use the JVM default truststore: as fallback option</li>
-     * </ol>
-     *
-     * @param sslBuilder
-     *         The {@link SSLContextBuilder} to use.
-     * @throws ClientInitializationException
-     *         if {@link KeyStore} cannot be initialized.
-     * @since 1.0.0
-     */
-    private void initTrustStore(SSLContextBuilder sslBuilder) throws ClientInitializationException {
-        ElasticsearchClientSslConfiguration sslConfiguration = getClientSslConfiguration();
-
-        boolean trustServerCertificate = sslConfiguration.isTrustServiceCertificate();
-        String truststorePath = sslConfiguration.getKeyStorePath();
-        String truststorePassword = sslConfiguration.getTrustStorePassword();
-        LOG.info("ES Rest Client - SSL trust server certificate: {}", (trustServerCertificate ? "Enabled" : "Disabled"));
-        LOG.info("ES Rest Client - Truststore path: {}", StringUtils.isNotBlank(truststorePath) ? truststorePath : "None");
-
-        try {
-            if (!trustServerCertificate) {
-                sslBuilder.loadTrustMaterial(null, new SkipCertificateCheckTrustStrategy());
-            } else if (StringUtils.isNotBlank(truststorePath)) {
-                sslBuilder.loadTrustMaterial(loadKeyStore(truststorePath, truststorePassword), null);
-            } else {
-                sslBuilder.loadTrustMaterial((TrustStrategy) null);
-            }
-        } catch (NoSuchAlgorithmException | KeyStoreException ltme) {
-            throw new ClientInitializationException(ltme, "Failed to init TrustStore");
         }
     }
 }

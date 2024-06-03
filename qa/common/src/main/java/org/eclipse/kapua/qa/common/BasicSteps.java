@@ -374,7 +374,6 @@ public class BasicSteps extends TestBase {
         logger.info("{}: {}", SystemSettingKey.DB_JDBC_DRIVER.key(), SystemSetting.getInstance().getString(SystemSettingKey.DB_JDBC_DRIVER));
         logger.info("{}: {}", SystemSettingKey.DB_CONNECTION_SCHEME.key(), SystemSetting.getInstance().getString(SystemSettingKey.DB_CONNECTION_SCHEME));
         logger.info("Rest: datastore.elasticsearch.node: {}", DatastoreElasticsearchClientSettings.getInstance().getString(DatastoreElasticsearchClientSettingsKey.NODES));
-        logger.info("Rest: datastore.elasticsearch.port: {}", DatastoreElasticsearchClientSettings.getInstance().getString(DatastoreElasticsearchClientSettingsKey.PORT));
         logger.info("===============================================");
     }
 
