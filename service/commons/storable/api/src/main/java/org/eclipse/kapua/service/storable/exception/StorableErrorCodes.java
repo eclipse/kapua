@@ -34,11 +34,4 @@ public enum StorableErrorCodes implements KapuaErrorCode {
      * @since 1.3.0
      */
     UNSUPPORTED_TYPE,
-
-    /**
-     * See {@link StorableNotFoundException}
-     *
-     * @since 2.0.0
-     */
-    STORABLE_NOT_FOUND
 }
