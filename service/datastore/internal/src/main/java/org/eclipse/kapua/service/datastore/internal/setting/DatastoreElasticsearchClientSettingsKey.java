@@ -52,17 +52,11 @@ public enum DatastoreElasticsearchClientSettingsKey implements SettingKey {
      */
     PASSWORD("datastore.elasticsearch.password"),
     /**
-     * Elasticsearch port.
-     *
-     * @since 1.3.0
-     */
-    PORT("datastore.elasticsearch.port"),
-    /**
      * Wait between client reconnection task executions.
      *
      * @since 1.3.0
      */
-    CLIENT_RECONNECTION_WAIT_BETWEEN_EXECUTIONS("datastore.elasticsearch.client.reconnection_wait_between_exec"),
+    CLIENT_RECONNECTION_WAIT_BETWEEN_EXECUTIONS("datastore.elasticsearch.client.reconnection_wait_between_exec"), //TODO: this is not used, should we allow to set a value for this?
     /**
      * Request query timeout.
      *
@@ -94,13 +88,6 @@ public enum DatastoreElasticsearchClientSettingsKey implements SettingKey {
      */
     SSL_ENABLED("datastore.elasticsearch.ssl.enabled"),
 
-    /**
-     * Force Elastichsearch client to trust the server certificate on the ssl connection handshake so, if true, no check will be performed for the server certificate (at the present only the rest
-     * client supports it)
-     *
-     * @since 1.3.0
-     */
-    SSL_TRUST_SERVER_CERTIFICATE("datastore.elasticsearch.ssl.trust_server_certificate"),
     /**
      * Elastichsearch client key store password (at the present only the rest client supports it).
      *

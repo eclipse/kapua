@@ -37,7 +37,6 @@ ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
               -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
               -Dconsumer.jaxb_context_class_name=org.eclipse.kapua.consumer.telemetry.TelemetryJAXBContextProvider \
               -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} \
-              -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} \
               -Ddatastore.client.class=\${DATASTORE_CLIENT} \
               -Dbroker.host=\${BROKER_HOST} \
               -Dbroker.port=\${BROKER_PORT} \
