@@ -13,9 +13,6 @@
  -->
 <!DOCTYPE xml>
 <locator-config>
-    <provided>
-    </provided>
-
     <packages>
         <package>org.eclipse.kapua.commons.model.id</package>
         <package>org.eclipse.kapua.commons.model.query</package>

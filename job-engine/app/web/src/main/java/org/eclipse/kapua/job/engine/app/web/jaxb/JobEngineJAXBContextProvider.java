@@ -12,6 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.app.web.jaxb;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.bind.JAXBContext;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.rest.model.errors.CleanJobDataExceptionInfo;
 import org.eclipse.kapua.commons.rest.model.errors.EntityNotFoundExceptionInfo;
@@ -79,11 +84,12 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerXmlRegistry;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 
-import javax.xml.bind.JAXBContext;
-import java.util.HashMap;
-import java.util.Map;
-
+/**
+ * @deprecated since 2.1.0 - rely on autodiscovery. Leaving this here for comparison
+ */
+@Deprecated
 public class JobEngineJAXBContextProvider implements JAXBContextProvider {
+
     private JAXBContext jaxbContext;
 
     @Override
@@ -95,7 +101,7 @@ public class JobEngineJAXBContextProvider implements JAXBContextProvider {
             Map<String, Object> properties = new HashMap<>(1);
             properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
 
-            jaxbContext = JAXBContextFactory.createContext(new Class[]{
+            jaxbContext = JAXBContextFactory.createContext(new Class[] {
                     // REST API exception models
                     ThrowableInfo.class,
                     ExceptionInfo.class,

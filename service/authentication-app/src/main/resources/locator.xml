@@ -14,12 +14,6 @@
  -->
 <!DOCTYPE xml>
 <locator-config>
-    <provided>
-        <provide>
-            <interceptor>annotation</interceptor>
-            <with>Impl</with>
-        </provide>
-    </provided>
     <packages>
         <package>org.eclipse.kapua.service.authentication</package>
         <package>org.eclipse.kapua.commons</package>
@@ -30,5 +24,11 @@
         <package>org.eclipse.kapua.service</package>
         <package>org.eclipse.kapua.translator</package>
         <package>org.eclipse.kapua.transport</package>
+        <excludes>
+            <package>org.eclipse.kapua.service.job</package>
+            <package>org.eclipse.kapua.service.scheduler</package>
+            <package>org.eclipse.kapua.service.datastore</package>
+            <package>org.eclipse.kapua.service.device.management</package>
+        </excludes>
     </packages>
 </locator-config>

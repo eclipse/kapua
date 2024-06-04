@@ -12,11 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
+import java.util.Collections;
+
 import javax.inject.Named;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.commons.util.xml.JAXBContextProviderBase;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProviderImpl;
 
 import com.google.inject.Provides;
 
@@ -24,7 +26,7 @@ public class TestModule extends AbstractKapuaModule {
 
     @Override
     protected void configureModule() {
-        bind(JAXBContextProvider.class).toInstance(new JAXBContextProviderBase());
+        bind(JAXBContextProvider.class).toInstance(new JAXBContextProviderImpl(Collections.emptySet()));
     }
 
     @Provides

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2021, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -9,11 +9,17 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.locator.guice;
+package org.eclipse.kapua.commons.core;
 
-public interface LocatorConfigurationExtractor {
-    LocatorConfig fetchLocatorConfig();
+import java.util.Collection;
 
+/**
+ * Just a container to pass a bunch of classes around
+ *
+ * @since 2.0.0
+ */
+public interface JaxbClassProvider {
+
+    Collection<Class<?>> getClasses();
 }

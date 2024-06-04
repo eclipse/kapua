@@ -16,10 +16,15 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.core.JaxbClassProvider;
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProviderImpl;
+import org.eclipse.kapua.commons.util.xml.XmlRootAnnotatedJaxbClassesScanner;
+import org.eclipse.kapua.locator.LocatorConfig;
 
 import com.google.inject.Provides;
+import com.google.inject.multibindings.ProvidesIntoSet;
 
 public class AppModule extends AbstractKapuaModule {
 
@@ -27,7 +32,14 @@ public class AppModule extends AbstractKapuaModule {
     protected void configureModule() {
         bind(MetricsAuthentication.class).in(Singleton.class);
         bind(DatabaseCheckUpdate.class).in(Singleton.class);
-        bind(JAXBContextProvider.class).to(AuthenticationJAXBContextProvider.class).in(Singleton.class);
+        // Switching manually-configured JAXBContextProvider to autodiscovery one below
+        // bind(JAXBContextProvider.class).to(AuthenticationJAXBContextProvider.class).in(Singleton.class);
+        bind(JAXBContextProvider.class).to(JAXBContextProviderImpl.class).in(Singleton.class);
+    }
+
+    @ProvidesIntoSet
+    JaxbClassProvider jaxbClassesAutoDiscoverer(LocatorConfig locatorConfig) {
+        return new XmlRootAnnotatedJaxbClassesScanner(locatorConfig);
     }
 
     @Provides

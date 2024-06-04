@@ -12,6 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.telemetry;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.bind.JAXBContext;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
@@ -33,10 +38,10 @@ import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.JAXBContext;
-import java.util.HashMap;
-import java.util.Map;
-
+/**
+ * @deprecated since 2.1.0 - rely on autodiscovery. Leaving this here for comparison
+ */
+@Deprecated
 public class TelemetryJAXBContextProvider implements JAXBContextProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(TelemetryJAXBContextProvider.class);
@@ -46,7 +51,7 @@ public class TelemetryJAXBContextProvider implements JAXBContextProvider {
     @Override
     public JAXBContext getJAXBContext() throws KapuaException {
         if (context == null) {
-            Class<?>[] classes = new Class<?>[]{
+            Class<?>[] classes = new Class<?>[] {
                     KapuaTmetadata.class,
                     KapuaTocd.class,
                     KapuaTad.class,

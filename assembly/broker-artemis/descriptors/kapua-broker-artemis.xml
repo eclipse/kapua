@@ -121,6 +121,7 @@
                 <include>${pom.groupId}:kapua-client-security</include>
                 <include>${pom.groupId}:kapua-commons</include>
                 <include>${pom.groupId}:kapua-device-api</include>
+                <include>${pom.groupId}:kapua-device-commons</include>
                 <include>${pom.groupId}:kapua-device-authentication</include>
                 <include>${pom.groupId}:kapua-device-registry-api</include>
                 <include>${pom.groupId}:kapua-device-registry-internal</include>

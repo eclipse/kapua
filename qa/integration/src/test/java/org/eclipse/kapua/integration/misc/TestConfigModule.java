@@ -26,7 +26,6 @@ public class TestConfigModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(JAXBContextProvider.class).to(TestJAXBContextProvider.class).in(Singleton.class);
-
     }
 
     @Provides

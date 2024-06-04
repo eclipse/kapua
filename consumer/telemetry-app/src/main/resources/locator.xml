@@ -14,16 +14,10 @@
  -->
 <!DOCTYPE xml>
 <locator-config>
-    <provided>
-        <provide>
-            <interceptor>annotation</interceptor>
-            <with>Impl</with>
-        </provide>
-    </provided>
-
     <packages>
         <package>org.eclipse.kapua.consumer.telemetry</package>
         <package>org.eclipse.kapua.commons</package>
+        <package>org.eclipse.kapua.model</package>
         <package>org.eclipse.kapua.job.engine.client</package>
         <package>org.eclipse.kapua.message</package>
         <package>org.eclipse.kapua.security</package>
@@ -31,5 +25,10 @@
         <package>org.eclipse.kapua.service</package>
         <package>org.eclipse.kapua.translator</package>
         <package>org.eclipse.kapua.transport</package>
+        <excludes>
+            <package>org.eclipse.kapua.service.job</package>
+            <package>org.eclipse.kapua.service.scheduler</package>
+            <package>org.eclipse.kapua.service.device.management.job</package>
+        </excludes>
     </packages>
 </locator-config>

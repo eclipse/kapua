@@ -12,10 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.commons.util.PropertiesUtils;
-import org.eclipse.kapua.model.id.KapuaId;
+import java.io.IOException;
+import java.util.Properties;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -27,12 +25,15 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import java.io.IOException;
-import java.util.Properties;
+
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.util.PropertiesUtils;
+import org.eclipse.kapua.model.id.KapuaId;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = {"pid", "configurations"})
+@XmlType(propOrder = { "pid" })
 @Entity(name = "ServiceConfig")
 @Table(name = "sys_configuration")
 /**
@@ -66,7 +67,8 @@ public class ServiceConfigImpl extends AbstractKapuaUpdatableEntity implements S
     /**
      * Constructor.
      *
-     * @param scopeId The scope {@link KapuaId} to set into the {@link ServiceConfig}
+     * @param scopeId
+     *         The scope {@link KapuaId} to set into the {@link ServiceConfig}
      * @since 1.0.0
      */
     public ServiceConfigImpl(KapuaId scopeId) {

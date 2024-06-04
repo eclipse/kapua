@@ -12,14 +12,27 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
-/**
- * Just a container to pass a bunch of classes around
- *
- * @since 2.0.0
- */
-public interface ClassProvider {
+public class SimpleJaxbClassProvider implements JaxbClassProvider {
 
-    public List<Class<?>> getClasses();
+    private final List<Class<?>> classes;
+
+    public SimpleJaxbClassProvider(Class<?>... classes) {
+        this.classes = Arrays.asList(classes);
+    }
+
+    @Override
+    public Collection<Class<?>> getClasses() {
+        return classes;
+    }
+
+    @Override
+    public String toString() {
+        return "SimpleJaxbClassProvider{" +
+                "classes=" + classes +
+                '}';
+    }
 }

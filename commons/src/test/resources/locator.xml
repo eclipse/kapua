@@ -14,9 +14,6 @@
  -->
 <!DOCTYPE xml>
 <locator-config>
-    <provided>
-    </provided>
-
     <packages>
         <package>org.eclipse.kapua</package>
     </packages>

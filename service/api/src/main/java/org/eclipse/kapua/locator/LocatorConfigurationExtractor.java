@@ -9,25 +9,17 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.commons.core;
-
-import javax.inject.Inject;
-import java.util.Set;
+package org.eclipse.kapua.locator;
 
 /**
- * @deprecated since 2.0.0 - use dependency injection to fetch ServiceModules where needed, there is no need to introduce additional indirection
+ * Locator configuration parser.
+ *
+ * @since 1.0.0
  */
-@Deprecated
-public class ServiceModuleProviderImpl implements ServiceModuleProvider {
+public interface LocatorConfigurationExtractor {
 
-
-    @Inject
-    private Set<ServiceModule> modules;
-
-    @Override
-    public Set<ServiceModule> getModules() {
-        return modules;
-    }
+    LocatorConfig fetchLocatorConfig();
 
 }

@@ -15,6 +15,8 @@ package org.eclipse.kapua.commons;
 import javax.inject.Singleton;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.core.JaxbClassProvider;
+import org.eclipse.kapua.commons.core.SimpleJaxbClassProvider;
 import org.eclipse.kapua.commons.crypto.CryptoUtil;
 import org.eclipse.kapua.commons.crypto.CryptoUtilImpl;
 import org.eclipse.kapua.commons.crypto.setting.CryptoSettings;
@@ -31,6 +33,7 @@ import org.eclipse.kapua.commons.model.domains.Domains;
 import org.eclipse.kapua.commons.model.mappers.KapuaBaseMapper;
 import org.eclipse.kapua.commons.model.mappers.KapuaBaseMapperImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordRepository;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreService;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImplJpaRepository;
@@ -39,6 +42,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.qr.QRCodeBuilder;
 import org.eclipse.kapua.commons.util.qr.QRCodeBuilderImpl;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.domain.Actions;
@@ -47,6 +51,7 @@ import org.eclipse.kapua.model.domain.DomainEntry;
 import org.eclipse.kapua.model.query.QueryFactory;
 
 import com.google.inject.Provides;
+import com.google.inject.multibindings.Multibinder;
 import com.google.inject.multibindings.ProvidesIntoSet;
 
 /**
@@ -64,6 +69,13 @@ public class CommonsModule extends AbstractKapuaModule {
         bind(QRCodeBuilder.class).to(QRCodeBuilderImpl.class).in(Singleton.class);
         bind(KapuaBaseMapper.class).to(KapuaBaseMapperImpl.class).in(Singleton.class);
         bind(XmlUtil.class).in(Singleton.class);
+
+        final Multibinder<JaxbClassProvider> jaxbClassProviderMultibinder = Multibinder.newSetBinder(binder(), JaxbClassProvider.class);
+        jaxbClassProviderMultibinder.addBinding()
+                .toInstance(new SimpleJaxbClassProvider(
+                        EventStoreRecordCreator.class,
+                        ServiceEvent.class
+                ));
     }
 
     @ProvidesIntoSet
