@@ -40,7 +40,7 @@ public class DeviceNotConnectedExceptionInfo extends ExceptionInfo {
     }
 
     public DeviceNotConnectedExceptionInfo(DeviceNotConnectedException deviceNotConnectedException) {
-        super(Response.Status.BAD_REQUEST, deviceNotConnectedException.getCode(), deviceNotConnectedException);
+        super(Response.Status.CONFLICT, deviceNotConnectedException.getCode(), deviceNotConnectedException);
 
         this.deviceId = deviceNotConnectedException.getDeviceId();
         this.connectionStatus = deviceNotConnectedException.getCurrentConnectionStatus();
