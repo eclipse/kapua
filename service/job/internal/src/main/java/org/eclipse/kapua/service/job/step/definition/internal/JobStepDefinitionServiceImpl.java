@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.definition.internal;
 
+import java.util.Optional;
+import javax.inject.Singleton;
+
 import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.domains.Domains;
@@ -22,14 +25,13 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionAttributes;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionCreator;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionListResult;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionQuery;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionRepository;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 import org.eclipse.kapua.storage.TxManager;
-
-import javax.inject.Singleton;
-import java.util.Optional;
 
 /**
  * {@link JobStepDefinitionService} implementation.
@@ -118,9 +120,11 @@ public class JobStepDefinitionServiceImpl implements JobStepDefinitionService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.read, KapuaId.ANY));
 
+        final JobStepDefinitionQuery query = new JobStepDefinitionQueryImpl(scopeId);
+        query.setPredicate(query.attributePredicate(JobStepDefinitionAttributes.ENTITY_ID, stepDefinitionId));
+
         // Do find
-        return txManager.execute(tx -> repository.find(tx, scopeId, stepDefinitionId))
-                .orElse(null);
+        return txManager.execute(tx -> repository.query(tx, query)).getFirstItem();
     }
 
     @Override
