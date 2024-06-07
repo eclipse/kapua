@@ -12,12 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
-import org.eclipse.kapua.commons.jpa.SecretAttributeConverter;
-import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
-import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
+import java.util.Date;
+import java.util.List;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -30,19 +26,19 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Date;
-import java.util.List;
+
+import org.eclipse.kapua.commons.jpa.SecretAttributeConverter;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
 
 /**
  * {@link MfaOption} implementation.
  *
  * @since 1.3.0
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.PROPERTY)
 @Entity(name = "MfaOption")
 @Table(name = "atht_mfa_option")
 public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOption {
@@ -86,7 +82,8 @@ public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOp
     /**
      * Constructor.
      *
-     * @param scopeId The {@link MfaOption#getScopeId()}
+     * @param scopeId
+     *         The {@link MfaOption#getScopeId()}
      * @since 1.3.0
      */
     public MfaOptionImpl(KapuaId scopeId) {
@@ -96,9 +93,12 @@ public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOp
     /**
      * Constructor.
      *
-     * @param scopeId      The scope {@link KapuaId} to set into the {@link MfaOption}.
-     * @param userId       user identifier
-     * @param mfaSecretKey The secret key to set into the {@link MfaOption}.
+     * @param scopeId
+     *         The scope {@link KapuaId} to set into the {@link MfaOption}.
+     * @param userId
+     *         user identifier
+     * @param mfaSecretKey
+     *         The secret key to set into the {@link MfaOption}.
      * @since 1.3.0
      * @deprecated Since 2.0.0. Please make use of  {@link #MfaOptionImpl()} and its setters.
      */
@@ -113,7 +113,8 @@ public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOp
     /**
      * Clone constructor.
      *
-     * @param mfaOption The {@link MfaOption} to clone.
+     * @param mfaOption
+     *         The {@link MfaOption} to clone.
      * @since 1.3.0
      */
     public MfaOptionImpl(MfaOption mfaOption) {
