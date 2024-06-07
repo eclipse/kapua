@@ -391,10 +391,13 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
                         ArgumentValidator.notNull(jobStepProperty.getPropertyValue(), "stepProperties[]." + jobStepProperty.getName());
                     }
 
-                    ArgumentValidator.areEqual(jobStepProperty.getPropertyType(), jobStepDefinitionProperty.getPropertyType(), "stepProperties[]." + jobStepProperty.getName());
-                    ArgumentValidator.lengthRange(jobStepProperty.getPropertyValue(), jobStepDefinitionProperty.getMinLength(), jobStepDefinitionProperty.getMaxLength(), "stepProperties[]." + jobStepProperty.getName());
+                    if (jobStepProperty.getPropertyValue() != null) {
+                        ArgumentValidator.areEqual(jobStepProperty.getPropertyType(), jobStepDefinitionProperty.getPropertyType(), "stepProperties[]." + jobStepProperty.getName());
+                        ArgumentValidator.lengthRange(jobStepProperty.getPropertyValue(), jobStepDefinitionProperty.getMinLength(), jobStepDefinitionProperty.getMaxLength(),
+                                                      "stepProperties[]." + jobStepProperty.getName());
 
-                    validateJobStepPropertyValue(jobStepProperty, jobStepDefinitionProperty);
+                        validateJobStepPropertyValue(jobStepProperty, jobStepDefinitionProperty);
+                    }
                 }
             }
         }
