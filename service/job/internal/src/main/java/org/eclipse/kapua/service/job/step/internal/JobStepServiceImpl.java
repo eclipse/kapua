@@ -14,10 +14,10 @@ package org.eclipse.kapua.service.job.step.internal;
 
 import java.util.List;
 import java.util.regex.Pattern;
-
 import javax.inject.Singleton;
 import javax.xml.bind.DatatypeConverter;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -56,8 +56,6 @@ import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Strings;
 
 /**
  * {@link JobStepService} implementation.
@@ -421,11 +419,13 @@ public class JobStepServiceImpl implements JobStepService {
                         ArgumentValidator.notNull(jobStepProperty.getPropertyValue(), "stepProperties[]." + jobStepProperty.getName());
                     }
 
-                    ArgumentValidator.areEqual(jobStepProperty.getPropertyType(), jobStepDefinitionProperty.getPropertyType(), "stepProperties[]." + jobStepProperty.getName());
-                    ArgumentValidator.lengthRange(jobStepProperty.getPropertyValue(), jobStepDefinitionProperty.getMinLength(), jobStepDefinitionProperty.getMaxLength(),
-                            "stepProperties[]." + jobStepProperty.getName());
+                    if (jobStepProperty.getPropertyValue() != null) {
+                        ArgumentValidator.areEqual(jobStepProperty.getPropertyType(), jobStepDefinitionProperty.getPropertyType(), "stepProperties[]." + jobStepProperty.getName());
+                        ArgumentValidator.lengthRange(jobStepProperty.getPropertyValue(), jobStepDefinitionProperty.getMinLength(), jobStepDefinitionProperty.getMaxLength(),
+                                                      "stepProperties[]." + jobStepProperty.getName());
 
-                    validateJobStepPropertyValue(jobStepProperty, jobStepDefinitionProperty);
+                        validateJobStepPropertyValue(jobStepProperty, jobStepDefinitionProperty);
+                    }
                 }
             }
         }
