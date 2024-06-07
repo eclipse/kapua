@@ -12,13 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.credential.Credential;
-import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import java.util.Date;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -31,13 +25,15 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Date;
 
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.PROPERTY)
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
+import org.eclipse.kapua.service.authentication.credential.CredentialType;
+
 @Entity(name = "Credential")
 @Table(name = "atht_credential")
 /**
@@ -99,7 +95,8 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     /**
      * Constructor.
      *
-     * @param scopeId The scope {@link KapuaId} to set into the {@link Credential}.
+     * @param scopeId
+     *         The scope {@link KapuaId} to set into the {@link Credential}.
      * @since 1.0.0
      */
     public CredentialImpl(KapuaId scopeId) {
@@ -109,10 +106,14 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     /**
      * Constructor.
      *
-     * @param scopeId        The scope {@link KapuaId} to set into the {@link Credential}.
-     * @param userId         The {@link org.eclipse.kapua.service.user.User} {@link KapuaId} to set into the {@link Credential}.
-     * @param credentialType The {@link CredentialType} to set into the {@link Credential}.
-     * @param credentialKey  The credential key to set into the {@link Credential}.
+     * @param scopeId
+     *         The scope {@link KapuaId} to set into the {@link Credential}.
+     * @param userId
+     *         The {@link org.eclipse.kapua.service.user.User} {@link KapuaId} to set into the {@link Credential}.
+     * @param credentialType
+     *         The {@link CredentialType} to set into the {@link Credential}.
+     * @param credentialKey
+     *         The credential key to set into the {@link Credential}.
      * @since 1.0.0
      */
     public CredentialImpl(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialStatus credentialStatus, Date expirationDate) {
