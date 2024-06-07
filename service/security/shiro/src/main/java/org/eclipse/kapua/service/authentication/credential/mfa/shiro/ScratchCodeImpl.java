@@ -12,11 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
-import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
@@ -24,17 +19,17 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+
+import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
 
 /**
  * {@link ScratchCode} implementation.
  *
  * @since 1.3.0
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.PROPERTY)
 @Entity(name = "ScratchCode")
 @Table(name = "atht_scratch_code")
 public class ScratchCodeImpl extends AbstractKapuaEntity implements ScratchCode {
@@ -63,7 +58,8 @@ public class ScratchCodeImpl extends AbstractKapuaEntity implements ScratchCode 
     /**
      * Constructor.
      *
-     * @param scopeId The {@link ScratchCode#getScopeId()}.
+     * @param scopeId
+     *         The {@link ScratchCode#getScopeId()}.
      * @since 1.3.0
      */
     public ScratchCodeImpl(KapuaId scopeId) {
@@ -73,8 +69,10 @@ public class ScratchCodeImpl extends AbstractKapuaEntity implements ScratchCode 
     /**
      * Constructor.
      *
-     * @param scopeId The scope {@link KapuaId} to set into the {@link ScratchCode}.
-     * @param code    The code to set into the {@link ScratchCode}.
+     * @param scopeId
+     *         The scope {@link KapuaId} to set into the {@link ScratchCode}.
+     * @param code
+     *         The code to set into the {@link ScratchCode}.
      * @since 1.3.0
      */
     public ScratchCodeImpl(KapuaId scopeId, KapuaId mfaOptionId, String code) {
@@ -87,7 +85,8 @@ public class ScratchCodeImpl extends AbstractKapuaEntity implements ScratchCode 
     /**
      * Clone constructor.
      *
-     * @param scratchCode The {@link ScratchCode} to clone.
+     * @param scratchCode
+     *         The {@link ScratchCode} to clone.
      * @since 1.3.0
      */
     public ScratchCodeImpl(ScratchCode scratchCode) {
