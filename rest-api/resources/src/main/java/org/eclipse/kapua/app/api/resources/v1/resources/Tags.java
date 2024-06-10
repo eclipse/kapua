@@ -13,10 +13,11 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
+
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.model.CountResult;
-import org.eclipse.kapua.app.api.core.model.EntityId;
-import org.eclipse.kapua.app.api.core.model.ScopeId;
+import org.eclipse.kapua.commons.rest.model.CountResult;
+import org.eclipse.kapua.commons.rest.model.EntityId;
+import org.eclipse.kapua.commons.rest.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
@@ -53,17 +54,22 @@ public class Tags extends AbstractKapuaResource {
     /**
      * Gets the {@link Tag} list in the scope.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param name    The {@link Tag} name to filter results
-     * @param offset  The result set offset.
-     * @param limit   The result set limit.
+     * @param scopeId
+     *         The {@link ScopeId} in which to search results.
+     * @param name
+     *         The {@link Tag} name to filter results
+     * @param offset
+     *         The result set offset.
+     * @param limit
+     *         The result set limit.
      * @return The {@link TagListResult} of all the tags associated to the current selected scope.
-     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException
+     *         Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
 
     @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public TagListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("name") String name,
@@ -92,17 +98,20 @@ public class Tags extends AbstractKapuaResource {
     /**
      * Queries the results with the given {@link TagQuery} parameter.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param query   The {@link TagQuery} to use to filter results.
+     * @param scopeId
+     *         The {@link ScopeId} in which to search results.
+     * @param query
+     *         The {@link TagQuery} to use to filter results.
      * @return The {@link TagListResult} of all the result matching the given {@link TagQuery} parameter.
-     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException
+     *         Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
 
     @POST
     @Path("_query")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public TagListResult query(
             @PathParam("scopeId") ScopeId scopeId,
             TagQuery query) throws KapuaException {
@@ -114,17 +123,20 @@ public class Tags extends AbstractKapuaResource {
     /**
      * Counts the results with the given {@link TagQuery} parameter.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param query   The {@link TagQuery} to use to filter results.
+     * @param scopeId
+     *         The {@link ScopeId} in which to search results.
+     * @param query
+     *         The {@link TagQuery} to use to filter results.
      * @return The count of all the result matching the given {@link TagQuery} parameter.
-     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException
+     *         Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
 
     @POST
     @Path("_count")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public CountResult count(
             @PathParam("scopeId") ScopeId scopeId,
             TagQuery query) throws KapuaException {
@@ -134,19 +146,21 @@ public class Tags extends AbstractKapuaResource {
     }
 
     /**
-     * Creates a new Tag based on the information provided in TagCreator
-     * parameter.
+     * Creates a new Tag based on the information provided in TagCreator parameter.
      *
-     * @param scopeId    The {@link ScopeId} in which to create the {@link Tag}
-     * @param tagCreator Provides the information for the new {@link Tag} to be created.
+     * @param scopeId
+     *         The {@link ScopeId} in which to create the {@link Tag}
+     * @param tagCreator
+     *         Provides the information for the new {@link Tag} to be created.
      * @return The newly created {@link Tag} object.
-     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException
+     *         Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
 
     @POST
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Response create(
             @PathParam("scopeId") ScopeId scopeId,
             TagCreator tagCreator) throws KapuaException {
@@ -158,16 +172,19 @@ public class Tags extends AbstractKapuaResource {
     /**
      * Returns the Tag specified by the "tagId" path parameter.
      *
-     * @param scopeId The {@link ScopeId} of the requested {@link Tag}.
-     * @param tagId   The id of the requested Tag.
+     * @param scopeId
+     *         The {@link ScopeId} of the requested {@link Tag}.
+     * @param tagId
+     *         The id of the requested Tag.
      * @return The requested Tag object.
-     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException
+     *         Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
 
     @GET
     @Path("{tagId}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Tag find(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("tagId") EntityId tagId) throws KapuaException {
@@ -179,18 +196,22 @@ public class Tags extends AbstractKapuaResource {
     /**
      * Updates the Tag based on the information provided in the Tag parameter.
      *
-     * @param scopeId The ScopeId of the requested {@link Tag}.
-     * @param tagId   The id of the requested {@link Tag}
-     * @param tag     The modified Tag whose attributed need to be updated.
+     * @param scopeId
+     *         The ScopeId of the requested {@link Tag}.
+     * @param tagId
+     *         The id of the requested {@link Tag}
+     * @param tag
+     *         The modified Tag whose attributed need to be updated.
      * @return The updated tag.
-     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException
+     *         Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
 
     @PUT
     @Path("{tagId}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Tag update(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("tagId") EntityId tagId,
@@ -204,10 +225,13 @@ public class Tags extends AbstractKapuaResource {
     /**
      * Deletes the Tag specified by the "tagId" path parameter.
      *
-     * @param scopeId The ScopeId of the requested {@link Tag}.
-     * @param tagId   The id of the Tag to be deleted.
+     * @param scopeId
+     *         The ScopeId of the requested {@link Tag}.
+     * @param tagId
+     *         The id of the Tag to be deleted.
      * @return HTTP 200 if operation has completed successfully.
-     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException
+     *         Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
 
