@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.domains.Domains;
@@ -313,6 +314,9 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             return false;
         });
         if (!res) {
+            if (tokenAuthenticationCode != null || tokenTrustKey != null) {
+                throw new IncorrectCredentialsException();
+            }
             // In case both the authenticationCode and the trustKey are null, the MFA login via Rest API must be triggered.
             // Since this method only returns true or false, the MFA request via Rest API is handled through exceptions.
             throw new MfaRequiredException();
