@@ -804,6 +804,20 @@ components:
         httpErrorCode: 403
         message: "This operation can be performed only on the current logged User."
         kapuaErrorCode: "SELF_MANAGED_ONLY"
+    DeviceNotConnectedExceptionInfo:
+      description: The device is currently disconnected
+      allOf:
+        - $ref: '#/components/schemas/exceptionInfo'
+        - properties:
+            deviceId:
+              description: The id of the disconnected device
+              $ref: '#/components/schemas/kapuaId'
+      example:
+        type: "deviceNotConnectedExceptionInfo"
+        httpErrorCode: 409
+        message: "The device 3243535747637285611 is not CONNECTED. Current device connection status is: null"
+        kapuaErrorCode: "DEVICE_NOT_CONNECTED"
+        deviceId: "LQNak9Yzkus"
     ### Other Base Entities ###
     kapuaListResult:
       description: A container for all the Entities List
@@ -1294,6 +1308,15 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/entityUniquenessExceptionInfo'
+    conflictDeviceNotConnected: #409 response - device not connected
+      description: A conflict in the request - the device is disconnected and the request cannot be accomplished
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DeviceNotConnectedExceptionInfo'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/DeviceNotConnectedExceptionInfo'
   # Security schemes
   securitySchemes:
     kapuaToken:
