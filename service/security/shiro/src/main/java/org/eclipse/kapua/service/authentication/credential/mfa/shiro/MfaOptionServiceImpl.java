@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.domains.Domains;
@@ -313,8 +314,12 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             return false;
         });
         if (!res) {
+            if ( (tokenAuthenticationCode != null && !tokenAuthenticationCode.isEmpty()) || (tokenTrustKey != null && !tokenTrustKey.isEmpty())) {
+                throw new IncorrectCredentialsException();
+            }
             // In case both the authenticationCode and the trustKey are null, the MFA login via Rest API must be triggered.
             // Since this method only returns true or false, the MFA request via Rest API is handled through exceptions.
+            // It could also be the case that tokens are not null but empty, in this case we throw same exception...
             throw new MfaRequiredException();
         }
         return res;
@@ -322,7 +327,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
 
     private Boolean validateFromTrustKey(TxContext tx, MfaOption mfaOption, String tokenTrustKey) throws KapuaAuthenticationException {
         // Check trust machine authentication on the server side
-        if (mfaOption.getTrustKey() == null) {
+        if (mfaOption.getTrustKey() == null || tokenTrustKey.isEmpty()) {
             return false;
         }
         Date now = new Date(System.currentTimeMillis());
@@ -341,6 +346,9 @@ public class MfaOptionServiceImpl implements MfaOptionService {
     private Boolean validateFromTokenAuthenticationCode(TxContext tx, KapuaId scopeId, MfaOption mfaOption, String tokenAuthenticationCode) throws KapuaAuthenticationException {
         // Do MFA match
         try {
+            if (tokenAuthenticationCode.isEmpty()) { //Token is not a numeric value and it's empty, so for sure validation is false even considering scratch codes
+                return false;
+            }
             final int numberToken = Integer.parseInt(tokenAuthenticationCode);
             boolean isCodeValid = mfaAuthenticator.authorize(mfaOption.getMfaSecretKey(), numberToken);
             if (isCodeValid) {
