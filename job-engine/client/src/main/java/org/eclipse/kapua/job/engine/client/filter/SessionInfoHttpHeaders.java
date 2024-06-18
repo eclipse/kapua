@@ -13,7 +13,7 @@
 package org.eclipse.kapua.job.engine.client.filter;
 
 /**
- * List of headers name used by the {@link SessionInfoFilter}
+ * List of headers name used by the job engine client and read by the job engine service to rebuild the session
  *
  * @since 1.5.0
  */

@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.security;
 
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.KapuaPrincipal;
-import org.eclipse.kapua.service.authentication.token.AccessToken;
-
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authentication.KapuaPrincipal;
+import org.eclipse.kapua.service.authentication.token.AccessToken;
 
 /**
  * Kapua session
@@ -37,10 +37,9 @@ public class KapuaSession implements Serializable {
 
     // TODO to be moved inside configuration service or something like that "fully.qualified.classname.methodname" (<init> for the constructor)
     static {
-        TRUSTED_CLASSES.add("org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext.<init>");
         TRUSTED_CLASSES.add("org.eclipse.kapua.commons.security.KapuaSecurityUtils.doPrivileged");
         TRUSTED_CLASSES.add("org.eclipse.kapua.commons.event.jms.JMSServiceEventBus.setSession");
-        TRUSTED_CLASSES.add("org.eclipse.kapua.job.engine.app.core.filter.RebuildSessionFilter.onAccessDenied");
+        TRUSTED_CLASSES.add("org.eclipse.kapua.job.engine.app.core.filter.RebuildTrustedSessionFilter.isAccessAllowed");
     }
 
     /**
@@ -59,8 +58,7 @@ public class KapuaSession implements Serializable {
     private KapuaId userId;
 
     /**
-     * Trusted mode.<br>
-     * If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
+     * Trusted mode.<br> If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
      */
     private boolean trustedMode;
 
@@ -163,7 +161,8 @@ public class KapuaSession implements Serializable {
      * @param accessToken
      * @param scopeId
      * @param userId
-     * @param openIDidToken the idToken obtained with an OpenID Connect login, contains user information, used for the logout
+     * @param openIDidToken
+     *         the idToken obtained with an OpenID Connect login, contains user information, used for the logout
      */
     public KapuaSession(AccessToken accessToken, KapuaId scopeId, KapuaId userId, String openIDidToken) {
         this();
@@ -221,16 +220,14 @@ public class KapuaSession implements Serializable {
     }
 
     /**
-     * Set the trusted mode status.<br>
-     * If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
+     * Set the trusted mode status.<br> If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
      */
     final void setTrustedMode(boolean trustedMode) {
         this.trustedMode = trustedMode;
     }
 
     /**
-     * Return the trusted mode status.<br>
-     * If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
+     * Return the trusted mode status.<br> If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
      *
      * @return
      */
@@ -250,7 +247,8 @@ public class KapuaSession implements Serializable {
     /**
      * Set the logout as 'user initiated'. This will allow to avoid logging out from an OpenID session by using the OpenIDLogoutListener.
      *
-     * @param userInitiatedLogout 'true' if user initiated logout, 'false' otherwise
+     * @param userInitiatedLogout
+     *         'true' if user initiated logout, 'false' otherwise
      */
     public void setUserInitiatedLogout(boolean userInitiatedLogout) {
         this.userInitiatedLogout = userInitiatedLogout;
