@@ -64,6 +64,7 @@ import org.eclipse.kapua.translator.kura.kapua.keystore.TranslatorAppKeystoreIte
 import org.eclipse.kapua.translator.kura.kapua.keystore.TranslatorAppKeystoreItemsKuraKapua;
 import org.eclipse.kapua.translator.kura.kapua.keystore.TranslatorAppKeystoreNoContentKuraKapua;
 import org.eclipse.kapua.translator.kura.kapua.keystore.TranslatorAppKeystoresKuraKapua;
+import org.eclipse.kapua.translator.setting.TranslatorKapuaKuraSettings;
 
 public class KapuaKuraTranslatorsModule extends AbstractKapuaModule {
     @Override
@@ -122,6 +123,7 @@ public class KapuaKuraTranslatorsModule extends AbstractKapuaModule {
                 .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL));
 
+        bind(TranslatorKapuaKuraSettings.class).in(Singleton.class);
     }
 
     @Provides
