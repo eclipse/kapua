@@ -23,6 +23,8 @@ import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.ExpiredAccessTokenException;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.InvalidatedAccessTokenException;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.MalformedAccessTokenException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -35,6 +37,7 @@ public class KapuaTokenAuthenticationFilter extends AuthenticatingFilter {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER = "Bearer";
     private final CredentialsFactory credentialsFactory;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public KapuaTokenAuthenticationFilter() {
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -43,6 +46,7 @@ public class KapuaTokenAuthenticationFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        logger.trace("Passing through KapuaTokenAuthenticationFilter.isAccessAllowed, request: {}, response: {}, mappedValue: {}", request, response, mappedValue);
         if (OPTIONS.equals(((HttpServletRequest) request).getMethod())) {
             return true;
         }
