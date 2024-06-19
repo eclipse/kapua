@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
+import java.util.Date;
+import java.util.Optional;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
@@ -53,9 +56,8 @@ import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
-
-import java.util.Date;
-import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link AccessTokenCredentials} based {@link AuthenticatingRealm} implementation.
@@ -73,6 +75,7 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
     private final AccessTokenService accessTokenService = KapuaLocator.getInstance().getService(AccessTokenService.class);
     private final UserService userService = KapuaLocator.getInstance().getService(UserService.class);
     private final KapuaAuthenticationSetting authenticationSetting = KapuaLocator.getInstance().getComponent(KapuaAuthenticationSetting.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * Constructor
@@ -87,11 +90,12 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken)
             throws AuthenticationException {
+        logger.trace("processing authenticationToken: {}", authenticationToken);
         // Extract credentials
         AccessTokenCredentialsImpl token = (AccessTokenCredentialsImpl) authenticationToken;
         // Token data
         String jwt = token.getTokenId();
-
+        logger.trace("processing jwt: {}", jwt);
         //verify validity of this token
         final JwtClaims jwtClaims;
         try {
@@ -117,17 +121,21 @@ public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
             JwtConsumer jwtConsumer = new JwtConsumerBuilder()
                     .setVerificationKey(CertificateUtils.stringToCertificate(certificateInfo.getCertificate()).getPublicKey()) // Set public key
                     .setExpectedIssuer(issuer) // Set expected issuer
-                    .setRequireIssuedAt() // Set require reserved claim: iat
+                    .setRequireIssuedAt() // Set require reserved claim: iatp
                     .setRequireExpirationTime() // Set require reserved claim: exp
                     .setRequireSubject() // // Set require reserved claim: sub
                     .build();
             // This validates JWT
             final JwtContext jwtContext = jwtConsumer.process(jwt);
             jwtClaims = jwtContext.getJwtClaims();
-        // FIXME: JWT cert. could be cached to speed-up validation process
+            // FIXME: JWT cert. could be cached to speed-up validation process
         } catch (KapuaException ke) {
+            //As we are swallowing the original exception, let's at least log it
+            logger.error("Error processing Auth Token(KapuaException)", ke);
             throw new AuthenticationException();
         } catch (InvalidJwtException e) {
+            //As we are swallowing the original exception, let's at least log it
+            logger.error("Error processing Auth Token (InvalidJwtException)", e);
             if (e.hasErrorCode(ErrorCodes.EXPIRED)) {
                 throw new ExpiredAccessTokenException();
             } else {

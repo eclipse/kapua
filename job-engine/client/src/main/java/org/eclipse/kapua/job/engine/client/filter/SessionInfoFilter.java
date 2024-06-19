@@ -18,6 +18,8 @@ import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.job.engine.client.settings.JobEngineClientSetting;
 import org.eclipse.kapua.job.engine.client.settings.JobEngineClientSettingKeys;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
@@ -33,11 +35,12 @@ public class SessionInfoFilter implements ClientRequestFilter {
     private final JobEngineClientSetting jobEngineClientSetting = KapuaLocator.getInstance().getComponent(JobEngineClientSetting.class);
     private final String jobEngineClientSettingAuthMode = jobEngineClientSetting.getString(JobEngineClientSettingKeys.JOB_ENGINE_CLIENT_AUTH_MODE, "access_token");
     private final boolean jobEngineClientAuthTrusted = "trusted".equals(jobEngineClientSettingAuthMode);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public void filter(ClientRequestContext requestContext) throws IOException {
         KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
-
+        logger.trace("SessionInfoFilter.filter, jobEngineClientAuthTrusted: {}, sessionTrusted: {}", jobEngineClientAuthTrusted, kapuaSession.isTrustedMode());
         if (jobEngineClientAuthTrusted || kapuaSession.isTrustedMode()) {
             requestContext.getHeaders().putSingle(SessionInfoHttpHeaders.AUTH_MODE, "trusted");
         } else {
