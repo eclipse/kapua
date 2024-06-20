@@ -38,7 +38,7 @@ accidentally exposed under:
 Where the scopeId has no meaning when dealing with a specific account
 Remove the match with /{scopeId}/... in the next release
  */
-@Path("{scopeId: (\\w+)?}{path:|/}accounts/{accountId}")
+@Path("{scopeId: ([\\w-]+)?}{path:|/}accounts/{accountId}")
 public class Account extends AbstractKapuaResource {
 
     @Inject

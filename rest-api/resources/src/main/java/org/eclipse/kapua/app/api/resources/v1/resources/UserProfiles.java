@@ -33,7 +33,7 @@ import javax.ws.rs.core.Response;
  Where the scopeId has no meaning of the current user (the one from the session will always be used)
  Remove the match with /{scopeId}/... in the next release
  */
-@Path("{scopeId: (\\w+)?}{path:|/}user/profile")
+@Path("{scopeId: ([\\w-]+)?}{path:|/}user/profile")
 public class UserProfiles extends AbstractKapuaResource {
 
     @Inject
