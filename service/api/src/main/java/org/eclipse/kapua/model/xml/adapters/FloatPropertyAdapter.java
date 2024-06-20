@@ -19,6 +19,11 @@ public class FloatPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Float
     }
 
     @Override
+    public boolean canUnmarshallEmptyString() {
+        return false;
+    }
+
+    @Override
     public Float unmarshallValue(String value) {
         return Float.parseFloat(value);
     }

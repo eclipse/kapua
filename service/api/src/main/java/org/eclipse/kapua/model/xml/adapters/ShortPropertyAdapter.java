@@ -19,6 +19,11 @@ public class ShortPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Short
     }
 
     @Override
+    public boolean canUnmarshallEmptyString() {
+        return false;
+    }
+
+    @Override
     public Short unmarshallValue(String property) {
         return Short.parseShort(property);
     }

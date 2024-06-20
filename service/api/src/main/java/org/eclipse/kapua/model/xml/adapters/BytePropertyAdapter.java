@@ -19,6 +19,11 @@ public class BytePropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Byte> 
     }
 
     @Override
+    public boolean canUnmarshallEmptyString() {
+        return false;
+    }
+
+    @Override
     public Byte unmarshallValue(String value) {
         return Byte.parseByte(value);
     }

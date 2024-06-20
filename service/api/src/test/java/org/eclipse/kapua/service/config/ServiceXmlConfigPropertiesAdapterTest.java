@@ -90,6 +90,7 @@ public class ServiceXmlConfigPropertiesAdapterTest {
 
         ServiceXmlConfigPropertiesAdapter instance = new ServiceXmlConfigPropertiesAdapter();
 
+        Map<String, Object> expectedProperty0 = new HashMap<>();
         Map<String, Object> expectedProperty1 = new HashMap<>();
         Map<String, Object> expectedProperty2 = new HashMap<>();
         Map<String, Object> expectedProperty3 = new HashMap<>();
@@ -98,33 +99,37 @@ public class ServiceXmlConfigPropertiesAdapterTest {
         Map<String, Object> expectedProperty6 = new HashMap<>();
         Map<String, Object> expectedProperty7 = new HashMap<>();
         Map<String, Object> expectedProperty8 = new HashMap<>();
-        Map<String, Object> expectedProperty9 = new HashMap<>();
-        Map<String, Object> expectedProperty10 = new HashMap<>();
-        expectedProperty2.put("name1", new String[]{"47", "10"});
-        expectedProperty3.put("name2", new Long[]{47l, 10l});
-        expectedProperty4.put("name3", new Double[]{47d, 10d});
-        expectedProperty5.put("name4", new Float[]{47f, 10f});
-        expectedProperty6.put("name5", new Integer[]{47, 10});
-        expectedProperty7.put("name6", new Byte[]{(byte) 47, (byte) 10});
-        expectedProperty8.put("name7", new Character[]{'4', '1'});
-        expectedProperty9.put("name8", new Boolean[]{false, false});
-        expectedProperty10.put("name9", new Short[]{(short) 47, (short) 10});
-        expectedProperties = new Map[]{expectedProperty1, expectedProperty2, expectedProperty3, expectedProperty4, expectedProperty5, expectedProperty6, expectedProperty7, expectedProperty8, expectedProperty9, expectedProperty10};
+        expectedProperty0.put("name0", new String[]{"47", "10"});
+        expectedProperty1.put("name1", new Long[]{47l, 10l});
+        expectedProperty2.put("name2", new Double[]{47d, 10d});
+        expectedProperty3.put("name3", new Float[]{47f, 10f});
+        expectedProperty4.put("name4", new Integer[]{47, 10});
+        expectedProperty5.put("name5", new Byte[]{(byte) 47, (byte) 10});
+        expectedProperty6.put("name6", new Character[]{'4', '1'});
+        expectedProperty7.put("name7", new Boolean[]{false, false});
+        expectedProperty8.put("name8", new Short[]{(short) 47, (short) 10});
+        expectedProperties = new Map[]{expectedProperty0, expectedProperty1, expectedProperty2, expectedProperty3, expectedProperty4, expectedProperty5, expectedProperty6, expectedProperty7, expectedProperty8};
 
         String name = "name";
         String stringValue1 = "47";
         String stringValue2 = "10";
         String[] stringValue = {stringValue1, stringValue2};
-        ConfigPropertyType[] configPropertyType = {null, ConfigPropertyType.stringType, ConfigPropertyType.longType,
-                ConfigPropertyType.doubleType, ConfigPropertyType.floatType, ConfigPropertyType.integerType,
-                ConfigPropertyType.byteType, ConfigPropertyType.charType, ConfigPropertyType.booleanType,
+        ConfigPropertyType[] configPropertyType = {
+                ConfigPropertyType.stringType,
+                ConfigPropertyType.longType,
+                ConfigPropertyType.doubleType,
+                ConfigPropertyType.floatType,
+                ConfigPropertyType.integerType,
+                ConfigPropertyType.byteType,
+                ConfigPropertyType.charType,
+                ConfigPropertyType.booleanType,
                 ConfigPropertyType.shortType};
         ServiceXmlConfigPropertiesAdapted serviceXmlConfigPropertiesAdapted = new ServiceXmlConfigPropertiesAdapted();
 
         for (int i = 0; i < configPropertyType.length; i++) {
             ServiceXmlConfigPropertyAdapted serviceXmlConfigPropertyAdapted1 = new ServiceXmlConfigPropertyAdapted();
             ServiceXmlConfigPropertyAdapted serviceXmlConfigPropertyAdapted2 = new ServiceXmlConfigPropertyAdapted(name + i, configPropertyType[i], stringValue);
-            ServiceXmlConfigPropertyAdapted[] properties1 = new ServiceXmlConfigPropertyAdapted[]{serviceXmlConfigPropertyAdapted1, serviceXmlConfigPropertyAdapted2};
+            ServiceXmlConfigPropertyAdapted[] properties1 = new ServiceXmlConfigPropertyAdapted[]{serviceXmlConfigPropertyAdapted2};
 
             Assert.assertThat("Instance of Map expected.", instance.unmarshal(serviceXmlConfigPropertiesAdapted), IsInstanceOf.instanceOf(Map.class));
 
