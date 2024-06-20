@@ -89,7 +89,7 @@ public class DataMessages extends AbstractKapuaResource {
                                                                    @QueryParam("startDate") DateParam startDateParam,
                                                                    @QueryParam("endDate") DateParam endDateParam,
                                                                    @QueryParam("metricName") String metricName,
-                                                                   @QueryParam("metricType") MetricType<V> metricType,
+                                                                   @QueryParam("metricType") String metricType,
                                                                    @QueryParam("metricMin") String metricMinValue,
                                                                    @QueryParam("metricMax") String metricMaxValue,
                                                                    @QueryParam("sortDir") @DefaultValue("DESC") SortDirection sortDir,
@@ -115,7 +115,9 @@ public class DataMessages extends AbstractKapuaResource {
         }
 
         if (!Strings.isNullOrEmpty(metricName)) {
-            andPredicate.getPredicates().add(getMetricPredicate(metricName, metricType, metricMinValue, metricMaxValue));
+            MetricType<V> internalMetricType = new MetricType<>(metricType);
+
+            andPredicate.getPredicates().add(getMetricPredicate(metricName, internalMetricType, metricMinValue, metricMaxValue));
         }
 
         MessageQuery query = MESSAGE_STORE_FACTORY.newQuery(scopeId);
