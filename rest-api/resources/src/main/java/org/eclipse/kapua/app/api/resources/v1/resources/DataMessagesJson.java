@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.resources.v1.resources.marker.JsonSerializationFixed;
 import org.eclipse.kapua.app.api.core.model.DateParam;
-import org.eclipse.kapua.app.api.core.model.MetricType;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.model.StorableEntityId;
 import org.eclipse.kapua.app.api.core.model.data.JsonDatastoreMessage;
@@ -89,7 +88,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
                                                                            @QueryParam("startDate") DateParam startDateParam,
                                                                            @QueryParam("endDate") DateParam endDateParam,
                                                                            @QueryParam("metricName") String metricName,
-                                                                           @QueryParam("metricType") MetricType<V> metricType,
+                                                                           @QueryParam("metricType") String metricType,
                                                                            @QueryParam("metricMin") String metricMinValue,
                                                                            @QueryParam("metricMax") String metricMaxValue,
                                                                            @QueryParam("sortDir") @DefaultValue("DESC") SortDirection sortDir,
