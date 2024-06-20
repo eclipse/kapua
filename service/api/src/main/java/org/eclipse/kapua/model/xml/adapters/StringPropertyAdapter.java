@@ -18,6 +18,17 @@ public class StringPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Stri
         super(String.class);
     }
 
+    /**
+     * Yes, definitely String can be empty.
+     *
+     * @return {@code true}
+     * @since 2.1.0
+     */
+    @Override
+    public boolean canUnmarshallEmptyString() {
+        return true;
+    }
+
     @Override
     public String unmarshallValue(String property) {
         return property;

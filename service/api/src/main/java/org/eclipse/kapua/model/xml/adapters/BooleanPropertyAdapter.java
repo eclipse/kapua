@@ -19,6 +19,11 @@ public class BooleanPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Boo
     }
 
     @Override
+    public boolean canUnmarshallEmptyString() {
+        return false;
+    }
+
+    @Override
     public Boolean unmarshallValue(String value) {
         return Boolean.parseBoolean(value);
     }

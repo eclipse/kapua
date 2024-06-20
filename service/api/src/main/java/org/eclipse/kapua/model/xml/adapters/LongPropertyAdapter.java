@@ -19,6 +19,11 @@ public class LongPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Long> 
     }
 
     @Override
+    public boolean canUnmarshallEmptyString() {
+        return false;
+    }
+
+    @Override
     public Long unmarshallValue(String property) {
         return Long.parseLong(property);
     }
