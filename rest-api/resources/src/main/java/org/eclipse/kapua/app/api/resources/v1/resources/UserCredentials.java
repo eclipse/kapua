@@ -37,7 +37,7 @@ import javax.ws.rs.core.MediaType;
  Where the scopeId has no meaning of the current user (the one from the session will always be used)
  Remove the match with /{scopeId}/... in the next release
  */
-@Path("{scopeId: (\\w+)?}{path:|/}user/credentials")
+@Path("{scopeId: ([\\w-]+)?}{path:|/}user/credentials")
 public class UserCredentials extends AbstractKapuaResource {
 
     @Inject
