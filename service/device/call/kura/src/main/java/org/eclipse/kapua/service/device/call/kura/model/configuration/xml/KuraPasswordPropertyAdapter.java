@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.model.configuration.xml;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.commons.crypto.CryptoUtil;
 import org.eclipse.kapua.model.xml.XmlPropertyAdapted;
 import org.eclipse.kapua.model.xml.adapters.ClassBasedXmlPropertyAdapterBase;
@@ -44,18 +45,60 @@ public class KuraPasswordPropertyAdapter extends ClassBasedXmlPropertyAdapterBas
     }
 
     @Override
+    public boolean canUnmarshallEmptyString() {
+        return true;
+    }
+
+    @Override
     public KuraPassword unmarshallValue(String value) {
         return new KuraPassword(cryptoUtil.decodeBase64(value));
+    }
+
+
+    /**
+     * Unmarshalls the given value according to {@link XmlPropertyAdapted#isEncrypted()}.
+     *
+     * @param value The value to unmarshall.
+     * @param isEncrypted The {@link XmlPropertyAdapted#isEncrypted()}.
+     * @return The unmarshalled {@link KuraPassword}
+     * @since 2.1.0
+     */
+    public KuraPassword unmarshallValue(String value, boolean isEncrypted) {
+        return isEncrypted ? unmarshallValue(value) : new KuraPassword(value);
     }
 
     @Override
     public Object unmarshallValues(XmlPropertyAdapted<?> property) {
         if (!property.getArray()) {
-            return property.isEncrypted() ? unmarshallValue(property.getValues()[0]) : new KuraPassword(property.getValues()[0]);
+            String[] values = property.getValues();
+
+            // Values might not have been defined
+            // ie:
+            //
+            // <property name="propertyName" array="false" encrypted="false" type="Integer">
+            // </property>
+            if (values == null || values.length == 0) {
+                return null;
+            }
+
+            String value = property.getValues()[0];
+            return unmarshallValue(value, property.isEncrypted() && !Strings.isNullOrEmpty(value));
+
         } else {
+            String[] values = property.getValues();
+
+            // Values might not have been defined
+            // ie:
+            //
+            // <property name="propertyName" array="true" encrypted="false" type="Integer">
+            // </property>
+            if (values == null) {
+                return null;
+            }
+
             return Arrays
                     .stream(property.getValues())
-                    .map(value -> property.isEncrypted() ? unmarshallValue(value) : new KuraPassword(value))
+                    .map(value -> unmarshallValue(value, property.isEncrypted() && !Strings.isNullOrEmpty(value)))
                     .collect(Collectors.toList()).toArray();
         }
     }

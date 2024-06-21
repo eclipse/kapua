@@ -19,6 +19,11 @@ public class IntegerPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Int
     }
 
     @Override
+    public boolean canUnmarshallEmptyString() {
+        return false;
+    }
+
+    @Override
     public Integer unmarshallValue(String property) {
         return Integer.parseInt(property);
     }

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.xml.adapters;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.model.xml.XmlPropertyAdapted;
 
 import java.lang.reflect.Array;
@@ -52,6 +53,9 @@ public abstract class ClassBasedXmlPropertyAdapterBase<T> implements XmlProperty
                 if (nativeValues[i] != null) {
                     stringValues[i] = this.marshallValue(nativeValues[i]);
                 }
+                else {
+                    stringValues[i] = null;
+                }
             }
             property.setValues(stringValues);
         }
@@ -61,14 +65,69 @@ public abstract class ClassBasedXmlPropertyAdapterBase<T> implements XmlProperty
         return object.toString();
     }
 
+    /**
+     * Whether the {@link ClassBasedXmlPropertyAdapterBase} implementation can unmarshall a empty {@link String}.
+
+     * @return {@code true} if it can, {@code false} otherwise.
+     * @since 2.1.0
+     */
+    public abstract boolean canUnmarshallEmptyString();
+
     public abstract T unmarshallValue(String value);
 
     @Override
     public Object unmarshallValues(XmlPropertyAdapted<?> property) {
         if (!property.getArray()) {
+            String[] values = property.getValues();
+
+            // Values might not have been defined
+            // ie:
+            //
+            // <property name="propertyName" array="false" encrypted="false" type="Integer">
+            // </property>
+            if (values == null || values.length == 0) {
+                return null;
+            }
+
+            // Value might be empty and some XmlPropertyAdapter can't handle empty values (ie: DoublePropertyAdapter).
+            //
+            // ie:
+            //
+            // <property name="propertyName" array="false" encrypted="false" type="Integer">
+            //     <value/>
+            // </property>
+            //
+            // <property name="propertyName" array="false" encrypted="false" type="Integer">
+            //     <value><value/>
+            // </property>
+            String value = values[0];
+            if (Strings.isNullOrEmpty(value) && !canUnmarshallEmptyString()) {
+                // FIXME: we should return an empty String, but ESF is not currently handling the DeviceConfiguration recevied.
+                // This might be the default behaviour to treat single values and arrays values the same...
+                return null;
+            }
+
             return unmarshallValue(property.getValues()[0]);
         } else {
-            final List<T> items = Arrays.stream(property.getValues()).map(this::unmarshallValue).collect(Collectors.toList());
+            String[] values = property.getValues();
+
+            // Values might not have been defined
+            // ie:
+            //
+            // <property name="propertyName" array="true" encrypted="false" type="Integer">
+            // </property>
+            if (values == null) {
+                return null;
+            }
+
+            final List<T> items = Arrays
+                    .stream(property.getValues())
+                    .map(value ->
+                            !Strings.isNullOrEmpty(value) || canUnmarshallEmptyString() ?
+                                unmarshallValue(value) :
+                                null
+                    )
+                    .collect(Collectors.toList());
             return items.toArray((T[]) Array.newInstance(clazz, items.size()));
         }
     }
