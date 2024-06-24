@@ -13,8 +13,8 @@
 package org.eclipse.kapua.commons.jpa;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+
+import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,7 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
     private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityManagerFactory.class);
 
     private static final Map<String, String> UNIQUE_CONTRAINTS = new HashMap<>();
-    private EntityManagerFactory entityManagerFactory;
+    private final EntityManagerFactory entityManagerFactory;
 
     /**
      * Protected constructor
@@ -44,32 +44,20 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
      * @param uniqueConstraints
      */
     protected AbstractEntityManagerFactory(String persistenceUnitName, String datasourceName, Map<String, String> uniqueConstraints) {
-        SystemSetting config = SystemSetting.getInstance();
-
         //
         // Initialize the EntityManagerFactory
         try {
             // JPA configuration overrides
+            // Other initialization code moved to org.eclipse.kapua.commons.jpa.JpaSessionCustomizer
             Map<String, Object> configOverrides = new HashMap<>();
-            configOverrides.put("javax.persistence.jdbc.driver", config.getString(SystemSettingKey.DB_JDBC_DRIVER));
 
             configOverrides.put("eclipselink.cache.shared.default", "false"); // This has to be set to false in order to disable the local object cache of EclipseLink.
-
-            configOverrides.put("eclipselink.connection-pool.default.url", JdbcConnectionUrlResolvers.resolveJdbcUrl());
-            configOverrides.put("eclipselink.connection-pool.default.user", config.getString(SystemSettingKey.DB_USERNAME));
-            configOverrides.put("eclipselink.connection-pool.default.password", config.getString(SystemSettingKey.DB_PASSWORD));
-
-            configOverrides.put("eclipselink.connection-pool.default.dataSourceName", datasourceName);
-            configOverrides.put("eclipselink.connection-pool.default.initial", config.getString(SystemSettingKey.DB_POOL_SIZE_INITIAL));
-            configOverrides.put("eclipselink.connection-pool.default.min", config.getString(SystemSettingKey.DB_POOL_SIZE_MIN));
-            configOverrides.put("eclipselink.connection-pool.default.max", config.getString(SystemSettingKey.DB_POOL_SIZE_MAX));
-            configOverrides.put("eclipselink.connection-pool.default.wait", config.getString(SystemSettingKey.DB_POOL_BORROW_TIMEOUT));
-
-            configOverrides.put("eclipselink.logging.level", "FINE");
-            configOverrides.put("eclipselink.logging.parameters", "true");
+            configOverrides.put("javax.persistence.nonJtaDataSource", DataSource.getDataSource());
 
             // Standalone JPA
             entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName, configOverrides);
+
+            printEntityManagerConfiguration(persistenceUnitName, datasourceName, configOverrides);
         } catch (Throwable ex) {
             LOG.error("Error creating EntityManagerFactory", ex);
             throw new ExceptionInInitializerError(ex);
@@ -83,7 +71,6 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
         }
     }
 
-    // Entity manager factory methods
     /**
      * Returns an EntityManager instance.
      *
@@ -96,4 +83,23 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
         return new EntityManager(entityManagerFactory.createEntityManager());
     }
 
+    //
+    // Private Methods
+    //
+
+    private void printEntityManagerConfiguration(String persistenceUnitName, String datasourceName, Map<String, Object> configOverrides) {
+        ConfigurationPrinter configurationPrinter =
+                ConfigurationPrinter.create()
+                        .withLogger(LOG)
+                        .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
+                        .withTitle("Persistence Unit Config: " + persistenceUnitName)
+                        .addParameter("Datasource Name", datasourceName)
+                        .openSection("Configuration Overrides");
+
+        for (Map.Entry<String, Object> config : configOverrides.entrySet()) {
+            configurationPrinter.addParameter(config.getKey(), config.getValue());
+        }
+
+        configurationPrinter.printLog();
+    }
 }
