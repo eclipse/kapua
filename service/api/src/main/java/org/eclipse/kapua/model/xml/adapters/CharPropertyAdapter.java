@@ -19,6 +19,11 @@ public class CharPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Charac
     }
 
     @Override
+    public boolean canUnmarshallEmptyString() {
+        return false;
+    }
+
+    @Override
     public Character unmarshallValue(String value) {
         return value.charAt(0);
     }

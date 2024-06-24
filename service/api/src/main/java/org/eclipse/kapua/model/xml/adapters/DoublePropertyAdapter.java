@@ -19,6 +19,11 @@ public class DoublePropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Doub
     }
 
     @Override
+    public boolean canUnmarshallEmptyString() {
+        return false;
+    }
+
+    @Override
     public Double unmarshallValue(String value) {
         return Double.parseDouble(value);
     }
