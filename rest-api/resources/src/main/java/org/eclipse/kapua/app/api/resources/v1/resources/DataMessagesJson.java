@@ -93,14 +93,15 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
                                                                            @QueryParam("startDate") DateParam startDateParam,
                                                                            @QueryParam("endDate") DateParam endDateParam,
                                                                            @QueryParam("metricName") String metricName,
-                                                                           @QueryParam("metricType") MetricType<V> metricType,
+                                                                           @QueryParam("metricType") String metricType,
                                                                            @QueryParam("metricMin") String metricMinValue,
                                                                            @QueryParam("metricMax") String metricMaxValue,
                                                                            @QueryParam("sortDir") @DefaultValue("DESC") SortDirection sortDir,
                                                                            @QueryParam("offset") @DefaultValue("0") int offset,
                                                                            @QueryParam("limit") @DefaultValue("50") int limit)
             throws KapuaException {
-        MessageQuery query = DataMessages.parametersToQuery(datastorePredicateFactory, messageStoreFactory, scopeId, clientId, channel, strictChannel, startDateParam, endDateParam, metricName, metricType, metricMinValue, metricMaxValue, sortDir, offset, limit);
+        MetricType<V> internalMetricType = new MetricType<>(metricType);
+        MessageQuery query = DataMessages.parametersToQuery(datastorePredicateFactory, messageStoreFactory, scopeId, clientId, channel, strictChannel, startDateParam, endDateParam, metricName, internalMetricType , metricMinValue, metricMaxValue, sortDir, offset, limit);
         query.setScopeId(scopeId);
         final MessageListResult result = messageStoreService.query(query);
 
