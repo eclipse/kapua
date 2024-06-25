@@ -12,6 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
@@ -25,21 +41,6 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.eclipse.kapua.service.config.ServiceComponentConfiguration;
 import org.eclipse.kapua.service.config.ServiceConfiguration;
 import org.eclipse.kapua.service.config.ServiceConfigurationFactory;
-
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Path("{scopeId}/serviceConfigurations")
 public class ServiceConfigurations extends AbstractKapuaResource {
@@ -79,11 +80,14 @@ public class ServiceConfigurations extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             ServiceConfiguration serviceConfiguration
     ) throws KapuaException, ClassNotFoundException {
+        Account account = accountService.find(scopeId);
+        if (account == null) {
+            throw new KapuaEntityNotFoundException(Account.TYPE, scopeId);
+        }
         for (ServiceComponentConfiguration serviceComponentConfiguration : serviceConfiguration.getComponentConfigurations()) {
             Class<KapuaService> configurableServiceClass = (Class<KapuaService>) Class.forName(serviceComponentConfiguration.getId()).asSubclass(KapuaService.class);
             if (KapuaConfigurableService.class.isAssignableFrom(configurableServiceClass)) {
                 KapuaConfigurableService configurableService = (KapuaConfigurableService) locator.getService(configurableServiceClass);
-                Account account = accountService.find(scopeId);
                 configurableService.setConfigValues(scopeId, account.getScopeId(), serviceComponentConfiguration.getProperties());
             }
         }
@@ -122,10 +126,13 @@ public class ServiceConfigurations extends AbstractKapuaResource {
             @PathParam("serviceId") String serviceId,
             ServiceComponentConfiguration serviceComponentConfiguration
     ) throws KapuaException, ClassNotFoundException {
+        Account account = accountService.find(scopeId);
+        if (account == null) {
+            throw new KapuaEntityNotFoundException(Account.TYPE, scopeId);
+        }
         Class<KapuaService> configurableServiceClass = (Class<KapuaService>) Class.forName(serviceId).asSubclass(KapuaService.class);
         if (KapuaConfigurableService.class.isAssignableFrom(configurableServiceClass)) {
             KapuaConfigurableService configurableService = (KapuaConfigurableService) locator.getService(configurableServiceClass);
-            Account account = accountService.find(scopeId);
             configurableService.setConfigValues(scopeId, account.getScopeId(), serviceComponentConfiguration.getProperties());
         }
         return Response.noContent().build();
