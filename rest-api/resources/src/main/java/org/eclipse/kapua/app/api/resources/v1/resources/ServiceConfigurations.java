@@ -80,14 +80,14 @@ public class ServiceConfigurations extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             ServiceConfiguration serviceConfiguration
     ) throws KapuaException, ClassNotFoundException {
+        Account account = accountService.find(scopeId);
+        if (account == null) {
+            throw new KapuaEntityNotFoundException(Account.TYPE, scopeId);
+        }
         for (ServiceComponentConfiguration serviceComponentConfiguration : serviceConfiguration.getComponentConfigurations()) {
             Class<KapuaService> configurableServiceClass = (Class<KapuaService>) Class.forName(serviceComponentConfiguration.getId()).asSubclass(KapuaService.class);
             if (KapuaConfigurableService.class.isAssignableFrom(configurableServiceClass)) {
                 KapuaConfigurableService configurableService = (KapuaConfigurableService) locator.getService(configurableServiceClass);
-                Account account = accountService.find(scopeId);
-                if (account == null) {
-                    throw new KapuaEntityNotFoundException(Account.TYPE, scopeId);
-                }
                 configurableService.setConfigValues(scopeId, account.getScopeId(), serviceComponentConfiguration.getProperties());
             }
         }
@@ -126,13 +126,13 @@ public class ServiceConfigurations extends AbstractKapuaResource {
             @PathParam("serviceId") String serviceId,
             ServiceComponentConfiguration serviceComponentConfiguration
     ) throws KapuaException, ClassNotFoundException {
+        Account account = accountService.find(scopeId);
+        if (account == null) {
+            throw new KapuaEntityNotFoundException(Account.TYPE, scopeId);
+        }
         Class<KapuaService> configurableServiceClass = (Class<KapuaService>) Class.forName(serviceId).asSubclass(KapuaService.class);
         if (KapuaConfigurableService.class.isAssignableFrom(configurableServiceClass)) {
             KapuaConfigurableService configurableService = (KapuaConfigurableService) locator.getService(configurableServiceClass);
-            Account account = accountService.find(scopeId);
-            if (account == null) {
-                throw new KapuaEntityNotFoundException(Account.TYPE, scopeId);
-            }
             configurableService.setConfigValues(scopeId, account.getScopeId(), serviceComponentConfiguration.getProperties());
         }
         return Response.noContent().build();
