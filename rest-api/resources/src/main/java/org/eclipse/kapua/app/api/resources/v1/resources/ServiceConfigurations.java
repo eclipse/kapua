@@ -29,6 +29,7 @@ import javax.ws.rs.core.Response;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.commons.configuration.metatype.EmptyTocd;
@@ -86,10 +87,11 @@ public class ServiceConfigurations extends AbstractKapuaResource {
         }
         for (ServiceComponentConfiguration serviceComponentConfiguration : serviceConfiguration.getComponentConfigurations()) {
             Class<KapuaService> configurableServiceClass = (Class<KapuaService>) Class.forName(serviceComponentConfiguration.getId()).asSubclass(KapuaService.class);
-            if (KapuaConfigurableService.class.isAssignableFrom(configurableServiceClass)) {
-                KapuaConfigurableService configurableService = (KapuaConfigurableService) locator.getService(configurableServiceClass);
-                configurableService.setConfigValues(scopeId, account.getScopeId(), serviceComponentConfiguration.getProperties());
+            if (!KapuaConfigurableService.class.isAssignableFrom(configurableServiceClass)) {
+                throw new KapuaIllegalArgumentException("serviceComponentConfiguration.id", serviceComponentConfiguration.getId());
             }
+            KapuaConfigurableService configurableService = (KapuaConfigurableService) locator.getService(configurableServiceClass);
+            configurableService.setConfigValues(scopeId, account.getScopeId(), serviceComponentConfiguration.getProperties());
         }
         return Response.noContent().build();
     }
@@ -102,17 +104,18 @@ public class ServiceConfigurations extends AbstractKapuaResource {
             @PathParam("serviceId") String serviceId
     ) throws KapuaException, ClassNotFoundException {
         Class<KapuaService> configurableServiceClass = (Class<KapuaService>) Class.forName(serviceId).asSubclass(KapuaService.class);
-        if (KapuaConfigurableService.class.isAssignableFrom(configurableServiceClass)) {
-            KapuaConfigurableService configurableService = (KapuaConfigurableService) locator.getService(configurableServiceClass);
-            KapuaTocd metadata = configurableService.getConfigMetadata(scopeId);
-            Map<String, Object> values = configurableService.getConfigValues(scopeId);
-            if (metadata != null && !(metadata instanceof EmptyTocd)) {
-                ServiceComponentConfiguration serviceComponentConfiguration = serviceConfigurationFactory.newComponentConfigurationInstance(metadata.getId());
-                serviceComponentConfiguration.setDefinition(metadata);
-                serviceComponentConfiguration.setName(metadata.getName());
-                serviceComponentConfiguration.setProperties(values);
-                return serviceComponentConfiguration;
-            }
+        if (!KapuaConfigurableService.class.isAssignableFrom(configurableServiceClass)) {
+            throw new KapuaIllegalArgumentException("service.pid", serviceId);
+        }
+        KapuaConfigurableService configurableService = (KapuaConfigurableService) locator.getService(configurableServiceClass);
+        KapuaTocd metadata = configurableService.getConfigMetadata(scopeId);
+        Map<String, Object> values = configurableService.getConfigValues(scopeId);
+        if (metadata != null && !(metadata instanceof EmptyTocd)) {
+            ServiceComponentConfiguration serviceComponentConfiguration = serviceConfigurationFactory.newComponentConfigurationInstance(metadata.getId());
+            serviceComponentConfiguration.setDefinition(metadata);
+            serviceComponentConfiguration.setName(metadata.getName());
+            serviceComponentConfiguration.setProperties(values);
+            return serviceComponentConfiguration;
         }
         return null;
     }
@@ -131,10 +134,11 @@ public class ServiceConfigurations extends AbstractKapuaResource {
             throw new KapuaEntityNotFoundException(Account.TYPE, scopeId);
         }
         Class<KapuaService> configurableServiceClass = (Class<KapuaService>) Class.forName(serviceId).asSubclass(KapuaService.class);
-        if (KapuaConfigurableService.class.isAssignableFrom(configurableServiceClass)) {
-            KapuaConfigurableService configurableService = (KapuaConfigurableService) locator.getService(configurableServiceClass);
-            configurableService.setConfigValues(scopeId, account.getScopeId(), serviceComponentConfiguration.getProperties());
+        if (!KapuaConfigurableService.class.isAssignableFrom(configurableServiceClass)) {
+            throw new KapuaIllegalArgumentException("service.pid", serviceId);
         }
+        KapuaConfigurableService configurableService = (KapuaConfigurableService) locator.getService(configurableServiceClass);
+        configurableService.setConfigValues(scopeId, account.getScopeId(), serviceComponentConfiguration.getProperties());
         return Response.noContent().build();
     }
 
