@@ -27,6 +27,11 @@ import org.eclipse.kapua.storage.TxContext;
 
 import java.util.Optional;
 
+/**
+ * The {@link PasswordResetter} implementation.
+ *
+ * @since 2.0.0
+ */
 public class PasswordResetterImpl implements PasswordResetter {
     private final CredentialFactory credentialFactory;
     private final CredentialRepository credentialRepository;

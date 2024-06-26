@@ -39,7 +39,6 @@ public class CredentialQueryImpl extends AbstractKapuaQuery implements Credentia
      * @since 1.0.0
      */
     public CredentialQueryImpl(KapuaId scopeId) {
-        this();
-        setScopeId(scopeId);
+        super(scopeId);
     }
 }
