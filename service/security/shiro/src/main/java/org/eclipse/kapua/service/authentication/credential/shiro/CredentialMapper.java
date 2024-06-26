@@ -16,6 +16,13 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 
+/**
+ * @since 2.0.0
+ */
 public interface CredentialMapper {
+
+    /**
+     * @since 2.0.0
+     */
     Credential map(CredentialCreator credentialCreator) throws KapuaException;
 }

@@ -22,10 +22,9 @@ import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import java.util.Date;
 
 /**
- * Credential creator implementation.
+ * {@link CredentialCreator} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class CredentialCreatorImpl extends AbstractKapuaEntityCreator<Credential> implements CredentialCreator {
 
@@ -38,20 +37,28 @@ public class CredentialCreatorImpl extends AbstractKapuaEntityCreator<Credential
     private CredentialStatus credentialStatus;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param scopeId
-     *            scope identifier
+     *            The {@link CredentialCreator#getScopeId()}
      * @param userId
-     *            user identifier
+     *            The {@link CredentialCreator#getUserId()}
      * @param credentialType
-     *            credential type (see {@link CredentialType} for the allowed values)
+     *            The {@link CredentialCreator#getCredentialType()}
      * @param credentialKey
+     *            The plain {@link CredentialCreator#getCredentialPlainKey()}
      * @param credentialStatus
+     *            The {@link CredentialCreator#getCredentialStatus()}
      * @param expirationDate
+     *            The {@link CredentialCreator#getExpirationDate()}
+     * @since 1.0.0
      */
-    public CredentialCreatorImpl(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey,
-            CredentialStatus credentialStatus, Date expirationDate) {
+    public CredentialCreatorImpl(KapuaId scopeId,
+                                 KapuaId userId,
+                                 CredentialType credentialType,
+                                 String credentialKey,
+                                 CredentialStatus credentialStatus,
+                                 Date expirationDate) {
         super(scopeId);
 
         this.userId = userId;
@@ -61,6 +68,12 @@ public class CredentialCreatorImpl extends AbstractKapuaEntityCreator<Credential
         this.expirationDate = expirationDate;
     }
 
+    /**
+     * Constructor.
+     *
+     * @param scopeId The {@link CredentialCreator#getScopeId()}
+     * @since 1.0.0
+     */
     public CredentialCreatorImpl(KapuaId scopeId) {
         super(scopeId);
     }

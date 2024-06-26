@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 /**
  * {@link CredentialService} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @Singleton
 public class CredentialServiceImpl extends KapuaConfigurableServiceBase implements CredentialService {

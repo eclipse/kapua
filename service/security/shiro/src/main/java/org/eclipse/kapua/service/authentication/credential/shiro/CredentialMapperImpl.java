@@ -21,6 +21,11 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticatio
 import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 
+/**
+ * The {@link CredentialMapper} implementation.
+ *
+ * @since 2.0.0
+ */
 public class CredentialMapperImpl implements CredentialMapper {
     public CredentialMapperImpl(CredentialFactory credentialFactory,
                                 KapuaAuthenticationSetting setting,
