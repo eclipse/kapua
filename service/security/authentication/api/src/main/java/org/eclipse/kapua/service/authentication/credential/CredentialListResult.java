@@ -20,10 +20,9 @@ import javax.xml.bind.annotation.XmlType;
 import org.eclipse.kapua.model.query.KapuaListResult;
 
 /**
- * Credential list result definition.
+ * {@link Credential} {@link KapuaListResult} definition.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 @XmlRootElement(name = "credentialListResult")
 @XmlAccessorType(XmlAccessType.PROPERTY)

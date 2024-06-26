@@ -18,9 +18,8 @@ import org.eclipse.kapua.model.id.KapuaId;
 import java.util.Date;
 
 /**
- * {@link CredentialFactory} definition.
+ * {@link Credential} {@link KapuaEntityFactory} definition.
  *
- * @see org.eclipse.kapua.model.KapuaEntityFactory
  * @since 1.0.0
  */
 public interface CredentialFactory extends KapuaEntityFactory<Credential, CredentialCreator, CredentialQuery, CredentialListResult> {

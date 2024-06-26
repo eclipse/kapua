@@ -20,16 +20,22 @@ package org.eclipse.kapua.service.authentication.credential;
 public enum CredentialType {
     /**
      * Password
+     *
+     * @since 1.0.0
      */
     PASSWORD,
 
     /**
      * API key
+     *
+     * @since 1.0.0
      */
     API_KEY,
 
     /**
      * Json Web Token
+     *
+     * @since 1.0.0
      */
     JWT;
 }
