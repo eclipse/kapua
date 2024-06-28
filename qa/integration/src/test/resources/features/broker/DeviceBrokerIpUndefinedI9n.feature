@@ -38,3 +38,4 @@ Feature: Device Broker connection ip not set
   @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment
+    And Clean Locator Instance

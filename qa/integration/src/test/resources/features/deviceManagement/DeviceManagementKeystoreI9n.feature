@@ -230,3 +230,4 @@ Feature: Device Management Keystore Service Tests
   @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment
+    And Clean Locator Instance

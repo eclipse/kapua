@@ -39,3 +39,4 @@ Feature: Device Broker connection ip with config file
   @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment
+    And Clean Locator Instance

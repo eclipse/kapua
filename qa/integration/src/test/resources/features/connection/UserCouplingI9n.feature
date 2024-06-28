@@ -1420,3 +1420,4 @@ Feature: User Coupling
   @teardown
   Scenario: Stop docker environment
     Given Stop full docker environment
+    And Clean Locator Instance

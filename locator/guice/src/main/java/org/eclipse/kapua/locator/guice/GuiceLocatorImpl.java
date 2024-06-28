@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -68,7 +70,7 @@ import com.google.inject.util.Modules;
  *
  * @since 1.0.0
  */
-public class GuiceLocatorImpl extends KapuaLocator {
+public class GuiceLocatorImpl extends KapuaLocator implements Closeable {
 
     private static final Logger LOG = LoggerFactory.getLogger(GuiceLocatorImpl.class);
 
@@ -359,5 +361,10 @@ public class GuiceLocatorImpl extends KapuaLocator {
 
         // Print it!
         configurationPrinter.printLog();
+    }
+
+    @Override
+    public void close() throws IOException {
+        INITIALIZATION_ATTEMPTS.decrementAndGet();
     }
 }

@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ServiceLoader;
 
@@ -111,6 +113,13 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
     }
 
     public static void clearInstance() {
+        if (instance instanceof Closeable) {
+            try {
+                ((Closeable) instance).close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         instance = null;
         isBeingCreated = false;
     }

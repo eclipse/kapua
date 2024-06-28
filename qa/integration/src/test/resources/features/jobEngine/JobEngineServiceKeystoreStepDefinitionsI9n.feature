@@ -145,3 +145,4 @@ Feature: Job Engine Service - Keystore Step Definitions
   @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment
+    And Clean Locator Instance

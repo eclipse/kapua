@@ -250,3 +250,4 @@ Feature: Device Management Inventory Service Tests
   @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment
+    And Clean Locator Instance
