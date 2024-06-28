@@ -12,14 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.artemis.plugin.security;
 
-import com.google.inject.Provides;
+import java.util.UUID;
+
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.jms.JMSException;
+
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.broker.artemis.plugin.security.context.SecurityContext;
 import org.eclipse.kapua.broker.artemis.plugin.security.metric.LoginMetric;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
-import org.eclipse.kapua.client.security.MessageListener;
+import org.eclipse.kapua.client.security.KapuaMessageListener;
 import org.eclipse.kapua.client.security.ServiceClient;
 import org.eclipse.kapua.client.security.ServiceClientMessagingImpl;
 import org.eclipse.kapua.client.security.amqpclient.Client;
@@ -28,12 +33,10 @@ import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.jms.JMSException;
-import java.util.UUID;
+import com.google.inject.Provides;
 
 public class ArtemisSecurityModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
         bind(ServerContext.class).in(Singleton.class);
@@ -46,9 +49,9 @@ public class ArtemisSecurityModule extends AbstractKapuaModule {
     @Provides
     @Singleton
     SecurityContext securityContext(LoginMetric loginMetric,
-                                    BrokerSetting brokerSettings,
-                                    MetricsSecurityPlugin metricsSecurityPlugin,
-                                    RunWithLock runWithLock) {
+            BrokerSetting brokerSettings,
+            MetricsSecurityPlugin metricsSecurityPlugin,
+            RunWithLock runWithLock) {
         return new SecurityContext(loginMetric,
                 brokerSettings.getBoolean(BrokerSettingKey.PRINT_SECURITY_CONTEXT_REPORT, false),
                 new LocalCache<>(
@@ -74,14 +77,14 @@ public class ArtemisSecurityModule extends AbstractKapuaModule {
     @Singleton
     @Provides
     ServiceClient authServiceClient(
-            MessageListener messageListener,
+            KapuaMessageListener messageListener,
             @Named("clusterName") String clusterName,
             @Named("brokerHost") String brokerHost,
             SystemSetting systemSetting) {
         return new ServiceClientMessagingImpl(messageListener, buildClient(systemSetting, clusterName, brokerHost, messageListener));
     }
 
-    public Client buildClient(SystemSetting systemSetting, String clusterName, String brokerHost, MessageListener messageListener) {
+    public Client buildClient(SystemSetting systemSetting, String clusterName, String brokerHost, KapuaMessageListener messageListener) {
         //TODO change configuration (use service event broker for now)
         String clientId = "svc-ath-" + UUID.randomUUID().toString();
         String host = systemSetting.getString(SystemSettingKey.SERVICE_BUS_HOST, "events-broker");

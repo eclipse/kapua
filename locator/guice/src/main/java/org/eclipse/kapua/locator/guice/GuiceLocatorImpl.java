@@ -59,6 +59,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -95,7 +96,12 @@ public class GuiceLocatorImpl extends KapuaLocator {
         this(SERVICE_RESOURCE);
     }
 
+    private static final AtomicInteger INITIALIZATION_ATTEMPTS = new AtomicInteger(0);
+
     public GuiceLocatorImpl(@NotNull String resourceName) {
+        if (INITIALIZATION_ATTEMPTS.incrementAndGet() != 1) {
+            throw new KapuaRuntimeException(KapuaLocatorErrorCodes.LOCATOR_CANNOT_BE_REINITIALIZED);
+        }
         try {
             init(resourceName);
         } catch (Exception e) {
@@ -251,6 +257,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
         try {
             injector = Guice.createInjector(stage, Modules.override(kapuaModules).with(overridingModules));
         } catch (Throwable t) {
+            injector = null;
             throw new RuntimeException(t);
         }
 
