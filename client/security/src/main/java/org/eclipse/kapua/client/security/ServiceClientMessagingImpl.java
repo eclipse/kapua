@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import javax.jms.JMSException;
 
 import org.eclipse.kapua.client.security.amqpclient.Client;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
@@ -24,7 +24,7 @@ import org.eclipse.kapua.client.security.bean.ResponseContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jms.JMSException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * Security service. Implementation through AMQP messaging layer.
@@ -34,17 +34,18 @@ public class ServiceClientMessagingImpl implements ServiceClient {
     private static final Logger logger = LoggerFactory.getLogger(ServiceClientMessagingImpl.class);
 
     private static final int TIMEOUT = 5000;
-    private final MessageListener messageListener;
+    private final KapuaMessageListener messageListener;
 
     private Client client;
 
-    public ServiceClientMessagingImpl(MessageListener messageListener, Client client) {
+    public ServiceClientMessagingImpl(KapuaMessageListener messageListener, Client client) {
         this.messageListener = messageListener;
         this.client = client;
     }
 
     @Override
-    public AuthResponse brokerConnect(AuthRequest authRequest) throws InterruptedException, JMSException, JsonProcessingException {//TODO review exception when Kapua code will be linked (throw KapuaException)
+    public AuthResponse brokerConnect(AuthRequest authRequest)
+            throws InterruptedException, JMSException, JsonProcessingException {//TODO review exception when Kapua code will be linked (throw KapuaException)
         String requestId = MessageHelper.getNewRequestId();
         authRequest.setRequestId(requestId);
         authRequest.setAction(SecurityAction.brokerConnect.name());

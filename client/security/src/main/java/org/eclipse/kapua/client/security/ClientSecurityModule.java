@@ -12,18 +12,26 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security;
 
+import javax.inject.Singleton;
+
 import org.eclipse.kapua.client.security.metric.AuthLoginMetricFactory;
 import org.eclipse.kapua.client.security.metric.AuthMetric;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 
-import javax.inject.Singleton;
+import com.google.inject.Provides;
 
 public class ClientSecurityModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
         bind(MetricsClientSecurity.class).in(Singleton.class);
-        bind(MessageListener.class).in(Singleton.class);
         bind(AuthMetric.class).in(Singleton.class);
         bind(AuthLoginMetricFactory.class).in(Singleton.class);
+    }
+
+    @Provides
+    @Singleton
+    KapuaMessageListener messageListener(MetricsClientSecurity metricsClientSecurity) {
+        return new KapuaMessageListener(metricsClientSecurity);
     }
 }

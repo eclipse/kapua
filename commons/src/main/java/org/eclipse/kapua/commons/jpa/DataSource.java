@@ -12,9 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
-import com.zaxxer.hikari.HikariDataSource;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 public final class DataSource {
 

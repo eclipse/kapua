@@ -12,13 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
-import com.google.common.base.Strings;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
-import org.eclipse.persistence.config.PersistenceUnitProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Cache;
 import javax.persistence.EntityGraph;
@@ -30,8 +25,15 @@ import javax.persistence.Query;
 import javax.persistence.SynchronizationType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.metamodel.Metamodel;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
+import org.eclipse.persistence.config.PersistenceUnitProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Strings;
 
 /**
  * Base {@code abstract} {@link EntityManager}.
@@ -39,6 +41,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 public class KapuaEntityManagerFactory implements EntityManagerFactory {
+
     private static final Logger LOG = LoggerFactory.getLogger(KapuaEntityManagerFactory.class);
     private static final String DEFAULT_DATASOURCE_NAME = "kapua-dbpool";
     private final EntityManagerFactory entityManagerFactory;
@@ -47,7 +50,8 @@ public class KapuaEntityManagerFactory implements EntityManagerFactory {
     /**
      * Constructor.
      *
-     * @param persistenceUnitName The {@link PersistenceUnit} name.
+     * @param persistenceUnitName
+     *         The {@link PersistenceUnit} name.
      * @since 2.0.0
      */
     public KapuaEntityManagerFactory(String persistenceUnitName) {
@@ -57,8 +61,10 @@ public class KapuaEntityManagerFactory implements EntityManagerFactory {
     /**
      * Constructor.
      *
-     * @param persistenceUnitName The {@link PersistenceUnit} name.
-     * @param datasourceName      The {@link DataSource} name.
+     * @param persistenceUnitName
+     *         The {@link PersistenceUnit} name.
+     * @param datasourceName
+     *         The {@link DataSource} name.
      * @since 2.0.0
      */
     public KapuaEntityManagerFactory(String persistenceUnitName, String datasourceName) {
@@ -69,6 +75,20 @@ public class KapuaEntityManagerFactory implements EntityManagerFactory {
             // This has to be set to false in order to disable the local object cache of EclipseLink.
             configOverrides.put(PersistenceUnitProperties.CACHE_SHARED_DEFAULT, "false");
             configOverrides.put(PersistenceUnitProperties.NON_JTA_DATASOURCE, DataSource.getDataSource());
+            // Uncomment the following and add the following lines to logback.xml to see full sql logs:
+            // <logger name="eclipselink.logging" level="ALL"/>
+            // <logger name="com.zaxxer.hikari" level="TRACE"/>
+            // configOverrides.put("eclipselink.logging.level", "ALL");
+            // configOverrides.put("eclipselink.logging.level.sql", "ALL");
+            // configOverrides.put("eclipselink.logging.level.transaction", "ALL");
+            // configOverrides.put("eclipselink.logging.level.connection", "ALL");
+            // configOverrides.put("eclipselink.logging.level.cache", "ALL");
+            // configOverrides.put("eclipselink.logging.parameters", "true");
+            // configOverrides.put("eclipselink.logging.session", "true");
+            // configOverrides.put("eclipselink.logging.thread", "true");
+            // configOverrides.put("eclipselink.logging.timestamp", "true");
+            // configOverrides.put("eclipselink.logging.connection", "true");
+            // configOverrides.put("eclipselink.logging.logger", "org.eclipse.persistence.logging.slf4j.SLF4JLogger");
 
             final String targetDatabase = systemSetting.getString(SystemSettingKey.DB_JDBC_DATABASE_TARGET);
             if (!Strings.isNullOrEmpty(targetDatabase)) {
@@ -100,9 +120,12 @@ public class KapuaEntityManagerFactory implements EntityManagerFactory {
     /**
      * Prints the {@link EntityManager}'s configuration.
      *
-     * @param persistenceUnitName The {@link PersistenceUnit#name()}.
-     * @param datasourceName      The datasource name.
-     * @param configOverrides     The configuration overrides for the {@link EntityManager}.
+     * @param persistenceUnitName
+     *         The {@link PersistenceUnit#name()}.
+     * @param datasourceName
+     *         The datasource name.
+     * @param configOverrides
+     *         The configuration overrides for the {@link EntityManager}.
      * @since 2.0.0
      */
     private void printEntityManagerConfiguration(String persistenceUnitName, String datasourceName, Map<String, Object> configOverrides) {

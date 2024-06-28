@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security.bean;
 
-import org.eclipse.kapua.client.security.MessageListener;
+import org.eclipse.kapua.client.security.KapuaMessageListener;
 
 public class ResponseContainer<O extends Response> {
 
@@ -35,7 +35,7 @@ public class ResponseContainer<O extends Response> {
         return requestId;
     }
 
-    public static <O extends Response> ResponseContainer<O> createAnRegisterNewMessageContainer(MessageListener messageListener, Request request) {
+    public static <O extends Response> ResponseContainer<O> createAnRegisterNewMessageContainer(KapuaMessageListener messageListener, Request request) {
         ResponseContainer<O> messageContainer = new ResponseContainer<>(request.getRequestId());
         messageListener.registerCallback(request.getRequestId(), messageContainer);
         return messageContainer;
