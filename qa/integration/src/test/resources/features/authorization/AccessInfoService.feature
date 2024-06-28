@@ -725,6 +725,7 @@ Scenario: Initialize test environment
     Then I can compare access role objects
     Then I can compare access permission objects
 
-@teardown
-Scenario: Reset Security Context for all scenarios
-  Given Reset Security Context
+  @teardown
+  Scenario: Reset Security Context for all scenarios
+    Given Clean Locator Instance
+    And Reset Security Context

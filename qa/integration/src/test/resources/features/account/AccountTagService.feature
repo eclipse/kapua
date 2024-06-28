@@ -127,4 +127,5 @@ Feature: Account Tag Service Integration Tests
 
   @teardown
   Scenario: Reset Security Context for all scenarios
-    Given Reset Security Context
+    Given Clean Locator Instance
+    And Reset Security Context

@@ -958,3 +958,4 @@ Feature: Endpoint Info Service Integration Tests
 @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment
+    And Clean Locator Instance

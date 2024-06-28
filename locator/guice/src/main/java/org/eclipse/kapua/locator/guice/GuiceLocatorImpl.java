@@ -46,6 +46,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Closeable;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -68,7 +70,7 @@ import java.util.stream.Stream;
  *
  * @since 1.0.0
  */
-public class GuiceLocatorImpl extends KapuaLocator {
+public class GuiceLocatorImpl extends KapuaLocator implements Closeable {
 
     private static final Logger LOG = LoggerFactory.getLogger(GuiceLocatorImpl.class);
 
@@ -500,5 +502,10 @@ public class GuiceLocatorImpl extends KapuaLocator {
      */
     private <T extends Class<?>> Collection<T> sortedClass(Collection<T> classes) {
         return classes.stream().sorted(Comparator.comparing(Class::getName)).collect(Collectors.toList());
+    }
+
+    @Override
+    public void close() throws IOException {
+        INITIALIZATION_ATTEMPTS.decrementAndGet();
     }
 }

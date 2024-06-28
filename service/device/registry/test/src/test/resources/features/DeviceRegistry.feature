@@ -228,6 +228,7 @@ Scenario: Initialize test environment
 
         Then All device factory functions must return non null values
 
-@teardown
-Scenario: Reset Security Context for all scenarios
-    Given Reset Security Context
+  @teardown
+  Scenario: Reset Security Context for all scenarios
+    Given Clean Locator Instance
+    And Reset Security Context

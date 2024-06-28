@@ -787,4 +787,5 @@ Feature: Trigger service tests
   @teardown
   Scenario: Stop test environment
     Given Stop full docker environment
+    And Clean Locator Instance
     And Reset Security Context

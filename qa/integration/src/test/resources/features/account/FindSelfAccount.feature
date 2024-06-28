@@ -100,6 +100,7 @@ Scenario: Initialize test environment
     And I look for my account by name
     Then I am able to read my account info
 
-@teardown
-Scenario: Reset Security Context for all scenarios
-  Given Reset Security Context
+  @teardown
+  Scenario: Reset Security Context for all scenarios
+    Given Clean Locator Instance
+    And Reset Security Context

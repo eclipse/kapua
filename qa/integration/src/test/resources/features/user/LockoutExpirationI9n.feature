@@ -668,4 +668,5 @@ Scenario: Init Security Context for all scenarios
 
 @teardown
   Scenario: Reset Security Context for all scenarios
-    Given Reset Security Context
+    Given Clean Locator Instance
+    And Reset Security Context

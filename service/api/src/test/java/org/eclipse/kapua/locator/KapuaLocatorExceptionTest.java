@@ -39,11 +39,13 @@ public class KapuaLocatorExceptionTest {
         argument3 = 'c';
         throwables = new Throwable[] { new Throwable(), null };
         expectedMessageNullArguments = new String[] { "Service unavailable {0}", "{0} is not a valid service provider for {1}", "Factory unavailable {0}",
-                "{0} is not a valid factory provider for {1}", "Error: ", "Error: ", "Error: " };
+                "{0} is not a valid factory provider for {1}", "Error: ", "Error: ", "Error: ",
+                "The Locator context initialization attempted more than once - this could lead to multiple singleton instances being alive, resulting in hard-to-detect errors." };
         expectedMessage = new String[] { "Service unavailable " + argument1, argument1 + " is not a valid service provider for " + argument2, "Factory unavailable " + argument1,
                 argument1 + " is not a valid factory provider for " + argument2, "Error: " + argument1 + ", " + argument2 + ", " + argument3,
                 "Error: " + argument1 + ", " + argument2 + ", " + argument3,
-                "Error: " + argument1 + ", " + argument2 + ", " + argument3 };
+                "Error: " + argument1 + ", " + argument2 + ", " + argument3,
+                "The Locator context initialization attempted more than once - this could lead to multiple singleton instances being alive, resulting in hard-to-detect errors." };
     }
 
     @Test

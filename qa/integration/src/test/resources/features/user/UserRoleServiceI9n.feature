@@ -1522,7 +1522,7 @@ Feature: User role service integration tests
     And I logout
 
   Scenario: testing "userIdsByRoleId" method on a selected role
-    I verify that I can fetch users assigned to a given role using the appropriate method
+  I verify that I can fetch users assigned to a given role using the appropriate method
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And Scope with ID 1
@@ -1673,4 +1673,5 @@ Feature: User role service integration tests
   @teardown
   Scenario: Stop test environment
     Given Stop full docker environment
+    And Clean Locator Instance
     And Reset Security Context
