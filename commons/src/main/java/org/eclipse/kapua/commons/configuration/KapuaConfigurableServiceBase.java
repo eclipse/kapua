@@ -12,7 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
+import java.util.Map;
+import java.util.Optional;
+
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -21,9 +25,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.eclipse.kapua.storage.TxManager;
-
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Base {@link KapuaConfigurableService} implementation, build upon {@link ServiceConfigurationManager}.
@@ -60,11 +61,17 @@ public class KapuaConfigurableServiceBase
 
     @Override
     public boolean isServiceEnabled(KapuaId scopeId) throws KapuaException {
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
+
         return txManager.execute(tx -> serviceConfigurationManager.isServiceEnabled(tx, scopeId));
     }
 
     @Override
     public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
+
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
         return txManager.execute(tx -> serviceConfigurationManager.getConfigMetadata(tx, scopeId, true));
@@ -72,6 +79,9 @@ public class KapuaConfigurableServiceBase
 
     @Override
     public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
+
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
 
@@ -80,6 +90,10 @@ public class KapuaConfigurableServiceBase
 
     @Override
     public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(values, "values");
+
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.write, scopeId));
 
         txManager.<Void>execute(tx -> {
