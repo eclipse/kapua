@@ -475,6 +475,9 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
     @Override
     public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(values, "values");
+
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
