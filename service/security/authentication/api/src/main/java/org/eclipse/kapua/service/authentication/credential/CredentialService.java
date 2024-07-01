@@ -21,6 +21,8 @@ import org.eclipse.kapua.service.authentication.user.PasswordResetRequest;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.eclipse.kapua.service.user.User;
 
+import java.util.Set;
+
 /**
  * {@link Credential} {@link KapuaEntityService} definition.
  *
@@ -42,7 +44,7 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
     CredentialListResult findByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException;
 
     /**
-     * Gets a {@link Credential} by its ApiKey. To be used when {@link Credential#getCredentialType()} is {@link CredentialType#API_KEY}
+     * Gets a {@link Credential} by its ApiKey. To be used when {@link Credential#getCredentialType()} is {@code API_KEY}
      *
      * @param tokenApiKey The API key to match
      * @return The matched {@link Credential}
@@ -112,4 +114,12 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
      * @since 2.0.0
      */
     Credential adminResetUserPassword(KapuaId scopeId, KapuaId userId, PasswordResetRequest passwordResetRequest) throws KapuaException;
+
+    /**
+     * Gets the available {@link Credential#getCredentialType()}s
+     * @return The available {@link Credential#getCredentialType()}s
+     * @throws KapuaException
+     * @since 2.1.0
+     */
+    Set<String> getAvailableCredentialTypes() throws KapuaException;
 }

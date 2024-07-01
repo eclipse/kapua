@@ -22,6 +22,8 @@ import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCrede
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialCreator;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialQuery;
 
+import java.util.List;
+
 @RemoteServiceRelativePath("credential")
 public interface GwtCredentialService extends RemoteService {
 
@@ -61,4 +63,5 @@ public interface GwtCredentialService extends RemoteService {
     Integer getMinPasswordLength(String scopeId)
             throws GwtKapuaException;
 
+    List<String> getAvailableCredentialTypes() throws GwtKapuaException;
 }

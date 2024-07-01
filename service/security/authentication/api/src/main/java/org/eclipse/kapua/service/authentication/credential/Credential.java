@@ -62,21 +62,21 @@ public interface Credential extends KapuaUpdatableEntity {
     void setUserId(KapuaId userId);
 
     /**
-     * Gets the {@link CredentialType}
+     * Gets the type.
      *
-     * @return The {@link CredentialType}
+     * @return The type.
      * @since 1.0.0
      */
     @XmlElement(name = "credentialType")
-    CredentialType getCredentialType();
+    String getCredentialType();
 
     /**
-     * Sets the {@link CredentialType}.
+     * Sets the type.
      *
-     * @param credentialType The {@link CredentialType}.
+     * @param credentialType The type.
      * @since 1.0.0
      */
-    void setCredentialType(CredentialType credentialType);
+    void setCredentialType(String credentialType);
 
     /**
      * Gets the secret key

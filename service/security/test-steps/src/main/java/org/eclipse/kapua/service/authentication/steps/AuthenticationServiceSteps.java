@@ -32,7 +32,6 @@ import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
 import org.eclipse.kapua.service.authentication.user.PasswordResetRequest;
 import org.eclipse.kapua.service.authentication.user.UserCredentialsFactory;
@@ -193,7 +192,7 @@ public class AuthenticationServiceSteps extends TestBase {
         primeException();
 
         User user = (User) stepData.get("User");
-        CredentialCreator credentialCreator = credentialFactory.newCreator(user.getScopeId(), user.getId(), CredentialType.PASSWORD, password, CredentialStatus.ENABLED, null);
+        CredentialCreator credentialCreator = credentialFactory.newCreator(user.getScopeId(), user.getId(), "PASSWORD", password, CredentialStatus.ENABLED, null);
         try {
             Credential credential = credentialService.create(credentialCreator);
             stepData.put(BasicSteps.LAST_CREDENTIAL_ID, credential.getId());

@@ -16,6 +16,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -48,6 +49,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
+import org.eclipse.kapua.service.authentication.credential.handler.CredentialTypeHandler;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialRepository;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
@@ -64,11 +66,12 @@ import org.eclipse.kapua.service.authentication.credential.mfa.shiro.MfaOptionSe
 import org.eclipse.kapua.service.authentication.credential.mfa.shiro.ScratchCodeFactoryImpl;
 import org.eclipse.kapua.service.authentication.credential.mfa.shiro.ScratchCodeImplJpaRepository;
 import org.eclipse.kapua.service.authentication.credential.mfa.shiro.ScratchCodeServiceImpl;
+import org.eclipse.kapua.service.authentication.credential.handler.shiro.ApiKeyCredentialTypeHandler;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFactoryImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImplJpaRepository;
-import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapper;
-import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapperImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
+import org.eclipse.kapua.service.authentication.credential.handler.shiro.JwtCredentialTypeHandler;
+import org.eclipse.kapua.service.authentication.credential.handler.shiro.PasswordCredentialTypeHandler;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordResetter;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidator;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidatorImpl;
@@ -198,13 +201,6 @@ public class AuthenticationModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    CredentialMapper credentialMapper(CredentialFactory credentialFactory, KapuaAuthenticationSetting kapuaAuthenticationSetting,
-            AuthenticationUtils authenticationUtils) {
-        return new CredentialMapperImpl(credentialFactory, kapuaAuthenticationSetting, authenticationUtils);
-    }
-
-    @Provides
-    @Singleton
     AccessTokenService accessTokenService(
             AuthorizationService authorizationService,
             PermissionFactory permissionFactory,
@@ -292,20 +288,20 @@ public class AuthenticationModule extends AbstractKapuaModule {
             CredentialRepository credentialRepository,
             CredentialFactory credentialFactory,
             KapuaJpaTxManagerFactory jpaTxManagerFactory,
-            CredentialMapper credentialMapper,
             PasswordValidator passwordValidator,
             KapuaAuthenticationSetting kapuaAuthenticationSetting,
-            PasswordResetter passwordResetter) {
+            PasswordResetter passwordResetter,
+            Set<CredentialTypeHandler> availableCredentialAuthenticationTypes) {
         return new CredentialServiceImpl(serviceConfigurationManager,
                 authorizationService,
                 permissionFactory,
                 jpaTxManagerFactory.create("kapua-authentication"),
                 credentialRepository,
                 credentialFactory,
-                credentialMapper,
                 passwordValidator,
                 kapuaAuthenticationSetting,
-                passwordResetter);
+                passwordResetter,
+                availableCredentialAuthenticationTypes);
     }
 
     @Provides
@@ -359,5 +355,41 @@ public class AuthenticationModule extends AbstractKapuaModule {
                 return cached.getConfigMetadata(txContext, scopeId, excludeDisabled);
             }
         };
+    }
+
+    //
+    // Credential type handlers
+    //
+
+    @ProvidesIntoSet
+    public CredentialTypeHandler passwordCredentialTypeHandler(
+            KapuaJpaTxManagerFactory kapuaJpaTxManagerFactory,
+            CredentialRepository credentialRepository,
+            AuthenticationUtils authenticationUtils,
+            PasswordValidator passwordValidator
+    ) {
+        return new PasswordCredentialTypeHandler(
+                kapuaJpaTxManagerFactory.create("kapua-authentication"),
+                credentialRepository,
+                authenticationUtils,
+                passwordValidator);
+    }
+
+
+    @ProvidesIntoSet
+    public CredentialTypeHandler apiKeyCredentialTypeHandler(
+            AuthenticationUtils authenticationUtils,
+            KapuaAuthenticationSetting authenticationSetting
+    ) {
+        return new ApiKeyCredentialTypeHandler(
+                authenticationSetting,
+                authenticationUtils);
+    }
+
+    @ProvidesIntoSet
+    public CredentialTypeHandler jwtCredentialTypeHandler(
+            AuthenticationUtils authenticationUtils
+    ) {
+        return new JwtCredentialTypeHandler(authenticationUtils);
     }
 }

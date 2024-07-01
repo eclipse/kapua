@@ -17,7 +17,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
 
 import java.util.Date;
 
@@ -31,7 +30,7 @@ public class CredentialCreatorImpl extends AbstractKapuaEntityCreator<Credential
     private static final long serialVersionUID = -5020680413729882095L;
 
     private KapuaId userId;
-    private CredentialType credentialType;
+    private String credentialType;
     private String credentialKey;
     private Date expirationDate;
     private CredentialStatus credentialStatus;
@@ -55,7 +54,7 @@ public class CredentialCreatorImpl extends AbstractKapuaEntityCreator<Credential
      */
     public CredentialCreatorImpl(KapuaId scopeId,
                                  KapuaId userId,
-                                 CredentialType credentialType,
+                                 String credentialType,
                                  String credentialKey,
                                  CredentialStatus credentialStatus,
                                  Date expirationDate) {
@@ -88,11 +87,11 @@ public class CredentialCreatorImpl extends AbstractKapuaEntityCreator<Credential
     }
 
     @Override
-    public CredentialType getCredentialType() {
+    public String getCredentialType() {
         return credentialType;
     }
 
-    public void setCredentialType(CredentialType credentialType) {
+    public void setCredentialType(String credentialType) {
         this.credentialType = credentialType;
     }
 

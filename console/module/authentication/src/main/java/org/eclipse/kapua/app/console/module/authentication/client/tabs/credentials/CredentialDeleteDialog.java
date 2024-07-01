@@ -19,7 +19,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
-import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialType;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialServiceAsync;
 
@@ -36,9 +35,9 @@ public class CredentialDeleteDialog extends EntityDeleteDialog {
 
     @Override
     public String getHeaderMessage() {
-        if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
+        if ("API_KEY".equals(selectedCredential.getCredentialType())) {
             return MSGS.dialogDeleteHeaderAPI();
-        } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+        } else if ("PASSWORD".equals(selectedCredential.getCredentialType())) {
             return MSGS.dialogDeleteHeaderPassword();
         } else {
             return "";
@@ -47,9 +46,9 @@ public class CredentialDeleteDialog extends EntityDeleteDialog {
 
     @Override
     public String getInfoMessage() {
-        if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
+        if ("API_KEY".equals(selectedCredential.getCredentialType())) {
             return MSGS.dialogDeleteInfoAPI();
-        } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+        } else if ("PASSWORD".equals(selectedCredential.getCredentialType())) {
             return MSGS.dialogDeleteInfoPassword();
         } else {
             return "";
@@ -64,9 +63,9 @@ public class CredentialDeleteDialog extends EntityDeleteDialog {
             public void onSuccess(Void arg0) {
                 exitStatus = true;
 
-                if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
+                if ("API_KEY".equals(selectedCredential.getCredentialType())) {
                     exitMessage = MSGS.dialogDeleteConfirmationAPI();
-                } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+                } else if ("PASSWORD".equals(selectedCredential.getCredentialType())) {
                     exitMessage = MSGS.dialogDeleteConfirmationPassword();
                 }
 
@@ -78,9 +77,9 @@ public class CredentialDeleteDialog extends EntityDeleteDialog {
                 exitStatus = false;
 
                 if (!isPermissionErrorMessage(cause)) {
-                    if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
+                    if ("API_KEY".equals(selectedCredential.getCredentialType())) {
                         exitMessage = MSGS.dialogDeleteErrorAPI(cause.getLocalizedMessage());
-                    } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+                    } else if ("PASSWORD".equals(selectedCredential.getCredentialType())) {
                         exitMessage = MSGS.dialogDeleteErrorPassword(cause.getLocalizedMessage());
                     }
                 }

@@ -25,7 +25,7 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.credential.handler.shiro.PasswordCredentialTypeHandler;
 import org.eclipse.kapua.service.authentication.shiro.UsernamePasswordCredentialsImpl;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.MfaRequiredException;
 import org.eclipse.kapua.service.user.User;
@@ -90,7 +90,7 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
             credential = KapuaSecurityUtils.doPrivileged(() -> {
                 CredentialListResult userCredentialList = credentialService.findByUserId(user.getScopeId(), user.getId());
 
-                List<Credential> passwordCredentialList = userCredentialList.getItems(c -> CredentialType.PASSWORD.equals(c.getCredentialType()));
+                List<Credential> passwordCredentialList = userCredentialList.getItems(c -> PasswordCredentialTypeHandler.TYPE.equals(c.getCredentialType()));
 
                 if (passwordCredentialList.isEmpty()) {
                     return null;
