@@ -136,7 +136,25 @@ public enum DatastoreElasticsearchClientSettingsKey implements SettingKey {
      *
      * @since 1.3.0
      */
-    SSL_TRUSTSTORE_PASSWORD("datastore.elasticsearch.ssl.truststore.password");
+    SSL_TRUSTSTORE_PASSWORD("datastore.elasticsearch.ssl.truststore.password"),
+    /**
+     * Elastichsearch client number of IO threads (use 0 or less to let the default value ofRuntime.getRuntime().availableProcessors() to be used
+     *
+     * @since 2.1.0
+     */
+    NUMBER_OF_IO_THREADS("datastore.elasticsearch.numberOfIOThreads"),
+    /**
+     * Elastichsearch client request connection timeout in milliseconds
+     *
+     * @since 2.1.0
+     */
+    REQUEST_CONNECTION_TIMEOUT_MILLIS("datastore.elasticsearch.request.connection.timeout.millis"),
+    /**
+     * Elastichsearch client request socket timeout in milliseconds
+     *
+     * @since 2.1.0
+     */
+    REQUEST_SOCKET_TIMEOUT_MILLIS("datastore.elasticsearch.request.socket.timeout.millis");
 
     /**
      * The key value in the configuration resources.
@@ -148,7 +166,8 @@ public enum DatastoreElasticsearchClientSettingsKey implements SettingKey {
     /**
      * Set up the {@code enum} with the key value provided
      *
-     * @param key The value mapped by this {@link Enum} value
+     * @param key
+     *         The value mapped by this {@link Enum} value
      * @since 1.0.0
      */
     DatastoreElasticsearchClientSettingsKey(String key) {
