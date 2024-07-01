@@ -14,13 +14,15 @@ package org.eclipse.kapua.service.authentication.user.shiro;
 
 import com.google.inject.Module;
 import com.google.inject.Provides;
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.KapuaJpaTxManagerFactory;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialRepository;
-import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapper;
+import org.eclipse.kapua.service.authentication.credential.handler.CredentialTypeHandler;
+import org.eclipse.kapua.service.authentication.credential.handler.shiro.PasswordCredentialTypeHandler;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordResetter;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordResetterImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidator;
@@ -31,6 +33,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.UserService;
 
 import javax.inject.Singleton;
+import java.util.Set;
 
 /**
  * {@code kapua-security-shiro} {@link Module} implementation.
@@ -38,6 +41,7 @@ import javax.inject.Singleton;
  * @since 2.0.0
  */
 public class UserCredentialsModule extends AbstractKapuaModule {
+
     @Override
     protected void configureModule() {
         bind(UserCredentialsFactory.class).to(UserCredentialsFactoryImpl.class);
@@ -46,11 +50,21 @@ public class UserCredentialsModule extends AbstractKapuaModule {
     @Provides
     @Singleton
     PasswordResetter passwordResetter(
-            CredentialFactory credentialFactory,
             CredentialRepository credentialRepository,
-            CredentialMapper credentialMapper,
-            PasswordValidator passwordValidator) {
-        return new PasswordResetterImpl(credentialFactory, credentialRepository, credentialMapper, passwordValidator);
+            Set<CredentialTypeHandler> credentialTypeHandlers,
+            PasswordValidator passwordValidator
+    ) {
+        PasswordCredentialTypeHandler passwordCredentialTypeHandler = (PasswordCredentialTypeHandler) credentialTypeHandlers
+                .stream()
+                .filter(credentialTypeHandler -> credentialTypeHandler instanceof PasswordCredentialTypeHandler)
+                .findFirst()
+                .orElseThrow(() -> KapuaRuntimeException.internalError("Cannot find an instance of PasswordCredentialTypeHandler between the available CredentialTypeHandlers"));
+
+        return new PasswordResetterImpl(
+                credentialRepository,
+                passwordCredentialTypeHandler,
+                passwordValidator
+        );
     }
 
     @Provides

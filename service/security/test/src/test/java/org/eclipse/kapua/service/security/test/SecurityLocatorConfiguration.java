@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.security.test;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.HashSet;
+
 import com.codahale.metrics.MetricRegistry;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -43,13 +47,17 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
+import org.eclipse.kapua.service.authentication.credential.handler.CredentialTypeHandler;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
+import org.eclipse.kapua.service.authentication.credential.handler.shiro.ApiKeyCredentialTypeHandler;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFactoryImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImplJpaRepository;
-import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapperImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
+import org.eclipse.kapua.service.authentication.credential.handler.shiro.JwtCredentialTypeHandler;
+import org.eclipse.kapua.service.authentication.credential.handler.shiro.PasswordCredentialTypeHandler;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordResetterImpl;
+import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidator;
 import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidatorImpl;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
@@ -87,9 +95,6 @@ import org.eclipse.kapua.service.user.internal.UserImplJpaRepository;
 import org.eclipse.kapua.service.user.internal.UserServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
-
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
 @Singleton
 public class SecurityLocatorConfiguration {
@@ -169,23 +174,44 @@ public class SecurityLocatorConfiguration {
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
                         Mockito.mock(RootUserTester.class),
                         new KapuaAuthenticationSetting());
-                try {
-                    bind(CredentialService.class).toInstance(new CredentialServiceImpl(
-                            credentialServiceConfigurationManager,
-                            mockedAuthorization,
-                            mockPermissionFactory,
-                            new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-authorization"),
-                            new CredentialImplJpaRepository(jpaRepoConfig),
-                            credentialFactory,
-                            new CredentialMapperImpl(credentialFactory, new KapuaAuthenticationSetting(), new AuthenticationUtils(SecureRandom.getInstance("SHA1PRNG"), new KapuaCryptoSetting())),
-                            new PasswordValidatorImpl(credentialServiceConfigurationManager), new KapuaAuthenticationSetting(),
-                            new PasswordResetterImpl(credentialFactory,
-                                    new CredentialImplJpaRepository(new KapuaJpaRepositoryConfiguration()),
-                                    new CredentialMapperImpl(credentialFactory, new KapuaAuthenticationSetting(), authenticationUtils(new KapuaCryptoSetting())),
-                                    new PasswordValidatorImpl(credentialServiceConfigurationManager))));
-                } catch (NoSuchAlgorithmException e) {
-                    throw new RuntimeException(e);
-                }
+
+                final CredentialImplJpaRepository credentialRepository = new CredentialImplJpaRepository(jpaRepoConfig);
+                final AuthenticationUtils authenticationUtils = authenticationUtils(new KapuaCryptoSetting());
+                final PasswordValidator passwordValidator = new PasswordValidatorImpl(credentialServiceConfigurationManager);
+
+                bind(CredentialService.class).toInstance(new CredentialServiceImpl(
+                        credentialServiceConfigurationManager,
+                        mockedAuthorization,
+                        mockPermissionFactory,
+                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-authorization"),
+                        credentialRepository,
+                        credentialFactory,
+                        new PasswordValidatorImpl(credentialServiceConfigurationManager), new KapuaAuthenticationSetting(),
+                        new PasswordResetterImpl(
+                                credentialRepository,
+                                new PasswordCredentialTypeHandler(
+                                        new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-authorization"),
+                                        credentialRepository,
+                                        authenticationUtils,
+                                        passwordValidator
+                                ),
+                                new PasswordValidatorImpl(credentialServiceConfigurationManager)),
+                        new HashSet<CredentialTypeHandler>() {{
+                            add(
+                                new PasswordCredentialTypeHandler(
+                                    new KapuaJpaTxManagerFactory(maxInsertAttempts).create("kapua-authorization"),
+                                    credentialRepository,
+                                    authenticationUtils,
+                                    passwordValidator)
+                            );
+                            add(
+                                new ApiKeyCredentialTypeHandler(
+                                    new KapuaAuthenticationSetting(),
+                                    authenticationUtils)
+                            );
+                            add(new JwtCredentialTypeHandler(authenticationUtils));
+                        }}
+                ));
                 final UserFactoryImpl userFactory = new UserFactoryImpl();
                 bind(UserFactory.class).toInstance(userFactory);
                 final RootUserTester rootUserTester = Mockito.mock(RootUserTester.class);

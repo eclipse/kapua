@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.authentication.shiro.realm;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authentication.credential.Credential;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.junit.Assert;
@@ -56,7 +55,7 @@ public class ApiKeyCredentialsMatcherTest {
     public void doCredentialsMatchDifferentCredentialTypesTest() {
         Mockito.when(authenticationToken.getCredentials()).thenReturn("tokenApiFullKey");
         Mockito.when(authenticationInfo.getCredentials()).thenReturn(credential);
-        Mockito.when(credential.getCredentialType()).thenReturn(CredentialType.PASSWORD);
+        Mockito.when(credential.getCredentialType()).thenReturn("PASSWORD");
 
         Assert.assertFalse("False expected.", apiKeyCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }
@@ -65,7 +64,7 @@ public class ApiKeyCredentialsMatcherTest {
     public void doCredentialsMatchDifferentTokenAndInfoPreTest() {
         Mockito.when(authenticationToken.getCredentials()).thenReturn("tokenApiFullKey");
         Mockito.when(authenticationInfo.getCredentials()).thenReturn(credential);
-        Mockito.when(credential.getCredentialType()).thenReturn(CredentialType.API_KEY);
+        Mockito.when(credential.getCredentialType()).thenReturn("API_KEY");
         Mockito.when(credential.getCredentialKey()).thenReturn("FullApiK:Credential");
 
         Assert.assertFalse("False expected.", apiKeyCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
@@ -75,7 +74,7 @@ public class ApiKeyCredentialsMatcherTest {
     public void doCredentialsMatchEqualTokenAndInfoPreFalseCheckPwTest() {
         Mockito.when(authenticationToken.getCredentials()).thenReturn("FullApiKCredential");
         Mockito.when(authenticationInfo.getCredentials()).thenReturn(credential);
-        Mockito.when(credential.getCredentialType()).thenReturn(CredentialType.API_KEY);
+        Mockito.when(credential.getCredentialType()).thenReturn("API_KEY");
         Mockito.when(credential.getCredentialKey()).thenReturn("FullApiK:$2a$12$2AZYOAvilJyNvG8b6rBDaOSIcM3mKc6iyNQUYIXOF4ZFEAYdzM7Jm");
 
         Assert.assertFalse("False expected.", apiKeyCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
@@ -85,7 +84,7 @@ public class ApiKeyCredentialsMatcherTest {
     public void doCredentialsMatchTest() {
         Mockito.when(authenticationToken.getCredentials()).thenReturn("FullApiKplainValue");
         Mockito.when(authenticationInfo.getCredentials()).thenReturn(credential);
-        Mockito.when(credential.getCredentialType()).thenReturn(CredentialType.API_KEY);
+        Mockito.when(credential.getCredentialType()).thenReturn("API_KEY");
         Mockito.when(credential.getCredentialKey()).thenReturn("FullApiK:$2a$12$2AZYOAvilJyNvG8b6rBDaOSIcM3mKc6iyNQUYIXOF4ZFEAYdzM7Jm");
 
         Assert.assertTrue("True expected.", apiKeyCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));

@@ -19,7 +19,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
@@ -274,8 +273,16 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
 
             });
         } catch (KapuaException ex) {
-            FailureHandler.handle(ex);
-            return null;
+            throw KapuaExceptionHandler.buildExceptionFromError(ex);
+        }
+    }
+
+    @Override
+    public List<String> getAvailableCredentialTypes() throws GwtKapuaException {
+        try {
+            return new ArrayList<String>(CREDENTIAL_SERVICE.getAvailableCredentialTypes());
+        } catch (Exception e) {
+            throw KapuaExceptionHandler.buildExceptionFromError(e);
         }
     }
 

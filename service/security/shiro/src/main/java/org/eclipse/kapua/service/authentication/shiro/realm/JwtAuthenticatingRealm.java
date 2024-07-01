@@ -33,7 +33,7 @@ import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.credential.handler.shiro.JwtCredentialTypeHandler;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
@@ -156,12 +156,15 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
                 throw new ShiroException("Unexpected error while looking for the user", e);
             }
         }
+
         // Check user
         checkUser(user);
+
         // Check account
         Account account = checkAccount(user.getScopeId());
+
         // Create credential
-        Credential credential = new CredentialImpl(user.getScopeId(), user.getId(), CredentialType.JWT, jwtIdToken, CredentialStatus.ENABLED, null);
+        Credential credential = new CredentialImpl(user.getScopeId(), user.getId(), JwtCredentialTypeHandler.TYPE, jwtIdToken, CredentialStatus.ENABLED, null);
 
         // Build AuthenticationInfo
         return new LoginAuthenticationInfo(getName(),

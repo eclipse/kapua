@@ -18,7 +18,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +33,7 @@ public class CredentialImplTest {
     KapuaId[] scopeIds;
     KapuaEid[] userIds;
     String[] credentialKeys;
-    CredentialType[] credentialTypes;
+    String[] credentialTypes;
     CredentialStatus[] credentialStatuses;
     Date[] dates;
     Date modifiedOn, expirationDate, loginFailuresReset, lockoutReset;
@@ -46,7 +45,7 @@ public class CredentialImplTest {
         scopeIds = new KapuaId[]{null, KapuaId.ONE};
         userIds = new KapuaEid[]{null, new KapuaEid(KapuaId.ONE)};
         credentialKeys = new String[]{null, "", "!!credentialKey-1", "#1(credentialKey.,/Key)9--99", "!$$ 1-2 key//", "credential_K_ey(....)<00>"};
-        credentialTypes = new CredentialType[]{null, CredentialType.PASSWORD, CredentialType.API_KEY, CredentialType.JWT};
+        credentialTypes = new String[]{null, "PASSWORD", "API_KEY", "JWT"};
         credentialStatuses = new CredentialStatus[]{null, CredentialStatus.ENABLED, CredentialStatus.DISABLED};
         dates = new Date[]{null, new Date()};
         modifiedOn = new Date();
@@ -60,7 +59,7 @@ public class CredentialImplTest {
         Mockito.when(credential.getModifiedBy()).thenReturn(KapuaId.ONE);
         Mockito.when(credential.getOptlock()).thenReturn(10);
         Mockito.when(credential.getUserId()).thenReturn(KapuaId.ONE);
-        Mockito.when(credential.getCredentialType()).thenReturn(CredentialType.PASSWORD);
+        Mockito.when(credential.getCredentialType()).thenReturn("PASSWORD");
         Mockito.when(credential.getCredentialKey()).thenReturn("key");
         Mockito.when(credential.getExpirationDate()).thenReturn(expirationDate);
         Mockito.when(credential.getStatus()).thenReturn(CredentialStatus.ENABLED);
@@ -70,7 +69,7 @@ public class CredentialImplTest {
 
         credentialImpl1 = new CredentialImpl();
         credentialImpl2 = new CredentialImpl(KapuaId.ONE);
-        credentialImpl3 = new CredentialImpl(KapuaId.ONE, new KapuaEid(KapuaId.ONE), CredentialType.PASSWORD, "key", CredentialStatus.ENABLED, new Date());
+        credentialImpl3 = new CredentialImpl(KapuaId.ONE, new KapuaEid(KapuaId.ONE), "PASSWORD", "key", CredentialStatus.ENABLED, new Date());
         credentialImpl4 = new CredentialImpl(credential);
     }
 
@@ -102,7 +101,7 @@ public class CredentialImplTest {
     public void credentialImplMultipleParametersTest() {
         for (KapuaId scopeId : scopeIds) {
             for (KapuaEid userId : userIds) {
-                for (CredentialType credentialType : credentialTypes) {
+                for (String credentialType : credentialTypes) {
                     for (String credentialKey : credentialKeys) {
                         for (CredentialStatus credentialStatus : credentialStatuses) {
                             for (Date date : dates) {
@@ -129,7 +128,7 @@ public class CredentialImplTest {
         Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, credentialImpl.getModifiedBy());
         Assert.assertEquals("Expected and actual values should be the same.", 10, credentialImpl.getOptlock());
         Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, credentialImpl.getUserId());
-        Assert.assertEquals("Expected and actual values should be the same.", CredentialType.PASSWORD, credentialImpl.getCredentialType());
+        Assert.assertEquals("Expected and actual values should be the same.", "PASSWORD", credentialImpl.getCredentialType());
         Assert.assertEquals("Expected and actual values should be the same.", "key", credentialImpl.getCredentialKey());
         Assert.assertEquals("Expected and actual values should be the same.", expirationDate, credentialImpl.getExpirationDate());
         Assert.assertEquals("Expected and actual values should be the same.", CredentialStatus.ENABLED, credentialImpl.getStatus());
@@ -170,9 +169,9 @@ public class CredentialImplTest {
 
     @Test
     public void setAndGetCredentialTypeTest() {
-        CredentialType[] newCredentialTypes = {null, CredentialType.PASSWORD, CredentialType.API_KEY, CredentialType.JWT};
+        String[] newCredentialTypes = {null, "PASSWORD", "API_KEY", "JWT"};
 
-        for (CredentialType newCredentialType : newCredentialTypes) {
+        for (String newCredentialType : newCredentialTypes) {
             credentialImpl1.setCredentialType(newCredentialType);
             credentialImpl2.setCredentialType(newCredentialType);
             credentialImpl3.setCredentialType(newCredentialType);

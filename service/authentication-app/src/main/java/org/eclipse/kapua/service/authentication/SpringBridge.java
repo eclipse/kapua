@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.authentication;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.kapua.client.security.metric.AuthMetric;
 import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
@@ -20,6 +21,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.guice.GuiceLocatorImpl;
+import org.eclipse.kapua.service.authentication.credential.handler.CredentialTypeHandler;
 import org.eclipse.kapua.service.authentication.setting.ServiceAuthenticationSetting;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -69,6 +71,17 @@ public class SpringBridge {
                 .getInstance(
                         Key.get(
                                 (TypeLiteral<Map<String, DeviceConnectionCredentialAdapter>>) TypeLiteral.get(Types.mapOf(String.class, DeviceConnectionCredentialAdapter.class))
+                        )
+                );
+    }
+
+    @Bean
+    Set<CredentialTypeHandler> credentialTypeHandlerSet() {
+        return ((GuiceLocatorImpl) KapuaLocator.getInstance())
+                .getInjector()
+                .getInstance(
+                        Key.get(
+                                (TypeLiteral<Set<CredentialTypeHandler>>) TypeLiteral.get(Types.setOf(CredentialTypeHandler.class))
                         )
                 );
     }

@@ -16,10 +16,8 @@ import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 
 public class GwtCredentialQuery extends GwtQuery {
 
-    private static final long serialVersionUID = 1L;
-
     private String username;
-    private GwtCredentialType type;
+    private String credentialType;
     private String userId;
 
     public String getUsername() {
@@ -30,12 +28,12 @@ public class GwtCredentialQuery extends GwtQuery {
         this.username = key;
     }
 
-    public GwtCredentialType getType() {
-        return type;
+    public String getCredentialType() {
+        return credentialType;
     }
 
-    public void setType(GwtCredentialType type) {
-        this.type = type;
+    public void setCredentialType(String credentialType) {
+        this.credentialType = credentialType;
     }
 
     public String getUserId() {

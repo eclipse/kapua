@@ -52,7 +52,7 @@ import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.credential.handler.shiro.PasswordCredentialTypeHandler;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
@@ -680,7 +680,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
                 if (!credentialList.isEmpty()) {
                     Credential credentialMatched = null;
                     for (Credential c : credentialList.getItems()) {
-                        if (CredentialType.PASSWORD.equals(c.getCredentialType())) {
+                        if (PasswordCredentialTypeHandler.TYPE.equals(c.getCredentialType())) {
                             credentialMatched = c;
                             break;
                         }

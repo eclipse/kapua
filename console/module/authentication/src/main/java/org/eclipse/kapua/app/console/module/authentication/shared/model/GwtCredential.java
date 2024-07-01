@@ -24,9 +24,7 @@ public class GwtCredential extends GwtUpdatableEntityModel {
     @Override
     @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
-        if ("credentialTypeEnum".equals(property)) {
-            return (X) GwtCredentialType.valueOf(getCredentialType());
-        } else if ("statusEnum".equals(property)) {
+        if ("statusEnum".equals(property)) {
             return (X) GwtCredentialStatus.valueOf(getStatus());
         } else if ("subjectTypeEnum".equals(property)) {
             return (X) GwtSubjectType.valueOf(getSubjectType());
@@ -79,10 +77,6 @@ public class GwtCredential extends GwtUpdatableEntityModel {
 
     public String getCredentialType() {
         return get("credentialType");
-    }
-
-    public GwtCredentialType getCredentialTypeEnum() {
-        return get("credentialTypeEnum");
     }
 
     public void setCredentialType(String credentialType) {

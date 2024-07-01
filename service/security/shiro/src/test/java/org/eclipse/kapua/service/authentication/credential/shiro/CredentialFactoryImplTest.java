@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
@@ -38,7 +37,7 @@ public class CredentialFactoryImplTest {
     KapuaId[] scopeIds;
     KapuaEid[] userIds;
     String[] credentialKeys;
-    CredentialType[] credentialTypes;
+    String[] credentialTypes;
     CredentialStatus[] credentialStatuses;
     Date[] dates;
     Credential credential;
@@ -50,7 +49,7 @@ public class CredentialFactoryImplTest {
         scopeIds = new KapuaId[]{null, KapuaId.ONE};
         userIds = new KapuaEid[]{null, new KapuaEid()};
         credentialKeys = new String[]{null, "", "!!credentialKey-1", "#1(credentialKey.,/Key)9--99", "!$$ 1-2 key//", "credential_K_ey(....)<00>"};
-        credentialTypes = new CredentialType[]{null, CredentialType.PASSWORD, CredentialType.API_KEY, CredentialType.JWT};
+        credentialTypes = new String[] {null, "PASSWORD", "API_KEY", "JWT"};
         credentialStatuses = new CredentialStatus[]{null, CredentialStatus.ENABLED, CredentialStatus.DISABLED};
         dates = new Date[]{null, new Date()};
         credential = Mockito.mock(Credential.class);
@@ -62,7 +61,7 @@ public class CredentialFactoryImplTest {
     public void newCreatorScopeIdUserIdMfaSecretKeyParametersTest() {
         for (KapuaId scopeId : scopeIds) {
             for (KapuaEid userId : userIds) {
-                for (CredentialType credentialType : credentialTypes) {
+                for (String credentialType : credentialTypes) {
                     for (String credentialKey : credentialKeys) {
                         for (CredentialStatus credentialStatus : credentialStatuses) {
                             for (Date date : dates) {
@@ -98,7 +97,7 @@ public class CredentialFactoryImplTest {
     public void newMfaOptionTest() {
         for (KapuaId scopeId : scopeIds) {
             for (KapuaEid userId : userIds) {
-                for (CredentialType credentialType : credentialTypes) {
+                for (String credentialType : credentialTypes) {
                     for (String credentialKey : credentialKeys) {
                         for (CredentialStatus credentialStatus : credentialStatuses) {
                             for (Date date : dates) {
@@ -138,7 +137,7 @@ public class CredentialFactoryImplTest {
     public void cloneTest() {
         Mockito.when(credential.getScopeId()).thenReturn(KapuaId.ONE);
         Mockito.when(credential.getUserId()).thenReturn(KapuaId.ONE);
-        Mockito.when(credential.getCredentialType()).thenReturn(CredentialType.JWT);
+        Mockito.when(credential.getCredentialType()).thenReturn("JWT");
         Mockito.when(credential.getCredentialKey()).thenReturn("key");
         Mockito.when(credential.getExpirationDate()).thenReturn(expirationDate);
         Mockito.when(credential.getModifiedOn()).thenReturn(modifiedOn);
@@ -149,7 +148,7 @@ public class CredentialFactoryImplTest {
 
         Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, credentialResult.getScopeId());
         Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, credentialResult.getUserId());
-        Assert.assertEquals("Expected and actual values should be the same.", CredentialType.JWT, credentialResult.getCredentialType());
+        Assert.assertEquals("Expected and actual values should be the same.", "JWT", credentialResult.getCredentialType());
         Assert.assertEquals("Expected and actual values should be the same.", "key", credentialResult.getCredentialKey());
         Assert.assertEquals("Expected and actual values should be the same.", expirationDate, credentialResult.getExpirationDate());
         Assert.assertEquals("Expected and actual values should be the same.", modifiedOn, credentialResult.getModifiedOn());

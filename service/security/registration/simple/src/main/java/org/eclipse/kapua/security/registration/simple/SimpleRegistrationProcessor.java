@@ -30,7 +30,6 @@ import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
@@ -345,7 +344,7 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
 
         // Create default password
 
-        CredentialCreator credential = credentialFactory.newCreator(account.getId(), user.getId(), CredentialType.PASSWORD, baseName + "-Password1!", CredentialStatus.ENABLED, null);
+        CredentialCreator credential = credentialFactory.newCreator(account.getId(), user.getId(), "PASSWORD", baseName + "-Password1!", CredentialStatus.ENABLED, null);
         credentialService.create(credential);
 
         return user;

@@ -49,7 +49,6 @@ import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionFactory;
@@ -830,7 +829,7 @@ public class UserServiceSteps extends TestBase {
      */
     private CredentialCreator credentialCreatorCreator(KapuaId scopeId, KapuaId userId, String password, CredentialStatus status, Date expirationDate) {
         CredentialCreator credentialCreator;
-        credentialCreator = credentialFactory.newCreator(scopeId, userId, CredentialType.PASSWORD, password, status, expirationDate);
+        credentialCreator = credentialFactory.newCreator(scopeId, userId, "PASSWORD", password, status, expirationDate);
         return credentialCreator;
     }
 
