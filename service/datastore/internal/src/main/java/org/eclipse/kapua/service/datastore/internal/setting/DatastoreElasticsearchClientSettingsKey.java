@@ -138,19 +138,19 @@ public enum DatastoreElasticsearchClientSettingsKey implements SettingKey {
      */
     SSL_TRUSTSTORE_PASSWORD("datastore.elasticsearch.ssl.truststore.password"),
     /**
-     * Elastichsearch client number of IO threads. Leave <=0 to use the default
+     * Elastichsearch client number of IO threads. Leave &lt;=0 to use the default
      *
      * @since 2.1.0
      */
     NUMBER_OF_IO_THREADS("datastore.elasticsearch.numberOfIOThreads"),
     /**
-     * Elastichsearch client request connection timeout in milliseconds. Leave <=0 to use the default
+     * Elastichsearch client request connection timeout in milliseconds. Leave &lt;0 to use the default
      *
      * @since 2.1.0
      */
     REQUEST_CONNECTION_TIMEOUT_MILLIS("datastore.elasticsearch.request.connection.timeout.millis"),
     /**
-     * Elastichsearch client request socket timeout in milliseconds. Leave <=0 to use the default
+     * Elastichsearch client request socket timeout in milliseconds. Leave &lt;0 to use the default
      *
      * @since 2.1.0
      */
