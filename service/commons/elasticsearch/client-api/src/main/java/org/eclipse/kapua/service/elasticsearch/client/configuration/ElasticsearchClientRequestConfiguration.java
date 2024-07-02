@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.configuration;
 
+import java.util.Optional;
+
 import org.eclipse.kapua.service.elasticsearch.client.model.Request;
 
 /**
@@ -26,8 +28,8 @@ public class ElasticsearchClientRequestConfiguration {
 
     private int queryTimeout = 15000;
     private int scrollTimeout = 60000;
-    private int connectionTimeoutMillis = 5000;
-    private int socketTimeoutMillis = 3000;
+    private Optional<Integer> connectionTimeoutMillis = Optional.empty();
+    private Optional<Integer> socketTimeoutMillis = Optional.empty();
 
     /**
      * Gets the number of maximum attempts to retry a {@link Request}.
@@ -137,7 +139,7 @@ public class ElasticsearchClientRequestConfiguration {
      * @return The query {@link Request} connection timeout.
      * @since 2.1.0
      */
-    public int getConnectionTimeoutMillis() {
+    public Optional<Integer> getConnectionTimeoutMillis() {
         return connectionTimeoutMillis;
     }
 
@@ -149,7 +151,7 @@ public class ElasticsearchClientRequestConfiguration {
      * @return The query {@link Request} connection timeout.
      * @since 2.1.0
      */
-    public int getSocketTimeoutMillis() {
+    public Optional<Integer> getSocketTimeoutMillis() {
         return socketTimeoutMillis;
     }
 
@@ -161,8 +163,8 @@ public class ElasticsearchClientRequestConfiguration {
      * @return This {@link ElasticsearchClientRequestConfiguration} to chain method invocation.
      * @since 2.1.0
      */
-    public ElasticsearchClientRequestConfiguration setConnectionTimeoutMillis(int connectionTimeoutMillis) {
-        this.connectionTimeoutMillis = connectionTimeoutMillis;
+    public ElasticsearchClientRequestConfiguration setConnectionTimeoutMillis(Integer connectionTimeoutMillis) {
+        this.connectionTimeoutMillis = Optional.ofNullable(connectionTimeoutMillis).filter(i -> i >= 0);
         return this;
     }
 
@@ -174,8 +176,8 @@ public class ElasticsearchClientRequestConfiguration {
      * @return This {@link ElasticsearchClientRequestConfiguration} to chain method invocation.
      * @since 2.1.0
      */
-    public ElasticsearchClientRequestConfiguration setSocketTimeoutMillis(int socketTimeoutMillis) {
-        this.socketTimeoutMillis = socketTimeoutMillis;
+    public ElasticsearchClientRequestConfiguration setSocketTimeoutMillis(Integer socketTimeoutMillis) {
+        this.socketTimeoutMillis = Optional.ofNullable(socketTimeoutMillis).filter(i -> i >= 0);
         return this;
     }
 }
