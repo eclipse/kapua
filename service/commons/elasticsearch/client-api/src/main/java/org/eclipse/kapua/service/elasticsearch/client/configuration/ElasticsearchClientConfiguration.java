@@ -31,7 +31,7 @@ public class ElasticsearchClientConfiguration {
     private List<ElasticsearchNode> nodes;
     private String username;
     private String password;
-    private Integer numberOfIOThreads;
+    private Optional<Integer> numberOfIOThreads;
 
     private ElasticsearchClientReconnectConfiguration reconnectConfiguration;
     private ElasticsearchClientRequestConfiguration requestConfiguration;
@@ -259,14 +259,13 @@ public class ElasticsearchClientConfiguration {
         return this;
     }
 
-    public int getNumberOfIOThreads() {
-        return Optional.ofNullable(numberOfIOThreads)
-                .filter(i -> i > 0)
-                .orElseGet(() -> Runtime.getRuntime().availableProcessors());
+    public Optional<Integer> getNumberOfIOThreads() {
+        return this.numberOfIOThreads;
     }
 
     public ElasticsearchClientConfiguration setNumberOfIOThreads(Integer numberOfIOThreads) {
-        this.numberOfIOThreads = numberOfIOThreads;
+        this.numberOfIOThreads = Optional.ofNullable(numberOfIOThreads)
+                .filter(i -> i > 0);
         return this;
     }
 }
