@@ -88,7 +88,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 /**
  * Implementation of Gherkin steps used in user test scenarios.
@@ -1253,18 +1252,8 @@ public class UserServiceSteps extends TestBase {
         KapuaId userIdTmp = null;
         KapuaId scopeIdTmp = null;
         try {
-            userIdTmp = KapuaSecurityUtils.doPrivileged(new Callable<KapuaId>() {
-                @Override
-                public KapuaId call() throws Exception {
-                    return userService.findByName(username).getId();
-                }
-            });
-            scopeIdTmp = KapuaSecurityUtils.doPrivileged(new Callable<KapuaId>() {
-                @Override
-                public KapuaId call() throws Exception {
-                    return userService.findByName(username).getScopeId();
-                }
-            });
+            userIdTmp = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(username).getId());
+            scopeIdTmp = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(username).getScopeId());
         } catch (KapuaException e) {
             e.printStackTrace();
         }
@@ -1273,12 +1262,7 @@ public class UserServiceSteps extends TestBase {
         final KapuaId userId = userIdTmp;
         final KapuaId scopeId = scopeIdTmp;
         try {
-            credential = KapuaSecurityUtils.doPrivileged(new Callable<Credential>() {
-                @Override
-                public Credential call() throws Exception {
-                    return credentialService.findByUserId(scopeId, userId).getFirstItem();
-                }
-            });
+            credential = KapuaSecurityUtils.doPrivileged(() -> credentialService.findByUserId(scopeId, userId).getFirstItem());
         } catch (KapuaException e) {
             e.printStackTrace();
         }
