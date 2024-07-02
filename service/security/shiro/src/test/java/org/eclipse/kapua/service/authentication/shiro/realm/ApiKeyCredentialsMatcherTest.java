@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
@@ -51,13 +52,13 @@ public class ApiKeyCredentialsMatcherTest {
         apiKeyCredentialsMatcher.doCredentialsMatch(authenticationToken, null);
     }
 
-    @Test
+    @Test(expected = KapuaRuntimeException.class)
     public void doCredentialsMatchDifferentCredentialTypesTest() {
         Mockito.when(authenticationToken.getCredentials()).thenReturn("tokenApiFullKey");
         Mockito.when(authenticationInfo.getCredentials()).thenReturn(credential);
         Mockito.when(credential.getCredentialType()).thenReturn("PASSWORD");
 
-        Assert.assertFalse("False expected.", apiKeyCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
+        apiKeyCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo);
     }
 
     @Test
