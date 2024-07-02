@@ -25,6 +25,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -332,9 +333,11 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
         restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> customizeHttpClient(httpClientBuilder, finalSslContext, finalCredentialsProvider));
         //        restClientBuilder.setFailureListener(new RestElasticsearchFailureListener());
         restClientBuilder.setRequestConfigCallback(
-                requestConfigBuilder -> requestConfigBuilder
-                        .setConnectTimeout(clientConfiguration.getRequestConfiguration().getConnectionTimeoutMillis())
-                        .setSocketTimeout(clientConfiguration.getRequestConfiguration().getSocketTimeoutMillis()));
+                requestConfigBuilder -> {
+                    clientConfiguration.getRequestConfiguration().getConnectionTimeoutMillis().ifPresent(timout -> requestConfigBuilder.setConnectTimeout(timout));
+                    clientConfiguration.getRequestConfiguration().getSocketTimeoutMillis().ifPresent(timout -> requestConfigBuilder.setSocketTimeout(timout));
+                    return requestConfigBuilder;
+                });
         RestClient restClient = restClientBuilder.build();
 
         // Init Kapua Elasticsearch Client
@@ -358,12 +361,17 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
             if(credentialsProvider != null) {
                 httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
             }
-            ;
-            DefaultConnectingIOReactor ioReactor = new DefaultConnectingIOReactor(
-                    IOReactorConfig.custom().setIoThreadCount(
-                            getClientConfiguration().getNumberOfIOThreads()
-                    ).build()
-            );
+            final DefaultConnectingIOReactor ioReactor;
+            final Optional<Integer> numberOfIOThreads = getClientConfiguration().getNumberOfIOThreads();
+            if (numberOfIOThreads.isPresent()) {
+                ioReactor = new DefaultConnectingIOReactor(
+                        IOReactorConfig.custom().setIoThreadCount(
+                                numberOfIOThreads.get()
+                        ).build()
+                );
+            } else {
+                ioReactor = new DefaultConnectingIOReactor();
+            }
             ioReactor.setExceptionHandler(new IOReactorExceptionHandler() {
 
                 @Override
