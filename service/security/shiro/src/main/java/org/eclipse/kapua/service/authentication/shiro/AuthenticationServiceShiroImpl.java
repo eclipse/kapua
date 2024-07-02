@@ -57,7 +57,7 @@ import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.MfaRequiredException;
-import org.eclipse.kapua.service.authentication.shiro.realm.CredentialsHandler;
+import org.eclipse.kapua.service.authentication.shiro.realm.CredentialsConverter;
 import org.eclipse.kapua.service.authentication.shiro.realm.KapuaAuthenticationToken;
 import org.eclipse.kapua.service.authentication.shiro.session.ShiroSessionKeys;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
@@ -138,7 +138,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     private final UserService userService;
 
-    private final Set<CredentialsHandler> credentialsHandlers;
+    private final Set<CredentialsConverter> credentialsConverters;
     private final KapuaAuthenticationSetting kapuaAuthenticationSetting;
 
     private final JwtConsumer jwtConsumer;
@@ -159,7 +159,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             AccessPermissionService accessPermissionService,
             AccessPermissionFactory accessPermissionFactory,
             UserService userService,
-            Set<CredentialsHandler> credentialsHandlers,
+            Set<CredentialsConverter> credentialsConverters,
             KapuaAuthenticationSetting kapuaAuthenticationSetting) {
         this.credentialService = credentialService;
         this.mfaOptionService = mfaOptionService;
@@ -175,7 +175,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         this.accessPermissionService = accessPermissionService;
         this.accessPermissionFactory = accessPermissionFactory;
         this.userService = userService;
-        this.credentialsHandlers = credentialsHandlers;
+        this.credentialsConverters = credentialsConverters;
         this.kapuaAuthenticationSetting = kapuaAuthenticationSetting;
         this.jwtConsumer = new JwtConsumerBuilder()
                 .setSkipAllValidators()
@@ -486,13 +486,13 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
      */
     private KapuaAuthenticationToken doMapToShiro(AuthenticationCredentials authenticationCredentials) throws KapuaAuthenticationException {
         // Parse login credentials
-        CredentialsHandler credentialsHandler = credentialsHandlers
+        CredentialsConverter credentialsConverter = credentialsConverters
                 .stream()
                 .filter(ch -> ch.canProcess(authenticationCredentials))
                 .findFirst()
                 .orElseThrow(() -> new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED));
 
-        return credentialsHandler.mapToShiro(authenticationCredentials);
+        return credentialsConverter.convertToShiro(authenticationCredentials);
     }
 
     private void handleTokenLoginException(ShiroException se, Subject currentSubject, AuthenticationToken authenticationToken) throws KapuaException {

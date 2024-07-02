@@ -80,11 +80,11 @@ import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErr
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.registration.RegistrationService;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
-import org.eclipse.kapua.service.authentication.shiro.realm.AccessTokenCredentialsHandler;
-import org.eclipse.kapua.service.authentication.shiro.realm.ApiKeyCredentialsHandler;
-import org.eclipse.kapua.service.authentication.shiro.realm.CredentialsHandler;
-import org.eclipse.kapua.service.authentication.shiro.realm.JwtCredentialsHandler;
-import org.eclipse.kapua.service.authentication.shiro.realm.UserPassCredentialsHandler;
+import org.eclipse.kapua.service.authentication.shiro.realm.AccessTokenCredentialsConverter;
+import org.eclipse.kapua.service.authentication.shiro.realm.ApiKeyCredentialsConverter;
+import org.eclipse.kapua.service.authentication.shiro.realm.CredentialsConverter;
+import org.eclipse.kapua.service.authentication.shiro.realm.JwtCredentialsConverter;
+import org.eclipse.kapua.service.authentication.shiro.realm.UserPassCredentialsConverter;
 import org.eclipse.kapua.service.authentication.shiro.registration.RegistrationServiceImpl;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
@@ -172,23 +172,23 @@ public class AuthenticationModule extends AbstractKapuaModule {
     }
 
     @ProvidesIntoSet
-    public CredentialsHandler usernamePasswordCredentialsHandler() {
-        return new UserPassCredentialsHandler();
+    public CredentialsConverter usernamePasswordCredentialsHandler() {
+        return new UserPassCredentialsConverter();
     }
 
     @ProvidesIntoSet
-    public CredentialsHandler apiKeyCredentialsHandler() {
-        return new ApiKeyCredentialsHandler();
+    public CredentialsConverter apiKeyCredentialsHandler() {
+        return new ApiKeyCredentialsConverter();
     }
 
     @ProvidesIntoSet
-    public CredentialsHandler jwtCredentialsHandler() {
-        return new JwtCredentialsHandler();
+    public CredentialsConverter jwtCredentialsHandler() {
+        return new JwtCredentialsConverter();
     }
 
     @ProvidesIntoSet
-    public CredentialsHandler accessTokenCredentialsHandler() {
-        return new AccessTokenCredentialsHandler();
+    public CredentialsConverter accessTokenCredentialsHandler() {
+        return new AccessTokenCredentialsConverter();
     }
 
     @Provides
