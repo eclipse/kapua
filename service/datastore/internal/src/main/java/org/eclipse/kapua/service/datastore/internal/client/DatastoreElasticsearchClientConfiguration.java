@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.client;
 
+import java.util.List;
+
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettingsKey;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class DatastoreElasticsearchClientConfiguration extends ElasticsearchClientConfiguration {
 
@@ -41,10 +41,12 @@ public class DatastoreElasticsearchClientConfiguration extends ElasticsearchClie
         setPassword(elasticsearchClientSettings.getString(DatastoreElasticsearchClientSettingsKey.PASSWORD));
         getRequestConfiguration().setQueryTimeout(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_QUERY_TIMEOUT));
         getRequestConfiguration().setScrollTimeout(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_SCROLL_TIMEOUT));
+        getRequestConfiguration().setConnectionTimeoutMillis(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_CONNECTION_TIMEOUT_MILLIS, -1));
+        getRequestConfiguration().setSocketTimeoutMillis(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_SOCKET_TIMEOUT_MILLIS, -1));
         getRequestConfiguration().setRequestRetryAttemptMax(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_RETRY_MAX));
         getRequestConfiguration().setRequestRetryAttemptWait(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_RETRY_WAIT));
         getSslConfiguration().setEnabled(elasticsearchClientSettings.getBoolean(DatastoreElasticsearchClientSettingsKey.SSL_ENABLED));
-
+        setNumberOfIOThreads(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.NUMBER_OF_IO_THREADS, 0));
         getReconnectConfiguration().setReconnectDelay(30000);
     }
 
