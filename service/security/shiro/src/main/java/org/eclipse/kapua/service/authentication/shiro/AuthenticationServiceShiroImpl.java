@@ -50,7 +50,6 @@ import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.SessionCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
-import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.handler.shiro.PasswordCredentialTypeHandler;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
@@ -667,33 +666,31 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     }
 
     /**
-     * Method for checking the lockout state of the user credential
+     * Checks if a {@link Credential} is locked.
+     * <p>
+     * As of 2.1.0, only PASSWORD credentials can be locked.
+     *
+     * @param authenticationToken The {@link AuthenticationToken} for the login attempt.
+     *
+     * @since 1.1.0
      */
     private Boolean checkIfCredentialHasJustBeenLocked(AuthenticationToken authenticationToken) throws KapuaException {
         String principal = (String) authenticationToken.getPrincipal();
         User user = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(principal));
-        Credential credential = null;
+
+        // Retrieve Credential
+        Credential passwordCredential = null;
         if (user != null) {
-            credential = KapuaSecurityUtils.doPrivileged(() -> {
-                CredentialListResult credentialList = credentialService.findByUserId(user.getScopeId(), user.getId());
-
-                if (!credentialList.isEmpty()) {
-                    Credential credentialMatched = null;
-                    for (Credential c : credentialList.getItems()) {
-                        if (PasswordCredentialTypeHandler.TYPE.equals(c.getCredentialType())) {
-                            credentialMatched = c;
-                            break;
-                        }
-                    }
-                    return credentialMatched;
-                } else {
-                    return null;
-                }
-            });
-
+            passwordCredential = KapuaSecurityUtils.doPrivileged(() ->
+                    credentialService.findByUserId(user.getScopeId(), user.getId(), PasswordCredentialTypeHandler.TYPE).getFirstItem()
+            );
         }
+
+        // Do check on current timestamp
         Date now = new Date();
-        return (credential != null && credential.getLockoutReset() != null && now.before(credential.getLockoutReset()));
+        return passwordCredential != null &&
+                passwordCredential.getLockoutReset() != null &&
+                now.before(passwordCredential.getLockoutReset());
     }
 
 }

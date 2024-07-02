@@ -44,6 +44,18 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
     CredentialListResult findByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException;
 
     /**
+     * Gets the {@link Credential}s filtered by given parameters
+     *
+     * @param scopeId The {@link Credential#getScopeId()}
+     * @param userId The {@link User#getId()}
+     * @param credentialType The {@link Credential#getCredentialType()}
+     * @return The {@link CredentialListResult}
+     * @throws KapuaException
+     * @since 1.0.0
+     */
+    CredentialListResult findByUserId(KapuaId scopeId, KapuaId userId, String credentialType) throws KapuaException;
+
+    /**
      * Gets a {@link Credential} by its ApiKey. To be used when {@link Credential#getCredentialType()} is {@code API_KEY}
      *
      * @param tokenApiKey The API key to match

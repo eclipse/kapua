@@ -253,10 +253,40 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.read, scopeId));
 
+        // Do find
         final CredentialListResult credentials = txManager.execute(tx -> credentialRepository.findByUserId(tx, scopeId, userId));
         credentials.getItems().forEach(credential -> credential.setCredentialKey(null));
         return credentials;
     }
+
+    @Override
+    public CredentialListResult findByUserId(KapuaId scopeId, KapuaId userId, String credentialType)
+            throws KapuaException {
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(userId, "userId");
+        ArgumentValidator.notEmptyOrNull(credentialType, credentialType);
+        ArgumentValidator.notNull(availableCredentialAuthenticationType.get(credentialType), "credentialType");
+
+        // Check Access
+        authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.read, scopeId));
+
+        // Do find
+        CredentialQuery credentialQuery = new CredentialQueryImpl(scopeId);
+
+        credentialQuery.setPredicate(
+            credentialQuery.andPredicate(
+                credentialQuery.attributePredicate(CredentialAttributes.USER_ID, userId),
+                credentialQuery.attributePredicate(CredentialAttributes.CREDENTIAL_TYPE, credentialType)
+            )
+        );
+
+        CredentialListResult credentials = txManager.execute(tx -> credentialRepository.query(tx, credentialQuery));
+        credentials.getItems().forEach(credential -> credential.setCredentialKey(null));
+        return credentials;
+    }
+
+
 
     @Override
     public Credential findByApiKey(String apiKey) throws KapuaException {
