@@ -25,13 +25,13 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 @Category(JUnitTests.class)
-public class ApiKeyCredentialsHandlerTest {
+public class ApiKeyCredentialsConverterTest {
 
-    ApiKeyCredentialsHandler instance;
+    ApiKeyCredentialsConverter instance;
 
     @Before
     public void setUp() {
-        instance = new ApiKeyCredentialsHandler();
+        instance = new ApiKeyCredentialsConverter();
     }
 
     @Test
@@ -54,7 +54,7 @@ public class ApiKeyCredentialsHandlerTest {
     public void apiKeyCredentialsImplMapToShiroImplTest() throws KapuaAuthenticationException {
         ApiKeyCredentials first = new ApiKeyCredentialsImpl("anApiKey");
 
-        ApiKeyCredentialsImpl second = (ApiKeyCredentialsImpl) instance.mapToShiro(first);
+        ApiKeyCredentialsImpl second = (ApiKeyCredentialsImpl) instance.convertToShiro(first);
 
         Assert.assertEquals(first, second);
         Assert.assertEquals(first.getApiKey(), second.getApiKey());
@@ -64,7 +64,7 @@ public class ApiKeyCredentialsHandlerTest {
     public void apiKeyCredentialsImplMapToShiroAnotherTest() throws KapuaAuthenticationException {
         ApiKeyCredentials first = new ApiKeyCredentialsAnotherImpl("anApiKey");
 
-        ApiKeyCredentialsImpl second = (ApiKeyCredentialsImpl) instance.mapToShiro(first);
+        ApiKeyCredentialsImpl second = (ApiKeyCredentialsImpl) instance.convertToShiro(first);
 
         Assert.assertNotNull(second);
         Assert.assertNotEquals(first, second);
@@ -73,7 +73,7 @@ public class ApiKeyCredentialsHandlerTest {
 
     @Test(expected = NullPointerException.class)
     public void apiKeyCredentialsImplMapToShiroNullTest() throws KapuaAuthenticationException {
-        instance.mapToShiro(null);
+        instance.convertToShiro(null);
     }
 
     @Test(expected = KapuaAuthenticationException.class)
@@ -82,6 +82,6 @@ public class ApiKeyCredentialsHandlerTest {
 
         Assert.assertNotNull(first);
 
-        instance.mapToShiro(first);
+        instance.convertToShiro(first);
     }
 }

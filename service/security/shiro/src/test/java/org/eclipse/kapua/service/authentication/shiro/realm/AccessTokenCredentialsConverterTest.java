@@ -25,13 +25,13 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 @Category(JUnitTests.class)
-public class AccessTokenCredentialsHandlerTest {
+public class AccessTokenCredentialsConverterTest {
 
-    AccessTokenCredentialsHandler instance;
+    AccessTokenCredentialsConverter instance;
 
     @Before
     public void setUp() {
-        instance = new AccessTokenCredentialsHandler();
+        instance = new AccessTokenCredentialsConverter();
     }
 
     @Test
@@ -54,7 +54,7 @@ public class AccessTokenCredentialsHandlerTest {
     public void accessTokenCredentialsImplMapToShiroImplTest() throws KapuaAuthenticationException {
         AccessTokenCredentialsImpl first = new AccessTokenCredentialsImpl("anAccessToken");
 
-        AccessTokenCredentialsImpl second = (AccessTokenCredentialsImpl) instance.mapToShiro(first);
+        AccessTokenCredentialsImpl second = (AccessTokenCredentialsImpl) instance.convertToShiro(first);
 
         Assert.assertEquals(first, second);
         Assert.assertEquals(first.getTokenId(), second.getTokenId());
@@ -64,7 +64,7 @@ public class AccessTokenCredentialsHandlerTest {
     public void accessTokenCredentialsImplMapToShiroAnotherTest() throws KapuaAuthenticationException {
         AccessTokenCredentials first = new AccessTokenCredentialsAnotherImpl("anAccessToken");
 
-        AccessTokenCredentialsImpl second = (AccessTokenCredentialsImpl) instance.mapToShiro(first);
+        AccessTokenCredentialsImpl second = (AccessTokenCredentialsImpl) instance.convertToShiro(first);
 
         Assert.assertNotNull(second);
         Assert.assertNotEquals(first, second);
@@ -73,7 +73,7 @@ public class AccessTokenCredentialsHandlerTest {
 
     @Test(expected = NullPointerException.class)
     public void accessTokenCredentialsImplMapToShiroNullTest() throws KapuaAuthenticationException {
-        instance.mapToShiro(null);
+        instance.convertToShiro(null);
     }
 
     @Test(expected = KapuaAuthenticationException.class)
@@ -82,6 +82,6 @@ public class AccessTokenCredentialsHandlerTest {
 
         Assert.assertNotNull(first);
 
-        instance.mapToShiro(first);
+        instance.convertToShiro(first);
     }
 }
