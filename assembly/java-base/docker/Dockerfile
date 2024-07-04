@@ -16,7 +16,9 @@ FROM @docker.base.image@
 
 ENV JAVA_HOME=/usr/lib/jvm/jre-openjdk
 
-RUN yum install -y java-1.8.0-openjdk && \
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* && \
+    sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-* && \
+    yum install -y java-1.8.0-openjdk && \
     yum install -y curl && \
     yum install -y openssl && \
     mkdir -p /opt/jolokia && \
