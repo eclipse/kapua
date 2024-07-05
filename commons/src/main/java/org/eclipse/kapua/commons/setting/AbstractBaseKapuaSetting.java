@@ -16,20 +16,20 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
-
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.DataConfiguration;
 import org.apache.commons.configuration.MapConfiguration;
 import org.apache.commons.configuration.PropertyConverter;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
 /**
- * An abstract base class which does not make any assumptions on where the
- * configuration comes from
+ * An abstract base class which does not make any assumptions on where the configuration comes from
  *
- * @param <K> The settings key type
+ * @param <K>
+ *         The settings key type
  */
 public class AbstractBaseKapuaSetting<K extends SettingKey> {
 
@@ -41,7 +41,8 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * This is useful for testing when the configuration has to be provided
      * </p>
      *
-     * @param map the map of values
+     * @param map
+     *         the map of values
      * @return the configuration, may be {@code null} if the "map" parameter was null
      */
     public static <K extends SettingKey> AbstractBaseKapuaSetting<K> fromMap(Map<String, Object> map) {
@@ -149,6 +150,30 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
             }
         }
         return config.getInt(key.key());
+    }
+
+    /**
+     * Get an integer property
+     *
+     * @param key
+     * @return
+     */
+    public Optional<Integer> getInteger(K key) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                try {
+                    return Optional.ofNullable(PropertyConverter.toInteger(sysProp));
+                } catch (Exception ex) {
+                    return Optional.empty();
+                }
+            }
+        }
+        try {
+            return Optional.ofNullable(config.getInteger(key.key(), null));
+        } catch (Exception ex) {
+            return Optional.empty();
+        }
     }
 
     /**

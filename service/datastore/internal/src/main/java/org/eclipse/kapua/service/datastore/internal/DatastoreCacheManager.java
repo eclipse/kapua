@@ -16,15 +16,17 @@ import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Datastore cache manager.<br>
- * It keeps informations about channels, metrics and clients to speed up the store operation and avoid time consuming unnecessary operations.
+ * Datastore cache manager.<br> It keeps informations about channels, metrics and clients to speed up the store operation and avoid time consuming unnecessary operations.
  *
  * @since 1.0.0
  */
 public class DatastoreCacheManager {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final DatastoreCacheManager INSTANCE = new DatastoreCacheManager();
 
     private final LocalCache<String, Metadata> schemaCache;
@@ -33,16 +35,13 @@ public class DatastoreCacheManager {
     private final LocalCache<String, Boolean> clientsCache;
 
     private DatastoreCacheManager() {
-        DatastoreSettings config = DatastoreSettings.getInstance();
-        int expireAfter = config.getInt(DatastoreSettingsKey.CONFIG_CACHE_LOCAL_EXPIRE_AFTER);
-        int sizeMax = config.getInt(DatastoreSettingsKey.CONFIG_CACHE_LOCAL_SIZE_MAXIMUM);
-        int sizeMaxMetadata = config.getInt(DatastoreSettingsKey.CONFIG_CACHE_METADATA_LOCAL_SIZE_MAXIMUM);
+        final DatastoreSettings config = DatastoreSettings.getInstance();
+        final int sizeMaxMetadata = config.getInt(DatastoreSettingsKey.CONFIG_CACHE_METADATA_LOCAL_SIZE_MAXIMUM);
 
-        // TODO set expiration to happen frequently because the reset cache method will not get
-        // called from service clients any more
-        channelsCache = new LocalCache<>(sizeMax, expireAfter, false);
-        metricsCache = new LocalCache<>(sizeMax, expireAfter, false);
-        clientsCache = new LocalCache<>(sizeMax, expireAfter, false);
+        clientsCache = new LocalCache<>(config.getClientCacheConfig(), false);
+        channelsCache = new LocalCache<>(config.getChannelsCacheConfig(), false);
+        metricsCache = new LocalCache<>(config.getMetricsCacheConfig(), false);
+
         schemaCache = new LocalCache<>(sizeMaxMetadata, null);
     }
 
