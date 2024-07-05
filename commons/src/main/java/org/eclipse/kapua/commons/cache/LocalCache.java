@@ -25,10 +25,9 @@ import com.google.common.cache.CacheBuilder;
  * Default Kapua cache implementation
  *
  * @param <K>
- *            keys type
+ *         keys type
  * @param <V>
- *            values type
- *
+ *         values type
  * @since 1.0
  */
 public class LocalCache<K, V> implements Cache<K, V> {
@@ -44,24 +43,57 @@ public class LocalCache<K, V> implements Cache<K, V> {
      * Construct local cache setting the provided max size, expire time and default value
      *
      * @param sizeMax
-     *            max cache size
+     *         max cache size
      * @param expireAfter
-     *            values ttl
+     *         values ttl
      * @param defaultValue
-     *            default value (if no value is found for a specific key)
+     *         default value (if no value is found for a specific key)
      */
     public LocalCache(int sizeMax, int expireAfter, final V defaultValue) {
+        this(new CacheConfig(sizeMax, expireAfter, ExpiryPolicy.MODIFIED), defaultValue);
+    }
+
+    /**
+     * Construct local cache setting the provided max size, expire time and default value
+     *
+     * @param sizeMax
+     *         max cache size
+     * @param expireAfter
+     *         values ttl
+     * @param defaultValue
+     *         default value (if no value is found for a specific key)
+     */
+    public LocalCache(int sizeMax, int expireAfter, final ExpiryPolicy expirationStrategy, final V defaultValue) {
+        this(new CacheConfig(sizeMax, expireAfter, expirationStrategy), defaultValue);
+    }
+
+    /**
+     * Construct local cache setting the provided max size, expire time and default value
+     *
+     * @param cacheConfig
+     *         cache configuration
+     * @param defaultValue
+     *         default value (if no value is found for a specific key)
+     */
+    public LocalCache(CacheConfig cacheConfig, final V defaultValue) {
         this.defaultValue = defaultValue;
-        cache = CacheBuilder.newBuilder().maximumSize(sizeMax).expireAfterWrite(expireAfter, TimeUnit.SECONDS).build();
+        switch (cacheConfig.expirationStrategy) {
+        case MODIFIED:
+            cache = CacheBuilder.newBuilder().maximumSize(cacheConfig.maxSize).expireAfterWrite(cacheConfig.expirationTimeoutSeconds, TimeUnit.SECONDS).build();
+            break;
+        case TOUCHED:
+            cache = CacheBuilder.newBuilder().maximumSize(cacheConfig.maxSize).expireAfterAccess(cacheConfig.expirationTimeoutSeconds, TimeUnit.SECONDS).build();
+            break;
+        }
     }
 
     /**
      * Construct local cache setting the provided max size and default value. <b>ttl is disabled, so no time based eviction will be performed.</b>
      *
      * @param sizeMax
-     *            max cache size
+     *         max cache size
      * @param defaultValue
-     *            default value (if no value is found for a specific key)
+     *         default value (if no value is found for a specific key)
      */
     public LocalCache(int sizeMax, final V defaultValue) {
         this.defaultValue = defaultValue;
