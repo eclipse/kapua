@@ -12,19 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal.cache;
 
-import com.codahale.metrics.Counter;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.setting.KapuaSettingException;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.commons.util.KapuaFileUtils;
-import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.Serializable;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.cache.Cache;
 import javax.cache.CacheException;
@@ -36,23 +29,27 @@ import javax.cache.expiry.Duration;
 import javax.cache.expiry.ModifiedExpiryPolicy;
 import javax.cache.expiry.TouchedExpiryPolicy;
 import javax.cache.spi.CachingProvider;
-import java.io.Serializable;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.kapua.KapuaErrorCodes;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.cache.ExpiryPolicy;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.setting.KapuaSettingException;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.commons.util.KapuaFileUtils;
+import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.codahale.metrics.Counter;
 
 /**
- * Class responsible for managing the various caches that are instantiated.
- * All the caches are stored in a Map, where the keys are the cache names and the value are the caches themselves.
+ * Class responsible for managing the various caches that are instantiated. All the caches are stored in a Map, where the keys are the cache names and the value are the caches themselves.
  */
 public class KapuaCacheManager {
-
-    enum ExpiryPolicy {
-        MODIFIED,
-        TOUCHED
-    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KapuaCacheManager.class);
 
@@ -119,7 +116,8 @@ public class KapuaCacheManager {
     /**
      * Method responsible for getting an existing cache, or instantiating a new cache if the searched one does not exists yet.
      *
-     * @param cacheName the name of the cache.
+     * @param cacheName
+     *         the name of the cache.
      * @return the Cache object containing the desired cache.
      */
     public static Cache<Serializable, Serializable> getCache(String cacheName) {
@@ -138,7 +136,6 @@ public class KapuaCacheManager {
         }
         return cache;
     }
-
 
     private static void checkCacheManager() {
         //called by synchronized section so no concurrency issues can arise
