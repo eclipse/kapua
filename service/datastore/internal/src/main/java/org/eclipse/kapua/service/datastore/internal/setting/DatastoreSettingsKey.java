@@ -23,15 +23,51 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 public enum DatastoreSettingsKey implements SettingKey {
 
     /**
-     * Local cache expire time
+     * Local cache expire time (default value is no specific cache value is defined)
      */
     CONFIG_CACHE_LOCAL_EXPIRE_AFTER("datastore.cache.local.expire.after"),
     /**
-     * Local cache maximum size
+     * Channels Local cache expire time. Overrides the default value if specified, can be omitted to use the value of CONFIG_CACHE_LOCAL_EXPIRE_AFTER.
+     */
+    CONFIG_CHANNELS_CACHE_LOCAL_EXPIRE_AFTER("datastore.cache.channels.local.expire.after"),
+    /**
+     * Clients Local cache expire time. Overrides the default value if specified, can be omitted to use the value of CONFIG_CACHE_LOCAL_EXPIRE_AFTER.
+     */
+    CONFIG_CLIENTS_CACHE_LOCAL_EXPIRE_AFTER("datastore.cache.clients.local.expire.after"),
+    /**
+     * Metrics Local cache expire time. Overrides the default value if specified, can be omitted to use the value of CONFIG_CACHE_LOCAL_EXPIRE_AFTER.
+     */
+    CONFIG_METRICS_CACHE_LOCAL_EXPIRE_AFTER("datastore.cache.metrics.local.expire.after"),
+    /**
+     * Channels Local cache expire strategy (either MODIFIED or TOUCHED). If omitted, MODIFIED will be assumed.
+     */
+    CONFIG_CHANNELS_CACHE_LOCAL_EXPIRE_STRATEGY("datastore.cache.channels.local.expire.strategy"),
+    /**
+     * Clients Local cache expire strategy (either MODIFIED or TOUCHED). If omitted, MODIFIED will be assumed.
+     */
+    CONFIG_CLIENTS_CACHE_LOCAL_EXPIRE_STRATEGY("datastore.cache.clients.local.expire.strategy"),
+    /**
+     * Metrics Local cache expire strategy (either MODIFIED or TOUCHED). If omitted, MODIFIED will be assumed.
+     */
+    CONFIG_METRICS_CACHE_LOCAL_EXPIRE_STRATEGY("datastore.cache.metrics.local.expire.strategy"),
+    /**
+     * Local cache maximum size (default value is no specific cache value is defined)
      */
     CONFIG_CACHE_LOCAL_SIZE_MAXIMUM("datastore.cache.local.size.maximum"),
     /**
-     * Metadata cache maximum size
+     * Channels Local cache expire time. Overrides the default value if specified, can be omitted to use the value of CONFIG_CACHE_LOCAL_SIZE_MAXIMUM.
+     */
+    CONFIG_CHANNELS_CACHE_LOCAL_SIZE_MAXIMUM("datastore.cache.channels.local.size.maximum"),
+    /**
+     * Clients Local cache expire time. Overrides the default value if specified, can be omitted to use the value of CONFIG_CACHE_LOCAL_SIZE_MAXIMUM.
+     */
+    CONFIG_CLIENTS_CACHE_LOCAL_SIZE_MAXIMUM("datastore.cache.clients.local.size.maximum"),
+    /**
+     * Metrics Local cache expire time. Overrides the default value if specified, can be omitted to use the value of CONFIG_CACHE_LOCAL_SIZE_MAXIMUM.
+     */
+    CONFIG_METRICS_CACHE_LOCAL_SIZE_MAXIMUM("datastore.cache.metrics.local.size.maximum"),
+    /**
+     * Metadata cache maximum size (default value is no specific cache value is defined)
      */
     CONFIG_CACHE_METADATA_LOCAL_SIZE_MAXIMUM("datastore.cache.metadata.local.size.maximum"),
     /**
