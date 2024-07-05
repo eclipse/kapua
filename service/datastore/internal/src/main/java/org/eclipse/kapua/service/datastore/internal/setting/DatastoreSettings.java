@@ -12,9 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.setting;
 
-import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
+import java.util.EnumSet;
+import java.util.Optional;
 
 import javax.inject.Inject;
+
+import org.eclipse.kapua.commons.cache.CacheConfig;
+import org.eclipse.kapua.commons.cache.ExpiryPolicy;
+import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Datastore {@link AbstractKapuaSetting}.
@@ -23,6 +30,7 @@ import javax.inject.Inject;
  */
 public class DatastoreSettings extends AbstractKapuaSetting<DatastoreSettingsKey> {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     /**
      * Resource file from which source properties.
      *
@@ -40,4 +48,49 @@ public class DatastoreSettings extends AbstractKapuaSetting<DatastoreSettingsKey
         super(DATASTORE_CONFIG_RESOURCE);
     }
 
+    private CacheConfig getCacheConfig(
+            String cacheName,
+            DatastoreSettingsKey specificCacheExpireKey,
+            DatastoreSettingsKey specificCacheExpireStrategy,
+            DatastoreSettingsKey specificCacheMaxSizeKey) {
+        int defaultExpireAfter = this.getInt(DatastoreSettingsKey.CONFIG_CACHE_LOCAL_EXPIRE_AFTER);
+        int defaultSizeMax = this.getInt(DatastoreSettingsKey.CONFIG_CACHE_LOCAL_SIZE_MAXIMUM);
+
+        final Optional<Integer> specificCacheExpireAfter = this.getInteger(specificCacheExpireKey);
+        final ExpiryPolicy expirationStrategy = Optional.ofNullable(this.getString(specificCacheExpireStrategy))
+                .flatMap(v -> EnumSet.allOf(ExpiryPolicy.class)
+                        .stream()
+                        .filter(e -> e.name().toUpperCase().equals(v.toUpperCase()))
+                        .findFirst())
+                .orElse(ExpiryPolicy.MODIFIED);
+        final Optional<Integer> specificCacheMaxSize = this.getInteger(specificCacheMaxSizeKey);
+        final Integer maxSizeFinal = specificCacheMaxSize.orElse(defaultSizeMax);
+        final Integer cacheExpireFinal = specificCacheExpireAfter.orElse(defaultExpireAfter);
+        logger.info("Config for {} cache: max size {}, expire time {}s with policy {}", cacheName, maxSizeFinal, cacheExpireFinal, expirationStrategy);
+        return new CacheConfig(maxSizeFinal, cacheExpireFinal, expirationStrategy);
+    }
+
+    public CacheConfig getClientCacheConfig() {
+        return getCacheConfig("clients",
+                DatastoreSettingsKey.CONFIG_CLIENTS_CACHE_LOCAL_EXPIRE_AFTER,
+                DatastoreSettingsKey.CONFIG_CLIENTS_CACHE_LOCAL_EXPIRE_STRATEGY,
+                DatastoreSettingsKey.CONFIG_CLIENTS_CACHE_LOCAL_SIZE_MAXIMUM
+        );
+    }
+
+    public CacheConfig getChannelsCacheConfig() {
+        return getCacheConfig("channels",
+                DatastoreSettingsKey.CONFIG_CHANNELS_CACHE_LOCAL_EXPIRE_AFTER,
+                DatastoreSettingsKey.CONFIG_CHANNELS_CACHE_LOCAL_EXPIRE_STRATEGY,
+                DatastoreSettingsKey.CONFIG_CHANNELS_CACHE_LOCAL_SIZE_MAXIMUM
+        );
+    }
+
+    public CacheConfig getMetricsCacheConfig() {
+        return getCacheConfig("metrics",
+                DatastoreSettingsKey.CONFIG_METRICS_CACHE_LOCAL_EXPIRE_AFTER,
+                DatastoreSettingsKey.CONFIG_METRICS_CACHE_LOCAL_EXPIRE_STRATEGY,
+                DatastoreSettingsKey.CONFIG_METRICS_CACHE_LOCAL_SIZE_MAXIMUM
+        );
+    }
 }

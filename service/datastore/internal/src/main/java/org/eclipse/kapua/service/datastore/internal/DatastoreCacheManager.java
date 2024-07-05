@@ -12,17 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import com.google.inject.Inject;
+import java.util.Map;
+
 import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 
-import java.util.Map;
+import com.google.inject.Inject;
 
 /**
- * Datastore cache manager.<br>
- * It keeps informations about channels, metrics and clients to speed up the store operation and avoid time consuming unnecessary operations.
+ * Datastore cache manager.<br> It keeps informations about channels, metrics and clients to speed up the store operation and avoid time consuming unnecessary operations.
  *
  * @since 1.0.0
  */
@@ -35,15 +35,12 @@ public class DatastoreCacheManager {
 
     @Inject
     public DatastoreCacheManager(DatastoreSettings datastoreSettings) {
-        int expireAfter = datastoreSettings.getInt(DatastoreSettingsKey.CONFIG_CACHE_LOCAL_EXPIRE_AFTER);
-        int sizeMax = datastoreSettings.getInt(DatastoreSettingsKey.CONFIG_CACHE_LOCAL_SIZE_MAXIMUM);
-        int sizeMaxMetadata = datastoreSettings.getInt(DatastoreSettingsKey.CONFIG_CACHE_METADATA_LOCAL_SIZE_MAXIMUM);
+        final int sizeMaxMetadata = datastoreSettings.getInt(DatastoreSettingsKey.CONFIG_CACHE_METADATA_LOCAL_SIZE_MAXIMUM);
 
-        // TODO set expiration to happen frequently because the reset cache method will not get
-        // called from service clients any more
-        channelsCache = new LocalCache<>(sizeMax, expireAfter, false);
-        metricsCache = new LocalCache<>(sizeMax, expireAfter, false);
-        clientsCache = new LocalCache<>(sizeMax, expireAfter, false);
+        clientsCache = new LocalCache<>(datastoreSettings.getClientCacheConfig(), false);
+        channelsCache = new LocalCache<>(datastoreSettings.getChannelsCacheConfig(), false);
+        metricsCache = new LocalCache<>(datastoreSettings.getMetricsCacheConfig(), false);
+
         schemaCache = new LocalCache<>(sizeMaxMetadata, null);
     }
 

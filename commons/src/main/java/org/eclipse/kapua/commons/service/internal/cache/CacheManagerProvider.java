@@ -12,11 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal.cache;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import javax.cache.CacheException;
+import javax.cache.CacheManager;
+import javax.cache.Caching;
+import javax.cache.spi.CachingProvider;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.cache.ExpiryPolicy;
 import org.eclipse.kapua.commons.metric.CommonsMetric;
 import org.eclipse.kapua.commons.setting.KapuaSettingException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -26,15 +33,11 @@ import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.cache.CacheException;
-import javax.cache.CacheManager;
-import javax.cache.Caching;
-import javax.cache.spi.CachingProvider;
-import java.net.URI;
-import java.net.URISyntaxException;
-
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class CacheManagerProvider implements Provider<CacheManager> {
+
     private static final String DEFAULT_CACHING_PROVIDER_CLASS_NAME = "org.eclipse.kapua.commons.service.internal.cache.dummy.CachingProvider";
     private final CommonsMetric commonsMetric;
     private final String cachingProviderClassName;
@@ -47,7 +50,7 @@ public class CacheManagerProvider implements Provider<CacheManager> {
         this.commonsMetric = commonsMetric;
         this.cachingProviderClassName = systemSetting.getString(SystemSettingKey.CACHING_PROVIDER);
         this.ttl = systemSetting.getLong(SystemSettingKey.CACHE_TTL, 60);
-        this.expiryPolicy = systemSetting.getString(SystemSettingKey.JCACHE_EXPIRY_POLICY, KapuaCacheManager.ExpiryPolicy.MODIFIED.name());
+        this.expiryPolicy = systemSetting.getString(SystemSettingKey.JCACHE_EXPIRY_POLICY, ExpiryPolicy.MODIFIED.name());
     }
 
     @Override
