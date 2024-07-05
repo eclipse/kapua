@@ -12,12 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal.cache;
 
-import com.google.inject.Inject;
-import org.eclipse.kapua.commons.metric.CommonsMetric;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.Serializable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.cache.Cache;
 import javax.cache.CacheManager;
@@ -26,21 +24,20 @@ import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.Duration;
 import javax.cache.expiry.ModifiedExpiryPolicy;
 import javax.cache.expiry.TouchedExpiryPolicy;
-import java.io.Serializable;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
+
+import org.eclipse.kapua.commons.cache.ExpiryPolicy;
+import org.eclipse.kapua.commons.metric.CommonsMetric;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.Inject;
 
 /**
- * Class responsible for managing the various caches that are instantiated.
- * All the caches are stored in a Map, where the keys are the cache names and the value are the caches themselves.
+ * Class responsible for managing the various caches that are instantiated. All the caches are stored in a Map, where the keys are the cache names and the value are the caches themselves.
  */
 public class KapuaCacheManager {
-
-    enum ExpiryPolicy {
-        MODIFIED,
-        TOUCHED
-    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KapuaCacheManager.class);
 
@@ -62,7 +59,8 @@ public class KapuaCacheManager {
     /**
      * Method responsible for getting an existing cache, or instantiating a new cache if the searched one does not exists yet.
      *
-     * @param cacheName the name of the cache.
+     * @param cacheName
+     *         the name of the cache.
      * @return the Cache object containing the desired cache.
      */
     public Cache<Serializable, Serializable> getCache(String cacheName) {
