@@ -189,7 +189,9 @@ public class AccountServiceImpl
 
     private Account doUpdateCurrentAccount(CurrentAccountUpdateRequest request) throws KapuaException {
         ArgumentValidator.notNull(request.organization, "request.organization");
-        ArgumentValidator.match(request.organization.getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "request.organization.email");
+        ArgumentValidator.notEmptyOrNull(request.organization.getName(), "account.organization.name");
+        ArgumentValidator.notEmptyOrNull(request.organization.getEmail(), "account.organization.email");
+        ArgumentValidator.match(request.organization.getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "account.organization.email");
 
         final KapuaId accountId = KapuaSecurityUtils.getSession().getScopeId();
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, Actions.write, accountId));
@@ -208,6 +210,8 @@ public class AccountServiceImpl
         // Argument validation
         ArgumentValidator.notNull(accountId, "accountId");
         ArgumentValidator.notNull(request.organization, "account.organization");
+        ArgumentValidator.notEmptyOrNull(request.organization.getName(), "account.organization.name");
+        ArgumentValidator.notEmptyOrNull(request.organization.getEmail(), "account.organization.email");
         ArgumentValidator.match(request.organization.getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "account.organization.email");
 
         return txManager.execute(tx -> {
