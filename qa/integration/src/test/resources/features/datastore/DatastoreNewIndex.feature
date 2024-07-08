@@ -200,3 +200,4 @@ Feature: Datastore tests
   @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment
+    And Clean Locator Instance

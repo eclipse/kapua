@@ -18,7 +18,6 @@ import org.eclipse.kapua.KapuaErrorCode;
  * Kapua locator error codes.
  *
  * @since 1.0
- *
  */
 public enum KapuaLocatorErrorCodes implements KapuaErrorCode {
     /**
@@ -49,4 +48,8 @@ public enum KapuaLocatorErrorCodes implements KapuaErrorCode {
      * Invalid locator configuration
      */
     INVALID_CONFIGURATION,
+    /**
+     * Locator cannot be initialized twice
+     */
+    LOCATOR_CANNOT_BE_REINITIALIZED
 }

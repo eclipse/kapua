@@ -12,12 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator;
 
+import java.util.EnumSet;
+
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
 
 @Category(JUnitTests.class)
 public class KapuaLocatorExceptionTest {
@@ -32,18 +33,19 @@ public class KapuaLocatorExceptionTest {
     @Before
     public void initialize() {
         expectedErrorMessage = "kapua-locator-service-error-messages";
-        kapuaLocatorErrorCodes = new KapuaLocatorErrorCodes[]{KapuaLocatorErrorCodes.SERVICE_UNAVAILABLE, KapuaLocatorErrorCodes.SERVICE_PROVIDER_INVALID,
-                KapuaLocatorErrorCodes.FACTORY_UNAVAILABLE, KapuaLocatorErrorCodes.FACTORY_PROVIDER_INVALID, KapuaLocatorErrorCodes.COMPONENT_UNAVAILABLE,
-                KapuaLocatorErrorCodes.COMPONENT_PROVIDER_INVALID, KapuaLocatorErrorCodes.INVALID_CONFIGURATION};
+        kapuaLocatorErrorCodes = EnumSet.allOf(KapuaLocatorErrorCodes.class).toArray(new KapuaLocatorErrorCodes[0]);
         argument1 = "argument1";
         argument2 = 42;
         argument3 = 'c';
-        throwables = new Throwable[]{new Throwable(), null};
-        expectedMessageNullArguments = new String[]{"Service unavailable {0}", "{0} is not a valid service provider for {1}", "Factory unavailable {0}",
-                "{0} is not a valid factory provider for {1}", "Error: ", "Error: ", "Error: "};
-        expectedMessage = new String[]{"Service unavailable " + argument1, argument1 + " is not a valid service provider for " + argument2, "Factory unavailable " + argument1,
-                argument1 + " is not a valid factory provider for " + argument2, "Error: " + argument1 + ", " + argument2 + ", " + argument3, "Error: " + argument1 + ", " + argument2 + ", " + argument3,
-                "Error: " + argument1 + ", " + argument2 + ", " + argument3};
+        throwables = new Throwable[] { new Throwable(), null };
+        expectedMessageNullArguments = new String[] { "Service unavailable {0}", "{0} is not a valid service provider for {1}", "Factory unavailable {0}",
+                "{0} is not a valid factory provider for {1}", "Error: ", "Error: ", "Error: ",
+                "The Locator context initialization attempted more than once - this could lead to multiple singleton instances being alive, resulting in hard-to-detect errors." };
+        expectedMessage = new String[] { "Service unavailable " + argument1, argument1 + " is not a valid service provider for " + argument2, "Factory unavailable " + argument1,
+                argument1 + " is not a valid factory provider for " + argument2, "Error: " + argument1 + ", " + argument2 + ", " + argument3,
+                "Error: " + argument1 + ", " + argument2 + ", " + argument3,
+                "Error: " + argument1 + ", " + argument2 + ", " + argument3,
+                "The Locator context initialization attempted more than once - this could lead to multiple singleton instances being alive, resulting in hard-to-detect errors." };
     }
 
     @Test

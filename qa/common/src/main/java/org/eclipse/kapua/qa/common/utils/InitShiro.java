@@ -35,8 +35,7 @@ public class InitShiro {
         try {
             SecurityManager securityManager = SecurityUtils.getSecurityManager();
             logger.info("Found Shiro security manager {}", securityManager);
-        }
-        catch (UnavailableSecurityManagerException e) {
+        } catch (UnavailableSecurityManagerException e) {
             logger.info("Init shiro security manager...");
             SecurityUtil.initSecurityManager();
         }
