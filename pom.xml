@@ -80,7 +80,6 @@
         <guava-failureaccess.version>1.0.1</guava-failureaccess.version>
         <guava-listenablefuture.version>9999.0-empty-to-avoid-conflict-with-guava</guava-listenablefuture.version>
         <guice.version>5.1.0</guice.version>
-        <guice-multibindings.version>4.2.3</guice-multibindings.version>
         <hamcrest-core.version>2.2</hamcrest-core.version>
         <h2.version>1.4.200</h2.version>
         <hikaricp.version>4.0.3</hikaricp.version>
@@ -1515,11 +1514,6 @@
                 <groupId>com.google.inject</groupId>
                 <artifactId>guice</artifactId>
                 <version>${guice.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.inject.extensions</groupId>
-                <artifactId>guice-multibindings</artifactId>
-                <version>${guice-multibindings.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.protobuf</groupId>

@@ -76,3 +76,4 @@ Scenario: Installing a package
 @teardown
   Scenario: Stop docker environment
     Given Stop full docker environment
+    And Clean Locator Instance

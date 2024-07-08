@@ -120,6 +120,7 @@ Scenario: Event factory sanity checks
 Scenario: Event service domain check
     Then The device event domain data can be updated
 
-@teardown
-Scenario: Reset Security Context for all scenarios
-    Given Reset Security Context
+  @teardown
+  Scenario: Reset Security Context for all scenarios
+    Given Clean Locator Instance
+    And Reset Security Context

@@ -194,6 +194,7 @@ Scenario: Validate a null device count
     When I count the devices based on the remembered query
     Then An exception was thrown
 
-@teardown
-Scenario: Reset Security Context for all scenarios
-    Given Reset Security Context
+  @teardown
+  Scenario: Reset Security Context for all scenarios
+    Given Clean Locator Instance
+    And Reset Security Context

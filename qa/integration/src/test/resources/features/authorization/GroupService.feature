@@ -1052,6 +1052,7 @@ Scenario: Initialize test environment
     And No exception was thrown
     And I logout
 
-@teardown
-Scenario: Reset Security Context for all scenarios
-  Given Reset Security Context
+  @teardown
+  Scenario: Reset Security Context for all scenarios
+    Given Clean Locator Instance
+    And Reset Security Context

@@ -46,6 +46,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Closeable;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -59,6 +61,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -67,7 +70,7 @@ import java.util.stream.Stream;
  *
  * @since 1.0.0
  */
-public class GuiceLocatorImpl extends KapuaLocator {
+public class GuiceLocatorImpl extends KapuaLocator implements Closeable {
 
     private static final Logger LOG = LoggerFactory.getLogger(GuiceLocatorImpl.class);
 
@@ -95,7 +98,12 @@ public class GuiceLocatorImpl extends KapuaLocator {
         this(SERVICE_RESOURCE);
     }
 
+    private static final AtomicInteger INITIALIZATION_ATTEMPTS = new AtomicInteger(0);
+
     public GuiceLocatorImpl(@NotNull String resourceName) {
+        if (INITIALIZATION_ATTEMPTS.incrementAndGet() != 1) {
+            throw new KapuaRuntimeException(KapuaLocatorErrorCodes.LOCATOR_CANNOT_BE_REINITIALIZED);
+        }
         try {
             init(resourceName);
         } catch (Exception e) {
@@ -251,6 +259,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
         try {
             injector = Guice.createInjector(stage, Modules.override(kapuaModules).with(overridingModules));
         } catch (Throwable t) {
+            injector = null;
             throw new RuntimeException(t);
         }
 
@@ -493,5 +502,10 @@ public class GuiceLocatorImpl extends KapuaLocator {
      */
     private <T extends Class<?>> Collection<T> sortedClass(Collection<T> classes) {
         return classes.stream().sorted(Comparator.comparing(Class::getName)).collect(Collectors.toList());
+    }
+
+    @Override
+    public void close() throws IOException {
+        INITIALIZATION_ATTEMPTS.decrementAndGet();
     }
 }

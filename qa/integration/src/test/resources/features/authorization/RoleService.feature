@@ -422,6 +422,7 @@ Scenario: Role service related objects sanity checks
     Then The role permission object constructors are sane
     Then The role permission comparator does its job
 
-@teardown
-Scenario: Reset Security Context for all scenarios
-  Given Reset Security Context
+  @teardown
+  Scenario: Reset Security Context for all scenarios
+    Given Clean Locator Instance
+    And Reset Security Context
