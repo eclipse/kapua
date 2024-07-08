@@ -67,6 +67,7 @@ public class Tags extends AbstractKapuaResource {
     public TagListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("name") String name,
+            @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         TagQuery query = tagFactory.newQuery(scopeId);
@@ -79,6 +80,7 @@ public class Tags extends AbstractKapuaResource {
 
         query.setOffset(offset);
         query.setLimit(limit);
+        query.setAskTotalCount(askTotalCount);
 
         return query(scopeId, query);
     }
