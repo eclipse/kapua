@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,17 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role;
 
-import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
+import org.eclipse.kapua.model.query.predicate.MatchPredicate;
 
-/**
- * {@link RoleAttributes} attributes.
- *
- * @see org.eclipse.kapua.model.KapuaEntityAttributes
- * @since 1.0.0
- */
-public class RoleAttributes extends KapuaNamedEntityAttributes {
-
-    public static final String NAME = "name";
-    public static final String DESCRIPTION = "description";
+public interface RoleMatchPredicate<T> extends MatchPredicate<T> {
 
 }
