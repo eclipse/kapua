@@ -27,6 +27,16 @@ paths:
             type: string
         - $ref: './endpointInfo.yaml#/components/parameters/endpointType'
         - $ref: '../openapi.yaml#/components/parameters/askTotalCount'
+        - name: matchTerm
+          in: query
+          description: |
+            A term to match on different fields. Every entity whose at least one of the specified fields starts with this value will be matched.
+            Matches on the following fields:
+
+              - SCHEMA
+              - DNS
+          schema:
+            type: string
         - $ref: '../openapi.yaml#/components/parameters/limit'
         - $ref: '../openapi.yaml#/components/parameters/offset'
       responses:
