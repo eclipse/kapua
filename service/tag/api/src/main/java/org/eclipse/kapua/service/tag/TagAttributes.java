@@ -23,4 +23,5 @@ import org.eclipse.kapua.model.query.predicate.QueryPredicate;
  */
 public class TagAttributes extends KapuaNamedEntityAttributes {
     public static final String DESCRIPTION = "description";
+    public static final String NAME = "name";
 }

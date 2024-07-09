@@ -68,6 +68,7 @@ public class Tags extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("name") String name,
             @QueryParam("askTotalCount") boolean askTotalCount,
+            @QueryParam("matchTerm") String matchTerm,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         TagQuery query = tagFactory.newQuery(scopeId);
@@ -75,6 +76,9 @@ public class Tags extends AbstractKapuaResource {
         AndPredicate andPredicate = query.andPredicate();
         if (!Strings.isNullOrEmpty(name)) {
             andPredicate.and(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name));
+        }
+        if (matchTerm != null && !matchTerm.isEmpty()) {
+            andPredicate.and(query.matchPredicate(matchTerm));
         }
         query.setPredicate(andPredicate);
 
