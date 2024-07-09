@@ -12,30 +12,26 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.endpoint.internal;
 
-import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
-import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.commons.model.query.predicate.AbstractMatchPredicate;
+import org.eclipse.kapua.service.endpoint.EndpointInfoAttributes;
 import org.eclipse.kapua.service.endpoint.EndpointInfoMatchPredicate;
-import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 
-/**
- * {@link EndpointInfoQuery} implementation.
- *
- * @since 1.0.0
- */
-public class EndpointInfoQueryImpl extends AbstractKapuaQuery implements EndpointInfoQuery {
+import java.util.Arrays;
+
+public class EndpointInfoMatchPredicateImpl<T> extends AbstractMatchPredicate<T> implements EndpointInfoMatchPredicate<T> {
 
     /**
      * Constructor.
      *
-     * @param scopeId The {@link #getScopeId()}.
-     * @since 1.0.0
+     * @param matchTerm
+     * @since 2.1.0
      */
-    public EndpointInfoQueryImpl(KapuaId scopeId) {
-        super(scopeId);
+    public EndpointInfoMatchPredicateImpl(T matchTerm) {
+        this.attributeNames = Arrays.asList(
+                EndpointInfoAttributes.SCHEMA,
+                EndpointInfoAttributes.DNS
+        );
+        this.matchTerm = matchTerm;
     }
 
-    @Override
-    public <T> EndpointInfoMatchPredicate<T> matchPredicate(T matchTerm) {
-        return new EndpointInfoMatchPredicateImpl<>(matchTerm);
-    }
 }
