@@ -79,6 +79,7 @@ public class Roles extends AbstractKapuaResource {
     public RoleListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("name") String name,
+            @QueryParam("matchTerm") String matchTerm,
             @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
@@ -87,6 +88,9 @@ public class Roles extends AbstractKapuaResource {
         AndPredicate andPredicate = query.andPredicate();
         if (!Strings.isNullOrEmpty(name)) {
             andPredicate.and(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name));
+        }
+        if (matchTerm != null && !matchTerm.isEmpty()) {
+            andPredicate.and(query.matchPredicate(matchTerm));
         }
         query.setPredicate(andPredicate);
 
