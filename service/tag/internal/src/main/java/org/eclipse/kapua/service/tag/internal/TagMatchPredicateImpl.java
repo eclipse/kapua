@@ -12,31 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag.internal;
 
-import org.eclipse.kapua.commons.model.query.AbstractKapuaNamedQuery;
-import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.commons.model.query.predicate.AbstractMatchPredicate;
+import org.eclipse.kapua.service.tag.TagAttributes;
 import org.eclipse.kapua.service.tag.TagMatchPredicate;
-import org.eclipse.kapua.service.tag.TagQuery;
+import java.util.Arrays;
+
+public class TagMatchPredicateImpl<T> extends AbstractMatchPredicate<T> implements TagMatchPredicate<T> {
 
 /**
- * {@link TagQuery} implementation.
+ * Constructor.
  *
- * @since 1.0.0
+ * @param matchTerm
+ * @since 2.1.0
  */
-public class TagQueryImpl extends AbstractKapuaNamedQuery implements TagQuery {
-
-    /**
-     * Constructor.
-     *
-     * @param scopeId The {@link #getScopeId()}.
-     * @since 1.0.0
-     */
-    public TagQueryImpl(KapuaId scopeId) {
-        super(scopeId);
+    public TagMatchPredicateImpl(T matchTerm) {
+        this.attributeNames = Arrays.asList(
+                TagAttributes.DESCRIPTION,
+                TagAttributes.NAME
+        );
+        this.matchTerm = matchTerm;
     }
-
-    @Override
-    public <T> TagMatchPredicate<T> matchPredicate(T matchTerm) {
-        return new TagMatchPredicateImpl<>(matchTerm);
-    }
-
 }
