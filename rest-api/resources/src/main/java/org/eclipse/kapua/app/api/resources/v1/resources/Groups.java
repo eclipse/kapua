@@ -66,6 +66,7 @@ public class Groups extends AbstractKapuaResource {
     public GroupListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("name") String name,
+            @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("matchTerm") String matchTerm,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
@@ -82,6 +83,7 @@ public class Groups extends AbstractKapuaResource {
 
         query.setOffset(offset);
         query.setLimit(limit);
+        query.setAskTotalCount(askTotalCount);
 
         return query(scopeId, query);
     }

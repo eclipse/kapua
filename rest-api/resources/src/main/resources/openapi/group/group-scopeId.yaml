@@ -25,6 +25,7 @@ paths:
           description: The group name to filter results
           schema:
             type: string
+        - $ref: '../openapi.yaml#/components/parameters/askTotalCount'
         - name: matchTerm
           in: query
           description: |
