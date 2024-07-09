@@ -29,4 +29,15 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = TagXmlRegistry.class, factoryMethod = "newQuery")
 public interface TagQuery extends KapuaQuery {
+
+    /**
+     * Instantiates a new {@link TagMatchPredicate}.
+     *
+     * @param matchTerm The term to use to match.
+     * @param <T>       The type of the term
+     * @return The newly instantiated {@link TagMatchPredicate}.
+     * @since 2.1.0
+     */
+    <T> TagMatchPredicate<T> matchPredicate(T matchTerm);
+
 }
