@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authorization.group.shiro;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaNamedQuery;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.group.GroupMatchPredicate;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 
 /**
@@ -31,5 +32,10 @@ public class GroupQueryImpl extends AbstractKapuaNamedQuery implements GroupQuer
      */
     public GroupQueryImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    @Override
+    public <T> GroupMatchPredicate<T> matchPredicate(T matchTerm) {
+        return new GroupMatchPredicateImpl<>(matchTerm);
     }
 }
