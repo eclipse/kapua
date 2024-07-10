@@ -21,7 +21,4 @@ import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
  * @since 1.0.0
  */
 public class GroupAttributes extends KapuaNamedEntityAttributes {
-
-    public static final String DESCRIPTION = "description";
-    public static final String NAME = "name";
 }
