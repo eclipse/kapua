@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.certificate.info.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaNamedQuery;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoMatchPredicate;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoQuery;
 
 /**
@@ -53,5 +54,10 @@ public class CertificateInfoQueryImpl extends AbstractKapuaNamedQuery implements
     @Override
     public void setIncludeInherited(Boolean includeInherited) {
         this.includeInherited = includeInherited;
+    }
+
+    @Override
+    public <T> CertificateInfoMatchPredicate<T> matchPredicate(T matchTerm) {
+        return new CertificateInfoMatchPredicateImpl<>(matchTerm);
     }
 }
