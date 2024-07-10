@@ -22,7 +22,4 @@ import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
  */
 public class RoleAttributes extends KapuaNamedEntityAttributes {
 
-    public static final String NAME = "name";
-    public static final String DESCRIPTION = "description";
-
 }
