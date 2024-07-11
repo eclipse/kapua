@@ -10,16 +10,10 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.tag;
+package org.eclipse.kapua.service.certificate.info;
 
-import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
-import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.QueryPredicate;
+import org.eclipse.kapua.model.query.predicate.MatchPredicate;
 
-/**
- * {@link KapuaQuery} {@link QueryPredicate} name for {@link Tag} entity.
- *
- * @since 1.0.0
- */
-public class TagAttributes extends KapuaNamedEntityAttributes {
+public interface CertificateInfoMatchPredicate<T> extends MatchPredicate<T> {
+
 }

@@ -29,4 +29,13 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = GroupXmlRegistry.class, factoryMethod = "newQuery")
 public interface GroupQuery extends KapuaQuery {
+    /**
+     * Instantiates a new {@link GroupMatchPredicate}.
+     *
+     * @param matchTerm The term to use to match.
+     * @param <T>       The type of the term
+     * @return The newly instantiated {@link GroupMatchPredicate}.
+     * @since 2.1.0
+     */
+    <T> GroupMatchPredicate<T> matchPredicate(T matchTerm);
 }
