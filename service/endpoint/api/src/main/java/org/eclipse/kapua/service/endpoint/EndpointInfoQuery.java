@@ -29,5 +29,13 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = EndpointInfoXmlRegistry.class, factoryMethod = "newQuery")
 public interface EndpointInfoQuery extends KapuaQuery {
-
+    /**
+     * Instantiates a new {@link EndpointInfoMatchPredicate}.
+     *
+     * @param matchTerm The term to use to match.
+     * @param <T>       The type of the term
+     * @return The newly instantiated {@link EndpointInfoMatchPredicate}.
+     * @since 2.1.0
+     */
+    <T> EndpointInfoMatchPredicate<T> matchPredicate(T matchTerm);
 }

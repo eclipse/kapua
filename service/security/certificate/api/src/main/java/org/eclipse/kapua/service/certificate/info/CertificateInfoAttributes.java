@@ -21,7 +21,6 @@ import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
  * @since 1.1.0
  */
 public class CertificateInfoAttributes extends KapuaNamedEntityAttributes {
-
     public static final String CA_ID = "caId";
 
     public static final String FORWARDABLE = "forwardable";
@@ -33,5 +32,13 @@ public class CertificateInfoAttributes extends KapuaNamedEntityAttributes {
     public static final String USAGE = "certificateUsages";
 
     public static final String USAGE_NAME = USAGE + ".name";
+
+    public static final String SERIAL = "serial";
+
+    public static final String ALGORITHM = "algorithm";
+
+    public static final String SUBJECT = "subject";
+
+
 
 }
