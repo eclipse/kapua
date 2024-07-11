@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authorization.role.shiro;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaNamedQuery;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.role.RoleMatchPredicate;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 
 /**
@@ -42,4 +43,10 @@ public class RoleQueryImpl extends AbstractKapuaNamedQuery implements RoleQuery 
         this();
         setScopeId(scopeId);
     }
+
+    @Override
+    public <T> RoleMatchPredicate<T> matchPredicate(T matchTerm) {
+        return new RoleMatchPredicateImpl<>(matchTerm);
+    }
+
 }

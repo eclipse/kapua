@@ -21,4 +21,5 @@ import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
  * @since 1.0.0
  */
 public class RoleAttributes extends KapuaNamedEntityAttributes {
+
 }

@@ -48,4 +48,14 @@ public interface CertificateInfoQuery extends KapuaQuery {
      * @since 1.1.0
      */
     void setIncludeInherited(Boolean includeInherited);
+
+    /**
+     * Instantiates a new {@link CertificateInfoMatchPredicate}.
+     *
+     * @param matchTerm The term to use to match.
+     * @param <T>       The type of the term
+     * @return The newly instantiated {@link CertificateInfoMatchPredicate}.
+     * @since 2.1.0
+     */
+    <T> CertificateInfoMatchPredicate<T> matchPredicate(T matchTerm);
 }
