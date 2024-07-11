@@ -24,6 +24,8 @@ import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryI
 import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
 import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
@@ -131,16 +133,19 @@ public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
 
         BulkUpdateRequest bulkRequest = new BulkUpdateRequest();
         boolean performUpdate = false;
+        final boolean shouldFetchBeforeUpsertInCacheMiss = DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.CONFIG_CACHE_METRICS_FETCH_FROM_SOURCE_BEFORE_UPSERT, true);
         // Create a bulk request
         for (MetricInfo metricInfo : metricInfos) {
             String metricInfoId = MetricInfoField.getOrDeriveId(metricInfo.getId(), metricInfo);
             // fix #REPLACE_ISSUE_NUMBER
             if (!DatastoreCacheManager.getInstance().getMetricsCache().get(metricInfoId)) {
-                StorableId storableId = STORABLE_ID_FACTORY.newStorableId(metricInfoId);
-                MetricInfo storedField = find(metricInfo.getScopeId(), storableId);
-                if (storedField != null) {
-                    DatastoreCacheManager.getInstance().getMetricsCache().put(metricInfoId, true);
-                    continue;
+                if (shouldFetchBeforeUpsertInCacheMiss) {
+                    StorableId storableId = STORABLE_ID_FACTORY.newStorableId(metricInfoId);
+                    MetricInfo storedField = find(metricInfo.getScopeId(), storableId);
+                    if (storedField != null) {
+                        DatastoreCacheManager.getInstance().getMetricsCache().put(metricInfoId, true);
+                        continue;
+                    }
                 }
                 performUpdate = true;
                 Metadata metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
