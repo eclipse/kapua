@@ -41,6 +41,7 @@ import org.eclipse.kapua.qa.common.MockedLocator;
 import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
+import org.eclipse.kapua.service.authentication.credential.shiro.AccountPasswordLengthProviderImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFactoryImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImplJpaRepository;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialMapperImpl;
@@ -50,6 +51,7 @@ import org.eclipse.kapua.service.authentication.credential.shiro.PasswordValidat
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.CredentialServiceConfigurationManagerImpl;
+import org.eclipse.kapua.service.authentication.shiro.SystemPasswordLengthProviderImpl;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorImpl;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaCryptoSetting;
@@ -165,11 +167,15 @@ public class SecurityLocatorConfiguration {
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
                 final CredentialFactoryImpl credentialFactory = new CredentialFactoryImpl();
                 bind(CredentialFactory.class).toInstance(credentialFactory);
+                final SystemPasswordLengthProviderImpl systemMinimumPasswordLengthProvider = new SystemPasswordLengthProviderImpl(new KapuaAuthenticationSetting());
                 final CredentialServiceConfigurationManagerImpl credentialServiceConfigurationManager = new CredentialServiceConfigurationManagerImpl(
                         new ServiceConfigImplJpaRepository(jpaRepoConfig),
+                        systemMinimumPasswordLengthProvider,
                         Mockito.mock(RootUserTester.class),
                         new KapuaAuthenticationSetting(),
                         new XmlUtil(new TestJAXBContextProvider()));
+                final AccountPasswordLengthProviderImpl accountPasswordLengthProvider = new AccountPasswordLengthProviderImpl(systemMinimumPasswordLengthProvider,
+                        credentialServiceConfigurationManager);
                 try {
                     bind(CredentialService.class).toInstance(new CredentialServiceImpl(
                             credentialServiceConfigurationManager,
@@ -179,11 +185,12 @@ public class SecurityLocatorConfiguration {
                             new CredentialImplJpaRepository(jpaRepoConfig),
                             credentialFactory,
                             new CredentialMapperImpl(credentialFactory, new KapuaAuthenticationSetting(), new AuthenticationUtils(SecureRandom.getInstance("SHA1PRNG"), new KapuaCryptoSetting())),
-                            new PasswordValidatorImpl(credentialServiceConfigurationManager), new KapuaAuthenticationSetting(),
+                            new PasswordValidatorImpl(accountPasswordLengthProvider), new KapuaAuthenticationSetting(),
+                            accountPasswordLengthProvider,
                             new PasswordResetterImpl(credentialFactory,
                                     new CredentialImplJpaRepository(new KapuaJpaRepositoryConfiguration()),
                                     new CredentialMapperImpl(credentialFactory, new KapuaAuthenticationSetting(), authenticationUtils(new KapuaCryptoSetting())),
-                                    new PasswordValidatorImpl(credentialServiceConfigurationManager))));
+                                    new PasswordValidatorImpl(accountPasswordLengthProvider))));
                 } catch (NoSuchAlgorithmException e) {
                     throw new RuntimeException(e);
                 }
