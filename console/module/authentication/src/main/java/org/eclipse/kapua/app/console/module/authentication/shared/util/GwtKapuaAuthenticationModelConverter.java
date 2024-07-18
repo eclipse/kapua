@@ -123,12 +123,11 @@ public class GwtKapuaAuthenticationModelConverter {
     public static Credential convertCredential(GwtCredential gwtCredential) {
 
         // Convert scopeId
-        KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredential.getScopeId());
-        Credential credential = CREDENTIAL_FACTORY.newEntity(scopeId);
+        Credential credential = CREDENTIAL_FACTORY.newEntity(GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredential.getScopeId()));
+
         GwtKapuaCommonsModelConverter.convertUpdatableEntity(gwtCredential, credential);
-        if (gwtCredential.getId() != null && !gwtCredential.getId().trim().isEmpty()) {
-            credential.setId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredential.getId()));
-        }
+
+        credential.setId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredential.getId()));
         credential.setUserId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredential.getUserId()));
         credential.setCredentialType(convertCredentialType(gwtCredential.getCredentialTypeEnum()));
         credential.setCredentialKey(gwtCredential.getCredentialKey());
@@ -138,6 +137,7 @@ public class GwtKapuaAuthenticationModelConverter {
         credential.setFirstLoginFailure(gwtCredential.getFirstLoginFailure());
         credential.setLoginFailuresReset(gwtCredential.getLoginFailuresReset());
         credential.setLockoutReset(gwtCredential.getLockoutReset());
+
         // Return converted
         return credential;
     }
