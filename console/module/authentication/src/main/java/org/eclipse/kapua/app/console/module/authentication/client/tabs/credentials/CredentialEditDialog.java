@@ -33,16 +33,16 @@ public class CredentialEditDialog extends CredentialAddDialog {
 
     public CredentialEditDialog(GwtSession currentSession, GwtCredential selectedCredential, String selectedUserId, String selectedUserName) {
         super(currentSession, selectedUserId, selectedUserName);
+
         this.selectedCredential = selectedCredential;
     }
 
     @Override
     public void submit() {
-        // TODO read enabled and expire date
-        selectedCredential.setCredentialKey(password.getValue());
         selectedCredential.setExpirationDate(expirationDate.getValue());
         selectedCredential.setCredentialStatus(credentialStatus.getValue().getValue().toString());
         selectedCredential.setOptlock(optlock.getValue().intValue());
+
         GWT_CREDENTIAL_SERVICE.update(xsrfToken, selectedCredential, new AsyncCallback<GwtCredential>() {
 
             @Override
@@ -99,16 +99,26 @@ public class CredentialEditDialog extends CredentialAddDialog {
     @Override
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
-        password.setVisible(false);
-        confirmPassword.setVisible(false);
-        passwordTooltip.setVisible(false);
-        credentialFormPanel.remove(credentialType);
-        credentialTypeLabel.setVisible(true);
+
+        password.hide();
+        password.disable();
+
+        confirmPassword.hide();
+        confirmPassword.disable();
+
+        passwordTooltip.hide();
+
+        credentialType.hide();
+        credentialType.disable();
+
+        credentialTypeLabel.show();
         credentialTypeLabel.setValue(selectedCredential.getCredentialType());
+
         if (selectedCredential.getLockoutReset() != null && selectedCredential.getLockoutReset().after(new Date())) {
             lockedUntil.setText(MSGS.dialogEditLockedUntil(DateUtils.formatDateTime(selectedCredential.getLockoutReset())));
             credentialFormPanel.add(lockedUntil);
         }
+
         DialogUtils.resizeDialog(this, 400, 230);
     }
 
