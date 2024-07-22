@@ -159,7 +159,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("credentialType", CREDENTIAL_MSGS.gridCredentialColumnHeaderCredentialType(), 400);
+        columnConfig = new ColumnConfig("credentialType", CREDENTIAL_MSGS.gridCredentialColumnHeaderCredentialType(), 100);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("expirationDateFormatted", CREDENTIAL_MSGS.gridCredentialColumnHeaderExpirationDate(), 200);
@@ -181,9 +181,18 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         columnConfig = new ColumnConfig("modifiedOnFormatted", CREDENTIAL_MSGS.gridCredentialColumnHeaderModifiedOn(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("modifiedByName", CREDENTIAL_MSGS.gridCredentialColumnHeaderModifiedBy(), 200);
+        columnConfig = new ColumnConfig("modifiedByName", CREDENTIAL_MSGS.gridCredentialColumnHeaderModifiedBy(), 150);
         columnConfig.setRenderer(new ModifiedByNameCellRenderer<GwtCredential>());
         columnConfig.setSortable(false);
+        columnConfigs.add(columnConfig);
+
+        columnConfig = new ColumnConfig("loginFailures", "Login Failures", 100);
+        columnConfigs.add(columnConfig);
+
+        columnConfig = new ColumnConfig("loginFailuresResetFormatted", "Login Failures Resets On", 200);
+        columnConfigs.add(columnConfig);
+
+        columnConfig = new ColumnConfig("lockoutResetFormatted", "Lockout Resets On", 200);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;
