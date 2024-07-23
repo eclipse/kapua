@@ -30,7 +30,15 @@ paths:
         - $ref: './device.yaml#/components/parameters/fetchAttributes'
         - $ref: '../openapi.yaml#/components/parameters/askTotalCount'
         - $ref: '../openapi.yaml#/components/parameters/sortParam'
-        - $ref: '../openapi.yaml#/components/parameters/sortDir'
+        - name: sortDir
+          in: query
+          description: The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive (except for "clientId" parameter).
+          schema:
+            type: string
+            enum:
+              - ASCENDING
+              - DESCENDING
+            default: ASCENDING
         - name: matchTerm
           in: query
           description: |
