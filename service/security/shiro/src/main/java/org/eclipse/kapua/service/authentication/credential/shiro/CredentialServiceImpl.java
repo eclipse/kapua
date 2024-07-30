@@ -226,6 +226,11 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
                 throw new KapuaIllegalArgumentException("credentialType", credential.getCredentialType().toString());
             }
 
+            // Some fields must be updated only by admin users
+            if (tryEditAdminFields(credential, currentCredential)) {
+                authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, null));
+            }
+
             // Passing attributes??
             Credential updatedCredential = CredentialDAO.update(em, credential);
             updatedCredential.setCredentialKey(null);
@@ -556,5 +561,13 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, null));
 
         return entityManagerSession.doAction(em -> CredentialDAO.find(em, scopeId, credentialId));
+    }
+
+
+    private boolean tryEditAdminFields(Credential updated, Credential current) {
+        return updated.getLoginFailures() != current.getLoginFailures() ||
+                   updated.getFirstLoginFailure() != current.getFirstLoginFailure() ||
+                   updated.getLoginFailuresReset() != current.getLoginFailuresReset() ||
+                   updated.getLockoutReset() != current.getLockoutReset();
     }
 }
