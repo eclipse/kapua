@@ -12,6 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
+import java.util.Date;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import com.google.common.collect.Sets;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
@@ -101,14 +109,6 @@ import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.Date;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * {@link AuthenticationService} implementation.
