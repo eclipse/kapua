@@ -12,6 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.concurrent.atomic.AtomicReference;
+import javax.inject.Singleton;
+
 import org.apache.shiro.codec.Base64;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -48,11 +53,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Singleton;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * {@link CredentialService} implementation.
@@ -189,6 +189,11 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
 
             if (currentCredential.getCredentialType() != credential.getCredentialType()) {
                 throw new KapuaIllegalArgumentException("credentialType", credential.getCredentialType().toString());
+            }
+
+            // Some fields must be updated only by admin users
+            if (tryEditAdminFields(credential, currentCredential)) {
+                authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.write, null));
             }
 
             // Passing attributes??
@@ -418,5 +423,13 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.CREDENTIAL, Actions.write, scopeId));
 
         return txManager.execute(tx -> passwordResetter.resetPassword(tx, scopeId, userId, false, passwordResetRequest));
+    }
+
+
+    private boolean tryEditAdminFields(Credential updated, Credential current) {
+        return updated.getLoginFailures() != current.getLoginFailures() ||
+                   updated.getFirstLoginFailure() != current.getFirstLoginFailure() ||
+                   updated.getLoginFailuresReset() != current.getLoginFailuresReset() ||
+                   updated.getLockoutReset() != current.getLockoutReset();
     }
 }
