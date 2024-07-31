@@ -12,23 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
-import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.app.api.core.model.CountResult;
-import org.eclipse.kapua.app.api.core.model.EntityId;
-import org.eclipse.kapua.app.api.core.model.ScopeId;
-import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.endpoint.EndpointInfo;
-import org.eclipse.kapua.service.endpoint.EndpointInfoAttributes;
-import org.eclipse.kapua.service.endpoint.EndpointInfoCreator;
-import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
-import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
-import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
-import org.eclipse.kapua.service.endpoint.EndpointInfoService;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -41,6 +24,24 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import com.google.common.base.Strings;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.app.api.core.model.CountResult;
+import org.eclipse.kapua.app.api.core.model.EntityId;
+import org.eclipse.kapua.app.api.core.model.ScopeId;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
+import org.eclipse.kapua.model.query.SortOrder;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.endpoint.EndpointInfo;
+import org.eclipse.kapua.service.endpoint.EndpointInfoAttributes;
+import org.eclipse.kapua.service.endpoint.EndpointInfoCreator;
+import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
+import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
+import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
+import org.eclipse.kapua.service.endpoint.EndpointInfoService;
 
 @Path("{scopeId}/endpointInfos")
 public class EndpointInfos extends AbstractKapuaResource {
@@ -69,6 +70,8 @@ public class EndpointInfos extends AbstractKapuaResource {
             @QueryParam("endpointType") @DefaultValue(EndpointInfo.ENDPOINT_TYPE_RESOURCE) String endpointType,
             @QueryParam("matchTerm") String matchTerm,
             @QueryParam("askTotalCount") boolean askTotalCount,
+            @QueryParam("sortParam") String sortParam,
+            @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         EndpointInfoQuery query = endpointInfoFactory.newQuery(scopeId);
@@ -79,6 +82,12 @@ public class EndpointInfos extends AbstractKapuaResource {
         }
         if (matchTerm != null && !matchTerm.isEmpty()) {
             andPredicate.and(query.matchPredicate(matchTerm));
+        }
+        if (matchTerm != null && !matchTerm.isEmpty()) {
+            andPredicate.and(query.matchPredicate(matchTerm));
+        }
+        if (!Strings.isNullOrEmpty(sortParam)) {
+            query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
         }
         query.setPredicate(andPredicate);
 
