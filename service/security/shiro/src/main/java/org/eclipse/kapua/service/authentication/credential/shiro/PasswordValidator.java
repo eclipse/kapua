@@ -17,7 +17,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.storage.TxContext;
 
 public interface PasswordValidator {
-    void validatePassword(TxContext txContext, KapuaId scopeId, String plainPassword) throws KapuaException;
 
-    int getMinimumPasswordLength(TxContext txContext, KapuaId scopeId) throws KapuaException;
+    void validatePassword(TxContext txContext, KapuaId scopeId, String plainPassword) throws KapuaException;
 }
