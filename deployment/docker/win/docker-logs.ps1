@@ -19,6 +19,6 @@ $common_path = Join-Path $script_dir docker-common.ps1
 
 Write-Host "Opening Eclipse Kapua logs..."
 
-docker-compose -f (Join-Path $script_dir .. compose docker-compose.yml) logs -f
+docker compose -f (Join-Path $script_dir .. compose docker-compose.yml) logs -f
 
 Write-Host "Opening Eclipse Kapua logs... DONE!"
