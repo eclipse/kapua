@@ -18,8 +18,6 @@ import javax.inject.Singleton;
 import org.eclipse.kapua.app.api.core.model.StorableEntityId;
 import org.eclipse.kapua.app.api.core.model.device.management.JsonGenericRequestMessage;
 import org.eclipse.kapua.app.api.core.model.device.management.JsonGenericResponseMessage;
-import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSetting;
-import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSettingKeys;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.keystore.DeviceKeystoreCertificateInfo;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.core.JaxbClassProvider;
@@ -28,6 +26,8 @@ import org.eclipse.kapua.commons.liquibase.DatabaseCheckUpdate;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProviderImpl;
 import org.eclipse.kapua.commons.util.xml.XmlRootAnnotatedJaxbClassesScanner;
+import org.eclipse.kapua.commons.jersey.rest.KapuaCommonApiCoreSetting;
+import org.eclipse.kapua.commons.jersey.rest.KapuaCommonApiCoreSettingKeys;
 import org.eclipse.kapua.locator.LocatorConfig;
 
 import com.google.inject.Provides;
@@ -38,7 +38,7 @@ public class AppModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(DatabaseCheckUpdate.class).in(Singleton.class);
-        bind(KapuaApiCoreSetting.class).in(Singleton.class);
+        bind(KapuaCommonApiCoreSetting.class).in(Singleton.class);
 
         // Switching manually-configured JAXBContextProvider to autodiscovery one below
         // bind(JAXBContextProvider.class).to(RestApiJAXBContextProvider.class).in(Singleton.class);
@@ -62,8 +62,8 @@ public class AppModule extends AbstractKapuaModule {
 
     @Provides
     @Named("showStackTrace")
-    Boolean showStackTrace(KapuaApiCoreSetting kapuaApiCoreSetting) {
-        return kapuaApiCoreSetting.getBoolean(KapuaApiCoreSettingKeys.API_EXCEPTION_STACKTRACE_SHOW, false);
+    Boolean showStackTrace(KapuaCommonApiCoreSetting kapuaCommonApiCoreSetting) {
+        return kapuaCommonApiCoreSetting.getBoolean(KapuaCommonApiCoreSettingKeys.API_EXCEPTION_STACKTRACE_SHOW, false);
     }
 
     @Provides
