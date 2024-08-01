@@ -80,7 +80,7 @@ docker_compose() {
     fi
     export KAPUA_SWAGGER_ENABLE=$6
 
-    docker-compose -f "${SCRIPT_DIR}/../compose/docker-compose.yml" "${COMPOSE_FILES[@]}" up -d
+    docker compose -f "${SCRIPT_DIR}/../compose/docker-compose.yml" "${COMPOSE_FILES[@]}" up -d
 }
 
 print_usage_deploy() {
@@ -148,5 +148,5 @@ echo "Deploying Eclipse Kapua... DONE!"
 if [[ ${OPEN_LOGS} == true ]]; then
     . "${SCRIPT_DIR}/docker-logs.sh"
 else
-    echo "Run \"docker-compose -f ${SCRIPT_DIR}/../compose/docker-compose.yml logs -f\" for container logs"
+    echo "Run \"docker compose -f ${SCRIPT_DIR}/../compose/docker-compose.yml logs -f\" for container logs"
 fi

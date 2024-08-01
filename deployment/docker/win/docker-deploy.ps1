@@ -75,17 +75,17 @@ If($dev) {
     $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.es-dev.yml)
 }
 
-docker-compose -f $(Join-Path $script_dir .. compose docker-compose.yml) $compose_files up -d
+docker compose -f $(Join-Path $script_dir .. compose docker-compose.yml) $compose_files up -d
 
 Write-Host "Deploying Eclipse Kapua... DONE!"
 
 If ($logs)
 {
     Write-Host "Opening Eclipse Kapua logs..."
-    docker-compose -f $( Join-Path $script_dir .. compose docker-compose.yml ) logs -f
+    docker compose -f $( Join-Path $script_dir .. compose docker-compose.yml ) logs -f
     Write-Host "Opening Eclipse Kapua logs... DONE!"
 }
 Else
 {
-    Write-Host "Run `"docker-compose -f $( Join-Path $script_dir .. compose docker-compose.yml ) logs -f`" for container logs"
+    Write-Host "Run `"docker compose -f $( Join-Path $script_dir .. compose docker-compose.yml ) logs -f`" for container logs"
 }
