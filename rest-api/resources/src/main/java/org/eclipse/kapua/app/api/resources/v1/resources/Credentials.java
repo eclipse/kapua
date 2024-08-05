@@ -12,6 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
@@ -28,19 +43,6 @@ import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.user.UserCredentialsService;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 @Path("{scopeId}/credentials")
 public class Credentials extends AbstractKapuaResource {
@@ -65,6 +67,8 @@ public class Credentials extends AbstractKapuaResource {
     public CredentialListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("userId") EntityId userId,
+            @QueryParam("sortParam") String sortParam,
+            @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         CredentialQuery query = credentialFactory.newQuery(scopeId);
@@ -72,6 +76,9 @@ public class Credentials extends AbstractKapuaResource {
         AndPredicate andPredicate = query.andPredicate();
         if (userId != null) {
             andPredicate.and(query.attributePredicate(CredentialAttributes.USER_ID, userId));
+        }
+        if (!Strings.isNullOrEmpty(sortParam)) {
+            query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
         }
         query.setPredicate(andPredicate);
 
