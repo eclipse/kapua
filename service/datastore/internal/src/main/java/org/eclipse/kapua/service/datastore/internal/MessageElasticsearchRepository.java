@@ -205,7 +205,7 @@ public class MessageElasticsearchRepository extends DatastoreElasticSearchReposi
 
     @Override
     public void deleteAllIndexes() {
-        super.deleteAllIndexes();
+        super.deleteIndexes(datastoreUtils.getDataIndexName(KapuaId.ANY));
         this.metricsByIndex.invalidateAll();
     }
 

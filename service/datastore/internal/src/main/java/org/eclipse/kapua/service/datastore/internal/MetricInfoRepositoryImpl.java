@@ -63,4 +63,9 @@ public class MetricInfoRepositoryImpl extends DatastoreElasticSearchRepositoryBa
     protected StorableId idExtractor(MetricInfo storable) {
         return storable.getId();
     }
+
+    @Override
+    public void deleteAllIndexes() {
+        super.deleteIndexes(datastoreUtils.getMetricIndexName(KapuaId.ANY));
+    }
 }

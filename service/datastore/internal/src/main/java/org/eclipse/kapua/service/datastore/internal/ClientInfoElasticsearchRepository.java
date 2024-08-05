@@ -64,4 +64,8 @@ public class ClientInfoElasticsearchRepository extends DatastoreElasticSearchRep
         return storable.getId();
     }
 
+    @Override
+    public void deleteAllIndexes() {
+        super.deleteIndexes(datastoreUtils.getClientIndexName(KapuaId.ANY));
+    }
 }
