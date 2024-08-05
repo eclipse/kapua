@@ -12,22 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
-import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.model.CountResult;
-import org.eclipse.kapua.app.api.core.model.EntityId;
-import org.eclipse.kapua.app.api.core.model.ScopeId;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
-import org.eclipse.kapua.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.authorization.group.Group;
-import org.eclipse.kapua.service.authorization.group.GroupCreator;
-import org.eclipse.kapua.service.authorization.group.GroupFactory;
-import org.eclipse.kapua.service.authorization.group.GroupListResult;
-import org.eclipse.kapua.service.authorization.group.GroupQuery;
-import org.eclipse.kapua.service.authorization.group.GroupService;
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -41,6 +25,23 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import com.google.common.base.Strings;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.app.api.core.model.CountResult;
+import org.eclipse.kapua.app.api.core.model.EntityId;
+import org.eclipse.kapua.app.api.core.model.ScopeId;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
+import org.eclipse.kapua.model.query.SortOrder;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.authorization.group.Group;
+import org.eclipse.kapua.service.authorization.group.GroupCreator;
+import org.eclipse.kapua.service.authorization.group.GroupFactory;
+import org.eclipse.kapua.service.authorization.group.GroupListResult;
+import org.eclipse.kapua.service.authorization.group.GroupQuery;
+import org.eclipse.kapua.service.authorization.group.GroupService;
 
 @Path("{scopeId}/groups")
 public class Groups extends AbstractKapuaResource {
@@ -68,6 +69,8 @@ public class Groups extends AbstractKapuaResource {
             @QueryParam("name") String name,
             @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("matchTerm") String matchTerm,
+            @QueryParam("sortParam") String sortParam,
+            @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         GroupQuery query = groupFactory.newQuery(scopeId);
@@ -78,6 +81,9 @@ public class Groups extends AbstractKapuaResource {
         }
         if (matchTerm != null && !matchTerm.isEmpty()) {
             andPredicate.and(query.matchPredicate(matchTerm));
+        }
+        if (!Strings.isNullOrEmpty(sortParam)) {
+            query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
         }
         query.setPredicate(andPredicate);
 
