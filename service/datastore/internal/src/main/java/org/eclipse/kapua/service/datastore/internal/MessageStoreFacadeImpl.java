@@ -498,9 +498,6 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
     @Override
     public void refreshAllIndexes() throws ClientException {
         messageRepository.refreshAllIndexes();
-        clientInfoRepository.refreshAllIndexes();
-        channelInfoRepository.refreshAllIndexes();
-        metricInfoRepository.refreshAllIndexes();
     }
 
     @Override
