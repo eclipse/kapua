@@ -25,6 +25,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
@@ -60,8 +61,6 @@ import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 
-import com.google.common.base.Strings;
-
 @Path("{scopeId}/roles")
 public class Roles extends AbstractKapuaResource {
 
@@ -93,6 +92,8 @@ public class Roles extends AbstractKapuaResource {
             @QueryParam("name") String name,
             @QueryParam("matchTerm") String matchTerm,
             @QueryParam("askTotalCount") boolean askTotalCount,
+            @QueryParam("sortParam") String sortParam,
+            @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         RoleQuery query = roleFactory.newQuery(scopeId);
@@ -103,6 +104,9 @@ public class Roles extends AbstractKapuaResource {
         }
         if (matchTerm != null && !matchTerm.isEmpty()) {
             andPredicate.and(query.matchPredicate(matchTerm));
+        }
+        if (!Strings.isNullOrEmpty(sortParam)) {
+            query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
         }
         query.setPredicate(andPredicate);
 

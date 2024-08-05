@@ -83,9 +83,6 @@ public class EndpointInfos extends AbstractKapuaResource {
         if (matchTerm != null && !matchTerm.isEmpty()) {
             andPredicate.and(query.matchPredicate(matchTerm));
         }
-        if (matchTerm != null && !matchTerm.isEmpty()) {
-            andPredicate.and(query.matchPredicate(matchTerm));
-        }
         if (!Strings.isNullOrEmpty(sortParam)) {
             query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
         }
