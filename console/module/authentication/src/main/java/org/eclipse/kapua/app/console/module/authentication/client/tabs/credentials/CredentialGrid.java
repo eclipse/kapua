@@ -39,7 +39,6 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialQuery;
-import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialType;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.permission.CredentialSessionPermission;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialServiceAsync;
@@ -249,7 +248,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
                         currentSession.hasPermission(CredentialSessionPermission.write()));
         getToolbar().getResetPasswordButton().setEnabled(
             getSelectionModel().getSelectedItem() != null &&
-                getSelectionModel().getSelectedItem().getCredentialTypeEnum().equals(GwtCredentialType.PASSWORD) &&
+                "PASSWORD".equals(getSelectionModel().getSelectedItem().getCredentialType()) &&
                 currentSession.hasPermission(CredentialSessionPermission.write()));
     }
 

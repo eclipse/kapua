@@ -14,15 +14,18 @@ package org.eclipse.kapua.service.authentication.credential.shiro;
 
 import org.eclipse.kapua.service.authentication.user.PasswordResetRequest;
 
+/**
+ * The {@link PasswordResetRequest} implementation.
+ *
+ * @since 1.0.0
+ */
 public class PasswordResetRequestImpl implements PasswordResetRequest {
     private String newPassword;
-
 
     @Override
     public String getNewPassword() {
         return newPassword;
     }
-
 
     @Override
     public void setNewPassword(String newPassword) {

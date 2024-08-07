@@ -49,7 +49,6 @@ import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionFactory;
@@ -89,7 +88,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 /**
  * Implementation of Gherkin steps used in user test scenarios.
@@ -830,7 +828,7 @@ public class UserServiceSteps extends TestBase {
      */
     private CredentialCreator credentialCreatorCreator(KapuaId scopeId, KapuaId userId, String password, CredentialStatus status, Date expirationDate) {
         CredentialCreator credentialCreator;
-        credentialCreator = credentialFactory.newCreator(scopeId, userId, CredentialType.PASSWORD, password, status, expirationDate);
+        credentialCreator = credentialFactory.newCreator(scopeId, userId, "PASSWORD", password, status, expirationDate);
         return credentialCreator;
     }
 
@@ -1254,18 +1252,8 @@ public class UserServiceSteps extends TestBase {
         KapuaId userIdTmp = null;
         KapuaId scopeIdTmp = null;
         try {
-            userIdTmp = KapuaSecurityUtils.doPrivileged(new Callable<KapuaId>() {
-                @Override
-                public KapuaId call() throws Exception {
-                    return userService.findByName(username).getId();
-                }
-            });
-            scopeIdTmp = KapuaSecurityUtils.doPrivileged(new Callable<KapuaId>() {
-                @Override
-                public KapuaId call() throws Exception {
-                    return userService.findByName(username).getScopeId();
-                }
-            });
+            userIdTmp = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(username).getId());
+            scopeIdTmp = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(username).getScopeId());
         } catch (KapuaException e) {
             e.printStackTrace();
         }
@@ -1274,12 +1262,7 @@ public class UserServiceSteps extends TestBase {
         final KapuaId userId = userIdTmp;
         final KapuaId scopeId = scopeIdTmp;
         try {
-            credential = KapuaSecurityUtils.doPrivileged(new Callable<Credential>() {
-                @Override
-                public Credential call() throws Exception {
-                    return credentialService.findByUserId(scopeId, userId).getFirstItem();
-                }
-            });
+            credential = KapuaSecurityUtils.doPrivileged(() -> credentialService.findByUserId(scopeId, userId).getFirstItem());
         } catch (KapuaException e) {
             e.printStackTrace();
         }

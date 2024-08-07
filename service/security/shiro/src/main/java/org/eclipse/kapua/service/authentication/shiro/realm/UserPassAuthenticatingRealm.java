@@ -24,8 +24,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
-import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.credential.handler.shiro.PasswordCredentialTypeHandler;
 import org.eclipse.kapua.service.authentication.shiro.UsernamePasswordCredentialsImpl;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.MfaRequiredException;
 import org.eclipse.kapua.service.user.User;
@@ -33,7 +32,6 @@ import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -88,16 +86,11 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
         Credential credential;
         try {
             credential = KapuaSecurityUtils.doPrivileged(() -> {
-                CredentialListResult userCredentialList = credentialService.findByUserId(user.getScopeId(), user.getId());
+                Credential passwordCredential = credentialService.findByUserId(user.getScopeId(), user.getId(), PasswordCredentialTypeHandler.TYPE).getFirstItem();
 
-                List<Credential> passwordCredentialList = userCredentialList.getItems(c -> CredentialType.PASSWORD.equals(c.getCredentialType()));
-
-                if (passwordCredentialList.isEmpty()) {
-                    return null;
-                } else {
-                    Credential passwordCredential = passwordCredentialList.get(0);
-                    return credentialService.findWithKey(passwordCredential.getScopeId(), passwordCredential.getId());
-                }
+                return passwordCredential != null ?
+                        credentialService.findWithKey(passwordCredential.getScopeId(), passwordCredential.getId()) :
+                        null;
             });
         } catch (AuthenticationException ae) {
             throw ae;

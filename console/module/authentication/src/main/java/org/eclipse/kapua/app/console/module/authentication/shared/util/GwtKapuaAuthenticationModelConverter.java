@@ -21,7 +21,6 @@ import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCrede
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialCreator;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialQuery;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialStatus;
-import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialType;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtMfaCredentialOptionsCreator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
@@ -29,14 +28,12 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.FieldSortCriteria;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialAttributes;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionFactory;
 
@@ -72,8 +69,8 @@ public class GwtKapuaAuthenticationModelConverter {
         if (gwtCredentialQuery.getUsername() != null && !gwtCredentialQuery.getUsername().trim().isEmpty()) {
             // TODO set username predicate
         }
-        if (gwtCredentialQuery.getType() != null && gwtCredentialQuery.getType() != GwtCredentialType.ALL) {
-            andPredicate.and(query.attributePredicate(CredentialAttributes.CREDENTIAL_TYPE, convertCredentialType(gwtCredentialQuery.getType()), Operator.EQUAL));
+        if (gwtCredentialQuery.getCredentialType() != null && "ALL".equals(gwtCredentialQuery.getCredentialType())) {
+            andPredicate.and(query.attributePredicate(CredentialAttributes.CREDENTIAL_TYPE, gwtCredentialQuery.getCredentialType()));
         }
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? CredentialAttributes.CREDENTIAL_TYPE : loadConfig.getSortField();
         if (sortField.equals("expirationDateFormatted")) {
@@ -106,7 +103,7 @@ public class GwtKapuaAuthenticationModelConverter {
         CredentialCreator credentialCreator = CREDENTIAL_FACTORY
                 .newCreator(scopeId,
                         GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredentialCreator.getUserId()),
-                        convertCredentialType(gwtCredentialCreator.getCredentialType()),
+                        gwtCredentialCreator.getCredentialType(),
                         gwtCredentialCreator.getCredentialPlainKey(),
                         convertCredentialStatus(gwtCredentialCreator.getCredentialStatus()),
                         gwtCredentialCreator.getExpirationDate());
@@ -129,7 +126,7 @@ public class GwtKapuaAuthenticationModelConverter {
 
         credential.setId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredential.getId()));
         credential.setUserId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredential.getUserId()));
-        credential.setCredentialType(convertCredentialType(gwtCredential.getCredentialTypeEnum()));
+        credential.setCredentialType(gwtCredential.getCredentialType());
         credential.setCredentialKey(gwtCredential.getCredentialKey());
         credential.setExpirationDate(gwtCredential.getExpirationDate());
         credential.setStatus(convertCredentialStatus(gwtCredential.getCredentialStatusEnum()));
@@ -140,10 +137,6 @@ public class GwtKapuaAuthenticationModelConverter {
 
         // Return converted
         return credential;
-    }
-
-    public static CredentialType convertCredentialType(GwtCredentialType gwtCredentialType) {
-        return CredentialType.valueOf(gwtCredentialType.toString());
     }
 
     public static CredentialStatus convertCredentialStatus(GwtCredentialStatus gwtCredentialStatus) {

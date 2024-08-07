@@ -27,6 +27,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = CredentialXmlRegistry.class, factoryMethod = "newQuery")
+@XmlType(factoryClass = CredentialXmlRegistry.class, factoryMethod = "newCredentialQuery")
 public interface CredentialQuery extends KapuaQuery {
 }

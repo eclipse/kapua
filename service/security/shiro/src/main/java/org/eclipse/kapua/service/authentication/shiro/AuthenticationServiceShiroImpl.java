@@ -50,14 +50,13 @@ import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.SessionCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
-import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.credential.handler.shiro.PasswordCredentialTypeHandler;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.MfaRequiredException;
-import org.eclipse.kapua.service.authentication.shiro.realm.CredentialsHandler;
+import org.eclipse.kapua.service.authentication.shiro.realm.CredentialsConverter;
 import org.eclipse.kapua.service.authentication.shiro.realm.KapuaAuthenticationToken;
 import org.eclipse.kapua.service.authentication.shiro.session.ShiroSessionKeys;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
@@ -138,7 +137,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     private final UserService userService;
 
-    private final Set<CredentialsHandler> credentialsHandlers;
+    private final Set<CredentialsConverter> credentialsConverters;
     private final KapuaAuthenticationSetting kapuaAuthenticationSetting;
 
     private final JwtConsumer jwtConsumer;
@@ -159,7 +158,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             AccessPermissionService accessPermissionService,
             AccessPermissionFactory accessPermissionFactory,
             UserService userService,
-            Set<CredentialsHandler> credentialsHandlers,
+            Set<CredentialsConverter> credentialsConverters,
             KapuaAuthenticationSetting kapuaAuthenticationSetting) {
         this.credentialService = credentialService;
         this.mfaOptionService = mfaOptionService;
@@ -175,7 +174,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         this.accessPermissionService = accessPermissionService;
         this.accessPermissionFactory = accessPermissionFactory;
         this.userService = userService;
-        this.credentialsHandlers = credentialsHandlers;
+        this.credentialsConverters = credentialsConverters;
         this.kapuaAuthenticationSetting = kapuaAuthenticationSetting;
         this.jwtConsumer = new JwtConsumerBuilder()
                 .setSkipAllValidators()
@@ -486,13 +485,13 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
      */
     private KapuaAuthenticationToken doMapToShiro(AuthenticationCredentials authenticationCredentials) throws KapuaAuthenticationException {
         // Parse login credentials
-        CredentialsHandler credentialsHandler = credentialsHandlers
+        CredentialsConverter credentialsConverter = credentialsConverters
                 .stream()
                 .filter(ch -> ch.canProcess(authenticationCredentials))
                 .findFirst()
                 .orElseThrow(() -> new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED));
 
-        return credentialsHandler.mapToShiro(authenticationCredentials);
+        return credentialsConverter.convertToShiro(authenticationCredentials);
     }
 
     private void handleTokenLoginException(ShiroException se, Subject currentSubject, AuthenticationToken authenticationToken) throws KapuaException {
@@ -667,33 +666,31 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     }
 
     /**
-     * Method for checking the lockout state of the user credential
+     * Checks if a {@link Credential} is locked.
+     * <p>
+     * As of 2.1.0, only PASSWORD credentials can be locked.
+     *
+     * @param authenticationToken The {@link AuthenticationToken} for the login attempt.
+     *
+     * @since 1.1.0
      */
     private Boolean checkIfCredentialHasJustBeenLocked(AuthenticationToken authenticationToken) throws KapuaException {
         String principal = (String) authenticationToken.getPrincipal();
         User user = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(principal));
-        Credential credential = null;
+
+        // Retrieve Credential
+        Credential passwordCredential = null;
         if (user != null) {
-            credential = KapuaSecurityUtils.doPrivileged(() -> {
-                CredentialListResult credentialList = credentialService.findByUserId(user.getScopeId(), user.getId());
-
-                if (!credentialList.isEmpty()) {
-                    Credential credentialMatched = null;
-                    for (Credential c : credentialList.getItems()) {
-                        if (CredentialType.PASSWORD.equals(c.getCredentialType())) {
-                            credentialMatched = c;
-                            break;
-                        }
-                    }
-                    return credentialMatched;
-                } else {
-                    return null;
-                }
-            });
-
+            passwordCredential = KapuaSecurityUtils.doPrivileged(() ->
+                    credentialService.findByUserId(user.getScopeId(), user.getId(), PasswordCredentialTypeHandler.TYPE).getFirstItem()
+            );
         }
+
+        // Do check on current timestamp
         Date now = new Date();
-        return (credential != null && credential.getLockoutReset() != null && now.before(credential.getLockoutReset()));
+        return passwordCredential != null &&
+                passwordCredential.getLockoutReset() != null &&
+                now.before(passwordCredential.getLockoutReset());
     }
 
 }

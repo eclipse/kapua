@@ -19,42 +19,57 @@ import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.authentication.user.PasswordResetRequest;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
+import org.eclipse.kapua.service.user.User;
+
+import java.util.Set;
 
 /**
- * Credential service definition.
+ * {@link Credential} {@link KapuaEntityService} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface CredentialService extends KapuaEntityService<Credential, CredentialCreator>,
         KapuaUpdatableEntityService<Credential>,
         KapuaConfigurableService {
 
     /**
-     * Return the credential list result looking by user identifier (and also scope identifier)
+     * Gets the {@link Credential}s filtered by {@link User#getId()}.
      *
-     * @param scopeId
-     * @param userId
-     * @return
+     * @param scopeId The {@link Credential#getScopeId()}
+     * @param userId The {@link User#getId()}
+     * @return The {@link CredentialListResult}
      * @throws KapuaException
-     * @since 1.0
+     * @since 1.0.0
      */
-    CredentialListResult findByUserId(KapuaId scopeId, KapuaId userId)
-            throws KapuaException;
+    CredentialListResult findByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException;
 
     /**
-     * Returns the {@link Credential} of type {@link CredentialType#API_KEY} matching the given parameters
+     * Gets the {@link Credential}s filtered by given parameters
+     *
+     * @param scopeId The {@link Credential#getScopeId()}
+     * @param userId The {@link User#getId()}
+     * @param credentialType The {@link Credential#getCredentialType()}
+     * @return The {@link CredentialListResult}
+     * @throws KapuaException
+     * @since 1.0.0
+     */
+    CredentialListResult findByUserId(KapuaId scopeId, KapuaId userId, String credentialType) throws KapuaException;
+
+    /**
+     * Gets a {@link Credential} by its ApiKey. To be used when {@link Credential#getCredentialType()} is {@code API_KEY}
      *
      * @param tokenApiKey The API key to match
      * @return The matched {@link Credential}
      * @throws KapuaException
-     * @since 1.0
+     * @since 1.0.0
      */
     Credential findByApiKey(String tokenApiKey) throws KapuaException;
 
     /**
-     * Queries for all users
+     * Gets the {@link Credential}s filtered by the {@link CredentialQuery}.
      *
-     * @param query
+     * @param query The {@link CredentialQuery} to filter results
+     * @since 1.0.0
      */
     @Override
     CredentialListResult query(KapuaQuery query) throws KapuaException;
@@ -62,50 +77,61 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
     /**
      * Unlocks a {@link Credential}
      *
-     * @param scopeId
-     * @param credentialId
+     * @param scopeId The {@link Credential#getScopeId()}
+     * @param credentialId The {@link Credential#getId()}
      * @throws KapuaException
+     * @since 1.0.0
      */
     void unlock(KapuaId scopeId, KapuaId credentialId) throws KapuaException;
 
     /**
-     * Returns the minimum password length according to account setting and system default
+     * Gets the minimum password length according to Account setting and system default.
      *
      * @param scopeId The id of the Account to check the setting
      * @return The minimum required password length
-     * @throws KapuaException When something goes wrong
+     * @throws KapuaException
+     * @since 1.3.0
      */
     int getMinimumPasswordLength(KapuaId scopeId) throws KapuaException;
 
-
     /**
-     * Check if the provided password meets all the password's requirements. Return exception if requirements not fulfilled.
+     * Checks if the provided password meets all the password's requirements.
      *
-     * @param scopeId:       The scope ID in which to perform the check
-     * @param plainPassword: Password to check requirement for
-     * @throws KapuaException When something goes wrong
+     * @param scopeId The scope ID in which to perform the check
+     * @param plainPassword The plain password to check requirements
+     * @throws KapuaException
+     * @since 2.0.0
      */
     void validatePassword(KapuaId scopeId, String plainPassword) throws KapuaException;
 
 
     /**
-     * Return the {@link Credential} within the provided scopeId with the provided credentialId.
-     * The returned object contains the field credentialKey filled with the actual value.
+     * Gets the {@link Credential} with {@link Credential#getCredentialKey()} not removed.
      *
-     * @param scopeId      The scope ID in which to perform the find
-     * @param credentialId The ID of the credential to find
-     * @return The searched Credential
-     * @throws KapuaException When something goes wrong
+     * @param scopeId      The {@link Credential#getScopeId()}
+     * @param credentialId The {@link Credential#getId()}
+     * @return The {@link Credential} matched.
+     * @throws KapuaException
+     * @since 2.0.0
      */
     Credential findWithKey(KapuaId scopeId, KapuaId credentialId) throws KapuaException;
 
     /**
-     * Reset the password of a user, according to the given {@link PasswordResetRequest}
+     * Resets the password of a {@link User}, according to the given {@link PasswordResetRequest}
      *
-     * @param scopeId              scope of the {@link Credential} in which to change the password
-     * @param userId               id of the {@link Credential} to change the password
-     * @param passwordResetRequest request for resetting password
-     * @return The updated credential
+     * @param scopeId              The {@link Credential#getScopeId()}
+     * @param userId               The {@link Credential#getUserId()}
+     * @param passwordResetRequest The {@link PasswordResetRequest}
+     * @return The updated {@link Credential}
+     * @since 2.0.0
      */
     Credential adminResetUserPassword(KapuaId scopeId, KapuaId userId, PasswordResetRequest passwordResetRequest) throws KapuaException;
+
+    /**
+     * Gets the available {@link Credential#getCredentialType()}s
+     * @return The available {@link Credential#getCredentialType()}s
+     * @throws KapuaException
+     * @since 2.1.0
+     */
+    Set<String> getAvailableCredentialTypes() throws KapuaException;
 }

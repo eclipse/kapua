@@ -25,13 +25,13 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 @Category(JUnitTests.class)
-public class UserPassCredentialsHandlerTest {
+public class UserPassCredentialsConverterTest {
 
-    UserPassCredentialsHandler instance;
+    UserPassCredentialsConverter instance;
 
     @Before
     public void setUp() {
-        instance = new UserPassCredentialsHandler();
+        instance = new UserPassCredentialsConverter();
     }
 
     @Test
@@ -57,7 +57,7 @@ public class UserPassCredentialsHandlerTest {
         first.setTrustKey("aTrustKey");
         first.setTrustMe(true);
 
-        UsernamePasswordCredentialsImpl second = (UsernamePasswordCredentialsImpl) instance.mapToShiro(first);
+        UsernamePasswordCredentialsImpl second = (UsernamePasswordCredentialsImpl) instance.convertToShiro(first);
 
         Assert.assertNotNull(second);
         Assert.assertEquals(first, second);
@@ -75,7 +75,7 @@ public class UserPassCredentialsHandlerTest {
         first.setTrustKey("aTrustKey");
         first.setTrustMe(true);
 
-        UsernamePasswordCredentialsImpl second = (UsernamePasswordCredentialsImpl) instance.mapToShiro(first);
+        UsernamePasswordCredentialsImpl second = (UsernamePasswordCredentialsImpl) instance.convertToShiro(first);
 
         Assert.assertNotNull(second);
         Assert.assertNotEquals(first, second);
@@ -88,7 +88,7 @@ public class UserPassCredentialsHandlerTest {
 
     @Test(expected = NullPointerException.class)
     public void usernamePasswordCredentialsImplMapToShiroNullTest() throws KapuaAuthenticationException {
-        instance.mapToShiro(null);
+        instance.convertToShiro(null);
     }
 
     @Test(expected = KapuaAuthenticationException.class)
@@ -97,6 +97,6 @@ public class UserPassCredentialsHandlerTest {
 
         Assert.assertNotNull(first);
 
-        instance.mapToShiro(first);
+        instance.convertToShiro(first);
     }
 }

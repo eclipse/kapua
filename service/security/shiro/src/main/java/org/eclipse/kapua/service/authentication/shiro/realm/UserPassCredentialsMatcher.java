@@ -22,11 +22,11 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.cache.CacheMetric;
 import org.eclipse.kapua.service.authentication.credential.cache.CachedPasswordMatcher;
 import org.eclipse.kapua.service.authentication.credential.cache.DefaultPasswordMatcher;
 import org.eclipse.kapua.service.authentication.credential.cache.PasswordMatcher;
+import org.eclipse.kapua.service.authentication.credential.handler.shiro.PasswordCredentialTypeHandler;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationServiceShiroImpl;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
@@ -86,9 +86,13 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
         LoginAuthenticationInfo info = (LoginAuthenticationInfo) authenticationInfo;
         User infoUser = (User) info.getPrincipals().getPrimaryPrincipal();
         Credential infoCredential = (Credential) info.getCredentials();
+
+        if (!PasswordCredentialTypeHandler.TYPE.equals(infoCredential.getCredentialType())) {
+            throw KapuaRuntimeException.internalError("Invalid Credential.type for UserPassCredentialsMatcher: " + infoCredential.getCredentialType());
+        }
+
         // Match token with info
         if (tokenUsername.equals(infoUser.getName()) &&
-                CredentialType.PASSWORD.equals(infoCredential.getCredentialType()) &&
                 passwordMatcher.checkPassword(tokenUsername, tokenPassword, infoCredential)) {
 
             try {

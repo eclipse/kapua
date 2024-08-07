@@ -17,16 +17,16 @@ import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 
 /**
- * {@link CredentialsHandler} definition.
+ * {@link CredentialsConverter} definition.
  * <p>
- * It maps a {@link AuthenticationCredentials} to a specific implementation of Apache Shiro {@link AuthenticationToken}.
+ * It converts a {@link AuthenticationCredentials} to a specific implementation of Apache Shiro {@link AuthenticationToken}.
  *
  * @since 2.0.0
  */
-public interface CredentialsHandler {
+public interface CredentialsConverter {
 
     /**
-     * Whether the given {@link AuthenticationCredentials} is processable from this {@link CredentialsHandler}.
+     * Whether the given {@link AuthenticationCredentials} is processable from this {@link CredentialsConverter}.
      *
      * @param credentials The {@link AuthenticationCredentials} to check.
      * @return {@code true} if it is processable, {@code false} if not.
@@ -42,5 +42,5 @@ public interface CredentialsHandler {
      * @throws KapuaAuthenticationException if the given {@link AuthenticationCredentials} are invalid.
      * @since 2.0.0
      */
-    KapuaAuthenticationToken mapToShiro(AuthenticationCredentials credentials) throws KapuaAuthenticationException;
+    KapuaAuthenticationToken convertToShiro(AuthenticationCredentials credentials) throws KapuaAuthenticationException;
 }

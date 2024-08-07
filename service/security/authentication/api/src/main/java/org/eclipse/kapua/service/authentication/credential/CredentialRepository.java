@@ -14,12 +14,28 @@ package org.eclipse.kapua.service.authentication.credential;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.storage.KapuaUpdatableEntityRepository;
 import org.eclipse.kapua.storage.TxContext;
 
+/**
+ * {@link Credential} {@link KapuaUpdatableEntityRepository} definition.
+ *
+ * @since 2.0.0
+ */
 public interface CredentialRepository
         extends KapuaUpdatableEntityRepository<Credential, CredentialListResult> {
 
 
+    /**
+     * Gets the {@link Credential}s filtered by the {@link User#getId()}.
+     *
+     * @param txContext The {@link TxContext}
+     * @param scopeId The {@link Credential#getScopeId()}
+     * @param userId The {@link User#getId()}
+     * @return The {@link CredentialListResult}
+     * @throws KapuaException
+     * @since 2.0.0
+     */
     CredentialListResult findByUserId(TxContext txContext, KapuaId scopeId, KapuaId userId) throws KapuaException;
 }

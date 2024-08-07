@@ -16,39 +16,53 @@ import org.eclipse.kapua.locator.KapuaLocator;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
+/**
+ * The {@link Credential} {@link XmlRegistry}
+ *
+ * @since 1.0.0
+ */
 @XmlRegistry
 public class CredentialXmlRegistry {
 
     private final CredentialFactory credentialFactory = KapuaLocator.getInstance().getFactory(CredentialFactory.class);
 
     /**
-     * Creates a new credential instance
+     * Instantiates a new {@link Credential}.
      *
-     * @return
+     * @return The newly instantiated {@link Credential}
+     * @since 1.0.0
      */
     public Credential newCredential() {
         return credentialFactory.newEntity(null);
     }
 
     /**
-     * Creates a new credential list result instance
+     * Instantiates a new {@link CredentialCreator}.
      *
-     * @return
+     * @return The newly instantiated {@link CredentialCreator}
+     * @since 1.0.0
+     */
+    public CredentialCreator newCredentialCreator() {
+        return credentialFactory.newCreator(null, null, null, null, null, null);
+    }
+
+    /**
+     * Instantiates a new {@link CredentialListResult}.
+     *
+     * @return The newly instantiated {@link CredentialListResult}
+     * @since 1.0.0
      */
     public CredentialListResult newCredentialListResult() {
         return credentialFactory.newListResult();
     }
 
     /**
-     * Creates a new credential creator instance
+     * Instantiates a new {@link CredentialQuery}.
      *
-     * @return
+     * @return The newly instantiated {@link CredentialQuery}
+     * @since 1.0.0
      */
-    public CredentialCreator newCredentialCreator() {
-        return credentialFactory.newCreator(null, null, null, null, null, null);
-    }
-
-    public CredentialQuery newQuery() {
+    public CredentialQuery newCredentialQuery() {
         return credentialFactory.newQuery(null);
     }
 }

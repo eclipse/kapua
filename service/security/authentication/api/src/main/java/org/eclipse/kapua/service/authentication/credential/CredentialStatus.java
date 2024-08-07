@@ -13,13 +13,20 @@
 package org.eclipse.kapua.service.authentication.credential;
 
 /**
- * Available credential types
+ * Available {@link Credential} status
  *
  * @since 1.0.0
  */
 public enum CredentialStatus {
+
+    /**
+     * @since 1.0.0
+     */
     ENABLED,
 
+    /**
+     * @since 1.0.0
+     */
     DISABLED
 
 }

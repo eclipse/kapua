@@ -40,11 +40,11 @@ import org.eclipse.kapua.app.console.module.authentication.client.messages.Conso
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialCreator;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialStatus;
-import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialType;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialServiceAsync;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaDateField;
 
+import java.util.List;
 
 public class CredentialAddDialog extends EntityAddEditDialog {
 
@@ -54,7 +54,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     protected FormPanel credentialFormPanel;
     private String selectedUserId;
     private String selectedUserName;
-    SimpleComboBox<GwtCredentialType> credentialType;
+    SimpleComboBox<String> credentialType;
     protected LabelField credentialTypeLabel;
     private LabelField subject;
     protected TextField<String> password;
@@ -90,60 +90,71 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         credentialTypeLabel.setLabelSeparator(":");
         credentialTypeLabel.setVisible(false);
         credentialFormPanel.add(credentialTypeLabel);
-        credentialType = new SimpleComboBox<GwtCredentialType>();
+
+        credentialType = new SimpleComboBox<String>();
         credentialType.setEditable(false);
         credentialType.setTypeAhead(false);
         credentialType.setAllowBlank(false);
         credentialType.setFieldLabel("* " + MSGS.dialogAddFieldCredentialType());
         credentialType.setToolTip(MSGS.dialogAddFieldCredentialTypeTooltip());
         credentialType.setTriggerAction(ComboBox.TriggerAction.ALL);
-        credentialType.add(GwtCredentialType.PASSWORD);
-        credentialType.add(GwtCredentialType.API_KEY);
         credentialType.setEmptyText(MSGS.credentialTypePlaceHolder());
         credentialType.getMessages().setBlankText(MSGS.credentialTypeBlankText());
-        credentialType.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<GwtCredentialType>>() {
+        credentialType.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>() {
 
             @Override
-            public void selectionChanged(SelectionChangedEvent<SimpleComboValue<GwtCredentialType>> selectionChangedEvent) {
-                password.setVisible(selectionChangedEvent.getSelectedItem().getValue() == GwtCredentialType.PASSWORD);
-                password.setAllowBlank(selectionChangedEvent.getSelectedItem().getValue() != GwtCredentialType.PASSWORD);
-                confirmPassword.setVisible(selectionChangedEvent.getSelectedItem().getValue() == GwtCredentialType.PASSWORD);
-                confirmPassword.setAllowBlank(selectionChangedEvent.getSelectedItem().getValue() != GwtCredentialType.PASSWORD);
+            public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> selectionChangedEvent) {
+                String selectedCredentialType = selectionChangedEvent.getSelectedItem().getValue();
+
+                password.setVisible("PASSWORD".equals(selectedCredentialType));
+                password.setEnabled("PASSWORD".equals(selectedCredentialType));
                 password.clearInvalid();
+
+                confirmPassword.setVisible("PASSWORD".equals(selectedCredentialType));
+                confirmPassword.setEnabled("PASSWORD".equals(selectedCredentialType));
                 confirmPassword.clearInvalid();
-                if (password.isVisible() && confirmPassword.isVisible()) {
-                    DialogUtils.resizeDialog(CredentialAddDialog.this, 400, 390);
-                    passwordTooltip.show();
-                    password.setAllowBlank(false);
-                } else {
-                    DialogUtils.resizeDialog(CredentialAddDialog.this, 400, 285);
-                    passwordTooltip.hide();
-                }
-                if (selectionChangedEvent.getSelectedItem().getValue() != GwtCredentialType.PASSWORD) {
+
+                passwordTooltip.setVisible("PASSWORD".equals(selectedCredentialType));
+
+                if (!"PASSWORD".equals(selectedCredentialType)) {
                     password.clear();
                     confirmPassword.clear();
-                    confirmPassword.disable();
                 }
-             }
+                DialogUtils.resizeDialog(CredentialAddDialog.this, 400, "PASSWORD".equals(selectionChangedEvent.getSelectedItem().getValue()) ? 390 : 285);
+            }
         });
+
+        GWT_CREDENTIAL_SERVICE.getAvailableCredentialTypes(new AsyncCallback<List<String>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                FailureHandler.handle(caught);
+                credentialType.setEmptyText("Error while loading available Credential types");
+            }
+
+            @Override
+            public void onSuccess(List<String> result) {
+                credentialType.add(result);
+            }
+        });
+
         credentialFormPanel.add(credentialType);
 
         password = new TextField<String>();
         password.setName("password");
         password.setFieldLabel("* " + MSGS.dialogAddFieldPassword());
+        password.setAllowBlank(false);
         password.setPassword(true);
         password.setVisible(false);
         password.setAutoValidate(true);
         credentialFormPanel.add(password);
 
         confirmPassword = new TextField<String>();
-        confirmPassword.setAllowBlank(false);
         confirmPassword.setName("confirmPassword");
         confirmPassword.setFieldLabel("* " + MSGS.dialogAddFieldConfirmPassword());
+        confirmPassword.setAllowBlank(false);
         confirmPassword.setPassword(true);
         confirmPassword.setVisible(false);
         confirmPassword.setAutoValidate(true);
-        confirmPassword.disable();
         credentialFormPanel.add(confirmPassword);
 
         password.addListener(Events.KeyUp, new Listener<BaseEvent>() {
@@ -178,8 +189,9 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         passwordTooltip.setStyleAttribute("margin-top", "-5px");
         passwordTooltip.setStyleAttribute("color", "gray");
         passwordTooltip.setStyleAttribute("font-size", "10px");
-        credentialFormPanel.add(passwordTooltip);
         passwordTooltip.hide();
+        credentialFormPanel.add(passwordTooltip);
+
         expirationDate = new KapuaDateField(this);
         expirationDate.setEmptyText(MSGS.dialogAddNoExpiration());
         expirationDate.setFieldLabel(MSGS.dialogAddFieldExpirationDate());
@@ -258,11 +270,11 @@ public class CredentialAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onSuccess(GwtCredential arg0) {
-                if (gwtCredentialCreator.getCredentialType() == GwtCredentialType.API_KEY) {
+                if ("API_KEY".equals(gwtCredentialCreator.getCredentialType())) {
                     ApiKeyConfirmationDialog apiKeyConfirmationDialog = new ApiKeyConfirmationDialog(arg0.getCredentialKey());
                     apiKeyConfirmationDialog.show();
                     exitMessage = MSGS.dialogAddConfirmationAPI();
-                } else if (gwtCredentialCreator.getCredentialType() == GwtCredentialType.PASSWORD) {
+                } else if ("PASSWORD".equals(gwtCredentialCreator.getCredentialType())) {
                     exitMessage = MSGS.dialogAddConfirmationPassword();
                 }
                 exitStatus = true;

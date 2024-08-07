@@ -20,11 +20,11 @@ import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationExc
 import org.eclipse.kapua.service.authentication.shiro.UsernamePasswordCredentialsImpl;
 
 /**
- * {@link UsernamePasswordCredentials} {@link CredentialsHandler} implementation.
+ * {@link UsernamePasswordCredentials} {@link CredentialsConverter} implementation.
  *
  * @since 2.0.0
  */
-public class UserPassCredentialsHandler implements CredentialsHandler {
+public class UserPassCredentialsConverter implements CredentialsConverter {
 
     @Override
     public boolean canProcess(AuthenticationCredentials authenticationCredentials) {
@@ -32,7 +32,7 @@ public class UserPassCredentialsHandler implements CredentialsHandler {
     }
 
     @Override
-    public KapuaAuthenticationToken mapToShiro(AuthenticationCredentials authenticationCredentials) throws KapuaAuthenticationException {
+    public KapuaAuthenticationToken convertToShiro(AuthenticationCredentials authenticationCredentials) throws KapuaAuthenticationException {
 
         UsernamePasswordCredentialsImpl usernamePasswordCredentials = authenticationCredentials instanceof UsernamePasswordCredentialsImpl ?
                 (UsernamePasswordCredentialsImpl) authenticationCredentials :

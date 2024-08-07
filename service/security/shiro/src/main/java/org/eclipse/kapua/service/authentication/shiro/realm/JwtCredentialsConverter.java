@@ -13,35 +13,35 @@
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
 import com.google.common.base.Strings;
-import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
+import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
-import org.eclipse.kapua.service.authentication.shiro.AccessTokenCredentialsImpl;
+import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
 
 /**
- * {@link AccessTokenCredentials} {@link CredentialsHandler} implementation.
+ * {@link JwtCredentials} {@link CredentialsConverter} implementation.
  *
  * @since 2.0.0
  */
-public class AccessTokenCredentialsHandler implements CredentialsHandler {
+public class JwtCredentialsConverter implements CredentialsConverter {
 
     @Override
     public boolean canProcess(AuthenticationCredentials authenticationCredentials) {
-        return authenticationCredentials instanceof AccessTokenCredentials;
+        return authenticationCredentials instanceof JwtCredentials;
     }
 
     @Override
-    public KapuaAuthenticationToken mapToShiro(AuthenticationCredentials authenticationCredentials) throws KapuaAuthenticationException {
+    public KapuaAuthenticationToken convertToShiro(AuthenticationCredentials authenticationCredentials) throws KapuaAuthenticationException {
 
-        AccessTokenCredentialsImpl accessTokenCredentials = authenticationCredentials instanceof AccessTokenCredentialsImpl ?
-                (AccessTokenCredentialsImpl) authenticationCredentials :
-                new AccessTokenCredentialsImpl((AccessTokenCredentials) authenticationCredentials);
+        JwtCredentialsImpl jwtCredentials = authenticationCredentials instanceof JwtCredentialsImpl ?
+                (JwtCredentialsImpl) authenticationCredentials :
+                new JwtCredentialsImpl((JwtCredentials) authenticationCredentials);
 
-        if (Strings.isNullOrEmpty(accessTokenCredentials.getTokenId())) {
-            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_SESSION_CREDENTIALS);
+        if (Strings.isNullOrEmpty(jwtCredentials.getIdToken())) {
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
         }
 
-        return accessTokenCredentials;
+        return jwtCredentials;
     }
 }
