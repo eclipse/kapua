@@ -21,7 +21,6 @@ import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
-import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialType;
 
 import java.util.Date;
 
@@ -63,9 +62,9 @@ public class CredentialEditDialog extends CredentialAddDialog {
             public void onSuccess(GwtCredential result) {
                 exitStatus = true;
 
-                if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
+                if ("API_KEY".equals(selectedCredential.getCredentialType())) {
                     exitMessage = MSGS.dialogEditConfirmationAPI();
-                } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+                } else if ("PASSWORD".equals(selectedCredential.getCredentialType())) {
                     exitMessage = MSGS.dialogEditConfirmationPassword();
                 }
 
@@ -81,14 +80,14 @@ public class CredentialEditDialog extends CredentialAddDialog {
     }
 
     private void loadCredential() {
-        credentialType.setSimpleValue(selectedCredential.getCredentialTypeEnum());
+        credentialType.setSimpleValue(selectedCredential.getCredentialType());
         expirationDate.setValue(selectedCredential.getExpirationDate());
         credentialStatus.setSimpleValue(selectedCredential.getCredentialStatusEnum());
         optlock.setValue(selectedCredential.getOptlock());
-        if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
+        if ("API_KEY".equals(selectedCredential.getCredentialType())) {
             expirationDate.setToolTip(MSGS.dialogAddFieldExpirationDateApiKeyTooltip());
             credentialStatus.setToolTip(MSGS.dialogAddStatusApiKeyTooltip());
-        } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+        } else if ("PASSWORD".equals(selectedCredential.getCredentialType())) {
             passwordTooltip.show();
             DialogUtils.resizeDialog(CredentialEditDialog.this, 400, 355);
             expirationDate.setToolTip(MSGS.dialogAddFieldExpirationDatePasswordTooltip());
@@ -142,9 +141,9 @@ public class CredentialEditDialog extends CredentialAddDialog {
 
     @Override
     public String getHeaderMessage() {
-        if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
+        if ("API_KEY".equals(selectedCredential.getCredentialType())) {
             return MSGS.dialogEditApiKeyHeader(selectedCredential.getUsername());
-        } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+        } else if ("PASSWORD".equals(selectedCredential.getCredentialType())) {
             return MSGS.dialogEditPasswordHeader(selectedCredential.getUsername());
         }
         return MSGS.dialogEditHeader(selectedCredential.getUsername());
@@ -152,9 +151,9 @@ public class CredentialEditDialog extends CredentialAddDialog {
 
     @Override
     public String getInfoMessage() {
-        if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
+        if ("API_KEY".equals(selectedCredential.getCredentialType())) {
             return MSGS.dialogEditApiKeyInfo();
-        } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+        } else if ("PASSWORD".equals(selectedCredential.getCredentialType())) {
             return MSGS.dialogEditPasswordInfo();
         }
         return MSGS.dialogEditInfo();

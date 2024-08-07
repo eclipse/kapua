@@ -41,7 +41,6 @@ import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RoleService;
@@ -118,7 +117,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
                 CredentialCreator credentialCreator = CREDENTIAL_FACTORY.newCreator(scopeId,
                         user.getId(),
-                        CredentialType.PASSWORD,
+                        "PASSWORD",
                         gwtUserCreator.getPassword(),
                         CredentialStatus.ENABLED,
                         null);

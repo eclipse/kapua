@@ -22,7 +22,7 @@ public class GwtCredentialCreator extends GwtEntityCreator implements Serializab
     private static final long serialVersionUID = 1L;
 
     private String userId;
-    private GwtCredentialType credentialType;
+    private String credentialType;
     private String credentialPlainKey;
     private GwtCredentialStatus credentialStatus;
     private Date expirationDate;
@@ -35,11 +35,11 @@ public class GwtCredentialCreator extends GwtEntityCreator implements Serializab
         this.userId = userId;
     }
 
-    public GwtCredentialType getCredentialType() {
+    public String getCredentialType() {
         return credentialType;
     }
 
-    public void setCredentialType(GwtCredentialType credentialType) {
+    public void setCredentialType(String credentialType) {
         this.credentialType = credentialType;
     }
 

@@ -14,10 +14,9 @@ package org.eclipse.kapua.service.authentication.exception;
 
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
 
 /**
- * {@link KapuaAuthenticationException} to {@code throw} when a {@link Credential} with {@link CredentialType#PASSWORD}
+ * {@link KapuaAuthenticationException} to {@code throw} when a {@link Credential} with with {@link Credential#getCredentialType()} is {@code PASSWORD}
  * has a {@link Credential#getCredentialKey()}/{@link CredentialCreator#getCredentialPlainKey()} too short or too long.
  *
  * @since 2.0.0

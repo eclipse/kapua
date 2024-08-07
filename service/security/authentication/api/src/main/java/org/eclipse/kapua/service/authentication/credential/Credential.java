@@ -16,6 +16,7 @@ import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
+import org.eclipse.kapua.service.user.User;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,24 +27,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
 
 /**
- * Credential definition.<br>
- * Used to handle credentials needed by the various authentication algorithms.
+ * Credential {@link KapuaUpdatableEntity} definition
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "credential")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "userId",
-        "credentialType",
-        "credentialKey",
-        "status",
-        "expirationDate",
-        "loginFailures",
-        "firstLoginFailure",
-        "loginFailuresReset",
-        "lockoutReset" }, //
-        factoryClass = CredentialXmlRegistry.class, //
-        factoryMethod = "newCredential") //
+@XmlType(factoryClass = CredentialXmlRegistry.class, factoryMethod = "newCredential")
 public interface Credential extends KapuaUpdatableEntity {
 
     String TYPE = "credential";
@@ -54,140 +44,159 @@ public interface Credential extends KapuaUpdatableEntity {
     }
 
     /**
-     * Return the user identifier
+     * Gets the {@link User#getId()} owner of the {@link Credential}
      *
-     * @return
+     * @return The {@link User#getId()}
+     * @since 1.0.0
      */
     @XmlElement(name = "userId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     KapuaId getUserId();
 
     /**
-     * Sets the user identifier
+     * Sets the {@link User#getId()} owner of the {@link Credential}
+     *
+     * @param userId The {@link User#getId()}
+     * @since 1.0.0
      */
     void setUserId(KapuaId userId);
 
     /**
-     * Return the credential type
+     * Gets the type.
      *
-     * @return
+     * @return The type.
+     * @since 1.0.0
      */
     @XmlElement(name = "credentialType")
-    CredentialType getCredentialType();
+    String getCredentialType();
 
     /**
-     * Sets the user credential type
-     */
-    void setCredentialType(CredentialType credentialType);
-
-    /**
-     * Return the credential key
+     * Sets the type.
      *
-     * @return
+     * @param credentialType The type.
+     * @since 1.0.0
+     */
+    void setCredentialType(String credentialType);
+
+    /**
+     * Gets the secret key
+     *
+     * @return The secret key
+     * @since 1.0.0
      */
     @XmlElement(name = "credentialKey")
     String getCredentialKey();
 
     /**
-     * Sets the credential key
+     * Sets the secret key
      *
-     * @param credentialKey
+     * @param credentialKey The secret key
+     * @since 1.0.0
      */
     void setCredentialKey(String credentialKey);
 
     /**
-     * Returns the current Credential status
+     * Gets the {@link CredentialStatus}
      *
-     * @return the Credential status
-     * @see CredentialStatus
+     * @return The {@link CredentialStatus}
+     * @since 1.0.0
      */
     @XmlElement(name = "status")
     CredentialStatus getStatus();
 
     /**
-     * Sets the current Credential status
+     * Sets the {@link CredentialStatus}
      *
-     * @param status The credential status
+     * @param status The {@link CredentialStatus}
+     * @since 1.0.0
      */
     void setStatus(CredentialStatus status);
 
     /**
-     * Gets the current Credential expiration date
+     * Gets the expiration date
      *
-     * @return the current Credential expiration date
+     * @return The expiration date
+     * @since 1.0.0
      */
     @XmlElement(name = "expirationDate")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
     Date getExpirationDate();
 
     /**
-     * Sets the current Credential expiration date
+     * Sets the expiration date
      *
-     * @param expirationDate the current Credential expiration date
+     * @param expirationDate The expiration date
+     * @since 1.0.0
      */
     void setExpirationDate(Date expirationDate);
 
     /**
      * Gets how many times this credential failed a login
      *
-     * @return an integer representing login failures for this credential
+     * @return How many times this credential failed a login
+     * @since 1.0.0
      */
     int getLoginFailures();
 
     /**
      * Sets how many times this credential failed a login
      *
-     * @param loginFailures the new failed logins count
+     * @param loginFailures How many times this credential failed a login
+     * @since 1.0.0
      */
     void setLoginFailures(int loginFailures);
 
     /**
-     * Gets a date indicating when the first login attempt failed after
-     * the login attempts have been reset
+     * Gets when the first login attempt failed
      *
-     * @return A {@link Date} object indicating when the first login attempt failed after the login attempts have been reset
+     * @return When first login attempt failed
+     * @since 1.0.0
      */
     @XmlElement(name = "firstLoginFailure")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
     Date getFirstLoginFailure();
 
     /**
-     * Sets a date indicating when the first login attempt failed after
-     * the login attempts have been reset
+     * Sets when first login attempt failed
      *
-     * @param firstLoginFailure A {@link Date} object indicating when the first login attempt failed after the login attempts have been reset
+     * @param firstLoginFailure When first login attempt failed.
+     * @since 1.0.0
      */
     void setFirstLoginFailure(Date firstLoginFailure);
 
     /**
-     * Gets a date indicating when the failed login attempts will be reset
+     * Gets when the failed login attempts will reset
      *
-     * @return A {@link Date} object indicating when the failed login attempts will be reset
+     * @return When the failed login attempts will reset
+     * @since 1.0.0
      */
     @XmlElement(name = "loginFailuresReset")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
     Date getLoginFailuresReset();
 
     /**
-     * Sets a date indicating when the failed login attempts will be reset
+     * Sets when the failed login attempts will reset
      *
-     * @param loginFailuresReset A {@link Date} object indicating when the failed login attempts will be reset
+     * @param loginFailuresReset When the failed login attempts will reset
+     * @since 1.0.0
      */
     void setLoginFailuresReset(Date loginFailuresReset);
 
     /**
-     * Gets a date indicating when the lockout will be lifted from the credential
+     * Gets when the lockout will be reset
      *
-     * @return A {@link Date} object indicating when the lockout will be reset
+     * @return When the lockout will be reset
+     * @since 1.0.0
      */
     @XmlElement(name = "lockoutReset")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
     Date getLockoutReset();
 
     /**
-     * Sets a date indicating when the lockout will be lifted from the credential
+     * Sets when the lockout will be reset
      *
-     * @param lockoutReset A {@link Date} object indicating when the lockout will be reset
+     * @param lockoutReset When the lockout will be reset
+     * @since 1.0.0
      */
     void setLockoutReset(Date lockoutReset);
 }

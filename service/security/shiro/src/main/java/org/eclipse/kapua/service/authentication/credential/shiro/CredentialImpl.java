@@ -26,21 +26,19 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
 
-@Entity(name = "Credential")
-@Table(name = "atht_credential")
 /**
  * {@link Credential} implementation.
  *
  * @since 1.0.0
  */
+@Entity(name = "Credential")
+@Table(name = "atht_credential")
 public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Credential {
 
     private static final long serialVersionUID = -7921424688644169175L;
@@ -51,9 +49,9 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     })
     private KapuaEid userId;
 
-    @Enumerated(EnumType.STRING)
+    @Basic
     @Column(name = "credential_type", updatable = false, nullable = false)
-    private CredentialType credentialType;
+    private String credentialType;
 
     @Basic
     @Column(name = "credential_key", nullable = false, updatable = false)
@@ -96,7 +94,7 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
      * Constructor.
      *
      * @param scopeId
-     *         The scope {@link KapuaId} to set into the {@link Credential}.
+     *         The {@link Credential#getScopeId()}
      * @since 1.0.0
      */
     public CredentialImpl(KapuaId scopeId) {
@@ -107,17 +105,23 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
      * Constructor.
      *
      * @param scopeId
-     *         The scope {@link KapuaId} to set into the {@link Credential}.
+     *         The {@link Credential#getScopeId()}
      * @param userId
-     *         The {@link org.eclipse.kapua.service.user.User} {@link KapuaId} to set into the {@link Credential}.
+     *         The {@link Credential#getUserId()}
      * @param credentialType
-     *         The {@link CredentialType} to set into the {@link Credential}.
+     *         The {@link Credential#getCredentialType()}
      * @param credentialKey
-     *         The credential key to set into the {@link Credential}.
+     *         The {@link Credential#getCredentialKey()}
      * @since 1.0.0
      */
-    public CredentialImpl(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialStatus credentialStatus, Date expirationDate) {
+    public CredentialImpl(KapuaId scopeId,
+                          KapuaId userId,
+                          String credentialType,
+                          String credentialKey,
+                          CredentialStatus credentialStatus,
+                          Date expirationDate) {
         super(scopeId);
+
         this.userId = (KapuaEid) userId;
         this.credentialType = credentialType;
         this.credentialKey = credentialKey;
@@ -128,11 +132,10 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     /**
      * Clone constructor.
      *
-     * @param credential
-     * @throws KapuaException
+     * @param credential The {@link Credential} to clone.
      * @since 1.1.0
      */
-    public CredentialImpl(Credential credential) throws KapuaException {
+    public CredentialImpl(Credential credential) {
         super(credential);
 
         setUserId(credential.getUserId());
@@ -151,23 +154,23 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     }
 
     @Override
-    public CredentialType getCredentialType() {
-        return credentialType;
-    }
-
-    @Override
-    public String getCredentialKey() {
-        return credentialKey;
-    }
-
-    @Override
     public void setUserId(KapuaId userId) {
         this.userId = KapuaEid.parseKapuaId(userId);
     }
 
     @Override
-    public void setCredentialType(CredentialType credentialType) {
+    public String getCredentialType() {
+        return credentialType;
+    }
+
+    @Override
+    public void setCredentialType(String credentialType) {
         this.credentialType = credentialType;
+    }
+
+    @Override
+    public String getCredentialKey() {
+        return credentialKey;
     }
 
     @Override
@@ -193,10 +196,6 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     @Override
     public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
-    }
-
-    public void setUserId(KapuaEid userId) {
-        this.userId = userId;
     }
 
     @Override

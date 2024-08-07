@@ -31,6 +31,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
+import org.eclipse.kapua.app.api.core.model.SetResult;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
@@ -252,5 +253,13 @@ public class Credentials extends AbstractKapuaResource {
         credentialService.unlock(scopeId, credentialId);
 
         return returnNoContent();
+    }
+
+
+    @GET
+    @Path("_availableCredentials")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public SetResult getAvailableAuthAdapter() throws KapuaException {
+        return new SetResult(credentialService.getAvailableCredentialTypes());
     }
 }

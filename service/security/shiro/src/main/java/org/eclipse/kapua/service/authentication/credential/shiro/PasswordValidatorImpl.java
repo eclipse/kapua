@@ -23,6 +23,11 @@ import org.eclipse.kapua.storage.TxContext;
 
 import java.util.Map;
 
+/**
+ * The {@link PasswordValidator} implementation.
+ *
+ * @since 2.0.0
+ */
 public class PasswordValidatorImpl implements PasswordValidator {
 
     private final CredentialServiceConfigurationManager credentialServiceConfigurationManager;

@@ -18,8 +18,17 @@ import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.user.PasswordResetRequest;
 import org.eclipse.kapua.storage.TxContext;
 
+/**
+ * @since 2.0.0
+ */
 public interface PasswordResetter {
+    /**
+     * @since 2.0.0
+     */
     Credential resetPassword(TxContext tx, KapuaId scopeId, KapuaId userId, boolean failIfAbsent, PasswordResetRequest passwordResetRequest) throws KapuaException;
 
+    /**
+     * @since 2.0.0
+     */
     Credential resetPassword(TxContext tx, KapuaId scopeId, KapuaId credentialId, PasswordResetRequest passwordResetRequest) throws KapuaException;
 }

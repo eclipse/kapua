@@ -16,20 +16,28 @@ package org.eclipse.kapua.service.authentication.credential;
  * Available credential types
  *
  * @since 1.0.0
+ * @deprecated Since 2.1.0. Moved to Injectable {@link Credential} types
  */
+@Deprecated
 public enum CredentialType {
     /**
      * Password
+     *
+     * @since 1.0.0
      */
     PASSWORD,
 
     /**
      * API key
+     *
+     * @since 1.0.0
      */
     API_KEY,
 
     /**
      * Json Web Token
+     *
+     * @since 1.0.0
      */
     JWT;
 }

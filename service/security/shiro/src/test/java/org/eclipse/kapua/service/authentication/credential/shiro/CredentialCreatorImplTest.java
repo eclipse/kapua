@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.authentication.credential.shiro;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +30,7 @@ public class CredentialCreatorImplTest {
 
     @Before
     public void initialize() {
-        credentialCreatorImpl1 = new CredentialCreatorImpl(KapuaId.ONE, KapuaId.ONE, CredentialType.API_KEY, "credential key", CredentialStatus.ENABLED, new Date());
+        credentialCreatorImpl1 = new CredentialCreatorImpl(KapuaId.ONE, KapuaId.ONE, "API_KEY", "credential key", CredentialStatus.ENABLED, new Date());
         credentialCreatorImpl2 = new CredentialCreatorImpl(KapuaId.ONE);
     }
 
@@ -40,13 +39,13 @@ public class CredentialCreatorImplTest {
         KapuaId[] scopeIds = {null, KapuaId.ONE};
         KapuaId[] userIds = {null, KapuaId.ONE};
         String[] credentialKeys = {null, "", "!!credentialKey-1", "#1(credentialKey.,/Key)9--99", "!$$ 1-2 key//", "credential_K_ey(....)<00>"};
-        CredentialType[] credentialTypes = {null, CredentialType.PASSWORD, CredentialType.API_KEY, CredentialType.JWT};
+        String[] credentialTypes = {null, "PASSWORD", "API_KEY", "JWT"};
         CredentialStatus[] credentialStatuses = {null, CredentialStatus.ENABLED, CredentialStatus.DISABLED};
         Date[] dates = {null, new Date()};
 
         for (KapuaId scopeId : scopeIds) {
             for (KapuaId userId : userIds) {
-                for (CredentialType credentialType : credentialTypes) {
+                for (String credentialType : credentialTypes) {
                     for (String credentialKey : credentialKeys) {
                         for (CredentialStatus credentialStatus : credentialStatuses) {
                             for (Date date : dates) {
@@ -92,8 +91,8 @@ public class CredentialCreatorImplTest {
 
     @Test
     public void setAndGetCredentialTypeTest() {
-        CredentialType[] newCredentialTypes = {null, CredentialType.PASSWORD, CredentialType.API_KEY, CredentialType.JWT};
-        for (CredentialType newCredentialType : newCredentialTypes) {
+        String[] newCredentialTypes = {null, "PASSWORD", "API_KEY", "JWT"};
+        for (String newCredentialType : newCredentialTypes) {
             credentialCreatorImpl1.setCredentialType(newCredentialType);
             credentialCreatorImpl2.setCredentialType(newCredentialType);
             Assert.assertEquals("Expected and actual values should be the same.", newCredentialType, credentialCreatorImpl1.getCredentialType());

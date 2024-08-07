@@ -17,30 +17,32 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.Credential;
-import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialRepository;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.credential.handler.CredentialTypeHandler;
 import org.eclipse.kapua.service.authentication.user.PasswordResetRequest;
 import org.eclipse.kapua.storage.TxContext;
 
 import java.util.Optional;
 
+/**
+ * The {@link PasswordResetter} implementation.
+ *
+ * @since 2.0.0
+ */
 public class PasswordResetterImpl implements PasswordResetter {
-    private final CredentialFactory credentialFactory;
     private final CredentialRepository credentialRepository;
-    private final CredentialMapper credentialMapper;
     private final PasswordValidator passwordValidator;
 
+    private final CredentialTypeHandler credentialTypeHandler;
+
     public PasswordResetterImpl(
-            CredentialFactory credentialFactory,
             CredentialRepository credentialRepository,
-            CredentialMapper credentialMapper,
+            CredentialTypeHandler credentialTypeHandler,
             PasswordValidator passwordValidator) {
-        this.credentialFactory = credentialFactory;
         this.credentialRepository = credentialRepository;
-        this.credentialMapper = credentialMapper;
+        this.credentialTypeHandler = credentialTypeHandler;
         this.passwordValidator = passwordValidator;
     }
 
@@ -48,7 +50,7 @@ public class PasswordResetterImpl implements PasswordResetter {
     public Credential resetPassword(TxContext tx, KapuaId scopeId, KapuaId userId, boolean failIfAbsent, PasswordResetRequest passwordResetRequest) throws KapuaException {
         final CredentialListResult credentials = credentialRepository.findByUserId(tx, scopeId, userId);
         final Optional<Credential> passwordCredential = credentials.getItems().stream()
-                .filter(credential -> credential.getCredentialType().equals(CredentialType.PASSWORD))
+                .filter(credential -> credentialTypeHandler.getName().equals(credential.getCredentialType()))
                 .findAny();
         if (failIfAbsent && !passwordCredential.isPresent()) {
             throw new KapuaEntityNotFoundException(Credential.TYPE, "User does not have any credential of type password");
@@ -60,9 +62,10 @@ public class PasswordResetterImpl implements PasswordResetter {
     public Credential resetPassword(TxContext tx, KapuaId scopeId, KapuaId credentialId, PasswordResetRequest passwordResetRequest) throws KapuaException {
         final Credential credential = credentialRepository.find(tx, scopeId, credentialId)
                 .orElseThrow(() -> new KapuaEntityNotFoundException(Credential.TYPE, credentialId));
-        if (credential.getCredentialType() != CredentialType.PASSWORD) {
+        if (!credentialTypeHandler.getName().equals(credential.getCredentialType())) {
             throw new KapuaEntityNotFoundException(Credential.TYPE, "User does not have any credential of type password");
         }
+
         return doResetPassword(tx, scopeId, credential.getUserId(), Optional.of(credential), passwordResetRequest);
     }
 
@@ -73,16 +76,21 @@ public class PasswordResetterImpl implements PasswordResetter {
         } catch (KapuaIllegalArgumentException ignored) {
             throw new KapuaIllegalArgumentException("passwordResetRequest.newPassword", plainNewPassword);
         }
-        if (currentCredential.isPresent()) {
-            credentialRepository.delete(tx, currentCredential.get());
-        }
-        final Credential toPersists = credentialMapper.map(
-                credentialFactory.newCreator(scopeId,
-                        userId,
-                        CredentialType.PASSWORD,
-                        plainNewPassword,
-                        CredentialStatus.ENABLED,
-                        null));
+
+        // Delete Credential if exist
+        currentCredential.ifPresent(credential -> credentialRepository.delete(tx, credential));
+
+        // Create the new one
+        String encryptedKey = credentialTypeHandler.cryptCredentialKey(plainNewPassword);
+        Credential toPersists = new CredentialImpl(
+                scopeId,
+                userId,
+                credentialTypeHandler.getName(),
+                encryptedKey,
+                CredentialStatus.ENABLED,
+                null // FIXME: no expiration date can be set upon reset?
+        );
+
         return credentialRepository.create(tx, toPersists);
     }
 

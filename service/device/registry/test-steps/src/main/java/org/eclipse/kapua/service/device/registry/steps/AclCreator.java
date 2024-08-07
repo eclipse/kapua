@@ -28,7 +28,6 @@ import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
@@ -209,7 +208,7 @@ public class AclCreator {
     public void attachUserCredentials(Account account, User user) throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
             CredentialCreator credentialCreator;
-            credentialCreator = credentialFactory.newCreator(account.getId(), user.getId(), CredentialType.PASSWORD, "KeepCalm123.", CredentialStatus.ENABLED, null);
+            credentialCreator = credentialFactory.newCreator(account.getId(), user.getId(), "PASSWORD", "KeepCalm123.", CredentialStatus.ENABLED, null);
             try {
                 credentialService.create(credentialCreator);
             } catch (KapuaException ke) {
@@ -223,7 +222,7 @@ public class AclCreator {
     public void attachUserCredentials(Account account, User user, String password) throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
             CredentialCreator credentialCreator;
-            credentialCreator = credentialFactory.newCreator(account.getId(), user.getId(), CredentialType.PASSWORD, password, CredentialStatus.ENABLED, null);
+            credentialCreator = credentialFactory.newCreator(account.getId(), user.getId(), "PASSWORD", password, CredentialStatus.ENABLED, null);
             try {
                 credentialService.create(credentialCreator);
             } catch (KapuaException ke) {

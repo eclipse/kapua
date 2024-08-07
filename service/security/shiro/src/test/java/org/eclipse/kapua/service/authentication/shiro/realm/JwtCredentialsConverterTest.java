@@ -25,13 +25,13 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 @Category(JUnitTests.class)
-public class JwtCredentialsHandlerTest {
+public class JwtCredentialsConverterTest {
 
-    JwtCredentialsHandler instance;
+    JwtCredentialsConverter instance;
 
     @Before
     public void setUp() {
-        instance = new JwtCredentialsHandler();
+        instance = new JwtCredentialsConverter();
     }
 
     @Test
@@ -54,7 +54,7 @@ public class JwtCredentialsHandlerTest {
     public void jwtCredentialsImplMapToShiroImplTest() throws KapuaAuthenticationException {
         JwtCredentialsImpl first = new JwtCredentialsImpl("aJwt", "anIdToken");
 
-        JwtCredentialsImpl second = (JwtCredentialsImpl) instance.mapToShiro(first);
+        JwtCredentialsImpl second = (JwtCredentialsImpl) instance.convertToShiro(first);
 
         Assert.assertNotNull(second);
         Assert.assertEquals(first, second);
@@ -66,7 +66,7 @@ public class JwtCredentialsHandlerTest {
     public void jwtCredentialsImplMapToShiroAnotherTest() throws KapuaAuthenticationException {
         JwtCredentials first = new JwtCredentialsAnotherImpl("aJwt", "anIdToken");
 
-        JwtCredentialsImpl second = (JwtCredentialsImpl) instance.mapToShiro(first);
+        JwtCredentialsImpl second = (JwtCredentialsImpl) instance.convertToShiro(first);
 
         Assert.assertNotNull(second);
         Assert.assertEquals(first.getAccessToken(), second.getAccessToken());
@@ -75,7 +75,7 @@ public class JwtCredentialsHandlerTest {
 
     @Test(expected = NullPointerException.class)
     public void jwtCredentialsImplMapToShiroNullTest() throws KapuaAuthenticationException {
-        instance.mapToShiro(null);
+        instance.convertToShiro(null);
     }
 
     @Test(expected = KapuaAuthenticationException.class)
@@ -84,6 +84,6 @@ public class JwtCredentialsHandlerTest {
 
         Assert.assertNotNull(first);
 
-        instance.mapToShiro(first);
+        instance.convertToShiro(first);
     }
 }
