@@ -136,9 +136,11 @@ public class DatastoreUtils extends AbstractStoreUtils {
         if (StringUtils.isNotEmpty(prefix)) {
             sb.append(prefix).append("-");
         }
-        String indexName = normalizedIndexName(scopeId.toStringId());
-        if (scopeId.equals(KapuaId.ANY)) {
+        String indexName;
+        if (KapuaId.ANY.equals(scopeId)) {
             indexName = "*";
+        } else {
+            indexName = normalizedIndexName(scopeId.toStringId());
         }
         sb.append(indexName).append("-").append("data-message").append("-*");
         return sb.toString();
@@ -201,9 +203,11 @@ public class DatastoreUtils extends AbstractStoreUtils {
         if (StringUtils.isNotEmpty(prefix)) {
             sb.append(prefix).append("-");
         }
-        String indexName = normalizedIndexName(scopeId.toStringId());
-        if (scopeId.equals(KapuaId.ANY)) {
+        String indexName;
+        if (KapuaId.ANY.equals(scopeId)) {
             indexName = "*";
+        } else {
+            indexName = normalizedIndexName(scopeId.toStringId());
         }
         sb.append(indexName);
         sb.append("-data-").append(indexType.name().toLowerCase());
