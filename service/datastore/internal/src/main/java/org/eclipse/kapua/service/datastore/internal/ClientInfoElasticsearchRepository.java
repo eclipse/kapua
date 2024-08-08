@@ -65,6 +65,11 @@ public class ClientInfoElasticsearchRepository extends DatastoreElasticSearchRep
     }
 
     @Override
+    public void refreshAllIndexes() {
+        super.refreshIndex(datastoreUtils.getClientIndexName(KapuaId.ANY));
+    }
+
+    @Override
     public void deleteAllIndexes() {
         super.deleteIndexes(datastoreUtils.getClientIndexName(KapuaId.ANY));
     }

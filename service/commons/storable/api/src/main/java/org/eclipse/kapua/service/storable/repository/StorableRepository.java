@@ -41,6 +41,8 @@ public interface StorableRepository<
 
     void refreshAllIndexes();
 
+    void refreshIndex(String indexExp);
+
     void deleteAllIndexes();
 
     void deleteIndexes(String indexExp);

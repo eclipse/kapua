@@ -199,7 +199,7 @@ public class MessageElasticsearchRepository extends DatastoreElasticSearchReposi
 
     @Override
     public void refreshAllIndexes() {
-        super.refreshAllIndexes();
+        super.refreshIndex(datastoreUtils.getDataIndexName(KapuaId.ANY));
         this.metricsByIndex.invalidateAll();
     }
 

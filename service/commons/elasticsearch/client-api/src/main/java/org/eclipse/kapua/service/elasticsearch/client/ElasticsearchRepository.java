@@ -256,6 +256,15 @@ public abstract class ElasticsearchRepository<
         }
     }
 
+    public void refreshIndex(String indexExp) {
+        try {
+            this.indexUpserted.invalidateAll();
+            elasticsearchClientProviderInstance.getElasticsearchClient().refreshIndex(indexExp);
+        } catch (ClientException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void deleteAllIndexes() {
         try {
