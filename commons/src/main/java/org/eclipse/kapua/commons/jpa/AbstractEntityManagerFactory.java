@@ -15,6 +15,7 @@ package org.eclipse.kapua.commons.jpa;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +69,7 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
             configOverrides.put("eclipselink.logging.level", "FINE");
             configOverrides.put("eclipselink.logging.parameters", "true");
 
+            configOverrides.put(PersistenceUnitProperties.SESSION_CUSTOMIZER, "org.eclipse.kapua.commons.jpa.KapuaSessionCustomizer");
             // Standalone JPA
             entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName, configOverrides);
         } catch (Throwable ex) {
