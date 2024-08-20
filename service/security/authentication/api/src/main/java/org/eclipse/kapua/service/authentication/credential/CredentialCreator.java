@@ -112,7 +112,7 @@ public interface CredentialCreator extends KapuaEntityCreator<Credential> {
      * @return The {@link CredentialStatus}
      * @since 1.0.0
      */
-    @XmlElement(name = "status")
+    @XmlElement(name = "credentialStatus")
     CredentialStatus getCredentialStatus();
 
     /**
