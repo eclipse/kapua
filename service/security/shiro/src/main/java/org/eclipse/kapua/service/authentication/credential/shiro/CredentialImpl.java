@@ -122,7 +122,7 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
                           Date expirationDate) {
         super(scopeId);
 
-        this.userId = (KapuaEid) userId;
+        this.userId = KapuaEid.parseKapuaId(userId);
         this.credentialType = credentialType;
         this.credentialKey = credentialKey;
         this.status = credentialStatus;
