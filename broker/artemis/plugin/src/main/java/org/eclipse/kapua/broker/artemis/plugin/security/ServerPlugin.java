@@ -232,6 +232,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             message.putStringProperty(MessageConstants.HEADER_KAPUA_SESSION, Base64.getEncoder().encodeToString(SerializationUtils.serialize(sessionContext.getKapuaSession())));
             message.putLongProperty(MessageConstants.HEADER_KAPUA_RECEIVED_TIMESTAMP, KapuaDateUtils.getKapuaSysDate().getEpochSecond());
             message.putStringProperty(MessageConstants.HEADER_KAPUA_MESSAGE_TYPE, getMessgeType(address));
+            message.putStringProperty(MessageConstants.HEADER_KAPUA_ACCOUNT_NAME, sessionContext.getAccountName());
             if (!sessionContext.isInternal()) {
                 if (isLwt(address)) {
                     //handle the missing message case
