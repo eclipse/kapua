@@ -105,6 +105,12 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                 username, remotingConnection.getClientID(), remotingConnection.getTransportConnection().getRemoteAddress(), connectionId, securityDomain);
         String clientIp = remotingConnection.getTransportConnection().getRemoteAddress();
         String clientId = remotingConnection.getClientID();
+        //set a random client id value if not set by the client
+        //from JMS 2 specs "Although setting client ID remains mandatory when creating an unshared durable subscription, it is optional when creating a shared durable subscription."
+        if (Strings.isNullOrEmpty(clientId)) {
+            clientId = clientIdPrefix + INDEX.getAndIncrement();
+            logger.info("Updated empty client id to: {}", clientId);
+        }
         //leave the clientId validation to the DeviceCreator. Here just check for / or ::
         //ArgumentValidator.match(clientId, DeviceValidationRegex.CLIENT_ID, "deviceCreator.clientId");
         if (clientId != null && (clientId.contains("/") || clientId.contains("::"))) {
@@ -153,12 +159,6 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             KapuaPrincipal kapuaPrincipal = buildInternalKapuaPrincipal(getAdminAccountInfo().getId(), username, connectionInfo.getClientId());
             //auto generate client id if null. It shouldn't be null but in some case the one from JMS connection is.
             String clientId = connectionInfo.getClientId();
-            //set a random client id value if not set by the client
-            //from JMS 2 specs "Although setting client ID remains mandatory when creating an unshared durable subscription, it is optional when creating a shared durable subscription."
-            if (Strings.isNullOrEmpty(clientId)) {
-                clientId = clientIdPrefix + INDEX.getAndIncrement();
-                logger.info("Updated empty client id to: {}", clientId);
-            }
             //update client id with account|clientId (see pattern)
             String fullClientId = Utils.getFullClientId(getAdminAccountInfo().getId(), clientId);
             remotingConnection.setClientID(fullClientId);
