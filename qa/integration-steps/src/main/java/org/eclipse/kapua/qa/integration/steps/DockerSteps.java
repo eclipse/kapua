@@ -247,6 +247,12 @@ public class DockerSteps {
         serviceModuleBundle.startup();
     }
 
+    @Given("Service events are shutdown")
+    public void stopEventBus() throws Exception {
+        ServiceModuleBundle serviceModuleBundle = KapuaLocator.getInstance().getComponent(ServiceModuleBundle.class);
+        serviceModuleBundle.shutdown();
+    }
+
     private void startBaseDockerEnvironmentInternal() throws Exception {
         logger.info("Starting full docker environment...");
         try {
