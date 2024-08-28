@@ -260,6 +260,14 @@ public interface ElasticsearchClient<C extends Closeable> {
     void refreshAllIndexes() throws ClientException;
 
     /**
+     * Forces the Elasticsearch to refresh a specific index.
+     *
+     * @throws ClientException if error occurs while refreshing.
+     * @since 2.1.0
+     */
+    void refreshIndex(String index) throws ClientException;
+
+    /**
      * Deletes all indexes.
      *
      * <b>

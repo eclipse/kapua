@@ -64,4 +64,13 @@ public class ClientInfoElasticsearchRepository extends DatastoreElasticSearchRep
         return storable.getId();
     }
 
+    @Override
+    public void refreshAllIndexes() {
+        super.refreshIndex(datastoreUtils.getClientIndexName(KapuaId.ANY));
+    }
+
+    @Override
+    public void deleteAllIndexes() {
+        super.deleteIndexes(datastoreUtils.getClientIndexName(KapuaId.ANY));
+    }
 }

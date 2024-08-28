@@ -63,4 +63,14 @@ public class ChannelInfoElasticsearchRepository extends DatastoreElasticSearchRe
     protected JsonNode getIndexSchema() throws MappingException {
         return ChannelInfoSchema.getChannelTypeSchema();
     }
+
+    @Override
+    public void refreshAllIndexes() {
+        super.refreshIndex(datastoreUtils.getChannelIndexName(KapuaId.ANY));
+    }
+
+    @Override
+    public void deleteAllIndexes() {
+        super.deleteIndexes(datastoreUtils.getChannelIndexName(KapuaId.ANY));
+    }
 }

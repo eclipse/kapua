@@ -100,6 +100,13 @@ public class ElasticsearchResourcePaths {
     }
 
     /**
+     * @since 2.1.0
+     */
+    public static String refreshIndex(@NotNull String index) {
+        return String.format("/%s/_refresh", index);
+    }
+
+    /**
      * @since 1.0.0
      */
     public static String defaultPathDocType(@NotNull String index) {

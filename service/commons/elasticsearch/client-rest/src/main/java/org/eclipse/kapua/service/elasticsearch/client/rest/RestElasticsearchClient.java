@@ -437,6 +437,16 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         }
     }
 
+    public void refreshIndex(String index) throws ClientException {
+        LOG.debug("Refresh index: {}", index);
+        Request request = new Request(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.refreshIndex(index));
+        Response refreshIndexResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "REFRESH INDEX");
+
+        if (!isRequestSuccessful(refreshIndexResponse)) {
+            throw buildExceptionFromUnsuccessfulResponse("Refresh indexes", refreshIndexResponse);
+        }
+    }
+
     @Override
     public void deleteAllIndexes() throws ClientException {
         LOG.debug("Delete all indexes");
