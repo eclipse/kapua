@@ -68,6 +68,7 @@ public class Credentials extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("userId") EntityId userId,
             @QueryParam("sortParam") String sortParam,
+            @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
@@ -84,6 +85,7 @@ public class Credentials extends AbstractKapuaResource {
 
         query.setOffset(offset);
         query.setLimit(limit);
+        query.setAskTotalCount(askTotalCount);
 
         return query(scopeId, query);
     }
