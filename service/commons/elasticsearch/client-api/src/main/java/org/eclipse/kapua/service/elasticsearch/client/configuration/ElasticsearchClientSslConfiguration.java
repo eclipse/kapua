@@ -41,7 +41,6 @@ package org.eclipse.kapua.service.elasticsearch.client.configuration;
 public class ElasticsearchClientSslConfiguration {
 
     private boolean enabled;
-    private boolean trustServiceCertificate;
     private String keyStorePath;
     private String keyStorePassword;
     private String keyStoreType;
@@ -69,28 +68,6 @@ public class ElasticsearchClientSslConfiguration {
      */
     public ElasticsearchClientSslConfiguration setEnabled(boolean enabled) {
         this.enabled = enabled;
-        return this;
-    }
-
-    /**
-     * Gets whether or not to trust the server certificate.
-     *
-     * @return {@code true} if needs to be trusted, {@code false} otherwise.
-     * @since 1.3.0
-     */
-    public boolean isTrustServiceCertificate() {
-        return trustServiceCertificate;
-    }
-
-    /**
-     * Sets whether or not to trust the server certificate.
-     *
-     * @param trustServiceCertificate {@code true} if needs to be trusted, {@code false} otherwise.
-     * @return This {@link ElasticsearchClientSslConfiguration} to chain method invocation.
-     * @since 1.3.0
-     */
-    public ElasticsearchClientSslConfiguration setTrustServiceCertificate(boolean trustServiceCertificate) {
-        this.trustServiceCertificate = trustServiceCertificate;
         return this;
     }
 

@@ -96,7 +96,6 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
     @Ignore
     public void connectNoSsl() throws InterruptedException, KapuaException, ParseException {
         // datastore.elasticsearch.ssl.enabled=false
-        // datastore.elasticsearch.ssl.trust_server_certificate=false
         // datastore.elasticsearch.ssl.keystore.path=
         // datastore.elasticsearch.ssl.keystore.password=
         // datastore.elasticsearch.ssl.keystore.type=jks
@@ -117,7 +116,6 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
     @Ignore
     public void connectSsl() throws InterruptedException, KapuaException, ParseException {
         // datastore.elasticsearch.ssl.enabled=true
-        // datastore.elasticsearch.ssl.trust_server_certificate=false
         // datastore.elasticsearch.ssl.keystore.path=
         // datastore.elasticsearch.ssl.keystore.password=
         // datastore.elasticsearch.ssl.keystore.type=jks
@@ -137,7 +135,6 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
     @Ignore
     public void connectSslTrustServerNoTrustStoreSet() throws InterruptedException, KapuaException, ParseException {
         // datastore.elasticsearch.ssl.enabled=true
-        // datastore.elasticsearch.ssl.trust_server_certificate=true
         // datastore.elasticsearch.ssl.keystore.path=
         // datastore.elasticsearch.ssl.keystore.password=
         // datastore.elasticsearch.ssl.keystore.type=jks
@@ -157,7 +154,6 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
     @Ignore
     public void connectSslTrustServerTrustStoreSet() throws InterruptedException, KapuaException, ParseException {
         // datastore.elasticsearch.ssl.enabled=false
-        // datastore.elasticsearch.ssl.trust_server_certificate=false
         // datastore.elasticsearch.ssl.keystore.path=
         // datastore.elasticsearch.ssl.keystore.password=
         // datastore.elasticsearch.ssl.keystore.type=jks
@@ -177,7 +173,6 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
     @Ignore
     public void connectSslTrustServerSelfSignedTrustStore() throws InterruptedException, KapuaException, ParseException {
         // datastore.elasticsearch.ssl.enabled=false
-        // datastore.elasticsearch.ssl.trust_server_certificate=false
         // datastore.elasticsearch.ssl.keystore.path=
         // datastore.elasticsearch.ssl.keystore.password=
         // datastore.elasticsearch.ssl.keystore.type=jks
