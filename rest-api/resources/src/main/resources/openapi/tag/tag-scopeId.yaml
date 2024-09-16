@@ -25,6 +25,16 @@ paths:
           description: The tag name to filter results
           schema:
             type: string
+        - $ref: '../openapi.yaml#/components/parameters/sortParam'
+        - name: sortDir
+          in: query
+          description: The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive (except for "clientId" parameter).
+          schema:
+            type: string
+            enum:
+              - ASCENDING
+              - DESCENDING
+            default: ASCENDING
         - name: matchTerm
           in: query
           description: |
