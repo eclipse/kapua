@@ -29,11 +29,6 @@ public class PasswordPropertyAdapter extends ClassBasedXmlPropertyAdapterBase<Pa
     }
 
     @Override
-    public boolean canMarshall(Class<?> objectClass) {
-        return Password.class.equals(objectClass);
-    }
-
-    @Override
     public boolean doesEncrypt() {
         return true;
     }
