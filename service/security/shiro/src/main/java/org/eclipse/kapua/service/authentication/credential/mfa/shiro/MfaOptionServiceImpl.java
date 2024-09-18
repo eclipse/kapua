@@ -12,6 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -56,15 +65,6 @@ import org.eclipse.kapua.storage.TxManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * {@link MfaOptionService} implementation.
@@ -314,7 +314,7 @@ public class MfaOptionServiceImpl implements MfaOptionService {
             return false;
         });
         if (!res) {
-            if ( (tokenAuthenticationCode != null && !tokenAuthenticationCode.isEmpty()) || (tokenTrustKey != null && !tokenTrustKey.isEmpty())) {
+            if (tokenAuthenticationCode != null && !tokenAuthenticationCode.isEmpty()) {
                 throw new IncorrectCredentialsException();
             }
             // In case both the authenticationCode and the trustKey are null, the MFA login via Rest API must be triggered.
