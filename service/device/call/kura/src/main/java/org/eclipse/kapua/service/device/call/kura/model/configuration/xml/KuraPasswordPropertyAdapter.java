@@ -99,7 +99,7 @@ public class KuraPasswordPropertyAdapter extends ClassBasedXmlPropertyAdapterBas
             return Arrays
                     .stream(property.getValues())
                     .map(value -> unmarshallValue(value, property.isEncrypted() && !Strings.isNullOrEmpty(value)))
-                    .collect(Collectors.toList()).toArray();
+                    .collect(Collectors.toList()).toArray(new KuraPassword[values.length]);
         }
     }
 }
