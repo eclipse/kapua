@@ -220,4 +220,27 @@ public class XmlPropertiesAdapterTest {
         Mockito.verify(booleanAdapter, Mockito.times(1)).unmarshallValue(Mockito.eq("true"));
         Mockito.verify(longAdapter, Mockito.never()).unmarshallValue(Mockito.any());
     }
+
+    @Test
+    public void testUnmarshallingMissingType() {
+        //Given adapters
+        final StringPropertyAdapter stringAdapter = Mockito.spy(new StringPropertyAdapter());
+        final BooleanPropertyAdapter booleanAdapter = Mockito.spy(new BooleanPropertyAdapter());
+        final LongPropertyAdapter longAdapter = Mockito.spy(new LongPropertyAdapter());
+        final HashMap<TestTypes, XmlPropertyAdapter> adapters = new HashMap<TestTypes, XmlPropertyAdapter>() {
+            {
+                put(TestTypes.First, stringAdapter);
+                put(TestTypes.Second, booleanAdapter);
+                put(TestTypes.Fourth, longAdapter);
+            }
+        };
+        //and an instance
+        final XmlPropertiesAdapter instance = new TestPropertiesAdapter(adapters);
+        //When I unmarshal
+        Assert.assertThrows(InternalError.class, () -> instance.unmarshal(new TestPropertyAdapted[]{
+                new TestPropertyAdapted("aString", TestTypes.First, "TheString"),
+                new TestPropertyAdapted("aBoolean", TestTypes.Second, "false", "true"),
+                new TestPropertyAdapted("anotherValue", null, "42")
+        }));
+    }
 }
