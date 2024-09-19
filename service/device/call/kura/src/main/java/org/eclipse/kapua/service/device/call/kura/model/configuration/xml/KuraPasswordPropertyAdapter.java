@@ -30,11 +30,6 @@ public class KuraPasswordPropertyAdapter extends ClassBasedXmlPropertyAdapterBas
     }
 
     @Override
-    public boolean canMarshall(Class objectClass) {
-        return KuraPassword.class.equals(objectClass);
-    }
-
-    @Override
     public boolean doesEncrypt() {
         return true;
     }
