@@ -36,18 +36,16 @@ public class XmlPropertiesAdapter<T extends Enum<T>, V extends XmlPropertyAdapte
 
     @Override
     public Map<String, Object> unmarshal(V[] properties) {
-        if (properties != null) {
-            for (V prop : properties) {
-                if (prop.getType() == null) {
-                    throw new InternalError("null value for property.type parameter");
-                }
-            }
-        }
         Map<String, Object> unmarshalledProperties;
         unmarshalledProperties = Optional.ofNullable(properties)
                 .map(Arrays::asList)
                 .orElse(Collections.emptyList())
                 .stream()
+                .peek(adaptedProp -> {
+                    if (adaptedProp.getType() == null) {
+                        throw new InternalError("null value for property.type parameter");
+                    }
+                })
                 .filter(adaptedProp -> xmlPropertyAdapters.containsKey((adaptedProp.getType())))
                 .collect(Collectors.toMap(
                         XmlPropertyAdapted::getName,
