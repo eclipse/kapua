@@ -187,6 +187,23 @@ public class XmlPropertiesAdapterTest {
     }
 
     @Test
+    public void testUnmarshallingMissingProperties() {
+        //Given adapters
+        final StringPropertyAdapter stringAdapter = Mockito.spy(new StringPropertyAdapter());
+        final HashMap<TestTypes, XmlPropertyAdapter> adapters = new HashMap<TestTypes, XmlPropertyAdapter>() {
+            {
+                put(TestTypes.First, stringAdapter);
+            }
+        };
+        //and an instance
+        final XmlPropertiesAdapter instance = new TestPropertiesAdapter(adapters);
+        //When I unmarshal
+        final Map<String, Object> got = instance.unmarshal(null);
+        Map<String, Object> expectedResult = new HashMap<>();
+        Assert.assertEquals(got, expectedResult);
+    }
+
+    @Test
     public void testUnmarshalling() {
         //Given adapters
         final StringPropertyAdapter stringAdapter = Mockito.spy(new StringPropertyAdapter());
