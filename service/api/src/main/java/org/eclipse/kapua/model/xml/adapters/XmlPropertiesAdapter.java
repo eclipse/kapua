@@ -48,6 +48,7 @@ public class XmlPropertiesAdapter<T extends Enum<T>, V extends XmlPropertyAdapte
                 .map(Arrays::asList)
                 .orElse(Collections.emptyList())
                 .stream()
+                .filter(adaptedProp -> xmlPropertyAdapters.containsKey((adaptedProp.getType())))
                 .collect(Collectors.toMap(
                         XmlPropertyAdapted::getName,
                         adaptedProp -> {
