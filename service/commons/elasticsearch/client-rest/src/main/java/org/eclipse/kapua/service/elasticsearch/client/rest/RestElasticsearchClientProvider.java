@@ -15,6 +15,25 @@ package org.eclipse.kapua.service.elasticsearch.client.rest;
 
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import javax.net.ssl.SSLContext;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
@@ -28,7 +47,6 @@ import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
 import org.apache.http.nio.conn.NoopIOSessionStrategy;
 import org.apache.http.nio.conn.SchemeIOSessionStrategy;
 import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
-import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.http.nio.reactor.IOReactorException;
 import org.apache.http.nio.reactor.IOReactorExceptionHandler;
 import org.apache.http.ssl.SSLContextBuilder;
@@ -51,24 +69,7 @@ import org.elasticsearch.client.RestClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.SSLContext;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+
 
 /**
  * {@link ElasticsearchClientProvider} REST implementation.
@@ -213,8 +214,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
      * <p>
      * It takes care of stopping the {@link #reconnectExecutorTask}.
      *
-     * @throws IOException
-     *         see {@link RestClient#close()} javadoc.
+     * @throws IOException see {@link RestClient#close()} javadoc.
      * @since 1.0.0
      */
     private void closeClient() throws IOException {
@@ -244,10 +244,8 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     /**
      * The {@link Callable} that connects (and reconnects) the {@link RestClient}.
      *
-     * @param initClientMethod
-     *         The {@link Callable} that connects (and reconnects) the {@link RestClient}.
-     * @throws Exception
-     *         if the given {@link Callable} throws {@link Exception}.
+     * @param initClientMethod The {@link Callable} that connects (and reconnects) the {@link RestClient}.
+     * @throws Exception if the given {@link Callable} throws {@link Exception}.
      * @since 1.0.0
      */
     private void reconnectClientTask(Callable<RestClient> initClientMethod) throws Exception {
@@ -268,8 +266,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
      * Initializes the {@link RestClient} as per {@link ElasticsearchClientConfiguration}.
      *
      * @return The initialized {@link RestClient}.
-     * @throws ClientInitializationException
-     *         if any {@link Exception} occurs while {@link RestClient} initialization.
+     * @throws ClientInitializationException if any {@link Exception} occurs while {@link RestClient} initialization.
      * @since 1.0.0
      */
     private RestClient initClient() throws ClientInitializationException {
@@ -348,13 +345,8 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
         final SSLContext finalSslContext = sslContext;
         final CredentialsProvider finalCredentialsProvider = credentialsProvider;
         restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> customizeHttpClient(httpClientBuilder, finalSslContext, finalCredentialsProvider));
-        //        restClientBuilder.setFailureListener(new RestElasticsearchFailureListener());
-        restClientBuilder.setRequestConfigCallback(
-                requestConfigBuilder -> {
-                    clientConfiguration.getRequestConfiguration().getConnectionTimeoutMillis().ifPresent(timout -> requestConfigBuilder.setConnectTimeout(timout));
-                    clientConfiguration.getRequestConfiguration().getSocketTimeoutMillis().ifPresent(timout -> requestConfigBuilder.setSocketTimeout(timout));
-                    return requestConfigBuilder;
-                });
+//        restClientBuilder.setFailureListener(new RestElasticsearchFailureListener());
+
         RestClient restClient = restClientBuilder.build();
 
         // Init Kapua Elasticsearch Client
@@ -429,17 +421,8 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
      * @since 1.3.0
      */
     private DefaultConnectingIOReactor getDefaultConnectingIOReactor() throws IOReactorException {
-        final DefaultConnectingIOReactor ioReactor;
-        final Optional<Integer> numberOfIOThreads = getClientConfiguration().getNumberOfIOThreads();
-        if (numberOfIOThreads.isPresent()) {
-            ioReactor = new DefaultConnectingIOReactor(
-                    IOReactorConfig.custom().setIoThreadCount(
-                            numberOfIOThreads.get()
-                    ).build()
-            );
-        } else {
-            ioReactor = new DefaultConnectingIOReactor();
-        }
+        DefaultConnectingIOReactor ioReactor = new DefaultConnectingIOReactor();
+
         ioReactor.setExceptionHandler(new IOReactorExceptionHandler() {
 
             @Override
@@ -498,10 +481,8 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     /**
      * Initializes the {@link KeyStore}  as per  {@link ElasticsearchClientSslConfiguration} with the given {@link SSLContextBuilder}.
      *
-     * @param sslBuilder
-     *         The {@link SSLContextBuilder} to use.
-     * @throws ClientInitializationException
-     *         if {@link KeyStore} cannot be initialized.
+     * @param sslBuilder The {@link SSLContextBuilder} to use.
+     * @throws ClientInitializationException if {@link KeyStore} cannot be initialized.
      * @since 1.0.0
      */
     private void initKeyStore(SSLContextBuilder sslBuilder) throws ClientInitializationException {
@@ -529,9 +510,9 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
      *     <li>Use the JVM default truststore: as fallback option</li>
      * </ol>
      *
-     * @param sslBuilder 
+     * @param sslBuilder
      *          The {@link SSLContextBuilder} to use.
-     * @throws ClientInitializationException 
+     * @throws ClientInitializationException
      *          if {@link KeyStore} cannot be initialized.
      * @since 1.0.0
      */
