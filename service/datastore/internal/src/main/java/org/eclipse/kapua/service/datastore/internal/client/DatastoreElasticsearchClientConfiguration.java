@@ -39,11 +39,12 @@ public class DatastoreElasticsearchClientConfiguration extends ElasticsearchClie
 
         setUsername(elasticsearchClientSettings.getString(DatastoreElasticsearchClientSettingsKey.USERNAME));
         setPassword(elasticsearchClientSettings.getString(DatastoreElasticsearchClientSettingsKey.PASSWORD));
+        setNumberOfIOThreads(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.NUMBER_OF_IO_THREADS, 1));
 
         getRequestConfiguration().setQueryTimeout(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_QUERY_TIMEOUT));
         getRequestConfiguration().setScrollTimeout(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_SCROLL_TIMEOUT));
-        getRequestConfiguration().setConnectionTimeoutMillis(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_CONNECTION_TIMEOUT_MILLIS, -1));
-        getRequestConfiguration().setSocketTimeoutMillis(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_SOCKET_TIMEOUT_MILLIS, -1));
+        getRequestConfiguration().setConnectionTimeoutMillis(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_CONNECTION_TIMEOUT_MILLIS));
+        getRequestConfiguration().setSocketTimeoutMillis(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_SOCKET_TIMEOUT_MILLIS));
         getRequestConfiguration().setRequestRetryAttemptMax(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_RETRY_MAX));
         getRequestConfiguration().setRequestRetryAttemptWait(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_RETRY_WAIT));
 
@@ -54,7 +55,6 @@ public class DatastoreElasticsearchClientConfiguration extends ElasticsearchClie
         getSslConfiguration().setTrustStorePath(elasticsearchClientSettings.getString(DatastoreElasticsearchClientSettingsKey.SSL_TRUSTSTORE_PATH));
         getSslConfiguration().setTrustStorePassword(elasticsearchClientSettings.getString(DatastoreElasticsearchClientSettingsKey.SSL_TRUSTSTORE_PASSWORD));
 
-        setNumberOfIOThreads(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.NUMBER_OF_IO_THREADS, 0));
         getReconnectConfiguration().setReconnectDelay(30000);
     }
 

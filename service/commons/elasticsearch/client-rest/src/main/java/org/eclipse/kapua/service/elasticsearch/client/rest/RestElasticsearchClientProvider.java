@@ -13,6 +13,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.rest;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import javax.net.ssl.SSLContext;
+
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
@@ -350,11 +369,9 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
         restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> customizeHttpClient(httpClientBuilder, finalSslContext, finalCredentialsProvider));
         //        restClientBuilder.setFailureListener(new RestElasticsearchFailureListener());
         restClientBuilder.setRequestConfigCallback(
-                requestConfigBuilder -> {
-                    clientConfiguration.getRequestConfiguration().getConnectionTimeoutMillis().ifPresent(timout -> requestConfigBuilder.setConnectTimeout(timout));
-                    clientConfiguration.getRequestConfiguration().getSocketTimeoutMillis().ifPresent(timout -> requestConfigBuilder.setSocketTimeout(timout));
-                    return requestConfigBuilder;
-                });
+                requestConfigBuilder -> requestConfigBuilder
+                        .setConnectTimeout(clientConfiguration.getRequestConfiguration().getConnectionTimeoutMillis())
+                        .setSocketTimeout(clientConfiguration.getRequestConfiguration().getSocketTimeoutMillis()));
         RestClient restClient = restClientBuilder.build();
 
         // Init Kapua Elasticsearch Client
@@ -529,9 +546,9 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
      *     <li>Use the JVM default truststore: as fallback option</li>
      * </ol>
      *
-     * @param sslBuilder 
+     * @param sslBuilder
      *          The {@link SSLContextBuilder} to use.
-     * @throws ClientInitializationException 
+     * @throws ClientInitializationException
      *          if {@link KeyStore} cannot be initialized.
      * @since 1.0.0
      */
