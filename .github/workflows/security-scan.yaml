@@ -21,6 +21,11 @@ jobs:
           distribution: 'zulu'
           java-version: 11
           cache: 'maven'
+      - uses: actions/setup-node@v4 # Installs Node and NPM
+        with:
+          node-version: 16
+      - name: Install Swagger CLI # Installs Swagger CLI to bundle OpenAPI files
+        run: 'npm install -g @apidevtools/swagger-cli'
       - uses: actions/cache@v4 # Cache local Maven repository to reuse dependencies
         with:
           path: ~/.m2/repository
