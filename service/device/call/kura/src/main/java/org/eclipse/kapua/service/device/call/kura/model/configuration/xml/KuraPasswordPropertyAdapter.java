@@ -30,11 +30,6 @@ public class KuraPasswordPropertyAdapter extends ClassBasedXmlPropertyAdapterBas
     }
 
     @Override
-    public boolean canMarshall(Class objectClass) {
-        return KuraPassword.class.equals(objectClass);
-    }
-
-    @Override
     public boolean doesEncrypt() {
         return true;
     }
@@ -99,7 +94,7 @@ public class KuraPasswordPropertyAdapter extends ClassBasedXmlPropertyAdapterBas
             return Arrays
                     .stream(property.getValues())
                     .map(value -> unmarshallValue(value, property.isEncrypted() && !Strings.isNullOrEmpty(value)))
-                    .collect(Collectors.toList()).toArray();
+                    .collect(Collectors.toList()).toArray(new KuraPassword[values.length]);
         }
     }
 }
