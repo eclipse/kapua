@@ -13,8 +13,10 @@
 package org.eclipse.kapua.model.xml.adapters;
 
 import org.eclipse.kapua.model.xml.XmlPropertyAdapted;
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Category(JUnitTests.class)
 public class XmlPropertiesAdapterTest {
     public enum TestTypes {
         First,
