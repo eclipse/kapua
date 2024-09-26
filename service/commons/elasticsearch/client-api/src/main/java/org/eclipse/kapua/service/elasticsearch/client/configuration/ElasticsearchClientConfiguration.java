@@ -17,7 +17,6 @@ import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvide
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The {@link ElasticsearchClientConfiguration} used to configure an instance of a {@link ElasticsearchClient}
@@ -32,7 +31,6 @@ public class ElasticsearchClientConfiguration {
     private List<ElasticsearchNode> nodes;
     private String username;
     private String password;
-    private Integer numberOfIOThreads;
 
     private ElasticsearchClientReconnectConfiguration reconnectConfiguration;
     private ElasticsearchClientRequestConfiguration requestConfiguration;
@@ -51,8 +49,7 @@ public class ElasticsearchClientConfiguration {
     /**
      * Sets the module name which is managing the {@link ElasticsearchClient} instance.
      *
-     * @param moduleName
-     *         The module name which is managing the {@link ElasticsearchClient} instance.
+     * @param moduleName The module name which is managing the {@link ElasticsearchClient} instance.
      * @since 1.3.0
      */
     public void setModuleName(String moduleName) {
@@ -93,8 +90,7 @@ public class ElasticsearchClientConfiguration {
     /**
      * Sets the Elasticsearch cluster name to use.
      *
-     * @param clusterName
-     *         The Elasticsearch cluster name to use.
+     * @param clusterName The Elasticsearch cluster name to use.
      * @return This {@link ElasticsearchClientConfiguration} to chain method invocation.
      * @since 1.3.0
      */
@@ -117,6 +113,7 @@ public class ElasticsearchClientConfiguration {
         return nodes;
     }
 
+
     /**
      * Adds a new {@link ElasticsearchNode} to the {@link List} {@link ElasticsearchNode}s already configured.
      * <p>
@@ -125,10 +122,8 @@ public class ElasticsearchClientConfiguration {
      *     getNodes().add(new ElasticsearchNode(address, port));
      * </pre>
      *
-     * @param address
-     *         The host of the Elasticsearch node
-     * @param port
-     *         The port of the Elasticsearch node
+     * @param address The host of the Elasticsearch node
+     * @param port    The port of the Elasticsearch node
      * @return This {@link ElasticsearchClientConfiguration} to chain method invocation.
      * @since 1.3.0
      */
@@ -140,8 +135,7 @@ public class ElasticsearchClientConfiguration {
     /**
      * Sets the {@link List} of {@link ElasticsearchNode}s.
      *
-     * @param nodes
-     *         The {@link List} of {@link ElasticsearchNode}s.
+     * @param nodes The {@link List} of {@link ElasticsearchNode}s.
      * @return This {@link ElasticsearchClientConfiguration} to chain method invocation.
      * @since 1.3.0
      */
@@ -165,8 +159,7 @@ public class ElasticsearchClientConfiguration {
      * <p>
      * Optional.
      *
-     * @param username
-     *         The username used to authenticate into Elasticsearch.
+     * @param username The username used to authenticate into Elasticsearch.
      * @return This {@link ElasticsearchClientConfiguration} to chain method invocation.
      * @since 1.3.0
      */
@@ -190,8 +183,7 @@ public class ElasticsearchClientConfiguration {
      * <p>
      * Optional.
      *
-     * @param password
-     *         The password used to authenticate into Elasticsearch.
+     * @param password The password used to authenticate into Elasticsearch.
      * @return This {@link ElasticsearchClientConfiguration} to chain method invocation.
      * @since 1.3.0
      */
@@ -217,8 +209,7 @@ public class ElasticsearchClientConfiguration {
     /**
      * Sets the {@link ElasticsearchClientReconnectConfiguration}.
      *
-     * @param reconnectConfiguration
-     *         The {@link ElasticsearchClientReconnectConfiguration}.
+     * @param reconnectConfiguration The {@link ElasticsearchClientReconnectConfiguration}.
      * @return This {@link ElasticsearchClientConfiguration} to chain method invocation.
      * @since 1.3.0
      */
@@ -244,8 +235,7 @@ public class ElasticsearchClientConfiguration {
     /**
      * Sets the {@link ElasticsearchClientReconnectConfiguration}.
      *
-     * @param requestConfiguration
-     *         the {@link ElasticsearchClientReconnectConfiguration}.
+     * @param requestConfiguration the {@link ElasticsearchClientReconnectConfiguration}.
      * @return This {@link ElasticsearchClientConfiguration} to chain method invocation.
      * @since 1.3.0
      */
@@ -271,24 +261,12 @@ public class ElasticsearchClientConfiguration {
     /**
      * Sets the {@link ElasticsearchClientSslConfiguration}
      *
-     * @param sslConfiguration
-     *         The {@link ElasticsearchClientSslConfiguration}
+     * @param sslConfiguration The {@link ElasticsearchClientSslConfiguration}
      * @return This {@link ElasticsearchClientConfiguration} to chain method invocation.
      * @since 1.3.0
      */
     public ElasticsearchClientConfiguration setSslConfiguration(ElasticsearchClientSslConfiguration sslConfiguration) {
         this.sslConfiguration = sslConfiguration;
-        return this;
-    }
-
-    public int getNumberOfIOThreads() {
-        return Optional.ofNullable(numberOfIOThreads)
-                .filter(i -> i > 0)
-                .orElseGet(() -> Runtime.getRuntime().availableProcessors());
-    }
-
-    public ElasticsearchClientConfiguration setNumberOfIOThreads(Integer numberOfIOThreads) {
-        this.numberOfIOThreads = numberOfIOThreads;
         return this;
     }
 }

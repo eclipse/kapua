@@ -17,7 +17,8 @@ import org.eclipse.kapua.service.elasticsearch.client.model.Request;
 /**
  * The {@link ElasticsearchClientRequestConfiguration} definition.
  * <p>
- * It contains values for configuring request properties. It contains default values to ease the usage of the class.
+ * It contains values for configuring request properties.
+ * It contains default values to ease the usage of the class.
  */
 public class ElasticsearchClientRequestConfiguration {
 
@@ -26,8 +27,6 @@ public class ElasticsearchClientRequestConfiguration {
 
     private int queryTimeout = 15000;
     private int scrollTimeout = 60000;
-    private int connectionTimeoutMillis = 5000;
-    private int socketTimeoutMillis = 3000;
 
     /**
      * Gets the number of maximum attempts to retry a {@link Request}.
@@ -44,8 +43,7 @@ public class ElasticsearchClientRequestConfiguration {
     /**
      * Sets the number of maximum attempts to retry a {@link Request}.
      *
-     * @param requestRetryAttemptMax
-     *         The number of maximum attempts to retry a {@link Request}.
+     * @param requestRetryAttemptMax The number of maximum attempts to retry a {@link Request}.
      * @return This {@link ElasticsearchClientRequestConfiguration} to chain method invocation.
      * @since 1.3.0
      */
@@ -69,8 +67,7 @@ public class ElasticsearchClientRequestConfiguration {
     /**
      * Sets the wait time between {@link Request} retries.
      *
-     * @param requestRetryAttemptWait
-     *         The wait time between {@link Request} retries.
+     * @param requestRetryAttemptWait The wait time between {@link Request} retries.
      * @return This {@link ElasticsearchClientRequestConfiguration} to chain method invocation.
      * @since 1.3.0
      */
@@ -94,8 +91,7 @@ public class ElasticsearchClientRequestConfiguration {
     /**
      * Sets the query {@link Request} timeout.
      *
-     * @param queryTimeout
-     *         The query {@link Request} timeout.
+     * @param queryTimeout The query {@link Request} timeout.
      * @return This {@link ElasticsearchClientRequestConfiguration} to chain method invocation.
      * @since 1.3.0
      */
@@ -119,63 +115,12 @@ public class ElasticsearchClientRequestConfiguration {
     /**
      * Sets the scroll {@link Request} timeout.
      *
-     * @param scrollTimeout
-     *         The scroll {@link Request} timeout.
+     * @param scrollTimeout The scroll {@link Request} timeout.
      * @return This {@link ElasticsearchClientRequestConfiguration} to chain method invocation.
      * @since 1.3.0
      */
     public ElasticsearchClientRequestConfiguration setScrollTimeout(int scrollTimeout) {
         this.scrollTimeout = scrollTimeout;
-        return this;
-    }
-
-    /**
-     * Gets the {@link Request} connection timeout. https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/7.17/_timeouts.html
-     * <p>
-     * Default value: 5000 ms
-     *
-     * @return The query {@link Request} connection timeout.
-     * @since 2.1.0
-     */
-    public int getConnectionTimeoutMillis() {
-        return connectionTimeoutMillis;
-    }
-
-    /**
-     * Gets the {@link Request} socket timeout. https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/7.17/_timeouts.html
-     * <p>
-     * Default value: 3000 ms
-     *
-     * @return The query {@link Request} connection timeout.
-     * @since 2.1.0
-     */
-    public int getSocketTimeoutMillis() {
-        return socketTimeoutMillis;
-    }
-
-    /**
-     * Sets the scroll {@link Request} connection timeout. https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/7.17/_timeouts.html.
-     *
-     * @param connectionTimeoutMillis
-     *         The scroll {@link Request} connection timeout.
-     * @return This {@link ElasticsearchClientRequestConfiguration} to chain method invocation.
-     * @since 2.1.0
-     */
-    public ElasticsearchClientRequestConfiguration setConnectionTimeoutMillis(int connectionTimeoutMillis) {
-        this.connectionTimeoutMillis = connectionTimeoutMillis;
-        return this;
-    }
-
-    /**
-     * Sets the scroll {@link Request} socket timeout. https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/7.17/_timeouts.html.
-     *
-     * @param socketTimeoutMillis
-     *         The scroll {@link Request} socket timeout.
-     * @return This {@link ElasticsearchClientRequestConfiguration} to chain method invocation.
-     * @since 2.1.0
-     */
-    public ElasticsearchClientRequestConfiguration setSocketTimeoutMillis(int socketTimeoutMillis) {
-        this.socketTimeoutMillis = socketTimeoutMillis;
         return this;
     }
 }
