@@ -214,6 +214,7 @@
                 <include>org.bitbucket.b_c:jose4j</include>
                 <include>org.checkerframework:checker-qual</include>
                 <include>org.eclipse.paho:org.eclipse.paho.client.mqttv3</include>
+                <include>org.eclipse.persistence:org.eclipse.persistence.asm</include>
                 <include>org.eclipse.persistence:org.eclipse.persistence.jpa</include>
                 <include>org.eclipse.persistence:org.eclipse.persistence.jpa.jpql</include>
                 <include>org.eclipse.persistence:org.eclipse.persistence.core</include>
