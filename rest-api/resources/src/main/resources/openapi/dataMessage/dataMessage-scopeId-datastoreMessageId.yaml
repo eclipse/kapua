@@ -27,7 +27,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './dataMessage.yaml#/components/schemas/dataMessageListResult'
+                $ref: './dataMessage.yaml#/components/schemas/dataMessage'
         400:
           $ref: '../openapi.yaml#/components/responses/illegalArgument'
         401:
