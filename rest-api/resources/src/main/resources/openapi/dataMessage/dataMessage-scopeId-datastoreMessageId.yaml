@@ -27,7 +27,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './dataMessage.yaml#/components/schemas/dataMessageListResult'
+                $ref: './dataMessage.yaml#/components/schemas/dataMessage'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
