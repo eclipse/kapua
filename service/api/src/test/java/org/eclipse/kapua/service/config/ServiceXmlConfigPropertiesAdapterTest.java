@@ -127,7 +127,7 @@ public class ServiceXmlConfigPropertiesAdapterTest {
         ServiceXmlConfigPropertiesAdapted serviceXmlConfigPropertiesAdapted = new ServiceXmlConfigPropertiesAdapted();
 
         for (int i = 0; i < configPropertyType.length; i++) {
-            ServiceXmlConfigPropertyAdapted serviceXmlConfigPropertyAdapted1 = new ServiceXmlConfigPropertyAdapted();
+            ServiceXmlConfigPropertyAdapted serviceXmlConfigPropertyAdapted1 = new ServiceXmlConfigPropertyAdapted("fooname", configPropertyType[0], "foovalue");
             ServiceXmlConfigPropertyAdapted serviceXmlConfigPropertyAdapted2 = new ServiceXmlConfigPropertyAdapted(name + i, configPropertyType[i], stringValue);
             ServiceXmlConfigPropertyAdapted[] properties1 = new ServiceXmlConfigPropertyAdapted[]{serviceXmlConfigPropertyAdapted2};
 
