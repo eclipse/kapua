@@ -106,7 +106,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         jobStepName = new KapuaTextField<String>();
         jobStepName.setMinLength(3);
         jobStepName.setMaxLength(255);
-        jobStepName.setValidator(new TextFieldValidator(jobStepName, TextFieldValidator.FieldType.NAME_SPACE));
+        jobStepName.setValidator(new TextFieldValidator(jobStepName, TextFieldValidator.FieldType.EXTENDED_NAME));
 
         jobStepDescription = new KapuaTextField<String>();
         jobStepIndex = new KapuaNumberField();

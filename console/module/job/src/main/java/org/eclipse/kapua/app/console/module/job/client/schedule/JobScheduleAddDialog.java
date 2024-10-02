@@ -144,7 +144,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         triggerName.setAllowBlank(false);
         triggerName.setMinLength(3);
         triggerName.setMaxLength(255);
-        triggerName.setValidator(new TextFieldValidator(triggerName, TextFieldValidator.FieldType.NAME_SPACE));
+        triggerName.setValidator(new TextFieldValidator(triggerName, TextFieldValidator.FieldType.EXTENDED_NAME));
         triggerName.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleScheduleNameLabel());
         triggerName.setToolTip(JOB_MSGS.dialogAddScheduleNameTooltip());
         mainPanel.add(triggerName);
