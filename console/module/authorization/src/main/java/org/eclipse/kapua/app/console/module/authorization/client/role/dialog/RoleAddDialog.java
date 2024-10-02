@@ -119,7 +119,7 @@ public class RoleAddDialog extends EntityAddEditDialog {
         roleNameField.setMinLength(3);
         roleNameField.setMaxLength(255);
         roleNameField.setFieldLabel("* " + MSGS.dialogAddFieldName());
-        roleNameField.setValidator(new TextFieldValidator(roleNameField, FieldType.NAME_SPACE));
+        roleNameField.setValidator(new TextFieldValidator(roleNameField, FieldType.EXTENDED_NAME));
         roleNameField.setToolTip(MSGS.dialogAddFieldNameTooltip());
         roleFormPanel.add(roleNameField);
 

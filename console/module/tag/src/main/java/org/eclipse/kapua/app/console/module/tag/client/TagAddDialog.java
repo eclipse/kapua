@@ -54,7 +54,7 @@ public class TagAddDialog extends EntityAddEditDialog {
         tagNameField = new KapuaTextField<String>();
         tagNameField.setAllowBlank(false);
         tagNameField.setFieldLabel("* " + MSGS.dialogAddFieldName());
-        tagNameField.setValidator(new TextFieldValidator(tagNameField, FieldType.NAME_SPACE));
+        tagNameField.setValidator(new TextFieldValidator(tagNameField, FieldType.EXTENDED_NAME));
         tagNameField.setMinLength(3);
         tagNameField.setMaxLength(255);
         tagFormPanel.add(tagNameField);
