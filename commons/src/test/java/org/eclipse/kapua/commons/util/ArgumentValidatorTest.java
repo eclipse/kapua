@@ -115,6 +115,39 @@ public class ArgumentValidatorTest {
     }
 
     @Test
+    public void testIllegalCharacterExtendedNameRegExp() throws Exception {
+        String permittedSymbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890-_ .:";
+        String[] listOfFalseStringsNameSpace = new String[]{"abc!", "abc\\", "abc#", "abc$", "abc%", "abc&", "abc'",
+                "abc(", "abc)", "abc=", "abc?", "abc*", "abc;", "abc>", "abc<", "abc,", "abc¡", "abc™",
+                "abc£", "abc¢", "abc∞", "abc§", "abc¶", "abc•", "abcª", "abcº", "abc≠", "abcœ", "abc∑", "abc´", "abc®", "abc†",
+                "abc—", "abc¨", "abc^", "abcø", "abcπ", "abc[", "abc]", "abcå", "abcß", "abc∂", "abcƒ", "abc©", "abc ", "̏abc", "abc∆",
+                "abc…", "abc^", "abc\\", "abcΩ", "abc≈", "abcç", "abc√", "abc∫", "abc~", "abcµ", "abc≤", "abc≥", "abc÷", "abc⁄", "abc@",
+                "abc‹", "abc›", "abc€", "abcı", "abc–", "abc°", "abc·", "abc‚", "abc±", "abcŒ", "abc„", "abc‘", "abc”", "abc’",
+                "abcÉ", "abcØ", "abc∏", "abc{", "abc}", "abcÅ", "abcÍ", "abcÔ", "abc", "abcÒ", "abcæ", "abcÆ", "abc|", "abc«", "abc◊",
+                "abcÑ", "abc¯", "abcÈ", "abcˇ", "abc¿", "", "a", "ab", "abc¬",};
+        int sizeOfFalseStrings = listOfFalseStringsNameSpace.length;
+        String[] listOfPermittedStringsNameSpace = new String[]{permittedSymbols, "abc", "123", "ab1", "1ab", "ABC",
+                "as.", "as:",
+                "A1B", "A b", "A-ab1", "A_1", "ab-", "___", "---", "   ", "_- ", "ab ", "12 ", "12_", "2-1", "abcd1234-_ "};
+        int sizeOfPermittedStrings = listOfPermittedStringsNameSpace.length;
+        for (int i = 0; i < sizeOfFalseStrings; i++) {
+            try {
+                ArgumentValidator.match(listOfFalseStringsNameSpace[i], CommonsValidationRegex.EXTENDED_NAME_REGEXP, "EXTENDED_NAME_REGEXP_test_case");
+                Assert.fail("Exception expected for: " + listOfFalseStringsNameSpace[i]);
+            } catch (KapuaIllegalArgumentException e) {
+                // Expected
+            }
+        }
+        for (int i = 0; i < sizeOfPermittedStrings; i++) {
+            try {
+                ArgumentValidator.match(listOfPermittedStringsNameSpace[i], CommonsValidationRegex.EXTENDED_NAME_REGEXP, "EXTENDED_NAME_REGEXP_test_case");
+            } catch (Exception ex) {
+                Assert.fail("No exception expected for: " + listOfPermittedStringsNameSpace[i]);
+            }
+        }
+    }
+
+    @Test
     public void testIllegalCharacterNameSpaceRegExp() throws Exception {
         String argRegExprNameSpace = "^[a-zA-Z0-9\\ \\_\\-]{3,}$";
         String permittedSymbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890-_ ";
