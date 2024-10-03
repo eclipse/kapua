@@ -56,7 +56,7 @@ public class GroupAddDialog extends EntityAddEditDialog {
         groupNameField.setMinLength(3);
         groupNameField.setMaxLength(255);
         groupNameField.setFieldLabel("* " + MSGS.dialogAddFieldName());
-        groupNameField.setValidator(new TextFieldValidator(groupNameField, FieldType.NAME_SPACE));
+        groupNameField.setValidator(new TextFieldValidator(groupNameField, FieldType.EXTENDED_NAME));
         groupNameField.setToolTip(MSGS.dialogAddFieldNameTooltip());
         groupFormPanel.add(groupNameField);
 

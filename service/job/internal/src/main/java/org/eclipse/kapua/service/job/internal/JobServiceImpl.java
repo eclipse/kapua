@@ -81,7 +81,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
         // Argument validation
         ArgumentValidator.notNull(creator, "jobCreator");
         ArgumentValidator.notNull(creator.getScopeId(), "jobCreator.scopeId");
-        ArgumentValidator.validateJobName(creator.getName(), "jobCreator.name");
+        ArgumentValidator.validateEntityName(creator.getName(), "jobCreator.name");
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(Domains.JOB, Actions.write, creator.getScopeId()));
         return txManager.execute(tx -> {

@@ -255,7 +255,7 @@ Feature: Access Groups
   Kapua should return an error.
     Given I create the group with name "NewAccessGroup" and description ""
     Given I expect the exception "KapuaIllegalArgumentException" with the text "*"
-    When I update the group name from "NewAccessGroup" to name with special characters "!#$%&'()=»Ç>:;<.,⁄@‹›€*ı–°·‚±Œ„‰?“‘”’ÉØ∏{}|ÆæÒÔÓÌÏÎÍÅ«"
+    When I update the group name from "NewAccessGroup" to name with special characters "!#$%&'()=»Ç>;<,⁄@‹›€*ı–°·‚±Œ„‰?“‘”’ÉØ∏{}|ÆæÒÔÓÌÏÎÍÅ«"
     Then An exception was thrown
 
   Scenario: Editing Access Group name to empty name
