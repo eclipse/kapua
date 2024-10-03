@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authentication.credential.mfa;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.user.User;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -24,7 +25,9 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * {@link MfaOption} creator service definition.
+ * {@link MfaOption} {@link KapuaEntityCreator}
+ *
+ * @since 1.3.0
  */
 @XmlRootElement(name = "mfaOptionCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -32,20 +35,20 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public interface MfaOptionCreator extends KapuaEntityCreator<MfaOption> {
 
     /**
-     * Gets the user id owner of this token
+     * Gets the {@link User#getId()}
      *
-     * @return The user id owner of this token
-     * @since 1.0
+     * @return The {@link User#getId()}
+     * @since 1.3.0
      */
     @XmlElement(name = "userId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     KapuaId getUserId();
 
     /**
-     * Sets the user id owner of this token.
+     * Sets the {@link User#getId()}
      *
-     * @param userId The user id owner of this token.
-     * @since 1.0
+     * @param userId The {@link User#getId()}
+     * @since 1.3.0
      */
     void setUserId(KapuaId userId);
 }

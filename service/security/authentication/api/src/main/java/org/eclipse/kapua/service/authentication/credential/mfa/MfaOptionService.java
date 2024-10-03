@@ -32,36 +32,36 @@ public interface MfaOptionService extends KapuaEntityService<MfaOption, MfaOptio
      *
      * @param scopeId The {@link User#getScopeId()}.
      * @param userId  The {@link User#getId()}
-     * @return The {@link MfaOption} of the {@link User} if found.
+     * @return The {@link MfaOption} of the {@link User}, if found.
      * @throws KapuaException
      * @since 1.3.0
      */
     MfaOption findByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException;
 
     /**
-     * Enables the trust machine for the {@link KapuaId} of the {@link MfaOption}.
+     * Enables the trust machine for a {@link User}
      *
-     * @param scopeId the scopeId
-     * @param userId  the {@link KapuaId} of the User owning the {@link MfaOption}
-     * @return the value of the trust key in plain text
+     * @param scopeId The {@link User#getScopeId()}
+     * @param userId  The {@link User#getId()}
+     * @return the value of the {@link MfaOption#getTrustKey()} in plain text
      * @since 1.3.0
      */
     String enableTrust(KapuaId scopeId, KapuaId userId) throws KapuaException;
 
     /**
-     * Disable the trust machine for the given {@link MfaOption}.
+     * Disables the trust machine for the given {@link MfaOption}.
      *
-     * @param scopeId     the scopeid
-     * @param mfaOptionId the {@link KapuaId} of the {@link MfaOption}
+     * @param scopeId     The {@link MfaOption#getScopeId()}
+     * @param mfaOptionId The {@link MfaOption#getId()}
      * @since 1.3.0
      */
     void disableTrust(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException;
 
     /**
-     * Disable the trust machine for the given {@link MfaOption}.
+     * Disables the trust machine of a {@link User}
      *
-     * @param scopeId the scopeid
-     * @param userId  the {@link KapuaId} of the User owning the {@link MfaOption}
+     * @param scopeId The {@link User#getScopeId()}
+     * @param userId  The {@link User#getId()}
      * @since 1.3.0
      */
     void disableTrustByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException;

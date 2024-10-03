@@ -17,19 +17,30 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 
 /**
- * {@link ScratchCode} service definition.
+ * {@link ScratchCode} {@link KapuaService} definition.
+ *
+ * @since 1.3.0
  */
 public interface ScratchCodeService extends KapuaService {
+
     /**
-     * Return the ScratchCode list result looking by {@link MfaOption} identifier (and also scope identifier)
+     * Finds the {@link ScratchCodeListResult}.
      *
-     * @param scopeId
-     * @param mfaOptionId
-     * @return
+     * @param scopeId The {@link MfaOption#getScopeId()}
+     * @param mfaOptionId The {@link MfaOption#getId()}
+     * @return A {@link ScratchCodeListResult} with matching items
      * @throws KapuaException
+     * @since 1.3.0
      */
     ScratchCodeListResult findByMfaOptionId(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException;
 
+    /**
+     * Deletes a {@link ScratchCode}
+     * @param scopeId The {@link ScratchCode#getScopeId()}
+     * @param scratchCodeId The {@link ScratchCode#getId()}
+     * @throws KapuaException
+     * @since 1.3.0
+     */
     void delete(KapuaId scopeId, KapuaId scratchCodeId) throws KapuaException;
 
 }

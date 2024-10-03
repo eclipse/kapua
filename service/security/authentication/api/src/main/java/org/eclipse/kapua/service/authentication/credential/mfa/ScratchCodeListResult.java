@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * {@link ScratchCode} list result definition.
+ * {@link ScratchCode} {@link KapuaListResult} definition.
  */
 @XmlRootElement(name = "scratchCodeListResult")
 @XmlAccessorType(XmlAccessType.PROPERTY)

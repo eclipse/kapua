@@ -25,12 +25,13 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * {@link ScratchCode} definition.<br>
+ * ScratchCode {@link KapuaEntity} definition.
+ *
+ * @since 1.3.0
  */
 @XmlRootElement(name = "scratchCode")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = ScratchCodeXmlRegistry.class, //
-        factoryMethod = "newScratchCode") //
+@XmlType(factoryClass = ScratchCodeXmlRegistry.class, factoryMethod = "newScratchCode")
 public interface ScratchCode extends KapuaEntity {
 
     String TYPE = "scratchCode";
@@ -41,25 +42,27 @@ public interface ScratchCode extends KapuaEntity {
     }
 
     /**
-     * Return the {@link KapuaId} of the {@link MfaOption}
+     * Gets the {@link MfaOption#getId()}
      *
-     * @return The {@link MfaOption} identifier.
+     * @return The {@link MfaOption#getId()}
+     * @since 1.3.0
      */
     @XmlElement(name = "mfaOptionId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     KapuaId getMfaOptionId();
 
     /**
-     * Sets the {@link MfaOption} id of this {@link AccessToken}
+     * Sets the {@link MfaOption#getId()}
      *
-     * @param mfaOptionId The {@link MfaOption} id to set.
+     * @param mfaOptionId The {@link MfaOption#getId()}
      */
     void setMfaOptionId(KapuaId mfaOptionId);
 
     /**
-     * Return the scratch code
+     * Gets the scratch code
      *
-     * @return
+     * @return The scratch code
+     * @since 1.3.0
      */
     @XmlElement(name = "scratchCode")
     String getCode();
@@ -67,7 +70,8 @@ public interface ScratchCode extends KapuaEntity {
     /**
      * Sets the scratch code
      *
-     * @param code
+     * @param code The scratch code
+     * @since 1.3.0
      */
     void setCode(String code);
 }
