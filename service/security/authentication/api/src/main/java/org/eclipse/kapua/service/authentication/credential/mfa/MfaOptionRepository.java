@@ -19,6 +19,11 @@ import org.eclipse.kapua.storage.TxContext;
 
 import java.util.Optional;
 
+/**
+ * {@link MfaOption} {@link KapuaUpdatableEntityRepository} definition.
+ *
+ * @since 2.0.0
+ */
 public interface MfaOptionRepository
         extends KapuaUpdatableEntityRepository<MfaOption, MfaOptionListResult> {
     Optional<MfaOption> findByUserId(TxContext tx, KapuaId scopeId, KapuaId userId) throws KapuaException;

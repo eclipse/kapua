@@ -17,9 +17,10 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 
 /**
- * {@link MfaOptionFactory} definition.
+ * {@link MfaOption} {@link KapuaEntityFactory} definition.
  *
  * @see KapuaEntityFactory
+ * @since 1.3.0
  */
 public interface MfaOptionFactory extends KapuaEntityFactory<MfaOption, MfaOptionCreator, MfaOptionQuery, MfaOptionListResult> {
 
@@ -29,6 +30,7 @@ public interface MfaOptionFactory extends KapuaEntityFactory<MfaOption, MfaOptio
      * @param scopeId The scope {@link KapuaId} to set into the {@link MfaOptionCreator}.
      * @param userId  The {@link org.eclipse.kapua.service.user.User} {@link KapuaId} to set into the{@link AccessToken}.
      * @return The newly instantiated {@link MfaOptionCreator}
+     * @since 1.3.0
      */
     MfaOptionCreator newCreator(KapuaId scopeId, KapuaId userId);
 
