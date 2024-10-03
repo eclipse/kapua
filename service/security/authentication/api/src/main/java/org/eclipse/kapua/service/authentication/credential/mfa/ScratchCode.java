@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.authentication.credential.mfa;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
-import org.eclipse.kapua.service.authentication.token.AccessToken;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
