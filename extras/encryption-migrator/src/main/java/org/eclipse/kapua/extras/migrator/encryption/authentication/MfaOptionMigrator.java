@@ -130,6 +130,11 @@ public class MfaOptionMigrator extends AbstractKapuaUpdatableEntity implements M
     }
 
     @Override
+    public boolean getHasTrustMe() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Date getTrustExpirationDate() {
         throw new UnsupportedOperationException();
     }

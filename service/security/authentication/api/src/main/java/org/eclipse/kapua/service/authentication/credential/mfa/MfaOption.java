@@ -99,6 +99,15 @@ public interface MfaOption extends KapuaUpdatableEntity {
     void setTrustKey(String trustKey);
 
     /**
+     * Gets whether the {@link #getTrustKey()} is present or not
+     *
+     * @return {@code true} if it is present, {@code false} otherwise
+     * @since 2.1.0
+     */
+    @XmlElement(name = "hasTrustMe")
+    boolean getHasTrustMe();
+
+    /**
      * Gets the {@link #getTrustKey()}  expiration date
      *
      * @return The {@link #getTrustKey()}  expiration date

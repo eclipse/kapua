@@ -35,4 +35,11 @@ public class MfaOptionAttributes extends KapuaUpdatableEntityAttributes {
      */
     public static final String MFA_SECRET_KEY = "mfaSecretKey";
 
+    /**
+     * {@link MfaOption#getHasTrustMe()}
+     *
+     * @since 2.1.0
+     */
+    public static final String HAS_TRUST_ME = "hasTrustMe";
+
 }

@@ -484,7 +484,7 @@ public class MfaManagementPanel extends ContentPanel {
         boolean hasCredentialDelete = currentSession.hasPermission(CredentialSessionPermission.delete());
 
         // MFA is enabled, user has credential:write or is managing himself, and there's a trust key defined: enable "revoke trust devices" button
-        forgetTrustedMachine.setEnabled(multiFactorAuth && (hasCredentialWrite || selfManagement) && gwtMfaCredentialOptions.getTrustKey() != null);
+        forgetTrustedMachine.setEnabled(multiFactorAuth && (hasCredentialWrite || selfManagement) && gwtMfaCredentialOptions.getHasTrustMe());
 
         // MFA button icon & label
         if (multiFactorAuth) {
