@@ -140,12 +140,25 @@ public class AbstractTranslatorAppInventoryKuraKapua<M extends InventoryResponse
             deviceInventoryContainer.setVersion(kuraInventoryContainer.getVersion());
             deviceInventoryContainer.setContainerType(kuraInventoryContainer.getType());
 
-            if (deviceInventoryContainer.getState() != null) {
-                try {
-                    deviceInventoryContainer.setState(DeviceInventoryContainerState.valueOf(kuraInventoryContainer.getState()));
-                } catch (IllegalArgumentException iae) {
-                    LOG.warn("Unrecognised KuraInventoryContainer.state '{}' received. Defaulting to UNKNOWN state for DeviceInventoryContainer {}", kuraInventoryContainer.getState(), deviceInventoryContainer.getName(), iae);
-                    deviceInventoryContainer.setState(DeviceInventoryContainerState.UNKNOWN);
+            if (kuraInventoryContainer.getState() != null) {
+                switch (kuraInventoryContainer.getState()) {
+                    case "active":
+                        deviceInventoryContainer.setState(DeviceInventoryContainerState.ACTIVE);
+                        break;
+                    case "installed":
+                        deviceInventoryContainer.setState(DeviceInventoryContainerState.INSTALLED);
+                        break;
+                    case "uninstalled":
+                        deviceInventoryContainer.setState(DeviceInventoryContainerState.UNINSTALLED);
+                        break;
+                    case "unknown":
+                        deviceInventoryContainer.setState(DeviceInventoryContainerState.UNKNOWN);
+                        break;
+                    default: {
+                        LOG.warn("Unrecognised KuraInventoryContainer.state '{}' received. Defaulting to UNKNOWN state for DeviceInventoryContainer {}", kuraInventoryContainer.getState(), deviceInventoryContainer.getName());
+                        deviceInventoryContainer.setState(DeviceInventoryContainerState.UNKNOWN);
+                    }
+
                 }
             } else {
                 LOG.warn("Property KuraInventoryContainer.state '{}' not present. Defaulting to UNKNOWN state for DeviceInventoryContainer {}", kuraInventoryContainer.getState(), deviceInventoryContainer.getName());
