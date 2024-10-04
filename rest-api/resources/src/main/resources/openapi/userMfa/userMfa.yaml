@@ -20,8 +20,11 @@ components:
                 - $ref: '../openapi.yaml#/components/schemas/kapuaId'
             trustKey:
               description: |
-                The key of the trusted machine.
+                The key of the trusted machine. Returned only on first activation to allow local storage.
               type: string
+            hasTrustMe:
+              type: boolean
+              description: Whether the trust key enabled present or not.
             trustExpirationDate:
               description: |
                 The moment when the machine trust will expire.

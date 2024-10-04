@@ -57,6 +57,14 @@ public class GwtMfaCredentialOptions extends GwtUpdatableEntityModel implements 
         set("trustKey", trustKey);
     }
 
+    public boolean getHasTrustMe() {
+        return get("hasTrustMe");
+    }
+
+    public void setHasTrustMe(boolean hasTrustMe) {
+        set("hasTrustMe", hasTrustMe);
+    }
+
     public String getAuthenticationKey() {
         return get("authenticationKey");
     }
