@@ -23,6 +23,8 @@ Feature: Device Broker Integration
   Scenario: Start full docker environment
     Given Init Security Context
     And Start full docker environment
+    #Now I set service events because the "Test the forced disconnection of a connected device" scenario send events and therefore needs connection to event-broker
+    And Service events are setup
 
   Scenario: Send BIRTH message and then DC message
   Effectively this is connect and disconnect of Kura device.
@@ -51,15 +53,12 @@ Feature: Device Broker Integration
 
   Scenario: Test the forced disconnection of a connected device
 
-    Given Service events are setup
-    And Client with name "client-disc-1" with client id "client-disc-1" user "kapua-broker" password "kapua-password" is connected
+    Given Client with name "client-disc-1" with client id "client-disc-1" user "kapua-broker" password "kapua-password" is connected
     Then Device status is "CONNECTED" within 5 seconds for client id "client-disc-1"
     When I Force Disconnect connection with client id "client-disc-1"
     Then Device status is "DISCONNECTED" within 10 seconds for client id "client-disc-1"
     And Client named "client-disc-1" is not connected
 
-#TODO
-#disable for now. Wait for further investigation.
   Scenario: Test the stealing link handling with 2 clients with same client id but different account (they should be able to connect both)
     Given I login as user with name "kapua-sys" and password "kapua-password"
     Given broker account "acme-1" with organization "acme-org-1" and email "acme-1@acme.com" and user "acme-1" are created
@@ -72,5 +71,6 @@ Feature: Device Broker Integration
 
   @teardown
   Scenario: Stop full docker environment
-    Given Stop full docker environment
+    Given Service events are shutdown
+    And Stop full docker environment
     And Clean Locator Instance
