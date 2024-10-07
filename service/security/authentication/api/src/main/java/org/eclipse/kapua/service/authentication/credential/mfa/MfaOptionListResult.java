@@ -20,7 +20,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * {@link MfaOption} list result definition.
+ * {@link MfaOption} {@link KapuaListResult} definition.
+ *
+ * @since 1.3.0
  */
 @XmlRootElement(name = "mfaOptionListResult")
 @XmlAccessorType(XmlAccessType.PROPERTY)

@@ -18,12 +18,19 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 
 /**
- * {@link ScratchCodeFactory} definition.
+ * {@link ScratchCode} {@link KapuaEntityFactory} definition.
  *
  * @see KapuaEntityFactory
+ * @since 1.3.0
  */
 public interface ScratchCodeFactory extends KapuaObjectFactory {
 
+    /**
+     * Instantiates a new {@link ScratchCode}.
+     * @param scopeId The {@link ScratchCode#getScopeId()}
+     * @return The newly instantiated {@link ScratchCode}
+     * @since 1.3.0
+     */
     ScratchCode newEntity(KapuaId scopeId);
 
     /**
@@ -37,11 +44,11 @@ public interface ScratchCodeFactory extends KapuaObjectFactory {
     /**
      * Instantiates a new {@link ScratchCode}.
      *
-     * @param scopeId     The scope {@link KapuaId} to set into the {@link ScratchCode}.
-     * @param mfaOptionId The {@link MfaOption} {@link KapuaId} to set into the
-     *                    {@link ScratchCode}.
-     * @param code        The code to set into the {@link ScratchCode}.
+     * @param scopeId     The {@link ScratchCode#getScopeId()}
+     * @param mfaOptionId The {@link MfaOption#getId()}
+     * @param code        The {@link ScratchCode#getCode()}.
      * @return The newly instantiated {@link ScratchCode}
+     * @since 1.3.0
      */
     ScratchCode newScratchCode(KapuaId scopeId, KapuaId mfaOptionId, String code);
 }

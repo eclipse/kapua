@@ -28,13 +28,15 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * {@link MfaOption} definition.<br>
+ * MfaOption {@link KapuaUpdatableEntity} definition.
+ * <p>
  * Used to handle {@link MfaOption} needed by the various authentication algorithms.
+ *
+ * @since 1.3.0
  */
 @XmlRootElement(name = "mfaOption")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = MfaOptionXmlRegistry.class, //
-        factoryMethod = "newMfaOption") //
+@XmlType(factoryClass = MfaOptionXmlRegistry.class, factoryMethod = "newMfaOption")
 public interface MfaOption extends KapuaUpdatableEntity {
 
     String TYPE = "mfaOption";
@@ -45,94 +47,115 @@ public interface MfaOption extends KapuaUpdatableEntity {
     }
 
     /**
-     * Return the user identifier
+     * Gets the {@link User#getId()}.
      *
-     * @return The user identifier.
+     * @return The {@link User#getId()}.
+     * @since 1.3.0
      */
     @XmlElement(name = "userId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     KapuaId getUserId();
 
     /**
-     * Sets the {@link User} id of this {@link MfaOption}
+     * Sets the {@link User#getId()}.
      *
-     * @param userId The {@link User} id to set.
+     * @param userId The {@link User#getId()}.
+     * @since 1.3.0
      */
     void setUserId(KapuaId userId);
 
     /**
-     * Return the {@link MfaOption} key
+     * Gets the secret key that generates access codes
      *
-     * @return
+     * @return The secret key that generates access codes
+     * @since 1.3.0
      */
     @XmlElement(name = "mfaSecretKey")
     String getMfaSecretKey();
 
     /**
-     * Sets the {@link MfaOption} key
+     * Sets the secret key that generates access codes
      *
-     * @param mfaSecretKey
+     * @param mfaSecretKey The secret key that generates access codes
+     * @since 1.3.0
      */
     void setMfaSecretKey(String mfaSecretKey);
 
     /**
-     * Return the trust key
+     * Gets the trust key for trusted machines
      *
-     * @return
+     * @return The trust key for trusted machines
+     * @since 1.3.0
      */
     @XmlElement(name = "trustKey")
     String getTrustKey();
 
     /**
-     * Sets the trust key
+     * Sets the trust key for trusted machines
      *
-     * @param trustKey
+     * @param trustKey The trust key for trusted machines
+     * @since 1.3.0
      */
     void setTrustKey(String trustKey);
 
     /**
-     * Gets the current trust key expiration date
+     * Gets whether the {@link #getTrustKey()} is present or not
      *
-     * @return the current trust key expiration date
+     * @return {@code true} if it is present, {@code false} otherwise
+     * @since 2.1.0
+     */
+    @XmlElement(name = "hasTrustMe")
+    boolean getHasTrustMe();
+
+    /**
+     * Gets the {@link #getTrustKey()}  expiration date
+     *
+     * @return The {@link #getTrustKey()}  expiration date
+     * @since 1.3.0
      */
     @XmlElement(name = "trustExpirationDate")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
     Date getTrustExpirationDate();
 
     /**
-     * Sets the current trust expiration date
+     * Sets the {@link #getTrustKey()}  expiration date
      *
-     * @param trustExpirationDate the current trust expiration date
+     * @param trustExpirationDate The {@link #getTrustKey()}  expiration date
+     * @since 1.3.0
      */
     void setTrustExpirationDate(Date trustExpirationDate);
 
     /**
-     * Gets the Mfa secret key in the form of a base64 QR code image
+     * Gets the {@link #getMfaSecretKey()} in the form of a base64 QR code image
      *
-     * @return the QR code image in base64
+     * @return The {@link #getMfaSecretKey()} in the form of a base64 QR code image
+     * @since 1.3.0
      */
     @XmlElement(name = "qrCodeImage")
     String getQRCodeImage();
 
     /**
-     * Sets the Mfa QR code image
+     * Sets the {@link #getMfaSecretKey()} in the form of a base64 QR code image
      *
-     * @param qrCodeImage the QR code image in base64
+     * @param qrCodeImage The {@link #getMfaSecretKey()} in the form of a base64 QR code image
+     * @since 1.3.0
      */
     void setQRCodeImage(String qrCodeImage);
 
     /**
-     * Gets the list of {@link ScratchCode} associated to this {@link MfaOption}
+     * Gets the list of {@link ScratchCode}s
      *
-     * @return the list of {@link ScratchCode}
+     * @return The list of {@link ScratchCode}s
+     * @since 1.3.0
      */
     @XmlElement(name = "scratchCodes")
     List<ScratchCode> getScratchCodes();
 
     /**
-     * Sets the list of {@link ScratchCode} associated to this {@link MfaOption}
+     * Sets the list of {@link ScratchCode}s
      *
-     * @param scratchCodes the list of {@link ScratchCode}
+     * @param scratchCodes The list of {@link ScratchCode}s
+     * @since 1.3.0
      */
     void setScratchCodes(List<ScratchCode> scratchCodes);
 }
