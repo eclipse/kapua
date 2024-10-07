@@ -27,13 +27,28 @@ public enum CommonsValidationRegex implements ValidationRegex {
     NAME_REGEXP("^[a-zA-Z0-9\\_\\-]{3,}$"),
 
     /**
-     * ^[a-zA-Z0-9\ \_\-]{3,}$
+     * ^[a-zA-Z0-9\ \_\-\.\:]{3,}$
+     *
+     * @since 2.1.0
      */
+    EXTENDED_NAME_REGEXP("^[a-zA-Z0-9\\ \\_\\-\\.\\:]{3,}$"),
+
+    /**
+     * ^[a-zA-Z0-9\ \_\-]{3,}$
+     *
+     * @since 1.0.0
+     * @deprecated Since 2.1.0. Please use {@link #EXTENDED_NAME_REGEXP}
+     */
+    @Deprecated
     NAME_SPACE_REGEXP("^[a-zA-Z0-9\\ \\_\\-]{3,}$"),
 
     /**
      * ^[a-zA-Z0-9\ \_\-\:]{3,}$
+     *
+     * @since 2.0.0
+     * @deprecated Since 2.1.0. Please use {@link #EXTENDED_NAME_REGEXP}
      */
+    @Deprecated
     NAME_SPACE_COLON_REGEXP("^[a-zA-Z0-9\\ \\_\\-\\:]{3,}$"),
 
     /**

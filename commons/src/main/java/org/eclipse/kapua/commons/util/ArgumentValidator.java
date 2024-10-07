@@ -290,7 +290,7 @@ public class ArgumentValidator {
      * <ul>
      *     <li>{@link #notEmptyOrNull(String, String)}</li>
      *     <li>{@link #lengthRange(String, Integer, Integer, String)}</li>
-     *     <li>{@link #match(String, ValidationRegex, String)} with {@link CommonsValidationRegex#NAME_SPACE_REGEXP} </li>
+     *     <li>{@link #match(String, ValidationRegex, String)} with {@link CommonsValidationRegex#EXTENDED_NAME_REGEXP} </li>
      * </ul>
      *
      * @param name         The value to validate. Usually would be the {@link KapuaNamedEntity#getName()} or {@link KapuaNamedEntityCreator#getName()}, but other values could be provided
@@ -307,7 +307,7 @@ public class ArgumentValidator {
     public static void validateEntityName(@Nullable String name, @Nullable Integer minLength, @Nullable Integer maxLength, @NotNull String argumentName) throws KapuaIllegalNullArgumentException, KapuaIllegalArgumentException {
         notEmptyOrNull(name, argumentName);
         lengthRange(name, minLength, maxLength, argumentName);
-        match(name, CommonsValidationRegex.NAME_SPACE_REGEXP, argumentName);
+        match(name, CommonsValidationRegex.EXTENDED_NAME_REGEXP, argumentName);
     }
 
 
@@ -323,8 +323,9 @@ public class ArgumentValidator {
      * @see ArgumentValidator#notEmptyOrNull(String, String)
      * @see ArgumentValidator#lengthRange(String, Integer, Integer, String)
      * @see ArgumentValidator#match(String, ValidationRegex, String)
-     * @since 1.2.0
+     * @deprecated Since 2.1.0. Use {@link #validateEntityName(String, String)} which now support an extended charset
      */
+    @Deprecated
     public static void validateJobName(@Nullable String name, @NotNull String argumentName) throws KapuaIllegalNullArgumentException, KapuaIllegalArgumentException {
         validateJobName(name, 3, 255, argumentName);
     }
@@ -348,8 +349,10 @@ public class ArgumentValidator {
      * @see ArgumentValidator#notEmptyOrNull(String, String)
      * @see ArgumentValidator#lengthRange(String, Integer, Integer, String)
      * @see ArgumentValidator#match(String, ValidationRegex, String)
-     * @since 1.2.0
+     * @since 2.0.0
+     * @deprecated Since 2.1.0. Use {@link #validateEntityName(String, Integer, Integer, String)}  which now support an extended charset
      */
+    @Deprecated
     public static void validateJobName(@Nullable String name, @Nullable Integer minLength, @Nullable Integer maxLength, @NotNull String argumentName) throws KapuaIllegalNullArgumentException, KapuaIllegalArgumentException {
         notEmptyOrNull(name, argumentName);
         lengthRange(name, minLength, maxLength, argumentName);
