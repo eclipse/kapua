@@ -22,32 +22,41 @@ public class MfaOptionXmlRegistry {
     private final MfaOptionFactory mfaOptionFactory = KapuaLocator.getInstance().getFactory(MfaOptionFactory.class);
 
     /**
-     * Creates a new {@link MfaOption} instance
+     * Instantiates a new {@link MfaOptionCreator} instance
      *
-     * @return
+     * @return The newly instantiated {@link MfaOptionCreator}
+     * @since 1.3.0
+     */
+    public MfaOptionCreator newMfaOptionCreator() {
+        return mfaOptionFactory.newCreator(null, null);
+    }
+
+    /**
+     * Instantiates a new {@link MfaOption} instance
+     *
+     * @return The newly instantiated {@link MfaOption}
+     * @since 1.3.0
      */
     public MfaOption newMfaOption() {
         return mfaOptionFactory.newEntity(null);
     }
 
     /**
-     * Creates a new {@link MfaOption} list result instance
+     * Instantiates a new {@link MfaOptionListResult} instance
      *
-     * @return
+     * @return The newly instantiated {@link MfaOptionListResult}
+     * @since 1.3.0
      */
     public MfaOptionListResult newMfaOptionListResult() {
         return mfaOptionFactory.newListResult();
     }
 
     /**
-     * Creates a new {@link MfaOption} creator instance
+     * Instantiates a new {@link MfaOptionQuery} instance.
      *
-     * @return
+     * @return The newly instantiated {@link MfaOptionQuery}
+     * @since 1.3.0
      */
-    public MfaOptionCreator newMfaOptionCreator() {
-        return mfaOptionFactory.newCreator(null, null);
-    }
-
     public MfaOptionQuery newQuery() {
         return mfaOptionFactory.newQuery(null);
     }

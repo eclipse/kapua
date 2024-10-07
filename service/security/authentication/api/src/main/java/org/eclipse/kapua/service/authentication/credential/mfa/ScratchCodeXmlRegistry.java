@@ -22,18 +22,20 @@ public class ScratchCodeXmlRegistry {
     private final ScratchCodeFactory scratchCodeFactory = KapuaLocator.getInstance().getFactory(ScratchCodeFactory.class);
 
     /**
-     * Creates a new {@link ScratchCode} instance
+     * Instantiates a new {@link ScratchCode} instance.
      *
-     * @return
+     * @return The newly instantiated {@link ScratchCode}
+     * @since 1.3.0
      */
     public ScratchCode newScratchCode() {
         return scratchCodeFactory.newEntity(null);
     }
 
     /**
-     * Creates a new {@link ScratchCodeListResult} instance
+     * Instantiates a new {@link ScratchCodeListResult} instance
      *
-     * @return
+     * @return The newly instantiated {@link ScratchCodeListResult}
+     * @since 1.3.0
      */
     public ScratchCodeListResult newScratchCodeListResult() {
         return scratchCodeFactory.newListResult();

@@ -22,11 +22,15 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.PostLoad;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.commons.jpa.SecretAttributeConverter;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -59,6 +63,10 @@ public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOp
     @Basic
     @Column(name = "trust_key")
     private String trustKey;
+
+    @Basic
+    @Column(name = "has_trust_me")
+    private Boolean hasTrustMe;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "trust_expiration_date")
@@ -122,6 +130,7 @@ public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOp
         setUserId(mfaOption.getUserId());
         setMfaSecretKey(mfaOption.getMfaSecretKey());
         setTrustKey(mfaOption.getTrustKey());
+        setHasTrustMe(mfaOption.getHasTrustMe());
         setTrustExpirationDate(mfaOption.getTrustExpirationDate());
     }
 
@@ -156,6 +165,15 @@ public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOp
     }
 
     @Override
+    public boolean getHasTrustMe() {
+        return hasTrustMe;
+    }
+
+    public void setHasTrustMe(boolean hasTrustMe) {
+        this.hasTrustMe = hasTrustMe;
+    }
+
+    @Override
     public Date getTrustExpirationDate() {
         return trustExpirationDate;
     }
@@ -185,4 +203,39 @@ public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOp
         this.scratchCodes = scratchCodes;
     }
 
+    /**
+     * Set {@link #getHasTrustMe()} according to the value of {@link #getTrustKey()} before create
+     *
+     * @since 2.1.0
+     */
+    @PrePersist
+    protected void prePersistsAction() {
+        super.prePersistsAction();
+
+        setHasTrustMe(!Strings.isNullOrEmpty(getTrustKey()));
+    }
+
+    /**
+     * Set {@link #getHasTrustMe()} according to the value of {@link #getTrustKey()} before update
+     *
+     * @since 2.1.0
+     */
+    @PreUpdate
+    protected void preUpdateAction() {
+        super.preUpdateAction();
+
+        setHasTrustMe(!Strings.isNullOrEmpty(getTrustKey()));
+    }
+
+    /**
+     * Sets {@link #getHasTrustMe()} for all {@link MfaOption}s existing before the adding of it.
+     *
+     * @since 2.1.0
+     */
+    @PostLoad
+    protected void postLoadAction() {
+        if (hasTrustMe == null) {
+            setHasTrustMe(!Strings.isNullOrEmpty(getTrustKey()));
+        }
+    }
 }
