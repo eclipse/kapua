@@ -168,16 +168,37 @@ public enum SystemSettingKey implements SettingKey {
     DB_CHARACTER_WILDCARD_SINGLE("commons.db.character.wildcard.single"),
 
     /**
-     * Database pool minimum pool size
+     * Database fixed pool size.
+     *
+     * @since 2.1.0
      */
-    DB_POOL_SIZE_MIN("commons.db.pool.size.min"),
+    DB_POOL_SIZE("commons.db.pool.size"),
+
     /**
-     * Database pool maximum pool size
+     * Database pool minimum pool size.
+     *
+     * @since 1.0.0
+     * @deprecated Since 2.1.0. Please make use of {@link #DB_POOL_SIZE}
      */
+    @Deprecated
+    DB_POOL_SIZE_MIN("commons.db.pool.size.min"),
+
+    /**
+     * Database pool maximum pool size.
+     *
+     * @since 1.0.0
+     * @deprecated Since 2.1.0. Please make use of {@link #DB_POOL_SIZE}
+     */
+    @Deprecated
     DB_POOL_SIZE_MAX("commons.db.pool.size.max"),
+
     /**
      * Database pool maximum time before evicting an idle connection
+     *
+     * @since 1.0.0
+     * @deprecated Since 2.1.0. No longer used.
      */
+    @Deprecated
     DB_POOL_IDLE_TIMEOUT("commons.db.pool.idle.timeout"),
     /**
      * Database pool keepalive query interval for idle connections
