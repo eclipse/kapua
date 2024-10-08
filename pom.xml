@@ -47,13 +47,13 @@
         <console.maven.toolchain.jdk.version>8</console.maven.toolchain.jdk.version>
 
         <!-- Dependencies versions -->
-        <camel.version>3.21.0</camel.version> <!-- latest 3.11.0 -->
-        <spring.version>5.3.23</spring.version> <!-- latest 5.3.8 -->
-        <spring-security.version>5.7.5</spring-security.version> <!-- latest 5.5.1 -->
-        <spring-boot.version>2.5.14</spring-boot.version> <!-- latest 2.5.2 --> <!-- 2.3.x is not fully supported by camel (will be on camel 3.4) -->
+        <camel.version>3.22.2</camel.version>
+        <spring.version>5.3.36</spring.version>
+        <spring-security.version>5.8.12</spring-security.version>
+        <spring-boot.version>2.7.18</spring-boot.version>
 
         <aopalliance.version>1.0</aopalliance.version>
-        <artemis.version>2.31.2</artemis.version>
+        <artemis.version>2.33.0</artemis.version>
         <assertj.version>3.2.0</assertj.version>
         <checker-framework.version>3.15.0</checker-framework.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
