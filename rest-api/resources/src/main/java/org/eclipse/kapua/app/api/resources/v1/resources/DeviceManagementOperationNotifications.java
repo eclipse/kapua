@@ -12,23 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
-import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.model.CountResult;
-import org.eclipse.kapua.app.api.core.model.EntityId;
-import org.eclipse.kapua.app.api.core.model.ScopeId;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.model.KapuaEntityAttributes;
-import org.eclipse.kapua.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
-import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationAttributes;
-import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory;
-import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationListResult;
-import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationQuery;
-import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationService;
-import org.eclipse.kapua.service.device.registry.Device;
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -41,6 +24,24 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import com.google.common.base.Strings;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.app.api.core.model.CountResult;
+import org.eclipse.kapua.app.api.core.model.EntityId;
+import org.eclipse.kapua.app.api.core.model.ScopeId;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
+import org.eclipse.kapua.model.query.SortOrder;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationAttributes;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationListResult;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationQuery;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationService;
+import org.eclipse.kapua.service.device.registry.Device;
 
 @Path("{scopeId}/devices/{deviceId}/operations/{operationId}/notifications")
 public class DeviceManagementOperationNotifications extends AbstractKapuaResource {
@@ -69,6 +70,9 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("operationId") EntityId operationId,
             @QueryParam("resource") String resource,
+            @QueryParam("askTotalCount") boolean askTotalCount,
+            @QueryParam("sortParam") String sortParam,
+            @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         ManagementOperationNotificationQuery query = managementOperationNotificationFactory.newQuery(scopeId);
@@ -79,10 +83,15 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
             andPredicate.and(query.attributePredicate(ManagementOperationNotificationAttributes.RESOURCE, resource));
         }
 
+        if (!Strings.isNullOrEmpty(sortParam)) {
+            query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
+        }
+
         query.setPredicate(andPredicate);
 
         query.setOffset(offset);
         query.setLimit(limit);
+        query.setAskTotalCount(askTotalCount);
 
         return query(scopeId, deviceId, operationId, query);
     }
