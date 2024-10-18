@@ -15,6 +15,8 @@ package org.eclipse.kapua.app.api.core.resources;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.storable.model.Storable;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
@@ -61,12 +63,29 @@ public abstract class AbstractKapuaResource {
      * @since 2.0.0
      */
     public <T extends KapuaEntity> T returnNotNullEntity(T entity, String entityType, KapuaId entityId) throws KapuaEntityNotFoundException {
+       return returnNotNullEntity(entity, entityType, entityId.getId().toString());
+    }
+
+    /**
+     * Checks id the given {@link Object} is {@code null}.
+     *
+     * @param entity The {@link Object} to check.
+     * @param entityType The {@link Object} type.
+     * @param entityId The {@link Object} id.
+     * @return The given entity if not {@code null}
+     * @param <T> The {@link Object} type.
+     * @throws KapuaEntityNotFoundException if given {@link Object} is {@code null}.
+     * @since 2.0.0
+     */
+    public <T> T returnNotNullEntity(T entity, String entityType, String entityId) throws KapuaEntityNotFoundException {
         if (entity == null) {
             throw new KapuaEntityNotFoundException(entityType, entityId);
         }
 
         return entity;
     }
+
+
 
     /**
      * Builds a 200 HTTP Response.

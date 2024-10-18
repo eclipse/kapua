@@ -33,5 +33,5 @@ public enum StorableErrorCodes implements KapuaErrorCode {
      *
      * @since 1.3.0
      */
-    UNSUPPORTED_TYPE
+    UNSUPPORTED_TYPE,
 }

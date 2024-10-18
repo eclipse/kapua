@@ -150,6 +150,6 @@ public class DataMetrics extends AbstractKapuaResource {
             throws KapuaException {
         MetricInfo metricInfo = metricInfoRegistryService.find(scopeId, metricInfoId);
 
-        return returnNotNullEntity(metricInfo);
+        return returnNotNullStorable(metricInfo, MetricInfo.TYPE, metricInfoId);
     }
 }

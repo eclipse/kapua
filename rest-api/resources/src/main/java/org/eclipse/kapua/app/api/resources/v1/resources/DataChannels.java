@@ -160,6 +160,6 @@ public class DataChannels extends AbstractKapuaResource {
             throws KapuaException {
         ChannelInfo channelInfo = channelInfoRegistryService.find(scopeId, channelInfoId);
 
-        return returnNotNullEntity(channelInfo);
+        return returnNotNullEntity(channelInfo, ChannelInfo.TYPE, channelInfoId.getId());
     }
 }
