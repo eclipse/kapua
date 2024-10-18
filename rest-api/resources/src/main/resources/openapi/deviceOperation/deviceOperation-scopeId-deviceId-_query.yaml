@@ -18,9 +18,35 @@ paths:
         - Device Management - Operation
       summary: Query the Registry Operations
       operationId: deviceRegistryOperationQuery
+      deprecated: true
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: '../device/device.yaml#/components/parameters/deviceId'
+      requestBody:
+        $ref: '../openapi.yaml#/components/requestBodies/kapuaQuery'
+      responses:
+        200:
+          description: The result of the query
+          content:
+            application/json:
+              schema:
+                $ref: './deviceOperation.yaml#/components/schemas/deviceOperationListResult'
+        400:
+          $ref: '../openapi.yaml#/components/responses/illegalArgument'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+  /{scopeId}/devices/{deviceId}/operations/_query1:
+    post:
+      tags:
+        - Device Management - Operation
+      summary: Query the Registry Operations
+      operationId: deviceRegistryOperationQuery1
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
       requestBody:
         $ref: '../openapi.yaml#/components/requestBodies/kapuaQuery'
       responses:

@@ -231,6 +231,8 @@ paths:
     $ref: './deviceOperation/deviceOperation-scopeId-deviceId-operationId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1operations~1{operationId}'
   /{scopeId}/devices/{deviceId}/operations/_query:
     $ref: './deviceOperation/deviceOperation-scopeId-deviceId-_query.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1operations~1_query'
+  /{scopeId}/devices/{deviceId}/operations/_query1:
+    $ref: './deviceOperation/deviceOperation-scopeId-deviceId-_query.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1operations~1_query1'
   /{scopeId}/devices/{deviceId}/operations/_count:
     $ref: './deviceOperation/deviceOperation-scopeId-deviceId-_count.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1operations~1_count'
   ### Device Package ###

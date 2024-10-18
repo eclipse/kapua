@@ -41,6 +41,7 @@ import org.eclipse.kapua.service.device.management.registry.operation.DeviceMana
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationListResult;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationQuery;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationStatus;
 import org.eclipse.kapua.service.device.registry.Device;
 
 @Path("{scopeId}/devices/{deviceId}/operations")
@@ -66,14 +67,15 @@ public class DeviceManagementOperations extends AbstractKapuaResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public DeviceManagementOperationListResult simpleQuery(
-            @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("resource") String resource,
-            @QueryParam("askTotalCount") boolean askTotalCount,
-            @QueryParam("sortParam") String sortParam,
-            @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
-            @QueryParam("offset") @DefaultValue("0") int offset,
-            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
+        @PathParam("scopeId") ScopeId scopeId,
+        @PathParam("deviceId") EntityId deviceId,
+        @QueryParam("resource") String resource,
+        @QueryParam("status") DeviceManagementOperationStatus operationStatus,
+        @QueryParam("askTotalCount") boolean askTotalCount,
+        @QueryParam("sortParam") String sortParam,
+        @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
+        @QueryParam("offset") @DefaultValue("0") int offset,
+        @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         DeviceManagementOperationQuery query = deviceManagementOperationFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate();
@@ -82,6 +84,12 @@ public class DeviceManagementOperations extends AbstractKapuaResource {
 
         if (!Strings.isNullOrEmpty(resource)) {
             andPredicate.and(query.attributePredicate(DeviceManagementOperationAttributes.RESOURCE, resource));
+        }
+        if (deviceId != null) {
+            andPredicate.and(query.attributePredicate(DeviceManagementOperationAttributes.DEVICE_ID, deviceId));
+        }
+        if (operationStatus != null) {
+            andPredicate.and(query.attributePredicate(DeviceManagementOperationAttributes.STATUS, operationStatus));
         }
 
         if (!Strings.isNullOrEmpty(sortParam)) {
@@ -94,7 +102,7 @@ public class DeviceManagementOperations extends AbstractKapuaResource {
         query.setLimit(limit);
         query.setAskTotalCount(askTotalCount);
 
-        return query(scopeId, deviceId, query);
+        return query(scopeId, query);
     }
 
     /**
@@ -106,11 +114,13 @@ public class DeviceManagementOperations extends AbstractKapuaResource {
      * @return The {@link DeviceManagementOperationListResult} of all the result matching the given {@link DeviceManagementOperationQuery} parameter.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
+     * @deprecated Since 2.0.0. Please make use of {@link #query(ScopeId, DeviceManagementOperationQuery)}
      */
     @POST
-    @Path("_query")
+    @Path("_query1")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Deprecated
     public DeviceManagementOperationListResult query(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
@@ -120,6 +130,28 @@ public class DeviceManagementOperations extends AbstractKapuaResource {
         AndPredicate andPredicate = query.andPredicate();
         andPredicate.and(query.attributePredicate(DeviceManagementOperationAttributes.DEVICE_ID, deviceId));
         query.setPredicate(andPredicate);
+
+        return deviceManagementOperationRegistryService.query(query);
+    }
+
+
+    /**
+     * Queries the results with the given {@link DeviceManagementOperationQuery} parameter.
+     *
+     * @param scopeId  The {@link ScopeId} in which to search results.
+     * @param query    The {@link DeviceManagementOperationQuery} to use to filter results.
+     * @return The {@link DeviceManagementOperationListResult} of all the result matching the given {@link DeviceManagementOperationQuery} parameter.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 2.0.0
+     */
+    @POST
+    @Path("_query")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public DeviceManagementOperationListResult query(
+        @PathParam("scopeId") ScopeId scopeId,
+        DeviceManagementOperationQuery query) throws KapuaException {
+        query.setScopeId(scopeId);
 
         return deviceManagementOperationRegistryService.query(query);
     }
