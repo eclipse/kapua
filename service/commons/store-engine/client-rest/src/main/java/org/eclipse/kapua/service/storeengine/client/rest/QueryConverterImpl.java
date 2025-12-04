@@ -19,6 +19,7 @@ import org.eclipse.kapua.service.storeengine.client.QueryConverter;
 import org.eclipse.kapua.service.storeengine.client.SchemaKeys;
 import org.eclipse.kapua.service.storeengine.client.exception.QueryMappingException;
 import org.eclipse.kapua.service.storable.exception.MappingException;
+import org.eclipse.kapua.service.storable.model.query.AggregationField;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.StorableQuery;
 import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
@@ -33,9 +34,9 @@ import java.util.List;
  */
 public class QueryConverterImpl implements QueryConverter {
 
-    private static ConvertOptions convertOptionsCount = new ConvertOptions(false, true, false, false, false);
+    private static ConvertOptions convertOptionsCount = new ConvertOptions(false, true, false, false, false, false);
     private static ConvertOptions convertOptionsDelete = convertOptionsCount;
-    private static ConvertOptions convertOptionsSearch = new ConvertOptions(true, true, true, true, true);
+    private static ConvertOptions convertOptionsSearch = new ConvertOptions(true, true, true, true, true, true);
 
     @Override
     public JsonNode convertQuery(Object query) throws QueryMappingException {
@@ -60,6 +61,28 @@ public class QueryConverterImpl implements QueryConverter {
         try {
             StorableQuery storableQuery = (StorableQuery) query;
             ObjectNode rootNode = MappingUtils.newObjectNode();
+
+            if (convertOptions.aggregationEnabled && storableQuery.getAggregationField() != null) {
+                AggregationField aggregationField = storableQuery.getAggregationField();
+                // Composite aggregation (instead of terms) so that buckets can be paged through 'after_key' without hitting 'search.max_buckets'
+                // "aggs": { <aggregationName>: { "composite": { "size": <size>, "sources": [ { <fieldName>: { "terms": { "field": <fieldName> } } } ] } } }
+                ObjectNode termsNode = MappingUtils.newObjectNode();
+                termsNode.put(SchemaKeys.KEY_AGGREGATION_FIELD, aggregationField.getFieldName());
+                ObjectNode sourceTermsNode = MappingUtils.newObjectNode();
+                sourceTermsNode.set(SchemaKeys.KEY_AGGREGATION_TERMS, termsNode);
+                ObjectNode sourceNode = MappingUtils.newObjectNode();
+                sourceNode.set(aggregationField.getFieldName(), sourceTermsNode);
+
+                ObjectNode compositeNode = MappingUtils.newObjectNode();
+                compositeNode.put(SchemaKeys.KEY_AGGREGATION_SIZE, aggregationField.getSize());
+                compositeNode.set(SchemaKeys.KEY_AGGREGATION_SOURCES, MappingUtils.newArrayNode().add(sourceNode));
+
+                ObjectNode aggregationNode = MappingUtils.newObjectNode();
+                aggregationNode.set(SchemaKeys.KEY_AGGREGATION_COMPOSITE, compositeNode);
+                ObjectNode aggsNode = MappingUtils.newObjectNode();
+                aggsNode.set(aggregationField.getAggregationName(), aggregationNode);
+                rootNode.set(SchemaKeys.KEY_AGGREGATION_NODE, aggsNode);
+            }
 
             if (convertOptions.sourceEnabled) {
                 ObjectNode includesFields = MappingUtils.newObjectNode();
@@ -114,13 +137,15 @@ public class QueryConverterImpl implements QueryConverter {
         protected boolean sortEnabled;
         protected boolean fromEnabled;
         protected boolean sizeEnabled;
+        protected boolean aggregationEnabled;
 
-        ConvertOptions(boolean source,boolean query,boolean sort, boolean from, boolean size) {
+        ConvertOptions(boolean source, boolean query, boolean sort, boolean from, boolean size, boolean aggregationEnabled) {
             this.sourceEnabled = source;
             this.queryEnabled = query;
             this.sortEnabled = sort;
             this.fromEnabled = from;
             this.sizeEnabled = size;
+            this.aggregationEnabled = aggregationEnabled;
         }
 
     }

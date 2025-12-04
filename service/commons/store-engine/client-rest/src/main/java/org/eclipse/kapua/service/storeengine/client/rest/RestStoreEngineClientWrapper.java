@@ -48,13 +48,17 @@ import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineCli
 import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientRequest;
 import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientResponse;
 import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.LowLevelSearchResponseException;
+import org.eclipse.kapua.service.storable.model.query.AggregationField;
+import org.eclipse.kapua.service.storable.model.query.StorableQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Callable;
@@ -285,40 +289,89 @@ public class RestStoreEngineClientWrapper implements StoreEngineClientWrapper<St
         return result.getResult().isEmpty() ? null : result.getResult().get(0);
     }
 
+    /**
+     * In case of aggregation query (aka the aggregation field has been set) the returned ResultList will contain one entry for each aggregation bucket ('hits' are not processed/considered in this case)
+     * each entry is of type T and has just 2 fields set: the aggregation field name (with its value) and the scope_id.
+     * All the buckets are returned: the composite aggregation is paged through 'after_key' until Elasticsearch has no more buckets.
+     */
     @Override
     public <T> ResultList<T> query(String index, Object query, Class<T> clazz) throws ClientException {
+        StorableQuery storableQuery = (StorableQuery) query;
         JsonNode queryJsonNode = getModelConverter().convertQuery(query);
         LOG.debug(QUERY_CONVERTED_QUERY, queryJsonNode);
 
-        String json = writeRequestFromJsonNode(queryJsonNode);
+        Object queryFetchStyle = getModelConverter().getFetchStyle(query);
+        if (storableQuery.getAggregationField() == null) {
+            JsonNode responseNode = performSearch(index, queryJsonNode);
+            return responseNode != null ? fillResultListQuery(responseNode, queryFetchStyle, clazz) : new ResultList<>(0);
+        } else {
+            return fillResultListAggregationQuery(index, queryJsonNode, storableQuery, queryFetchStyle, clazz);
+        }
+    }
 
-        long totalCount = 0;
-        ArrayNode resultsNode = null;
-        String totalRelation = null;
-
+    /**
+     * Performs a search request.
+     *
+     * @return the response node, or {@code null} if the request was unsuccessful but not a cause of concern
+     */
+    private JsonNode performSearch(String index, JsonNode queryJsonNode) throws ClientException {
         StoreEngineClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.search(index));
-        request.setJsonEntity(json);
+        request.setJsonEntity(writeRequestFromJsonNode(queryJsonNode));
         StoreEngineClientResponse queryResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "QUERY");
 
         if (isRequestSuccessful(queryResponse)) {
-            JsonNode responseNode = readResponseAsJsonNode(queryResponse);
-            JsonNode hitsNode = responseNode.path(ElasticsearchKeywords.KEY_HITS);
-
-            totalCount = hitsNode.path(ElasticsearchKeywords.KEY_TOTAL).path(ElasticsearchKeywords.KEY_VALUE).asLong();
-            totalRelation = hitsNode.path(ElasticsearchKeywords.KEY_TOTAL).path(ElasticsearchKeywords.KEY_RELATION).asText();
-            if (totalCount > Integer.MAX_VALUE) {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_HITS_MAX_VALUE_EXCEEDED);
-            }
-            resultsNode = ((ArrayNode) hitsNode.get(ElasticsearchKeywords.KEY_HITS));
+            return readResponseAsJsonNode(queryResponse);
         } else if (isRequestCauseOfConcern(queryResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Query", queryResponse);
         }
+        return null;
+    }
 
+    private <T> ResultList<T> fillResultListAggregationQuery(String index, JsonNode queryJsonNode, StorableQuery storableQuery, Object queryFetchStyle, Class<T> clazz) throws ClientException {
+        AggregationField aggregationField = storableQuery.getAggregationField();
+        ObjectNode compositeNode = (ObjectNode) queryJsonNode.path(SchemaKeys.KEY_AGGREGATION_NODE).path(aggregationField.getAggregationName()).path(SchemaKeys.KEY_AGGREGATION_COMPOSITE);
+        List<T> items = new ArrayList<>();
+
+        JsonNode afterKey;
+        do {
+            JsonNode responseNode = performSearch(index, queryJsonNode);
+            if (responseNode == null) {
+                break;
+            }
+            JsonNode aggregationNode = responseNode.path(ElasticsearchKeywords.KEY_AGGREGATIONS).path(aggregationField.getAggregationName());
+            for (JsonNode bucket : aggregationNode.path(ElasticsearchKeywords.KEY_BUCKETS)) {
+                Map<String, Object> object = new HashMap<>();
+                object.put("scope_id", storableQuery.getScopeId().toStringId());
+                object.put(aggregationField.getFieldName(), bucket.path(ElasticsearchKeywords.KEY_BUCKETS_KEY).path(aggregationField.getFieldName()).asText()); //set the value for the aggregation field
+                object.put(QueryConverter.QUERY_FETCH_STYLE_KEY, queryFetchStyle);
+                items.add(getModelContext().unmarshal(clazz, object));
+            }
+            // 'after_key' is missing once there are no more buckets
+            afterKey = aggregationNode.get(ElasticsearchKeywords.KEY_AFTER_KEY);
+            if (afterKey != null) {
+                compositeNode.set(SchemaKeys.KEY_AGGREGATION_AFTER, afterKey);
+                LOG.debug(QUERY_CONVERTED_QUERY, queryJsonNode);
+            }
+        } while (afterKey != null);
+
+        ResultList<T> resultList = new ResultList<>(items.size());
+        items.forEach(resultList::add);
+        return resultList;
+    }
+
+    private <T> ResultList<T> fillResultListQuery(JsonNode responseNode, Object queryFetchStyle, Class<T> clazz) throws ClientException {
+        JsonNode hitsNode = responseNode.path(ElasticsearchKeywords.KEY_HITS);
+        //First, understand if ES contains more than 'max-result-window' hits
+        long totalCount = hitsNode.path(ElasticsearchKeywords.KEY_TOTAL).path(ElasticsearchKeywords.KEY_VALUE).asLong();
+        String totalRelation = hitsNode.path(ElasticsearchKeywords.KEY_TOTAL).path(ElasticsearchKeywords.KEY_RELATION).asText();
+        if (totalCount > Integer.MAX_VALUE) {
+            throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_HITS_MAX_VALUE_EXCEEDED);
+        }
+        ArrayNode resultsNode = ((ArrayNode) hitsNode.get(ElasticsearchKeywords.KEY_HITS));
         ResultList<T> resultList = new ResultList<>(totalCount);
         if (totalRelation != null) {
             resultList.setTotalHitsExceedsCount(!totalRelation.equals("eq"));
         }
-        Object queryFetchStyle = getModelConverter().getFetchStyle(query);
         if (resultsNode != null && !resultsNode.isEmpty()) {
             for (JsonNode result : resultsNode) {
                 Map<String, Object> object = objectMapper.convertValue(result.get(SchemaKeys.KEY_SOURCE), Map.class);
