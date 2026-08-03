@@ -23,12 +23,22 @@ import org.elasticsearch.client.RestClient;
  *
  * @since 2.1.0
  */
-class ElasticsearchLowLevelSearchClient implements LowLevelSearchClient {
+public class ElasticsearchLowLevelSearchClient implements LowLevelSearchClient {
 
     private final RestClient restClient;
 
     ElasticsearchLowLevelSearchClient(RestClient restClient) {
         this.restClient = restClient;
+    }
+
+    /**
+     * Escape hatch for callers that are known to depend on the Elasticsearch REST client directly (e.g. interop with {@code RestHighLevelClient}), rather than
+     * going through {@link LowLevelSearchClient}.
+     *
+     * @return The wrapped Elasticsearch {@link RestClient}.
+     */
+    public RestClient unwrap() {
+        return restClient;
     }
 
     @Override

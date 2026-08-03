@@ -94,6 +94,7 @@ import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvide
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.model.IndexRequest;
 import org.eclipse.kapua.service.elasticsearch.client.rest.ElasticsearchResourcePaths;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.ElasticsearchLowLevelSearchClient;
 import org.eclipse.kapua.service.storable.model.StorableListResult;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
@@ -772,7 +773,7 @@ public class DatastoreSteps extends TestBase {
         }
         Request request = new Request("POST", index + ElasticsearchResourcePaths.getBulkPath());
         request.setJsonEntity(body.toString());
-        RestClient cl = (RestClient) elasticsearchClientWrapper.getClient();
+        RestClient cl = ((ElasticsearchLowLevelSearchClient) elasticsearchClientWrapper.getClient()).unwrap();
         cl.performRequest(request);
     }
 
