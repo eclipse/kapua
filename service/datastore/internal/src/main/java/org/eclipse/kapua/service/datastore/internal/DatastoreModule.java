@@ -88,22 +88,24 @@ public class DatastoreModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    ElasticsearchClientProvider elasticsearchClientProvider(MetricsEsClient metricsEsClient, StorableIdFactory storableIdFactory, DatastoreUtils datastoreUtils) {
-        ElasticsearchClientConfiguration esClientConfiguration = DatastoreElasticsearchClientConfiguration.getInstance();
-        return new RestElasticsearchClientProvider(metricsEsClient, lowLevelSearchClientBuilderFactory())
-                .withClientConfiguration(esClientConfiguration)
-                .withModelContext(new ModelContextImpl(storableIdFactory, datastoreUtils))
-                .withModelConverter(new QueryConverterImpl());
-    }
-
-    /**
-     * Picks, at startup, which low-level REST client implementation is used to talk to the cluster, as per {@link DatastoreElasticsearchClientSettingsKey#CLIENT_ENGINE}.
-     */
-    private LowLevelSearchClientBuilderFactory lowLevelSearchClientBuilderFactory() {
+    LowLevelSearchClientBuilderFactory lowLevelSearchClientBuilderFactory() {
         String engine = DatastoreElasticsearchClientSettings.getInstance().getString(DatastoreElasticsearchClientSettingsKey.CLIENT_ENGINE, "elasticsearch");
         return engine.equalsIgnoreCase("opensearch")
                 ? new OpensearchLowLevelSearchClientBuilderFactory()
                 : new ElasticsearchLowLevelSearchClientBuilderFactory();
+    }
+
+    @Provides
+    @Singleton
+    ElasticsearchClientProvider elasticsearchClientProvider(MetricsEsClient metricsEsClient,
+                                                            LowLevelSearchClientBuilderFactory lowLevelSearchClientBuilderFactory,
+                                                            StorableIdFactory storableIdFactory,
+                                                            DatastoreUtils datastoreUtils) {
+        ElasticsearchClientConfiguration esClientConfiguration = DatastoreElasticsearchClientConfiguration.getInstance();
+        return new RestElasticsearchClientProvider(metricsEsClient, lowLevelSearchClientBuilderFactory)
+                .withClientConfiguration(esClientConfiguration)
+                .withModelContext(new ModelContextImpl(storableIdFactory, datastoreUtils))
+                .withModelConverter(new QueryConverterImpl());
     }
 
     @Provides
