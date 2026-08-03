@@ -38,11 +38,16 @@ import org.eclipse.kapua.service.datastore.internal.client.DatastoreElasticsearc
 import org.eclipse.kapua.service.datastore.internal.converter.ModelContextImpl;
 import org.eclipse.kapua.service.elasticsearch.client.rest.QueryConverterImpl;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettings;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettingsKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
 import org.eclipse.kapua.service.elasticsearch.client.rest.MetricsEsClient;
 import org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.ElasticsearchLowLevelSearchClientBuilderFactory;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.LowLevelSearchClientBuilderFactory;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.OpensearchLowLevelSearchClientBuilderFactory;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
 
 import com.google.inject.Provides;
@@ -85,10 +90,20 @@ public class DatastoreModule extends AbstractKapuaModule {
     @Singleton
     ElasticsearchClientProvider elasticsearchClientProvider(MetricsEsClient metricsEsClient, StorableIdFactory storableIdFactory, DatastoreUtils datastoreUtils) {
         ElasticsearchClientConfiguration esClientConfiguration = DatastoreElasticsearchClientConfiguration.getInstance();
-        return new RestElasticsearchClientProvider(metricsEsClient)
+        return new RestElasticsearchClientProvider(metricsEsClient, lowLevelSearchClientBuilderFactory())
                 .withClientConfiguration(esClientConfiguration)
                 .withModelContext(new ModelContextImpl(storableIdFactory, datastoreUtils))
                 .withModelConverter(new QueryConverterImpl());
+    }
+
+    /**
+     * Picks, at startup, which low-level REST client implementation is used to talk to the cluster, as per {@link DatastoreElasticsearchClientSettingsKey#CLIENT_ENGINE}.
+     */
+    private LowLevelSearchClientBuilderFactory lowLevelSearchClientBuilderFactory() {
+        String engine = DatastoreElasticsearchClientSettings.getInstance().getString(DatastoreElasticsearchClientSettingsKey.CLIENT_ENGINE, "elasticsearch");
+        return engine.equalsIgnoreCase("opensearch")
+                ? new OpensearchLowLevelSearchClientBuilderFactory()
+                : new ElasticsearchLowLevelSearchClientBuilderFactory();
     }
 
     @Provides
