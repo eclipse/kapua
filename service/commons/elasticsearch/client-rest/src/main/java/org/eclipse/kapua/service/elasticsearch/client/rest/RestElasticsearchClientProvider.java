@@ -44,9 +44,10 @@ import org.eclipse.kapua.service.elasticsearch.client.configuration.Elasticsearc
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientProviderInitException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.LowLevelSearchClient;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.LowLevelSearchClientBuilder;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.LowLevelSearchClientBuilderFactory;
 import org.eclipse.kapua.service.elasticsearch.client.utils.InetAddressParser;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,13 +87,15 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     private ModelContext modelContext;
     private QueryConverter modelConverter;
     private MetricsEsClient metrics;
+    private final LowLevelSearchClientBuilderFactory lowLevelSearchClientBuilderFactory;
     private volatile boolean initialized;
     private volatile boolean closed = true;
     private AtomicInteger nextClientIndex = new AtomicInteger(0);
 
     @Inject
-    public RestElasticsearchClientProvider(MetricsEsClient metricsEsClient) {
+    public RestElasticsearchClientProvider(MetricsEsClient metricsEsClient, LowLevelSearchClientBuilderFactory lowLevelSearchClientBuilderFactory) {
         this.metrics = metricsEsClient;
+        this.lowLevelSearchClientBuilderFactory = lowLevelSearchClientBuilderFactory;
     }
 
     @Override
@@ -206,7 +209,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     /**
      * Closes the {@link RestElasticsearchClientProvider}.
      * <p>
-     * It takes care of closing the {@link RestClient}.
+     * It takes care of closing the {@link LowLevelSearchClient}.
      *
      * @since 1.0.0
      */
@@ -223,11 +226,11 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     }
 
     /**
-     * Closes the {@link RestClient} pool.
+     * Closes the {@link LowLevelSearchClient} pool.
      * <p>
      *
      * @throws IOException
-     *         see {@link RestClient#close()} javadoc.
+     *         see {@link LowLevelSearchClient#close()} javadoc.
      * @since 2.0.0
      */
     private void closeClientPool() throws IOException {
@@ -286,11 +289,11 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
 //    }
 
     /**
-     * Initializes the {@link RestClient} pool as per {@link ElasticsearchClientConfiguration}.
+     * Initializes the {@link LowLevelSearchClient} pool as per {@link ElasticsearchClientConfiguration}.
      *
-     * @return The initialized {@link RestClient} pool.
+     * @return The initialized {@link LowLevelSearchClient} pool.
      * @throws ClientInitializationException
-     *         if any {@link Exception} occurs while {@link RestClient} initialization.
+     *         if any {@link Exception} occurs while {@link LowLevelSearchClient} initialization.
      * @since 2.0.0
      */
     private void initClientPool(int poolSize) throws ClientInitializationException {
@@ -354,7 +357,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
             throw new ClientInitializationException(e, "Error while parsing node addresses!");
         }
 
-        RestClientBuilder restClientBuilder = RestClient.builder(hosts.toArray(new HttpHost[0]));
+        LowLevelSearchClientBuilder restClientBuilder = lowLevelSearchClientBuilderFactory.builder(hosts.toArray(new HttpHost[0]));
         SSLContext sslContext = null;
         if (sslEnabled) {
             try {
@@ -388,7 +391,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
                     return requestConfigBuilder;
                 });
 
-        org.elasticsearch.client.RestClient esRestClientWrapped;
+        LowLevelSearchClient esRestClientWrapped;
         esRestClientWrapped = restClientBuilder.build();
 
         // Create Client Wrapper
