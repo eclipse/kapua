@@ -19,21 +19,21 @@ import org.elasticsearch.client.ResponseException;
 import org.elasticsearch.client.RestClient;
 
 /**
- * {@link LowLevelSearchClient} backed by the Elasticsearch low-level REST client.
+ * {@link DeviceStoreClient} backed by the Elasticsearch low-level REST client.
  *
  * @since 2.1.0
  */
-public class ElasticsearchLowLevelSearchClient implements LowLevelSearchClient {
+public class ElasticsearchDeviceStoreClient implements DeviceStoreClient {
 
     private final RestClient restClient;
 
-    ElasticsearchLowLevelSearchClient(RestClient restClient) {
+    ElasticsearchDeviceStoreClient(RestClient restClient) {
         this.restClient = restClient;
     }
 
     /**
      * Escape hatch for callers that are known to depend on the Elasticsearch REST client directly (e.g. interop with {@code RestHighLevelClient}), rather than
-     * going through {@link LowLevelSearchClient}.
+     * going through {@link DeviceStoreClient}.
      *
      * @return The wrapped Elasticsearch {@link RestClient}.
      */
@@ -42,16 +42,16 @@ public class ElasticsearchLowLevelSearchClient implements LowLevelSearchClient {
     }
 
     @Override
-    public LowLevelSearchRequest newRequest(String method, String endpoint) {
-        return new ElasticsearchLowLevelSearchRequest(new Request(method, endpoint));
+    public DeviceStoreClientRequest newRequest(String method, String endpoint) {
+        return new ElasticsearchDeviceStoreClientRequest(new Request(method, endpoint));
     }
 
     @Override
-    public LowLevelSearchResponse performRequest(LowLevelSearchRequest request) throws IOException {
+    public DeviceStoreClientResponse performRequest(DeviceStoreClientRequest request) throws IOException {
         try {
-            return new ElasticsearchLowLevelSearchResponse(restClient.performRequest(((ElasticsearchLowLevelSearchRequest) request).unwrap()));
+            return new ElasticsearchDeviceStoreClientResponse(restClient.performRequest(((ElasticsearchDeviceStoreClientRequest) request).unwrap()));
         } catch (ResponseException e) {
-            throw new LowLevelSearchResponseException(new ElasticsearchLowLevelSearchResponse(e.getResponse()), e);
+            throw new LowLevelSearchResponseException(new ElasticsearchDeviceStoreClientResponse(e.getResponse()), e);
         }
     }
 

@@ -19,29 +19,29 @@ import org.opensearch.client.ResponseException;
 import org.opensearch.client.RestClient;
 
 /**
- * {@link LowLevelSearchClient} backed by the OpenSearch low-level REST client.
+ * {@link DeviceStoreClient} backed by the OpenSearch low-level REST client.
  *
  * @since 2.1.0
  */
-class OpensearchLowLevelSearchClient implements LowLevelSearchClient {
+class OpensearchDeviceStoreClient implements DeviceStoreClient {
 
     private final RestClient restClient;
 
-    OpensearchLowLevelSearchClient(RestClient restClient) {
+    OpensearchDeviceStoreClient(RestClient restClient) {
         this.restClient = restClient;
     }
 
     @Override
-    public LowLevelSearchRequest newRequest(String method, String endpoint) {
-        return new OpensearchLowLevelSearchRequest(new Request(method, endpoint));
+    public DeviceStoreClientRequest newRequest(String method, String endpoint) {
+        return new OpensearchDeviceStoreClientRequest(new Request(method, endpoint));
     }
 
     @Override
-    public LowLevelSearchResponse performRequest(LowLevelSearchRequest request) throws IOException {
+    public DeviceStoreClientResponse performRequest(DeviceStoreClientRequest request) throws IOException {
         try {
-            return new OpensearchLowLevelSearchResponse(restClient.performRequest(((OpensearchLowLevelSearchRequest) request).unwrap()));
+            return new OpensearchDeviceStoreClientResponse(restClient.performRequest(((OpensearchDeviceStoreClientRequest) request).unwrap()));
         } catch (ResponseException e) {
-            throw new LowLevelSearchResponseException(new OpensearchLowLevelSearchResponse(e.getResponse()), e);
+            throw new LowLevelSearchResponseException(new OpensearchDeviceStoreClientResponse(e.getResponse()), e);
         }
     }
 

@@ -21,15 +21,15 @@ import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
  * Vendor-agnostic view of the low-level REST client builder, be it the Elasticsearch or the OpenSearch one.
  * <p>
  * The callbacks are expressed in terms of Apache HttpComponents types since both vendors' builders customize the very same underlying HTTP client, unlike
- * {@link LowLevelSearchClient}/{@link LowLevelSearchRequest}/{@link LowLevelSearchResponse} which each vendor forked into its own package.
+ * {@link DeviceStoreClient}/{@link DeviceStoreClientRequest}/{@link DeviceStoreClientResponse} which each vendor forked into its own package.
  *
  * @since 2.1.0
  */
-public interface LowLevelSearchClientBuilder {
+public interface DeviceStoreClientBuilder {
 
-    LowLevelSearchClientBuilder setHttpClientConfigCallback(UnaryOperator<HttpAsyncClientBuilder> callback);
+    DeviceStoreClientBuilder setHttpClientConfigCallback(UnaryOperator<HttpAsyncClientBuilder> callback);
 
-    LowLevelSearchClientBuilder setRequestConfigCallback(UnaryOperator<RequestConfig.Builder> callback);
+    DeviceStoreClientBuilder setRequestConfigCallback(UnaryOperator<RequestConfig.Builder> callback);
 
-    LowLevelSearchClient build();
+    DeviceStoreClient build();
 }

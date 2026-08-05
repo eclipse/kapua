@@ -12,34 +12,32 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel;
 
-import org.apache.http.HttpEntity;
-import org.elasticsearch.client.Response;
+import org.elasticsearch.client.Request;
 
 /**
- * {@link LowLevelSearchResponse} backed by the Elasticsearch low-level REST client.
+ * {@link DeviceStoreClientRequest} backed by the Elasticsearch low-level REST client.
  *
  * @since 2.1.0
  */
-class ElasticsearchLowLevelSearchResponse implements LowLevelSearchResponse {
+class ElasticsearchDeviceStoreClientRequest implements DeviceStoreClientRequest {
 
-    private final Response response;
+    private final Request request;
 
-    ElasticsearchLowLevelSearchResponse(Response response) {
-        this.response = response;
+    ElasticsearchDeviceStoreClientRequest(Request request) {
+        this.request = request;
+    }
+
+    Request unwrap() {
+        return request;
     }
 
     @Override
-    public int getStatusCode() {
-        return response.getStatusLine().getStatusCode();
+    public void setJsonEntity(String json) {
+        request.setJsonEntity(json);
     }
 
     @Override
-    public String getReasonPhrase() {
-        return response.getStatusLine().getReasonPhrase();
-    }
-
-    @Override
-    public HttpEntity getEntity() {
-        return response.getEntity();
+    public void addParameter(String name, String value) {
+        request.addParameter(name, value);
     }
 }

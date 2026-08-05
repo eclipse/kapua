@@ -12,14 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel;
 
+import java.io.Closeable;
+import java.io.IOException;
+
 /**
- * Vendor-agnostic view of the request object accepted by the underlying low-level REST client, be it the Elasticsearch or the OpenSearch one.
+ * Vendor-agnostic view of the low-level REST client, be it the Elasticsearch or the OpenSearch one.
  *
  * @since 2.1.0
  */
-public interface LowLevelSearchRequest {
+public interface DeviceStoreClient extends Closeable {
 
-    void setJsonEntity(String json);
+    DeviceStoreClientRequest newRequest(String method, String endpoint);
 
-    void addParameter(String name, String value);
+    /**
+     * @throws LowLevelSearchResponseException
+     *         if the underlying client reports a non-2xx response as an exception.
+     */
+    DeviceStoreClientResponse performRequest(DeviceStoreClientRequest request) throws IOException;
 }

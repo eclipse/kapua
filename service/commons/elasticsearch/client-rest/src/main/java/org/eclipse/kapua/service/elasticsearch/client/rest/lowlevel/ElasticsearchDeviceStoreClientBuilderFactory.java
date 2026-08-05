@@ -16,14 +16,14 @@ import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 
 /**
- * {@link LowLevelSearchClientBuilderFactory} that talks to an Elasticsearch cluster.
+ * {@link DeviceStoreClientBuilderFactory} that talks to an Elasticsearch cluster.
  *
  * @since 2.1.0
  */
-public class ElasticsearchLowLevelSearchClientBuilderFactory implements LowLevelSearchClientBuilderFactory {
+public class ElasticsearchDeviceStoreClientBuilderFactory implements DeviceStoreClientBuilderFactory {
 
     @Override
-    public LowLevelSearchClientBuilder builder(HttpHost[] hosts) {
-        return new ElasticsearchLowLevelSearchClientBuilder(RestClient.builder(hosts));
+    public DeviceStoreClientBuilder builder(HttpHost[] hosts) {
+        return new ElasticsearchDeviceStoreClientBuilder(RestClient.builder(hosts));
     }
 }

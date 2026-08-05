@@ -12,18 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel;
 
-import org.apache.http.HttpHost;
-import org.opensearch.client.RestClient;
+import org.apache.http.HttpEntity;
 
 /**
- * {@link LowLevelSearchClientBuilderFactory} that talks to an OpenSearch cluster.
+ * Vendor-agnostic view of the response object returned by the underlying low-level REST client, be it the Elasticsearch or the OpenSearch one.
  *
  * @since 2.1.0
  */
-public class OpensearchLowLevelSearchClientBuilderFactory implements LowLevelSearchClientBuilderFactory {
+public interface DeviceStoreClientResponse {
 
-    @Override
-    public LowLevelSearchClientBuilder builder(HttpHost[] hosts) {
-        return new OpensearchLowLevelSearchClientBuilder(RestClient.builder(hosts));
-    }
+    int getStatusCode();
+
+    String getReasonPhrase();
+
+    HttpEntity getEntity();
 }

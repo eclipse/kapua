@@ -12,18 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel;
 
-import org.elasticsearch.client.Request;
+import org.opensearch.client.Request;
 
 /**
- * {@link LowLevelSearchRequest} backed by the Elasticsearch low-level REST client.
+ * {@link DeviceStoreClientRequest} backed by the OpenSearch low-level REST client.
  *
  * @since 2.1.0
  */
-class ElasticsearchLowLevelSearchRequest implements LowLevelSearchRequest {
+class OpensearchDeviceStoreClientRequest implements DeviceStoreClientRequest {
 
     private final Request request;
 
-    ElasticsearchLowLevelSearchRequest(Request request) {
+    OpensearchDeviceStoreClientRequest(Request request) {
         this.request = request;
     }
 

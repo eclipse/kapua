@@ -12,18 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel;
 
-import org.apache.http.HttpEntity;
-
 /**
- * Vendor-agnostic view of the response object returned by the underlying low-level REST client, be it the Elasticsearch or the OpenSearch one.
+ * Vendor-agnostic view of the request object accepted by the underlying low-level REST client, be it the Elasticsearch or the OpenSearch one.
  *
  * @since 2.1.0
  */
-public interface LowLevelSearchResponse {
+public interface DeviceStoreClientRequest {
 
-    int getStatusCode();
+    void setJsonEntity(String json);
 
-    String getReasonPhrase();
-
-    HttpEntity getEntity();
+    void addParameter(String name, String value);
 }

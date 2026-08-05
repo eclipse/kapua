@@ -12,21 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel;
 
-import java.io.Closeable;
-import java.io.IOException;
+import org.apache.http.HttpHost;
 
 /**
- * Vendor-agnostic view of the low-level REST client, be it the Elasticsearch or the OpenSearch one.
+ * Selects, at startup, which underlying low-level REST client implementation ({@link ElasticsearchDeviceStoreClientBuilderFactory} or
+ * {@link OpensearchDeviceStoreClientBuilderFactory}) is used to talk to the cluster.
  *
  * @since 2.1.0
  */
-public interface LowLevelSearchClient extends Closeable {
+public interface DeviceStoreClientBuilderFactory {
 
-    LowLevelSearchRequest newRequest(String method, String endpoint);
-
-    /**
-     * @throws LowLevelSearchResponseException
-     *         if the underlying client reports a non-2xx response as an exception.
-     */
-    LowLevelSearchResponse performRequest(LowLevelSearchRequest request) throws IOException;
+    DeviceStoreClientBuilder builder(HttpHost[] hosts);
 }

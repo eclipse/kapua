@@ -19,32 +19,32 @@ import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.elasticsearch.client.RestClientBuilder;
 
 /**
- * {@link LowLevelSearchClientBuilder} backed by the Elasticsearch low-level REST client.
+ * {@link DeviceStoreClientBuilder} backed by the Elasticsearch low-level REST client.
  *
  * @since 2.1.0
  */
-class ElasticsearchLowLevelSearchClientBuilder implements LowLevelSearchClientBuilder {
+class ElasticsearchDeviceStoreClientBuilder implements DeviceStoreClientBuilder {
 
     private final RestClientBuilder restClientBuilder;
 
-    ElasticsearchLowLevelSearchClientBuilder(RestClientBuilder restClientBuilder) {
+    ElasticsearchDeviceStoreClientBuilder(RestClientBuilder restClientBuilder) {
         this.restClientBuilder = restClientBuilder;
     }
 
     @Override
-    public LowLevelSearchClientBuilder setHttpClientConfigCallback(UnaryOperator<HttpAsyncClientBuilder> callback) {
+    public DeviceStoreClientBuilder setHttpClientConfigCallback(UnaryOperator<HttpAsyncClientBuilder> callback) {
         restClientBuilder.setHttpClientConfigCallback(callback::apply);
         return this;
     }
 
     @Override
-    public LowLevelSearchClientBuilder setRequestConfigCallback(UnaryOperator<RequestConfig.Builder> callback) {
+    public DeviceStoreClientBuilder setRequestConfigCallback(UnaryOperator<RequestConfig.Builder> callback) {
         restClientBuilder.setRequestConfigCallback(callback::apply);
         return this;
     }
 
     @Override
-    public LowLevelSearchClient build() {
-        return new ElasticsearchLowLevelSearchClient(restClientBuilder.build());
+    public DeviceStoreClient build() {
+        return new ElasticsearchDeviceStoreClient(restClientBuilder.build());
     }
 }

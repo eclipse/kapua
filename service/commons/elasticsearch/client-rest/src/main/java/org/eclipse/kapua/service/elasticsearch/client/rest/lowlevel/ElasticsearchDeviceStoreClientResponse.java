@@ -13,18 +13,18 @@
 package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel;
 
 import org.apache.http.HttpEntity;
-import org.opensearch.client.Response;
+import org.elasticsearch.client.Response;
 
 /**
- * {@link LowLevelSearchResponse} backed by the OpenSearch low-level REST client.
+ * {@link DeviceStoreClientResponse} backed by the Elasticsearch low-level REST client.
  *
  * @since 2.1.0
  */
-class OpensearchLowLevelSearchResponse implements LowLevelSearchResponse {
+class ElasticsearchDeviceStoreClientResponse implements DeviceStoreClientResponse {
 
     private final Response response;
 
-    OpensearchLowLevelSearchResponse(Response response) {
+    ElasticsearchDeviceStoreClientResponse(Response response) {
         this.response = response;
     }
 
