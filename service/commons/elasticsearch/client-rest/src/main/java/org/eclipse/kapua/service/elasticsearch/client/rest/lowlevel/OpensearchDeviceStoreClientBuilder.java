@@ -14,37 +14,51 @@ package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel;
 
 import java.util.function.UnaryOperator;
 
+import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.opensearch.client.RestClientBuilder;
+import org.opensearch.client.RestClient;
 
 /**
  * {@link DeviceStoreClientBuilder} backed by the OpenSearch low-level REST client.
  *
  * @since 2.1.0
  */
-class OpensearchDeviceStoreClientBuilder implements DeviceStoreClientBuilder {
+public class OpensearchDeviceStoreClientBuilder implements DeviceStoreClientBuilder {
 
-    private final RestClientBuilder restClientBuilder;
+    private RestClientBuilder restClientBuilder;
 
-    OpensearchDeviceStoreClientBuilder(RestClientBuilder restClientBuilder) {
-        this.restClientBuilder = restClientBuilder;
+    @Override
+    public DeviceStoreClientBuilder initializeAndSetHosts(HttpHost[] hosts) {
+        restClientBuilder = RestClient.builder(hosts);
+        return this;
     }
 
     @Override
-    public DeviceStoreClientBuilder setHttpClientConfigCallback(UnaryOperator<HttpAsyncClientBuilder> callback) {
+    public DeviceStoreClientBuilder setHttpClientConfigCallback(UnaryOperator<HttpAsyncClientBuilder> callback) throws ClientInitializationException {
+        if (restClientBuilder == null) {
+            throw new ClientInitializationException("RestClientBuilder is not initialized yet. Call initializeAndSetHosts() first.");
+        }
         restClientBuilder.setHttpClientConfigCallback(callback::apply);
         return this;
     }
 
     @Override
-    public DeviceStoreClientBuilder setRequestConfigCallback(UnaryOperator<RequestConfig.Builder> callback) {
+    public DeviceStoreClientBuilder setRequestConfigCallback(UnaryOperator<RequestConfig.Builder> callback) throws ClientInitializationException {
+        if (restClientBuilder == null) {
+            throw new ClientInitializationException("RestClientBuilder is not initialized yet. Call initializeAndSetHosts() first.");
+        }
         restClientBuilder.setRequestConfigCallback(callback::apply);
         return this;
     }
 
     @Override
-    public DeviceStoreClient build() {
+    public DeviceStoreClient build() throws ClientInitializationException {
+        if (restClientBuilder == null) {
+            throw new ClientInitializationException("RestClientBuilder is not initialized yet. Call initializeAndSetHosts() first.");
+        }
         return new OpensearchDeviceStoreClient(restClientBuilder.build());
     }
 }

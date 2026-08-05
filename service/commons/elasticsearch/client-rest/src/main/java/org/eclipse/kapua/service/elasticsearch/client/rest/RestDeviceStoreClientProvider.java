@@ -46,7 +46,6 @@ import org.eclipse.kapua.service.elasticsearch.client.exception.ClientProviderIn
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.DeviceStoreClient;
 import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.DeviceStoreClientBuilder;
-import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.DeviceStoreClientBuilderFactory;
 import org.eclipse.kapua.service.elasticsearch.client.utils.InetAddressParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,15 +86,15 @@ public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<
     private ModelContext modelContext;
     private QueryConverter modelConverter;
     private MetricsEsClient metrics;
-    private final DeviceStoreClientBuilderFactory deviceStoreClientBuilderFactory;
+    private final DeviceStoreClientBuilder deviceStoreClientBuilder;
     private volatile boolean initialized;
     private volatile boolean closed = true;
     private AtomicInteger nextClientIndex = new AtomicInteger(0);
 
     @Inject
-    public RestDeviceStoreClientProvider(MetricsEsClient metricsEsClient, DeviceStoreClientBuilderFactory deviceStoreClientBuilderFactory) {
+    public RestDeviceStoreClientProvider(MetricsEsClient metricsEsClient, DeviceStoreClientBuilder deviceStoreClientBuilder) {
         this.metrics = metricsEsClient;
-        this.deviceStoreClientBuilderFactory = deviceStoreClientBuilderFactory;
+        this.deviceStoreClientBuilder = deviceStoreClientBuilder;
     }
 
     @Override
@@ -357,7 +356,7 @@ public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<
             throw new ClientInitializationException(e, "Error while parsing node addresses!");
         }
 
-        DeviceStoreClientBuilder restClientBuilder = deviceStoreClientBuilderFactory.builder(hosts.toArray(new HttpHost[0]));
+        DeviceStoreClientBuilder restClientBuilder = deviceStoreClientBuilder.initializeAndSetHosts(hosts.toArray(new HttpHost[0]));
         SSLContext sslContext = null;
         if (sslEnabled) {
             try {
