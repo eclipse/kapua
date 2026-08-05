@@ -45,9 +45,9 @@ import org.eclipse.kapua.service.elasticsearch.client.DeviceStoreClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.DeviceStoreClientConfiguration;
 import org.eclipse.kapua.service.elasticsearch.client.rest.MetricsEsClient;
 import org.eclipse.kapua.service.elasticsearch.client.rest.RestDeviceStoreClientProvider;
-import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.ElasticsearchDeviceStoreClientBuilderFactory;
-import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.DeviceStoreClientBuilderFactory;
-import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.OpensearchDeviceStoreClientBuilderFactory;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.DeviceStoreClientBuilder;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.ElasticsearchDeviceStoreClientBuilder;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.OpensearchDeviceStoreClientBuilder;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
 
 import com.google.inject.Provides;
@@ -88,21 +88,21 @@ public class DatastoreModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    DeviceStoreClientBuilderFactory lowLevelSearchClientBuilderFactory() {
+    DeviceStoreClientBuilder lowLevelSearchClientBuilder() {
         String engine = DeviceStoreClientSettings.getInstance().getString(DatastoreElasticsearchClientSettingsKey.CLIENT_ENGINE, "elasticsearch");
         return engine.equalsIgnoreCase("opensearch")
-                ? new OpensearchDeviceStoreClientBuilderFactory()
-                : new ElasticsearchDeviceStoreClientBuilderFactory();
+                ? new OpensearchDeviceStoreClientBuilder()
+                : new ElasticsearchDeviceStoreClientBuilder();
     }
 
     @Provides
     @Singleton
     DeviceStoreClientProvider elasticsearchClientProvider(MetricsEsClient metricsEsClient,
-                                                          DeviceStoreClientBuilderFactory deviceStoreClientBuilderFactory,
+                                                          DeviceStoreClientBuilder deviceStoreClientBuilder,
                                                           StorableIdFactory storableIdFactory,
                                                           DatastoreUtils datastoreUtils) {
         DeviceStoreClientConfiguration esClientConfiguration = TelemetryDeviceStoreClientConfiguration.getInstance(); //For now, opensearch and elasticsearch share the same settings, until their settings that we use in the codebase don't diverge. In that case, we will need to create a new configuration class for opensearch.
-        return new RestDeviceStoreClientProvider(metricsEsClient, deviceStoreClientBuilderFactory)
+        return new RestDeviceStoreClientProvider(metricsEsClient, deviceStoreClientBuilder)
                 .withClientConfiguration(esClientConfiguration)
                 .withModelContext(new ModelContextImpl(storableIdFactory, datastoreUtils))
                 .withModelConverter(new QueryConverterImpl());

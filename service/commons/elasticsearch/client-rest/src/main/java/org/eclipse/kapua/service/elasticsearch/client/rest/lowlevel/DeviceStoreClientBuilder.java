@@ -14,8 +14,10 @@ package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel;
 
 import java.util.function.UnaryOperator;
 
+import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 
 /**
  * Vendor-agnostic view of the low-level REST client builder, be it the Elasticsearch or the OpenSearch one.
@@ -27,9 +29,11 @@ import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
  */
 public interface DeviceStoreClientBuilder {
 
-    DeviceStoreClientBuilder setHttpClientConfigCallback(UnaryOperator<HttpAsyncClientBuilder> callback);
+    DeviceStoreClientBuilder initializeAndSetHosts(HttpHost[] hosts) throws ClientInitializationException;
 
-    DeviceStoreClientBuilder setRequestConfigCallback(UnaryOperator<RequestConfig.Builder> callback);
+    DeviceStoreClientBuilder setHttpClientConfigCallback(UnaryOperator<HttpAsyncClientBuilder> callback) throws ClientInitializationException;
 
-    DeviceStoreClient build();
+    DeviceStoreClientBuilder setRequestConfigCallback(UnaryOperator<RequestConfig.Builder> callback) throws ClientInitializationException;
+
+    DeviceStoreClient build() throws ClientInitializationException;
 }
