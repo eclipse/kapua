@@ -12,32 +12,34 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel;
 
-import org.opensearch.client.Request;
+import org.apache.http.HttpEntity;
+import org.opensearch.client.Response;
 
 /**
- * {@link LowLevelSearchRequest} backed by the OpenSearch low-level REST client.
+ * {@link DeviceStoreClientResponse} backed by the OpenSearch low-level REST client.
  *
  * @since 2.1.0
  */
-class OpensearchLowLevelSearchRequest implements LowLevelSearchRequest {
+class OpensearchDeviceStoreClientResponse implements DeviceStoreClientResponse {
 
-    private final Request request;
+    private final Response response;
 
-    OpensearchLowLevelSearchRequest(Request request) {
-        this.request = request;
-    }
-
-    Request unwrap() {
-        return request;
+    OpensearchDeviceStoreClientResponse(Response response) {
+        this.response = response;
     }
 
     @Override
-    public void setJsonEntity(String json) {
-        request.setJsonEntity(json);
+    public int getStatusCode() {
+        return response.getStatusLine().getStatusCode();
     }
 
     @Override
-    public void addParameter(String name, String value) {
-        request.addParameter(name, value);
+    public String getReasonPhrase() {
+        return response.getStatusLine().getReasonPhrase();
+    }
+
+    @Override
+    public HttpEntity getEntity() {
+        return response.getEntity();
     }
 }

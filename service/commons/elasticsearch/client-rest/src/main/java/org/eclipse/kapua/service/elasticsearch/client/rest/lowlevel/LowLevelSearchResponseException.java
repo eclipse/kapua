@@ -15,21 +15,21 @@ package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel;
 import java.io.IOException;
 
 /**
- * Thrown by {@link LowLevelSearchClient#performRequest(LowLevelSearchRequest)} when the underlying client reports a non-2xx response as an exception rather than
- * returning it, carrying the {@link LowLevelSearchResponse} that caused it.
+ * Thrown by {@link DeviceStoreClient#performRequest(DeviceStoreClientRequest)} when the underlying client reports a non-2xx response as an exception rather than
+ * returning it, carrying the {@link DeviceStoreClientResponse} that caused it.
  *
  * @since 2.1.0
  */
 public class LowLevelSearchResponseException extends IOException {
 
-    private final LowLevelSearchResponse response;
+    private final DeviceStoreClientResponse response;
 
-    public LowLevelSearchResponseException(LowLevelSearchResponse response, Throwable cause) {
+    public LowLevelSearchResponseException(DeviceStoreClientResponse response, Throwable cause) {
         super(cause);
         this.response = response;
     }
 
-    public LowLevelSearchResponse getResponse() {
+    public DeviceStoreClientResponse getResponse() {
         return response;
     }
 }
