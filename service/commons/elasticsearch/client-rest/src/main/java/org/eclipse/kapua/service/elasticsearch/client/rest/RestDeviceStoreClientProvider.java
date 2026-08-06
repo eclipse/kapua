@@ -100,7 +100,7 @@ public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<
     @Override
     public RestDeviceStoreClientProvider init() throws ClientProviderInitException {
         if (!closed) {
-            LOG.warn("Elasticsearch rest client provider: closing the pool failed at a previous stage, trying to close before init.");
+            LOG.warn(deviceStoreClientBuilder.getVendorName() + " Elasticsearch rest client provider: closing the pool failed at a previous stage, trying to close before init.");
             close();
         }
         if (initialized && closed) {
@@ -129,7 +129,7 @@ public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<
                             .create()
                             .withLogger(LOG)
                             .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
-                            .withTitle("Elasticsearch REST Provider Configuration")
+                            .withTitle(deviceStoreClientBuilder.getVendorName() + " REST Provider Configuration")
                             .addParameter("Module Name", getClientConfiguration().getModuleName())
                             .addParameter("Cluster Name", getClientConfiguration().getClusterName());
 

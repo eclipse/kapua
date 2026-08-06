@@ -31,6 +31,11 @@ public class ElasticsearchDeviceStoreClientBuilder implements DeviceStoreClientB
     private RestClientBuilder restClientBuilder;
 
     @Override
+    public String getVendorName() {
+        return "Elasticsearch";
+    }
+
+    @Override
     public DeviceStoreClientBuilder initializeAndSetHosts(HttpHost[] hosts) {
         restClientBuilder = RestClient.builder(hosts);
         return this;

@@ -29,6 +29,8 @@ import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializa
  */
 public interface DeviceStoreClientBuilder {
 
+    String getVendorName();
+
     DeviceStoreClientBuilder initializeAndSetHosts(HttpHost[] hosts) throws ClientInitializationException;
 
     DeviceStoreClientBuilder setHttpClientConfigCallback(UnaryOperator<HttpAsyncClientBuilder> callback) throws ClientInitializationException;
