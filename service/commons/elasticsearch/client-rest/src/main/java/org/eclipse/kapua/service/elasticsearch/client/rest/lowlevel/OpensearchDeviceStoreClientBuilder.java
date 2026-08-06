@@ -31,6 +31,11 @@ public class OpensearchDeviceStoreClientBuilder implements DeviceStoreClientBuil
     private RestClientBuilder restClientBuilder;
 
     @Override
+    public String getVendorName() {
+        return "Opensearch";
+    }
+
+    @Override
     public DeviceStoreClientBuilder initializeAndSetHosts(HttpHost[] hosts) {
         restClientBuilder = RestClient.builder(hosts);
         return this;
