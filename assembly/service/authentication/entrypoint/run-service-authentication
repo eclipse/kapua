@@ -11,6 +11,12 @@
 #        Eurotech
 ################################################################################
 
+JAVA_OPTS="${JAVA_OPTS} --add-opens java.base/java.lang=ALL-UNNAMED"
+JAVA_OPTS="${JAVA_OPTS} --add-opens java.base/java.util=ALL-UNNAMED"
+JAVA_OPTS="${JAVA_OPTS} --add-opens java.base/java.lang.reflect=ALL-UNNAMED"
+JAVA_OPTS="${JAVA_OPTS} --add-opens java.base/java.text=ALL-UNNAMED"
+JAVA_OPTS="${JAVA_OPTS} --add-opens java.base/java.io=ALL-UNNAMED"
+
 #options for DB connection
 JAVA_OPTS="${JAVA_OPTS} -Dcommons.db.jdbc.database.target=${DB_TARGET:-}"
 JAVA_OPTS="${JAVA_OPTS} -Dcommons.db.connection.host=${DB_HOST:-db}"
