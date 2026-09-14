@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Singleton;
 
@@ -46,8 +47,7 @@ import org.eclipse.kapua.service.elasticsearch.client.configuration.DeviceStoreC
 import org.eclipse.kapua.service.elasticsearch.client.rest.MetricsEsClient;
 import org.eclipse.kapua.service.elasticsearch.client.rest.RestDeviceStoreClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.DeviceStoreClientBuilder;
-import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.ElasticsearchDeviceStoreClientBuilder;
-import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.OpensearchDeviceStoreClientBuilder;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.DeviceStoreClientBuilderLocator;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
 
 import com.google.inject.Provides;
@@ -88,11 +88,9 @@ public class DatastoreModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    DeviceStoreClientBuilder lowLevelSearchClientBuilder() {
+    DeviceStoreClientBuilder lowLevelSearchClientBuilder(Set<DeviceStoreClientBuilder> availableDeviceStoreClientBuilders, DeviceStoreClientBuilderLocator deviceStoreClientBuilderLocator) {
         String engine = DeviceStoreClientSettings.getInstance().getString(DatastoreElasticsearchClientSettingsKey.CLIENT_ENGINE, "elasticsearch");
-        return engine.equalsIgnoreCase("opensearch")
-                ? new OpensearchDeviceStoreClientBuilder()
-                : new ElasticsearchDeviceStoreClientBuilder();
+        return deviceStoreClientBuilderLocator.locate(engine, availableDeviceStoreClientBuilders);
     }
 
     @Provides

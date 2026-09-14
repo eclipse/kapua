@@ -29,6 +29,20 @@ import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializa
  */
 public interface DeviceStoreClientBuilder {
 
+    /**
+     * Stable, machine-readable identifier for this vendor (e.g. {@code "elasticsearch"}, {@code "opensearch"}).
+     * <p>
+     * Matched, case-insensitively, against a {@code *.client.engine} setting to pick which implementation to use out of the {@link java.util.Set} of all
+     * {@link DeviceStoreClientBuilder}s contributed on the classpath. Unlike {@link #getVendorName()}, this value is a contract other code matches against and
+     * must stay stable across releases.
+     *
+     * @since 2.1.0
+     */
+    String getId();
+
+    /**
+     * Human-readable vendor name, used for logging/diagnostics only.
+     */
     String getVendorName();
 
     DeviceStoreClientBuilder initializeAndSetHosts(HttpHost[] hosts) throws ClientInitializationException;

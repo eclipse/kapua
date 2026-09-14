@@ -28,7 +28,14 @@ import org.opensearch.client.RestClient;
  */
 public class OpensearchDeviceStoreClientBuilder implements DeviceStoreClientBuilder {
 
+    public static final String ID = "opensearch";
+
     private RestClientBuilder restClientBuilder;
+
+    @Override
+    public String getId() {
+        return ID;
+    }
 
     @Override
     public String getVendorName() {

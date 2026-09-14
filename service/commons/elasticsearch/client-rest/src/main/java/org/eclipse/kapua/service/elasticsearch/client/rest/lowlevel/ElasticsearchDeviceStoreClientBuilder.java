@@ -28,7 +28,14 @@ import org.elasticsearch.client.RestClientBuilder;
  */
 public class ElasticsearchDeviceStoreClientBuilder implements DeviceStoreClientBuilder {
 
+    public static final String ID = "elasticsearch";
+
     private RestClientBuilder restClientBuilder;
+
+    @Override
+    public String getId() {
+        return ID;
+    }
 
     @Override
     public String getVendorName() {
