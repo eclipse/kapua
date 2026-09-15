@@ -10,9 +10,10 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel;
+package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.opensearch;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.DeviceStoreClientBuilder;
 
 import com.google.inject.multibindings.ProvidesIntoSet;
 

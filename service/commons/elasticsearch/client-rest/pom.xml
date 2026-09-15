@@ -36,14 +36,15 @@
             <artifactId>kapua-service-elasticsearch-client-api</artifactId>
         </dependency>
 
-        <!-- External dependencies -->
+        <!-- External dependencies - the vendor-neutral REST plumbing (RestDeviceStoreClientProvider/Wrapper, DeviceStoreClientBuilder) is expressed in terms of
+             Apache HttpComponents types, since both vendors' low-level REST client builders customize the very same underlying async HTTP client. -->
         <dependency>
-            <groupId>org.elasticsearch.client</groupId>
-            <artifactId>elasticsearch-rest-client</artifactId>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpasyncclient</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opensearch.client</groupId>
-            <artifactId>opensearch-rest-client</artifactId>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore-nio</artifactId>
         </dependency>
 
         <!-- Test -->

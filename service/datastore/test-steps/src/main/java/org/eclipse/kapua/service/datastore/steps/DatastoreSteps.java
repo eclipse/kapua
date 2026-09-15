@@ -94,7 +94,7 @@ import org.eclipse.kapua.service.elasticsearch.client.DeviceStoreClientWrapper;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.model.IndexRequest;
 import org.eclipse.kapua.service.elasticsearch.client.rest.ElasticsearchResourcePaths;
-import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.ElasticsearchDeviceStoreClient;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.elasticsearch.ElasticsearchDeviceStoreClient;
 import org.eclipse.kapua.service.storable.model.StorableListResult;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;

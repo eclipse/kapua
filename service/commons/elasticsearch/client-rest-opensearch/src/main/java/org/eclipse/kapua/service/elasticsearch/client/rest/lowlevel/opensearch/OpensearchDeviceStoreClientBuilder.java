@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel;
+package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.opensearch;
 
 import java.util.function.UnaryOperator;
 
@@ -18,17 +18,19 @@ import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.DeviceStoreClient;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.DeviceStoreClientBuilder;
+import org.opensearch.client.RestClientBuilder;
+import org.opensearch.client.RestClient;
 
 /**
- * {@link DeviceStoreClientBuilder} backed by the Elasticsearch low-level REST client.
+ * {@link DeviceStoreClientBuilder} backed by the OpenSearch low-level REST client.
  *
  * @since 2.1.0
  */
-public class ElasticsearchDeviceStoreClientBuilder implements DeviceStoreClientBuilder {
+public class OpensearchDeviceStoreClientBuilder implements DeviceStoreClientBuilder {
 
-    public static final String ID = "elasticsearch";
+    public static final String ID = "opensearch";
 
     private RestClientBuilder restClientBuilder;
 
@@ -39,7 +41,7 @@ public class ElasticsearchDeviceStoreClientBuilder implements DeviceStoreClientB
 
     @Override
     public String getVendorName() {
-        return "Elasticsearch";
+        return "Opensearch";
     }
 
     @Override
@@ -71,6 +73,6 @@ public class ElasticsearchDeviceStoreClientBuilder implements DeviceStoreClientB
         if (restClientBuilder == null) {
             throw new ClientInitializationException("RestClientBuilder is not initialized yet. Call initializeAndSetHosts() first.");
         }
-        return new ElasticsearchDeviceStoreClient(restClientBuilder.build());
+        return new OpensearchDeviceStoreClient(restClientBuilder.build());
     }
 }

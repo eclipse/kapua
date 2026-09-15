@@ -29,5 +29,7 @@
     <modules>
         <module>client-api</module>
         <module>client-rest</module>
+        <module>client-rest-elasticsearch</module>
+        <module>client-rest-opensearch</module>
     </modules>
 </project>

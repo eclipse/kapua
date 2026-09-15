@@ -10,10 +10,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel;
+package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.elasticsearch;
 
 import java.io.IOException;
 
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.DeviceStoreClient;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.DeviceStoreClientRequest;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.DeviceStoreClientResponse;
+import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.LowLevelSearchResponseException;
 import org.elasticsearch.client.Request;
 import org.elasticsearch.client.ResponseException;
 import org.elasticsearch.client.RestClient;
