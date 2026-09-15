@@ -13,7 +13,7 @@
 package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel;
 
 /**
- * Vendor-agnostic view of the request object accepted by the underlying low-level REST client, be it the Elasticsearch or the OpenSearch one.
+ * Vendor-agnostic view of the request object accepted by the underlying low-level REST client, be it the Elasticsearch or another one.
  *
  * @since 2.1.0
  */

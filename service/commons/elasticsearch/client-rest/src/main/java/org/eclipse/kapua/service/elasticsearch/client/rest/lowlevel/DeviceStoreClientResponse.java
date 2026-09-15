@@ -15,7 +15,7 @@ package org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel;
 import org.apache.http.HttpEntity;
 
 /**
- * Vendor-agnostic view of the response object returned by the underlying low-level REST client, be it the Elasticsearch or the OpenSearch one.
+ * Vendor-agnostic view of the response object returned by the underlying low-level REST client, be it the Elasticsearch or the another one.
  *
  * @since 2.1.0
  */

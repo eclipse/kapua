@@ -17,10 +17,9 @@ import java.util.stream.Collectors;
 
 /**
  * Picks the {@link DeviceStoreClientBuilder} whose {@link DeviceStoreClientBuilder#getId()} matches a configured engine id, out of whatever
- * {@link DeviceStoreClientBuilder}s are contributed on the classpath (see {@link ElasticsearchDeviceStoreClientBuilderModule},
- * {@link OpensearchDeviceStoreClientBuilderModule}).
+ * {@link DeviceStoreClientBuilder}s are contributed on the classpath.
  * <p>
- * Shared by every consumer that needs to resolve its own {@link DeviceStoreClientBuilder} (e.g. kapua's own datastore, or a downstream project's log store) so
+ * Shared by every consumer that needs to resolve its own {@link DeviceStoreClientBuilder} (e.g. kapua's own datastore) so
  * the "read a setting, find the matching builder" logic isn't duplicated in each of them.
  *
  * @since 2.1.0
@@ -29,7 +28,7 @@ public class DeviceStoreClientBuilderLocator {
 
     /**
      * @param engineId
-     *         The configured engine id (e.g. {@code "elasticsearch"}, {@code "opensearch"}), matched case-insensitively.
+     *         The configured engine id (e.g. {@code "elasticsearch"}, or for example {@code "opensearch"}), matched case-insensitively.
      * @param candidates
      *         Every {@link DeviceStoreClientBuilder} contributed on the classpath.
      * @return The matching {@link DeviceStoreClientBuilder}.

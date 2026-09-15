@@ -16,7 +16,7 @@ import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * Vendor-agnostic view of the low-level REST client, be it the Elasticsearch or the OpenSearch one.
+ * Vendor-agnostic view of the low-level REST client, be it the Elasticsearch or another one.
  *
  * @since 2.1.0
  */

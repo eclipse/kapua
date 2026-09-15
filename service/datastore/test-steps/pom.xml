@@ -55,8 +55,7 @@
             <artifactId>kapua-datastore-internal</artifactId>
         </dependency>
         <!-- ElasticsearchDeviceStoreClient#unwrap() escape hatch used directly by DatastoreSteps for bulk test setup - a genuine compile-time need, not a
-             runtime engine choice, so this is deliberately a hard dependency rather than something an assembly opts into. OpenSearch isn't needed here since
-             nothing in this test-support code references it directly; the actual engine used by a given test run is still whatever locator.xml/config picks. -->
+             runtime engine choice, so this is deliberately a hard dependency rather than something an assembly opts into. -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-service-elasticsearch-client-rest-elasticsearch</artifactId>

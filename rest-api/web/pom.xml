@@ -94,11 +94,6 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-service-elasticsearch-client-rest-opensearch</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-registry-internal</artifactId>
         </dependency>
         <dependency>

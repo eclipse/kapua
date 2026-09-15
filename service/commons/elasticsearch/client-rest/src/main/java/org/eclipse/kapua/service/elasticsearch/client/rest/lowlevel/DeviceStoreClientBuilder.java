@@ -20,7 +20,7 @@ import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 
 /**
- * Vendor-agnostic view of the low-level REST client builder, be it the Elasticsearch or the OpenSearch one.
+ * Vendor-agnostic view of the low-level REST client builder, be it the Elasticsearch or another one.
  * <p>
  * The callbacks are expressed in terms of Apache HttpComponents types since both vendors' builders customize the very same underlying HTTP client, unlike
  * {@link DeviceStoreClient}/{@link DeviceStoreClientRequest}/{@link DeviceStoreClientResponse} which each vendor forked into its own package.
@@ -30,7 +30,7 @@ import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializa
 public interface DeviceStoreClientBuilder {
 
     /**
-     * Stable, machine-readable identifier for this vendor (e.g. {@code "elasticsearch"}, {@code "opensearch"}).
+     * Stable, machine-readable identifier for this vendor (e.g. {@code "elasticsearch"}, or for example {@code "opensearch"}).
      * <p>
      * Matched, case-insensitively, against a {@code *.client.engine} setting to pick which implementation to use out of the {@link java.util.Set} of all
      * {@link DeviceStoreClientBuilder}s contributed on the classpath. Unlike {@link #getVendorName()}, this value is a contract other code matches against and

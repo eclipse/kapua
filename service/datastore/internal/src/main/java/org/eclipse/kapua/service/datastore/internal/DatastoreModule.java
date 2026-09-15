@@ -99,7 +99,7 @@ public class DatastoreModule extends AbstractKapuaModule {
                                                           DeviceStoreClientBuilder deviceStoreClientBuilder,
                                                           StorableIdFactory storableIdFactory,
                                                           DatastoreUtils datastoreUtils) {
-        DeviceStoreClientConfiguration esClientConfiguration = TelemetryDeviceStoreClientConfiguration.getInstance(); //For now, opensearch and elasticsearch share the same settings, until their settings that we use in the codebase don't diverge. In that case, we will need to create a new configuration class for opensearch.
+        DeviceStoreClientConfiguration esClientConfiguration = TelemetryDeviceStoreClientConfiguration.getInstance(); //For now, different impls. share the same settings, until their settings that we use in the codebase don't diverge. In that case, we will need to create a new configuration class for implementations different from es.
         return new RestDeviceStoreClientProvider(metricsEsClient, deviceStoreClientBuilder)
                 .withClientConfiguration(esClientConfiguration)
                 .withModelContext(new ModelContextImpl(storableIdFactory, datastoreUtils))

@@ -165,7 +165,7 @@ public enum DatastoreElasticsearchClientSettingsKey implements SettingKey {
     */
     POOL_SIZE("datastore.elasticsearch.pool.size"),
     /**
-     * The search engine the low-level REST client talks to. Either {@code elasticsearch} or {@code opensearch}.
+     * The search engine the low-level REST client talks to. Either {@code elasticsearch} or for example {@code opensearch}.
      *
      * @since 2.1.0
      */

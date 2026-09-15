@@ -47,7 +47,7 @@ import com.google.inject.multibindings.ProvidesIntoSet;
  * (e.g. {@code client-rest-elasticsearch}), since that dependency would run backwards (those modules depend on this one). Two local fakes stand in for
  * "whatever vendor modules happen to be on the classpath".
  * <p>
- * The one non-obvious property under test: two independent "flows" (e.g. Message Store vs. Log Store), each resolving the <em>same</em> engine id from the
+ * The one non-obvious property under test: two independent "flows" (e.g. Message Store vs. other store implementations), each resolving the <em>same</em> engine id from the
  * <em>same</em> shared {@link Set}, must each get their <em>own</em> {@link DeviceStoreClientBuilder} instance - never the same mutable instance - because a
  * real {@link DeviceStoreClientBuilder} implementation is stateful ({@link DeviceStoreClientBuilder#initializeAndSetHosts}). That only holds because a
  * contributing module's {@code @ProvidesIntoSet} method must NOT be scoped as {@code @Singleton}.
