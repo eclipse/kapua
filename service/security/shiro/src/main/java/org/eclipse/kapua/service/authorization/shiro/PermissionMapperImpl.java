@@ -174,6 +174,10 @@ public class PermissionMapperImpl implements PermissionMapper {
 
             boolean implies = super.implies(shiroPermission);
 
+            if (implies && targetPermission.getForwardable()) {
+                implies = this.forwardable;
+            }
+
             // If it fails try forward permission if this Permission is forwardable
             if (!implies && targetPermission.getTargetScopeId() != null && this.getForwardable()) {
                 implies = forwardPermission(shiroPermission);
