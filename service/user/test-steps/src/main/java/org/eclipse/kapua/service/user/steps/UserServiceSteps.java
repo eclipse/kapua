@@ -997,7 +997,9 @@ public class UserServiceSteps extends TestBase {
                             permissionFactory.newPermission(
                                 cucPermission.getDomain(),
                                 cucPermission.getAction(),
-                                MoreObjects.firstNonNull(cucPermission.getTargetScopeId(), account.getId())
+                                MoreObjects.firstNonNull(cucPermission.getTargetScopeId(), account.getId()),
+                                null,
+                                cucPermission.getForwardable()
                             )
                         );
 
@@ -1031,7 +1033,9 @@ public class UserServiceSteps extends TestBase {
                     permissionFactory.newPermission(
                         cucPermission.getDomain(),
                         cucPermission.getAction(),
-                        MoreObjects.firstNonNull(cucPermission.getTargetScopeId(), account.getId())
+                        MoreObjects.firstNonNull(cucPermission.getTargetScopeId(), account.getId()),
+                        null,
+                        cucPermission.getForwardable()
                 );
                 permissions.add(permission);
 

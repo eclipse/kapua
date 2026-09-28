@@ -1466,6 +1466,74 @@ Feature: User Permission tests
     And An exception was thrown
     And I logout
 
+  Scenario: Querying all the accounts of the platform with not forwardable Account:Read permission
+  Login as kapua-sys user and add a new user0 user with the Account:Read permission, not forwardable, to the kapua-sys account.
+  Create a child account subAccount0 and a grandchild account subSubAccount0.
+  Login as user0 and query for all the accounts of the platform (query without scopeId).
+  Since the permission is not forwardable, the accounts must not be returned and the exception must be thrown.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And A generic user
+      | name  | displayName  | email           | phoneNumber     | status  | userType |
+      | user0 | Kapua User 0 | user0@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
+    And I add credentials
+      | name  | password          | enabled |
+      | user0 | ToManySecrets123# | true    |
+    And Add permissions to the last created user
+      | domain  | action | forwardable |
+      | account | read   | false       |
+    And Account
+      | name        | scopeId |
+      | subAccount0 | 1       |
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
+    And Account
+      | name           |
+      | subSubAccount0 |
+    Then I logout
+    When I login as user with name "user0" and password "ToManySecrets123#"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    When I query for all the accounts of the platform
+    Then An exception was thrown
+    And I logout
+
+  Scenario: Querying all the accounts of the platform with forwardable Account:Read permission
+  Login as kapua-sys user and add a new user0 user with the Account:Read permission, forwardable, to the kapua-sys account.
+  Create a child account subAccount0 and a grandchild account subSubAccount0.
+  Login as user0 and query for all the accounts of the platform (query without scopeId).
+  Since the permission is forwardable, kapua-sys and all its direct and indirect child accounts must be returned.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And A generic user
+      | name  | displayName  | email           | phoneNumber     | status  | userType |
+      | user0 | Kapua User 0 | user0@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
+    And I add credentials
+      | name  | password          | enabled |
+      | user0 | ToManySecrets123# | true    |
+    And Add permissions to the last created user
+      | domain  | action | forwardable |
+      | account | read   | true        |
+    And Account
+      | name        | scopeId |
+      | subAccount0 | 1       |
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
+    And Account
+      | name           |
+      | subSubAccount0 |
+    Then I logout
+    When I login as user with name "user0" and password "ToManySecrets123#"
+    And I query for all the accounts of the platform
+    Then No exception was thrown
+    And I find 3 accounts
+    And I logout
+
   @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment

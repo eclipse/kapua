@@ -879,6 +879,20 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
+    @When("I query for all the accounts of the platform")
+    public void queryForAllAccountsOfThePlatform() throws Exception {
+        // A null scopeId means no scope filter: all the accounts of the platform
+        AccountQuery query = accountFactory.newQuery(null);
+        stepData.remove("NumberOfFoundAccounts");
+        try {
+            primeException();
+            AccountListResult accList = accountService.query(query);
+            stepData.put("NumberOfFoundAccounts", accList.getSize());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
     @When("I find {int} account(s)")
     public void iFindAccounts(int numberOfAccounts) {
         int foundAccounts = (int) stepData.get("NumberOfFoundAccounts");
