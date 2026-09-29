@@ -879,6 +879,20 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
+    @When("I find all child accounts recursively of account {string}")
+    public void findChildrenRecursivelyOfAccount(String accountName) throws Exception {
+        // Account lookup is privileged: the permission check under test is the one of findChildrenRecursively
+        Account tmpAccount = KapuaSecurityUtils.doPrivileged(() -> accountService.findByName(accountName));
+        stepData.remove("NumberOfFoundAccounts");
+        try {
+            primeException();
+            AccountListResult accList = accountService.findChildrenRecursively(tmpAccount.getId());
+            stepData.put("NumberOfFoundAccounts", accList.getSize());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
     @When("I query for all the accounts of the platform")
     public void queryForAllAccountsOfThePlatform() throws Exception {
         // A null scopeId means no scope filter: all the accounts of the platform

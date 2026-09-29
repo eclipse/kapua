@@ -49,6 +49,7 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.AccountUpdateRequest;
 import org.eclipse.kapua.service.account.CurrentAccountUpdateRequest;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
@@ -371,16 +372,22 @@ public class AccountServiceImpl
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
 
         return txManager.execute(tx -> {
-            // Check Access
             Account account = accountRepository.find(tx, KapuaId.ANY, scopeId)
                     // Make sure account exists
                     .orElseThrow(() -> new KapuaEntityNotFoundException(Account.TYPE, scopeId));
 
-            // Check access
-            checkAccountPermission(account.getScopeId(), account.getId(), Actions.read, true);
+            AccountListResult childAccounts = accountRepository.findChildAccountsRecursive(tx, account.getParentAccountPath());
+            AccountListResult readableChildAccounts = new AccountListResultImpl();
 
-            // Do find
-            return accountRepository.findChildAccountsRecursive(tx, account.getParentAccountPath());
+            for (Account childAccount : childAccounts.getItems()) {
+                try {
+                    checkAccountPermission(childAccount.getScopeId(), childAccount.getId(), Actions.read, false);
+                    readableChildAccounts.addItem(childAccount);
+                } catch (SubjectUnauthorizedException e) {
+                    // ignore accounts that the user does not have access to
+                }
+            }
+            return readableChildAccounts;
         });
     }
 
