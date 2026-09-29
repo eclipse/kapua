@@ -174,17 +174,33 @@ public class PermissionMapperImpl implements PermissionMapper {
 
             boolean implies = super.implies(shiroPermission);
 
-            if (implies && targetPermission.getForwardable()) {
-                implies = this.forwardable;
-            }
-
-            // If it fails try forward permission if this Permission is forwardable
-            if (!implies && targetPermission.getTargetScopeId() != null && this.getForwardable()) {
-                implies = forwardPermission(shiroPermission);
-            }
+            //shiro does not consider forwardable permissions
+            implies = applyForwardableRules(implies, shiroPermission);
 
             // Return result
             return implies;
+        }
+
+        /**
+         * Shiro does not consider the forwardable flag of the {@link org.eclipse.kapua.service.authorization.permission.Permission} when checking {@link Permission#implies(Permission)}.<br>
+         * So we check them there
+         * @since 2.0.0
+         */
+        private boolean applyForwardableRules(boolean currentImplies, Permission shiroPermission) {
+            org.eclipse.kapua.service.authorization.permission.Permission targetPermission = (org.eclipse.kapua.service.authorization.permission.Permission) shiroPermission;
+
+            if (currentImplies) { //shiro thinks this permission implies the target permission, but we still need to consider forwardable...
+                if (this.getTargetScopeId() != null && //if the target scope id is null, it means that the permission is for all scopes, so no need to check forwardable
+                        targetPermission.getForwardable()) {
+                    return this.forwardable;
+                }
+            } else { //shiro thinks this permission doesn't imply the target permission, but maybe forwardable flag is set, and we can forward this permission to the target scope id
+                if (targetPermission.getTargetScopeId() != null &&
+                        this.getForwardable()) {
+                    return forwardPermission(shiroPermission);
+                }
+            }
+            return currentImplies;
         }
 
         /**
