@@ -379,8 +379,15 @@ public class AccountServiceImpl
                     .orElseThrow(() -> new KapuaEntityNotFoundException(Account.TYPE, scopeId));
 
             AccountListResult childAccounts = accountRepository.findChildAccountsRecursive(tx, account.getParentAccountPath());
-            AccountListResult readableChildAccounts = new AccountListResultImpl();
+            Permission forwardablePermissionOnAccount = accountPermission(account.getScopeId(), account.getId(), Actions.read, true); //If I have this permission on the requested scope, I can read all the children accounts, no need to check each one of them
+            if (authorizationService.isPermitted(forwardablePermissionOnAccount)) {
+                return childAccounts;
+            }
 
+            //filter out accounts the user doesn't have access to
+            //NOTE: in practice, permissions are granted as forwardable=false (this account only) or forwardable=true (all descendants, handled above);
+            //per-child scoping exists in the model but isn't exposed by the console, so it's effectively unused. Next logic is here to handle that case, and it is left here for completeness and future-proofing.
+            AccountListResult readableChildAccounts = new AccountListResultImpl();
             Map<KapuaId, Boolean> permittedByScope = new HashMap<>(); //using the map to cache permission info for sibling accounts / accounts in the same scope
             for (Account child : childAccounts.getItems()) {
                 Permission permission = accountPermission(child.getScopeId(), child.getId(), Actions.read, false);
