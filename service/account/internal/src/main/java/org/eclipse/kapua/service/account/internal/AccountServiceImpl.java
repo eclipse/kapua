@@ -14,6 +14,8 @@
 package org.eclipse.kapua.service.account.internal;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -49,7 +51,7 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.AccountUpdateRequest;
 import org.eclipse.kapua.service.account.CurrentAccountUpdateRequest;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException;
+import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.storage.TxContext;
 import org.eclipse.kapua.storage.TxManager;
@@ -379,14 +381,19 @@ public class AccountServiceImpl
             AccountListResult childAccounts = accountRepository.findChildAccountsRecursive(tx, account.getParentAccountPath());
             AccountListResult readableChildAccounts = new AccountListResultImpl();
 
-            for (Account childAccount : childAccounts.getItems()) {
-                try {
-                    checkAccountPermission(childAccount.getScopeId(), childAccount.getId(), Actions.read, false);
-                    readableChildAccounts.addItem(childAccount);
-                } catch (SubjectUnauthorizedException e) {
-                    // ignore accounts that the user does not have access to
+            Map<KapuaId, Boolean> permittedByScope = new HashMap<>(); //using the map to cache permission info for sibling accounts / accounts in the same scope
+            for (Account child : childAccounts.getItems()) {
+                Permission permission = accountPermission(child.getScopeId(), child.getId(), Actions.read, false);
+                Boolean permitted = permittedByScope.get(permission.getTargetScopeId());
+                if (permitted == null) {
+                    permitted = authorizationService.isPermitted(permission);
+                    permittedByScope.put(permission.getTargetScopeId(), permitted);
+                }
+                if (permitted) {
+                    readableChildAccounts.addItem(child);
                 }
             }
+
             return readableChildAccounts;
         });
     }
@@ -436,12 +443,20 @@ public class AccountServiceImpl
      *         The {@link KapuaId} of the {@link Account} to look for
      */
     private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, Actions action, boolean forwardable) throws KapuaException {
-        if (KapuaSecurityUtils.getSession().getScopeId().equals(accountId)) {
-            // I'm looking for myself, so let's check if I have the correct permission
-            authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, action, accountId, null, forwardable));
-        } else {
-            // I'm looking for another account, so I need to check the permission on the account scope
-            authorizationService.checkPermission(permissionFactory.newPermission(Domains.ACCOUNT, action, scopeId, null, forwardable));
-        }
+        authorizationService.checkPermission(accountPermission(scopeId, accountId, action, forwardable));
+    }
+
+    /**
+     * Builds the {@link Permission} required to access the {@link Account}: if the current session is looking for its own {@link Account}
+     * the {@link Permission} is on the {@link Account} itself, otherwise on the scope that contains the {@link Account}.
+     *
+     * @param scopeId
+     *         The {@link Account#getScopeId()} of the {@link Account} to look for
+     * @param accountId
+     *         The {@link KapuaId} of the {@link Account} to look for
+     */
+    private Permission accountPermission(KapuaId scopeId, KapuaId accountId, Actions action, boolean forwardable) {
+        KapuaId targetScopeId = KapuaSecurityUtils.getSession().getScopeId().equals(accountId) ? accountId : scopeId;
+        return permissionFactory.newPermission(Domains.ACCOUNT, action, targetScopeId, null, forwardable);
     }
 }
