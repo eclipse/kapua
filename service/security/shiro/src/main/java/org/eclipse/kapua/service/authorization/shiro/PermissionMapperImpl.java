@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -89,6 +89,7 @@ public class PermissionMapperImpl implements PermissionMapper {
             result = prime * result + (domain == null ? 0 : domain.hashCode());
             result = prime * result + (targetScopeId == null ? 0 : targetScopeId.hashCode());
             result = prime * result + (groupId == null ? 0 : groupId.hashCode());
+            result = prime * result + Boolean.hashCode(forwardable);
             return result;
         }
 
@@ -105,6 +106,9 @@ public class PermissionMapperImpl implements PermissionMapper {
             }
             KapuaPermission other = (KapuaPermission) obj;
             if (action != other.action) {
+                return false;
+            }
+            if (forwardable != other.forwardable) {
                 return false;
             }
             if (domain == null) {
