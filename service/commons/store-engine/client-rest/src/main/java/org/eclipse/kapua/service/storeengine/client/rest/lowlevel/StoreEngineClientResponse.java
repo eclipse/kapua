@@ -19,7 +19,7 @@ import org.apache.http.HttpEntity;
  *
  * @since 2.1.0
  */
-public interface DeviceStoreClientResponse {
+public interface StoreEngineClientResponse {
 
     int getStatusCode();
 

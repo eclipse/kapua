@@ -40,7 +40,7 @@ import com.google.inject.multibindings.ProvidesIntoSet;
 
 /**
  * Verifies the DI wiring that lets {@code DatastoreModule} (and, symmetrically, a downstream project's own module - e.g. edc-next's {@code DeviceLogstoreModule})
- * pick a {@link DeviceStoreClientBuilder} out of a Guice-multibound {@link Set}, by {@link DeviceStoreClientBuilder#getId()} - instead of hardcoding a concrete
+ * pick a {@link StoreEngineClientBuilder} out of a Guice-multibound {@link Set}, by {@link StoreEngineClientBuilder#getId()} - instead of hardcoding a concrete
  * vendor class.
  * <p>
  * This lives in {@code client-rest} - the module owning {@link DeviceStoreClientBuilderLocator} - and deliberately does NOT depend on any real vendor module
@@ -48,24 +48,24 @@ import com.google.inject.multibindings.ProvidesIntoSet;
  * "whatever vendor modules happen to be on the classpath".
  * <p>
  * The one non-obvious property under test: two independent "flows" (e.g. Message Store vs. other store implementations), each resolving the <em>same</em> engine id from the
- * <em>same</em> shared {@link Set}, must each get their <em>own</em> {@link DeviceStoreClientBuilder} instance - never the same mutable instance - because a
- * real {@link DeviceStoreClientBuilder} implementation is stateful ({@link DeviceStoreClientBuilder#initializeAndSetHosts}). That only holds because a
+ * <em>same</em> shared {@link Set}, must each get their <em>own</em> {@link StoreEngineClientBuilder} instance - never the same mutable instance - because a
+ * real {@link StoreEngineClientBuilder} implementation is stateful ({@link StoreEngineClientBuilder#initializeAndSetHosts}). That only holds because a
  * contributing module's {@code @ProvidesIntoSet} method must NOT be scoped as {@code @Singleton}.
  */
 @Category(JUnitTests.class)
-public class DeviceStoreClientBuilderSetBindingTest {
+public class StoreEngineClientBuilderSetBindingTest {
 
-    private static final Key<Set<DeviceStoreClientBuilder>> DEVICE_STORE_CLIENT_BUILDER_SET_KEY = Key.get(new TypeLiteral<Set<DeviceStoreClientBuilder>>() {
+    private static final Key<Set<StoreEngineClientBuilder>> DEVICE_STORE_CLIENT_BUILDER_SET_KEY = Key.get(new TypeLiteral<Set<StoreEngineClientBuilder>>() {
     });
 
     /**
      * Stands in for a real vendor implementation (e.g. {@code ElasticsearchDeviceStoreClientBuilder}): only {@link #getId()} matters for these tests.
      */
-    private static class FakeDeviceStoreClientBuilder implements DeviceStoreClientBuilder {
+    private static class FakeStoreEngineClientBuilder implements StoreEngineClientBuilder {
 
         private final String id;
 
-        FakeDeviceStoreClientBuilder(String id) {
+        FakeStoreEngineClientBuilder(String id) {
             this.id = id;
         }
 
@@ -80,29 +80,29 @@ public class DeviceStoreClientBuilderSetBindingTest {
         }
 
         @Override
-        public DeviceStoreClientBuilder initializeAndSetHosts(HttpHost[] hosts) {
+        public StoreEngineClientBuilder initializeAndSetHosts(HttpHost[] hosts) {
             throw new UnsupportedOperationException("not needed by this test");
         }
 
         @Override
-        public DeviceStoreClientBuilder setHttpClientConfigCallback(UnaryOperator<HttpAsyncClientBuilder> callback) {
+        public StoreEngineClientBuilder setHttpClientConfigCallback(UnaryOperator<HttpAsyncClientBuilder> callback) {
             throw new UnsupportedOperationException("not needed by this test");
         }
 
         @Override
-        public DeviceStoreClientBuilder setRequestConfigCallback(UnaryOperator<RequestConfig.Builder> callback) {
+        public StoreEngineClientBuilder setRequestConfigCallback(UnaryOperator<RequestConfig.Builder> callback) {
             throw new UnsupportedOperationException("not needed by this test");
         }
 
         @Override
-        public DeviceStoreClient build() {
+        public StoreEngineClient build() {
             throw new UnsupportedOperationException("not needed by this test");
         }
     }
 
     /**
      * Stands in for a real vendor's {@code *BuilderModule} (e.g. {@code ElasticsearchDeviceStoreClientBuilderModule}): contributes a fresh
-     * {@link FakeDeviceStoreClientBuilder} into the {@link Set} on every resolution - deliberately not {@code @Singleton}.
+     * {@link FakeStoreEngineClientBuilder} into the {@link Set} on every resolution - deliberately not {@code @Singleton}.
      */
     private static class FirstFakeBuilderModule extends AbstractKapuaModule {
 
@@ -113,8 +113,8 @@ public class DeviceStoreClientBuilderSetBindingTest {
         }
 
         @ProvidesIntoSet
-        DeviceStoreClientBuilder fakeBuilder() {
-            return new FakeDeviceStoreClientBuilder(ID);
+        StoreEngineClientBuilder fakeBuilder() {
+            return new FakeStoreEngineClientBuilder(ID);
         }
     }
 
@@ -127,8 +127,8 @@ public class DeviceStoreClientBuilderSetBindingTest {
         }
 
         @ProvidesIntoSet
-        DeviceStoreClientBuilder fakeBuilder() {
-            return new FakeDeviceStoreClientBuilder(ID);
+        StoreEngineClientBuilder fakeBuilder() {
+            return new FakeStoreEngineClientBuilder(ID);
         }
     }
 
@@ -136,21 +136,21 @@ public class DeviceStoreClientBuilderSetBindingTest {
     public void bothContributedBuildersAppearInTheSharedSetWithTheExpectedIds() {
         Injector injector = Guice.createInjector(new FirstFakeBuilderModule(), new SecondFakeBuilderModule());
 
-        Set<DeviceStoreClientBuilder> available = injector.getInstance(DEVICE_STORE_CLIENT_BUILDER_SET_KEY);
+        Set<StoreEngineClientBuilder> available = injector.getInstance(DEVICE_STORE_CLIENT_BUILDER_SET_KEY);
 
         Assertions.assertThat(available).hasSize(2);
         Assertions.assertThat(available)
-                .extracting(DeviceStoreClientBuilder::getId)
+                .extracting(StoreEngineClientBuilder::getId)
                 .containsExactlyInAnyOrder(FirstFakeBuilderModule.ID, SecondFakeBuilderModule.ID);
     }
 
     @Test
     public void locateResolvesTheMatchingBuilderCaseInsensitively() {
-        DeviceStoreClientBuilder first = new FakeDeviceStoreClientBuilder(FirstFakeBuilderModule.ID);
-        DeviceStoreClientBuilder second = new FakeDeviceStoreClientBuilder(SecondFakeBuilderModule.ID);
-        Set<DeviceStoreClientBuilder> candidates = new HashSet<>(Arrays.asList(first, second));
+        StoreEngineClientBuilder first = new FakeStoreEngineClientBuilder(FirstFakeBuilderModule.ID);
+        StoreEngineClientBuilder second = new FakeStoreEngineClientBuilder(SecondFakeBuilderModule.ID);
+        Set<StoreEngineClientBuilder> candidates = new HashSet<>(Arrays.asList(first, second));
 
-        DeviceStoreClientBuilder picked = new DeviceStoreClientBuilderLocator().locate("Fake-Second", candidates);
+        StoreEngineClientBuilder picked = new DeviceStoreClientBuilderLocator().locate("Fake-Second", candidates);
 
         Assertions.assertThat(picked).isSameAs(second);
     }
@@ -172,20 +172,20 @@ public class DeviceStoreClientBuilderSetBindingTest {
                     @Provides
                     @Singleton
                     @Named("messageStore")
-                    DeviceStoreClientBuilder messageStoreBuilder(Set<DeviceStoreClientBuilder> availableDeviceStoreClientBuilders, DeviceStoreClientBuilderLocator locator) {
+                    StoreEngineClientBuilder messageStoreBuilder(Set<StoreEngineClientBuilder> availableDeviceStoreClientBuilders, DeviceStoreClientBuilderLocator locator) {
                         return locator.locate(FirstFakeBuilderModule.ID, availableDeviceStoreClientBuilders);
                     }
 
                     @Provides
                     @Singleton
                     @Named("logStore")
-                    DeviceStoreClientBuilder logStoreBuilder(Set<DeviceStoreClientBuilder> availableDeviceStoreClientBuilders, DeviceStoreClientBuilderLocator locator) {
+                    StoreEngineClientBuilder logStoreBuilder(Set<StoreEngineClientBuilder> availableDeviceStoreClientBuilders, DeviceStoreClientBuilderLocator locator) {
                         return locator.locate(FirstFakeBuilderModule.ID, availableDeviceStoreClientBuilders);
                     }
                 });
 
-        DeviceStoreClientBuilder messageStoreBuilder = injector.getInstance(Key.get(DeviceStoreClientBuilder.class, Names.named("messageStore")));
-        DeviceStoreClientBuilder logStoreBuilder = injector.getInstance(Key.get(DeviceStoreClientBuilder.class, Names.named("logStore")));
+        StoreEngineClientBuilder messageStoreBuilder = injector.getInstance(Key.get(StoreEngineClientBuilder.class, Names.named("messageStore")));
+        StoreEngineClientBuilder logStoreBuilder = injector.getInstance(Key.get(StoreEngineClientBuilder.class, Names.named("logStore")));
 
         // Both flows chose the same engine id ...
         Assertions.assertThat(messageStoreBuilder.getId()).isEqualTo(FirstFakeBuilderModule.ID);
@@ -194,7 +194,7 @@ public class DeviceStoreClientBuilderSetBindingTest {
         Assertions.assertThat(messageStoreBuilder).isNotSameAs(logStoreBuilder);
 
         // Within a single flow, the @Singleton on the resolving method still means repeated lookups return the same cached instance.
-        DeviceStoreClientBuilder messageStoreBuilderAgain = injector.getInstance(Key.get(DeviceStoreClientBuilder.class, Names.named("messageStore")));
+        StoreEngineClientBuilder messageStoreBuilderAgain = injector.getInstance(Key.get(StoreEngineClientBuilder.class, Names.named("messageStore")));
         Assertions.assertThat(messageStoreBuilderAgain).isSameAs(messageStoreBuilder);
     }
 }

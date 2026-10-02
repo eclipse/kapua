@@ -46,7 +46,7 @@ import org.eclipse.kapua.service.storeengine.client.DeviceStoreClientProvider;
 import org.eclipse.kapua.service.storeengine.client.configuration.DeviceStoreClientConfiguration;
 import org.eclipse.kapua.service.storeengine.client.rest.MetricsEsClient;
 import org.eclipse.kapua.service.storeengine.client.rest.RestDeviceStoreClientProvider;
-import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClientBuilder;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientBuilder;
 import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClientBuilderLocator;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
 
@@ -88,19 +88,19 @@ public class DatastoreModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    DeviceStoreClientBuilder lowLevelSearchClientBuilder(Set<DeviceStoreClientBuilder> availableDeviceStoreClientBuilders, DeviceStoreClientBuilderLocator deviceStoreClientBuilderLocator) {
+    StoreEngineClientBuilder lowLevelSearchClientBuilder(Set<StoreEngineClientBuilder> availableStoreEngineClientBuilders, DeviceStoreClientBuilderLocator deviceStoreClientBuilderLocator) {
         String engine = DeviceStoreClientSettings.getInstance().getString(DatastoreElasticsearchClientSettingsKey.CLIENT_ENGINE, "elasticsearch");
-        return deviceStoreClientBuilderLocator.locate(engine, availableDeviceStoreClientBuilders);
+        return deviceStoreClientBuilderLocator.locate(engine, availableStoreEngineClientBuilders);
     }
 
     @Provides
     @Singleton
     DeviceStoreClientProvider elasticsearchClientProvider(MetricsEsClient metricsEsClient,
-                                                          DeviceStoreClientBuilder deviceStoreClientBuilder,
+                                                          StoreEngineClientBuilder storeEngineClientBuilder,
                                                           StorableIdFactory storableIdFactory,
                                                           DatastoreUtils datastoreUtils) {
         DeviceStoreClientConfiguration esClientConfiguration = TelemetryDeviceStoreClientConfiguration.getInstance(); //For now, different impls. share the same settings, until their settings that we use in the codebase don't diverge. In that case, we will need to create a new configuration class for implementations different from es.
-        return new RestDeviceStoreClientProvider(metricsEsClient, deviceStoreClientBuilder)
+        return new RestDeviceStoreClientProvider(metricsEsClient, storeEngineClientBuilder)
                 .withClientConfiguration(esClientConfiguration)
                 .withModelContext(new ModelContextImpl(storableIdFactory, datastoreUtils))
                 .withModelConverter(new QueryConverterImpl());

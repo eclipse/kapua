@@ -44,9 +44,9 @@ import org.eclipse.kapua.service.storeengine.client.model.UpdateRequest;
 import org.eclipse.kapua.service.storeengine.client.model.UpdateResponse;
 import org.eclipse.kapua.service.storeengine.client.rest.exception.RequestEntityWriteError;
 import org.eclipse.kapua.service.storeengine.client.rest.exception.ResponseEntityReadError;
-import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClient;
-import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClientRequest;
-import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClientResponse;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClient;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientRequest;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientResponse;
 import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.LowLevelSearchResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,11 +67,11 @@ import java.util.concurrent.TimeoutException;
  *
  * @since 1.0.0
  */
-public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<DeviceStoreClient> {
+public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<StoreEngineClient> {
 
     private static final Logger LOG = LoggerFactory.getLogger(RestDeviceStoreClientWrapper.class);
 
-    private DeviceStoreClient wrappedClient;
+    private StoreEngineClient wrappedClient;
     private DeviceStoreClientConfiguration clientConfiguration;
     private ModelContext modelContext;
     private QueryConverter modelConverter;
@@ -124,12 +124,12 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
     // ------- BUILDER METHODS - START
 
     @Override
-    public DeviceStoreClient getClient() {
+    public StoreEngineClient getClient() {
         return this.wrappedClient;
     }
 
     @Override
-    public DeviceStoreClientWrapper<DeviceStoreClient> withClient(DeviceStoreClient client) {
+    public DeviceStoreClientWrapper<StoreEngineClient> withClient(StoreEngineClient client) {
        this.wrappedClient = client;
        return this;
     }
@@ -140,7 +140,7 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
     }
 
     @Override
-    public DeviceStoreClientWrapper<DeviceStoreClient> withClientConfiguration(DeviceStoreClientConfiguration clientConfiguration) {
+    public DeviceStoreClientWrapper<StoreEngineClient> withClientConfiguration(DeviceStoreClientConfiguration clientConfiguration) {
         this.clientConfiguration = clientConfiguration;
         return this;
     }
@@ -151,7 +151,7 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
     }
 
     @Override
-    public DeviceStoreClientWrapper<DeviceStoreClient> withModelContext(ModelContext modelContext) {
+    public DeviceStoreClientWrapper<StoreEngineClient> withModelContext(ModelContext modelContext) {
         this.modelContext = modelContext;
         return this;
     }
@@ -162,7 +162,7 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
     }
 
     @Override
-    public DeviceStoreClientWrapper<DeviceStoreClient> withModelConverter(QueryConverter modelConverter) {
+    public DeviceStoreClientWrapper<StoreEngineClient> withModelConverter(QueryConverter modelConverter) {
         this.modelConverter = modelConverter;
         return this;
     }
@@ -175,9 +175,9 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
         LOG.debug("Insert - converted object: '{}'", insertRequestStorableMap);
 
         String json = writeRequestFromMap(insertRequestStorableMap);
-        DeviceStoreClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_PUT, ElasticsearchResourcePaths.insertType(insertRequest));
+        StoreEngineClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_PUT, ElasticsearchResourcePaths.insertType(insertRequest));
         request.setJsonEntity(json);
-        DeviceStoreClientResponse insertResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), insertRequest.getIndex(), "INSERT");
+        StoreEngineClientResponse insertResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), insertRequest.getIndex(), "INSERT");
 
         if (isRequestSuccessful(insertResponse)) {
             JsonNode responseNode = readResponseAsJsonNode(insertResponse);
@@ -200,9 +200,9 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
         LOG.debug("Upsert - converted object: '{}'", updateRequestMap);
 
         String json = writeRequestFromMap(updateRequestMap);
-        DeviceStoreClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.upsert(updateRequest.getIndex(), updateRequest.getId()));
+        StoreEngineClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.upsert(updateRequest.getIndex(), updateRequest.getId()));
         request.setJsonEntity(json);
-        DeviceStoreClientResponse updateResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), updateRequest.getIndex(), "UPSERT");
+        StoreEngineClientResponse updateResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), updateRequest.getIndex(), "UPSERT");
 
         if (isRequestSuccessful(updateResponse)) {
             JsonNode responseNode = readResponseAsJsonNode(updateResponse);
@@ -232,9 +232,9 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
             bulkOperation.append(writeRequestFromMap(storableMap));
             bulkOperation.append(", \"doc_as_upsert\": true }\n");
         }
-        DeviceStoreClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.getBulkPath());
+        StoreEngineClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.getBulkPath());
         request.setJsonEntity(bulkOperation.toString());
-        DeviceStoreClientResponse updateResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), "multi-index", "UPSERT BULK");
+        StoreEngineClientResponse updateResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), "multi-index", "UPSERT BULK");
 
         if (isRequestSuccessful(updateResponse)) {
             JsonNode responseNode = readResponseAsJsonNode(updateResponse);
@@ -296,9 +296,9 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
         ArrayNode resultsNode = null;
         String totalRelation = null;
 
-        DeviceStoreClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.search(index));
+        StoreEngineClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.search(index));
         request.setJsonEntity(json);
-        DeviceStoreClientResponse queryResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "QUERY");
+        StoreEngineClientResponse queryResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "QUERY");
 
         if (isRequestSuccessful(queryResponse)) {
             JsonNode responseNode = readResponseAsJsonNode(queryResponse);
@@ -343,9 +343,9 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
         LOG.debug(COUNT_CONVERTED_QUERY, queryJsonNode);
 
         String json = writeRequestFromJsonNode(queryJsonNode);
-        DeviceStoreClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.count(index));
+        StoreEngineClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.count(index));
         request.setJsonEntity(json);
-        DeviceStoreClientResponse queryResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "COUNT");
+        StoreEngineClientResponse queryResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "COUNT");
 
         long totalCount = 0;
         if (isRequestSuccessful(queryResponse)) {
@@ -365,8 +365,8 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
     @Override
     public void delete(String index, String id) throws ClientException {
         LOG.debug("Delete - id: '{}'", id);
-        DeviceStoreClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_DELETE, ElasticsearchResourcePaths.id(index, id));
-        DeviceStoreClientResponse deleteResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, ElasticsearchKeywords.ACTION_DELETE);
+        StoreEngineClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_DELETE, ElasticsearchResourcePaths.id(index, id));
+        StoreEngineClientResponse deleteResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, ElasticsearchKeywords.ACTION_DELETE);
 
         if (!isRequestSuccessful(deleteResponse) &&
                 !isRequestNotFound(deleteResponse)) {
@@ -381,9 +381,9 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
         LOG.debug(QUERY_CONVERTED_QUERY, queryJsonNode);
 
         String json = writeRequestFromJsonNode(queryJsonNode);
-        DeviceStoreClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.deleteByQuery(index));
+        StoreEngineClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.deleteByQuery(index));
         request.setJsonEntity(json);
-        DeviceStoreClientResponse deleteResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "DELETE BY QUERY");
+        StoreEngineClientResponse deleteResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "DELETE BY QUERY");
 
         if (!isRequestSuccessful(deleteResponse) &&
                 isRequestCauseOfConcern(deleteResponse)) {
@@ -394,8 +394,8 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
     @Override
     public IndexResponse isIndexExists(IndexRequest indexRequest) throws ClientException {
         LOG.debug("Index exists - index name: '{}'", indexRequest.getIndex());
-        DeviceStoreClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_HEAD, ElasticsearchResourcePaths.index(indexRequest.getIndex()));
-        DeviceStoreClientResponse isIndexExistsResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), indexRequest.getIndex(), "INDEX EXIST");
+        StoreEngineClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_HEAD, ElasticsearchResourcePaths.index(indexRequest.getIndex()));
+        StoreEngineClientResponse isIndexExistsResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), indexRequest.getIndex(), "INDEX EXIST");
 
         if (isRequestSuccessful(isIndexExistsResponse)) {
             return new IndexResponse(true);
@@ -409,9 +409,9 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
     @Override
     public IndexResponse findIndexes(IndexRequest indexRequest) throws ClientException {
         LOG.debug("Find indexes - index prefix: '{}'", indexRequest.getIndex());
-        DeviceStoreClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.findIndex(indexRequest.getIndex()));
+        StoreEngineClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.findIndex(indexRequest.getIndex()));
         request.addParameter("pretty", "true");
-        DeviceStoreClientResponse findIndexResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), indexRequest.getIndex(), "INDEX EXIST");
+        StoreEngineClientResponse findIndexResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), indexRequest.getIndex(), "INDEX EXIST");
 
         if (isRequestSuccessful(findIndexResponse)) {
             try {
@@ -431,9 +431,9 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
         LOG.debug("Create index - object: '{}'", indexSettings);
 
         String json = writeRequestFromJsonNode(indexSettings);
-        DeviceStoreClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_PUT, ElasticsearchResourcePaths.index(indexName));
+        StoreEngineClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_PUT, ElasticsearchResourcePaths.index(indexName));
         request.setJsonEntity(json);
-        DeviceStoreClientResponse createIndexResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), indexName, "CREATE INDEX");
+        StoreEngineClientResponse createIndexResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), indexName, "CREATE INDEX");
 
         if (!isRequestSuccessful(createIndexResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Create index", createIndexResponse);
@@ -443,8 +443,8 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
     @Override
     public boolean isMappingExists(String index) throws ClientException {
         LOG.debug("Mapping exists - mapping name: '{}'", index);
-        DeviceStoreClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.mapping(index));
-        DeviceStoreClientResponse isMappingExistsResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "MAPPING EXIST");
+        StoreEngineClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.mapping(index));
+        StoreEngineClientResponse isMappingExistsResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "MAPPING EXIST");
 
         if (isRequestSuccessful(isMappingExistsResponse)) {
             return true;
@@ -460,9 +460,9 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
         LOG.debug("Create mapping - object: '{}, index: {}", mapping, index);
 
         String json = writeRequestFromJsonNode(mapping);
-        DeviceStoreClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_PUT, ElasticsearchResourcePaths.mapping(index));
+        StoreEngineClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_PUT, ElasticsearchResourcePaths.mapping(index));
         request.setJsonEntity(json);
-        DeviceStoreClientResponse createMappingResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "PUT MAPPING");
+        StoreEngineClientResponse createMappingResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "PUT MAPPING");
 
         if (!isRequestSuccessful(createMappingResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Create mapping", createMappingResponse);
@@ -472,8 +472,8 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
     @Override
     public void refreshAllIndexes() throws ClientException {
         LOG.debug("Refresh all indexes");
-        DeviceStoreClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.refreshAllIndexes());
-        DeviceStoreClientResponse refreshIndexResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), ElasticsearchKeywords.INDEX_ALL, "REFRESH INDEX");
+        StoreEngineClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.refreshAllIndexes());
+        StoreEngineClientResponse refreshIndexResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), ElasticsearchKeywords.INDEX_ALL, "REFRESH INDEX");
 
         if (!isRequestSuccessful(refreshIndexResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Refresh all indexes", refreshIndexResponse);
@@ -482,8 +482,8 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
 
     public void refreshIndex(String index) throws ClientException {
         LOG.debug("Refresh index: {}", index);
-        DeviceStoreClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.refreshIndex(index));
-        DeviceStoreClientResponse refreshIndexResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "REFRESH INDEX");
+        StoreEngineClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.refreshIndex(index));
+        StoreEngineClientResponse refreshIndexResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), index, "REFRESH INDEX");
 
         if (!isRequestSuccessful(refreshIndexResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Refresh indexes", refreshIndexResponse);
@@ -493,8 +493,8 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
     @Override
     public void deleteAllIndexes() throws ClientException {
         LOG.debug("Delete all indexes");
-        DeviceStoreClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_DELETE, ElasticsearchResourcePaths.index("_all"));
-        DeviceStoreClientResponse deleteIndexResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), ElasticsearchKeywords.INDEX_ALL, "DELETE INDEX");
+        StoreEngineClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_DELETE, ElasticsearchResourcePaths.index("_all"));
+        StoreEngineClientResponse deleteIndexResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), ElasticsearchKeywords.INDEX_ALL, "DELETE INDEX");
 
         if (!isRequestSuccessful(deleteIndexResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Delete all indexes", deleteIndexResponse);
@@ -506,8 +506,8 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
         LOG.debug("Delete indexes");
         for (String index : indexes) {
             LOG.debug("Delete index: {}", index);
-            DeviceStoreClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_DELETE, ElasticsearchResourcePaths.index(index));
-            DeviceStoreClientResponse deleteIndexResponse = restCallTimeoutHandler(() -> {
+            StoreEngineClientRequest request = getClient().newRequest(ElasticsearchKeywords.ACTION_DELETE, ElasticsearchResourcePaths.index(index));
+            StoreEngineClientResponse deleteIndexResponse = restCallTimeoutHandler(() -> {
                 LOG.debug("Deleting index: {}", index);
                 return getClient().performRequest(request);
             }, index, "DELETE INDEX");
@@ -524,7 +524,7 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
         }
     }
 
-    private DeviceStoreClientResponse restCallTimeoutHandler(Callable<DeviceStoreClientResponse> restAction, String index, String operationName) throws ClientException {
+    private StoreEngineClientResponse restCallTimeoutHandler(Callable<StoreEngineClientResponse> restAction, String index, String operationName) throws ClientException {
         int retryCount = 0;
         try {
             do {
@@ -558,13 +558,13 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
     }
 
     /**
-     * Checks if the given {@link DeviceStoreClientResponse#getStatusCode()} is a HTTP 2xx code.
+     * Checks if the given {@link StoreEngineClientResponse#getStatusCode()} is a HTTP 2xx code.
      *
-     * @param response The {@link DeviceStoreClientResponse} to check.
-     * @return {@code true} if {@link DeviceStoreClientResponse#getStatusCode()} is a 2xx HTTP code, {@code false} otherwise.
+     * @param response The {@link StoreEngineClientResponse} to check.
+     * @return {@code true} if {@link StoreEngineClientResponse#getStatusCode()} is a 2xx HTTP code, {@code false} otherwise.
      * @since 1.0.0
      */
-    private boolean isRequestSuccessful(@NotNull DeviceStoreClientResponse response) {
+    private boolean isRequestSuccessful(@NotNull StoreEngineClientResponse response) {
         return isRequestSuccessful(response.getStatusCode());
     }
 
@@ -580,13 +580,13 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
     }
 
     /**
-     * Checks if the given {@link DeviceStoreClientResponse#getStatusCode()} is a HTTP 400 code.
+     * Checks if the given {@link StoreEngineClientResponse#getStatusCode()} is a HTTP 400 code.
      *
-     * @param response The {@link DeviceStoreClientResponse} to check.
-     * @return {@code true} if {@link DeviceStoreClientResponse#getStatusCode()} is a 400 HTTP code, {@code false} otherwise.
+     * @param response The {@link StoreEngineClientResponse} to check.
+     * @return {@code true} if {@link StoreEngineClientResponse#getStatusCode()} is a 400 HTTP code, {@code false} otherwise.
      * @since 1.3.0
      */
-    private boolean isRequestBadRequest(@NotNull DeviceStoreClientResponse response) {
+    private boolean isRequestBadRequest(@NotNull StoreEngineClientResponse response) {
         return isRequestBadRequest(response.getStatusCode());
     }
 
@@ -603,13 +603,13 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
 
 
     /**
-     * Checks if the given {@link DeviceStoreClientResponse#getStatusCode()} is a HTTP 404 code.
+     * Checks if the given {@link StoreEngineClientResponse#getStatusCode()} is a HTTP 404 code.
      *
-     * @param response The {@link DeviceStoreClientResponse} to check.
-     * @return {@code true} if {@link DeviceStoreClientResponse#getStatusCode()} is a 404 HTTP code, {@code false} otherwise.
+     * @param response The {@link StoreEngineClientResponse} to check.
+     * @return {@code true} if {@link StoreEngineClientResponse#getStatusCode()} is a 404 HTTP code, {@code false} otherwise.
      * @since 1.3.0
      */
-    private boolean isRequestNotFound(@NotNull DeviceStoreClientResponse response) {
+    private boolean isRequestNotFound(@NotNull StoreEngineClientResponse response) {
         return isRequestNotFound(response.getStatusCode());
     }
 
@@ -624,7 +624,7 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
         return (404 == responseCode);
     }
 
-    private boolean isRequestNotParsed(@NotNull DeviceStoreClientResponse response) throws ClientException {
+    private boolean isRequestNotParsed(@NotNull StoreEngineClientResponse response) throws ClientException {
         JsonNode responseNode = readResponseAsJsonNode(response);
         return responseNode.path("error").path("type").asText().equals("parsing_exception");
     }
@@ -636,7 +636,7 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
      * @return {@code false} iff the above condition holds, case in which we don't want to propagate an exception
      * @since 2.1.0
      */
-    private boolean isRequestCauseOfConcern(@NotNull DeviceStoreClientResponse response) throws ClientException {
+    private boolean isRequestCauseOfConcern(@NotNull StoreEngineClientResponse response) throws ClientException {
         if (isRequestBadRequest(response)) {
             return isRequestNotParsed(response);
         } else {
@@ -645,18 +645,18 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<De
     }
 
     /**
-     * Builds a {@link ClientActionResponseException} from the {@link DeviceStoreClientResponse} trying to get the reason from it.
+     * Builds a {@link ClientActionResponseException} from the {@link StoreEngineClientResponse} trying to get the reason from it.
      *
      * @param action   The action that was performed
-     * @param response The {@link DeviceStoreClientResponse} from Elasticsearch
+     * @param response The {@link StoreEngineClientResponse} from Elasticsearch
      * @return The {@link ClientActionResponseException} to throw.
      * @since 1.3.0
      */
-    private ClientException buildExceptionFromUnsuccessfulResponse(@NotNull String action, @NotNull DeviceStoreClientResponse response) {
+    private ClientException buildExceptionFromUnsuccessfulResponse(@NotNull String action, @NotNull StoreEngineClientResponse response) {
         return new ClientActionResponseException(action, response.getReasonPhrase(), String.valueOf(response.getStatusCode()));
     }
 
-    private JsonNode readResponseAsJsonNode(@NotNull DeviceStoreClientResponse response) throws ResponseEntityReadError {
+    private JsonNode readResponseAsJsonNode(@NotNull StoreEngineClientResponse response) throws ResponseEntityReadError {
         try {
             return objectMapper.readTree(EntityUtils.toString(response.getEntity()));
         } catch (IOException e) {

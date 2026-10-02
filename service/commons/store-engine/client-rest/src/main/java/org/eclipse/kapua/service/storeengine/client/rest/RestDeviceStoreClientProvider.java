@@ -44,8 +44,8 @@ import org.eclipse.kapua.service.storeengine.client.configuration.ElasticsearchN
 import org.eclipse.kapua.service.storeengine.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientProviderInitException;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientUnavailableException;
-import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClient;
-import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClientBuilder;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClient;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientBuilder;
 import org.eclipse.kapua.service.storeengine.client.utils.InetAddressParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,21 +86,21 @@ public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<
     private ModelContext modelContext;
     private QueryConverter modelConverter;
     private MetricsEsClient metrics;
-    private final DeviceStoreClientBuilder deviceStoreClientBuilder;
+    private final StoreEngineClientBuilder storeEngineClientBuilder;
     private volatile boolean initialized;
     private volatile boolean closed = true;
     private AtomicInteger nextClientIndex = new AtomicInteger(0);
 
     @Inject
-    public RestDeviceStoreClientProvider(MetricsEsClient metricsEsClient, DeviceStoreClientBuilder deviceStoreClientBuilder) {
+    public RestDeviceStoreClientProvider(MetricsEsClient metricsEsClient, StoreEngineClientBuilder storeEngineClientBuilder) {
         this.metrics = metricsEsClient;
-        this.deviceStoreClientBuilder = deviceStoreClientBuilder;
+        this.storeEngineClientBuilder = storeEngineClientBuilder;
     }
 
     @Override
     public RestDeviceStoreClientProvider init() throws ClientProviderInitException {
         if (!closed) {
-            LOG.warn(deviceStoreClientBuilder.getVendorName() + " Elasticsearch rest client provider: closing the pool failed at a previous stage, trying to close before init.");
+            LOG.warn(storeEngineClientBuilder.getVendorName() + " Elasticsearch rest client provider: closing the pool failed at a previous stage, trying to close before init.");
             close();
         }
         if (initialized && closed) {
@@ -129,7 +129,7 @@ public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<
                             .create()
                             .withLogger(LOG)
                             .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
-                            .withTitle(deviceStoreClientBuilder.getVendorName() + " REST Provider Configuration")
+                            .withTitle(storeEngineClientBuilder.getVendorName() + " REST Provider Configuration")
                             .addParameter("Module Name", getClientConfiguration().getModuleName())
                             .addParameter("Cluster Name", getClientConfiguration().getClusterName());
 
@@ -208,7 +208,7 @@ public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<
     /**
      * Closes the {@link RestDeviceStoreClientProvider}.
      * <p>
-     * It takes care of closing the {@link DeviceStoreClient}.
+     * It takes care of closing the {@link StoreEngineClient}.
      *
      * @since 1.0.0
      */
@@ -225,11 +225,11 @@ public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<
     }
 
     /**
-     * Closes the {@link DeviceStoreClient} pool.
+     * Closes the {@link StoreEngineClient} pool.
      * <p>
      *
      * @throws IOException
-     *         see {@link DeviceStoreClient#close()} javadoc.
+     *         see {@link StoreEngineClient#close()} javadoc.
      * @since 2.0.0
      */
     private void closeClientPool() throws IOException {
@@ -288,11 +288,11 @@ public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<
 //    }
 
     /**
-     * Initializes the {@link DeviceStoreClient} pool as per {@link DeviceStoreClientConfiguration}.
+     * Initializes the {@link StoreEngineClient} pool as per {@link DeviceStoreClientConfiguration}.
      *
-     * @return The initialized {@link DeviceStoreClient} pool.
+     * @return The initialized {@link StoreEngineClient} pool.
      * @throws ClientInitializationException
-     *         if any {@link Exception} occurs while {@link DeviceStoreClient} initialization.
+     *         if any {@link Exception} occurs while {@link StoreEngineClient} initialization.
      * @since 2.0.0
      */
     private void initClientPool(int poolSize) throws ClientInitializationException {
@@ -356,7 +356,7 @@ public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<
             throw new ClientInitializationException(e, "Error while parsing node addresses!");
         }
 
-        DeviceStoreClientBuilder restClientBuilder = deviceStoreClientBuilder.initializeAndSetHosts(hosts.toArray(new HttpHost[0]));
+        StoreEngineClientBuilder restClientBuilder = storeEngineClientBuilder.initializeAndSetHosts(hosts.toArray(new HttpHost[0]));
         SSLContext sslContext = null;
         if (sslEnabled) {
             try {
@@ -390,7 +390,7 @@ public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<
                     return requestConfigBuilder;
                 });
 
-        DeviceStoreClient esRestClientWrapped;
+        StoreEngineClient esRestClientWrapped;
         esRestClientWrapped = restClientBuilder.build();
 
         // Create Client Wrapper

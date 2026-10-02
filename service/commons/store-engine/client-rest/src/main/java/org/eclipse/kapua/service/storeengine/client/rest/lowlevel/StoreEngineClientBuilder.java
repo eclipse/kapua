@@ -23,17 +23,17 @@ import org.eclipse.kapua.service.storeengine.client.exception.ClientInitializati
  * Vendor-agnostic view of the low-level REST client builder, be it the Elasticsearch or another one.
  * <p>
  * The callbacks are expressed in terms of Apache HttpComponents types since both vendors' builders customize the very same underlying HTTP client, unlike
- * {@link DeviceStoreClient}/{@link DeviceStoreClientRequest}/{@link DeviceStoreClientResponse} which each vendor forked into its own package.
+ * {@link StoreEngineClient}/{@link StoreEngineClientRequest}/{@link StoreEngineClientResponse} which each vendor forked into its own package.
  *
  * @since 2.1.0
  */
-public interface DeviceStoreClientBuilder {
+public interface StoreEngineClientBuilder {
 
     /**
      * Stable, machine-readable identifier for this vendor (e.g. {@code "elasticsearch"}, or for example {@code "opensearch"}).
      * <p>
      * Matched, case-insensitively, against a {@code *.client.engine} setting to pick which implementation to use out of the {@link java.util.Set} of all
-     * {@link DeviceStoreClientBuilder}s contributed on the classpath. Unlike {@link #getVendorName()}, this value is a contract other code matches against and
+     * {@link StoreEngineClientBuilder}s contributed on the classpath. Unlike {@link #getVendorName()}, this value is a contract other code matches against and
      * must stay stable across releases.
      *
      * @since 2.1.0
@@ -45,11 +45,11 @@ public interface DeviceStoreClientBuilder {
      */
     String getVendorName();
 
-    DeviceStoreClientBuilder initializeAndSetHosts(HttpHost[] hosts) throws ClientInitializationException;
+    StoreEngineClientBuilder initializeAndSetHosts(HttpHost[] hosts) throws ClientInitializationException;
 
-    DeviceStoreClientBuilder setHttpClientConfigCallback(UnaryOperator<HttpAsyncClientBuilder> callback) throws ClientInitializationException;
+    StoreEngineClientBuilder setHttpClientConfigCallback(UnaryOperator<HttpAsyncClientBuilder> callback) throws ClientInitializationException;
 
-    DeviceStoreClientBuilder setRequestConfigCallback(UnaryOperator<RequestConfig.Builder> callback) throws ClientInitializationException;
+    StoreEngineClientBuilder setRequestConfigCallback(UnaryOperator<RequestConfig.Builder> callback) throws ClientInitializationException;
 
-    DeviceStoreClient build() throws ClientInitializationException;
+    StoreEngineClient build() throws ClientInitializationException;
 }

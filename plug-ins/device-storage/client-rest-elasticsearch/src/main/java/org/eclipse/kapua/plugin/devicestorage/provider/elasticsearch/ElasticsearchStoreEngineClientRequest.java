@@ -12,19 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.plugin.devicestorage.provider.elasticsearch;
 
-import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClientRequest;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientRequest;
 import org.elasticsearch.client.Request;
 
 /**
- * {@link DeviceStoreClientRequest} backed by the Elasticsearch low-level REST client.
+ * {@link StoreEngineClientRequest} backed by the Elasticsearch low-level REST client.
  *
  * @since 2.1.0
  */
-class ElasticsearchDeviceStoreClientRequest implements DeviceStoreClientRequest {
+class ElasticsearchStoreEngineClientRequest implements StoreEngineClientRequest {
 
     private final Request request;
 
-    ElasticsearchDeviceStoreClientRequest(Request request) {
+    ElasticsearchStoreEngineClientRequest(Request request) {
         this.request = request;
     }
 

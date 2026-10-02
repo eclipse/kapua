@@ -15,21 +15,21 @@ package org.eclipse.kapua.service.storeengine.client.rest.lowlevel;
 import java.io.IOException;
 
 /**
- * Thrown by {@link DeviceStoreClient#performRequest(DeviceStoreClientRequest)} when the underlying client reports a non-2xx response as an exception rather than
- * returning it, carrying the {@link DeviceStoreClientResponse} that caused it.
+ * Thrown by {@link StoreEngineClient#performRequest(StoreEngineClientRequest)} when the underlying client reports a non-2xx response as an exception rather than
+ * returning it, carrying the {@link StoreEngineClientResponse} that caused it.
  *
  * @since 2.1.0
  */
 public class LowLevelSearchResponseException extends IOException {
 
-    private final DeviceStoreClientResponse response;
+    private final StoreEngineClientResponse response;
 
-    public LowLevelSearchResponseException(DeviceStoreClientResponse response, Throwable cause) {
+    public LowLevelSearchResponseException(StoreEngineClientResponse response, Throwable cause) {
         super(cause);
         this.response = response;
     }
 
-    public DeviceStoreClientResponse getResponse() {
+    public StoreEngineClientResponse getResponse() {
         return response;
     }
 }

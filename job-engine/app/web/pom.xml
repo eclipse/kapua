@@ -239,7 +239,7 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-foreignkeys</artifactId>
         </dependency>
-        <!-- DeviceStoreClientBuilder implementation available to this assembly - picked by DatastoreModule at runtime via datastore.elasticsearch.client.engine. -->
+        <!-- StoreEngineClientBuilder implementation available to this assembly - picked by DatastoreModule at runtime via datastore.elasticsearch.client.engine. -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-service-elasticsearch-client-rest-elasticsearch</artifactId>

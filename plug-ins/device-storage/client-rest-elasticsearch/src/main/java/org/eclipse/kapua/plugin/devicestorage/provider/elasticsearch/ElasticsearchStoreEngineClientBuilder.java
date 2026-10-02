@@ -18,17 +18,17 @@ import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientInitializationException;
-import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClient;
-import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClientBuilder;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClient;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientBuilder;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 
 /**
- * {@link DeviceStoreClientBuilder} backed by the Elasticsearch low-level REST client.
+ * {@link StoreEngineClientBuilder} backed by the Elasticsearch low-level REST client.
  *
  * @since 2.1.0
  */
-public class ElasticsearchDeviceStoreClientBuilder implements DeviceStoreClientBuilder {
+public class ElasticsearchStoreEngineClientBuilder implements StoreEngineClientBuilder {
 
     public static final String ID = "elasticsearch";
 
@@ -45,13 +45,13 @@ public class ElasticsearchDeviceStoreClientBuilder implements DeviceStoreClientB
     }
 
     @Override
-    public DeviceStoreClientBuilder initializeAndSetHosts(HttpHost[] hosts) {
+    public StoreEngineClientBuilder initializeAndSetHosts(HttpHost[] hosts) {
         restClientBuilder = RestClient.builder(hosts);
         return this;
     }
 
     @Override
-    public DeviceStoreClientBuilder setHttpClientConfigCallback(UnaryOperator<HttpAsyncClientBuilder> callback) throws ClientInitializationException {
+    public StoreEngineClientBuilder setHttpClientConfigCallback(UnaryOperator<HttpAsyncClientBuilder> callback) throws ClientInitializationException {
         if (restClientBuilder == null) {
             throw new ClientInitializationException("RestClientBuilder is not initialized yet. Call initializeAndSetHosts() first.");
         }
@@ -60,7 +60,7 @@ public class ElasticsearchDeviceStoreClientBuilder implements DeviceStoreClientB
     }
 
     @Override
-    public DeviceStoreClientBuilder setRequestConfigCallback(UnaryOperator<RequestConfig.Builder> callback) throws ClientInitializationException {
+    public StoreEngineClientBuilder setRequestConfigCallback(UnaryOperator<RequestConfig.Builder> callback) throws ClientInitializationException {
         if (restClientBuilder == null) {
             throw new ClientInitializationException("RestClientBuilder is not initialized yet. Call initializeAndSetHosts() first.");
         }
@@ -69,10 +69,10 @@ public class ElasticsearchDeviceStoreClientBuilder implements DeviceStoreClientB
     }
 
     @Override
-    public DeviceStoreClient build() throws ClientInitializationException {
+    public StoreEngineClient build() throws ClientInitializationException {
         if (restClientBuilder == null) {
             throw new ClientInitializationException("RestClientBuilder is not initialized yet. Call initializeAndSetHosts() first.");
         }
-        return new ElasticsearchDeviceStoreClient(restClientBuilder.build());
+        return new ElasticsearchStoreEngineClient(restClientBuilder.build());
     }
 }

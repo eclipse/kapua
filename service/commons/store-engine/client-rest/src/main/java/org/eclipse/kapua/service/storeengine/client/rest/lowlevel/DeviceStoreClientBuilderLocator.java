@@ -16,10 +16,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Picks the {@link DeviceStoreClientBuilder} whose {@link DeviceStoreClientBuilder#getId()} matches a configured engine id, out of whatever
- * {@link DeviceStoreClientBuilder}s are contributed on the classpath.
+ * Picks the {@link StoreEngineClientBuilder} whose {@link StoreEngineClientBuilder#getId()} matches a configured engine id, out of whatever
+ * {@link StoreEngineClientBuilder}s are contributed on the classpath.
  * <p>
- * Shared by every consumer that needs to resolve its own {@link DeviceStoreClientBuilder} (e.g. kapua's own datastore) so
+ * Shared by every consumer that needs to resolve its own {@link StoreEngineClientBuilder} (e.g. kapua's own datastore) so
  * the "read a setting, find the matching builder" logic isn't duplicated in each of them.
  *
  * @since 2.1.0
@@ -30,18 +30,18 @@ public class DeviceStoreClientBuilderLocator {
      * @param engineId
      *         The configured engine id (e.g. {@code "elasticsearch"}, or for example {@code "opensearch"}), matched case-insensitively.
      * @param candidates
-     *         Every {@link DeviceStoreClientBuilder} contributed on the classpath.
-     * @return The matching {@link DeviceStoreClientBuilder}.
+     *         Every {@link StoreEngineClientBuilder} contributed on the classpath.
+     * @return The matching {@link StoreEngineClientBuilder}.
      * @throws IllegalArgumentException
-     *         if no contributed {@link DeviceStoreClientBuilder} has a matching {@link DeviceStoreClientBuilder#getId()}.
+     *         if no contributed {@link StoreEngineClientBuilder} has a matching {@link StoreEngineClientBuilder#getId()}.
      */
-    public DeviceStoreClientBuilder locate(String engineId, Set<DeviceStoreClientBuilder> candidates) {
-        for (DeviceStoreClientBuilder candidate : candidates) {
+    public StoreEngineClientBuilder locate(String engineId, Set<StoreEngineClientBuilder> candidates) {
+        for (StoreEngineClientBuilder candidate : candidates) {
             if (engineId.equalsIgnoreCase(candidate.getId())) {
                 return candidate;
             }
         }
-        String availableIds = candidates.stream().map(DeviceStoreClientBuilder::getId).collect(Collectors.joining(", "));
-        throw new IllegalArgumentException(String.format("Unable to find a DeviceStoreClientBuilder for engine '%s'. Available: [%s]", engineId, availableIds));
+        String availableIds = candidates.stream().map(StoreEngineClientBuilder::getId).collect(Collectors.joining(", "));
+        throw new IllegalArgumentException(String.format("Unable to find a StoreEngineClientBuilder for engine '%s'. Available: [%s]", engineId, availableIds));
     }
 }

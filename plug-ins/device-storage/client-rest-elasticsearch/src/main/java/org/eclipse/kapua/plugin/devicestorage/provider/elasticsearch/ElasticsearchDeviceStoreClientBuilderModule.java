@@ -13,15 +13,15 @@
 package org.eclipse.kapua.plugin.devicestorage.provider.elasticsearch;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClientBuilder;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientBuilder;
 
 import com.google.inject.multibindings.ProvidesIntoSet;
 
 /**
- * Contributes {@link ElasticsearchDeviceStoreClientBuilder} to the {@link java.util.Set} of {@link DeviceStoreClientBuilder}s that a consuming module
- * (e.g. {@code DatastoreModule}) picks from, by {@link DeviceStoreClientBuilder#getId()}.
+ * Contributes {@link ElasticsearchStoreEngineClientBuilder} to the {@link java.util.Set} of {@link StoreEngineClientBuilder}s that a consuming module
+ * (e.g. {@code DatastoreModule}) picks from, by {@link StoreEngineClientBuilder#getId()}.
  * <p>
- * Deliberately not {@code @Singleton}: {@link DeviceStoreClientBuilder} is stateful (see {@link DeviceStoreClientBuilder#initializeAndSetHosts}), so each
+ * Deliberately not {@code @Singleton}: {@link StoreEngineClientBuilder} is stateful (see {@link StoreEngineClientBuilder#initializeAndSetHosts}), so each
  * consumer that resolves a builder out of the {@link java.util.Set} must get its own instance.
  *
  * @since 2.1.0
@@ -34,7 +34,7 @@ public class ElasticsearchDeviceStoreClientBuilderModule extends AbstractKapuaMo
     }
 
     @ProvidesIntoSet
-    DeviceStoreClientBuilder elasticsearchDeviceStoreClientBuilder() {
-        return new ElasticsearchDeviceStoreClientBuilder();
+    StoreEngineClientBuilder elasticsearchDeviceStoreClientBuilder() {
+        return new ElasticsearchStoreEngineClientBuilder();
     }
 }

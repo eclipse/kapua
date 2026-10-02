@@ -16,7 +16,7 @@ import java.util.Set;
 
 import org.assertj.core.api.Assertions;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClientBuilder;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientBuilder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -26,17 +26,17 @@ import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 
 @Category(JUnitTests.class)
-public class ElasticsearchDeviceStoreClientBuilderModuleTest {
+public class ElasticsearchStoreEngineClientBuilderModuleTest {
 
     @Test
     public void idMatchesTheConstantAndIsContributedToTheSharedSet() {
-        Assertions.assertThat(new ElasticsearchDeviceStoreClientBuilder().getId()).isEqualTo(ElasticsearchDeviceStoreClientBuilder.ID);
+        Assertions.assertThat(new ElasticsearchStoreEngineClientBuilder().getId()).isEqualTo(ElasticsearchStoreEngineClientBuilder.ID);
 
         Injector injector = Guice.createInjector(new ElasticsearchDeviceStoreClientBuilderModule());
-        Set<DeviceStoreClientBuilder> available = injector.getInstance(Key.get(new TypeLiteral<Set<DeviceStoreClientBuilder>>() {
+        Set<StoreEngineClientBuilder> available = injector.getInstance(Key.get(new TypeLiteral<Set<StoreEngineClientBuilder>>() {
         }));
 
         Assertions.assertThat(available).hasSize(1);
-        Assertions.assertThat(available.iterator().next()).isInstanceOf(ElasticsearchDeviceStoreClientBuilder.class);
+        Assertions.assertThat(available.iterator().next()).isInstanceOf(ElasticsearchStoreEngineClientBuilder.class);
     }
 }

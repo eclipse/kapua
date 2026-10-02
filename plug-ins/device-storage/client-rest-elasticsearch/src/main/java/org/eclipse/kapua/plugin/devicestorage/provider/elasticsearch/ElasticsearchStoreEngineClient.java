@@ -14,30 +14,29 @@ package org.eclipse.kapua.plugin.devicestorage.provider.elasticsearch;
 
 import java.io.IOException;
 
-import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClient;
-import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClientRequest;
-import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClientResponse;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClient;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientResponse;
 import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.LowLevelSearchResponseException;
 import org.elasticsearch.client.Request;
 import org.elasticsearch.client.ResponseException;
 import org.elasticsearch.client.RestClient;
 
 /**
- * {@link DeviceStoreClient} backed by the Elasticsearch low-level REST client.
+ * {@link StoreEngineClient} backed by the Elasticsearch low-level REST client.
  *
  * @since 2.1.0
  */
-public class ElasticsearchDeviceStoreClient implements DeviceStoreClient {
+public class ElasticsearchStoreEngineClient implements StoreEngineClient {
 
     private final RestClient restClient;
 
-    ElasticsearchDeviceStoreClient(RestClient restClient) {
+    ElasticsearchStoreEngineClient(RestClient restClient) {
         this.restClient = restClient;
     }
 
     /**
      * Escape hatch for callers that are known to depend on the Elasticsearch REST client directly (e.g. interop with {@code RestHighLevelClient}), rather than
-     * going through {@link DeviceStoreClient}.
+     * going through {@link StoreEngineClient}.
      *
      * @return The wrapped Elasticsearch {@link RestClient}.
      */
@@ -46,16 +45,16 @@ public class ElasticsearchDeviceStoreClient implements DeviceStoreClient {
     }
 
     @Override
-    public DeviceStoreClientRequest newRequest(String method, String endpoint) {
-        return new ElasticsearchDeviceStoreClientRequest(new Request(method, endpoint));
+    public org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientRequest newRequest(String method, String endpoint) {
+        return new ElasticsearchStoreEngineClientRequest(new Request(method, endpoint));
     }
 
     @Override
-    public DeviceStoreClientResponse performRequest(DeviceStoreClientRequest request) throws IOException {
+    public StoreEngineClientResponse performRequest(org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientRequest request) throws IOException {
         try {
-            return new ElasticsearchDeviceStoreClientResponse(restClient.performRequest(((ElasticsearchDeviceStoreClientRequest) request).unwrap()));
+            return new ElasticsearchStoreEngineClientResponse(restClient.performRequest(((ElasticsearchStoreEngineClientRequest) request).unwrap()));
         } catch (ResponseException e) {
-            throw new LowLevelSearchResponseException(new ElasticsearchDeviceStoreClientResponse(e.getResponse()), e);
+            throw new LowLevelSearchResponseException(new ElasticsearchStoreEngineClientResponse(e.getResponse()), e);
         }
     }
 
