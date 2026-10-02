@@ -26,11 +26,11 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
-import org.eclipse.kapua.service.elasticsearch.client.DeviceStoreClientProvider;
-import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
-import org.eclipse.kapua.service.elasticsearch.client.model.InsertRequest;
+import org.eclipse.kapua.service.storeengine.client.DeviceStoreClientProvider;
+import org.eclipse.kapua.service.storeengine.client.SchemaKeys;
+import org.eclipse.kapua.service.storeengine.client.exception.ClientException;
+import org.eclipse.kapua.service.storeengine.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.service.storeengine.client.model.InsertRequest;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;

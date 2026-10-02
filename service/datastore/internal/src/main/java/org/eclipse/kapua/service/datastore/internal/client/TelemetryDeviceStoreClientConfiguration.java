@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.eclipse.kapua.service.datastore.internal.setting.DeviceStoreClientSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettingsKey;
-import org.eclipse.kapua.service.elasticsearch.client.configuration.DeviceStoreClientConfiguration;
+import org.eclipse.kapua.service.storeengine.client.configuration.DeviceStoreClientConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -149,7 +149,7 @@
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-service-elasticsearch-client-rest</artifactId>
+            <artifactId>kapua-service-store-engine-client-rest</artifactId>
         </dependency>
 
         <dependency>

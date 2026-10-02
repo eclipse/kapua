@@ -13,7 +13,7 @@
 package org.eclipse.kapua.service.datastore.internal.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
-import org.eclipse.kapua.service.elasticsearch.client.DeviceStoreClientWrapper;
+import org.eclipse.kapua.service.storeengine.client.DeviceStoreClientWrapper;
 
 /**
  * Datastore {@link DeviceStoreClientWrapper} {@link org.eclipse.kapua.commons.setting.AbstractKapuaSetting}

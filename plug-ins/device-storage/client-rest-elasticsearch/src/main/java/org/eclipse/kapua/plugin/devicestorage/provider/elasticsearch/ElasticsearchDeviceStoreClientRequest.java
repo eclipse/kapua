@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.plugin.devicestorage.provider.elasticsearch;
 
-import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.DeviceStoreClientRequest;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClientRequest;
 import org.elasticsearch.client.Request;
 
 /**

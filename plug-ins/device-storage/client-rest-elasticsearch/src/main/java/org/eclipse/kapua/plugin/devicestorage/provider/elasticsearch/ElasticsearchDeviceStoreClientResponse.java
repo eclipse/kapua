@@ -13,7 +13,7 @@
 package org.eclipse.kapua.plugin.devicestorage.provider.elasticsearch;
 
 import org.apache.http.HttpEntity;
-import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.DeviceStoreClientResponse;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClientResponse;
 import org.elasticsearch.client.Response;
 
 /**

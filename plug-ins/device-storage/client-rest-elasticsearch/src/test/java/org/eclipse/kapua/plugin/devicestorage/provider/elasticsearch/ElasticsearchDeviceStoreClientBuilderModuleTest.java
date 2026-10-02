@@ -16,7 +16,7 @@ import java.util.Set;
 
 import org.assertj.core.api.Assertions;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.DeviceStoreClientBuilder;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClientBuilder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 

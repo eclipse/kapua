@@ -13,7 +13,7 @@
 package org.eclipse.kapua.service.datastore.internal.setting;
 
 import org.eclipse.kapua.commons.setting.SettingKey;
-import org.eclipse.kapua.service.elasticsearch.client.DeviceStoreClientWrapper;
+import org.eclipse.kapua.service.storeengine.client.DeviceStoreClientWrapper;
 
 /**
  * Datastore {@link DeviceStoreClientWrapper} setting keys.

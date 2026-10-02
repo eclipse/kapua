@@ -13,7 +13,7 @@
 package org.eclipse.kapua.plugin.devicestorage.provider.elasticsearch;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.service.elasticsearch.client.rest.lowlevel.DeviceStoreClientBuilder;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClientBuilder;
 
 import com.google.inject.multibindings.ProvidesIntoSet;
 
