@@ -36,7 +36,7 @@
             <artifactId>kapua-service-store-engine-client-api</artifactId>
         </dependency>
 
-        <!-- External dependencies - the vendor-neutral REST plumbing (RestDeviceStoreClientProvider/Wrapper, StoreEngineClientBuilder) is expressed in terms of
+        <!-- External dependencies - the vendor-neutral REST plumbing (RestStoreEngineClientProvider/Wrapper, StoreEngineClientBuilder) is expressed in terms of
              Apache HttpComponents types, since both vendors' low-level REST client builders customize the very same underlying async HTTP client. -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

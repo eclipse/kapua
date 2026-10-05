@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.storeengine.client.exception;
 
-import org.eclipse.kapua.service.storeengine.client.DeviceStoreClientProvider;
+import org.eclipse.kapua.service.storeengine.client.StoreEngineClientProvider;
 
 /**
- * {@link ClientException} to throw when {@link DeviceStoreClientProvider} fails to initialize.
+ * {@link ClientException} to throw when {@link StoreEngineClientProvider} fails to initialize.
  *
  * @since 1.3.0
  */

@@ -21,7 +21,7 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
-import org.eclipse.kapua.service.storeengine.client.DeviceStoreClientProvider;
+import org.eclipse.kapua.service.storeengine.client.StoreEngineClientProvider;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
@@ -34,13 +34,13 @@ public class MetricInfoRepositoryImpl extends DatastoreRepositoryBase<MetricInfo
 
     @Inject
     protected MetricInfoRepositoryImpl(
-            DeviceStoreClientProvider deviceStoreClientProviderInstance,
+            StoreEngineClientProvider storeEngineClientProviderInstance,
             MetricInfoFactory metricInfoFactory,
             StorablePredicateFactory storablePredicateFactory,
             DatastoreSettings datastoreSettings,
             DatastoreUtils datastoreUtils,
             DatastoreCacheManager datastoreCacheManager) {
-        super(deviceStoreClientProviderInstance,
+        super(storeEngineClientProviderInstance,
                 MetricInfo.class,
                 metricInfoFactory,
                 storablePredicateFactory,

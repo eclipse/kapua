@@ -23,22 +23,22 @@ import org.eclipse.kapua.service.storeengine.client.exception.ClientUnavailableE
  * @param <C> {@link DeviceStoreClientWrapper} type.
  * @since 1.0.0
  */
-public interface DeviceStoreClientProvider<C extends DeviceStoreClientWrapper> {
+public interface StoreEngineClientProvider<C extends DeviceStoreClientWrapper> {
 
     /**
-     * Initializes the {@link DeviceStoreClientProvider}.
+     * Initializes the {@link StoreEngineClientProvider}.
      * <p>
      * The init methods can be called more than once in order to reinitialize the underlying datastore connection.
      * It the datastore was already initialized this method close the old one before initializing the new one.
      *
      * @return Itself, to chain invocations.
-     * @throws ClientProviderInitException in case of error while initializing {@link DeviceStoreClientProvider}
+     * @throws ClientProviderInitException in case of error while initializing {@link StoreEngineClientProvider}
      * @since 1.3.0
      */
-    DeviceStoreClientProvider<C> init() throws ClientProviderInitException;
+    StoreEngineClientProvider<C> init() throws ClientProviderInitException;
 
     /**
-     * Closes the {@link DeviceStoreClientProvider} and all {@link DeviceStoreClientWrapper}s
+     * Closes the {@link StoreEngineClientProvider} and all {@link DeviceStoreClientWrapper}s
      *
      * @throws ClientClosingException in case of error while closing the client.
      * @since 1.0.0
@@ -52,7 +52,7 @@ public interface DeviceStoreClientProvider<C extends DeviceStoreClientWrapper> {
      * @return Itself, to chain invocations.
      * @since 1.3.0
      */
-    DeviceStoreClientProvider<C> withClientConfiguration(DeviceStoreClientConfiguration deviceStoreClientConfiguration);
+    StoreEngineClientProvider<C> withClientConfiguration(DeviceStoreClientConfiguration deviceStoreClientConfiguration);
 
     /**
      * Sets the {@link ModelContext} to use in the {@link DeviceStoreClientWrapper}.
@@ -61,7 +61,7 @@ public interface DeviceStoreClientProvider<C extends DeviceStoreClientWrapper> {
      * @return Itself, to chain invocations.
      * @since 1.3.0
      */
-    DeviceStoreClientProvider<C> withModelContext(ModelContext modelContext);
+    StoreEngineClientProvider<C> withModelContext(ModelContext modelContext);
 
     /**
      * Sets the {@link QueryConverter} to use in the {@link DeviceStoreClientWrapper}/
@@ -70,7 +70,7 @@ public interface DeviceStoreClientProvider<C extends DeviceStoreClientWrapper> {
      * @return Itself, to chain invocations.
      * @since 1.3.0
      */
-    DeviceStoreClientProvider<C> withModelConverter(QueryConverter queryConverter);
+    StoreEngineClientProvider<C> withModelConverter(QueryConverter queryConverter);
 
 
     /**

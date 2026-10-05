@@ -26,7 +26,7 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
-import org.eclipse.kapua.service.storeengine.client.DeviceStoreClientProvider;
+import org.eclipse.kapua.service.storeengine.client.StoreEngineClientProvider;
 import org.eclipse.kapua.service.storeengine.client.SchemaKeys;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientException;
 import org.eclipse.kapua.service.storeengine.client.exception.DatamodelMappingException;
@@ -48,13 +48,13 @@ public class MessageDeviceStoreRepository extends DatastoreRepositoryBase<Datast
 
     @Inject
     public MessageDeviceStoreRepository(
-            DeviceStoreClientProvider deviceStoreClientProviderInstance,
+            StoreEngineClientProvider storeEngineClientProviderInstance,
             MessageStoreFactory messageStoreFactory,
             StorablePredicateFactory storablePredicateFactory,
             DatastoreSettings datastoreSettings,
             DatastoreUtils datastoreUtils,
             DatastoreCacheManager datastoreCacheManager) {
-        super(deviceStoreClientProviderInstance,
+        super(storeEngineClientProviderInstance,
                 DatastoreMessage.class,
                 messageStoreFactory,
                 storablePredicateFactory,
@@ -119,7 +119,7 @@ public class MessageDeviceStoreRepository extends DatastoreRepositoryBase<Datast
             }
         }
         final InsertRequest insertRequest = new InsertRequest(idExtractor(messageToStore).toString(), indexName, messageToStore);
-        return deviceStoreClientProviderInstance.getDeviceStoreClient().insert(insertRequest).getId();
+        return storeEngineClientProviderInstance.getDeviceStoreClient().insert(insertRequest).getId();
     }
 
     private Map<String, Metric> getMessageMappingDiffs(Map<String, Metric> currentMetrics, Map<String, Metric> newMetrics) {
@@ -137,7 +137,7 @@ public class MessageDeviceStoreRepository extends DatastoreRepositoryBase<Datast
             }
             final ObjectNode metricsMapping = getNewMessageMappingsBuilder(esMetrics);
             logger.trace("Sending dynamic message mappings: {}", metricsMapping);
-            deviceStoreClientProviderInstance.getDeviceStoreClient().putMapping(index, metricsMapping);
+            storeEngineClientProviderInstance.getDeviceStoreClient().putMapping(index, metricsMapping);
         } catch (ClientException | MappingException e) {
             throw new RuntimeException(e);
         }

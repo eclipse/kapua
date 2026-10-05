@@ -42,10 +42,10 @@ import org.eclipse.kapua.service.storeengine.client.rest.QueryConverterImpl;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettingsKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
-import org.eclipse.kapua.service.storeengine.client.DeviceStoreClientProvider;
+import org.eclipse.kapua.service.storeengine.client.StoreEngineClientProvider;
 import org.eclipse.kapua.service.storeengine.client.configuration.DeviceStoreClientConfiguration;
 import org.eclipse.kapua.service.storeengine.client.rest.MetricsEsClient;
-import org.eclipse.kapua.service.storeengine.client.rest.RestDeviceStoreClientProvider;
+import org.eclipse.kapua.service.storeengine.client.rest.RestStoreEngineClientProvider;
 import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientBuilder;
 import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClientBuilderLocator;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
@@ -95,12 +95,12 @@ public class DatastoreModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    DeviceStoreClientProvider elasticsearchClientProvider(MetricsEsClient metricsEsClient,
+    StoreEngineClientProvider elasticsearchClientProvider(MetricsEsClient metricsEsClient,
                                                           StoreEngineClientBuilder storeEngineClientBuilder,
                                                           StorableIdFactory storableIdFactory,
                                                           DatastoreUtils datastoreUtils) {
         DeviceStoreClientConfiguration esClientConfiguration = TelemetryDeviceStoreClientConfiguration.getInstance(); //For now, different impls. share the same settings, until their settings that we use in the codebase don't diverge. In that case, we will need to create a new configuration class for implementations different from es.
-        return new RestDeviceStoreClientProvider(metricsEsClient, storeEngineClientBuilder)
+        return new RestStoreEngineClientProvider(metricsEsClient, storeEngineClientBuilder)
                 .withClientConfiguration(esClientConfiguration)
                 .withModelContext(new ModelContextImpl(storableIdFactory, datastoreUtils))
                 .withModelConverter(new QueryConverterImpl());

@@ -45,7 +45,7 @@ public abstract class DeviceStoreRepository<
         T extends Storable,
         L extends StorableListResult<T>,
         Q extends StorableQuery> implements StorableRepository<T, L, Q> {
-    protected final DeviceStoreClientProvider deviceStoreClientProviderInstance;
+    protected final StoreEngineClientProvider storeEngineClientProviderInstance;
     private final Class<T> clazz;
     private final StorableFactory<T, L, Q> storableFactory;
     protected final StorablePredicateFactory storablePredicateFactory;
@@ -64,12 +64,12 @@ public abstract class DeviceStoreRepository<
     private static final String INDEX_EXPR_WILDCARD = "*";
 
     protected DeviceStoreRepository(
-            DeviceStoreClientProvider deviceStoreClientProviderInstance,
+            StoreEngineClientProvider storeEngineClientProviderInstance,
             Class<T> clazz,
             StorableFactory<T, L, Q> storableFactory,
             StorablePredicateFactory storablePredicateFactory,
             LocalCache<String, Boolean> indexesCache) {
-        this.deviceStoreClientProviderInstance = deviceStoreClientProviderInstance;
+        this.storeEngineClientProviderInstance = storeEngineClientProviderInstance;
         this.storableFactory = storableFactory;
         this.storablePredicateFactory = storablePredicateFactory;
         this.clazz = clazz;
@@ -77,11 +77,11 @@ public abstract class DeviceStoreRepository<
     }
 
     protected DeviceStoreRepository(
-            DeviceStoreClientProvider deviceStoreClientProviderInstance,
+            StoreEngineClientProvider storeEngineClientProviderInstance,
             Class<T> clazz,
             StorableFactory<T, L, Q> storableFactory,
             StorablePredicateFactory storablePredicateFactory) {
-        this.deviceStoreClientProviderInstance = deviceStoreClientProviderInstance;
+        this.storeEngineClientProviderInstance = storeEngineClientProviderInstance;
         this.storableFactory = storableFactory;
         this.storablePredicateFactory = storablePredicateFactory;
         this.clazz = clazz;
@@ -104,7 +104,7 @@ public abstract class DeviceStoreRepository<
 
             synchIndex(indexName);
             final T res;
-            res = (T) deviceStoreClientProviderInstance.getDeviceStoreClient().<T>find(indexName, idsQuery, clazz);
+            res = (T) storeEngineClientProviderInstance.getDeviceStoreClient().<T>find(indexName, idsQuery, clazz);
             return res;
         } catch (ClientException e) {
             throw new RuntimeException(e);
@@ -130,7 +130,7 @@ public abstract class DeviceStoreRepository<
         try {
             final String indexName = indexResolver(query.getScopeId());
             synchIndex(indexName);
-            final ResultList<T> partialResult = deviceStoreClientProviderInstance.getDeviceStoreClient().query(indexName, query, clazz);
+            final ResultList<T> partialResult = storeEngineClientProviderInstance.getDeviceStoreClient().query(indexName, query, clazz);
             final L res = storableFactory.newListResult();
             res.addItems(partialResult.getResult());
             res.setTotalCount(partialResult.getTotalCount());
@@ -157,7 +157,7 @@ public abstract class DeviceStoreRepository<
             final String indexName = indexResolver(query.getScopeId());
             synchIndex(indexName);
 
-            return deviceStoreClientProviderInstance.getDeviceStoreClient().count(indexName, query);
+            return storeEngineClientProviderInstance.getDeviceStoreClient().count(indexName, query);
         } catch (ClientException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -173,7 +173,7 @@ public abstract class DeviceStoreRepository<
         try {
             synchIndex(indexName);
 
-            deviceStoreClientProviderInstance.getDeviceStoreClient().delete(indexName, id.toString());
+            storeEngineClientProviderInstance.getDeviceStoreClient().delete(indexName, id.toString());
         } catch (ClientException e) {
             throw new RuntimeException(e);
         }
@@ -182,7 +182,7 @@ public abstract class DeviceStoreRepository<
     @Override
     public void delete(Q query) {
         try {
-            deviceStoreClientProviderInstance.getDeviceStoreClient().deleteByQuery(indexResolver(query.getScopeId()), query);
+            storeEngineClientProviderInstance.getDeviceStoreClient().deleteByQuery(indexResolver(query.getScopeId()), query);
         } catch (ClientException e) {
             throw new RuntimeException(e);
         }
@@ -196,7 +196,7 @@ public abstract class DeviceStoreRepository<
 
             final UpdateRequest request = new UpdateRequest(itemId.toString(), indexName, item);
             final UpdateResponse upsertResponse;
-            upsertResponse = deviceStoreClientProviderInstance.getDeviceStoreClient().upsert(request);
+            upsertResponse = storeEngineClientProviderInstance.getDeviceStoreClient().upsert(request);
             final String responseId = upsertResponse.getId();
             logger.debug("Upsert  successfully executed [{}, {} - {}]", indexName, itemId, responseId);
             return responseId;
@@ -221,7 +221,7 @@ public abstract class DeviceStoreRepository<
                     });
             final BulkUpdateRequest bulkUpdateRequest = new BulkUpdateRequest();
             bulkUpdateRequest.setRequest(requests);
-            final BulkUpdateResponse updateResponse = deviceStoreClientProviderInstance
+            final BulkUpdateResponse updateResponse = storeEngineClientProviderInstance
                     .getDeviceStoreClient()
                     .upsert(bulkUpdateRequest);
             return updateResponse.getResponse()
@@ -241,7 +241,7 @@ public abstract class DeviceStoreRepository<
     protected void doUpsertIndex(String indexName) {
         final DeviceStoreClientWrapper deviceStoreClientWrapper;
         try {
-            deviceStoreClientWrapper = deviceStoreClientProviderInstance.getDeviceStoreClient();
+            deviceStoreClientWrapper = storeEngineClientProviderInstance.getDeviceStoreClient();
             // Check existence of the kapua internal indexes
             IndexResponse indexExistsResponse = deviceStoreClientWrapper.isIndexExists(new IndexRequest(indexName));
             if (!indexExistsResponse.isIndexExists()) {
@@ -264,7 +264,7 @@ public abstract class DeviceStoreRepository<
     public void refreshAllIndexes() {
         try {
             this.indexUpserted.invalidateAll();
-            deviceStoreClientProviderInstance.getDeviceStoreClient().refreshAllIndexes();
+            storeEngineClientProviderInstance.getDeviceStoreClient().refreshAllIndexes();
         } catch (ClientException e) {
             throw new RuntimeException(e);
         }
@@ -273,7 +273,7 @@ public abstract class DeviceStoreRepository<
     public void refreshIndex(String indexExp) {
         try {
             this.indexUpserted.invalidateAll();
-            deviceStoreClientProviderInstance.getDeviceStoreClient().refreshIndex(indexExp);
+            storeEngineClientProviderInstance.getDeviceStoreClient().refreshIndex(indexExp);
         } catch (ClientException e) {
             throw new RuntimeException(e);
         }
@@ -283,7 +283,7 @@ public abstract class DeviceStoreRepository<
     public void deleteAllIndexes() {
         try {
             this.indexUpserted.invalidateAll();
-            deviceStoreClientProviderInstance.getDeviceStoreClient().deleteAllIndexes();
+            storeEngineClientProviderInstance.getDeviceStoreClient().deleteAllIndexes();
         } catch (ClientException e) {
             throw new RuntimeException(e);
         }
@@ -293,7 +293,7 @@ public abstract class DeviceStoreRepository<
     public void deleteIndexes(String indexExp) {
         try {
             this.indexUpserted.invalidateAll();
-            deviceStoreClientProviderInstance.getDeviceStoreClient().deleteIndexes(indexExp);
+            storeEngineClientProviderInstance.getDeviceStoreClient().deleteIndexes(indexExp);
         } catch (ClientException e) {
             throw new RuntimeException(e);
         }

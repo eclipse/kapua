@@ -21,7 +21,7 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
-import org.eclipse.kapua.service.storeengine.client.DeviceStoreClientProvider;
+import org.eclipse.kapua.service.storeengine.client.StoreEngineClientProvider;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
@@ -34,13 +34,13 @@ public class ClientInfoDeviceStoreRepository extends DatastoreRepositoryBase<Cli
 
     @Inject
     protected ClientInfoDeviceStoreRepository(
-            DeviceStoreClientProvider deviceStoreClientProviderInstance,
+            StoreEngineClientProvider storeEngineClientProviderInstance,
             ClientInfoFactory clientInfoFactory,
             StorablePredicateFactory storablePredicateFactory,
             DatastoreSettings datastoreSettings,
             DatastoreUtils datastoreUtils,
             DatastoreCacheManager datastoreCacheManager) {
-        super(deviceStoreClientProviderInstance,
+        super(storeEngineClientProviderInstance,
                 ClientInfo.class,
                 clientInfoFactory,
                 storablePredicateFactory,

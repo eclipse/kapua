@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
-import org.eclipse.kapua.service.storeengine.client.DeviceStoreClientProvider;
+import org.eclipse.kapua.service.storeengine.client.StoreEngineClientProvider;
 import org.eclipse.kapua.service.storeengine.client.DeviceStoreRepository;
 import org.eclipse.kapua.service.storeengine.client.SchemaKeys;
 import org.eclipse.kapua.service.storable.StorableFactory;
@@ -39,23 +39,23 @@ public abstract class DatastoreRepositoryBase<
     protected final DatastoreSettings datastoreSettings;
 
     protected DatastoreRepositoryBase(
-            DeviceStoreClientProvider deviceStoreClientProviderInstance,
+            StoreEngineClientProvider storeEngineClientProviderInstance,
             Class<T> clazz,
             StorableFactory<T, L, Q> storableFactory,
             StorablePredicateFactory storablePredicateFactory,
             LocalCache<String, Boolean> indexesCache,
             DatastoreSettings datastoreSettings) {
-        super(deviceStoreClientProviderInstance, clazz, storableFactory, storablePredicateFactory,
+        super(storeEngineClientProviderInstance, clazz, storableFactory, storablePredicateFactory,
                 indexesCache);
         this.datastoreSettings = datastoreSettings;
     }
 
     protected DatastoreRepositoryBase(
-            DeviceStoreClientProvider deviceStoreClientProviderInstance,
+            StoreEngineClientProvider storeEngineClientProviderInstance,
             Class<T> clazz,
             StorableFactory<T, L, Q> storableFactory,
             StorablePredicateFactory storablePredicateFactory, DatastoreSettings datastoreSettings) {
-        super(deviceStoreClientProviderInstance, clazz, storableFactory, storablePredicateFactory);
+        super(storeEngineClientProviderInstance, clazz, storableFactory, storablePredicateFactory);
         this.datastoreSettings = datastoreSettings;
     }
 

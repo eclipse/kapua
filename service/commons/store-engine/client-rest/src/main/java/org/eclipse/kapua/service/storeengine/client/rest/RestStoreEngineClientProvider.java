@@ -35,7 +35,7 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
-import org.eclipse.kapua.service.storeengine.client.DeviceStoreClientProvider;
+import org.eclipse.kapua.service.storeengine.client.StoreEngineClientProvider;
 import org.eclipse.kapua.service.storeengine.client.ModelContext;
 import org.eclipse.kapua.service.storeengine.client.QueryConverter;
 import org.eclipse.kapua.service.storeengine.client.configuration.DeviceStoreClientConfiguration;
@@ -68,15 +68,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
- * {@link DeviceStoreClientProvider} REST implementation.
+ * {@link StoreEngineClientProvider} REST implementation.
  * <p>
  * Instantiates, in a Singleton fashion, and manages the {@link RestDeviceStoreClientWrapper}.
  *
  * @since 1.0.0
  */
-public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<RestDeviceStoreClientWrapper> {
+public class RestStoreEngineClientProvider implements StoreEngineClientProvider<RestDeviceStoreClientWrapper> {
 
-    static final Logger LOG = LoggerFactory.getLogger(RestDeviceStoreClientProvider.class);
+    static final Logger LOG = LoggerFactory.getLogger(RestStoreEngineClientProvider.class);
 
     private static final String PROVIDER_CANNOT_CLOSE_CLIENT_MSG = "Cannot close ElasticSearch REST client. Client is already closed or not initialized";
 
@@ -92,13 +92,13 @@ public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<
     private AtomicInteger nextClientIndex = new AtomicInteger(0);
 
     @Inject
-    public RestDeviceStoreClientProvider(MetricsEsClient metricsEsClient, StoreEngineClientBuilder storeEngineClientBuilder) {
+    public RestStoreEngineClientProvider(MetricsEsClient metricsEsClient, StoreEngineClientBuilder storeEngineClientBuilder) {
         this.metrics = metricsEsClient;
         this.storeEngineClientBuilder = storeEngineClientBuilder;
     }
 
     @Override
-    public RestDeviceStoreClientProvider init() throws ClientProviderInitException {
+    public RestStoreEngineClientProvider init() throws ClientProviderInitException {
         if (!closed) {
             LOG.warn(storeEngineClientBuilder.getVendorName() + " Elasticsearch rest client provider: closing the pool failed at a previous stage, trying to close before init.");
             close();
@@ -106,7 +106,7 @@ public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<
         if (initialized && closed) {
             return this;
         }
-        synchronized (RestDeviceStoreClientProvider.class) {
+        synchronized (RestStoreEngineClientProvider.class) {
             if (!closed) {
                 throw new ClientProviderInitException("Client pool not closed");
             }
@@ -206,7 +206,7 @@ public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<
     }
 
     /**
-     * Closes the {@link RestDeviceStoreClientProvider}.
+     * Closes the {@link RestStoreEngineClientProvider}.
      * <p>
      * It takes care of closing the {@link StoreEngineClient}.
      *
@@ -214,7 +214,7 @@ public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<
      */
     @Override
     public void close() {
-        synchronized (RestDeviceStoreClientProvider.class) {
+        synchronized (RestStoreEngineClientProvider.class) {
             try {
                 LOG.info("ES Rest Client - Closing pool");
                 closeClientPool();
@@ -275,7 +275,7 @@ public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<
      */
 //    private void reconnectClientTask(Callable<RestClient> initClientMethod) throws Exception {
 //        if (internalElasticsearchRestClient == null) {
-//            synchronized (RestDeviceStoreClientProvider.class) {
+//            synchronized (RestStoreEngineClientProvider.class) {
 //                if (internalElasticsearchRestClient == null) {
 //                    metrics.getClientReconnectCall().inc();
 //
@@ -432,19 +432,19 @@ public class RestDeviceStoreClientProvider implements DeviceStoreClientProvider<
     }
 
     @Override
-    public DeviceStoreClientProvider<RestDeviceStoreClientWrapper> withClientConfiguration(DeviceStoreClientConfiguration deviceStoreClientConfiguration) {
+    public StoreEngineClientProvider<RestDeviceStoreClientWrapper> withClientConfiguration(DeviceStoreClientConfiguration deviceStoreClientConfiguration) {
         this.deviceStoreClientConfiguration = deviceStoreClientConfiguration;
         return this;
     }
 
     @Override
-    public DeviceStoreClientProvider<RestDeviceStoreClientWrapper> withModelContext(ModelContext modelContext) {
+    public StoreEngineClientProvider<RestDeviceStoreClientWrapper> withModelContext(ModelContext modelContext) {
         this.modelContext = modelContext;
         return this;
     }
 
     @Override
-    public DeviceStoreClientProvider<RestDeviceStoreClientWrapper> withModelConverter(QueryConverter modelConverter) {
+    public StoreEngineClientProvider<RestDeviceStoreClientWrapper> withModelConverter(QueryConverter modelConverter) {
         this.modelConverter = modelConverter;
         return this;
     }

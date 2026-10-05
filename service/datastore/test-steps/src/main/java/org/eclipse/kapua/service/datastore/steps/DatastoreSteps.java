@@ -89,7 +89,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.eclipse.kapua.service.storeengine.client.DeviceStoreClientProvider;
+import org.eclipse.kapua.service.storeengine.client.StoreEngineClientProvider;
 import org.eclipse.kapua.service.storeengine.client.DeviceStoreClientWrapper;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientException;
 import org.eclipse.kapua.service.storeengine.client.model.IndexRequest;
@@ -308,7 +308,7 @@ public class DatastoreSteps extends TestBase {
         messageFactory = locator.getFactory(KapuaMessageFactory.class);
         storableIdFactory = locator.getFactory(StorableIdFactory.class);
         channelInfoRegistryService = locator.getService(ChannelInfoRegistryService.class);
-        deviceStoreClientWrapper = locator.getComponent(DeviceStoreClientProvider.class).getDeviceStoreClient();
+        deviceStoreClientWrapper = locator.getComponent(StoreEngineClientProvider.class).getDeviceStoreClient();
         channelInfoFactory = locator.getFactory(ChannelInfoFactory.class);
         clientInfoFactory = locator.getFactory(ClientInfoFactory.class);
         messageStoreFactory = locator.getFactory(MessageStoreFactory.class);
