@@ -30,12 +30,12 @@ public class ElasticsearchClientConfiguration {
     private List<ElasticsearchNode> nodes;
     private String username;
     private String password;
-    private Optional<Integer> numberOfIOThreads;
     private int poolSize;
 
     private ElasticsearchClientReconnectConfiguration reconnectConfiguration;
     private ElasticsearchClientRequestConfiguration requestConfiguration;
     private ElasticsearchClientSslConfiguration sslConfiguration;
+    private ElasticsearchClientConnectionConfiguration connectionConfiguration;
 
     /**
      * Gets the module name which is managing the {@link ElasticsearchClientWrapper} instance.
@@ -259,13 +259,23 @@ public class ElasticsearchClientConfiguration {
         return this;
     }
 
+    /**
+     * @deprecated Replaced by corresponding method in {@link ElasticsearchClientConnectionConfiguration}
+     * @return
+     */
+    @Deprecated
     public Optional<Integer> getNumberOfIOThreads() {
-        return this.numberOfIOThreads;
+        return this.getConnectionConfiguration().getNumberOfIOThreads();
     }
 
+    /**
+     * @deprecated Replaced by corresponding method in {@link ElasticsearchClientConnectionConfiguration}
+     * @param numberOfIOThreads
+     * @return
+     */
+    @Deprecated
     public ElasticsearchClientConfiguration setNumberOfIOThreads(Integer numberOfIOThreads) {
-        this.numberOfIOThreads = Optional.ofNullable(numberOfIOThreads)
-                .filter(i -> i > 0);
+        this.getConnectionConfiguration().setNumberOfIOThreads(Optional.of(numberOfIOThreads));
         return this;
     }
 
@@ -289,6 +299,33 @@ public class ElasticsearchClientConfiguration {
      */
     public ElasticsearchClientConfiguration setPoolSize(int poolSize) {
         this.poolSize = poolSize;
+        return this;
+    }
+
+    /**
+     * Gets the {@link ElasticsearchClientConnectionConfiguration}
+     *
+     * @return The {@link ElasticsearchClientConnectionConfiguration}
+     * @since 2.1.0
+     */
+    public ElasticsearchClientConnectionConfiguration getConnectionConfiguration() {
+        if (connectionConfiguration == null) {
+            connectionConfiguration = new ElasticsearchClientConnectionConfiguration();
+        }
+
+        return connectionConfiguration;
+    }
+
+    /**
+     * Sets the {@link ElasticsearchClientConnectionConfiguration}
+     *
+     * @param connectionConfiguration
+     *         The {@link ElasticsearchClientConnectionConfiguration}
+     * @return This {@link ElasticsearchClientConnectionConfiguration} to chain method invocation.
+     * @since 2.1.0gt
+     */
+    public ElasticsearchClientConfiguration setConnectionConfiguration(ElasticsearchClientConnectionConfiguration connectionConfiguration) {
+        this.connectionConfiguration = connectionConfiguration;
         return this;
     }
 }
