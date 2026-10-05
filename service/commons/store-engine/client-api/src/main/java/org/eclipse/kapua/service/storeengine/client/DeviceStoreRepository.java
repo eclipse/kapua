@@ -239,20 +239,20 @@ public abstract class DeviceStoreRepository<
 
 
     protected void doUpsertIndex(String indexName) {
-        final DeviceStoreClientWrapper deviceStoreClientWrapper;
+        final StoreEngineClientWrapper storeEngineClientWrapper;
         try {
-            deviceStoreClientWrapper = storeEngineClientProviderInstance.getDeviceStoreClient();
+            storeEngineClientWrapper = storeEngineClientProviderInstance.getDeviceStoreClient();
             // Check existence of the kapua internal indexes
-            IndexResponse indexExistsResponse = deviceStoreClientWrapper.isIndexExists(new IndexRequest(indexName));
+            IndexResponse indexExistsResponse = storeEngineClientWrapper.isIndexExists(new IndexRequest(indexName));
             if (!indexExistsResponse.isIndexExists()) {
                 ObjectNode settings = getMappingSchema(indexName);
-                deviceStoreClientWrapper.createIndex(indexName, settings);
+                storeEngineClientWrapper.createIndex(indexName, settings);
                 logger.info("Index created with name: {}, index exists check: {}", indexName, indexExistsResponse);
                 logger.debug("Index created with name: {}, index settings: {}", indexName, settings);
             }
             // Update base index mappings regardless the index existed or not
             JsonNode mappings = getIndexSchema();
-            deviceStoreClientWrapper.putMapping(indexName, mappings);
+            storeEngineClientWrapper.putMapping(indexName, mappings);
             logger.info("Index mappings updated for index: {}, index exists check: {}", indexName, indexExistsResponse);
             logger.debug("Index mappings updated for index: {}, index mappings: {}", indexName, mappings);
         } catch (ClientException | MappingException e) {

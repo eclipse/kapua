@@ -22,7 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.ParseException;
 import org.apache.http.util.EntityUtils;
 import org.eclipse.kapua.commons.util.RandomUtils;
-import org.eclipse.kapua.service.storeengine.client.DeviceStoreClientWrapper;
+import org.eclipse.kapua.service.storeengine.client.StoreEngineClientWrapper;
 import org.eclipse.kapua.service.storeengine.client.ModelContext;
 import org.eclipse.kapua.service.storeengine.client.QueryConverter;
 import org.eclipse.kapua.service.storeengine.client.SchemaKeys;
@@ -67,9 +67,9 @@ import java.util.concurrent.TimeoutException;
  *
  * @since 1.0.0
  */
-public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<StoreEngineClient> {
+public class RestStoreEngineClientWrapper implements StoreEngineClientWrapper<StoreEngineClient> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RestDeviceStoreClientWrapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RestStoreEngineClientWrapper.class);
 
     private StoreEngineClient wrappedClient;
     private DeviceStoreClientConfiguration clientConfiguration;
@@ -91,7 +91,7 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<St
      * @since 1.0.0
      */
     @Inject
-    public RestDeviceStoreClientWrapper(MetricsEsClient metricsEsClient) {
+    public RestStoreEngineClientWrapper(MetricsEsClient metricsEsClient) {
         this.metricsEsClient = metricsEsClient;
         objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
@@ -129,7 +129,7 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<St
     }
 
     @Override
-    public DeviceStoreClientWrapper<StoreEngineClient> withClient(StoreEngineClient client) {
+    public StoreEngineClientWrapper<StoreEngineClient> withClient(StoreEngineClient client) {
        this.wrappedClient = client;
        return this;
     }
@@ -140,7 +140,7 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<St
     }
 
     @Override
-    public DeviceStoreClientWrapper<StoreEngineClient> withClientConfiguration(DeviceStoreClientConfiguration clientConfiguration) {
+    public StoreEngineClientWrapper<StoreEngineClient> withClientConfiguration(DeviceStoreClientConfiguration clientConfiguration) {
         this.clientConfiguration = clientConfiguration;
         return this;
     }
@@ -151,7 +151,7 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<St
     }
 
     @Override
-    public DeviceStoreClientWrapper<StoreEngineClient> withModelContext(ModelContext modelContext) {
+    public StoreEngineClientWrapper<StoreEngineClient> withModelContext(ModelContext modelContext) {
         this.modelContext = modelContext;
         return this;
     }
@@ -162,7 +162,7 @@ public class RestDeviceStoreClientWrapper implements DeviceStoreClientWrapper<St
     }
 
     @Override
-    public DeviceStoreClientWrapper<StoreEngineClient> withModelConverter(QueryConverter modelConverter) {
+    public StoreEngineClientWrapper<StoreEngineClient> withModelConverter(QueryConverter modelConverter) {
         this.modelConverter = modelConverter;
         return this;
     }

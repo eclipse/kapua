@@ -13,17 +13,17 @@
 package org.eclipse.kapua.service.datastore.internal.setting;
 
 import org.eclipse.kapua.commons.setting.SettingKey;
-import org.eclipse.kapua.service.storeengine.client.DeviceStoreClientWrapper;
+import org.eclipse.kapua.service.storeengine.client.StoreEngineClientWrapper;
 
 /**
- * Datastore {@link DeviceStoreClientWrapper} setting keys.
+ * Datastore {@link StoreEngineClientWrapper} setting keys.
  *
  * @since 1.3.0
  */
 public enum DatastoreElasticsearchClientSettingsKey implements SettingKey {
 
     /**
-     * The name of the module which is managing the {@link DeviceStoreClientWrapper}.
+     * The name of the module which is managing the {@link StoreEngineClientWrapper}.
      *
      * @since 1.3.0
      */

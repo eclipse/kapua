@@ -70,17 +70,17 @@ import java.util.stream.Collectors;
 /**
  * {@link StoreEngineClientProvider} REST implementation.
  * <p>
- * Instantiates, in a Singleton fashion, and manages the {@link RestDeviceStoreClientWrapper}.
+ * Instantiates, in a Singleton fashion, and manages the {@link RestStoreEngineClientWrapper}.
  *
  * @since 1.0.0
  */
-public class RestStoreEngineClientProvider implements StoreEngineClientProvider<RestDeviceStoreClientWrapper> {
+public class RestStoreEngineClientProvider implements StoreEngineClientProvider<RestStoreEngineClientWrapper> {
 
     static final Logger LOG = LoggerFactory.getLogger(RestStoreEngineClientProvider.class);
 
     private static final String PROVIDER_CANNOT_CLOSE_CLIENT_MSG = "Cannot close ElasticSearch REST client. Client is already closed or not initialized";
 
-    private List<RestDeviceStoreClientWrapper> restDeviceStoreClientWrappers;
+    private List<RestStoreEngineClientWrapper> restDeviceStoreClientWrappers;
 
     private DeviceStoreClientConfiguration deviceStoreClientConfiguration;
     private ModelContext modelContext;
@@ -189,7 +189,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
                 } catch (IOException ioExc) {
                     LOG.warn(PROVIDER_CANNOT_CLOSE_CLIENT_MSG, ioExc);
                 }
-                throw new ClientProviderInitException(e, "Cannot init DeviceStoreClientWrapper");
+                throw new ClientProviderInitException(e, "Cannot init StoreEngineClientWrapper");
             }
 
             // Start a reconnect task - commented because actually not needed now, maybe useful in the future
@@ -298,7 +298,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
     private void initClientPool(int poolSize) throws ClientInitializationException {
         initialized = false;
         restDeviceStoreClientWrappers = new ArrayList<>(poolSize);
-        RestDeviceStoreClientWrapper clientPoolItem;
+        RestStoreEngineClientWrapper clientPoolItem;
         for(int i=0; i < poolSize; i++) {
             clientPoolItem = createClientWrapper();
             clientPoolItem.init();
@@ -307,7 +307,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
         initialized = true;
     }
 
-    private RestDeviceStoreClientWrapper createClientWrapper() throws ClientInitializationException {
+    private RestStoreEngineClientWrapper createClientWrapper() throws ClientInitializationException {
 
         DeviceStoreClientConfiguration clientConfiguration = getClientConfiguration();
 
@@ -394,7 +394,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
         esRestClientWrapped = restClientBuilder.build();
 
         // Create Client Wrapper
-        RestDeviceStoreClientWrapper wrapper = new RestDeviceStoreClientWrapper(metrics);
+        RestStoreEngineClientWrapper wrapper = new RestStoreEngineClientWrapper(metrics);
         wrapper.withClientConfiguration(clientConfiguration)
         .withModelContext(modelContext)
         .withModelConverter(modelConverter)
@@ -432,30 +432,30 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
     }
 
     @Override
-    public StoreEngineClientProvider<RestDeviceStoreClientWrapper> withClientConfiguration(DeviceStoreClientConfiguration deviceStoreClientConfiguration) {
+    public StoreEngineClientProvider<RestStoreEngineClientWrapper> withClientConfiguration(DeviceStoreClientConfiguration deviceStoreClientConfiguration) {
         this.deviceStoreClientConfiguration = deviceStoreClientConfiguration;
         return this;
     }
 
     @Override
-    public StoreEngineClientProvider<RestDeviceStoreClientWrapper> withModelContext(ModelContext modelContext) {
+    public StoreEngineClientProvider<RestStoreEngineClientWrapper> withModelContext(ModelContext modelContext) {
         this.modelContext = modelContext;
         return this;
     }
 
     @Override
-    public StoreEngineClientProvider<RestDeviceStoreClientWrapper> withModelConverter(QueryConverter modelConverter) {
+    public StoreEngineClientProvider<RestStoreEngineClientWrapper> withModelConverter(QueryConverter modelConverter) {
         this.modelConverter = modelConverter;
         return this;
     }
 
     @Override
-    public RestDeviceStoreClientWrapper getDeviceStoreClient() throws ClientUnavailableException, ClientProviderInitException {
+    public RestStoreEngineClientWrapper getDeviceStoreClient() throws ClientUnavailableException, ClientProviderInitException {
         this.init();
         // To evenly distribute requests among clients, calculate the index to return in a round robin style.
         int clientIndex = Math.abs(nextClientIndex.getAndAdd(1) % restDeviceStoreClientWrappers.size());
         LOG.debug("Elasticsearch client provider pool get ES client: assign index {} in a pool of {}", clientIndex, restDeviceStoreClientWrappers.size());
-        RestDeviceStoreClientWrapper clientWrapper = restDeviceStoreClientWrappers.get(clientIndex);
+        RestStoreEngineClientWrapper clientWrapper = restDeviceStoreClientWrappers.get(clientIndex);
         return clientWrapper;
     }
     // Private methods

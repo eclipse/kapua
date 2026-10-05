@@ -17,7 +17,7 @@ import org.eclipse.kapua.service.storeengine.client.model.InsertRequest;
 import javax.validation.constraints.NotNull;
 
 /**
- * {@link RestDeviceStoreClientWrapper} resource paths.
+ * {@link RestStoreEngineClientWrapper} resource paths.
  *
  * @since 1.3.0
  */

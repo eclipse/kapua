@@ -38,7 +38,7 @@ import java.io.Closeable;
  *
  * @since 1.0.0
  */
-public interface DeviceStoreClientWrapper<C extends Closeable> {
+public interface StoreEngineClientWrapper<C extends Closeable> {
 
     /**
      * Initializes the underlying Elasticsearch connection.
@@ -50,7 +50,7 @@ public interface DeviceStoreClientWrapper<C extends Closeable> {
     /**
      * Closes the underlying Elasticsearch connection.
      *
-     * @throws ClientUnavailableException If the {@link DeviceStoreClientWrapper} was not initialized and this is invoked.
+     * @throws ClientUnavailableException If the {@link StoreEngineClientWrapper} was not initialized and this is invoked.
      * @since 1.0.0
      */
     void close() throws ClientUnavailableException;
@@ -64,13 +64,13 @@ public interface DeviceStoreClientWrapper<C extends Closeable> {
     C getClient();
 
     /**
-     * Sets the org.elasticsearch.Client to use with {@link DeviceStoreClientWrapper}.
+     * Sets the org.elasticsearch.Client to use with {@link StoreEngineClientWrapper}.
      *
      * @param wrappedClient The org.elasticsearch.Client
      * @return Itself, to chain invocations.
      * @since 1.3.0
      */
-    DeviceStoreClientWrapper<C> withClient(C wrappedClient);
+    StoreEngineClientWrapper<C> withClient(C wrappedClient);
 
     /**
      * Gets the {@link DeviceStoreClientConfiguration}.
@@ -81,13 +81,13 @@ public interface DeviceStoreClientWrapper<C extends Closeable> {
     DeviceStoreClientConfiguration getClientConfiguration();
 
     /**
-     * Sets the {@link DeviceStoreClientConfiguration} to use with the {@link DeviceStoreClientWrapper}.
+     * Sets the {@link DeviceStoreClientConfiguration} to use with the {@link StoreEngineClientWrapper}.
      *
      * @param clientConfiguration The {@link DeviceStoreClientConfiguration}.
      * @return Itself, to chain invocations.
      * @since 1.3.0
      */
-    DeviceStoreClientWrapper<C> withClientConfiguration(DeviceStoreClientConfiguration clientConfiguration);
+    StoreEngineClientWrapper<C> withClientConfiguration(DeviceStoreClientConfiguration clientConfiguration);
 
     /**
      * Gets the {@link ModelContext}
@@ -104,7 +104,7 @@ public interface DeviceStoreClientWrapper<C extends Closeable> {
      * @return Itself, to chain invocations.
      * @since 1.3.0
      */
-    DeviceStoreClientWrapper<C> withModelContext(ModelContext modelContext);
+    StoreEngineClientWrapper<C> withModelContext(ModelContext modelContext);
 
     /**
      * Gets the {@link QueryConverter}
@@ -121,7 +121,7 @@ public interface DeviceStoreClientWrapper<C extends Closeable> {
      * @return Itself, to chain invocations.
      * @since 1.3.0
      */
-    DeviceStoreClientWrapper<C> withModelConverter(QueryConverter modelConverter);
+    StoreEngineClientWrapper<C> withModelConverter(QueryConverter modelConverter);
 
     /**
      * Inserts a document.

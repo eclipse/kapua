@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.storeengine.client.exception;
 
-import org.eclipse.kapua.service.storeengine.client.DeviceStoreClientWrapper;
+import org.eclipse.kapua.service.storeengine.client.StoreEngineClientWrapper;
 
 /**
- * {@link ClientException} to throw when che {@link DeviceStoreClientWrapper} is not available.
+ * {@link ClientException} to throw when che {@link StoreEngineClientWrapper} is not available.
  *
  * @since 1.0.0
  */

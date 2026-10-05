@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.storeengine.client.configuration;
 
-import org.eclipse.kapua.service.storeengine.client.DeviceStoreClientWrapper;
+import org.eclipse.kapua.service.storeengine.client.StoreEngineClientWrapper;
 
 /**
  * {@link ElasticsearchNode} definition.
  * <p>
- * This is the collector of host and port for the {@link DeviceStoreClientWrapper}.
+ * This is the collector of host and port for the {@link StoreEngineClientWrapper}.
  *
  * @since 1.3.0
  */
