@@ -13,7 +13,7 @@
 package org.eclipse.kapua.service.storeengine.client.utils;
 
 import com.google.common.collect.Lists;
-import org.eclipse.kapua.service.storeengine.client.configuration.ElasticsearchNode;
+import org.eclipse.kapua.service.storeengine.client.configuration.StoreEngineNode;
 
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -24,14 +24,14 @@ public class InetAddressParser {
     private InetAddressParser() {
     }
 
-    public static List<InetSocketAddress> parseAddresses(List<ElasticsearchNode> elasticsearchNodes) {
-        return elasticsearchNodes
+    public static List<InetSocketAddress> parseAddresses(List<StoreEngineNode> storeEngineNodes) {
+        return storeEngineNodes
                 .stream()
                 .map(n -> new InetSocketAddress(n.getAddress(), n.getPort()))
                 .collect(Collectors.toList());
     }
 
-    public static InetSocketAddress parseAddresses(ElasticsearchNode elasticsearchNode) {
-        return parseAddresses(Lists.newArrayList(elasticsearchNode)).get(0);
+    public static InetSocketAddress parseAddresses(StoreEngineNode storeEngineNode) {
+        return parseAddresses(Lists.newArrayList(storeEngineNode)).get(0);
     }
 }

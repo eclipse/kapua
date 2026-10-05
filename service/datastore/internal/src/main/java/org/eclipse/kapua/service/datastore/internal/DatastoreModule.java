@@ -35,15 +35,15 @@ import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoFactory;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
-import org.eclipse.kapua.service.datastore.internal.client.TelemetryDeviceStoreClientConfiguration;
+import org.eclipse.kapua.service.datastore.internal.client.TelemetryStoreEngineClientConfiguration;
 import org.eclipse.kapua.service.datastore.internal.converter.ModelContextImpl;
-import org.eclipse.kapua.service.datastore.internal.setting.DeviceStoreClientSettings;
+import org.eclipse.kapua.service.datastore.internal.setting.TelemetryStoreEngineClientSettings;
 import org.eclipse.kapua.service.storeengine.client.rest.QueryConverterImpl;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettingsKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.storeengine.client.StoreEngineClientProvider;
-import org.eclipse.kapua.service.storeengine.client.configuration.DeviceStoreClientConfiguration;
+import org.eclipse.kapua.service.storeengine.client.configuration.StoreEngineClientConfiguration;
 import org.eclipse.kapua.service.storeengine.client.rest.MetricsEsClient;
 import org.eclipse.kapua.service.storeengine.client.rest.RestStoreEngineClientProvider;
 import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientBuilder;
@@ -89,7 +89,7 @@ public class DatastoreModule extends AbstractKapuaModule {
     @Provides
     @Singleton
     StoreEngineClientBuilder lowLevelSearchClientBuilder(Set<StoreEngineClientBuilder> availableStoreEngineClientBuilders, DeviceStoreClientBuilderLocator deviceStoreClientBuilderLocator) {
-        String engine = DeviceStoreClientSettings.getInstance().getString(DatastoreElasticsearchClientSettingsKey.CLIENT_ENGINE, "elasticsearch");
+        String engine = TelemetryStoreEngineClientSettings.getInstance().getString(DatastoreElasticsearchClientSettingsKey.CLIENT_ENGINE, "elasticsearch");
         return deviceStoreClientBuilderLocator.locate(engine, availableStoreEngineClientBuilders);
     }
 
@@ -99,7 +99,7 @@ public class DatastoreModule extends AbstractKapuaModule {
                                                           StoreEngineClientBuilder storeEngineClientBuilder,
                                                           StorableIdFactory storableIdFactory,
                                                           DatastoreUtils datastoreUtils) {
-        DeviceStoreClientConfiguration esClientConfiguration = TelemetryDeviceStoreClientConfiguration.getInstance(); //For now, different impls. share the same settings, until their settings that we use in the codebase don't diverge. In that case, we will need to create a new configuration class for implementations different from es.
+        StoreEngineClientConfiguration esClientConfiguration = TelemetryStoreEngineClientConfiguration.getInstance(); //For now, different impls. share the same settings, until their settings that we use in the codebase don't diverge. In that case, we will need to create a new configuration class for implementations different from es.
         return new RestStoreEngineClientProvider(metricsEsClient, storeEngineClientBuilder)
                 .withClientConfiguration(esClientConfiguration)
                 .withModelContext(new ModelContextImpl(storableIdFactory, datastoreUtils))

@@ -26,7 +26,7 @@ import org.eclipse.kapua.service.storeengine.client.StoreEngineClientWrapper;
 import org.eclipse.kapua.service.storeengine.client.ModelContext;
 import org.eclipse.kapua.service.storeengine.client.QueryConverter;
 import org.eclipse.kapua.service.storeengine.client.SchemaKeys;
-import org.eclipse.kapua.service.storeengine.client.configuration.DeviceStoreClientConfiguration;
+import org.eclipse.kapua.service.storeengine.client.configuration.StoreEngineClientConfiguration;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientActionResponseException;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientCommunicationException;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientErrorCodes;
@@ -72,7 +72,7 @@ public class RestStoreEngineClientWrapper implements StoreEngineClientWrapper<St
     private static final Logger LOG = LoggerFactory.getLogger(RestStoreEngineClientWrapper.class);
 
     private StoreEngineClient wrappedClient;
-    private DeviceStoreClientConfiguration clientConfiguration;
+    private StoreEngineClientConfiguration clientConfiguration;
     private ModelContext modelContext;
     private QueryConverter modelConverter;
 
@@ -135,12 +135,12 @@ public class RestStoreEngineClientWrapper implements StoreEngineClientWrapper<St
     }
 
     @Override
-    public DeviceStoreClientConfiguration getClientConfiguration() {
+    public StoreEngineClientConfiguration getClientConfiguration() {
         return this.clientConfiguration;
     }
 
     @Override
-    public StoreEngineClientWrapper<StoreEngineClient> withClientConfiguration(DeviceStoreClientConfiguration clientConfiguration) {
+    public StoreEngineClientWrapper<StoreEngineClient> withClientConfiguration(StoreEngineClientConfiguration clientConfiguration) {
         this.clientConfiguration = clientConfiguration;
         return this;
     }

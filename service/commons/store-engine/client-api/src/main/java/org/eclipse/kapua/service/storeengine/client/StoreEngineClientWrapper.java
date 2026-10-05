@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.storeengine.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.kapua.service.storeengine.client.configuration.DeviceStoreClientConfiguration;
+import org.eclipse.kapua.service.storeengine.client.configuration.StoreEngineClientConfiguration;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientException;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientUnavailableException;
@@ -73,21 +73,21 @@ public interface StoreEngineClientWrapper<C extends Closeable> {
     StoreEngineClientWrapper<C> withClient(C wrappedClient);
 
     /**
-     * Gets the {@link DeviceStoreClientConfiguration}.
+     * Gets the {@link StoreEngineClientConfiguration}.
      *
-     * @return The {@link DeviceStoreClientConfiguration}.
+     * @return The {@link StoreEngineClientConfiguration}.
      * @since 1.3.0
      */
-    DeviceStoreClientConfiguration getClientConfiguration();
+    StoreEngineClientConfiguration getClientConfiguration();
 
     /**
-     * Sets the {@link DeviceStoreClientConfiguration} to use with the {@link StoreEngineClientWrapper}.
+     * Sets the {@link StoreEngineClientConfiguration} to use with the {@link StoreEngineClientWrapper}.
      *
-     * @param clientConfiguration The {@link DeviceStoreClientConfiguration}.
+     * @param clientConfiguration The {@link StoreEngineClientConfiguration}.
      * @return Itself, to chain invocations.
      * @since 1.3.0
      */
-    StoreEngineClientWrapper<C> withClientConfiguration(DeviceStoreClientConfiguration clientConfiguration);
+    StoreEngineClientWrapper<C> withClientConfiguration(StoreEngineClientConfiguration clientConfiguration);
 
     /**
      * Gets the {@link ModelContext}

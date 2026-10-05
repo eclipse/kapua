@@ -13,14 +13,14 @@
 package org.eclipse.kapua.service.storeengine.client.configuration;
 
 /**
- * The {@link ElasticsearchClientReconnectConfiguration} definition.
+ * The {@link StoreEngineClientReconnectConfiguration} definition.
  * <p>
  * It contains values for configuring reconnection properties.
  * It contains default values to ease the usage of the class.
  *
  * @since 1.3.0
  */
-public class ElasticsearchClientReconnectConfiguration {
+public class StoreEngineClientReconnectConfiguration {
 
     private int reconnectDelay = 30000;
 
@@ -40,10 +40,10 @@ public class ElasticsearchClientReconnectConfiguration {
      * Sets the reconnect delay after a connection lost with Elasticsearch
      *
      * @param reconnectDelay The reconnect delay to wait
-     * @return This {@link ElasticsearchClientReconnectConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientReconnectConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public ElasticsearchClientReconnectConfiguration setReconnectDelay(int reconnectDelay) {
+    public StoreEngineClientReconnectConfiguration setReconnectDelay(int reconnectDelay) {
         this.reconnectDelay = reconnectDelay;
         return this;
     }

@@ -38,7 +38,7 @@ package org.eclipse.kapua.service.storeengine.client.configuration;
  *
  * @since 1.3.0
  */
-public class ElasticsearchClientSslConfiguration {
+public class StoreEngineClientSslConfiguration {
 
     private boolean enabled;
     private String keyStorePath;
@@ -63,10 +63,10 @@ public class ElasticsearchClientSslConfiguration {
      * Sest whether or not the SSL encryption is enabled.
      *
      * @param enabled {@code true} if SSL encryption is enabled, {@code false} otherwise.
-     * @return This {@link ElasticsearchClientSslConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientSslConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public ElasticsearchClientSslConfiguration setEnabled(boolean enabled) {
+    public StoreEngineClientSslConfiguration setEnabled(boolean enabled) {
         this.enabled = enabled;
         return this;
     }
@@ -85,10 +85,10 @@ public class ElasticsearchClientSslConfiguration {
      * Sets the {@link java.security.KeyStore} path.
      *
      * @param keyStorePath The {@link java.security.KeyStore} path.
-     * @return This {@link ElasticsearchClientSslConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientSslConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public ElasticsearchClientSslConfiguration setKeyStorePath(String keyStorePath) {
+    public StoreEngineClientSslConfiguration setKeyStorePath(String keyStorePath) {
         this.keyStorePath = keyStorePath;
         return this;
     }
@@ -107,10 +107,10 @@ public class ElasticsearchClientSslConfiguration {
      * Sets the {@link java.security.KeyStore} password.
      *
      * @param keyStorePassword The {@link java.security.KeyStore} password.
-     * @return This {@link ElasticsearchClientSslConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientSslConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public ElasticsearchClientSslConfiguration setKeyStorePassword(String keyStorePassword) {
+    public StoreEngineClientSslConfiguration setKeyStorePassword(String keyStorePassword) {
         this.keyStorePassword = keyStorePassword;
         return this;
     }
@@ -129,10 +129,10 @@ public class ElasticsearchClientSslConfiguration {
      * Sets the {@link java.security.KeyStore} type.
      *
      * @param keyStoreType The {@link java.security.KeyStore} type.
-     * @return This {@link ElasticsearchClientSslConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientSslConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public ElasticsearchClientSslConfiguration setKeyStoreType(String keyStoreType) {
+    public StoreEngineClientSslConfiguration setKeyStoreType(String keyStoreType) {
         this.keyStoreType = keyStoreType;
         return this;
     }
@@ -151,10 +151,10 @@ public class ElasticsearchClientSslConfiguration {
      * Sets the trust {@link java.security.KeyStore} path.
      *
      * @param trustStorePath The trust {@link java.security.KeyStore} path.
-     * @return This {@link ElasticsearchClientSslConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientSslConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public ElasticsearchClientSslConfiguration setTrustStorePath(String trustStorePath) {
+    public StoreEngineClientSslConfiguration setTrustStorePath(String trustStorePath) {
         this.trustStorePath = trustStorePath;
         return this;
     }
@@ -173,10 +173,10 @@ public class ElasticsearchClientSslConfiguration {
      * Sets the trust {@link java.security.KeyStore} password.
      *
      * @param trustStorePassword The trust {@link java.security.KeyStore} password.
-     * @return This {@link ElasticsearchClientSslConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientSslConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public ElasticsearchClientSslConfiguration setTrustStorePassword(String trustStorePassword) {
+    public StoreEngineClientSslConfiguration setTrustStorePassword(String trustStorePassword) {
         this.trustStorePassword = trustStorePassword;
         return this;
     }

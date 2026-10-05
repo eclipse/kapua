@@ -38,9 +38,9 @@ import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.service.storeengine.client.StoreEngineClientProvider;
 import org.eclipse.kapua.service.storeengine.client.ModelContext;
 import org.eclipse.kapua.service.storeengine.client.QueryConverter;
-import org.eclipse.kapua.service.storeengine.client.configuration.DeviceStoreClientConfiguration;
-import org.eclipse.kapua.service.storeengine.client.configuration.ElasticsearchClientSslConfiguration;
-import org.eclipse.kapua.service.storeengine.client.configuration.ElasticsearchNode;
+import org.eclipse.kapua.service.storeengine.client.configuration.StoreEngineClientConfiguration;
+import org.eclipse.kapua.service.storeengine.client.configuration.StoreEngineClientSslConfiguration;
+import org.eclipse.kapua.service.storeengine.client.configuration.StoreEngineNode;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientProviderInitException;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientUnavailableException;
@@ -82,7 +82,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
 
     private List<RestStoreEngineClientWrapper> restDeviceStoreClientWrappers;
 
-    private DeviceStoreClientConfiguration deviceStoreClientConfiguration;
+    private StoreEngineClientConfiguration storeEngineClientConfiguration;
     private ModelContext modelContext;
     private QueryConverter modelConverter;
     private MetricsEsClient metrics;
@@ -113,7 +113,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
             if (initialized) { //this check is needed, in addition to the same above, to avoid multiple initializations with multi-threading
                 return this;
             }
-            if (deviceStoreClientConfiguration == null) {
+            if (storeEngineClientConfiguration == null) {
                 throw new ClientProviderInitException("Client configuration not defined");
             }
             if (modelContext == null) {
@@ -137,7 +137,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
                 configurationPrinter.openSection("Nodes");
 
                 int nodesIndex = 1;
-                for (ElasticsearchNode node : getClientConfiguration().getNodes()) {
+                for (StoreEngineNode node : getClientConfiguration().getNodes()) {
                     configurationPrinter
                             .openSection("# " + nodesIndex++)
                             .addParameter("Host", node.getAddress())
@@ -175,7 +175,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
 
             // Init Kapua Elasticsearch Client
             try {
-                int poolSize = deviceStoreClientConfiguration.getPoolSize();
+                int poolSize = storeEngineClientConfiguration.getPoolSize();
                 if (poolSize >= 1) {
                     LOG.info("ES Rest Client - Configured pool of size {}", poolSize);
                 } else {
@@ -288,7 +288,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
 //    }
 
     /**
-     * Initializes the {@link StoreEngineClient} pool as per {@link DeviceStoreClientConfiguration}.
+     * Initializes the {@link StoreEngineClient} pool as per {@link StoreEngineClientConfiguration}.
      *
      * @return The initialized {@link StoreEngineClient} pool.
      * @throws ClientInitializationException
@@ -309,7 +309,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
 
     private RestStoreEngineClientWrapper createClientWrapper() throws ClientInitializationException {
 
-        DeviceStoreClientConfiguration clientConfiguration = getClientConfiguration();
+        StoreEngineClientConfiguration clientConfiguration = getClientConfiguration();
 
         if (clientConfiguration.getNodes().isEmpty()) {
             throw new ClientInitializationException("No Elasticsearch nodes are configured");
@@ -432,8 +432,8 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
     }
 
     @Override
-    public StoreEngineClientProvider<RestStoreEngineClientWrapper> withClientConfiguration(DeviceStoreClientConfiguration deviceStoreClientConfiguration) {
-        this.deviceStoreClientConfiguration = deviceStoreClientConfiguration;
+    public StoreEngineClientProvider<RestStoreEngineClientWrapper> withClientConfiguration(StoreEngineClientConfiguration storeEngineClientConfiguration) {
+        this.storeEngineClientConfiguration = storeEngineClientConfiguration;
         return this;
     }
 
@@ -502,24 +502,24 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
     }
 
     /**
-     * Gets the {@link DeviceStoreClientConfiguration}.
+     * Gets the {@link StoreEngineClientConfiguration}.
      *
-     * @return The {@link DeviceStoreClientConfiguration}.
+     * @return The {@link StoreEngineClientConfiguration}.
      * @since 1.3.0
      */
-    private DeviceStoreClientConfiguration getClientConfiguration() {
-        return deviceStoreClientConfiguration;
+    private StoreEngineClientConfiguration getClientConfiguration() {
+        return storeEngineClientConfiguration;
     }
 
     /**
-     * Gets the {@link ElasticsearchClientSslConfiguration}.
+     * Gets the {@link StoreEngineClientSslConfiguration}.
      * <p>
      * Shortcut for {@link #getClientConfiguration()#getClientSslConfiguration()}
      *
-     * @return The {@link ElasticsearchClientSslConfiguration}
+     * @return The {@link StoreEngineClientSslConfiguration}
      * @since 1.3.0
      */
-    private ElasticsearchClientSslConfiguration getClientSslConfiguration() {
+    private StoreEngineClientSslConfiguration getClientSslConfiguration() {
         return getClientConfiguration().getSslConfiguration();
     }
 
@@ -531,12 +531,12 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
      * @return The {@link ElasticsearchClientReconnectConfiguration}
      * @since 1.3.0
      */
-//    private ElasticsearchClientReconnectConfiguration getClientReconnectConfiguration() {
+//    private StoreEngineClientReconnectConfiguration getClientReconnectConfiguration() {
 //        return getClientConfiguration().getReconnectConfiguration();
 //    }
 
     /**
-     * Initializes the {@link KeyStore}  as per  {@link ElasticsearchClientSslConfiguration} with the given {@link SSLContextBuilder}.
+     * Initializes the {@link KeyStore}  as per  {@link StoreEngineClientSslConfiguration} with the given {@link SSLContextBuilder}.
      *
      * @param sslBuilder
      *         The {@link SSLContextBuilder} to use.
@@ -545,7 +545,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
      * @since 1.0.0
      */
     private void initKeyStore(SSLContextBuilder sslBuilder) throws ClientInitializationException {
-        ElasticsearchClientSslConfiguration sslConfiguration = getClientSslConfiguration();
+        StoreEngineClientSslConfiguration sslConfiguration = getClientSslConfiguration();
 
         String keystorePath = sslConfiguration.getKeyStorePath();
         String keystorePassword = sslConfiguration.getKeyStorePassword();
@@ -561,11 +561,11 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
     }
 
     /**
-     * Initializes the {@link TrustStrategy} as per {@link ElasticsearchClientSslConfiguration} with the given {@link SSLContextBuilder}
+     * Initializes the {@link TrustStrategy} as per {@link StoreEngineClientSslConfiguration} with the given {@link SSLContextBuilder}
      * <p>
      * Truststore 2 available configurations:
      * <ol>
-     *     <li>Set the custom trust manager: if {@link ElasticsearchClientSslConfiguration#getTrustStorePath()} is defined</li>
+     *     <li>Set the custom trust manager: if {@link StoreEngineClientSslConfiguration#getTrustStorePath()} is defined</li>
      *     <li>Use the JVM default truststore: as fallback option</li>
      * </ol>
      *
@@ -576,7 +576,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
      * @since 1.0.0
      */
     private void initTrustStore(SSLContextBuilder sslBuilder) throws ClientInitializationException {
-        ElasticsearchClientSslConfiguration sslConfiguration = getClientSslConfiguration();
+        StoreEngineClientSslConfiguration sslConfiguration = getClientSslConfiguration();
 
         String truststorePath = sslConfiguration.getTrustStorePath();
         String truststorePassword = sslConfiguration.getTrustStorePassword();
@@ -594,7 +594,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
     }
 
     /**
-     * Loads the {@link KeyStore}  as per {@link ElasticsearchClientSslConfiguration}.
+     * Loads the {@link KeyStore}  as per {@link StoreEngineClientSslConfiguration}.
      *
      * @param keystorePath
      *         The {@link KeyStore} path.

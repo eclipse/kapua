@@ -15,13 +15,13 @@ package org.eclipse.kapua.service.storeengine.client.configuration;
 import org.eclipse.kapua.service.storeengine.client.StoreEngineClientWrapper;
 
 /**
- * {@link ElasticsearchNode} definition.
+ * {@link StoreEngineNode} definition.
  * <p>
  * This is the collector of host and port for the {@link StoreEngineClientWrapper}.
  *
  * @since 1.3.0
  */
-public class ElasticsearchNode {
+public class StoreEngineNode {
 
     private final String address;
     private final int port;
@@ -33,7 +33,7 @@ public class ElasticsearchNode {
      * @param port    The host port.
      * @since 1.3.0
      */
-    public ElasticsearchNode(String address, int port) {
+    public StoreEngineNode(String address, int port) {
         this.address = address;
         this.port = port;
     }

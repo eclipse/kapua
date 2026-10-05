@@ -21,7 +21,7 @@ import org.eclipse.kapua.service.storeengine.client.StoreEngineClientWrapper;
  * @since 1.3.0
  */
 //TODO: FIXME: singletons should not be handled manually, we have DI for that
-public class DeviceStoreClientSettings extends AbstractKapuaSetting<DatastoreElasticsearchClientSettingsKey> {
+public class TelemetryStoreEngineClientSettings extends AbstractKapuaSetting<DatastoreElasticsearchClientSettingsKey> {
 
     /**
      * Resource file from which source properties.
@@ -35,24 +35,24 @@ public class DeviceStoreClientSettings extends AbstractKapuaSetting<DatastoreEla
      *
      * @since 1.3.0
      */
-    private static final DeviceStoreClientSettings INSTANCE = new DeviceStoreClientSettings();
+    private static final TelemetryStoreEngineClientSettings INSTANCE = new TelemetryStoreEngineClientSettings();
 
     /**
-     * Initialize the {@link AbstractKapuaSetting} with the {@link DeviceStoreClientSettings#DATASTORE_ELASTICSEARCH_CONFIG_RESOURCE} value.
+     * Initialize the {@link AbstractKapuaSetting} with the {@link TelemetryStoreEngineClientSettings#DATASTORE_ELASTICSEARCH_CONFIG_RESOURCE} value.
      *
      * @since 1.3.0
      */
-    private DeviceStoreClientSettings() {
+    private TelemetryStoreEngineClientSettings() {
         super(DATASTORE_ELASTICSEARCH_CONFIG_RESOURCE);
     }
 
     /**
-     * Gets a singleton instance of {@link DeviceStoreClientSettings}.
+     * Gets a singleton instance of {@link TelemetryStoreEngineClientSettings}.
      *
-     * @return A singleton instance of {@link DeviceStoreClientSettings}.
+     * @return A singleton instance of {@link TelemetryStoreEngineClientSettings}.
      * @since 1.3.0
      */
-    public static DeviceStoreClientSettings getInstance() {
+    public static TelemetryStoreEngineClientSettings getInstance() {
         return INSTANCE;
     }
 }

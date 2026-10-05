@@ -15,7 +15,7 @@ package org.eclipse.kapua.service.storeengine.client.utils;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-import org.eclipse.kapua.service.storeengine.client.configuration.ElasticsearchNode;
+import org.eclipse.kapua.service.storeengine.client.configuration.StoreEngineNode;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -38,19 +38,19 @@ public class InetAddressParserTest {
 
     @Test
     public void testLocal() {
-        InetSocketAddress result = InetAddressParser.parseAddresses(new ElasticsearchNode("127.0.0.1", 9300));
+        InetSocketAddress result = InetAddressParser.parseAddresses(new StoreEngineNode("127.0.0.1", 9300));
         assertThatResolvedAs(result, Inet4Address.class, "127.0.0.1", 9300);
     }
 
     @Test
     public void testLocalV6() {
-        InetSocketAddress result = InetAddressParser.parseAddresses(new ElasticsearchNode("[::1]", 9300));
+        InetSocketAddress result = InetAddressParser.parseAddresses(new StoreEngineNode("[::1]", 9300));
         assertThatResolvedAs(result, Inet6Address.class, "0:0:0:0:0:0:0:1", 9300);
     }
 
     @Test
     public void testHostUnknown() {
-        InetSocketAddress result = InetAddressParser.parseAddresses(new ElasticsearchNode(UNKNOWN_HOST, 9300));
+        InetSocketAddress result = InetAddressParser.parseAddresses(new StoreEngineNode(UNKNOWN_HOST, 9300));
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result).has(UNRESOLVED);
     }

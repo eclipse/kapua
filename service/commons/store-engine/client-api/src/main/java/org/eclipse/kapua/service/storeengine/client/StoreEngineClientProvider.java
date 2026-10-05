@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.storeengine.client;
 
-import org.eclipse.kapua.service.storeengine.client.configuration.DeviceStoreClientConfiguration;
+import org.eclipse.kapua.service.storeengine.client.configuration.StoreEngineClientConfiguration;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientClosingException;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientProviderInitException;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientUnavailableException;
@@ -46,18 +46,18 @@ public interface StoreEngineClientProvider<C extends StoreEngineClientWrapper> {
     void close() throws ClientClosingException;
 
     /**
-     * Sets the {@link DeviceStoreClientConfiguration} to use to instantiate and manage the {@link StoreEngineClientWrapper}.
+     * Sets the {@link StoreEngineClientConfiguration} to use to instantiate and manage the {@link StoreEngineClientWrapper}.
      *
-     * @param deviceStoreClientConfiguration The {@link DeviceStoreClientConfiguration}.
+     * @param storeEngineClientConfiguration The {@link StoreEngineClientConfiguration}.
      * @return Itself, to chain invocations.
      * @since 1.3.0
      */
-    StoreEngineClientProvider<C> withClientConfiguration(DeviceStoreClientConfiguration deviceStoreClientConfiguration);
+    StoreEngineClientProvider<C> withClientConfiguration(StoreEngineClientConfiguration storeEngineClientConfiguration);
 
     /**
      * Sets the {@link ModelContext} to use in the {@link StoreEngineClientWrapper}.
      *
-     * @param modelContext The {@link DeviceStoreClientConfiguration}.
+     * @param modelContext The {@link StoreEngineClientConfiguration}.
      * @return Itself, to chain invocations.
      * @since 1.3.0
      */

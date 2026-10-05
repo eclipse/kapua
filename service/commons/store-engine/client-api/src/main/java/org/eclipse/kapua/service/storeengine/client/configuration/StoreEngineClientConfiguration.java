@@ -19,22 +19,22 @@ import java.util.Optional;
 import org.eclipse.kapua.service.storeengine.client.StoreEngineClientWrapper;
 
 /**
- * The {@link DeviceStoreClientConfiguration} used to configure an instance of a {@link StoreEngineClientWrapper}
+ * The {@link StoreEngineClientConfiguration} used to configure an instance of a {@link StoreEngineClientWrapper}
  *
  * @since 1.3.0
  */
-public class DeviceStoreClientConfiguration {
+public class StoreEngineClientConfiguration {
 
     private String moduleName;
     private String clusterName;
-    private List<ElasticsearchNode> nodes;
+    private List<StoreEngineNode> nodes;
     private String username;
     private String password;
     private int poolSize;
 
-    private ElasticsearchClientReconnectConfiguration reconnectConfiguration = new ElasticsearchClientReconnectConfiguration();
-    private ElasticsearchClientRequestConfiguration requestConfiguration = new ElasticsearchClientRequestConfiguration();
-    private ElasticsearchClientSslConfiguration sslConfiguration = new ElasticsearchClientSslConfiguration();
+    private StoreEngineClientReconnectConfiguration reconnectConfiguration = new StoreEngineClientReconnectConfiguration();
+    private StoreEngineClientRequestConfiguration requestConfiguration = new StoreEngineClientRequestConfiguration;
+    private StoreEngineClientSslConfiguration sslConfiguration = new StoreEngineClientSslConfiguration();
     private ElasticsearchClientConnectionConfiguration connectionConfiguration = new ElasticsearchClientConnectionConfiguration();
 
     /**
@@ -73,21 +73,21 @@ public class DeviceStoreClientConfiguration {
      *
      * @param clusterName
      *         The Elasticsearch cluster name to use.
-     * @return This {@link DeviceStoreClientConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public DeviceStoreClientConfiguration setClusterName(String clusterName) {
+    public StoreEngineClientConfiguration setClusterName(String clusterName) {
         this.clusterName = clusterName;
         return this;
     }
 
     /**
-     * Gets the {@link List} of {@link ElasticsearchNode}s.
+     * Gets the {@link List} of {@link StoreEngineNode}s.
      *
-     * @return The {@link List} of {@link ElasticsearchNode}s.
+     * @return The {@link List} of {@link StoreEngineNode}s.
      * @since 1.3.0
      */
-    public List<ElasticsearchNode> getNodes() {
+    public List<StoreEngineNode> getNodes() {
         if (nodes == null) {
             nodes = new ArrayList<>();
         }
@@ -96,34 +96,34 @@ public class DeviceStoreClientConfiguration {
     }
 
     /**
-     * Adds a new {@link ElasticsearchNode} to the {@link List} {@link ElasticsearchNode}s already configured.
+     * Adds a new {@link StoreEngineNode} to the {@link List} {@link StoreEngineNode}s already configured.
      * <p>
      * Shortcut method for:
      * <pre>
-     *     getNodes().add(new ElasticsearchNode(address, port));
+     *     getNodes().add(new StoreEngineNode(address, port));
      * </pre>
      *
      * @param address
      *         The host of the Elasticsearch node
      * @param port
      *         The port of the Elasticsearch node
-     * @return This {@link DeviceStoreClientConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public DeviceStoreClientConfiguration addNode(String address, int port) {
-        getNodes().add(new ElasticsearchNode(address, port));
+    public StoreEngineClientConfiguration addNode(String address, int port) {
+        getNodes().add(new StoreEngineNode(address, port));
         return this;
     }
 
     /**
-     * Sets the {@link List} of {@link ElasticsearchNode}s.
+     * Sets the {@link List} of {@link StoreEngineNode}s.
      *
      * @param nodes
-     *         The {@link List} of {@link ElasticsearchNode}s.
-     * @return This {@link DeviceStoreClientConfiguration} to chain method invocation.
+     *         The {@link List} of {@link StoreEngineNode}s.
+     * @return This {@link StoreEngineClientConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public DeviceStoreClientConfiguration setNodes(List<ElasticsearchNode> nodes) {
+    public StoreEngineClientConfiguration setNodes(List<StoreEngineNode> nodes) {
         this.nodes = nodes;
         return this;
     }
@@ -145,10 +145,10 @@ public class DeviceStoreClientConfiguration {
      *
      * @param username
      *         The username used to authenticate into Elasticsearch.
-     * @return This {@link DeviceStoreClientConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public DeviceStoreClientConfiguration setUsername(String username) {
+    public StoreEngineClientConfiguration setUsername(String username) {
         this.username = username;
         return this;
     }
@@ -170,79 +170,79 @@ public class DeviceStoreClientConfiguration {
      *
      * @param password
      *         The password used to authenticate into Elasticsearch.
-     * @return This {@link DeviceStoreClientConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public DeviceStoreClientConfiguration setPassword(String password) {
+    public StoreEngineClientConfiguration setPassword(String password) {
         this.password = password;
         return this;
     }
 
     /**
-     * Gets the {@link ElasticsearchClientReconnectConfiguration}.
+     * Gets the {@link StoreEngineClientReconnectConfiguration}.
      *
-     * @return The {@link ElasticsearchClientReconnectConfiguration}.
+     * @return The {@link StoreEngineClientReconnectConfiguration}.
      * @since 1.3.0
      */
-    public ElasticsearchClientReconnectConfiguration getReconnectConfiguration() {
+    public StoreEngineClientReconnectConfiguration getReconnectConfiguration() {
         return reconnectConfiguration;
     }
 
     /**
-     * Sets the {@link ElasticsearchClientReconnectConfiguration}.
+     * Sets the {@link StoreEngineClientReconnectConfiguration}.
      *
      * @param reconnectConfiguration
-     *         The {@link ElasticsearchClientReconnectConfiguration}.
-     * @return This {@link DeviceStoreClientConfiguration} to chain method invocation.
+     *         The {@link StoreEngineClientReconnectConfiguration}.
+     * @return This {@link StoreEngineClientConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public DeviceStoreClientConfiguration setReconnectConfiguration(ElasticsearchClientReconnectConfiguration reconnectConfiguration) {
+    public StoreEngineClientConfiguration setReconnectConfiguration(StoreEngineClientReconnectConfiguration reconnectConfiguration) {
         this.reconnectConfiguration = reconnectConfiguration;
         return this;
     }
 
     /**
-     * Gets the {@link ElasticsearchClientReconnectConfiguration}.
+     * Gets the {@link StoreEngineClientReconnectConfiguration}.
      *
-     * @return the {@link ElasticsearchClientReconnectConfiguration}.
+     * @return the {@link StoreEngineClientReconnectConfiguration}.
      * @since 1.3.0
      */
-    public ElasticsearchClientRequestConfiguration getRequestConfiguration() {
+    public StoreEngineClientRequestConfiguration getRequestConfiguration() {
         return requestConfiguration;
     }
 
     /**
-     * Sets the {@link ElasticsearchClientReconnectConfiguration}.
+     * Sets the {@link StoreEngineClientReconnectConfiguration}.
      *
      * @param requestConfiguration
-     *         the {@link ElasticsearchClientReconnectConfiguration}.
-     * @return This {@link DeviceStoreClientConfiguration} to chain method invocation.
+     *         the {@link StoreEngineClientReconnectConfiguration}.
+     * @return This {@link StoreEngineClientConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public DeviceStoreClientConfiguration setRequestConfiguration(ElasticsearchClientRequestConfiguration requestConfiguration) {
+    public StoreEngineClientConfiguration setRequestConfiguration(StoreEngineClientRequestConfiguration requestConfiguration) {
         this.requestConfiguration = requestConfiguration;
         return this;
     }
 
     /**
-     * Gets the {@link ElasticsearchClientSslConfiguration}
+     * Gets the {@link StoreEngineClientSslConfiguration}
      *
-     * @return The {@link ElasticsearchClientSslConfiguration}
+     * @return The {@link StoreEngineClientSslConfiguration}
      * @since 1.3.0
      */
-    public ElasticsearchClientSslConfiguration getSslConfiguration() {
+    public StoreEngineClientSslConfiguration getSslConfiguration() {
         return sslConfiguration;
     }
 
     /**
-     * Sets the {@link ElasticsearchClientSslConfiguration}
+     * Sets the {@link StoreEngineClientSslConfiguration}
      *
      * @param sslConfiguration
-     *         The {@link ElasticsearchClientSslConfiguration}
-     * @return This {@link DeviceStoreClientConfiguration} to chain method invocation.
+     *         The {@link StoreEngineClientSslConfiguration}
+     * @return This {@link StoreEngineClientConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public DeviceStoreClientConfiguration setSslConfiguration(ElasticsearchClientSslConfiguration sslConfiguration) {
+    public StoreEngineClientConfiguration setSslConfiguration(StoreEngineClientSslConfiguration sslConfiguration) {
         this.sslConfiguration = sslConfiguration;
         return this;
     }
@@ -262,7 +262,7 @@ public class DeviceStoreClientConfiguration {
      * @return
      */
     @Deprecated
-    public ElasticsearchClientConfiguration setNumberOfIOThreads(Integer numberOfIOThreads) {
+    public StoreEngineClientConfiguration setNumberOfIOThreads(Integer numberOfIOThreads) {
         this.getConnectionConfiguration().setNumberOfIOThreads(Optional.of(numberOfIOThreads));
         return this;
     }
@@ -282,10 +282,10 @@ public class DeviceStoreClientConfiguration {
      *
      * @param poolSize 
      *         The size of the Elasticsearch client pool.
-     * @return This {@link DeviceStoreClientConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientConfiguration} to chain method invocation.
      * @since 1.6.0
      */
-    public DeviceStoreClientConfiguration setPoolSize(int poolSize) {
+    public StoreEngineClientConfiguration setPoolSize(int poolSize) {
         this.poolSize = poolSize;
         return this;
     }
@@ -305,10 +305,10 @@ public class DeviceStoreClientConfiguration {
      *
      * @param connectionConfiguration
      *         The {@link ElasticsearchClientConnectionConfiguration}
-     * @return This {@link ElasticsearchClientConnectionConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientConfiguration} to chain method invocation.
      * @since 2.1.0
      */
-    public ElasticsearchClientConfiguration setConnectionConfiguration(ElasticsearchClientConnectionConfiguration connectionConfiguration) {
+    public StoreEngineClientConfiguration setConnectionConfiguration(ElasticsearchClientConnectionConfiguration connectionConfiguration) {
         this.connectionConfiguration = connectionConfiguration;
         return this;
     }

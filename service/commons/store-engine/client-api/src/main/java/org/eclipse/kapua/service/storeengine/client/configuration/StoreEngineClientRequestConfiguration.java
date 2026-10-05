@@ -17,11 +17,11 @@ import java.util.Optional;
 import org.eclipse.kapua.service.storeengine.client.model.Request;
 
 /**
- * The {@link ElasticsearchClientRequestConfiguration} definition.
+ * The {@link StoreEngineClientRequestConfiguration} definition.
  * <p>
  * It contains values for configuring request properties. It contains default values to ease the usage of the class.
  */
-public class ElasticsearchClientRequestConfiguration {
+public class StoreEngineClientRequestConfiguration {
 
     private int requestRetryAttemptMax = 3;
     private int requestRetryAttemptWait = 2500;
@@ -48,10 +48,10 @@ public class ElasticsearchClientRequestConfiguration {
      *
      * @param requestRetryAttemptMax
      *         The number of maximum attempts to retry a {@link Request}.
-     * @return This {@link ElasticsearchClientRequestConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientRequestConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public ElasticsearchClientRequestConfiguration setRequestRetryAttemptMax(int requestRetryAttemptMax) {
+    public StoreEngineClientRequestConfiguration setRequestRetryAttemptMax(int requestRetryAttemptMax) {
         this.requestRetryAttemptMax = requestRetryAttemptMax;
         return this;
     }
@@ -73,10 +73,10 @@ public class ElasticsearchClientRequestConfiguration {
      *
      * @param requestRetryAttemptWait
      *         The wait time between {@link Request} retries.
-     * @return This {@link ElasticsearchClientRequestConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientRequestConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public ElasticsearchClientRequestConfiguration setRequestRetryAttemptWait(int requestRetryAttemptWait) {
+    public StoreEngineClientRequestConfiguration setRequestRetryAttemptWait(int requestRetryAttemptWait) {
         this.requestRetryAttemptWait = requestRetryAttemptWait;
         return this;
     }
@@ -98,10 +98,10 @@ public class ElasticsearchClientRequestConfiguration {
      *
      * @param queryTimeout
      *         The query {@link Request} timeout.
-     * @return This {@link ElasticsearchClientRequestConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientRequestConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public ElasticsearchClientRequestConfiguration setQueryTimeout(int queryTimeout) {
+    public StoreEngineClientRequestConfiguration setQueryTimeout(int queryTimeout) {
         this.queryTimeout = queryTimeout;
         return this;
     }
@@ -123,10 +123,10 @@ public class ElasticsearchClientRequestConfiguration {
      *
      * @param scrollTimeout
      *         The scroll {@link Request} timeout.
-     * @return This {@link ElasticsearchClientRequestConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientRequestConfiguration} to chain method invocation.
      * @since 1.3.0
      */
-    public ElasticsearchClientRequestConfiguration setScrollTimeout(int scrollTimeout) {
+    public StoreEngineClientRequestConfiguration setScrollTimeout(int scrollTimeout) {
         this.scrollTimeout = scrollTimeout;
         return this;
     }
@@ -160,10 +160,10 @@ public class ElasticsearchClientRequestConfiguration {
      *
      * @param connectionTimeoutMillis
      *         The scroll {@link Request} connection timeout.
-     * @return This {@link ElasticsearchClientRequestConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientRequestConfiguration} to chain method invocation.
      * @since 2.1.0
      */
-    public ElasticsearchClientRequestConfiguration setConnectionTimeoutMillis(Integer connectionTimeoutMillis) {
+    public StoreEngineClientRequestConfiguration setConnectionTimeoutMillis(Integer connectionTimeoutMillis) {
         this.connectionTimeoutMillis = Optional.ofNullable(connectionTimeoutMillis).filter(i -> i >= 0);
         return this;
     }
@@ -173,10 +173,10 @@ public class ElasticsearchClientRequestConfiguration {
      *
      * @param socketTimeoutMillis
      *         The scroll {@link Request} socket timeout.
-     * @return This {@link ElasticsearchClientRequestConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientRequestConfiguration} to chain method invocation.
      * @since 2.1.0
      */
-    public ElasticsearchClientRequestConfiguration setSocketTimeoutMillis(Integer socketTimeoutMillis) {
+    public StoreEngineClientRequestConfiguration setSocketTimeoutMillis(Integer socketTimeoutMillis) {
         this.socketTimeoutMillis = Optional.ofNullable(socketTimeoutMillis).filter(i -> i >= 0);
         return this;
     }
