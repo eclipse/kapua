@@ -75,7 +75,7 @@ public class MetricInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
             MetricInfoRepository metricInfoRepository,
             DatastoreCacheManager datastoreCacheManager,
             DatastoreSettings datastoreSettings) {
-        super(configProvider);
+        super(configProvider, datastoreCacheManager.getConfigurationCache());
 
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;

@@ -12,6 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -29,7 +36,6 @@ import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreChannel;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageInfo;
-import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
 import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoImpl;
@@ -56,12 +62,6 @@ import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Message store facade
@@ -101,8 +101,9 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
             ClientInfoRepository clientInfoRepository,
             MetricsDatastore metricsDatastore,
             DatastoreUtils datastoreUtils,
-            DatastoreCacheManager datastoreCacheManager) {
-        super(configProvider);
+            DatastoreCacheManager cacheManager) {
+        super(configProvider, cacheManager.getConfigurationCache());
+
         this.storableIdFactory = storableIdFactory;
         this.clientInfoRegistryFacade = clientInfoRegistryFacade;
         this.channelInfoStoreFacade = channelInfoStoreFacade;
@@ -113,7 +114,7 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
         this.clientInfoRepository = clientInfoRepository;
         this.metrics = metricsDatastore;
         this.datastoreUtils = datastoreUtils;
-        this.datastoreCacheManager = datastoreCacheManager;
+        this.datastoreCacheManager = cacheManager;
     }
 
     /**
@@ -141,9 +142,8 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
         // Overwrite timestamp if necessary
         // Use the account service plan to determine whether we will give
         // precede to the device time
-        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(message.getScopeId());
         long indexedOn = KapuaDateUtils.getKapuaSysDate().toEpochMilli();
-        if (DataIndexBy.DEVICE_TIMESTAMP.equals(accountServicePlan.getDataIndexBy())) {
+        if (DataIndexBy.DEVICE_TIMESTAMP.equals(this.getMessageStoreConfiguration(message.getScopeId()).getDataIndexBy())) {
             if (capturedOn != null) {
                 indexedOn = capturedOn.getTime();
             } else {
@@ -153,8 +153,8 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
         // Extract schema metadata
         Date indexedOnDate = new Date(indexedOn);
 
-        if (!newInsert && !MessageUniquenessCheck.NONE.equals(accountServicePlan.getMessageUniquenessCheck())) {
-            DatastoreMessage datastoreMessage = MessageUniquenessCheck.FULL.equals(accountServicePlan.getMessageUniquenessCheck()) ?
+        if (!newInsert && !MessageUniquenessCheck.NONE.equals(this.getMessageStoreConfiguration(message.getScopeId()).getMessageUniquenessCheck())) {
+            DatastoreMessage datastoreMessage = MessageUniquenessCheck.FULL.equals(this.getMessageStoreConfiguration(message.getScopeId()).getMessageUniquenessCheck()) ?
                     messageRepository.find(message.getScopeId(), storableIdFactory.newStorableId(messageId)) :
                     messageRepository.find(message.getScopeId(), storableIdFactory.newStorableId(messageId), indexedOnDate.getTime());
             if (datastoreMessage != null) {
@@ -185,8 +185,8 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
         final String storedId = messageRepository.store(messageToStore, metrics);
         messageToStore.setDatastoreId(storableIdFactory.newStorableId(storedId));
 
-        MessageInfo messageInfo = configProvider.getInfo(message.getScopeId());
-        this.onAfterMessageStore(messageInfo, messageToStore);
+        //MessageInfo messageInfo = configProvider.getInfo(message.getScopeId());
+        this.onAfterMessageStore(null, messageToStore);
 
         return storableIdFactory.newStorableId(storedId);
     }
