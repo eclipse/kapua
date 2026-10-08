@@ -48,7 +48,9 @@ import org.eclipse.kapua.translator.exception.InvalidPayloadException;
  */
 public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<ConfigurationResponseChannel, ConfigurationResponsePayload, ConfigurationResponseMessage> {
 
-    private boolean isWire;
+    // Translators are shared between threads (see TranslatorHubModule): per-translation state must be kept per thread
+    private final ThreadLocal<Boolean> isWire = new ThreadLocal<>();
+
     @Inject
     public TranslatorAppConfigurationKuraKapua(DeviceManagementSetting deviceManagementSetting) {
         super(deviceManagementSetting, ConfigurationResponseMessage.class, ConfigurationResponsePayload.class);
@@ -56,10 +58,12 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
 
     @Override
     protected ConfigurationResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
+        // Always set explicitly, so that a value left over by a previous failed translation on this thread is never reused
+        isWire.set(false);
         try {
             if (kuraResponseChannel.getAppId().contains("WIRE")) {
                 translatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, WireMetrics.APP_ID, WireMetrics.APP_VERSION);
-                isWire = true;
+                isWire.set(true);
             } else {
                 translatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, ConfigurationMetrics.APP_ID, ConfigurationMetrics.APP_VERSION);
             }
@@ -71,12 +75,12 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
 
     @Override
     protected ConfigurationResponsePayload translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
-        ConfigurationResponsePayload configurationResponsePayload = super.translatePayload(kuraResponsePayload);
-
         try {
+            ConfigurationResponsePayload configurationResponsePayload = super.translatePayload(kuraResponsePayload);
+
             if (kuraResponsePayload.hasBody()) {
                 KuraDeviceConfiguration kuraDeviceConfiguration;
-                if (isWire) {
+                if (Boolean.TRUE.equals(isWire.get())) {
                     kuraDeviceConfiguration = readJsonBodyAs(kuraResponsePayload.getBody(), KuraDeviceConfiguration.class);
                 } else {
                     kuraDeviceConfiguration = readXmlBodyAs(kuraResponsePayload.getBody(), KuraDeviceConfiguration.class);
@@ -86,8 +90,13 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
 
             // Return Kapua Payload
             return configurationResponsePayload;
+        } catch (InvalidPayloadException ipe) {
+            throw ipe;
         } catch (Exception e) {
             throw new InvalidPayloadException(e, kuraResponsePayload);
+        } finally {
+            // Clean up ThreadLocal to prevent memory leaks
+            isWire.remove();
         }
     }
 

@@ -54,10 +54,13 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
     @Inject
     protected DeviceConfigurationFactory deviceConfigurationFactory;
 
-    private final ThreadLocal<Boolean> isWire = new ThreadLocal<>(); //ThreadLocal should not be necessary until new translator instances are created for each request/thread, but kept here for safety (from what I understand, now translators classes and TranslatorHub are not Singletons)
+    // Translators are shared between threads (see TranslatorHubModule): per-translation state must be kept per thread
+    private final ThreadLocal<Boolean> isWire = new ThreadLocal<>();
 
     @Override
     protected KuraRequestChannel translateChannel(ConfigurationRequestChannel kapuaChannel) throws InvalidChannelException {
+        // Always set explicitly, so that a value left over by a previous failed translation on this thread is never reused
+        isWire.set(false);
         try {
             KuraRequestChannel kuraRequestChannel = TranslatorKapuaKuraUtils.buildBaseRequestChannel(ConfigurationMetrics.APP_ID, ConfigurationMetrics.APP_VERSION, kapuaChannel.getMethod());
 

@@ -13,11 +13,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator;
 
+import com.google.inject.Singleton;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 
 public class TranslatorHubModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(TranslatorHub.class).to(TranslatorHubImpl.class);
+        // Singleton: the injected Translators are shared between all callers and threads, so they must be stateless
+        bind(TranslatorHub.class).to(TranslatorHubImpl.class).in(Singleton.class);
     }
 }
