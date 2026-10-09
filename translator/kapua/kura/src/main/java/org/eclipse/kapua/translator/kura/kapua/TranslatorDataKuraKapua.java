@@ -17,13 +17,11 @@ import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataChannel;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataPayload;
-import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidMessageException;
@@ -42,9 +40,7 @@ import javax.inject.Inject;
 public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDataMessage> {
 
     @Inject
-    private AccountService accountService;
-    @Inject
-    private DeviceRegistryService deviceRegistryService;
+    private TranslatorKuraKapuaIdsCache translatorKuraKapuaIdsCache;
     @Inject
     private KapuaDataMessageFactory kapuaDataMessageFactory;
     @Inject
@@ -65,14 +61,14 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
             // Kapua payload
             KapuaDataPayload kapuaDataPayload = translate(kuraMessage.getPayload());
             // Kapua message
-            Account account = accountService.findByName(kuraMessage.getChannel().getScope());
+            KapuaId scopeId = translatorKuraKapuaIdsCache.findAccountId(kuraMessage.getChannel().getScope());
 
-            if (account == null) {
+            if (scopeId == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraMessage.getChannel().getScope());
             }
 
             KapuaDataMessage kapuaDataMessage = kapuaDataMessageFactory.newKapuaDataMessage();
-            kapuaDataMessage.setScopeId(account.getId());
+            kapuaDataMessage.setScopeId(scopeId);
             kapuaDataMessage.setClientId(kuraMessage.getChannel().getClientId());
             kapuaDataMessage.setChannel(kapuaDataChannel);
             kapuaDataMessage.setPayload(kapuaDataPayload);
@@ -83,8 +79,7 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
 
             // Optionally resolve the KapuaDataChannel.clientId to improve performances
             if (resolveDeviceId) {
-                Device device = deviceRegistryService.findByClientId(account.getId(), kuraMessage.getChannel().getClientId());
-                kapuaDataMessage.setDeviceId(device != null ? device.getId() : null);
+                kapuaDataMessage.setDeviceId(translatorKuraKapuaIdsCache.findDeviceId(scopeId, kuraMessage.getChannel().getClientId()));
             }
 
             // Return Kapua Message

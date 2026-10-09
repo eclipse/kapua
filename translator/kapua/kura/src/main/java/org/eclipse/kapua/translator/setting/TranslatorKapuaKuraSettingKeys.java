@@ -30,7 +30,65 @@ public enum TranslatorKapuaKuraSettingKeys implements SettingKey {
      *
      * @since 2.1.0
      */
-    TRANSLATOR_KURA_KAPUA_DATA_DEVICE_ID_RESOLVE("translator.kura.kapua.data.deviceId.resolve");
+    TRANSLATOR_KURA_KAPUA_DATA_DEVICE_ID_RESOLVE("translator.kura.kapua.data.deviceId.resolve"),
+
+    /**
+     * Default maximum size of the local caches used to resolve {@link KuraChannel#getScope()} and {@link KuraChannel#getClientId()}.
+     * A value less than or equal to 0 disables the cache.
+     *
+     * @since 2.1.0
+     */
+    TRANSLATOR_KURA_KAPUA_CACHE_LOCAL_SIZE_MAXIMUM("translator.kura.kapua.cache.local.size.maximum"),
+
+    /**
+     * Default expiration time (in seconds) of the local caches used to resolve {@link KuraChannel#getScope()} and {@link KuraChannel#getClientId()}.
+     * A value less than or equal to 0 disables the cache.
+     *
+     * @since 2.1.0
+     */
+    TRANSLATOR_KURA_KAPUA_CACHE_LOCAL_EXPIRE_AFTER("translator.kura.kapua.cache.local.expire.after"),
+
+    /**
+     * Maximum size of the local cache of account ids by account name. Overrides {@link #TRANSLATOR_KURA_KAPUA_CACHE_LOCAL_SIZE_MAXIMUM}.
+     *
+     * @since 2.1.0
+     */
+    TRANSLATOR_KURA_KAPUA_CACHE_ACCOUNT_LOCAL_SIZE_MAXIMUM("translator.kura.kapua.cache.account.local.size.maximum"),
+
+    /**
+     * Expiration time (in seconds) of the local cache of account ids by account name. Overrides {@link #TRANSLATOR_KURA_KAPUA_CACHE_LOCAL_EXPIRE_AFTER}.
+     *
+     * @since 2.1.0
+     */
+    TRANSLATOR_KURA_KAPUA_CACHE_ACCOUNT_LOCAL_EXPIRE_AFTER("translator.kura.kapua.cache.account.local.expire.after"),
+
+    /**
+     * Expiration strategy of the local cache of account ids by account name. Defaults to {@link org.eclipse.kapua.commons.cache.ExpiryPolicy#MODIFIED}.
+     *
+     * @since 2.1.0
+     */
+    TRANSLATOR_KURA_KAPUA_CACHE_ACCOUNT_LOCAL_EXPIRE_STRATEGY("translator.kura.kapua.cache.account.local.expire.strategy"),
+
+    /**
+     * Maximum size of the local cache of {@link Device} ids by scope id and client id. Overrides {@link #TRANSLATOR_KURA_KAPUA_CACHE_LOCAL_SIZE_MAXIMUM}.
+     *
+     * @since 2.1.0
+     */
+    TRANSLATOR_KURA_KAPUA_CACHE_DEVICE_LOCAL_SIZE_MAXIMUM("translator.kura.kapua.cache.device.local.size.maximum"),
+
+    /**
+     * Expiration time (in seconds) of the local cache of {@link Device} ids by scope id and client id. Overrides {@link #TRANSLATOR_KURA_KAPUA_CACHE_LOCAL_EXPIRE_AFTER}.
+     *
+     * @since 2.1.0
+     */
+    TRANSLATOR_KURA_KAPUA_CACHE_DEVICE_LOCAL_EXPIRE_AFTER("translator.kura.kapua.cache.device.local.expire.after"),
+
+    /**
+     * Expiration strategy of the local cache of {@link Device} ids by scope id and client id. Defaults to {@link org.eclipse.kapua.commons.cache.ExpiryPolicy#MODIFIED}.
+     *
+     * @since 2.1.0
+     */
+    TRANSLATOR_KURA_KAPUA_CACHE_DEVICE_LOCAL_EXPIRE_STRATEGY("translator.kura.kapua.cache.device.local.expire.strategy");
 
     /**
      * The key value of the {@link SettingKey}.
