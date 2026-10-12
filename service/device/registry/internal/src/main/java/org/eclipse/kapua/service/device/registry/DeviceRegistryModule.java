@@ -17,6 +17,8 @@ import java.util.Map;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.commons.lang3.tuple.Pair;
+import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.core.ServiceModule;
@@ -33,6 +35,7 @@ import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.domain.DomainEntry;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.GroupQueryHelper;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
@@ -65,6 +68,7 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceImplJpaRepository;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCache;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCacheFactory;
+import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceCachedImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
 import org.eclipse.kapua.service.device.registry.lifecycle.internal.DeviceLifeCycleServiceImpl;
@@ -75,6 +79,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Provides;
+import com.google.inject.TypeLiteral;
+import com.google.inject.name.Names;
 import com.google.inject.multibindings.ProvidesIntoSet;
 
 /**
@@ -97,6 +103,20 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
         bind(KapuaDeviceRegistrySettings.class).in(Singleton.class);
         //This needs to be auto-created by guice, otherwise the RaiseServiceEventInterceptor will not work (sic!)
         bind(DeviceConnectionService.class).to(DeviceConnectionServiceImpl.class).in(Singleton.class);
+
+        // Local cache of Devices by scope id and client id, used by the cached DeviceRegistryService
+        final KapuaDeviceRegistrySettings kapuaDeviceRegistrySettings = new KapuaDeviceRegistrySettings();
+        bind(
+                new TypeLiteral<LocalCache<Pair<KapuaId, String>, Device>>() {
+
+                })
+                .annotatedWith(Names.named("devicesByClientIdCache"))
+                .toInstance(new LocalCache<>(
+                        kapuaDeviceRegistrySettings.getCacheConfig(
+                                KapuaDeviceRegistrySettingKeys.DEVICE_CACHE_LOCAL_SIZE_MAXIMUM, 10000,
+                                KapuaDeviceRegistrySettingKeys.DEVICE_CACHE_LOCAL_EXPIRE_AFTER, 3600,
+                                KapuaDeviceRegistrySettingKeys.DEVICE_CACHE_LOCAL_EXPIRE_STRATEGY),
+                        null));
     }
 
     @ProvidesIntoSet
@@ -204,6 +224,35 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                 deviceRepository,
                 groupQueryHelper,
                 eventStorer
+        );
+    }
+
+    @Provides
+    @Singleton
+    @Named("cachedDeviceRegistryService")
+    DeviceRegistryService cachedDeviceRegistryService(
+            @Named("DeviceRegistryTransactionManager") TxManager deviceRegistryTxManager,
+            Map<Class<?>, ServiceConfigurationManager> serviceConfigurationManagersByServiceClass,
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            DeviceFactory deviceFactory,
+            DeviceValidation deviceValidation,
+            DeviceRepository deviceRepository,
+            GroupQueryHelper groupQueryHelper,
+            EventStorer eventStorer,
+            @Named("devicesByClientIdCache") LocalCache<Pair<KapuaId, String>, Device> devicesByClientIdCache
+    ) {
+        return new DeviceRegistryServiceCachedImpl(
+                deviceRegistryTxManager,
+                serviceConfigurationManagersByServiceClass.get(DeviceRegistryService.class),
+                authorizationService,
+                permissionFactory,
+                deviceFactory,
+                deviceValidation,
+                deviceRepository,
+                groupQueryHelper,
+                eventStorer,
+                devicesByClientIdCache
         );
     }
 

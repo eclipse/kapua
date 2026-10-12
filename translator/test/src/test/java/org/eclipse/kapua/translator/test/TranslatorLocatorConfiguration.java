@@ -102,8 +102,12 @@ public class TranslatorLocatorConfiguration {
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
                 // Inject mocked Permission Factory
                 bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
-                bind(AccountService.class).toInstance(Mockito.mock(AccountService.class));
-                bind(DeviceRegistryService.class).toInstance(Mockito.mock(DeviceRegistryService.class));
+                final AccountService accountService = Mockito.mock(AccountService.class);
+                bind(AccountService.class).toInstance(accountService);
+                bind(AccountService.class).annotatedWith(Names.named("cachedAccountService")).toInstance(accountService);
+                final DeviceRegistryService deviceRegistryService = Mockito.mock(DeviceRegistryService.class);
+                bind(DeviceRegistryService.class).toInstance(deviceRegistryService);
+                bind(DeviceRegistryService.class).annotatedWith(Names.named("cachedDeviceRegistryService")).toInstance(deviceRegistryService);
                 bind(GenericRequestFactory.class).toInstance(Mockito.mock(GenericRequestFactory.class));
                 bind(DeviceAssetFactory.class).toInstance(Mockito.mock(DeviceAssetFactory.class));
                 bind(DeviceBundleFactory.class).toInstance(Mockito.mock(DeviceBundleFactory.class));

@@ -47,7 +47,6 @@ import org.eclipse.kapua.translator.kura.kapua.TranslatorAppPackageKuraKapua;
 import org.eclipse.kapua.translator.kura.kapua.TranslatorAppResponseKuraKapua;
 import org.eclipse.kapua.translator.kura.kapua.TranslatorAppSnapshotKuraKapua;
 import org.eclipse.kapua.translator.kura.kapua.TranslatorDataKuraKapua;
-import org.eclipse.kapua.translator.kura.kapua.TranslatorKuraKapuaIdsCache;
 import org.eclipse.kapua.translator.kura.kapua.TranslatorKuraKapuaUtils;
 import org.eclipse.kapua.translator.kura.kapua.TranslatorKuraKapuaUtilsImpl;
 import org.eclipse.kapua.translator.kura.kapua.TranslatorLifeAppsKuraKapua;
@@ -129,7 +128,6 @@ public class KapuaKuraTranslatorsModule extends AbstractKapuaModule {
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL));
 
         bind(TranslatorKapuaKuraSettings.class).in(Singleton.class);
-        bind(TranslatorKuraKapuaIdsCache.class).in(Singleton.class);
     }
 
     @Provides
