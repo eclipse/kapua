@@ -43,6 +43,7 @@ import org.eclipse.kapua.service.device.management.configuration.message.interna
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
+import org.eclipse.kapua.translator.exception.TranslateException;
 
 /**
  * {@link org.eclipse.kapua.translator.Translator} implementation from {@link ConfigurationRequestMessage} to {@link KuraRequestMessage}
@@ -55,7 +56,18 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
     protected DeviceConfigurationFactory deviceConfigurationFactory;
     @Inject
     private XmlUtil xmlUtil;
-    private final ThreadLocal<Boolean> isWire = new ThreadLocal<>(); //ThreadLocal should not be necessary until new translator instances are created for each request/thread, but kept here for safety (from what I understand, now translators classes and TranslatorHub are not Singletons)
+    // Translators are shared between threads (see TranslatorHubModule): per-translation state must be kept per thread
+    private final ThreadLocal<Boolean> isWire = new ThreadLocal<>();
+
+    @Override
+    public KuraRequestMessage translate(ConfigurationRequestMessage kapuaMessage) throws TranslateException {
+        try {
+            return super.translate(kapuaMessage);
+        } finally {
+            // Clean up ThreadLocal on every path, since the thread is returned to its pool after the translation
+            isWire.remove();
+        }
+    }
 
     @Override
     protected KuraRequestChannel translateChannel(ConfigurationRequestChannel kapuaChannel) throws InvalidChannelException {
@@ -127,9 +139,6 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
             throw ipe;
         } catch (Exception e) {
             throw new InvalidPayloadException(e, kapuaPayload);
-        } finally {
-            // Clean up ThreadLocal to prevent memory leaks
-            isWire.remove();
         }
     }
 

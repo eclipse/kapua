@@ -40,6 +40,7 @@ import org.eclipse.kapua.service.device.management.configuration.message.interna
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationResponsePayload;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
+import org.eclipse.kapua.translator.exception.TranslateException;
 
 /**
  * {@link org.eclipse.kapua.translator.Translator} implementation from {@link KuraResponseMessage} to {@link ConfigurationResponseMessage}
@@ -48,10 +49,22 @@ import org.eclipse.kapua.translator.exception.InvalidPayloadException;
  */
 public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<ConfigurationResponseChannel, ConfigurationResponsePayload, ConfigurationResponseMessage> {
 
-    private boolean isWire;
+    // Translators are shared between threads (see TranslatorHubModule): per-translation state must be kept per thread
+    private final ThreadLocal<Boolean> isWire = new ThreadLocal<>();
+
     @Inject
     public TranslatorAppConfigurationKuraKapua(DeviceManagementSetting deviceManagementSetting) {
         super(deviceManagementSetting, ConfigurationResponseMessage.class, ConfigurationResponsePayload.class);
+    }
+
+    @Override
+    public ConfigurationResponseMessage translate(KuraResponseMessage kuraMessage) throws TranslateException {
+        try {
+            return super.translate(kuraMessage);
+        } finally {
+            // Clean up ThreadLocal on every path, since the thread is returned to its pool after the translation
+            isWire.remove();
+        }
     }
 
     @Override
@@ -59,7 +72,7 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
         try {
             if (kuraResponseChannel.getAppId().contains("WIRE")) {
                 translatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, WireMetrics.APP_ID, WireMetrics.APP_VERSION);
-                isWire = true;
+                isWire.set(true);
             } else {
                 translatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, ConfigurationMetrics.APP_ID, ConfigurationMetrics.APP_VERSION);
             }
@@ -76,7 +89,7 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
         try {
             if (kuraResponsePayload.hasBody()) {
                 KuraDeviceConfiguration kuraDeviceConfiguration;
-                if (isWire) {
+                if (Boolean.TRUE.equals(isWire.get())) {
                     kuraDeviceConfiguration = readJsonBodyAs(kuraResponsePayload.getBody(), KuraDeviceConfiguration.class);
                 } else {
                     kuraDeviceConfiguration = readXmlBodyAs(kuraResponsePayload.getBody(), KuraDeviceConfiguration.class);
