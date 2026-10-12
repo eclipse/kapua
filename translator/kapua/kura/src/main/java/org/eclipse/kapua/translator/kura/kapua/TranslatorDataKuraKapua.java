@@ -32,9 +32,6 @@ import org.eclipse.kapua.translator.exception.TranslateException;
 import org.eclipse.kapua.translator.setting.TranslatorKapuaKuraSettingKeys;
 import org.eclipse.kapua.translator.setting.TranslatorKapuaKuraSettings;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 /**
  * {@link Translator} implementation from {@link KuraDataMessage} to {@link KapuaDataMessage}
  *
@@ -42,22 +39,34 @@ import javax.inject.Named;
  */
 public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDataMessage> {
 
-    @Inject
-    @Named("cachedAccountService")
-    private AccountService accountService;
-    @Inject
-    @Named("cachedDeviceRegistryService")
-    private DeviceRegistryService deviceRegistryService;
-    @Inject
-    private KapuaDataMessageFactory kapuaDataMessageFactory;
-    @Inject
-    private TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
+    private final AccountService accountService;
+    private final DeviceRegistryService deviceRegistryService;
+    private final KapuaDataMessageFactory kapuaDataMessageFactory;
+    private final TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
 
-    final private boolean resolveDeviceId;
+    private final boolean resolveDeviceId;
 
-    @Inject
-    public TranslatorDataKuraKapua(TranslatorKapuaKuraSettings translatorKapuaKuraSettings) {
-        resolveDeviceId = translatorKapuaKuraSettings.getBoolean(TranslatorKapuaKuraSettingKeys.TRANSLATOR_KURA_KAPUA_DATA_DEVICE_ID_RESOLVE);
+    /**
+     * Constructor.
+     *
+     * @param accountService              The {@link AccountService} used to resolve the {@link KuraDataChannel#getScope()}.
+     * @param deviceRegistryService       The {@link DeviceRegistryService} used to resolve the {@link KuraDataChannel#getClientId()}.
+     * @param kapuaDataMessageFactory     The {@link KapuaDataMessageFactory}.
+     * @param translatorKuraKapuaUtils    The {@link TranslatorKuraKapuaUtils}.
+     * @param translatorKapuaKuraSettings The {@link TranslatorKapuaKuraSettings}.
+     * @since 2.1.0
+     */
+    public TranslatorDataKuraKapua(
+            AccountService accountService,
+            DeviceRegistryService deviceRegistryService,
+            KapuaDataMessageFactory kapuaDataMessageFactory,
+            TranslatorKuraKapuaUtils translatorKuraKapuaUtils,
+            TranslatorKapuaKuraSettings translatorKapuaKuraSettings) {
+        this.accountService = accountService;
+        this.deviceRegistryService = deviceRegistryService;
+        this.kapuaDataMessageFactory = kapuaDataMessageFactory;
+        this.translatorKuraKapuaUtils = translatorKuraKapuaUtils;
+        this.resolveDeviceId = translatorKapuaKuraSettings.getBoolean(TranslatorKapuaKuraSettingKeys.TRANSLATOR_KURA_KAPUA_DATA_DEVICE_ID_RESOLVE);
     }
 
     @Override
