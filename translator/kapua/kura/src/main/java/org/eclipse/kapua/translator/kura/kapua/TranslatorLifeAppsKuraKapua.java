@@ -45,21 +45,27 @@ import org.eclipse.kapua.translator.exception.TranslateException;
  */
 public class TranslatorLifeAppsKuraKapua extends AbstractAccountResolvingTranslator<KuraAppsMessage, KapuaAppsMessage> {
 
-    @Inject
-    private DeviceRegistryService deviceRegistryService;
-    @Inject
-    private TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
+    private final DeviceRegistryService deviceRegistryService;
+    private final TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
 
     /**
      * Constructor.
      *
-     * @param accountService      The {@link AccountService} used to resolve the {@link Account} ids from the {@link Account} names.
-     * @param accountsByNameCache The {@link LocalCache} of {@link Account}s by {@link Account#getName()}, shared among {@link Translator}s.
+     * @param accountService           The {@link AccountService} used to resolve the {@link Account} ids from the {@link Account} names.
+     * @param accountsByNameCache      The {@link LocalCache} of {@link Account}s by {@link Account#getName()}, shared among {@link Translator}s.
+     * @param deviceRegistryService    The {@link DeviceRegistryService}.
+     * @param translatorKuraKapuaUtils The {@link TranslatorKuraKapuaUtils}.
      * @since 2.1.0
      */
     @Inject
-    public TranslatorLifeAppsKuraKapua(AccountService accountService, @Named("accountsByNameCache") LocalCache<String, Account> accountsByNameCache) {
+    public TranslatorLifeAppsKuraKapua(
+            AccountService accountService,
+            @Named("accountsByNameCache") LocalCache<String, Account> accountsByNameCache,
+            DeviceRegistryService deviceRegistryService,
+            TranslatorKuraKapuaUtils translatorKuraKapuaUtils) {
         super(accountService, accountsByNameCache);
+        this.deviceRegistryService = deviceRegistryService;
+        this.translatorKuraKapuaUtils = translatorKuraKapuaUtils;
     }
 
     @Override

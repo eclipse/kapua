@@ -61,12 +61,9 @@ import java.util.Map;
  */
 public class TranslatorAppNotifyKuraKapua extends AbstractAccountResolvingTranslator<KuraNotifyMessage, KapuaNotifyMessage> {
 
-    @Inject
-    private DeviceRegistryService deviceRegistryService;
-    @Inject
-    private KapuaIdFactory kapuaIdFactory;
-    @Inject
-    private TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
+    private final DeviceRegistryService deviceRegistryService;
+    private final KapuaIdFactory kapuaIdFactory;
+    private final TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
 
     private final Map<String, KapuaAppProperties> appNameDictionary;
     private final Map<String, KapuaAppProperties> appVersionDictionary;
@@ -74,13 +71,24 @@ public class TranslatorAppNotifyKuraKapua extends AbstractAccountResolvingTransl
     /**
      * Constructor.
      *
-     * @param accountService      The {@link AccountService} used to resolve the {@link Account} ids from the {@link Account} names.
-     * @param accountsByNameCache The {@link LocalCache} of {@link Account}s by {@link Account#getName()}, shared among {@link Translator}s.
+     * @param accountService           The {@link AccountService} used to resolve the {@link Account} ids from the {@link Account} names.
+     * @param accountsByNameCache      The {@link LocalCache} of {@link Account}s by {@link Account#getName()}, shared among {@link Translator}s.
+     * @param deviceRegistryService    The {@link DeviceRegistryService}.
+     * @param kapuaIdFactory           The {@link KapuaIdFactory}.
+     * @param translatorKuraKapuaUtils The {@link TranslatorKuraKapuaUtils}.
      * @since 2.1.0
      */
     @Inject
-    public TranslatorAppNotifyKuraKapua(AccountService accountService, @Named("accountsByNameCache") LocalCache<String, Account> accountsByNameCache) {
+    public TranslatorAppNotifyKuraKapua(
+            AccountService accountService,
+            @Named("accountsByNameCache") LocalCache<String, Account> accountsByNameCache,
+            DeviceRegistryService deviceRegistryService,
+            KapuaIdFactory kapuaIdFactory,
+            TranslatorKuraKapuaUtils translatorKuraKapuaUtils) {
         super(accountService, accountsByNameCache);
+        this.deviceRegistryService = deviceRegistryService;
+        this.kapuaIdFactory = kapuaIdFactory;
+        this.translatorKuraKapuaUtils = translatorKuraKapuaUtils;
 
         appNameDictionary = new HashMap<>();
 

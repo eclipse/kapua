@@ -70,12 +70,9 @@ import java.util.Map;
  */
 public class TranslatorEventConfigurationKuraKapua extends AbstractAccountResolvingTranslator<KuraConfigurationEventMessage, DeviceConfigurationEventMessage> {
 
-    @Inject
-    private DeviceRegistryService deviceRegistryService;
-    @Inject
-    private DeviceConfigurationFactory deviceConfigurationFactory;
-    @Inject
-    private TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
+    private final DeviceRegistryService deviceRegistryService;
+    private final DeviceConfigurationFactory deviceConfigurationFactory;
+    private final TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
 
     private final Map<String, KapuaAppProperties> appNameDictionary;
     private final Map<String, KapuaAppProperties> appVersionDictionary;
@@ -83,13 +80,24 @@ public class TranslatorEventConfigurationKuraKapua extends AbstractAccountResolv
     /**
      * Constructor.
      *
-     * @param accountService      The {@link AccountService} used to resolve the {@link Account} ids from the {@link Account} names.
-     * @param accountsByNameCache The {@link LocalCache} of {@link Account}s by {@link Account#getName()}, shared among {@link Translator}s.
+     * @param accountService             The {@link AccountService} used to resolve the {@link Account} ids from the {@link Account} names.
+     * @param accountsByNameCache        The {@link LocalCache} of {@link Account}s by {@link Account#getName()}, shared among {@link Translator}s.
+     * @param deviceRegistryService      The {@link DeviceRegistryService}.
+     * @param deviceConfigurationFactory The {@link DeviceConfigurationFactory}.
+     * @param translatorKuraKapuaUtils   The {@link TranslatorKuraKapuaUtils}.
      * @since 2.1.0
      */
     @Inject
-    public TranslatorEventConfigurationKuraKapua(AccountService accountService, @Named("accountsByNameCache") LocalCache<String, Account> accountsByNameCache) {
+    public TranslatorEventConfigurationKuraKapua(
+            AccountService accountService,
+            @Named("accountsByNameCache") LocalCache<String, Account> accountsByNameCache,
+            DeviceRegistryService deviceRegistryService,
+            DeviceConfigurationFactory deviceConfigurationFactory,
+            TranslatorKuraKapuaUtils translatorKuraKapuaUtils) {
         super(accountService, accountsByNameCache);
+        this.deviceRegistryService = deviceRegistryService;
+        this.deviceConfigurationFactory = deviceConfigurationFactory;
+        this.translatorKuraKapuaUtils = translatorKuraKapuaUtils;
 
         appNameDictionary = new HashMap<>();
         appNameDictionary.put(AssetMetrics.APP_ID.getName(), DeviceAssetAppProperties.APP_NAME);
