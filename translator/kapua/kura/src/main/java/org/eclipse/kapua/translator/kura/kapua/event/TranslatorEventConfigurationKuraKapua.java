@@ -15,6 +15,8 @@ package org.eclipse.kapua.translator.kura.kapua.event;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.commons.cache.LocalCache;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.call.kura.model.asset.AssetMetrics;
@@ -52,6 +54,7 @@ import org.eclipse.kapua.translator.exception.TranslateException;
 import org.eclipse.kapua.translator.kura.kapua.TranslatorKuraKapuaUtils;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -67,8 +70,6 @@ import java.util.Map;
 public class TranslatorEventConfigurationKuraKapua extends Translator<KuraConfigurationEventMessage, DeviceConfigurationEventMessage> {
 
     @Inject
-    private AccountService accountService;
-    @Inject
     private DeviceRegistryService deviceRegistryService;
     @Inject
     private DeviceConfigurationFactory deviceConfigurationFactory;
@@ -78,7 +79,17 @@ public class TranslatorEventConfigurationKuraKapua extends Translator<KuraConfig
     private final Map<String, KapuaAppProperties> appNameDictionary;
     private final Map<String, KapuaAppProperties> appVersionDictionary;
 
-    public TranslatorEventConfigurationKuraKapua() {
+    /**
+     * Constructor.
+     *
+     * @param accountService      The {@link AccountService} used to resolve the {@link Account} ids from the {@link Account} names.
+     * @param accountsByNameCache The {@link LocalCache} of {@link Account}s by {@link Account#getName()}, shared among {@link Translator}s.
+     * @since 2.1.0
+     */
+    @Inject
+    public TranslatorEventConfigurationKuraKapua(AccountService accountService, @Named("accountsByNameCache") LocalCache<String, Account> accountsByNameCache) {
+        super(accountService, accountsByNameCache);
+
         appNameDictionary = new HashMap<>();
         appNameDictionary.put(AssetMetrics.APP_ID.getName(), DeviceAssetAppProperties.APP_NAME);
         appNameDictionary.put(BundleMetrics.APP_ID.getName(), DeviceBundleAppProperties.APP_NAME);
@@ -102,18 +113,18 @@ public class TranslatorEventConfigurationKuraKapua extends Translator<KuraConfig
             deviceConfigurationEventMessage.setChannel(translate(kuraNotifyMessage.getChannel()));
             deviceConfigurationEventMessage.setPayload(translate(kuraNotifyMessage.getPayload()));
 
-            Account account = accountService.findByName(kuraNotifyMessage.getChannel().getScope());
-            if (account == null) {
+            KapuaId accountId = findAccountIdByName(kuraNotifyMessage.getChannel().getScope());
+            if (accountId == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraNotifyMessage.getChannel().getScope());
             }
 
-            Device device = deviceRegistryService.findByClientId(account.getId(), kuraNotifyMessage.getChannel().getClientId());
+            Device device = deviceRegistryService.findByClientId(accountId, kuraNotifyMessage.getChannel().getClientId());
             if (device == null) {
                 throw new KapuaEntityNotFoundException(Device.class.toString(), kuraNotifyMessage.getChannel().getClientId());
             }
 
             deviceConfigurationEventMessage.setDeviceId(device.getId());
-            deviceConfigurationEventMessage.setScopeId(account.getId());
+            deviceConfigurationEventMessage.setScopeId(accountId);
             deviceConfigurationEventMessage.setCapturedOn(kuraNotifyMessage.getPayload().getTimestamp());
             deviceConfigurationEventMessage.setSentOn(kuraNotifyMessage.getPayload().getTimestamp());
             deviceConfigurationEventMessage.setReceivedOn(kuraNotifyMessage.getTimestamp());

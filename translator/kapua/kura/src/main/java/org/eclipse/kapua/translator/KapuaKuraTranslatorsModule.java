@@ -19,16 +19,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
-import com.google.inject.multibindings.ProvidesIntoSet;
-import com.google.inject.name.Named;
-import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.message.KapuaMessageFactory;
-import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
-import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.translator.kapua.kura.TranslatorAppAssetKapuaKura;
 import org.eclipse.kapua.translator.kapua.kura.TranslatorAppBundleKapuaKura;
 import org.eclipse.kapua.translator.kapua.kura.TranslatorAppCommandKapuaKura;
@@ -106,7 +99,7 @@ public class KapuaKuraTranslatorsModule extends AbstractKapuaModule {
         translatorMultibinder.addBinding().to(TranslatorAppPackageKuraKapua.class);
         translatorMultibinder.addBinding().to(TranslatorAppResponseKuraKapua.class);
         translatorMultibinder.addBinding().to(TranslatorAppSnapshotKuraKapua.class);
-        // TranslatorDataKuraKapua is provided by translatorDataKuraKapua(...)
+        translatorMultibinder.addBinding().to(TranslatorDataKuraKapua.class);
         translatorMultibinder.addBinding().to(TranslatorLifeAppsKuraKapua.class);
         translatorMultibinder.addBinding().to(TranslatorLifeBirthKuraKapua.class);
         translatorMultibinder.addBinding().to(TranslatorLifeDisconnectKuraKapua.class);
@@ -135,21 +128,6 @@ public class KapuaKuraTranslatorsModule extends AbstractKapuaModule {
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL));
 
         bind(TranslatorKapuaKuraSettings.class).in(Singleton.class);
-    }
-
-    /**
-     * Provides the {@link TranslatorDataKuraKapua}, which resolves {@link Account} ids through the shared {@link LocalCache} of {@link Account}s by name
-     * since it is invoked for each data message.
-     */
-    @ProvidesIntoSet
-    Translator translatorDataKuraKapua(
-            AccountService accountService,
-            @Named("accountsByNameCache") LocalCache<String, Account> accountsByNameCache,
-            DeviceRegistryService deviceRegistryService,
-            KapuaDataMessageFactory kapuaDataMessageFactory,
-            TranslatorKuraKapuaUtils translatorKuraKapuaUtils,
-            TranslatorKapuaKuraSettings translatorKapuaKuraSettings) {
-        return new TranslatorDataKuraKapua(accountService, accountsByNameCache, deviceRegistryService, kapuaDataMessageFactory, translatorKuraKapuaUtils, translatorKapuaKuraSettings);
     }
 
     @Provides

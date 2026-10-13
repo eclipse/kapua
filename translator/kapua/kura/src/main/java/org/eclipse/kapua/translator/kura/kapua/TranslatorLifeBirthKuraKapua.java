@@ -13,14 +13,17 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthPayload;
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaBirthChannelImpl;
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaBirthMessageImpl;
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaBirthPayloadImpl;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthChannel;
@@ -42,11 +45,21 @@ import org.eclipse.kapua.translator.exception.TranslateException;
 public class TranslatorLifeBirthKuraKapua extends Translator<KuraBirthMessage, KapuaBirthMessage> {
 
     @Inject
-    private AccountService accountService;
-    @Inject
     private DeviceRegistryService deviceRegistryService;
     @Inject
     private TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
+
+    /**
+     * Constructor.
+     *
+     * @param accountService      The {@link AccountService} used to resolve the {@link Account} ids from the {@link Account} names.
+     * @param accountsByNameCache The {@link LocalCache} of {@link Account}s by {@link Account#getName()}, shared among {@link Translator}s.
+     * @since 2.1.0
+     */
+    @Inject
+    public TranslatorLifeBirthKuraKapua(AccountService accountService, @Named("accountsByNameCache") LocalCache<String, Account> accountsByNameCache) {
+        super(accountService, accountsByNameCache);
+    }
 
     @Override
     public KapuaBirthMessage translate(KuraBirthMessage kuraBirthMessage) throws TranslateException {
@@ -55,13 +68,13 @@ public class TranslatorLifeBirthKuraKapua extends Translator<KuraBirthMessage, K
             kapuaBirthMessage.setChannel(translate(kuraBirthMessage.getChannel()));
             kapuaBirthMessage.setPayload(translate(kuraBirthMessage.getPayload()));
 
-            Account account = accountService.findByName(kuraBirthMessage.getChannel().getScope());
-            if (account == null) {
+            KapuaId accountId = findAccountIdByName(kuraBirthMessage.getChannel().getScope());
+            if (accountId == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraBirthMessage.getChannel().getScope());
             }
-            kapuaBirthMessage.setScopeId(account.getId());
+            kapuaBirthMessage.setScopeId(accountId);
 
-            Device device = deviceRegistryService.findByClientId(account.getId(), kuraBirthMessage.getChannel().getClientId());
+            Device device = deviceRegistryService.findByClientId(accountId, kuraBirthMessage.getChannel().getClientId());
             if (device != null) {
                 kapuaBirthMessage.setDeviceId(device.getId());
             } else {

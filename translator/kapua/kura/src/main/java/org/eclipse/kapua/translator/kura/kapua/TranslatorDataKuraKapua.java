@@ -34,6 +34,9 @@ import org.eclipse.kapua.translator.exception.TranslateException;
 import org.eclipse.kapua.translator.setting.TranslatorKapuaKuraSettingKeys;
 import org.eclipse.kapua.translator.setting.TranslatorKapuaKuraSettings;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 /**
  * {@link Translator} implementation from {@link KuraDataMessage} to {@link KapuaDataMessage}
  *
@@ -58,9 +61,10 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
      * @param translatorKapuaKuraSettings The {@link TranslatorKapuaKuraSettings}.
      * @since 2.1.0
      */
+    @Inject
     public TranslatorDataKuraKapua(
             AccountService accountService,
-            LocalCache<String, Account> accountsByNameCache,
+            @Named("accountsByNameCache") LocalCache<String, Account> accountsByNameCache,
             DeviceRegistryService deviceRegistryService,
             KapuaDataMessageFactory kapuaDataMessageFactory,
             TranslatorKuraKapuaUtils translatorKuraKapuaUtils,

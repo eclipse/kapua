@@ -13,12 +13,14 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingPayload;
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingChannelImpl;
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingMessageImpl;
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingPayloadImpl;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraMissingChannel;
@@ -33,6 +35,7 @@ import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * {@link Translator} implementation from {@link KuraMissingMessage} to {@link KapuaMissingMessage}
@@ -44,9 +47,19 @@ public class TranslatorLifeMissingKuraKapua extends Translator<KuraMissingMessag
     @Inject
     private DeviceRegistryService deviceRegistryService;
     @Inject
-    private AccountService accountService;
-    @Inject
     private TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
+
+    /**
+     * Constructor.
+     *
+     * @param accountService      The {@link AccountService} used to resolve the {@link Account} ids from the {@link Account} names.
+     * @param accountsByNameCache The {@link LocalCache} of {@link Account}s by {@link Account#getName()}, shared among {@link Translator}s.
+     * @since 2.1.0
+     */
+    @Inject
+    public TranslatorLifeMissingKuraKapua(AccountService accountService, @Named("accountsByNameCache") LocalCache<String, Account> accountsByNameCache) {
+        super(accountService, accountsByNameCache);
+    }
 
     @Override
     public KapuaMissingMessage translate(KuraMissingMessage kuraMissingMessage) throws TranslateException {
@@ -55,18 +68,18 @@ public class TranslatorLifeMissingKuraKapua extends Translator<KuraMissingMessag
             kapuaMissingMessage.setChannel(translate(kuraMissingMessage.getChannel()));
             kapuaMissingMessage.setPayload(translate(kuraMissingMessage.getPayload()));
 
-            Account account = accountService.findByName(kuraMissingMessage.getChannel().getScope());
-            if (account == null) {
+            KapuaId accountId = findAccountIdByName(kuraMissingMessage.getChannel().getScope());
+            if (accountId == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraMissingMessage.getChannel().getScope());
             }
 
-            Device device = deviceRegistryService.findByClientId(account.getId(), kuraMissingMessage.getChannel().getClientId());
+            Device device = deviceRegistryService.findByClientId(accountId, kuraMissingMessage.getChannel().getClientId());
             if (device == null) {
                 throw new KapuaEntityNotFoundException(Device.class.toString(), kuraMissingMessage.getChannel().getClientId());
             }
 
             kapuaMissingMessage.setDeviceId(device.getId());
-            kapuaMissingMessage.setScopeId(account.getId());
+            kapuaMissingMessage.setScopeId(accountId);
             kapuaMissingMessage.setCapturedOn(kuraMissingMessage.getPayload().getTimestamp());
             kapuaMissingMessage.setSentOn(kuraMissingMessage.getPayload().getTimestamp());
             kapuaMissingMessage.setReceivedOn(kuraMissingMessage.getTimestamp());
