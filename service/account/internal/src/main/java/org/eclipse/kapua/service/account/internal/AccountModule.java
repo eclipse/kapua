@@ -65,7 +65,7 @@ public class AccountModule extends AbstractKapuaModule implements Module {
         bind(KapuaAccountSetting.class).in(Singleton.class);
         bind(AccountMapper.class).to(AccountMapperImpl.class).in(Singleton.class);
 
-        // Local cache of Accounts by name, used by the cached AccountService
+        // Local cache of Accounts by name, shared by the components that resolve Accounts by name on hot paths (i.e. Translators)
         final KapuaAccountSetting kapuaAccountSetting = new KapuaAccountSetting();
         bind(
                 new TypeLiteral<LocalCache<String, Account>>() {
@@ -75,7 +75,7 @@ public class AccountModule extends AbstractKapuaModule implements Module {
                 .toInstance(new LocalCache<>(
                         kapuaAccountSetting.getCacheConfig(
                                 KapuaAccountSettingKeys.ACCOUNT_CACHE_LOCAL_SIZE_MAXIMUM, 1000,
-                                KapuaAccountSettingKeys.ACCOUNT_CACHE_LOCAL_EXPIRE_AFTER, 3600,
+                                KapuaAccountSettingKeys.ACCOUNT_CACHE_LOCAL_EXPIRE_AFTER, 60,
                                 KapuaAccountSettingKeys.ACCOUNT_CACHE_LOCAL_EXPIRE_STRATEGY),
                         null));
 
@@ -143,28 +143,6 @@ public class AccountModule extends AbstractKapuaModule implements Module {
                 serviceConfigurationManagersByServiceClass.get(AccountService.class),
                 eventStorer,
                 accountMapper);
-    }
-
-    @Provides
-    @Singleton
-    @Named("cachedAccountService")
-    AccountService cachedAccountService(AccountRepository accountRepository,
-            PermissionFactory permissionFactory,
-            AuthorizationService authorizationService,
-            Map<Class<?>, ServiceConfigurationManager> serviceConfigurationManagersByServiceClass,
-            EventStorer eventStorer,
-            KapuaJpaTxManagerFactory jpaTxManagerFactory,
-            AccountMapper accountMapper,
-            @Named("accountsByNameCache") LocalCache<String, Account> accountsByNameCache) {
-        return new AccountServiceCachedImpl(
-                jpaTxManagerFactory.create("kapua-account"),
-                accountRepository,
-                permissionFactory,
-                authorizationService,
-                serviceConfigurationManagersByServiceClass.get(AccountService.class),
-                eventStorer,
-                accountMapper,
-                accountsByNameCache);
     }
 
     @Provides

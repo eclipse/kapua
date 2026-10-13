@@ -59,27 +59,6 @@ public enum KapuaDeviceRegistrySettingKeys implements SettingKey {
      */
     DEVICE_CONNECTION_AUTHENTICATION_TYPE_DEFAULT("device.connection.authentication.type.default"),
 
-    /**
-     * Maximum size of the local cache of {@link Device}s by scope id and client id used by the cached {@link DeviceRegistryService}.
-     *
-     * @since 2.1.0
-     */
-    DEVICE_CACHE_LOCAL_SIZE_MAXIMUM("device.registry.cache.local.size.maximum"),
-
-    /**
-     * Expiration time (in seconds) of the local cache of {@link Device}s by scope id and client id used by the cached {@link DeviceRegistryService}.
-     *
-     * @since 2.1.0
-     */
-    DEVICE_CACHE_LOCAL_EXPIRE_AFTER("device.registry.cache.local.expire.after"),
-
-    /**
-     * Expiration strategy of the local cache of {@link Device}s by scope id and client id used by the cached {@link DeviceRegistryService}.
-     *
-     * @since 2.1.0
-     */
-    DEVICE_CACHE_LOCAL_EXPIRE_STRATEGY("device.registry.cache.local.expire.strategy"),
-
     ;
 
     private final String key;

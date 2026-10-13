@@ -13,10 +13,12 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataChannel;
@@ -39,7 +41,6 @@ import org.eclipse.kapua.translator.setting.TranslatorKapuaKuraSettings;
  */
 public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDataMessage> {
 
-    private final AccountService accountService;
     private final DeviceRegistryService deviceRegistryService;
     private final KapuaDataMessageFactory kapuaDataMessageFactory;
     private final TranslatorKuraKapuaUtils translatorKuraKapuaUtils;
@@ -50,6 +51,7 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
      * Constructor.
      *
      * @param accountService              The {@link AccountService} used to resolve the {@link KuraDataChannel#getScope()}.
+     * @param accountsByNameCache         The {@link LocalCache} of {@link Account}s by {@link Account#getName()} used to resolve the {@link KuraDataChannel#getScope()}.
      * @param deviceRegistryService       The {@link DeviceRegistryService} used to resolve the {@link KuraDataChannel#getClientId()}.
      * @param kapuaDataMessageFactory     The {@link KapuaDataMessageFactory}.
      * @param translatorKuraKapuaUtils    The {@link TranslatorKuraKapuaUtils}.
@@ -58,11 +60,12 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
      */
     public TranslatorDataKuraKapua(
             AccountService accountService,
+            LocalCache<String, Account> accountsByNameCache,
             DeviceRegistryService deviceRegistryService,
             KapuaDataMessageFactory kapuaDataMessageFactory,
             TranslatorKuraKapuaUtils translatorKuraKapuaUtils,
             TranslatorKapuaKuraSettings translatorKapuaKuraSettings) {
-        this.accountService = accountService;
+        super(accountService, accountsByNameCache);
         this.deviceRegistryService = deviceRegistryService;
         this.kapuaDataMessageFactory = kapuaDataMessageFactory;
         this.translatorKuraKapuaUtils = translatorKuraKapuaUtils;
@@ -77,14 +80,14 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
             // Kapua payload
             KapuaDataPayload kapuaDataPayload = translate(kuraMessage.getPayload());
             // Kapua message
-            Account account = accountService.findByName(kuraMessage.getChannel().getScope());
+            KapuaId accountId = findAccountIdByName(kuraMessage.getChannel().getScope());
 
-            if (account == null) {
+            if (accountId == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraMessage.getChannel().getScope());
             }
 
             KapuaDataMessage kapuaDataMessage = kapuaDataMessageFactory.newKapuaDataMessage();
-            kapuaDataMessage.setScopeId(account.getId());
+            kapuaDataMessage.setScopeId(accountId);
             kapuaDataMessage.setClientId(kuraMessage.getChannel().getClientId());
             kapuaDataMessage.setChannel(kapuaDataChannel);
             kapuaDataMessage.setPayload(kapuaDataPayload);
@@ -95,7 +98,7 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
 
             // Optionally resolve the KapuaDataChannel.clientId to improve performances
             if (resolveDeviceId) {
-                Device device = deviceRegistryService.findByClientId(account.getId(), kuraMessage.getChannel().getClientId());
+                Device device = deviceRegistryService.findByClientId(accountId, kuraMessage.getChannel().getClientId());
                 kapuaDataMessage.setDeviceId(device != null ? device.getId() : null);
             }
 

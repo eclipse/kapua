@@ -21,11 +21,12 @@ import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.multibindings.ProvidesIntoSet;
 import com.google.inject.name.Named;
-import com.google.inject.name.Names;
+import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
+import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.translator.kapua.kura.TranslatorAppAssetKapuaKura;
@@ -75,25 +76,6 @@ import org.eclipse.kapua.translator.kura.kapua.keystore.TranslatorAppKeystoresKu
 import org.eclipse.kapua.translator.setting.TranslatorKapuaKuraSettings;
 
 public class KapuaKuraTranslatorsModule extends AbstractKapuaModule {
-
-    /**
-     * Name of the {@link AccountService} binding used by {@link TranslatorDataKuraKapua}.
-     * <p>
-     * Bound to the default {@link AccountService}: applications can override it (i.e. with a caching {@link AccountService}).
-     *
-     * @since 2.1.0
-     */
-    public static final String TRANSLATOR_DATA_KURA_KAPUA_ACCOUNT_SERVICE = "translatorDataKuraKapuaAccountService";
-
-    /**
-     * Name of the {@link DeviceRegistryService} binding used by {@link TranslatorDataKuraKapua}.
-     * <p>
-     * Bound to the default {@link DeviceRegistryService}: applications can override it (i.e. with a caching {@link DeviceRegistryService}).
-     *
-     * @since 2.1.0
-     */
-    public static final String TRANSLATOR_DATA_KURA_KAPUA_DEVICE_REGISTRY_SERVICE = "translatorDataKuraKapuaDeviceRegistryService";
-
     @Override
     protected void configureModule() {
         final Multibinder<Translator> translatorMultibinder = Multibinder.newSetBinder(binder(), Translator.class);
@@ -153,24 +135,21 @@ public class KapuaKuraTranslatorsModule extends AbstractKapuaModule {
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL));
 
         bind(TranslatorKapuaKuraSettings.class).in(Singleton.class);
-
-        // Services used by TranslatorDataKuraKapua. Default ones, which applications can override
-        bind(AccountService.class).annotatedWith(Names.named(TRANSLATOR_DATA_KURA_KAPUA_ACCOUNT_SERVICE)).to(AccountService.class);
-        bind(DeviceRegistryService.class).annotatedWith(Names.named(TRANSLATOR_DATA_KURA_KAPUA_DEVICE_REGISTRY_SERVICE)).to(DeviceRegistryService.class);
     }
 
     /**
-     * Provides the {@link TranslatorDataKuraKapua}, using the {@link AccountService} and {@link DeviceRegistryService}
-     * bound as {@link #TRANSLATOR_DATA_KURA_KAPUA_ACCOUNT_SERVICE} and {@link #TRANSLATOR_DATA_KURA_KAPUA_DEVICE_REGISTRY_SERVICE}.
+     * Provides the {@link TranslatorDataKuraKapua}, which resolves {@link Account} ids through the shared {@link LocalCache} of {@link Account}s by name
+     * since it is invoked for each data message.
      */
     @ProvidesIntoSet
     Translator translatorDataKuraKapua(
-            @Named(TRANSLATOR_DATA_KURA_KAPUA_ACCOUNT_SERVICE) AccountService accountService,
-            @Named(TRANSLATOR_DATA_KURA_KAPUA_DEVICE_REGISTRY_SERVICE) DeviceRegistryService deviceRegistryService,
+            AccountService accountService,
+            @Named("accountsByNameCache") LocalCache<String, Account> accountsByNameCache,
+            DeviceRegistryService deviceRegistryService,
             KapuaDataMessageFactory kapuaDataMessageFactory,
             TranslatorKuraKapuaUtils translatorKuraKapuaUtils,
             TranslatorKapuaKuraSettings translatorKapuaKuraSettings) {
-        return new TranslatorDataKuraKapua(accountService, deviceRegistryService, kapuaDataMessageFactory, translatorKuraKapuaUtils, translatorKapuaKuraSettings);
+        return new TranslatorDataKuraKapua(accountService, accountsByNameCache, deviceRegistryService, kapuaDataMessageFactory, translatorKuraKapuaUtils, translatorKapuaKuraSettings);
     }
 
     @Provides
