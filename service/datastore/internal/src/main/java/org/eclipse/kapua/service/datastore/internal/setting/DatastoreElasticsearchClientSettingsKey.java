@@ -120,6 +120,45 @@ public enum DatastoreElasticsearchClientSettingsKey implements SettingKey {
      */
     SSL_TRUSTSTORE_PASSWORD("datastore.elasticsearch.ssl.truststore.password"),
     /**
+     * Elastichsearch client number of IO threads. Leave &lt;=0 to use the default
+     *
+     * @deprecated The parameter will be replaced by @ASYNCLIENT_NUMBER_OF_IO_THREADS
+     * with identical meaning.
+     * @since 2.1.0
+     */
+    @Deprecated
+    NUMBER_OF_IO_THREADS("datastore.elasticsearch.numberOfIOThreads"),
+    /**
+     * Elastichsearch client number of IO threads. Leave &lt;=0 to use the default
+     *
+     * @since 2.1.0
+     */
+    CONNECTION_NUMBER_OF_IO_THREADS("datastore.elasticsearch.connection.numberOfIOThreads"),
+    /**
+     * Elastichsearch client max connection pool size for the client connection manager
+     *
+     * @since 2.1.0
+     */
+    CONNECTION_MAX_TOTAL_CONN("datastore.elasticsearch.connection.maxTotal"),
+    /**
+     * Elastichsearch client default max connections of the client connection manager assigned to a single route
+     *
+     * @since 2.1.0
+     */
+    CONNECTION_DEFAULT_MAX_CONN_PER_ROUTE("datastore.elasticsearch.connection.defaultMaxPerRoute"),
+    /**
+     * Elastichsearch client request connection timeout in milliseconds. Leave &lt;0 to use the default
+     *
+     * @since 2.1.0
+     */
+    REQUEST_CONNECTION_TIMEOUT_MILLIS("datastore.elasticsearch.request.connection.timeout.millis"),
+    /**
+     * Elastichsearch client request socket timeout in milliseconds. Leave &lt;0 to use the default
+     *
+     * @since 2.1.0
+     */
+    REQUEST_SOCKET_TIMEOUT_MILLIS("datastore.elasticsearch.request.socket.timeout.millis"),
+    /**
      * Elasticsearch client pool size.
      *
      * @since 1.6.0
@@ -136,7 +175,8 @@ public enum DatastoreElasticsearchClientSettingsKey implements SettingKey {
     /**
      * Set up the {@code enum} with the key value provided
      *
-     * @param key The value mapped by this {@link Enum} value
+     * @param key
+     *         The value mapped by this {@link Enum} value
      * @since 1.0.0
      */
     DatastoreElasticsearchClientSettingsKey(String key) {

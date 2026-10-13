@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.elasticsearch.client.configuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientWrapper;
 
@@ -25,7 +26,6 @@ import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientWrapper
 public class ElasticsearchClientConfiguration {
 
     private String moduleName;
-    private String providerClassName;
     private String clusterName;
     private List<ElasticsearchNode> nodes;
     private String username;
@@ -35,6 +35,7 @@ public class ElasticsearchClientConfiguration {
     private ElasticsearchClientReconnectConfiguration reconnectConfiguration;
     private ElasticsearchClientRequestConfiguration requestConfiguration;
     private ElasticsearchClientSslConfiguration sslConfiguration;
+    private ElasticsearchClientConnectionConfiguration connectionConfiguration;
 
     /**
      * Gets the module name which is managing the {@link ElasticsearchClientWrapper} instance.
@@ -259,6 +260,26 @@ public class ElasticsearchClientConfiguration {
     }
 
     /**
+     * @deprecated Replaced by corresponding method in {@link ElasticsearchClientConnectionConfiguration}
+     * @return
+     */
+    @Deprecated
+    public Optional<Integer> getNumberOfIOThreads() {
+        return this.getConnectionConfiguration().getNumberOfIOThreads();
+    }
+
+    /**
+     * @deprecated Replaced by corresponding method in {@link ElasticsearchClientConnectionConfiguration}
+     * @param numberOfIOThreads
+     * @return
+     */
+    @Deprecated
+    public ElasticsearchClientConfiguration setNumberOfIOThreads(Integer numberOfIOThreads) {
+        this.getConnectionConfiguration().setNumberOfIOThreads(Optional.of(numberOfIOThreads));
+        return this;
+    }
+
+    /**
      * Gets the size of the Elasticsearch client pool.
      *
      * @return The size of the Elasticsearch client pool.
@@ -278,6 +299,33 @@ public class ElasticsearchClientConfiguration {
      */
     public ElasticsearchClientConfiguration setPoolSize(int poolSize) {
         this.poolSize = poolSize;
+        return this;
+    }
+
+    /**
+     * Gets the {@link ElasticsearchClientConnectionConfiguration}
+     *
+     * @return The {@link ElasticsearchClientConnectionConfiguration}
+     * @since 2.1.0
+     */
+    public ElasticsearchClientConnectionConfiguration getConnectionConfiguration() {
+        if (connectionConfiguration == null) {
+            connectionConfiguration = new ElasticsearchClientConnectionConfiguration();
+        }
+
+        return connectionConfiguration;
+    }
+
+    /**
+     * Sets the {@link ElasticsearchClientConnectionConfiguration}
+     *
+     * @param connectionConfiguration
+     *         The {@link ElasticsearchClientConnectionConfiguration}
+     * @return This {@link ElasticsearchClientConnectionConfiguration} to chain method invocation.
+     * @since 2.1.0gt
+     */
+    public ElasticsearchClientConfiguration setConnectionConfiguration(ElasticsearchClientConnectionConfiguration connectionConfiguration) {
+        this.connectionConfiguration = connectionConfiguration;
         return this;
     }
 }
