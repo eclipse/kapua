@@ -28,6 +28,7 @@ import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraDisconne
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraDisconnectPayload;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.translator.AbstractAccountResolvingTranslator;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidMessageException;
@@ -42,7 +43,7 @@ import javax.inject.Named;
  *
  * @since 1.0.0
  */
-public class TranslatorLifeDisconnectKuraKapua extends Translator<KuraDisconnectMessage, KapuaDisconnectMessage> {
+public class TranslatorLifeDisconnectKuraKapua extends AbstractAccountResolvingTranslator<KuraDisconnectMessage, KapuaDisconnectMessage> {
 
     @Inject
     private DeviceRegistryService deviceRegistryService;

@@ -41,6 +41,7 @@ import org.eclipse.kapua.service.device.management.message.notification.NotifySt
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageAppProperties;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.translator.AbstractAccountResolvingTranslator;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidMessageException;
@@ -58,7 +59,7 @@ import java.util.Map;
  *
  * @since 1.0.0
  */
-public class TranslatorAppNotifyKuraKapua extends Translator<KuraNotifyMessage, KapuaNotifyMessage> {
+public class TranslatorAppNotifyKuraKapua extends AbstractAccountResolvingTranslator<KuraNotifyMessage, KapuaNotifyMessage> {
 
     @Inject
     private DeviceRegistryService deviceRegistryService;

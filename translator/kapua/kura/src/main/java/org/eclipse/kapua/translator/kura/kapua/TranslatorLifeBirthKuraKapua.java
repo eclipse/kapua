@@ -31,6 +31,7 @@ import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthMes
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthPayload;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.translator.AbstractAccountResolvingTranslator;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidMessageException;
@@ -42,7 +43,7 @@ import org.eclipse.kapua.translator.exception.TranslateException;
  *
  * @since 1.0.0
  */
-public class TranslatorLifeBirthKuraKapua extends Translator<KuraBirthMessage, KapuaBirthMessage> {
+public class TranslatorLifeBirthKuraKapua extends AbstractAccountResolvingTranslator<KuraBirthMessage, KapuaBirthMessage> {
 
     @Inject
     private DeviceRegistryService deviceRegistryService;

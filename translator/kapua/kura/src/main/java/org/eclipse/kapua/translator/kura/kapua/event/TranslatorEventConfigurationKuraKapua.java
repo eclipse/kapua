@@ -43,6 +43,7 @@ import org.eclipse.kapua.service.device.management.message.KapuaAppProperties;
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageAppProperties;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.translator.AbstractAccountResolvingTranslator;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidBodyContentException;
 import org.eclipse.kapua.translator.exception.InvalidBodyEncodingException;
@@ -67,7 +68,7 @@ import java.util.Map;
  *
  * @since 2.0.0
  */
-public class TranslatorEventConfigurationKuraKapua extends Translator<KuraConfigurationEventMessage, DeviceConfigurationEventMessage> {
+public class TranslatorEventConfigurationKuraKapua extends AbstractAccountResolvingTranslator<KuraConfigurationEventMessage, DeviceConfigurationEventMessage> {
 
     @Inject
     private DeviceRegistryService deviceRegistryService;
