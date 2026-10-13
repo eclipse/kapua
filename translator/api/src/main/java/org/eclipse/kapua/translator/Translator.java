@@ -68,7 +68,7 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
      *
      * @param accountService      The {@link AccountService} used to find the {@link Account}s that are not cached.
      * @param accountsByNameCache The {@link LocalCache} of {@link Account}s by {@link Account#getName()}, shared among {@link Translator}s.
-     *                            If {@code null}, {@link Account}s are not cached.
+     *                            If {@code null}, {@link Account}s are not cached and "findAccountIdByName" calls the service directly so it is a way for translators to don't use cache.
      * @since 2.1.0
      */
     protected Translator(AccountService accountService, LocalCache<String, Account> accountsByNameCache) {
@@ -96,13 +96,9 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
         if (accountService == null) {
             throw new IllegalStateException(String.format("%s has been constructed without an AccountService", getClass().getName()));
         }
-        // Argument validation
         ArgumentValidator.notEmptyOrNull(accountName, "accountName");
-
-        // Check cache
         Account account = accountsByNameCache != null ? accountsByNameCache.get(accountName) : null;
         if (account == null) {
-            // Do find
             account = accountService.findByName(accountName);
             if (account == null) {
                 return null;
@@ -112,8 +108,6 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
                 accountsByNameCache.put(accountName, account);
             }
         }
-
-        // Return result
         return account.getId();
     }
 
