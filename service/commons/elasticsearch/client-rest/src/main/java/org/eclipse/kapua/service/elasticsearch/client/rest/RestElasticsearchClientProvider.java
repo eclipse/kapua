@@ -370,7 +370,11 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
                 }
             });
 
-            httpClientBuilder.setConnectionManager(new PoolingNHttpClientConnectionManager(ioReactor));
+            PoolingNHttpClientConnectionManager poolConnManager = new PoolingNHttpClientConnectionManager(ioReactor);
+            getClientConfiguration().getConnectionConfiguration().getMaxTotal().ifPresent(val -> poolConnManager.setMaxTotal(val));
+            getClientConfiguration().getConnectionConfiguration().getDefaultMaxPerRoute().ifPresent(val -> poolConnManager.setDefaultMaxPerRoute(val));
+            LOG.info("ES Rest Client - Client connection manager maxTotal: {}, defaultMaxPerRoute: {}", poolConnManager.getMaxTotal(), poolConnManager.getDefaultMaxPerRoute());
+            httpClientBuilder.setConnectionManager(poolConnManager);
         }
         catch (IOReactorException e) {
             throw new RuntimeException(e);

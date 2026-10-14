@@ -33,9 +33,10 @@ public class ElasticsearchClientConfiguration {
     private String username;
     private String password;
 
-    private ElasticsearchClientReconnectConfiguration reconnectConfiguration;
-    private ElasticsearchClientRequestConfiguration requestConfiguration;
-    private ElasticsearchClientSslConfiguration sslConfiguration;
+    private ElasticsearchClientReconnectConfiguration reconnectConfiguration = new ElasticsearchClientReconnectConfiguration();
+    private ElasticsearchClientRequestConfiguration requestConfiguration = new ElasticsearchClientRequestConfiguration();
+    private ElasticsearchClientSslConfiguration sslConfiguration = new ElasticsearchClientSslConfiguration();
+    private ElasticsearchClientConnectionConfiguration connectionConfiguration = new ElasticsearchClientConnectionConfiguration();
 
     /**
      * Gets the module name which is managing the {@link ElasticsearchClient} instance.
@@ -220,10 +221,6 @@ public class ElasticsearchClientConfiguration {
      * @since 1.3.0
      */
     public ElasticsearchClientReconnectConfiguration getReconnectConfiguration() {
-        if (reconnectConfiguration == null) {
-            reconnectConfiguration = new ElasticsearchClientReconnectConfiguration();
-        }
-
         return reconnectConfiguration;
     }
 
@@ -246,10 +243,6 @@ public class ElasticsearchClientConfiguration {
      * @since 1.3.0
      */
     public ElasticsearchClientRequestConfiguration getRequestConfiguration() {
-        if (requestConfiguration == null) {
-            requestConfiguration = new ElasticsearchClientRequestConfiguration();
-        }
-
         return requestConfiguration;
     }
 
@@ -272,10 +265,6 @@ public class ElasticsearchClientConfiguration {
      * @since 1.3.0
      */
     public ElasticsearchClientSslConfiguration getSslConfiguration() {
-        if (sslConfiguration == null) {
-            sslConfiguration = new ElasticsearchClientSslConfiguration();
-        }
-
         return sslConfiguration;
     }
 
@@ -288,6 +277,29 @@ public class ElasticsearchClientConfiguration {
      */
     public ElasticsearchClientConfiguration setSslConfiguration(ElasticsearchClientSslConfiguration sslConfiguration) {
         this.sslConfiguration = sslConfiguration;
+        return this;
+    }
+
+    /**
+     * Gets the {@link ElasticsearchClientConnectionConfiguration}
+     *
+     * @return The {@link ElasticsearchClientConnectionConfiguration}
+     * @since 2.1.0
+     */
+    public ElasticsearchClientConnectionConfiguration getConnectionConfiguration() {
+        return connectionConfiguration;
+    }
+
+    /**
+     * Sets the {@link ElasticsearchClientConnectionConfiguration}
+     *
+     * @param connectionConfiguration
+     *         The {@link ElasticsearchClientConnectionConfiguration}
+     * @return This {@link ElasticsearchClientConnectionConfiguration} to chain method invocation.
+     * @since 2.1.0gt
+     */
+    public ElasticsearchClientConfiguration setConnectionConfiguration(ElasticsearchClientConnectionConfiguration connectionConfiguration) {
+        this.connectionConfiguration = connectionConfiguration;
         return this;
     }
 }
