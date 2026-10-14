@@ -32,10 +32,10 @@ public class ElasticsearchClientConfiguration {
     private String password;
     private int poolSize;
 
-    private ElasticsearchClientReconnectConfiguration reconnectConfiguration;
-    private ElasticsearchClientRequestConfiguration requestConfiguration;
-    private ElasticsearchClientSslConfiguration sslConfiguration;
-    private ElasticsearchClientConnectionConfiguration connectionConfiguration;
+    private ElasticsearchClientReconnectConfiguration reconnectConfiguration = new ElasticsearchClientReconnectConfiguration();
+    private ElasticsearchClientRequestConfiguration requestConfiguration = new ElasticsearchClientRequestConfiguration();
+    private ElasticsearchClientSslConfiguration sslConfiguration = new ElasticsearchClientSslConfiguration();
+    private ElasticsearchClientConnectionConfiguration connectionConfiguration = new ElasticsearchClientConnectionConfiguration();
 
     /**
      * Gets the module name which is managing the {@link ElasticsearchClientWrapper} instance.
@@ -185,10 +185,6 @@ public class ElasticsearchClientConfiguration {
      * @since 1.3.0
      */
     public ElasticsearchClientReconnectConfiguration getReconnectConfiguration() {
-        if (reconnectConfiguration == null) {
-            reconnectConfiguration = new ElasticsearchClientReconnectConfiguration();
-        }
-
         return reconnectConfiguration;
     }
 
@@ -212,10 +208,6 @@ public class ElasticsearchClientConfiguration {
      * @since 1.3.0
      */
     public ElasticsearchClientRequestConfiguration getRequestConfiguration() {
-        if (requestConfiguration == null) {
-            requestConfiguration = new ElasticsearchClientRequestConfiguration();
-        }
-
         return requestConfiguration;
     }
 
@@ -239,10 +231,6 @@ public class ElasticsearchClientConfiguration {
      * @since 1.3.0
      */
     public ElasticsearchClientSslConfiguration getSslConfiguration() {
-        if (sslConfiguration == null) {
-            sslConfiguration = new ElasticsearchClientSslConfiguration();
-        }
-
         return sslConfiguration;
     }
 
@@ -309,10 +297,6 @@ public class ElasticsearchClientConfiguration {
      * @since 2.1.0
      */
     public ElasticsearchClientConnectionConfiguration getConnectionConfiguration() {
-        if (connectionConfiguration == null) {
-            connectionConfiguration = new ElasticsearchClientConnectionConfiguration();
-        }
-
         return connectionConfiguration;
     }
 
