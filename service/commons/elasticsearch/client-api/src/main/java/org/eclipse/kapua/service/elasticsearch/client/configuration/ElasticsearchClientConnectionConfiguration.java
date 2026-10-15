@@ -20,9 +20,9 @@ import java.util.Optional;
  * @since 2.1.0
  */
 public class ElasticsearchClientConnectionConfiguration {
-    private Optional<Integer> numberOfIOThreads;
-    private Optional<Integer> maxTotalConnections;
-    private Optional<Integer> defaultMaxConnectionsPerRoute;
+    private Optional<Integer> numberOfIOThreads = Optional.empty();
+    private Optional<Integer> maxTotalConnections = Optional.empty();
+    private Optional<Integer> defaultMaxConnectionsPerRoute = Optional.empty();
 
     /**
      * Gets the number of I/O dispatch threads to be used by the I/O reactor.
