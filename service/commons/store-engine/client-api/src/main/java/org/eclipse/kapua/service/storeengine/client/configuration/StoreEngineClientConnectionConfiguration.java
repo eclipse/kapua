@@ -10,16 +10,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.elasticsearch.client.configuration;
+package org.eclipse.kapua.service.storeengine.client.configuration;
 
 import java.util.Optional;
 
 /**
- * The {@link ElasticsearchClientConnectionConfiguration} contains configurations
+ * The {@link StoreEngineClientConnectionConfiguration} contains configurations
  * to customize the behavior of the connection pool manager of the ES rest client.
  * @since 2.1.0
  */
-public class ElasticsearchClientConnectionConfiguration {
+public class StoreEngineClientConnectionConfiguration {
     private Optional<Integer> numberOfIOThreads = Optional.empty();
     private Optional<Integer> maxTotalConnections = Optional.empty();
     private Optional<Integer> defaultMaxConnectionsPerRoute = Optional.empty();
@@ -38,10 +38,10 @@ public class ElasticsearchClientConnectionConfiguration {
      * Sets the number of I/O dispatch threads to be used by the I/O reactor.
      * 
      * @param numberOfIOThreads The number of I/O dispatch threads to be used by the I/O reactor.
-     * @return This {@link ElasticsearchClientConnectionConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientConnectionConfiguration} to chain method invocation.
      * @since 2.1.0
      */
-    public ElasticsearchClientConnectionConfiguration setNumberOfIOThreads(Optional<Integer> numberOfIOThreads) {
+    public StoreEngineClientConnectionConfiguration setNumberOfIOThreads(Optional<Integer> numberOfIOThreads) {
         this.numberOfIOThreads = numberOfIOThreads
                 .filter(i -> i > 0);
         return this;
@@ -61,10 +61,10 @@ public class ElasticsearchClientConnectionConfiguration {
      * Sets the total number of connections available in the connection pool manager.
      * 
      * @param maxTotalConnections The total number of connections available in the connection pool manager.
-     * @return This {@link ElasticsearchClientConnectionConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientConnectionConfiguration} to chain method invocation.
      * @since 2.1.0
      */
-    public ElasticsearchClientConnectionConfiguration setMaxTotal(Optional<Integer> maxTotalConnections) {
+    public StoreEngineClientConnectionConfiguration setMaxTotal(Optional<Integer> maxTotalConnections) {
         this.maxTotalConnections = maxTotalConnections
                 .filter(i -> i > 0);
         return this;
@@ -84,10 +84,10 @@ public class ElasticsearchClientConnectionConfiguration {
      * Sets the default max number of connections per route in the connection pool manager.
      * 
      * @param defaultMaxConnectionsPerRoute The default max number of connections per route in the connection pool manager.
-     * @return This {@link ElasticsearchClientConnectionConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientConnectionConfiguration} to chain method invocation.
      * @since 2.1.0
      */
-    public ElasticsearchClientConnectionConfiguration setDefaultMaxPerRoute(Optional<Integer> defaultMaxConnectionsPerRoute) {
+    public StoreEngineClientConnectionConfiguration setDefaultMaxPerRoute(Optional<Integer> defaultMaxConnectionsPerRoute) {
         this.defaultMaxConnectionsPerRoute = defaultMaxConnectionsPerRoute
                 .filter(i -> i > 0);
         return this;

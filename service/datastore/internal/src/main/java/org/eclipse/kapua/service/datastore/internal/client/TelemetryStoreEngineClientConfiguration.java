@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.datastore.internal.client;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.kapua.service.datastore.internal.setting.TelemetryStoreEngineClientSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettingsKey;
@@ -53,10 +54,17 @@ public class TelemetryStoreEngineClientConfiguration extends StoreEngineClientCo
         getSslConfiguration().setKeyStorePassword(telemetryStoreEngineClientSettings.getString(DatastoreElasticsearchClientSettingsKey.SSL_KEYSTORE_PASSWORD));
         getSslConfiguration().setTrustStorePath(telemetryStoreEngineClientSettings.getString(DatastoreElasticsearchClientSettingsKey.SSL_TRUSTSTORE_PATH));
         getSslConfiguration().setTrustStorePassword(telemetryStoreEngineClientSettings.getString(DatastoreElasticsearchClientSettingsKey.SSL_TRUSTSTORE_PASSWORD));
-
-        setNumberOfIOThreads(telemetryStoreEngineClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.NUMBER_OF_IO_THREADS, 0));
         getReconnectConfiguration().setReconnectDelay(30000);
 
+        // NUMBER_OF_IO_THREADS has been deprecated in favour of ASYNC_CONN_NUMBER_OF_IO_THREADS. If the latter is defined it will take
+        // precedence otherwise the first one will be picked if any value is defined.
+        Optional<Integer> numberOfIOThreads = telemetryStoreEngineClientSettings.getInteger(DatastoreElasticsearchClientSettingsKey.CONNECTION_NUMBER_OF_IO_THREADS);
+        if (!numberOfIOThreads.isPresent()) {
+            numberOfIOThreads = Optional.of(telemetryStoreEngineClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.NUMBER_OF_IO_THREADS, 0));
+        }
+        getConnectionConfiguration().setNumberOfIOThreads(numberOfIOThreads);
+        getConnectionConfiguration().setMaxTotal(telemetryStoreEngineClientSettings.getInteger(DatastoreElasticsearchClientSettingsKey.CONNECTION_MAX_TOTAL_CONN));
+        getConnectionConfiguration().setDefaultMaxPerRoute(telemetryStoreEngineClientSettings.getInteger(DatastoreElasticsearchClientSettingsKey.CONNECTION_DEFAULT_MAX_CONN_PER_ROUTE));
         setPoolSize(telemetryStoreEngineClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.POOL_SIZE));
     }
 

@@ -33,9 +33,9 @@ public class StoreEngineClientConfiguration {
     private int poolSize;
 
     private StoreEngineClientReconnectConfiguration reconnectConfiguration = new StoreEngineClientReconnectConfiguration();
-    private StoreEngineClientRequestConfiguration requestConfiguration = new StoreEngineClientRequestConfiguration;
+    private StoreEngineClientRequestConfiguration requestConfiguration = new StoreEngineClientRequestConfiguration();
     private StoreEngineClientSslConfiguration sslConfiguration = new StoreEngineClientSslConfiguration();
-    private ElasticsearchClientConnectionConfiguration connectionConfiguration = new ElasticsearchClientConnectionConfiguration();
+    private StoreEngineClientConnectionConfiguration connectionConfiguration = new StoreEngineClientConnectionConfiguration();
 
     /**
      * Gets the module name which is managing the {@link StoreEngineClientWrapper} instance.
@@ -248,7 +248,7 @@ public class StoreEngineClientConfiguration {
     }
 
     /**
-     * @deprecated Replaced by corresponding method in {@link ElasticsearchClientConnectionConfiguration}
+     * @deprecated Replaced by corresponding method in {@link StoreEngineClientConnectionConfiguration}
      * @return
      */
     @Deprecated
@@ -257,7 +257,7 @@ public class StoreEngineClientConfiguration {
     }
 
     /**
-     * @deprecated Replaced by corresponding method in {@link ElasticsearchClientConnectionConfiguration}
+     * @deprecated Replaced by corresponding method in {@link StoreEngineClientConnectionConfiguration}
      * @param numberOfIOThreads
      * @return
      */
@@ -291,25 +291,26 @@ public class StoreEngineClientConfiguration {
     }
 
     /**
-     * Gets the {@link ElasticsearchClientConnectionConfiguration}
+     * Gets the {@link StoreEngineClientConnectionConfiguration}
      *
-     * @return The {@link ElasticsearchClientConnectionConfiguration}
+     * @return The {@link StoreEngineClientConnectionConfiguration}
      * @since 2.1.0
      */
-    public ElasticsearchClientConnectionConfiguration getConnectionConfiguration() {
+    public StoreEngineClientConnectionConfiguration getConnectionConfiguration() {
         return connectionConfiguration;
     }
 
     /**
-     * Sets the {@link ElasticsearchClientConnectionConfiguration}
+     * Sets the {@link StoreEngineClientConnectionConfiguration}
      *
      * @param connectionConfiguration
-     *         The {@link ElasticsearchClientConnectionConfiguration}
+     *         The {@link StoreEngineClientConnectionConfiguration}
      * @return This {@link StoreEngineClientConfiguration} to chain method invocation.
      * @since 2.1.0
      */
-    public StoreEngineClientConfiguration setConnectionConfiguration(ElasticsearchClientConnectionConfiguration connectionConfiguration) {
+    public StoreEngineClientConfiguration setConnectionConfiguration(StoreEngineClientConnectionConfiguration connectionConfiguration) {
         this.connectionConfiguration = connectionConfiguration;
         return this;
     }
 }
+
