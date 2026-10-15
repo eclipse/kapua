@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -306,7 +306,7 @@ public class ElasticsearchClientConfiguration {
      * @param connectionConfiguration
      *         The {@link ElasticsearchClientConnectionConfiguration}
      * @return This {@link ElasticsearchClientConnectionConfiguration} to chain method invocation.
-     * @since 2.1.0gt
+     * @since 2.1.0
      */
     public ElasticsearchClientConfiguration setConnectionConfiguration(ElasticsearchClientConnectionConfiguration connectionConfiguration) {
         this.connectionConfiguration = connectionConfiguration;

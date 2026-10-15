@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
@@ -24,30 +23,17 @@ public abstract class AbstractDatastoreFacade {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDatastoreFacade.class);
 
     protected final ConfigurationProvider configProvider;
-    // TODO Make the Cache size configurable.
-    private final LocalCache<String, MessageStoreConfiguration> configurationCache;
 
-
-    public AbstractDatastoreFacade(ConfigurationProvider configProvider, LocalCache<String, MessageStoreConfiguration> storeConfigurationCache) {
+    public AbstractDatastoreFacade(ConfigurationProvider configProvider) {
         this.configProvider = configProvider;
-        this.configurationCache = storeConfigurationCache;
     }
 
-    protected MessageStoreConfiguration getMessageStoreConfiguration(KapuaId scopeId) throws ConfigurationException {
-        MessageStoreConfiguration messageStoreConfig;
-        String compactId = scopeId.toCompactId();
-        if (configurationCache.get(compactId) == null) {
-            LOG.info("Reloading message store configuration local cache for scope Id: {}", compactId);
-            messageStoreConfig = configProvider.getConfiguration(scopeId);
-            configurationCache.put(compactId, messageStoreConfig);
-        } else {
-            messageStoreConfig = configurationCache.get(compactId);
-        }
-        return messageStoreConfig;
+    protected MessageStoreConfiguration getConfigurationFromCache(KapuaId scopeId) throws ConfigurationException {
+        return configProvider.getConfigurationFromCache(scopeId);
     }
 
     protected boolean isDatastoreServiceEnabled(KapuaId scopeId) throws ConfigurationException {
-        MessageStoreConfiguration messageStoreConfiguration = getMessageStoreConfiguration(scopeId);
+        MessageStoreConfiguration messageStoreConfiguration = getConfigurationFromCache(scopeId);
         long ttl = messageStoreConfiguration.getDataTimeToLiveMilliseconds();
 
         return messageStoreConfiguration.getDataStorageEnabled() && ttl != MessageStoreConfiguration.DISABLED;
