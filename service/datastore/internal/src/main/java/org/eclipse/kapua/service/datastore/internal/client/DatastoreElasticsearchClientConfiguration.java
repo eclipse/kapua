@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.datastore.internal.client;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettings;
