@@ -24,7 +24,7 @@ public abstract class AbstractDatastoreFacade {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDatastoreFacade.class);
 
     protected final ConfigurationProvider configProvider;
-    // TODO Make the Cache size configurable.
+    // TODO Make the Cache size configurable externally (currently only on properties file).
     private final LocalCache<String, MessageStoreConfiguration> configurationCache;
 
 
