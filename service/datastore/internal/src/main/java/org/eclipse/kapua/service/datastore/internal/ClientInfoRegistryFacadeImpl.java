@@ -62,7 +62,7 @@ public class ClientInfoRegistryFacadeImpl extends AbstractDatastoreFacade implem
             StorablePredicateFactory storablePredicateFactory,
             ClientInfoRepository clientInfoRepository,
             DatastoreCacheManager datastoreCacheManager) {
-        super(configProvider, datastoreCacheManager.getConfigurationCache());
+        super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
         this.repository = clientInfoRepository;

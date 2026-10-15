@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import org.eclipse.kapua.commons.cache.ExpiryPolicy;
 import org.eclipse.kapua.commons.cache.LocalCache;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
@@ -35,7 +36,7 @@ public class DatastoreCacheManager {
     private final LocalCache<String, Boolean> channelsCache;
     private final LocalCache<String, Boolean> metricsCache;
     private final LocalCache<String, Boolean> clientsCache;
-    private final LocalCache<String, MessageStoreConfiguration> configurationCache;
+    private final LocalCache<KapuaId, MessageStoreConfiguration> configurationCache;
 
     @Inject
     public DatastoreCacheManager(DatastoreSettings datastoreSettings) {
@@ -50,8 +51,8 @@ public class DatastoreCacheManager {
         final Optional<Integer> configurationSizeMax = datastoreSettings.getInteger(DatastoreSettingsKey.CONFIG_CACHE_CONFIGURATION_LOCAL_SIZE_MAXIMUM);
         final Optional<Integer> configurationExpireAfter = datastoreSettings.getInteger(DatastoreSettingsKey.CONFIG_CACHE_CONFIGURATION_LOCAL_EXPIRE_AFTER);
         configurationCache = new LocalCache<>(
-                configurationSizeMax.filter(val -> val >= 0).orElse(1000),
-                configurationExpireAfter.filter(val -> val >= 0).orElse(60),
+                configurationSizeMax.filter(val -> val > 0).orElse(0),
+                configurationExpireAfter.filter(val -> val > 0).orElse(0),
                 ExpiryPolicy.MODIFIED, null);
     }
 
@@ -99,9 +100,9 @@ public class DatastoreCacheManager {
      * Get the message store configurations cache
      *
      * @return
-     * @since 1.6.16
+     * @since 2.1.0
      */
-   public LocalCache<String, MessageStoreConfiguration> getConfigurationCache() {
+   public LocalCache<KapuaId, MessageStoreConfiguration> getConfigurationCache() {
         return configurationCache;
     }
 }

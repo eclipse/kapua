@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.datastore.internal.client;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettings;
@@ -59,13 +58,11 @@ public class DatastoreElasticsearchClientConfiguration extends ElasticsearchClie
 
         // NUMBER_OF_IO_THREADS has been deprecated in favour of ASYNC_CONN_NUMBER_OF_IO_THREADS. If the latter is defined it will take
         // precedence otherwise the first one will be picked if any value is defined.
-        Optional<Integer> numberOfThreads;
-        try {
-            numberOfThreads = elasticsearchClientSettings.getInteger(DatastoreElasticsearchClientSettingsKey.CONNECTION_NUMBER_OF_IO_THREADS);
-        } catch (NoSuchElementException e) {
-            numberOfThreads = Optional.of(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.NUMBER_OF_IO_THREADS, 0));
+        Optional<Integer> numberOfIOThreads = elasticsearchClientSettings.getInteger(DatastoreElasticsearchClientSettingsKey.CONNECTION_NUMBER_OF_IO_THREADS);
+        if (!numberOfIOThreads.isPresent()) {
+            numberOfIOThreads = Optional.of(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.NUMBER_OF_IO_THREADS, 0));
         }
-        getConnectionConfiguration().setNumberOfIOThreads(numberOfThreads);
+        getConnectionConfiguration().setNumberOfIOThreads(numberOfIOThreads);
         getConnectionConfiguration().setMaxTotal(elasticsearchClientSettings.getInteger(DatastoreElasticsearchClientSettingsKey.CONNECTION_MAX_TOTAL_CONN));
         getConnectionConfiguration().setDefaultMaxPerRoute(elasticsearchClientSettings.getInteger(DatastoreElasticsearchClientSettingsKey.CONNECTION_DEFAULT_MAX_CONN_PER_ROUTE));
         setPoolSize(elasticsearchClientSettings.getInt(DatastoreElasticsearchClientSettingsKey.POOL_SIZE));
