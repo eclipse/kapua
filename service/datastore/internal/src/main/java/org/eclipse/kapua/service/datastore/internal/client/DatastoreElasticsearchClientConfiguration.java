@@ -48,6 +48,9 @@ public class DatastoreElasticsearchClientConfiguration extends ElasticsearchClie
         getSslConfiguration().setEnabled(ELASTICSEARCH_CLIENT_SETTINGS.getBoolean(DatastoreElasticsearchClientSettingsKey.SSL_ENABLED));
 
         getReconnectConfiguration().setReconnectDelay(30000);
+
+        getConnectionConfiguration().setMaxTotal(ELASTICSEARCH_CLIENT_SETTINGS.getInteger(DatastoreElasticsearchClientSettingsKey.CONNECTION_MAX_TOTAL_CONN));
+        getConnectionConfiguration().setDefaultMaxPerRoute(ELASTICSEARCH_CLIENT_SETTINGS.getInteger(DatastoreElasticsearchClientSettingsKey.CONNECTION_DEFAULT_MAX_CONN_PER_ROUTE));
     }
 
     public static ElasticsearchClientConfiguration getInstance() {

@@ -142,7 +142,19 @@ public enum DatastoreElasticsearchClientSettingsKey implements SettingKey {
      *
      * @since 1.3.0
      */
-    SSL_TRUSTSTORE_PASSWORD("datastore.elasticsearch.ssl.truststore.password");
+    SSL_TRUSTSTORE_PASSWORD("datastore.elasticsearch.ssl.truststore.password"),
+    /**
+     * Elastichsearch client max connection pool size for the client connection manager
+     *
+     * @since 2.1.0
+     */
+    CONNECTION_MAX_TOTAL_CONN("datastore.elasticsearch.connection.maxTotal"),
+    /**
+     * Elastichsearch client default max connections of the client connection manager assigned to a single route
+     *
+     * @since 2.1.0
+     */
+    CONNECTION_DEFAULT_MAX_CONN_PER_ROUTE("datastore.elasticsearch.connection.defaultMaxPerRoute");
 
     /**
      * The key value in the configuration resources.
