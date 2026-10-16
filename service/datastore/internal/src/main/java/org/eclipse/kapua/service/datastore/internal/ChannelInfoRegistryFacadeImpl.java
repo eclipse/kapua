@@ -64,7 +64,7 @@ public class ChannelInfoRegistryFacadeImpl extends AbstractDatastoreFacade imple
             StorablePredicateFactory storablePredicateFactory,
             ChannelInfoRepository channelInfoRepository,
             DatastoreCacheManager datastoreCacheManager) {
-        super(configProvider, datastoreCacheManager.getConfigurationCache());
+        super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.storablePredicateFactory = storablePredicateFactory;
         this.repository = channelInfoRepository;

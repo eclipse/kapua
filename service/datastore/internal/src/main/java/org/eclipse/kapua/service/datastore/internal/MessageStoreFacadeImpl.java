@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -86,9 +86,8 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
             MetricInfoRepository metricInfoRepository,
             ChannelInfoRepository channelInfoRepository,
             ClientInfoRepository clientInfoRepository,
-            DatastoreUtils datastoreUtils,
-            DatastoreCacheManager cacheManager) {
-        super(configProvider, cacheManager.getConfigurationCache());
+            DatastoreUtils datastoreUtils) {
+        super(configProvider);
         this.storableIdFactory = storableIdFactory;
         this.clientInfoRegistryFacade = clientInfoRegistryFacade;
         this.channelInfoStoreFacade = channelInfoStoreFacade;
@@ -126,7 +125,7 @@ public final class MessageStoreFacadeImpl extends AbstractDatastoreFacade implem
         // Use the account service plan to determine whether we will give
         // precede to the device time        
         long indexedOn = KapuaDateUtils.getKapuaSysDate().toEpochMilli();
-        if (DataIndexBy.DEVICE_TIMESTAMP.equals(this.getMessageStoreConfiguration(message.getScopeId()).getDataIndexBy())) {
+        if (DataIndexBy.DEVICE_TIMESTAMP.equals(this.getConfigurationFromCache(message.getScopeId()).getDataIndexBy())) {
             if (capturedOn != null) {
                 indexedOn = capturedOn.getTime();
             } else {
