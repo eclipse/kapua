@@ -43,7 +43,7 @@ import com.google.inject.multibindings.ProvidesIntoSet;
  * pick a {@link StoreEngineClientBuilder} out of a Guice-multibound {@link Set}, by {@link StoreEngineClientBuilder#getId()} - instead of hardcoding a concrete
  * vendor class.
  * <p>
- * This lives in {@code client-rest} - the module owning {@link DeviceStoreClientBuilderLocator} - and deliberately does NOT depend on any real vendor module
+ * This lives in {@code client-rest} - the module owning {@link StoreEngineClientBuilderLocator} - and deliberately does NOT depend on any real vendor module
  * (e.g. {@code client-rest-elasticsearch}), since that dependency would run backwards (those modules depend on this one). Two local fakes stand in for
  * "whatever vendor modules happen to be on the classpath".
  * <p>
@@ -150,14 +150,14 @@ public class StoreEngineClientBuilderSetBindingTest {
         StoreEngineClientBuilder second = new FakeStoreEngineClientBuilder(SecondFakeBuilderModule.ID);
         Set<StoreEngineClientBuilder> candidates = new HashSet<>(Arrays.asList(first, second));
 
-        StoreEngineClientBuilder picked = new DeviceStoreClientBuilderLocator().locate("Fake-Second", candidates);
+        StoreEngineClientBuilder picked = new StoreEngineClientBuilderLocator().locate("Fake-Second", candidates);
 
         Assertions.assertThat(picked).isSameAs(second);
     }
 
     @Test
     public void locateThrowsWhenNoContributedBuilderMatches() {
-        Assertions.assertThatThrownBy(() -> new DeviceStoreClientBuilderLocator().locate("solr", Collections.emptySet()))
+        Assertions.assertThatThrownBy(() -> new StoreEngineClientBuilderLocator().locate("solr", Collections.emptySet()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -172,14 +172,14 @@ public class StoreEngineClientBuilderSetBindingTest {
                     @Provides
                     @Singleton
                     @Named("messageStore")
-                    StoreEngineClientBuilder messageStoreBuilder(Set<StoreEngineClientBuilder> availableDeviceStoreClientBuilders, DeviceStoreClientBuilderLocator locator) {
+                    StoreEngineClientBuilder messageStoreBuilder(Set<StoreEngineClientBuilder> availableDeviceStoreClientBuilders, StoreEngineClientBuilderLocator locator) {
                         return locator.locate(FirstFakeBuilderModule.ID, availableDeviceStoreClientBuilders);
                     }
 
                     @Provides
                     @Singleton
                     @Named("logStore")
-                    StoreEngineClientBuilder logStoreBuilder(Set<StoreEngineClientBuilder> availableDeviceStoreClientBuilders, DeviceStoreClientBuilderLocator locator) {
+                    StoreEngineClientBuilder logStoreBuilder(Set<StoreEngineClientBuilder> availableDeviceStoreClientBuilders, StoreEngineClientBuilderLocator locator) {
                         return locator.locate(FirstFakeBuilderModule.ID, availableDeviceStoreClientBuilders);
                     }
                 });

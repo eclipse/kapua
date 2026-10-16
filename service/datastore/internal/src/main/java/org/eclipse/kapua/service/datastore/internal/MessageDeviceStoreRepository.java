@@ -119,7 +119,7 @@ public class MessageDeviceStoreRepository extends DatastoreRepositoryBase<Datast
             }
         }
         final InsertRequest insertRequest = new InsertRequest(idExtractor(messageToStore).toString(), indexName, messageToStore);
-        return storeEngineClientProviderInstance.getDeviceStoreClient().insert(insertRequest).getId();
+        return storeEngineClientProviderInstance.getStoreEngineClient().insert(insertRequest).getId();
     }
 
     private Map<String, Metric> getMessageMappingDiffs(Map<String, Metric> currentMetrics, Map<String, Metric> newMetrics) {
@@ -137,7 +137,7 @@ public class MessageDeviceStoreRepository extends DatastoreRepositoryBase<Datast
             }
             final ObjectNode metricsMapping = getNewMessageMappingsBuilder(esMetrics);
             logger.trace("Sending dynamic message mappings: {}", metricsMapping);
-            storeEngineClientProviderInstance.getDeviceStoreClient().putMapping(index, metricsMapping);
+            storeEngineClientProviderInstance.getStoreEngineClient().putMapping(index, metricsMapping);
         } catch (ClientException | MappingException e) {
             throw new RuntimeException(e);
         }

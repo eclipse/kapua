@@ -47,7 +47,7 @@ import org.eclipse.kapua.service.storeengine.client.configuration.StoreEngineCli
 import org.eclipse.kapua.service.storeengine.client.rest.MetricsEsClient;
 import org.eclipse.kapua.service.storeengine.client.rest.RestStoreEngineClientProvider;
 import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientBuilder;
-import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.DeviceStoreClientBuilderLocator;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientBuilderLocator;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
 
 import com.google.inject.Provides;
@@ -88,9 +88,9 @@ public class DatastoreModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    StoreEngineClientBuilder lowLevelSearchClientBuilder(Set<StoreEngineClientBuilder> availableStoreEngineClientBuilders, DeviceStoreClientBuilderLocator deviceStoreClientBuilderLocator) {
+    StoreEngineClientBuilder lowLevelSearchClientBuilder(Set<StoreEngineClientBuilder> availableStoreEngineClientBuilders, StoreEngineClientBuilderLocator storeEngineClientBuilderLocator) {
         String engine = TelemetryStoreEngineClientSettings.getInstance().getString(DatastoreElasticsearchClientSettingsKey.CLIENT_ENGINE, "elasticsearch");
-        return deviceStoreClientBuilderLocator.locate(engine, availableStoreEngineClientBuilders);
+        return storeEngineClientBuilderLocator.locate(engine, availableStoreEngineClientBuilders);
     }
 
     @Provides

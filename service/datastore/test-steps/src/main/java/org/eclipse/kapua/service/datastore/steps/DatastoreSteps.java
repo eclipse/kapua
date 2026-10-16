@@ -308,7 +308,7 @@ public class DatastoreSteps extends TestBase {
         messageFactory = locator.getFactory(KapuaMessageFactory.class);
         storableIdFactory = locator.getFactory(StorableIdFactory.class);
         channelInfoRegistryService = locator.getService(ChannelInfoRegistryService.class);
-        storeEngineClientWrapper = locator.getComponent(StoreEngineClientProvider.class).getDeviceStoreClient();
+        storeEngineClientWrapper = locator.getComponent(StoreEngineClientProvider.class).getStoreEngineClient();
         channelInfoFactory = locator.getFactory(ChannelInfoFactory.class);
         clientInfoFactory = locator.getFactory(ClientInfoFactory.class);
         messageStoreFactory = locator.getFactory(MessageStoreFactory.class);

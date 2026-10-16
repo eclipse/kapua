@@ -80,7 +80,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
 
     private static final String PROVIDER_CANNOT_CLOSE_CLIENT_MSG = "Cannot close ElasticSearch REST client. Client is already closed or not initialized";
 
-    private List<RestStoreEngineClientWrapper> restDeviceStoreClientWrappers;
+    private List<RestStoreEngineClientWrapper> restStoreEngineClientWrappers;
 
     private StoreEngineClientConfiguration storeEngineClientConfiguration;
     private ModelContext modelContext;
@@ -100,7 +100,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
     @Override
     public RestStoreEngineClientProvider init() throws ClientProviderInitException {
         if (!closed) {
-            LOG.warn(storeEngineClientBuilder.getVendorName() + " Elasticsearch rest client provider: closing the pool failed at a previous stage, trying to close before init.");
+            LOG.warn(storeEngineClientBuilder.getVendorName() + " rest client provider: closing the pool failed at a previous stage, trying to close before init.");
             close();
         }
         if (initialized && closed) {
@@ -247,19 +247,19 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
 //            reconnectExecutorTask = null;
 //        }
         initialized = false;
-        if (restDeviceStoreClientWrappers == null) {
+        if (restStoreEngineClientWrappers == null) {
             closed = true;
             return;
         }
         closed = false;
-        for (int i = 0; i < restDeviceStoreClientWrappers.size(); i++) {
-            if (restDeviceStoreClientWrappers.get(i) != null) {
-                restDeviceStoreClientWrappers.get(i).close();
-                restDeviceStoreClientWrappers.set(i, null);
+        for (int i = 0; i < restStoreEngineClientWrappers.size(); i++) {
+            if (restStoreEngineClientWrappers.get(i) != null) {
+                restStoreEngineClientWrappers.get(i).close();
+                restStoreEngineClientWrappers.set(i, null);
             }
         }
-        restDeviceStoreClientWrappers.clear();
-        restDeviceStoreClientWrappers = null;
+        restStoreEngineClientWrappers.clear();
+        restStoreEngineClientWrappers = null;
         closed = true;
     }
 
@@ -297,12 +297,12 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
      */
     private void initClientPool(int poolSize) throws ClientInitializationException {
         initialized = false;
-        restDeviceStoreClientWrappers = new ArrayList<>(poolSize);
+        restStoreEngineClientWrappers = new ArrayList<>(poolSize);
         RestStoreEngineClientWrapper clientPoolItem;
         for(int i=0; i < poolSize; i++) {
             clientPoolItem = createClientWrapper();
             clientPoolItem.init();
-            restDeviceStoreClientWrappers.add(clientPoolItem);
+            restStoreEngineClientWrappers.add(clientPoolItem);
         }
         initialized = true;
     }
@@ -450,12 +450,12 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
     }
 
     @Override
-    public RestStoreEngineClientWrapper getDeviceStoreClient() throws ClientUnavailableException, ClientProviderInitException {
+    public RestStoreEngineClientWrapper getStoreEngineClient() throws ClientUnavailableException, ClientProviderInitException {
         this.init();
         // To evenly distribute requests among clients, calculate the index to return in a round robin style.
-        int clientIndex = Math.abs(nextClientIndex.getAndAdd(1) % restDeviceStoreClientWrappers.size());
-        LOG.debug("Elasticsearch client provider pool get ES client: assign index {} in a pool of {}", clientIndex, restDeviceStoreClientWrappers.size());
-        RestStoreEngineClientWrapper clientWrapper = restDeviceStoreClientWrappers.get(clientIndex);
+        int clientIndex = Math.abs(nextClientIndex.getAndAdd(1) % restStoreEngineClientWrappers.size());
+        LOG.debug("Elasticsearch client provider pool get ES client: assign index {} in a pool of {}", clientIndex, restStoreEngineClientWrappers.size());
+        RestStoreEngineClientWrapper clientWrapper = restStoreEngineClientWrappers.get(clientIndex);
         return clientWrapper;
     }
     // Private methods
@@ -523,14 +523,14 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
         return getClientConfiguration().getSslConfiguration();
     }
 
-    /**
-     * Gets the {@link ElasticsearchClientReconnectConfiguration}.
-     * <p>
-     * Shortcut for {@link #getClientConfiguration()#getClientReconnectConfiguration()}
-     *
-     * @return The {@link ElasticsearchClientReconnectConfiguration}
-     * @since 1.3.0
-     */
+//    /**
+//     * Gets the {@link ElasticsearchClientReconnectConfiguration}.
+//     * <p>
+//     * Shortcut for {@link #getClientConfiguration()#getClientReconnectConfiguration()}
+//     *
+//     * @return The {@link ElasticsearchClientReconnectConfiguration}
+//     * @since 1.3.0
+//     */
 //    private StoreEngineClientReconnectConfiguration getClientReconnectConfiguration() {
 //        return getClientConfiguration().getReconnectConfiguration();
 //    }

@@ -99,7 +99,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
         // datastore.elasticsearch.ssl.truststore.path=
         // datastore.elasticsearch.ssl.truststore.password=
         try {
-            storeEngineClientProvider.getDeviceStoreClient();
+            storeEngineClientProvider.getStoreEngineClient();
             storeMessage("ssl_test/no_ssl");
             Assert.fail("ClientException should be thrown!");
         } catch (ClientException e) {
@@ -119,7 +119,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
         // datastore.elasticsearch.ssl.truststore.path=
         // datastore.elasticsearch.ssl.truststore.password=
         try {
-            storeEngineClientProvider.getDeviceStoreClient();
+            storeEngineClientProvider.getStoreEngineClient();
             storeMessage("ssl_test/ssl");
         } catch (ClientException e) {
             Assert.fail("No ClientException should be thrown!");
@@ -138,7 +138,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
         // datastore.elasticsearch.ssl.truststore.path=
         // datastore.elasticsearch.ssl.truststore.password=
         try {
-            storeEngineClientProvider.getDeviceStoreClient();
+            storeEngineClientProvider.getStoreEngineClient();
             storeMessage("ssl_test/ssl_trust_server_no_trust_store_set");
         } catch (ClientException e) {
             Assert.fail("No ClientException should be thrown!");
@@ -157,7 +157,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
         // datastore.elasticsearch.ssl.truststore.path=some valid truststore path
         // datastore.elasticsearch.ssl.truststore.password=trust store password
         try {
-            storeEngineClientProvider.getDeviceStoreClient();
+            storeEngineClientProvider.getStoreEngineClient();
             storeMessage("ssl_test/ssl_trust_server_default_trust_store_set");
         } catch (ClientException e) {
             Assert.fail("No ClientException should be thrown!");
@@ -176,7 +176,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
         // datastore.elasticsearch.ssl.truststore.path=self signed trust store
         // datastore.elasticsearch.ssl.truststore.password=password
         try {
-            storeEngineClientProvider.getDeviceStoreClient();
+            storeEngineClientProvider.getStoreEngineClient();
             storeMessage("ssl_test/ssl_trust_server_self_signed_tust");
         } catch (ClientException e) {
             Assert.fail("No ClientException should be thrown!");

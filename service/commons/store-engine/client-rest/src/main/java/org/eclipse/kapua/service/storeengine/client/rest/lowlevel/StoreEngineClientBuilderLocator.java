@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  *
  * @since 2.1.0
  */
-public class DeviceStoreClientBuilderLocator {
+public class StoreEngineClientBuilderLocator {
 
     /**
      * @param engineId
