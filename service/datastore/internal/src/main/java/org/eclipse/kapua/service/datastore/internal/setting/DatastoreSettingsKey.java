@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2025 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -82,12 +82,12 @@ public enum DatastoreSettingsKey implements SettingKey {
      */
     CONFIG_METRICS_CACHE_LOCAL_FETCH_FROM_SOURCE_BEFORE_UPSERT("datastore.cache.metrics.local.fetchBeforeUpsert"),
     /**
-     * Channels behaviour switch - when the cache does not know a specific channel, should the system ask other upserts to wait until the non-cached channel to finish its upsert (set to true, 
+     * Channels behaviour switch - when the cache does not know a specific channel, should the system ask other upserts to wait until the non-cached channel to finish its upsert (set to true,
      * default) or just let it go (set to false)? Asking to wait increase the chances the other upserts are resolved by the cache.
      */
     CONFIG_CHANNELS_CACHE_LOCAL_SYNCH_BEFORE_UPSERT("datastore.cache.channels.local.synchBeforeUpsert"),
     /**
-     * Client behaviour switch - when the cache does not know a specific client, should the system ask other upserts to wait until the non-cached client to finish its upsert (set to true, default) 
+     * Client behaviour switch - when the cache does not know a specific client, should the system ask other upserts to wait until the non-cached client to finish its upsert (set to true, default)
      * or just let it go (set to false)? Asking to wait increase the chances the other upserts are resolved by the cache.
      */
     CONFIG_CLIENTS_CACHE_LOCAL_SYNCH_BEFORE_UPSERT("datastore.cache.clients.local.synchBeforeUpsert"),

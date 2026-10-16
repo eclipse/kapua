@@ -96,11 +96,12 @@ public class DatastoreModule extends AbstractKapuaModule {
     ConfigurationProvider configurationProvider(
             Map<Class<?>, ServiceConfigurationManager> serviceConfigurationManagersByServiceClass,
             KapuaJpaTxManagerFactory jpaTxManagerFactory,
-            AccountService accountService
+            AccountService accountService,
+            DatastoreCacheManager datastoreCacheManager
     ) {
         final ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(
                 serviceConfigurationManagersByServiceClass.get(MessageStoreService.class),
-                accountService);
+                accountService, datastoreCacheManager.getConfigurationCache());
         return configurationProvider;
     }
 
