@@ -44,9 +44,9 @@ import org.eclipse.kapua.service.storeengine.client.configuration.StoreEngineNod
 import org.eclipse.kapua.service.storeengine.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientProviderInitException;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientUnavailableException;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClient;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientBuilder;
 import org.eclipse.kapua.service.storeengine.client.utils.InetAddressParser;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,19 +86,21 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
     private ModelContext modelContext;
     private QueryConverter modelConverter;
     private MetricsEsClient metrics;
+    private final StoreEngineClientBuilder storeEngineClientBuilder;
     private volatile boolean initialized;
     private volatile boolean closed = true;
     private AtomicInteger nextClientIndex = new AtomicInteger(0);
 
     @Inject
-    public RestStoreEngineClientProvider(MetricsEsClient metricsEsClient) {
+    public RestStoreEngineClientProvider(MetricsEsClient metricsEsClient, StoreEngineClientBuilder storeEngineClientBuilder) {
         this.metrics = metricsEsClient;
+        this.storeEngineClientBuilder = storeEngineClientBuilder;
     }
 
     @Override
     public RestStoreEngineClientProvider init() throws ClientProviderInitException {
         if (!closed) {
-            LOG.warn("Elasticsearch rest client provider: closing the pool failed at a previous stage, trying to close before init.");
+            LOG.warn(storeEngineClientBuilder.getVendorName() + " rest client provider: closing the pool failed at a previous stage, trying to close before init.");
             close();
         }
         if (initialized && closed) {
@@ -127,7 +129,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
                             .create()
                             .withLogger(LOG)
                             .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
-                            .withTitle("Elasticsearch REST Provider Configuration")
+                            .withTitle(storeEngineClientBuilder.getVendorName() + " REST Provider Configuration")
                             .addParameter("Module Name", getClientConfiguration().getModuleName())
                             .addParameter("Cluster Name", getClientConfiguration().getClusterName());
 
@@ -206,7 +208,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
     /**
      * Closes the {@link RestStoreEngineClientProvider}.
      * <p>
-     * It takes care of closing the {@link RestClient}.
+     * It takes care of closing the {@link StoreEngineClient}.
      *
      * @since 1.0.0
      */
@@ -223,11 +225,11 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
     }
 
     /**
-     * Closes the {@link RestClient} pool.
+     * Closes the {@link StoreEngineClient} pool.
      * <p>
      *
      * @throws IOException
-     *         see {@link RestClient#close()} javadoc.
+     *         see {@link StoreEngineClient#close()} javadoc.
      * @since 2.0.0
      */
     private void closeClientPool() throws IOException {
@@ -250,7 +252,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
             return;
         }
         closed = false;
-        for (int i=0; i < restStoreEngineClientWrappers.size(); i++) {
+        for (int i = 0; i < restStoreEngineClientWrappers.size(); i++) {
             if (restStoreEngineClientWrappers.get(i) != null) {
                 restStoreEngineClientWrappers.get(i).close();
                 restStoreEngineClientWrappers.set(i, null);
@@ -286,11 +288,11 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
 //    }
 
     /**
-     * Initializes the {@link RestClient} pool as per {@link StoreEngineClientConfiguration}.
+     * Initializes the {@link StoreEngineClient} pool as per {@link StoreEngineClientConfiguration}.
      *
-     * @return The initialized {@link RestClient} pool.
+     * @return The initialized {@link StoreEngineClient} pool.
      * @throws ClientInitializationException
-     *         if any {@link Exception} occurs while {@link RestClient} initialization.
+     *         if any {@link Exception} occurs while {@link StoreEngineClient} initialization.
      * @since 2.0.0
      */
     private void initClientPool(int poolSize) throws ClientInitializationException {
@@ -354,7 +356,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
             throw new ClientInitializationException(e, "Error while parsing node addresses!");
         }
 
-        RestClientBuilder restClientBuilder = RestClient.builder(hosts.toArray(new HttpHost[0]));
+        StoreEngineClientBuilder restClientBuilder = storeEngineClientBuilder.initializeAndSetHosts(hosts.toArray(new HttpHost[0]));
         SSLContext sslContext = null;
         if (sslEnabled) {
             try {
@@ -388,7 +390,7 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
                     return requestConfigBuilder;
                 });
 
-        org.elasticsearch.client.RestClient esRestClientWrapped;
+        StoreEngineClient esRestClientWrapped;
         esRestClientWrapped = restClientBuilder.build();
 
         // Create Client Wrapper
@@ -521,14 +523,14 @@ public class RestStoreEngineClientProvider implements StoreEngineClientProvider<
         return getClientConfiguration().getSslConfiguration();
     }
 
-    /**
-     * Gets the {@link StoreEngineClientReconnectConfiguration}.
-     * <p>
-     * Shortcut for {@link #getClientConfiguration()#getClientReconnectConfiguration()}
-     *
-     * @return The {@link StoreEngineClientReconnectConfiguration}
-     * @since 1.3.0
-     */
+//    /**
+//     * Gets the {@link ElasticsearchClientReconnectConfiguration}.
+//     * <p>
+//     * Shortcut for {@link #getClientConfiguration()#getClientReconnectConfiguration()}
+//     *
+//     * @return The {@link ElasticsearchClientReconnectConfiguration}
+//     * @since 1.3.0
+//     */
 //    private StoreEngineClientReconnectConfiguration getClientReconnectConfiguration() {
 //        return getClientConfiguration().getReconnectConfiguration();
 //    }
