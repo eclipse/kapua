@@ -74,8 +74,8 @@ public class AccountModule extends AbstractKapuaModule implements Module {
                 .annotatedWith(Names.named("accountsByNameCache"))
                 .toInstance(new LocalCache<>(
                         kapuaAccountSetting.getCacheConfig(
-                                KapuaAccountSettingKeys.ACCOUNT_CACHE_LOCAL_SIZE_MAXIMUM, 1000,
-                                KapuaAccountSettingKeys.ACCOUNT_CACHE_LOCAL_EXPIRE_AFTER, 60,
+                                KapuaAccountSettingKeys.ACCOUNT_CACHE_LOCAL_SIZE_MAXIMUM, 0,
+                                KapuaAccountSettingKeys.ACCOUNT_CACHE_LOCAL_EXPIRE_AFTER, 0,
                                 KapuaAccountSettingKeys.ACCOUNT_CACHE_LOCAL_EXPIRE_STRATEGY),
                         null));
 
