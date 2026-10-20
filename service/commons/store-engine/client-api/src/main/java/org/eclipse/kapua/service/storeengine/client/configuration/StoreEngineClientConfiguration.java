@@ -305,7 +305,7 @@ public class StoreEngineClientConfiguration {
      *
      * @param connectionConfiguration
      *         The {@link StoreEngineClientConnectionConfiguration}
-     * @return This {@link StoreEngineClientConnectionConfiguration} to chain method invocation.
+     * @return This {@link StoreEngineClientConfiguration} to chain method invocation.
      * @since 2.1.0
      */
     public StoreEngineClientConfiguration setConnectionConfiguration(StoreEngineClientConnectionConfiguration connectionConfiguration) {
@@ -313,3 +313,4 @@ public class StoreEngineClientConfiguration {
         return this;
     }
 }
+

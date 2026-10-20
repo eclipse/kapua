@@ -54,6 +54,11 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-datastore-internal</artifactId>
         </dependency>
+        <!-- ElasticsearchStoreEngineClient#unwrap() escape hatch used directly by DatastoreSteps for bulk test setup. Tests talk directly with the low level impl. -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-service-elasticsearch-client-rest-elasticsearch</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-commons</artifactId>
