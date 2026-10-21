@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Singleton;
 
@@ -36,13 +37,17 @@ import org.eclipse.kapua.service.datastore.MetricInfoFactory;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.internal.client.TelemetryStoreEngineClientConfiguration;
 import org.eclipse.kapua.service.datastore.internal.converter.ModelContextImpl;
+import org.eclipse.kapua.service.datastore.internal.setting.TelemetryStoreEngineClientSettings;
 import org.eclipse.kapua.service.storeengine.client.rest.QueryConverterImpl;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettingsKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.storeengine.client.StoreEngineClientProvider;
 import org.eclipse.kapua.service.storeengine.client.configuration.StoreEngineClientConfiguration;
 import org.eclipse.kapua.service.storeengine.client.rest.MetricsEsClient;
 import org.eclipse.kapua.service.storeengine.client.rest.RestStoreEngineClientProvider;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientBuilder;
+import org.eclipse.kapua.service.storeengine.client.rest.lowlevel.StoreEngineClientBuilderLocator;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
 
 import com.google.inject.Provides;
@@ -83,9 +88,19 @@ public class DatastoreModule extends AbstractKapuaModule {
 
     @Provides
     @Singleton
-    StoreEngineClientProvider elasticsearchClientProvider(MetricsEsClient metricsEsClient, StorableIdFactory storableIdFactory, DatastoreUtils datastoreUtils) {
-        StoreEngineClientConfiguration esClientConfiguration = TelemetryStoreEngineClientConfiguration.getInstance();
-        return new RestStoreEngineClientProvider(metricsEsClient)
+    StoreEngineClientBuilder lowLevelSearchClientBuilder(Set<StoreEngineClientBuilder> availableStoreEngineClientBuilders, StoreEngineClientBuilderLocator storeEngineClientBuilderLocator) {
+        String engine = TelemetryStoreEngineClientSettings.getInstance().getString(DatastoreElasticsearchClientSettingsKey.CLIENT_ENGINE, "elasticsearch");
+        return storeEngineClientBuilderLocator.locate(engine, availableStoreEngineClientBuilders);
+    }
+
+    @Provides
+    @Singleton
+    StoreEngineClientProvider elasticsearchClientProvider(MetricsEsClient metricsEsClient,
+                                                          StoreEngineClientBuilder storeEngineClientBuilder,
+                                                          StorableIdFactory storableIdFactory,
+                                                          DatastoreUtils datastoreUtils) {
+        StoreEngineClientConfiguration esClientConfiguration = TelemetryStoreEngineClientConfiguration.getInstance(); //For now, different impls. share the same settings, until their settings that we use in the codebase don't diverge. In that case, we will need to create a new configuration class for implementations different from es.
+        return new RestStoreEngineClientProvider(metricsEsClient, storeEngineClientBuilder)
                 .withClientConfiguration(esClientConfiguration)
                 .withModelContext(new ModelContextImpl(storableIdFactory, datastoreUtils))
                 .withModelConverter(new QueryConverterImpl());

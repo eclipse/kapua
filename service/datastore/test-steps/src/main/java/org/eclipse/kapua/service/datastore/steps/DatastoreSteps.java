@@ -88,11 +88,12 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.eclipse.kapua.service.storeengine.client.StoreEngineClientWrapper;
 import org.eclipse.kapua.service.storeengine.client.StoreEngineClientProvider;
+import org.eclipse.kapua.service.storeengine.client.StoreEngineClientWrapper;
 import org.eclipse.kapua.service.storeengine.client.exception.ClientException;
 import org.eclipse.kapua.service.storeengine.client.model.IndexRequest;
 import org.eclipse.kapua.service.storeengine.client.rest.ElasticsearchResourcePaths;
+import org.eclipse.kapua.plugin.devicestorage.provider.elasticsearch.ElasticsearchStoreEngineClient;
 import org.eclipse.kapua.service.storable.model.StorableListResult;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
@@ -689,7 +690,7 @@ public class DatastoreSteps extends TestBase {
         }
         Request request = new Request("POST", index + ElasticsearchResourcePaths.getBulkPath());
         request.setJsonEntity(body.toString());
-        RestClient cl = (RestClient) storeEngineClientWrapper.getClient();
+        RestClient cl = ((ElasticsearchStoreEngineClient) storeEngineClientWrapper.getClient()).unwrap();
         cl.performRequest(request);
     }
 
