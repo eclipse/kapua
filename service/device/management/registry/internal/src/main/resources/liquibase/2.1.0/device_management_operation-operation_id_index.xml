@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026, 2026 Eurotech and/or its affiliates and others
+
+    This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        Eurotech - initial API and implementation
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+
+        logicalFilePath="KapuaDB/changelog-device-management-registry-2.1.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
+
+    <changeSet id="dvcm_mgt_operation-2.1.0-add_index_scopeId_operation_id" author="eurotech">
+
+        <createIndex tableName="dvcm_device_management_operation" indexName="idx_dvcm_device_management_operation_scope_id_operation_id">
+            <column name="scope_id"/>
+            <column name="operation_id"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex tableName="dvcm_device_management_operation" indexName="idx_dvcm_device_management_operation_scope_id_operation_id"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
