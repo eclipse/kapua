@@ -56,9 +56,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Callable;
@@ -292,7 +290,7 @@ public class RestStoreEngineClientWrapper implements StoreEngineClientWrapper<St
     /**
      * In case of aggregation query (aka the aggregation field has been set) the returned ResultList will contain one entry for each aggregation bucket ('hits' are not processed/considered in this case)
      * each entry is of type T and has just 2 fields set: the aggregation field name (with its value) and the scope_id.
-     * All the buckets are returned: the composite aggregation is paged through 'after_key' until Elasticsearch has no more buckets.
+     * Only one page of buckets is returned (at most {@link AggregationField#getSize()}, starting after {@link AggregationField#getAfter()}).
      */
     @Override
     public <T> ResultList<T> query(String index, Object query, Class<T> clazz) throws ClientException {
@@ -301,11 +299,13 @@ public class RestStoreEngineClientWrapper implements StoreEngineClientWrapper<St
         LOG.debug(QUERY_CONVERTED_QUERY, queryJsonNode);
 
         Object queryFetchStyle = getModelConverter().getFetchStyle(query);
-        if (storableQuery.getAggregationField() == null) {
-            JsonNode responseNode = performSearch(index, queryJsonNode);
-            return responseNode != null ? fillResultListQuery(responseNode, queryFetchStyle, clazz) : new ResultList<>(0);
+        JsonNode responseNode = performSearch(index, queryJsonNode);
+        if (responseNode == null) {
+            return new ResultList<>(0);
+        } else if (storableQuery.getAggregationField() == null) {
+            return fillResultListQuery(responseNode, queryFetchStyle, clazz);
         } else {
-            return fillResultListAggregationQuery(index, queryJsonNode, storableQuery, queryFetchStyle, clazz);
+            return fillResultListAggregationQuery(responseNode, storableQuery, queryFetchStyle, clazz);
         }
     }
 
@@ -327,35 +327,18 @@ public class RestStoreEngineClientWrapper implements StoreEngineClientWrapper<St
         return null;
     }
 
-    private <T> ResultList<T> fillResultListAggregationQuery(String index, JsonNode queryJsonNode, StorableQuery storableQuery, Object queryFetchStyle, Class<T> clazz) throws ClientException {
+    private <T> ResultList<T> fillResultListAggregationQuery(JsonNode responseNode, StorableQuery storableQuery, Object queryFetchStyle, Class<T> clazz) throws ClientException {
         AggregationField aggregationField = storableQuery.getAggregationField();
-        ObjectNode compositeNode = (ObjectNode) queryJsonNode.path(SchemaKeys.KEY_AGGREGATION_NODE).path(aggregationField.getAggregationName()).path(SchemaKeys.KEY_AGGREGATION_COMPOSITE);
-        List<T> items = new ArrayList<>();
+        JsonNode aggregationBuckets = responseNode.path(ElasticsearchKeywords.KEY_AGGREGATIONS).path(aggregationField.getAggregationName()).path(ElasticsearchKeywords.KEY_BUCKETS);
+        ResultList<T> resultList = new ResultList<>(aggregationBuckets.size());
 
-        JsonNode afterKey;
-        do {
-            JsonNode responseNode = performSearch(index, queryJsonNode);
-            if (responseNode == null) {
-                break;
-            }
-            JsonNode aggregationNode = responseNode.path(ElasticsearchKeywords.KEY_AGGREGATIONS).path(aggregationField.getAggregationName());
-            for (JsonNode bucket : aggregationNode.path(ElasticsearchKeywords.KEY_BUCKETS)) {
-                Map<String, Object> object = new HashMap<>();
-                object.put("scope_id", storableQuery.getScopeId().toStringId());
-                object.put(aggregationField.getFieldName(), bucket.path(ElasticsearchKeywords.KEY_BUCKETS_KEY).path(aggregationField.getFieldName()).asText()); //set the value for the aggregation field
-                object.put(QueryConverter.QUERY_FETCH_STYLE_KEY, queryFetchStyle);
-                items.add(getModelContext().unmarshal(clazz, object));
-            }
-            // 'after_key' is missing once there are no more buckets
-            afterKey = aggregationNode.get(ElasticsearchKeywords.KEY_AFTER_KEY);
-            if (afterKey != null) {
-                compositeNode.set(SchemaKeys.KEY_AGGREGATION_AFTER, afterKey);
-                LOG.debug(QUERY_CONVERTED_QUERY, queryJsonNode);
-            }
-        } while (afterKey != null);
-
-        ResultList<T> resultList = new ResultList<>(items.size());
-        items.forEach(resultList::add);
+        for (JsonNode bucket : aggregationBuckets) {
+            Map<String, Object> object = new HashMap<>();
+            object.put("scope_id", storableQuery.getScopeId().toStringId());
+            object.put(aggregationField.getFieldName(), bucket.path(ElasticsearchKeywords.KEY_BUCKETS_KEY).path(aggregationField.getFieldName()).asText()); //set the value for the aggregation field
+            object.put(QueryConverter.QUERY_FETCH_STYLE_KEY, queryFetchStyle);
+            resultList.add(getModelContext().unmarshal(clazz, object));
+        }
         return resultList;
     }
 

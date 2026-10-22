@@ -64,8 +64,8 @@ public class QueryConverterImpl implements QueryConverter {
 
             if (convertOptions.aggregationEnabled && storableQuery.getAggregationField() != null) {
                 AggregationField aggregationField = storableQuery.getAggregationField();
-                // Composite aggregation (instead of terms) so that buckets can be paged through 'after_key' without hitting 'search.max_buckets'
-                // "aggs": { <aggregationName>: { "composite": { "size": <size>, "sources": [ { <fieldName>: { "terms": { "field": <fieldName> } } } ] } } }
+                // Composite aggregation (instead of terms) so that buckets can be paged through 'after' without hitting 'search.max_buckets'
+                // "aggs": { <aggregationName>: { "composite": { "size": <size>, "sources": [ { <fieldName>: { "terms": { "field": <fieldName> } } } ], "after": { <fieldName>: <after> } } } }
                 ObjectNode termsNode = MappingUtils.newObjectNode();
                 termsNode.put(SchemaKeys.KEY_AGGREGATION_FIELD, aggregationField.getFieldName());
                 ObjectNode sourceTermsNode = MappingUtils.newObjectNode();
@@ -76,6 +76,12 @@ public class QueryConverterImpl implements QueryConverter {
                 ObjectNode compositeNode = MappingUtils.newObjectNode();
                 compositeNode.put(SchemaKeys.KEY_AGGREGATION_SIZE, aggregationField.getSize());
                 compositeNode.set(SchemaKeys.KEY_AGGREGATION_SOURCES, MappingUtils.newArrayNode().add(sourceNode));
+                if (aggregationField.getAfter() != null) {
+                    // with a single source the composite key is just the field value
+                    ObjectNode afterNode = MappingUtils.newObjectNode();
+                    afterNode.put(aggregationField.getFieldName(), aggregationField.getAfter());
+                    compositeNode.set(SchemaKeys.KEY_AGGREGATION_AFTER, afterNode);
+                }
 
                 ObjectNode aggregationNode = MappingUtils.newObjectNode();
                 aggregationNode.set(SchemaKeys.KEY_AGGREGATION_COMPOSITE, compositeNode);

@@ -43,5 +43,4 @@ public class ElasticsearchKeywords {
     static final String KEY_AGGREGATIONS = "aggregations";
     static final String KEY_BUCKETS = "buckets";
     static final String KEY_BUCKETS_KEY = "key";
-    static final String KEY_AFTER_KEY = "after_key";
 }

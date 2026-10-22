@@ -26,6 +26,7 @@ public class AggregationField {
     private String aggregationName;
     private String fieldName;
     private int size;
+    private String after;
 
     /**
      * Constructor.
@@ -43,6 +44,14 @@ public class AggregationField {
         this.size = size;
     }
 
+    /**
+     * @param after The value of the aggregation field after which the buckets are returned (exclusive), {@code null} to start from the first bucket.
+     */
+    public AggregationField(String aggregationName, String fieldName, int size, String after) {
+        this(aggregationName, fieldName, size);
+        this.after = after;
+    }
+
     public String getAggregationName() {
         return aggregationName;
     }
@@ -53,6 +62,10 @@ public class AggregationField {
 
     public int getSize() {
         return size;
+    }
+
+    public String getAfter() {
+        return after;
     }
 
 }

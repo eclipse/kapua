@@ -77,6 +77,8 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
     private final ChannelInfoFactory channelInfoFactory;
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
+    private static final String DISTINCT_CHANNELS_AGGREGATION_NAME = "distinct_channels";
+    private static final int DISTINCT_CHANNELS_PAGE_SIZE = 1000;
 
     /**
      * Default constructor
@@ -218,10 +220,32 @@ public class ChannelInfoRegistryServiceImpl implements ChannelInfoRegistryServic
 
     @Override
     public List<String> fetchDistinctChannelNames(KapuaId scopeId) throws KapuaException {
-        ChannelInfoQuery aggregationQuery = channelInfoFactory.newQuery(scopeId);
+        ChannelInfoQuery query = channelInfoFactory.newQuery(scopeId);
+        List<String> channelNames = new ArrayList<>();
+        List<String> page;
+        String after = null;
+        do {
+            page = fetchDistinctChannelNames(query, after, DISTINCT_CHANNELS_PAGE_SIZE);
+            channelNames.addAll(page);
+            if (!page.isEmpty()) {
+                after = page.get(page.size() - 1);
+            }
+        } while (page.size() == DISTINCT_CHANNELS_PAGE_SIZE);
+        return channelNames;
+    }
+
+    @Override
+    public List<String> fetchDistinctChannelNames(ChannelInfoQuery query, String after, int limit) throws KapuaException {
+        ArgumentValidator.notNull(query, QUERY);
+        ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
+        //limit is the composite aggregation size, so it must stay below 'search.max_buckets'
+        ArgumentValidator.numRange(limit, 1, maxResultWindowValue, "limit");
+
+        ChannelInfoQuery aggregationQuery = channelInfoFactory.newQuery(query.getScopeId());
+        aggregationQuery.setPredicate(query.getPredicate());
+        aggregationQuery.setOffset(0);
         aggregationQuery.setLimit(0); //setting size to 0 to retrieve only aggregation results and no documents
-        //size is the number of buckets per page (must stay below 'search.max_buckets'): all the pages are fetched anyway
-        aggregationQuery.setAggregationField(new AggregationField("distinct_channels", ChannelInfoSchema.CHANNEL_NAME, 1000));
+        aggregationQuery.setAggregationField(new AggregationField(DISTINCT_CHANNELS_AGGREGATION_NAME, ChannelInfoSchema.CHANNEL_NAME, limit, after));
         ChannelInfoListResult result = this.query(aggregationQuery);
         return result.getItems().stream().map(ChannelInfo::getName).collect(Collectors.toList());
     }
