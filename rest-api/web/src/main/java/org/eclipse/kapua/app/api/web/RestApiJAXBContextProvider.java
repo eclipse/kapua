@@ -22,6 +22,7 @@ import org.eclipse.kapua.KapuaSerializable;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.SetResult;
 import org.eclipse.kapua.app.api.core.model.StorableEntityId;
+import org.eclipse.kapua.app.api.core.model.data.DistinctChannelNamesResult;
 import org.eclipse.kapua.app.api.core.model.data.JsonDatastoreMessage;
 import org.eclipse.kapua.app.api.core.model.data.JsonMessageQuery;
 import org.eclipse.kapua.app.api.core.model.device.management.JsonGenericRequestMessage;
@@ -418,6 +419,7 @@ public class RestApiJAXBContextProvider implements JAXBContextProvider {
                     ChannelInfoListResult.class,
                     ChannelInfoQuery.class,
                     ChannelInfoXmlRegistry.class,
+                    DistinctChannelNamesResult.class,
 
                     // Data Client Info
                     ClientInfo.class,
